@@ -2,15 +2,13 @@ import { createClient } from '@supabase/supabase-js';
 
 /**
  * Inicialização do cliente Supabase.
- * Para resolver o erro 'supabaseUrl is required', inserimos a URL fornecida como fallback.
- * Prioriza variáveis de ambiente (Vercel/Production) e usa o endpoint oficial como segurança.
+ * Prioriza variáveis de ambiente (Vercel/Production) e usa o endpoint oficial como fallback.
  */
 const supabaseUrl = process.env.SUPABASE_URL || 
                     process.env.REACT_APP_SUPABASE_URL || 
                     'https://dlpebpireghwddibcgqr.supabase.co';
 
-// A Anon Key também é obrigatória para a inicialização. 
-// Certifique-se de configurar SUPABASE_ANON_KEY nas variáveis de ambiente do seu projeto.
+// A Anon Key deve ser configurada nas variáveis de ambiente do seu projeto (Vercel).
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 
                         process.env.REACT_APP_SUPABASE_ANON_KEY || 
                         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder';

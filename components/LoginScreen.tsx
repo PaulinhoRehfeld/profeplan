@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PenTool, Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { UserSession } from '../types';
@@ -20,41 +19,36 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     setError('');
 
     try {
-      // 1. Verificar se o e-mail está na lista de autorizados no Supabase
+      // 1. Verificar se o e-mail e a chave de acesso (password) coincidem no Supabase
       const { data: authorizedUser, error: supabaseError } = await supabase
         .from('authorized_users')
         .select('*')
         .eq('email', email.toLowerCase().trim())
+        .eq('access_key', password) // Validação direta via banco de dados
         .single();
 
       if (supabaseError || !authorizedUser) {
-        setError('Acesso negado. Seu e-mail não consta na lista de autorização do PROFEPLAN V3.');
+        console.error("Erro Supabase:", supabaseError);
+        setError('Acesso negado. E-mail ou Chave de Acesso incorretos.');
         setLoading(false);
         return;
       }
 
-      // 2. Validação de senha master conforme roteiro pedagógico
-      // Senha master para Admin: PLAN@0403 (ou específica para Paulo)
-      // Senha padrão para Professores Autorizados: PLAN@0403
-      const isPasswordValid = password === 'PLAN@0403'; 
+      // Se chegamos aqui, os dados são válidos
+      const session: UserSession = {
+        email: authorizedUser.email,
+        role: authorizedUser.role === 'ADMIN' ? 'ADMIN' : 'TEACHER',
+        accessLevel: authorizedUser.role, // 'BASICO' | 'PRO' | 'ADMIN'
+        isLoggedIn: true,
+        driveConnected: false 
+      };
 
-      if (isPasswordValid) {
-        const session: UserSession = {
-          email: email.toLowerCase().trim(),
-          role: authorizedUser.role === 'ADMIN' ? 'ADMIN' : 'TEACHER',
-          accessLevel: authorizedUser.role, // 'BASICO' | 'PRO' | 'ADMIN'
-          isLoggedIn: true,
-          driveConnected: false // Será verificado no App.tsx via localStorage
-        };
-
-        localStorage.setItem('profeplan_session', JSON.stringify(session));
-        onLogin(session);
-      } else {
-        setError('Chave de Acesso incorreta. Verifique os dados fornecidos pela coordenação.');
-      }
+      localStorage.setItem('profeplan_session', JSON.stringify(session));
+      onLogin(session);
+      
     } catch (err) {
       console.error("Erro crítico de autenticação:", err);
-      setError('Ocorreu uma falha na comunicação com o banco de dados de segurança.');
+      setError('Falha na comunicação com o servidor de segurança. Verifique sua conexão.');
     } finally {
       setLoading(false);
     }
