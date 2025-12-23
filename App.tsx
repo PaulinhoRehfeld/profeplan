@@ -4,7 +4,7 @@ import {
   Send, Bot, User, Menu, X, 
   Image as ImageIcon, Database, 
   PenTool, BrainCircuit, Loader2, Sparkle, 
-  RefreshCcw, Info, FileText, Download, Copy, Check
+  RefreshCcw, Info, FileText, Download, Copy, Check, Cloud
 } from 'lucide-react';
 
 // Componentes Locais
@@ -42,12 +42,16 @@ const App: React.FC = () => {
     theme: 'light'
   });
 
+  // 1. Estado para o token do Google Drive
+  const [googleToken, setGoogleToken] = useState<string | null>(localStorage.getItem('google_drive_token'));
+  
   const [activeMode, setActiveMode] = useState<ToolMode>(ToolMode.CHAT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{data: string, type: string} | null>(null);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [isSavingToDrive, setIsSavingToDrive] = useState(false);
   const [discipline, setDiscipline] = useState('');
   const [grade, setGrade] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -77,13 +81,88 @@ const App: React.FC = () => {
     return <LoginScreen onLogin={setSession} />;
   }
 
+  // 2. Função para "CONECTAR" (Solicitar permissão do Drive via OAuth2)
+  const handleConnectDrive = () => {
+    const google = (window as any).google;
+    if (!google) {
+      alert("Bibliotecas do Google não carregadas. Verifique sua conexão.");
+      return;
+    }
+
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com', 
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      callback: (response: any) => {
+        if (response.access_token) {
+          setGoogleToken(response.access_token);
+          localStorage.setItem('google_drive_token', response.access_token);
+          alert("Google Drive conectado com sucesso!");
+        }
+      },
+    });
+    client.requestAccessToken();
+  };
+
+  // 3. Função REAL para Salvar no Google Docs
+  const handleSaveGoogleDocs = async () => {
+    if (!googleToken) {
+      alert("Por favor, conecte seu Google Drive nas configurações primeiro.");
+      setIsSettingsOpen(true);
+      return;
+    }
+
+    const lastAiMessage = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
+    if (!lastAiMessage) {
+      alert("Nenhum plano encontrado para salvar.");
+      return;
+    }
+
+    setIsSavingToDrive(true);
+    try {
+      // Passo 1: Criar o arquivo metadata no Drive (MimeType convert automaticamente para Google Doc)
+      const response = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${googleToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: `Plano de Aula - ${discipline || 'PROFEPLAN'} - ${grade || 'Geral'}`,
+          mimeType: 'application/vnd.google-apps.document'
+        })
+      });
+
+      const file = await response.json();
+      if (file.error) throw new Error(file.error.message);
+      
+      // Passo 2: Upload do conteúdo textual
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${googleToken}`,
+          'Content-Type': 'text/plain'
+        },
+        body: lastAiMessage.content
+      });
+
+      // Passo 3: Abrir em nova aba para edição
+      window.open(`https://docs.google.com/document/d/${file.id}/edit`, '_blank');
+
+    } catch (error) {
+      console.error("Erro no Docs:", error);
+      alert("Falha ao salvar no Google Docs. Tente reconectar seu Drive.");
+    } finally {
+      setIsSavingToDrive(false);
+    }
+  };
+
   const handleExportDocx = async () => {
     const lastAiMsg = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
     if (!lastAiMsg) {
-      alert("Gere um planejamento primeiro para exportar.");
+      alert("Gere um planejamento primeiro.");
       return;
     }
-    const title = `Planejamento_${discipline || 'Pedagogico'}_${grade || 'Geral'}`;
+    const title = `Plano_${discipline || 'Pedagogico'}`;
     await exportToDocx(lastAiMsg.content, title);
   };
 
@@ -128,7 +207,7 @@ const App: React.FC = () => {
       }
     } catch (error: any) {
       setIsThinking(false);
-      const errorMsgText = "### ⚠️ FALHA DE COMUNICAÇÃO\nNão foi possível conectar ao motor Gemini. Verifique sua chave API e conexão.";
+      const errorMsgText = "### ⚠️ FALHA NO MOTOR\nNão foi possível processar seu pedido agora. Verifique sua conexão ou tente novamente.";
       setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
     } finally {
       setIsThinking(false);
@@ -163,7 +242,6 @@ const App: React.FC = () => {
                           <button 
                             onClick={() => handleCopyText(m.content, m.id)}
                             className="p-2.5 bg-white border border-slate-100 rounded-xl shadow-sm text-slate-400 hover:text-blue-600 hover:shadow-md transition-all"
-                            title="Copiar texto"
                           >
                             {copiedId === m.id ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
                           </button>
@@ -183,7 +261,7 @@ const App: React.FC = () => {
                     <BrainCircuit size={20} className="animate-spin-slow" />
                   </div>
                   <div className="bg-white border border-slate-100 p-6 rounded-[2rem] rounded-tl-none shadow-sm flex items-center gap-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Processando Raciocínio...</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Processando...</span>
                   </div>
                 </div>
               )}
@@ -192,9 +270,9 @@ const App: React.FC = () => {
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-slate-50 to-transparent">
-            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto bg-white rounded-full border border-slate-200 shadow-xl overflow-hidden focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100 transition-all">
+            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto bg-white rounded-full border border-slate-200 shadow-xl overflow-hidden focus-within:border-blue-400 transition-all">
               <div className="flex gap-1 p-2 items-center">
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all">
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="p-3 text-slate-400 hover:text-blue-600 rounded-full">
                   <ImageIcon size={20} />
                 </button>
                 <input type="file" ref={fileInputRef} className="hidden" />
@@ -300,10 +378,16 @@ const App: React.FC = () => {
               <Download size={16} /> Exportar para Word
             </button>
             <button 
-              onClick={() => alert("Função em desenvolvimento...")}
-              className="flex items-center gap-3 w-full p-4 bg-slate-50 text-slate-500 rounded-2xl text-[11px] font-black uppercase tracking-tight border border-slate-100 hover:bg-slate-100 transition-all"
+              onClick={handleSaveGoogleDocs}
+              disabled={isSavingToDrive}
+              className={`flex items-center gap-3 w-full p-4 rounded-2xl text-[11px] font-black uppercase tracking-tight border transition-all ${
+                isSavingToDrive 
+                  ? 'bg-slate-100 text-slate-400 border-slate-200' 
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100'
+              }`}
             >
-              <FileText size={16} /> Salvar no Drive
+              {isSavingToDrive ? <Loader2 size={16} className="animate-spin" /> : <Cloud size={16} />} 
+              Salvar no Google Docs
             </button>
           </div>
         </div>
@@ -321,7 +405,14 @@ const App: React.FC = () => {
         </div>
       </aside>
 
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} settings={settings} setSettings={setSettings} />
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        settings={settings} 
+        setSettings={setSettings} 
+        onConnectDrive={handleConnectDrive}
+        isDriveConnected={!!googleToken}
+      />
     </div>
   );
 };
