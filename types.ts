@@ -14,7 +14,7 @@ export interface Message {
 }
 
 export type UserRole = 'ADMIN' | 'TEACHER';
-export type AccessLevel = 'BASICO' | 'PRO' | 'PREMIUM';
+export type AccessLevel = 'BASICO' | 'PRO' | 'ADMIN';
 
 export interface UserSession {
   email: string;

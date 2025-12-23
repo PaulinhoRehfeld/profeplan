@@ -43,22 +43,36 @@ export const generateProfePlanStream = async (
   message: string,
   history: { role: string; parts: { text: string }[] }[],
   mode: string,
-  imagePart?: { inlineData: { data: string; mimeType: string } }
+  imagePart?: { inlineData: { data: string; mimeType: string } },
+  audioPart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  // A chave API é injetada via environment variable process.env.API_KEY
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
 
   const contents = [...history];
-  const currentParts: any[] = [{ text: message }];
+  const currentParts: any[] = [];
+  
+  if (message) {
+    currentParts.push({ text: message });
+  }
+  
   if (imagePart) {
     currentParts.push(imagePart);
   }
+  
+  if (audioPart) {
+    currentParts.push(audioPart);
+  }
+
+  // Fallback se não houver conteúdo nenhum (embora improvável com o UI)
+  if (currentParts.length === 0) {
+    currentParts.push({ text: "Olá" });
+  }
+
   contents.push({ role: 'user', parts: currentParts });
 
   try {
-    // Utilizando Gemini 3 Flash para máxima velocidade e suporte ao Thinking Mode
     return await ai.models.generateContentStream({
       model: 'gemini-3-flash-preview',
       contents: contents,

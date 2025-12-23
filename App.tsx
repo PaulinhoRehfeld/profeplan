@@ -4,7 +4,8 @@ import {
   Send, Bot, User, Menu, X, 
   Image as ImageIcon, Database, 
   PenTool, BrainCircuit, Loader2, Sparkle, 
-  RefreshCcw, Info, FileText, Download, Copy, Check, Cloud
+  RefreshCcw, Info, FileText, Download, Copy, Check, Cloud,
+  Mic, MicOff, Square
 } from 'lucide-react';
 
 // Componentes Locais
@@ -21,8 +22,8 @@ import { generateProfePlanStream } from './services/geminiService';
 import { exportToDocx } from './services/exportService';
 import { INITIAL_GREETING } from './constants';
 
-// Client ID limpo e sem espaços para evitar erro 404 no Google Auth
-const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com'.trim();
+// Client ID oficial (Sanitizado)
+const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(() => {
@@ -45,7 +46,7 @@ const App: React.FC = () => {
     theme: 'light'
   });
 
-  const [googleToken, setGoogleToken] = useState<string | null>(localStorage.getItem('google_drive_token'));
+  const [googleToken, setGoogleToken] = useState<string | null>(() => localStorage.getItem('google_drive_token'));
   const [activeMode, setActiveMode] = useState<ToolMode>(ToolMode.CHAT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -57,6 +58,11 @@ const App: React.FC = () => {
   const [grade, setGrade] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   
+  // Audio states
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
   const [messages, setMessages] = useState<Message[]>(() => {
     if (!session) return [];
     try {
@@ -82,49 +88,155 @@ const App: React.FC = () => {
     return <LoginScreen onLogin={setSession} />;
   }
 
+  // --- AUDIO RECORDING LOGIC ---
+
+  const getSupportedMimeType = () => {
+    const types = ['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/aac'];
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) return type;
+    }
+    return '';
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = getSupportedMimeType();
+      const mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const finalMimeType = mediaRecorder.mimeType || 'audio/webm';
+        const blob = new Blob(audioChunksRef.current, { type: finalMimeType });
+        handleSendVoice(blob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Erro ao acessar microfone:", err);
+      alert("Não foi possível acessar seu microfone. Verifique as permissões de áudio do seu navegador.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+    }
+  };
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = (reader.result as string)?.split(',')[1];
+        if (base64String) resolve(base64String);
+        else reject("Falha na conversão para base64");
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const handleSendVoice = async (blob: Blob) => {
+    setIsThinking(true);
+    try {
+      const base64Audio = await blobToBase64(blob);
+      const audioPart = {
+        inlineData: {
+          data: base64Audio,
+          mimeType: blob.type
+        }
+      };
+
+      const userMsg: Message = { 
+        id: Date.now().toString(), 
+        role: MessageRole.USER, 
+        content: "🎤 [Mensagem de Voz Enviada]", 
+        timestamp: new Date() 
+      };
+      
+      setMessages(prev => [...prev, userMsg]);
+      
+      const history = messages.slice(-10).map(m => ({ 
+        role: m.role === MessageRole.USER ? 'user' : 'model', 
+        parts: [{ text: m.content }] 
+      }));
+      
+      // Solicitar explicitamente transcrição e processamento pedagógico
+      const voicePrompt = "Por favor, transcreva o áudio acima e processe as orientações pedagógicas contidas nele.";
+      const stream = await generateProfePlanStream(voicePrompt, history, activeMode, undefined, audioPart);
+      
+      let fullText = '';
+      const aiId = (Date.now() + 1).toString();
+      setMessages(prev => [...prev, { id: aiId, role: MessageRole.ASSISTANT, content: '', timestamp: new Date() }]);
+
+      for await (const chunk of stream) {
+        if (isThinking) setIsThinking(false);
+        fullText += chunk.text || '';
+        setMessages(prev => prev.map(m => m.id === aiId ? { ...m, content: fullText } : m));
+      }
+    } catch (error: any) {
+      setIsThinking(false);
+      console.error(error);
+      const errorMsgText = "### ⚠️ FALHA NO PROCESSAMENTO DE ÁUDIO\nO motor de IA não conseguiu processar sua mensagem de voz. Tente falar mais perto do microfone ou digite sua solicitação.";
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
+    } finally {
+      setIsThinking(false);
+    }
+  };
+
   // --- GOOGLE DRIVE INTEGRATION ---
   
   const handleConnectDrive = () => {
     try {
       const google = (window as any).google;
       if (!google || !google.accounts || !google.accounts.oauth2) {
-        console.error("Google Identity Services library not found");
-        alert("Aguarde o carregamento dos serviços do Google e tente novamente.");
+        alert("Aguarde o carregamento do módulo de segurança do Google (GSI) e tente novamente.");
         return;
       }
 
       const client = google.accounts.oauth2.initTokenClient({
-        client_id: GOOGLE_CLIENT_ID,
+        client_id: GOOGLE_CLIENT_ID.trim(),
         scope: 'https://www.googleapis.com/auth/drive.file',
         callback: (response: any) => {
           if (response.access_token) {
             setGoogleToken(response.access_token);
             localStorage.setItem('google_drive_token', response.access_token);
-            alert("Google Drive conectado com sucesso!");
+            alert("Sincronização Cloud vinculada com sucesso!");
           } else if (response.error) {
             console.error("OAuth Error:", response);
-            alert(`Erro na conexão: ${response.error_description || response.error}`);
+            alert(`Falha na conexão: ${response.error_description || response.error}`);
           }
         },
       });
-      // prompt: 'consent' garante que o usuário veja a tela de permissão
       client.requestAccessToken({ prompt: 'consent' });
     } catch (err) {
-      console.error("Falha ao iniciar OAuth2:", err);
-      alert("Erro ao abrir a autenticação. Verifique se o seu navegador não bloqueou o popup.");
+      console.error("Critical Google SDK Failure:", err);
+      alert("Houve um erro técnico ao abrir o portal do Google. Verifique se o Client ID está autorizado para esta origem.");
     }
   };
 
   const handleSaveGoogleDocs = async () => {
     if (!googleToken) {
-      alert("Conecte seu Google Drive nas configurações primeiro.");
+      alert("Seu Google Drive ainda não está conectado. Vá em Configurações.");
       setIsSettingsOpen(true);
       return;
     }
 
     const lastAiMessage = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
     if (!lastAiMessage) {
-      alert("Gere um planejamento para poder salvar.");
+      alert("Não há planejamento recente para salvar.");
       return;
     }
 
@@ -137,22 +249,23 @@ const App: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: `PROFEPLAN - ${discipline || 'Plano'} - ${grade || ''}`,
+          name: `PROFEPLAN - ${discipline || 'Plano'} - ${grade || 'Geral'}`,
           mimeType: 'application/vnd.google-apps.document'
         })
       });
 
       const file = await createResponse.json();
+      
       if (file.error) {
         if (file.error.code === 401) {
-          alert("Sessão expirada. Reconecte o Google Drive.");
+          alert("Sessão Google expirada. Refaça a conexão nas configurações.");
           setGoogleToken(null);
           localStorage.removeItem('google_drive_token');
           return;
         }
         throw new Error(file.error.message);
       }
-      
+
       const uploadResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`, {
         method: 'PATCH',
         headers: {
@@ -162,11 +275,12 @@ const App: React.FC = () => {
         body: lastAiMessage.content
       });
 
-      if (!uploadResponse.ok) throw new Error("Erro no upload do conteúdo.");
+      if (!uploadResponse.ok) throw new Error("Erro ao sincronizar o conteúdo pedagógico.");
+
       window.open(`https://docs.google.com/document/d/${file.id}/edit`, '_blank');
     } catch (error: any) {
-      console.error("Erro no Drive:", error);
-      alert(`Falha: ${error.message}`);
+      console.error("Drive Sync Fail:", error);
+      alert(`Erro na sincronização: ${error.message || "Falha desconhecida."}`);
     } finally {
       setIsSavingToDrive(false);
     }
@@ -220,7 +334,7 @@ const App: React.FC = () => {
       }
     } catch (error: any) {
       setIsThinking(false);
-      const errorMsgText = "### ⚠️ ERRO NO MOTOR\nNão conseguimos processar sua solicitação. Verifique sua conexão.";
+      const errorMsgText = "### ⚠️ ERRO NO MOTOR DE IA\nNão foi possível completar o processamento técnico agora. Verifique sua conexão.";
       setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
     } finally {
       setIsThinking(false);
@@ -283,30 +397,48 @@ const App: React.FC = () => {
           </div>
 
           <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-slate-50 to-transparent">
-            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto bg-white rounded-full border border-slate-200 shadow-xl overflow-hidden focus-within:border-blue-400 transition-all">
+            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto bg-white rounded-full border border-slate-200 shadow-xl overflow-hidden focus-within:border-blue-400 transition-all relative">
               <div className="flex gap-1 p-2 items-center">
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="p-3 text-slate-400 hover:text-blue-600 rounded-full">
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="p-3 text-slate-400 hover:text-blue-600 rounded-full" title="Anexar Imagem ou PDF">
                   <ImageIcon size={20} />
                 </button>
-                <input type="file" ref={fileInputRef} className="hidden" />
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/*,application/pdf" />
+                
+                <button 
+                  type="button" 
+                  onClick={isRecording ? stopRecording : startRecording} 
+                  className={`p-3 rounded-full transition-all ${
+                    isRecording ? 'bg-red-50 text-red-600 animate-pulse' : 'text-slate-400 hover:text-blue-600'
+                  }`}
+                  title={isRecording ? "Parar e Enviar Áudio" : "Gravar Mensagem de Voz"}
+                >
+                  {isRecording ? <Square size={20} fill="currentColor" /> : <Mic size={20} />}
+                </button>
+
                 <input 
                   type="text" 
                   value={input} 
                   onChange={(e) => setInput(e.target.value)} 
-                  placeholder="O que vamos planejar agora?"
-                  className="flex-1 px-4 py-2 font-medium text-slate-700 outline-none bg-transparent placeholder:text-slate-300"
+                  placeholder={isRecording ? "Gravando áudio pedagógico..." : "O que vamos planejar agora?"}
+                  disabled={isRecording}
+                  className="flex-1 px-4 py-2 font-medium text-slate-700 outline-none bg-transparent placeholder:text-slate-300 disabled:opacity-50"
                 />
                 <button 
                   type="submit" 
-                  disabled={isThinking || !input.trim()}
+                  disabled={isThinking || (!input.trim() && !selectedImage) || isRecording}
                   className={`p-3 rounded-full transition-all ${
-                    input.trim() ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400'
+                    (input.trim() || selectedImage) ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400'
                   }`}
                 >
                   {isThinking ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                 </button>
               </div>
             </form>
+            {isRecording && (
+               <div className="max-w-3xl mx-auto mt-2 text-center animate-bounce">
+                  <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Escutando... Clique no quadrado para finalizar.</span>
+               </div>
+            )}
           </div>
         </>
       );
@@ -395,8 +527,8 @@ const App: React.FC = () => {
               disabled={isSavingToDrive}
               className={`flex items-center gap-3 w-full p-4 rounded-2xl text-[11px] font-black uppercase tracking-tight border transition-all ${
                 isSavingToDrive 
-                  ? 'bg-slate-100 text-slate-400 border-slate-200' 
-                  : 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100'
+                  ? 'bg-slate-100 text-slate-400 border-slate-200 shadow-none' 
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100 shadow-sm'
               }`}
             >
               {isSavingToDrive ? <Loader2 size={16} className="animate-spin" /> : <Cloud size={16} />} 

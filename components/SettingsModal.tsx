@@ -8,7 +8,7 @@ interface SettingsModalProps {
   onClose: () => void;
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
-  // --- NOVAS PROPS ---
+  // --- NOVAS PROPS CONECTADAS ---
   onConnectDrive: () => void;
   isDriveConnected: boolean;
 }
@@ -102,17 +102,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          {/* Seção 3: Google Drive (Ecossistema Cloud) */}
+          {/* Seção 3: Google Drive (Botão Funcional Solicitado) */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
               <Zap className="w-4 h-4" /> Ecossistema Cloud
             </div>
-            
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center shadow-sm">
-                    {/* Ícone do Google Drive oficial solicitado */}
+                    {/* Ícone do Google Drive Oficial */}
                     <svg className="w-6 h-6" viewBox="0 0 24 24">
                         <path fill="#0066DA" d="M7.71 3.5L4.6 9l5.45 9.47L13.14 13L7.71 3.5z" />
                         <path fill="#00AC47" d="M18.91 13H7.07l-2.47 4.47l2.47 4.53h11.84l2.47-4.53L18.91 13z" />
@@ -125,7 +124,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 </div>
 
-                {/* BOTÃO FUNCIONAL CONFORME SOLICITADO */}
+                {/* BOTÃO FUNCIONAL COM INDICADOR PULSANTE */}
                 <button 
                   onClick={onConnectDrive}
                   className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
@@ -137,7 +136,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   {isDriveConnected ? (
                     <span className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                      Conectado
+                      Conectado ✓
                     </span>
                   ) : (
                     'Conectar'
