@@ -2,7 +2,6 @@
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
 import { SYSTEM_PROMPT } from "../constants";
 
-// Utilitários de áudio
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -45,7 +44,7 @@ export const generateProfePlanStream = async (
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  // CRITICAL: Create instance RIGHT BEFORE the call
+  // CRITICAL: New instance every call to ensure latest API Key
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
@@ -69,9 +68,11 @@ export const generateProfePlanStream = async (
       },
     });
   } catch (error: any) {
-    if (error.message?.includes("Requested entity was not found")) {
-      // Re-trigger key selection via window
-      if ((window as any).aistudio) {
+    const errorMsg = error?.message || String(error);
+    if (errorMsg.includes("Requested entity was not found")) {
+      console.error("Model access error. Key selection required.");
+      // Trigger selection if possible
+      if ((window as any).aistudio?.openSelectKey) {
         await (window as any).aistudio.openSelectKey();
       }
     }
