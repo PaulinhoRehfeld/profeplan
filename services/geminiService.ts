@@ -1,7 +1,8 @@
+
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
 import { SYSTEM_PROMPT } from "../constants";
 
-// Utilitários para processamento de áudio PCM (Requisito Gemini TTS)
+// Utilitários de áudio
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -38,18 +39,16 @@ const safetySettings = [
   { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
 ];
 
-/**
- * Gera resposta em streaming usando Gemini 3 Pro com Thinking Budget.
- */
 export const generateProfePlanStream = async (
   message: string,
   history: { role: string; parts: { text: string }[] }[],
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
+  // CRITICAL: Create instance RIGHT BEFORE the call
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
-  const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}\nFoque em entregar um resultado técnico, estruturado e pronto para uso em sala de aula.`;
+  const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
 
   const contents = [...history];
   const currentParts: any[] = [{ text: message }];
@@ -58,41 +57,43 @@ export const generateProfePlanStream = async (
   }
   contents.push({ role: 'user', parts: currentParts });
 
-  return await ai.models.generateContentStream({
-    model: 'gemini-3-pro-preview',
-    contents: contents,
-    config: {
-      systemInstruction: specificInstruction,
-      temperature: 0.7,
-      thinkingConfig: { 
-        thinkingBudget: 32768 // Raciocínio profundo ativado para análise pedagógica
+  try {
+    return await ai.models.generateContentStream({
+      model: 'gemini-3-pro-preview',
+      contents: contents,
+      config: {
+        systemInstruction: specificInstruction,
+        temperature: 0.7,
+        thinkingConfig: { thinkingBudget: 32768 },
+        safetySettings,
       },
-      safetySettings,
-    },
-  });
+    });
+  } catch (error: any) {
+    if (error.message?.includes("Requested entity was not found")) {
+      // Re-trigger key selection via window
+      if ((window as any).aistudio) {
+        await (window as any).aistudio.openSelectKey();
+      }
+    }
+    throw error;
+  }
 };
 
-/**
- * Converte texto pedagógico em fala humanizada (TTS).
- */
 export const speakPedagogicalText = async (text: string) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Como um professor experiente e calmo, leia este trecho: ${text.substring(0, 800)}` }] }],
+      contents: [{ parts: [{ text: `Como um professor experiente: ${text.substring(0, 500)}` }] }],
       config: {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
-          voiceConfig: { 
-            prebuiltVoiceConfig: { voiceName: 'Kore' } 
-          },
+          voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
         },
       },
     });
 
     const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    
     if (base64Audio) {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       const audioBuffer = await decodeAudioData(decode(base64Audio), audioContext, 24000, 1);
@@ -102,6 +103,6 @@ export const speakPedagogicalText = async (text: string) => {
       source.start();
     }
   } catch (error) {
-    console.error("Erro no TTS ProfePlan:", error);
+    console.error("TTS Error:", error);
   }
 };
