@@ -45,8 +45,6 @@ const App: React.FC = () => {
   const [activeMode, setActiveMode] = useState<ToolMode>(ToolMode.CHAT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [savingToDrive, setSavingToDrive] = useState<string | null>(null);
-  const [showDriveToast, setShowDriveToast] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{data: string, type: string} | null>(null);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -68,6 +66,7 @@ const App: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Monitoramento contínuo da chave de API
   useEffect(() => {
     const checkKey = async () => {
       const aistudio = (window as any).aistudio;
@@ -77,9 +76,7 @@ const App: React.FC = () => {
       }
     };
     checkKey();
-    
-    // Interval check to detect key selection changes
-    const interval = setInterval(checkKey, 3000);
+    const interval = setInterval(checkKey, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -98,9 +95,10 @@ const App: React.FC = () => {
     const aistudio = (window as any).aistudio;
     if (aistudio && typeof aistudio.openSelectKey === 'function') {
       await aistudio.openSelectKey();
-      setHasKey(true); // Assume success per guidelines
+      // Assume sucesso imediato para melhorar a UX, o SDK lidará com falhas reais
+      setHasKey(true);
     } else {
-      alert("Ambiente PROFEPLAN Cloud não detectado. Verifique se está acessando pelo portal oficial.");
+      alert("Ambiente de nuvem PROFEPLAN não detectado. Use o botão de login oficial.");
     }
   };
 
@@ -123,7 +121,7 @@ const App: React.FC = () => {
     setIsThinking(true);
 
     try {
-      const history = messages.slice(-10).map(m => ({ 
+      const history = messages.slice(-8).map(m => ({ 
         role: m.role === MessageRole.USER ? 'user' : 'model', 
         parts: [{ text: m.content }] 
       }));
@@ -143,23 +141,23 @@ const App: React.FC = () => {
         setMessages(prev => prev.map(m => m.id === aiId ? { ...m, content: fullText } : m));
       }
     } catch (error: any) {
-      console.error("Communication error:", error);
+      console.error("Detailed API Error:", error);
       setIsThinking(false);
       
-      const errorMsg = error?.message || String(error);
-      let pedagogicError = "### ⚠️ Falha na Engenharia de Raciocínio\nNão foi possível processar seu pedido no momento.";
+      const errorMsgText = error?.message || String(error);
+      let errorMessage = "### ⚠️ FALHA CRÍTICA DE MOTOR\nNão foi possível processar seu raciocínio agora.";
       
-      if (errorMsg.includes("Requested entity was not found")) {
+      if (errorMsgText.includes("Requested entity was not found") || errorMsgText.includes("404")) {
         setHasKey(false);
-        pedagogicError += "\n\n**O motor Gemini 3 Pro exige uma conta com faturamento (Billing) ativo.**\n\nClique no botão abaixo para reativar o motor com sua chave de API paga.";
+        errorMessage += "\n\n**O motor Gemini 3 Pro exige uma chave de API de um projeto pago (Billing Ativo).**\n\nPor favor, reative o motor no botão abaixo:";
       } else {
-        pedagogicError += "\n\nVerifique sua conexão ou tente novamente em alguns instantes.";
+        errorMessage += "\n\nOcorreu uma instabilidade na conexão. Verifique sua rede ou tente novamente em instantes.";
       }
 
       setMessages(prev => [...prev, { 
         id: Date.now().toString(), 
         role: MessageRole.ASSISTANT, 
-        content: pedagogicError, 
+        content: errorMessage, 
         timestamp: new Date() 
       }]);
     } finally {
@@ -175,21 +173,21 @@ const App: React.FC = () => {
         <>
           <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-10 pb-44 custom-scrollbar bg-slate-50/30">
             {!hasKey && (
-              <div className="max-w-4xl mx-auto mb-8 bg-amber-50 border-2 border-amber-200 p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 animate-in zoom-in-95 shadow-xl shadow-amber-900/5">
+              <div className="max-w-4xl mx-auto mb-8 bg-amber-50 border-2 border-amber-200 p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-amber-900/10 animate-in slide-in-from-top-4">
                 <div className="flex items-center gap-5">
-                  <div className="bg-amber-100 p-4 rounded-2xl shadow-inner">
-                    <ShieldAlert className="text-amber-600 w-7 h-7" />
+                  <div className="bg-amber-500 p-4 rounded-2xl shadow-lg shadow-amber-500/20">
+                    <ShieldAlert className="text-white w-7 h-7" />
                   </div>
                   <div>
-                    <p className="font-black text-amber-900 uppercase text-xs tracking-widest mb-1">Motor Pro Inativo</p>
-                    <p className="text-xs text-amber-700 font-semibold leading-relaxed">Para análise profunda (Thinking Mode), selecione sua chave de API paga do Google Cloud.</p>
+                    <p className="font-black text-amber-900 uppercase text-xs tracking-widest mb-1">Motor Pro Aguardando Ativação</p>
+                    <p className="text-[11px] text-amber-700 font-semibold leading-relaxed">O Thinking Mode v3.0 requer uma chave de API com faturamento ativo.</p>
                   </div>
                 </div>
                 <button 
                   onClick={handleSelectKey}
-                  className="bg-amber-600 text-white px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-lg shadow-amber-600/30 hover:bg-amber-700 transition-all flex items-center gap-3 active:scale-95 shrink-0"
+                  className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all flex items-center gap-3 active:scale-95 shrink-0"
                 >
-                  <Key size={18} /> Ativar Motor Pro
+                  <Key size={18} className="text-blue-400" /> Ativar Agora
                 </button>
               </div>
             )}
@@ -211,12 +209,12 @@ const App: React.FC = () => {
                       <MarkdownRenderer content={m.content} />
                       
                       {m.role === MessageRole.ASSISTANT && m.content.includes("⚠️") && (
-                        <div className="mt-6 pt-4 border-t border-red-50 flex justify-center">
+                        <div className="mt-8 pt-6 border-t border-slate-100 flex justify-center">
                           <button 
                             onClick={handleSelectKey}
-                            className="flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-red-200 hover:bg-red-700 transition-all"
+                            className="flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-red-500/20 hover:bg-red-700 transition-all active:scale-95"
                           >
-                            <RefreshCcw size={14} /> Tentar Reativar Motor
+                            <RefreshCcw size={16} /> Reativar Motor Pro
                           </button>
                         </div>
                       )}
@@ -236,7 +234,7 @@ const App: React.FC = () => {
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                     </div>
-                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Processando Raciocínio...</span>
+                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Sincronizando Currículo...</span>
                   </div>
                 </div>
               )}
@@ -255,7 +253,7 @@ const App: React.FC = () => {
                   type="text" 
                   value={input} 
                   onChange={(e) => setInput(e.target.value)} 
-                  placeholder={hasKey ? "Qual o seu objetivo pedagógico agora?" : "Ative o Motor Pro acima..."}
+                  placeholder={hasKey ? "Qual o seu objetivo pedagógico agora?" : "Selecione sua chave de API para continuar..."}
                   className="flex-1 px-5 py-3 font-bold text-slate-700 outline-none bg-transparent placeholder:text-slate-300 transition-all"
                 />
                 <button 
@@ -293,7 +291,7 @@ const App: React.FC = () => {
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border transition-colors ${hasKey ? 'text-blue-600 bg-blue-50 border-blue-100' : 'text-amber-600 bg-amber-50 border-amber-100'}`}>
-                  {hasKey ? activeMode.replace('_', ' ') : 'ATIVAR PRO'}
+                  {hasKey ? activeMode.replace('_', ' ') : 'PENDENTE'}
                 </span>
                 <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg">PROFEPLAN v3.0</h2>
               </div>
@@ -311,9 +309,9 @@ const App: React.FC = () => {
             {!hasKey && (
               <button 
                 onClick={handleSelectKey}
-                className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-amber-500/20 animate-pulse hover:scale-105 transition-transform"
+                className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-amber-500/20 animate-pulse hover:scale-105 transition-transform"
               >
-                <Key size={14} /> Ativar Pro
+                <Key size={14} /> Ativar Motor
               </button>
             )}
           </div>
@@ -359,7 +357,7 @@ const App: React.FC = () => {
             <div className={`mt-6 flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-sm transition-all ${hasKey ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'}`}>
               <div className={`w-2.5 h-2.5 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)] ${hasKey ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`}></div>
               <p className={`text-[10px] font-black uppercase tracking-widest ${hasKey ? 'text-white' : 'text-slate-600'}`}>
-                {hasKey ? 'Motor Pronto' : 'Aguardando Chave'}
+                {hasKey ? 'Sincronização Ativa' : 'Aguardando Ativação'}
               </p>
             </div>
           </div>

@@ -2,6 +2,7 @@
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
 import { SYSTEM_PROMPT } from "../constants";
 
+// Utilitários de áudio internos
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -44,7 +45,7 @@ export const generateProfePlanStream = async (
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  // CRITICAL: New instance every call to ensure latest API Key
+  // CRITICAL: New instance every call to ensure latest API Key from dialog
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
@@ -69,9 +70,9 @@ export const generateProfePlanStream = async (
     });
   } catch (error: any) {
     const errorMsg = error?.message || String(error);
-    if (errorMsg.includes("Requested entity was not found")) {
-      console.error("Model access error. Key selection required.");
-      // Trigger selection if possible
+    // Se o erro for de entidade não encontrada, é problema de chave/billing no Gemini 3
+    if (errorMsg.includes("Requested entity was not found") || errorMsg.includes("404")) {
+      console.error("Gemini 3 Pro access denied. Key/Billing check required.");
       if ((window as any).aistudio?.openSelectKey) {
         await (window as any).aistudio.openSelectKey();
       }
