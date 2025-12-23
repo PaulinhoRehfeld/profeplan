@@ -33,6 +33,23 @@
       .markdown-content p { margin-bottom: 1rem; line-height: 1.6; }
       .markdown-content ul, .markdown-content ol { margin-left: 1.5rem; margin-bottom: 1rem; }
       .markdown-content li { margin-bottom: 0.25rem; }
+      
+      /* Esconder scrollbar mas manter funcionalidade */
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin-slow {
+        animation: spin-slow 3s linear infinite;
+      }
     </style>
     <script type="importmap">
 {
@@ -52,5 +69,7 @@
   </head>
   <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
+    <!-- O segredo para o Vercel carregar o app está nesta linha abaixo -->
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
