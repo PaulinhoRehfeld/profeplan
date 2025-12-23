@@ -2,7 +2,7 @@
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
 import { SYSTEM_PROMPT } from "../constants";
 
-// Utilitários de áudio internos
+// Utilitários de áudio internos (PCM decoding)
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -45,7 +45,7 @@ export const generateProfePlanStream = async (
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  // Instancia o SDK usando a chave de ambiente do proprietário (VOCÊ)
+  // A chave API é injetada via environment variable process.env.API_KEY
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
@@ -57,20 +57,20 @@ export const generateProfePlanStream = async (
   }
   contents.push({ role: 'user', parts: currentParts });
 
-  // Usamos o gemini-3-flash-preview para maior estabilidade e disponibilidade imediata
   try {
+    // Utilizando Gemini 3 Flash para máxima velocidade e suporte ao Thinking Mode
     return await ai.models.generateContentStream({
       model: 'gemini-3-flash-preview',
       contents: contents,
       config: {
         systemInstruction: specificInstruction,
         temperature: 0.8,
-        thinkingConfig: { thinkingBudget: 24576 }, // Orçamento otimizado para Flash
+        thinkingConfig: { thinkingBudget: 24576 },
         safetySettings,
       },
     });
   } catch (error: any) {
-    console.error("Erro na infraestrutura ProfePlan:", error);
+    console.error("Erro na Chamada do Gemini API:", error);
     throw error;
   }
 };
@@ -80,7 +80,7 @@ export const speakPedagogicalText = async (text: string) => {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Como um professor experiente: ${text.substring(0, 500)}` }] }],
+      contents: [{ parts: [{ text: `Como um professor experiente e acolhedor: ${text.substring(0, 500)}` }] }],
       config: {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
@@ -99,6 +99,6 @@ export const speakPedagogicalText = async (text: string) => {
       source.start();
     }
   } catch (error) {
-    console.error("Falha no áudio pedagógico:", error);
+    console.error("Erro TTS:", error);
   }
 };
