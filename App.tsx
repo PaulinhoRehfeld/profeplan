@@ -1,10 +1,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  Send, Bot, User, CheckCircle2, Menu, X, 
-  Image as ImageIcon, Volume2, Database, 
-  CloudUpload, Sparkles, Home, PenTool, FileDown,
-  BrainCircuit, Loader2, Sparkle, Key, ShieldAlert, RefreshCcw
+  Send, Bot, User, Menu, X, 
+  Image as ImageIcon, Database, 
+  PenTool, BrainCircuit, Loader2, Sparkle, 
+  RefreshCcw, Info
 } from 'lucide-react';
 
 // Componentes Locais
@@ -16,9 +16,8 @@ import MarkdownRenderer from './components/MarkdownRenderer';
 import AdminDashboard from './components/AdminDashboard';
 
 // Tipos e Serviços
-import { Message, MessageRole, ToolMode, UserSettings, UserSession, DriveFile } from './types';
-import { generateProfePlanStream, speakPedagogicalText } from './services/geminiService';
-import { exportToDocx } from './services/exportService';
+import { Message, MessageRole, ToolMode, UserSettings, UserSession } from './types';
+import { generateProfePlanStream } from './services/geminiService';
 import { INITIAL_GREETING } from './constants';
 
 const App: React.FC = () => {
@@ -90,7 +89,7 @@ const App: React.FC = () => {
     setIsThinking(true);
 
     try {
-      const history = messages.slice(-8).map(m => ({ 
+      const history = messages.slice(-10).map(m => ({ 
         role: m.role === MessageRole.USER ? 'user' : 'model', 
         parts: [{ text: m.content }] 
       }));
@@ -110,15 +109,15 @@ const App: React.FC = () => {
         setMessages(prev => prev.map(m => m.id === aiId ? { ...m, content: fullText } : m));
       }
     } catch (error: any) {
-      console.error("Communication error:", error);
+      console.error("Detailed Communication Error:", error);
       setIsThinking(false);
       
-      const pedagogicError = "### ⚠️ ERRO CRÍTICO DE ENGENHARIA\nNão foi possível processar seu pedido agora. Verifique sua conexão ou a validade da chave de API configurada no sistema.";
+      const errorMsgText = "### ⚠️ SISTEMA TEMPORARIAMENTE INDISPONÍVEL\nOcorreu uma falha na conexão com os servidores centrais do PROFEPLAN.\n\n**Orientações para o Colega Professor:**\n1. Verifique se sua internet está estável.\n2. Se o erro persistir, aguarde alguns instantes e tente enviar novamente.\n3. O motor Gemini 3 está sendo reinicializado.";
 
       setMessages(prev => [...prev, { 
         id: Date.now().toString(), 
         role: MessageRole.ASSISTANT, 
-        content: pedagogicError, 
+        content: errorMsgText, 
         timestamp: new Date() 
       }]);
     } finally {
@@ -164,7 +163,7 @@ const App: React.FC = () => {
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                     </div>
-                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Engenharia Pedagógica Ativa...</span>
+                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Engenharia Pedagógica em Curso...</span>
                   </div>
                 </div>
               )}
@@ -183,7 +182,7 @@ const App: React.FC = () => {
                   type="text" 
                   value={input} 
                   onChange={(e) => setInput(e.target.value)} 
-                  placeholder="Descreva seu desafio ou objetivo pedagógico..."
+                  placeholder="Descreva seu objetivo pedagógico aqui..."
                   className="flex-1 px-5 py-3 font-bold text-slate-700 outline-none bg-transparent placeholder:text-slate-300 transition-all"
                 />
                 <button 
@@ -274,8 +273,8 @@ const App: React.FC = () => {
         <div className="mt-auto pt-10 border-t border-slate-100">
           <div className="rounded-[3rem] p-8 text-white shadow-2xl relative overflow-hidden group bg-gradient-to-br from-blue-600 to-indigo-700">
             <Sparkle className="absolute -bottom-8 -left-8 w-32 h-32 opacity-10 transition-transform duration-700 scale-110 group-hover:scale-125" />
-            <p className="text-[11px] font-black uppercase tracking-widest mb-2 opacity-70 italic">Status Inteligência</p>
-            <p className="text-2xl font-black italic uppercase leading-tight">Gemini 3 Pro<br/>Thinking Mode</p>
+            <p className="text-[11px] font-black uppercase tracking-widest mb-2 opacity-70 italic">Motor de Inteligência</p>
+            <p className="text-2xl font-black italic uppercase leading-tight">Gemini 3 Flash<br/>Thinking Mode</p>
             <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-sm bg-white/10 border-white/20">
               <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)] bg-emerald-400 animate-pulse"></div>
               <p className="text-[10px] font-black uppercase tracking-widest text-white">Sincronização Ativa</p>

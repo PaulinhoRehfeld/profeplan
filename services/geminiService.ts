@@ -45,7 +45,7 @@ export const generateProfePlanStream = async (
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  // Cria a instância usando a chave do processo (sua chave)
+  // Instancia o SDK usando a chave de ambiente do proprietário (VOCÊ)
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
@@ -57,19 +57,20 @@ export const generateProfePlanStream = async (
   }
   contents.push({ role: 'user', parts: currentParts });
 
+  // Usamos o gemini-3-flash-preview para maior estabilidade e disponibilidade imediata
   try {
     return await ai.models.generateContentStream({
-      model: 'gemini-3-pro-preview',
+      model: 'gemini-3-flash-preview',
       contents: contents,
       config: {
         systemInstruction: specificInstruction,
-        temperature: 0.7,
-        thinkingConfig: { thinkingBudget: 32768 },
+        temperature: 0.8,
+        thinkingConfig: { thinkingBudget: 24576 }, // Orçamento otimizado para Flash
         safetySettings,
       },
     });
   } catch (error: any) {
-    console.error("Erro na API Gemini:", error);
+    console.error("Erro na infraestrutura ProfePlan:", error);
     throw error;
   }
 };
@@ -98,6 +99,6 @@ export const speakPedagogicalText = async (text: string) => {
       source.start();
     }
   } catch (error) {
-    console.error("TTS Error:", error);
+    console.error("Falha no áudio pedagógico:", error);
   }
 };
