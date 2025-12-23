@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, User, BookOpen, Settings, Zap, CheckCircle } from 'lucide-react';
+import { X, User, BookOpen, Settings, Zap } from 'lucide-react';
 import { UserSettings } from '../types';
 
 interface SettingsModalProps {
@@ -8,7 +8,7 @@ interface SettingsModalProps {
   onClose: () => void;
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
-  // --- NOVAS PROPS CONFORME ROTEIRO ---
+  // --- NOVAS PROPS ---
   onConnectDrive: () => void;
   isDriveConnected: boolean;
 }
@@ -17,9 +17,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen, 
   onClose, 
   settings, 
-  setSettings, 
-  onConnectDrive, 
-  isDriveConnected 
+  setSettings,
+  onConnectDrive,
+  isDriveConnected
 }) => {
   if (!isOpen) return null;
 
@@ -107,11 +107,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
               <Zap className="w-4 h-4" /> Ecossistema Cloud
             </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-[2rem] p-6 shadow-sm">
-              <div className="flex items-center justify-between">
+            
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl border border-slate-100 flex items-center justify-center shadow-sm">
-                    {/* Ícone do Google Drive conforme solicitado */}
+                  <div className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center shadow-sm">
+                    {/* Ícone do Google Drive oficial solicitado */}
                     <svg className="w-6 h-6" viewBox="0 0 24 24">
                         <path fill="#0066DA" d="M7.71 3.5L4.6 9l5.45 9.47L13.14 13L7.71 3.5z" />
                         <path fill="#00AC47" d="M18.91 13H7.07l-2.47 4.47l2.47 4.53h11.84l2.47-4.53L18.91 13z" />
@@ -119,24 +120,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-sm">Google Drive</h4>
-                    <p className="text-[10px] text-slate-500 font-medium">Sincronização para exportação automática</p>
+                    <h4 className="font-bold text-slate-900">Google Drive</h4>
+                    <p className="text-xs text-slate-500">Sincronização para exportação automática</p>
                   </div>
                 </div>
 
-                {/* BOTÃO FUNCIONAL CONFORME ROTEIRO */}
+                {/* BOTÃO FUNCIONAL CONFORME SOLICITADO */}
                 <button 
                   onClick={onConnectDrive}
-                  className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 active:scale-95 ${
+                  className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
                     isDriveConnected 
                     ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-inner cursor-default' 
-                    : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0'
                   }`}
                 >
                   {isDriveConnected ? (
                     <span className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                      Conectado ✓
+                      Conectado
                     </span>
                   ) : (
                     'Conectar'

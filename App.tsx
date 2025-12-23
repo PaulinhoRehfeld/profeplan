@@ -21,7 +21,8 @@ import { generateProfePlanStream } from './services/geminiService';
 import { exportToDocx } from './services/exportService';
 import { INITIAL_GREETING } from './constants';
 
-const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com';
+// Client ID limpo e sem espaços para evitar erro 404 no Google Auth
+const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com'.trim();
 
 const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(() => {
@@ -87,7 +88,8 @@ const App: React.FC = () => {
     try {
       const google = (window as any).google;
       if (!google || !google.accounts || !google.accounts.oauth2) {
-        alert("A biblioteca do Google ainda está carregando. Por favor, aguarde alguns segundos e tente novamente.");
+        console.error("Google Identity Services library not found");
+        alert("Aguarde o carregamento dos serviços do Google e tente novamente.");
         return;
       }
 
@@ -100,15 +102,16 @@ const App: React.FC = () => {
             localStorage.setItem('google_drive_token', response.access_token);
             alert("Google Drive conectado com sucesso!");
           } else if (response.error) {
-            console.error("Erro na autorização:", response.error);
-            alert("Erro ao conectar ao Google Drive. Verifique se o Client ID e as origens JavaScript estão configurados no Google Cloud.");
+            console.error("OAuth Error:", response);
+            alert(`Erro na conexão: ${response.error_description || response.error}`);
           }
         },
       });
+      // prompt: 'consent' garante que o usuário veja a tela de permissão
       client.requestAccessToken({ prompt: 'consent' });
     } catch (err) {
-      console.error("Falha ao iniciar cliente OAuth2:", err);
-      alert("Erro crítico ao carregar o módulo de autenticação. Verifique se o Client ID é válido.");
+      console.error("Falha ao iniciar OAuth2:", err);
+      alert("Erro ao abrir a autenticação. Verifique se o seu navegador não bloqueou o popup.");
     }
   };
 
@@ -121,13 +124,12 @@ const App: React.FC = () => {
 
     const lastAiMessage = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
     if (!lastAiMessage) {
-      alert("Nenhum planejamento disponível para salvar.");
+      alert("Gere um planejamento para poder salvar.");
       return;
     }
 
     setIsSavingToDrive(true);
     try {
-      // 1. Criar o arquivo (metadados)
       const createResponse = await fetch('https://www.googleapis.com/drive/v3/files', {
         method: 'POST',
         headers: {
@@ -143,7 +145,7 @@ const App: React.FC = () => {
       const file = await createResponse.json();
       if (file.error) {
         if (file.error.code === 401) {
-          alert("Sessão do Google expirada. Por favor, conecte novamente.");
+          alert("Sessão expirada. Reconecte o Google Drive.");
           setGoogleToken(null);
           localStorage.removeItem('google_drive_token');
           return;
@@ -151,7 +153,6 @@ const App: React.FC = () => {
         throw new Error(file.error.message);
       }
       
-      // 2. Upload do conteúdo (Texto simples que o Docs converterá)
       const uploadResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`, {
         method: 'PATCH',
         headers: {
@@ -161,12 +162,11 @@ const App: React.FC = () => {
         body: lastAiMessage.content
       });
 
-      if (!uploadResponse.ok) throw new Error("Erro ao enviar conteúdo ao arquivo.");
-
+      if (!uploadResponse.ok) throw new Error("Erro no upload do conteúdo.");
       window.open(`https://docs.google.com/document/d/${file.id}/edit`, '_blank');
     } catch (error: any) {
-      console.error("Erro no fluxo do Drive:", error);
-      alert(`Erro: ${error.message || "Falha na sincronização."}`);
+      console.error("Erro no Drive:", error);
+      alert(`Falha: ${error.message}`);
     } finally {
       setIsSavingToDrive(false);
     }
@@ -175,7 +175,7 @@ const App: React.FC = () => {
   const handleExportDocx = async () => {
     const lastAiMsg = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
     if (!lastAiMsg) return;
-    const title = `Plano_${discipline || 'Pedagogico'}_${Date.now()}`;
+    const title = `Plano_${discipline || 'Doc'}_${Date.now()}`;
     await exportToDocx(lastAiMsg.content, title);
   };
 
@@ -220,7 +220,7 @@ const App: React.FC = () => {
       }
     } catch (error: any) {
       setIsThinking(false);
-      const errorMsgText = "### ⚠️ ERRO DE PROCESSAMENTO\nHouve um problema ao conectar com a IA. Verifique sua conexão ou tente novamente.";
+      const errorMsgText = "### ⚠️ ERRO NO MOTOR\nNão conseguimos processar sua solicitação. Verifique sua conexão.";
       setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
     } finally {
       setIsThinking(false);
