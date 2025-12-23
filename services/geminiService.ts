@@ -45,7 +45,7 @@ export const generateProfePlanStream = async (
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  // CRITICAL: New instance every call to ensure latest API Key from dialog
+  // Cria a instância usando a chave do processo (sua chave)
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
@@ -69,14 +69,7 @@ export const generateProfePlanStream = async (
       },
     });
   } catch (error: any) {
-    const errorMsg = error?.message || String(error);
-    // Se o erro for de entidade não encontrada, é problema de chave/billing no Gemini 3
-    if (errorMsg.includes("Requested entity was not found") || errorMsg.includes("404")) {
-      console.error("Gemini 3 Pro access denied. Key/Billing check required.");
-      if ((window as any).aistudio?.openSelectKey) {
-        await (window as any).aistudio.openSelectKey();
-      }
-    }
+    console.error("Erro na API Gemini:", error);
     throw error;
   }
 };
