@@ -1,18 +1,7 @@
-
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
 import { SYSTEM_PROMPT } from "../constants";
 
-// Inicialização segura usando a variável de ambiente injetada
-const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
-
-const safetySettings = [
-  { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-];
-
-// Funções auxiliares para decodificação de áudio PCM (Diretrizes Gemini)
+// Utilitários para processamento de áudio PCM (Requisito Gemini TTS)
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -42,50 +31,56 @@ async function decodeAudioData(
   return buffer;
 }
 
+const safetySettings = [
+  { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+  { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+];
+
+/**
+ * Gera resposta em streaming usando Gemini 3 Pro com Thinking Budget.
+ */
 export const generateProfePlanStream = async (
   message: string,
   history: { role: string; parts: { text: string }[] }[],
+  mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } }
 ) => {
-  const ai = getAI();
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
-  // Converte o histórico para o formato esperado pela API
-  const contents: any[] = history.map(h => ({
-    role: h.role,
-    parts: h.parts
-  }));
-  
+  const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}\nFoque em entregar um resultado técnico, estruturado e pronto para uso em sala de aula.`;
+
+  const contents = [...history];
   const currentParts: any[] = [{ text: message }];
   if (imagePart) {
     currentParts.push(imagePart);
   }
-
   contents.push({ role: 'user', parts: currentParts });
 
-  // Chamada direta conforme as novas diretrizes da SDK
-  const streamResponse = await ai.models.generateContentStream({
+  return await ai.models.generateContentStream({
     model: 'gemini-3-pro-preview',
     contents: contents,
     config: {
-      systemInstruction: SYSTEM_PROMPT,
+      systemInstruction: specificInstruction,
       temperature: 0.7,
-      maxOutputTokens: 20000,
       thinkingConfig: { 
-        thinkingBudget: 10000 
+        thinkingBudget: 32768 // Raciocínio profundo ativado para análise pedagógica
       },
-      safetySettings: safetySettings,
+      safetySettings,
     },
   });
-  
-  return streamResponse;
 };
 
-export const speakText = async (text: string) => {
-  const ai = getAI();
+/**
+ * Converte texto pedagógico em fala humanizada (TTS).
+ */
+export const speakPedagogicalText = async (text: string) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Leia com tom de professor calmo, profissional e didático: ${text.substring(0, 1000)}` }] }],
+      contents: [{ parts: [{ text: `Como um professor experiente e calmo, leia este trecho: ${text.substring(0, 800)}` }] }],
       config: {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
@@ -96,24 +91,17 @@ export const speakText = async (text: string) => {
       },
     });
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
     
     if (base64Audio) {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-      
-      const audioBuffer = await decodeAudioData(
-        decode(base64Audio),
-        audioContext,
-        24000,
-        1,
-      );
-
+      const audioBuffer = await decodeAudioData(decode(base64Audio), audioContext, 24000, 1);
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(audioContext.destination);
       source.start();
     }
   } catch (error) {
-    console.error("Erro ao gerar áudio:", error);
+    console.error("Erro no TTS ProfePlan:", error);
   }
 };
