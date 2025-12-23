@@ -21,6 +21,8 @@ import { generateProfePlanStream } from './services/geminiService';
 import { exportToDocx } from './services/exportService';
 import { INITIAL_GREETING } from './constants';
 
+const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com';
+
 const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(() => {
     try {
@@ -42,9 +44,7 @@ const App: React.FC = () => {
     theme: 'light'
   });
 
-  // 1. Estado para o token do Google Drive
   const [googleToken, setGoogleToken] = useState<string | null>(localStorage.getItem('google_drive_token'));
-  
   const [activeMode, setActiveMode] = useState<ToolMode>(ToolMode.CHAT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -81,76 +81,92 @@ const App: React.FC = () => {
     return <LoginScreen onLogin={setSession} />;
   }
 
-  // 2. Função para "CONECTAR" (Solicitar permissão do Drive via OAuth2)
+  // --- GOOGLE DRIVE INTEGRATION ---
+  
   const handleConnectDrive = () => {
-    const google = (window as any).google;
-    if (!google) {
-      alert("Bibliotecas do Google não carregadas. Verifique sua conexão.");
-      return;
-    }
+    try {
+      const google = (window as any).google;
+      if (!google || !google.accounts || !google.accounts.oauth2) {
+        alert("A biblioteca do Google ainda está carregando. Por favor, aguarde alguns segundos e tente novamente.");
+        return;
+      }
 
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com', 
-      scope: 'https://www.googleapis.com/auth/drive.file',
-      callback: (response: any) => {
-        if (response.access_token) {
-          setGoogleToken(response.access_token);
-          localStorage.setItem('google_drive_token', response.access_token);
-          alert("Google Drive conectado com sucesso!");
-        }
-      },
-    });
-    client.requestAccessToken();
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: (response: any) => {
+          if (response.access_token) {
+            setGoogleToken(response.access_token);
+            localStorage.setItem('google_drive_token', response.access_token);
+            alert("Google Drive conectado com sucesso!");
+          } else if (response.error) {
+            console.error("Erro na autorização:", response.error);
+            alert("Erro ao conectar ao Google Drive. Verifique se o Client ID e as origens JavaScript estão configurados no Google Cloud.");
+          }
+        },
+      });
+      client.requestAccessToken({ prompt: 'consent' });
+    } catch (err) {
+      console.error("Falha ao iniciar cliente OAuth2:", err);
+      alert("Erro crítico ao carregar o módulo de autenticação. Verifique se o Client ID é válido.");
+    }
   };
 
-  // 3. Função REAL para Salvar no Google Docs
   const handleSaveGoogleDocs = async () => {
     if (!googleToken) {
-      alert("Por favor, conecte seu Google Drive nas configurações primeiro.");
+      alert("Conecte seu Google Drive nas configurações primeiro.");
       setIsSettingsOpen(true);
       return;
     }
 
     const lastAiMessage = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
     if (!lastAiMessage) {
-      alert("Nenhum plano encontrado para salvar.");
+      alert("Nenhum planejamento disponível para salvar.");
       return;
     }
 
     setIsSavingToDrive(true);
     try {
-      // Passo 1: Criar o arquivo metadata no Drive (MimeType convert automaticamente para Google Doc)
-      const response = await fetch('https://www.googleapis.com/drive/v3/files', {
+      // 1. Criar o arquivo (metadados)
+      const createResponse = await fetch('https://www.googleapis.com/drive/v3/files', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${googleToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: `Plano de Aula - ${discipline || 'PROFEPLAN'} - ${grade || 'Geral'}`,
+          name: `PROFEPLAN - ${discipline || 'Plano'} - ${grade || ''}`,
           mimeType: 'application/vnd.google-apps.document'
         })
       });
 
-      const file = await response.json();
-      if (file.error) throw new Error(file.error.message);
+      const file = await createResponse.json();
+      if (file.error) {
+        if (file.error.code === 401) {
+          alert("Sessão do Google expirada. Por favor, conecte novamente.");
+          setGoogleToken(null);
+          localStorage.removeItem('google_drive_token');
+          return;
+        }
+        throw new Error(file.error.message);
+      }
       
-      // Passo 2: Upload do conteúdo textual
-      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`, {
+      // 2. Upload do conteúdo (Texto simples que o Docs converterá)
+      const uploadResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${googleToken}`,
-          'Content-Type': 'text/plain'
+          'Content-Type': 'text/plain; charset=UTF-8'
         },
         body: lastAiMessage.content
       });
 
-      // Passo 3: Abrir em nova aba para edição
-      window.open(`https://docs.google.com/document/d/${file.id}/edit`, '_blank');
+      if (!uploadResponse.ok) throw new Error("Erro ao enviar conteúdo ao arquivo.");
 
-    } catch (error) {
-      console.error("Erro no Docs:", error);
-      alert("Falha ao salvar no Google Docs. Tente reconectar seu Drive.");
+      window.open(`https://docs.google.com/document/d/${file.id}/edit`, '_blank');
+    } catch (error: any) {
+      console.error("Erro no fluxo do Drive:", error);
+      alert(`Erro: ${error.message || "Falha na sincronização."}`);
     } finally {
       setIsSavingToDrive(false);
     }
@@ -158,11 +174,8 @@ const App: React.FC = () => {
 
   const handleExportDocx = async () => {
     const lastAiMsg = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
-    if (!lastAiMsg) {
-      alert("Gere um planejamento primeiro.");
-      return;
-    }
-    const title = `Plano_${discipline || 'Pedagogico'}`;
+    if (!lastAiMsg) return;
+    const title = `Plano_${discipline || 'Pedagogico'}_${Date.now()}`;
     await exportToDocx(lastAiMsg.content, title);
   };
 
@@ -207,7 +220,7 @@ const App: React.FC = () => {
       }
     } catch (error: any) {
       setIsThinking(false);
-      const errorMsgText = "### ⚠️ FALHA NO MOTOR\nNão foi possível processar seu pedido agora. Verifique sua conexão ou tente novamente.";
+      const errorMsgText = "### ⚠️ ERRO DE PROCESSAMENTO\nHouve um problema ao conectar com a IA. Verifique sua conexão ou tente novamente.";
       setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
     } finally {
       setIsThinking(false);
@@ -241,7 +254,7 @@ const App: React.FC = () => {
                         <div className="absolute top-2 -right-12 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => handleCopyText(m.content, m.id)}
-                            className="p-2.5 bg-white border border-slate-100 rounded-xl shadow-sm text-slate-400 hover:text-blue-600 hover:shadow-md transition-all"
+                            className="p-2.5 bg-white border border-slate-100 rounded-xl shadow-sm text-slate-400 hover:text-blue-600 transition-all"
                           >
                             {copiedId === m.id ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
                           </button>
@@ -261,7 +274,7 @@ const App: React.FC = () => {
                     <BrainCircuit size={20} className="animate-spin-slow" />
                   </div>
                   <div className="bg-white border border-slate-100 p-6 rounded-[2rem] rounded-tl-none shadow-sm flex items-center gap-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Processando...</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Processando Raciocínio...</span>
                   </div>
                 </div>
               )}
@@ -280,7 +293,7 @@ const App: React.FC = () => {
                   type="text" 
                   value={input} 
                   onChange={(e) => setInput(e.target.value)} 
-                  placeholder="Qual o desafio pedagógico de hoje?"
+                  placeholder="O que vamos planejar agora?"
                   className="flex-1 px-4 py-2 font-medium text-slate-700 outline-none bg-transparent placeholder:text-slate-300"
                 />
                 <button 
@@ -323,7 +336,7 @@ const App: React.FC = () => {
                 <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-base">PROFEPLAN v3.0</h2>
               </div>
               <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 italic">
-                {discipline || 'Nível Geral'} • {grade || 'Base Nacional'}
+                {discipline || 'Geral'} • {grade || 'Série'}
               </span>
             </div>
           </div>
@@ -343,7 +356,7 @@ const App: React.FC = () => {
 
       <aside className="w-72 bg-white border-l border-slate-100 hidden xl:flex flex-col p-8 space-y-8 shrink-0 shadow-xl">
         <div>
-          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-6">Parâmetros de Contexto</h3>
+          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-6">Filtros Rápidos</h3>
           <div className="space-y-5">
             <div className="space-y-2">
               <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Disciplina</label>
@@ -351,8 +364,8 @@ const App: React.FC = () => {
                 type="text" 
                 value={discipline} 
                 onChange={e => setDiscipline(e.target.value)} 
-                placeholder="Ex: Português" 
-                className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none shadow-inner" 
+                placeholder="Ex: Geografia" 
+                className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none" 
               />
             </div>
             <div className="space-y-2">
@@ -361,21 +374,21 @@ const App: React.FC = () => {
                 type="text" 
                 value={grade} 
                 onChange={e => setGrade(e.target.value)} 
-                placeholder="Ex: 3º Ano Médio" 
-                className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none shadow-inner" 
+                placeholder="Ex: 9º Ano" 
+                className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none" 
               />
             </div>
           </div>
         </div>
 
         <div className="pt-2">
-          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-4">Ações Pedagógicas</h3>
+          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-4">Exportação</h3>
           <div className="grid grid-cols-1 gap-3">
             <button 
               onClick={handleExportDocx}
-              className="flex items-center gap-3 w-full p-4 bg-blue-50 text-blue-700 rounded-2xl text-[11px] font-black uppercase tracking-tight border border-blue-100 hover:bg-blue-100 transition-all shadow-sm hover:shadow-md"
+              className="flex items-center gap-3 w-full p-4 bg-blue-50 text-blue-700 rounded-2xl text-[11px] font-black uppercase tracking-tight border border-blue-100 hover:bg-blue-100 transition-all"
             >
-              <Download size={16} /> Exportar para Word
+              <Download size={16} /> Salvar como Word
             </button>
             <button 
               onClick={handleSaveGoogleDocs}
@@ -387,7 +400,7 @@ const App: React.FC = () => {
               }`}
             >
               {isSavingToDrive ? <Loader2 size={16} className="animate-spin" /> : <Cloud size={16} />} 
-              Salvar no Google Docs
+              Google Docs
             </button>
           </div>
         </div>
@@ -395,12 +408,8 @@ const App: React.FC = () => {
         <div className="mt-auto pt-8 border-t border-slate-100">
           <div className="rounded-[2.5rem] p-6 text-white shadow-xl relative overflow-hidden group bg-gradient-to-br from-blue-600 to-indigo-700">
             <Sparkle className="absolute -bottom-6 -left-6 w-24 h-24 opacity-10 transition-transform group-hover:scale-125" />
-            <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-70 italic">Inteligência Docente</p>
-            <p className="text-sm font-bold italic uppercase leading-tight tracking-tight">Gemini 3 Flash<br/>Thinking Mode</p>
-            <div className="mt-4 flex items-center gap-2 p-3 rounded-xl border backdrop-blur-sm bg-white/10 border-white/20">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-white">Motor Sincronizado</p>
-            </div>
+            <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-70 italic">IA DOCENTE</p>
+            <p className="text-sm font-bold italic uppercase leading-tight tracking-tight">Gemini Workspace<br/>Sync Ativo</p>
           </div>
         </div>
       </aside>
