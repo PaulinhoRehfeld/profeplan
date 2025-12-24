@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Trash2, Mail, ShieldAlert, Loader2, CheckCircle2 } from 'lucide-react';
+import { UserPlus, Trash2, Mail, ShieldAlert, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
 
 const AdminDashboard: React.FC = () => {
@@ -9,9 +8,11 @@ const AdminDashboard: React.FC = () => {
   const [newRole, setNewRole] = useState('PRO');
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [error, setError] = useState(''); // Novo estado para mensagens de erro
 
   const fetchUsers = async () => {
     setLoading(true);
+    setError(''); // Limpa erro ao buscar
     try {
       const { data, error } = await supabase
         .from('authorized_users')
@@ -20,8 +21,15 @@ const AdminDashboard: React.FC = () => {
       
       if (error) throw error;
       if (data) setEmails(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro ao listar usuários:", err);
+      if (err.message.includes('policy') || err.message.includes('row-level security')) {
+        setError('Erro de Segurança: A Política de Segurança de Linha (RLS) está ativa na tabela \'authorized_users\' do Supabase. Para gerenciar usuários, você precisa desativar o RLS para esta tabela no seu projeto Supabase, ou adicionar uma política que permita a leitura.');
+      } else if (err.message.includes('supabaseKey') || err.message.includes('API key')) {
+        setError('Erro de Configuração: Chave de API do Supabase ausente ou inválida. Verifique suas variáveis de ambiente.');
+      } else {
+        setError('Erro ao listar usuários: ' + err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -34,6 +42,7 @@ const AdminDashboard: React.FC = () => {
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     setActionLoading(true);
+    setError(''); // Limpa erro anterior
     try {
       const { error } = await supabase
         .from('authorized_users')
@@ -42,9 +51,18 @@ const AdminDashboard: React.FC = () => {
       if (error) throw error;
       
       setNewEmail('');
-      fetchUsers();
+      fetchUsers(); // Re-busca a lista para atualizar a UI
     } catch (err: any) {
-      alert("Erro ao autorizar e-mail: " + (err.message || "E-mail já cadastrado."));
+      console.error("Erro ao adicionar usuário:", err);
+      if (err.message.includes('policy') || err.message.includes('row-level security')) {
+        setError('Erro de Segurança: A Política de Segurança de Linha (RLS) está ativa na tabela \'authorized_users\' do Supabase. Para gerenciar usuários, você precisa desativar o RLS para esta tabela no seu projeto Supabase, ou adicionar uma política que permita a inserção.');
+      } else if (err.code === '23505') { // Código de erro para violação de unique constraint (e-mail já existe)
+        setError('Este e-mail já está autorizado.');
+      } else if (err.message.includes('supabaseKey') || err.message.includes('API key')) {
+        setError('Erro de Configuração: Chave de API do Supabase ausente ou inválida. Verifique suas variáveis de ambiente.');
+      } else {
+        setError('Erro ao autorizar e-mail: ' + err.message);
+      }
     } finally {
       setActionLoading(false);
     }
@@ -54,6 +72,7 @@ const AdminDashboard: React.FC = () => {
     if (!confirm("Deseja revogar permanentemente o acesso deste usuário?")) return;
     
     setActionLoading(true);
+    setError(''); // Limpa erro anterior
     try {
       const { error } = await supabase
         .from('authorized_users')
@@ -61,9 +80,16 @@ const AdminDashboard: React.FC = () => {
         .eq('id', id);
         
       if (error) throw error;
-      fetchUsers();
-    } catch (err) {
-      alert("Erro ao remover acesso.");
+      fetchUsers(); // Re-busca a lista para atualizar a UI
+    } catch (err: any) {
+      console.error("Erro ao remover usuário:", err);
+      if (err.message.includes('policy') || err.message.includes('row-level security')) {
+        setError('Erro de Segurança: A Política de Segurança de Linha (RLS) está ativa na tabela \'authorized_users\' do Supabase. Para gerenciar usuários, você precisa desativar o RLS para esta tabela no seu projeto Supabase, ou adicionar uma política que permita a exclusão.');
+      } else if (err.message.includes('supabaseKey') || err.message.includes('API key')) {
+        setError('Erro de Configuração: Chave de API do Supabase ausente ou inválida. Verifique suas variáveis de ambiente.');
+      } else {
+        setError('Erro ao remover acesso: ' + err.message);
+      }
     } finally {
       setActionLoading(false);
     }
@@ -81,6 +107,13 @@ const AdminDashboard: React.FC = () => {
           <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest">Acesso Root Ativo</span>
         </div>
       </header>
+
+      {error && ( // Exibe o erro na interface
+        <div className="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in slide-in-from-top-2">
+          <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+          <p className="text-red-400 text-xs font-bold leading-tight">{error}</p>
+        </div>
+      )}
 
       {/* Formulário de Cadastro */}
       <form onSubmit={handleAddUser} className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl flex flex-col md:flex-row gap-5 items-end transition-all hover:shadow-2xl">

@@ -396,139 +396,166 @@ const App: React.FC = () => {
     }
   };
 
+  // Fix: Defined `renderActiveContent` function to conditionally render components
   const renderActiveContent = () => {
-    if (checkingApiKey) {
-      return (
-        <div className="flex-1 flex items-center justify-center flex-col gap-4 text-center p-8">
-          <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-          <p className="text-xl font-bold text-slate-700">Verificando Credenciais PROFEPLAN...</p>
-          <p className="text-slate-500">Aguarde enquanto preparamos seu workspace.</p>
-        </div>
-      );
-    }
-
-    if (!geminiApiKeySelected) {
-      return (
-        <div className="flex-1 flex items-center justify-center flex-col gap-6 text-center p-8 bg-slate-100">
-          <Key className="w-16 h-16 text-red-500" />
-          <h3 className="text-2xl font-bold text-red-700">Chave de API do Gemini Ausente!</h3>
-          <p className="text-slate-600 text-lg max-w-lg">
-            Para o PROFEPLAN funcionar, é essencial que você selecione sua chave de API do Gemini. 
-            Isso permite que a IA processe suas solicitações pedagógicas.
-          </p>
-          <button 
-            onClick={handleSelectGeminiApiKey}
-            className="mt-4 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl text-lg hover:bg-blue-700 transition-colors shadow-lg"
-          >
-            Conectar Chave de API do Gemini
-          </button>
-          <p className="text-xs text-slate-500 mt-4">
-            <Info className="inline w-3 h-3 mr-1" /> Um link para a documentação de faturamento será fornecido.
-          </p>
-        </div>
-      );
-    }
-
-    switch(activeMode) {
-      case ToolMode.FILES: return <div className="p-8 h-full overflow-y-auto"><DriveExplorer userEmail={session.email} /></div>;
-      case ToolMode.ADMIN: return <div className="p-8 h-full overflow-y-auto"><AdminDashboard /></div>;
-      default: return (
-        <>
-          <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-10 pb-32 custom-scrollbar bg-slate-50/30">
-            <div className="max-w-4xl mx-auto space-y-10">
-              {messages.map((m) => (
-                <div key={m.id} className={`flex gap-5 group ${m.role === MessageRole.USER ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-4 duration-300`}>
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-md ${
-                    m.role === MessageRole.USER ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'
-                  }`}>
-                    {m.role === MessageRole.USER ? <User size={20} /> : <Bot size={22} />}
-                  </div>
-                  <div className={`max-w-[85%] lg:max-w-[80%] flex flex-col ${m.role === MessageRole.USER ? 'items-end' : 'items-start'}`}>
-                    <div className={`p-6 rounded-[2rem] border shadow-sm relative ${
-                      m.role === MessageRole.USER 
-                        ? 'bg-blue-600 text-white border-blue-500 rounded-tr-none' 
-                        : 'bg-white text-slate-800 border-slate-100 rounded-tl-none'
+    switch (activeMode) {
+      case ToolMode.CHAT:
+      case ToolMode.PLANNING: // Planning can also use the chat interface
+      case ToolMode.ACTIVITIES:
+      case ToolMode.INCLUSION:
+      case ToolMode.SIMULATION:
+      case ToolMode.AUDITOR:
+        return (
+          <>
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+              {messages.map((msg, index) => (
+                <div key={msg.id} className={`flex ${msg.role === MessageRole.USER ? 'justify-end' : 'justify-start'} mb-8`}>
+                  <div className={`flex items-start gap-4 max-w-[80%]`}>
+                    {msg.role === MessageRole.ASSISTANT && (
+                      <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0 shadow-lg">
+                        <Bot className="w-5 h-5" />
+                      </div>
+                    )}
+                    <div className={`p-5 rounded-3xl shadow-lg relative ${
+                      msg.role === MessageRole.USER 
+                        ? 'bg-blue-500 text-white rounded-br-none' 
+                        : 'bg-white text-slate-800 rounded-bl-none border border-slate-100'
                     }`}>
-                      <MarkdownRenderer content={m.content} />
-                      
-                      {m.role === MessageRole.ASSISTANT && m.content.length > 50 && (
-                        <div className="absolute top-2 -right-12 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button 
-                            onClick={() => handleCopyText(m.content, m.id)}
-                            className="p-2.5 bg-white border border-slate-100 rounded-xl shadow-sm text-slate-400 hover:text-blue-600 transition-all"
-                          >
-                            {copiedId === m.id ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
-                          </button>
-                        </div>
+                      <MarkdownRenderer content={msg.content} />
+                      <span className={`absolute text-[9px] font-medium opacity-60 mt-1 ${
+                        msg.role === MessageRole.USER ? 'bottom-2 left-5 text-blue-100' : 'bottom-2 right-5 text-slate-400'
+                      }`}>
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                      {msg.role === MessageRole.ASSISTANT && msg.id !== 'initial' && (
+                        <button 
+                          onClick={() => handleCopyText(msg.content, msg.id)}
+                          className="absolute -top-3 -right-3 p-2 bg-slate-100 text-slate-500 rounded-full shadow-md hover:bg-slate-200 transition-colors"
+                          title="Copiar texto"
+                        >
+                          {copiedId === msg.id ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                        </button>
                       )}
                     </div>
-                    <span className="text-[9px] font-bold text-slate-300 mt-2 uppercase tracking-widest">
-                      {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
+                    {msg.role === MessageRole.USER && (
+                      <div className="w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center shrink-0 shadow-lg">
+                        <User className="w-5 h-5" />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
-              
               {isThinking && (
-                <div className="flex gap-5 animate-pulse">
-                  <div className="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center text-slate-400">
-                    <BrainCircuit size={20} className="animate-spin-slow" />
-                  </div>
-                  <div className="bg-white border border-slate-100 p-6 rounded-[2rem] rounded-tl-none shadow-sm flex items-center gap-4">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Processando Raciocínio...</span>
+                <div className="flex justify-start mb-8">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0 shadow-lg">
+                      <Bot className="w-5 h-5" />
+                    </div>
+                    <div className="p-5 bg-white text-slate-800 rounded-3xl rounded-bl-none shadow-lg border border-slate-100 flex items-center gap-3">
+                      <Loader2 className="w-5 h-5 animate-spin text-blue-500" />
+                      <span className="text-sm font-medium text-slate-600">PROFEPLAN está pensando...</span>
+                    </div>
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} className="h-4" />
+              <div ref={messagesEndRef} />
             </div>
-          </div>
 
-          <div className="absolute bottom-0 left-0 right-0 p-4 lg:p-6 bg-gradient-to-t from-slate-50 to-transparent">
-            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto bg-white rounded-full border border-slate-200 shadow-xl overflow-hidden focus-within:border-blue-400 transition-all relative">
-              <div className="flex gap-1 p-2 items-center">
-                <button type="button" onClick={() => fileInputRef.current?.click()} className="p-3 text-slate-400 hover:text-blue-600 rounded-full" title="Anexar Imagem ou PDF">
-                  <ImageIcon size={20} />
-                </button>
-                <input type="file" ref={fileInputRef} className="hidden" accept="image/*,application/pdf" />
-                
-                <button 
-                  type="button" 
-                  onClick={isRecording ? stopRecording : startRecording} 
-                  className={`p-3 rounded-full transition-all ${
-                    isRecording ? 'bg-red-50 text-red-600 animate-pulse' : 'text-slate-400 hover:text-blue-600'
-                  }`}
-                  title={isRecording ? "Parar e Enviar Áudio" : "Gravar Mensagem de Voz"}
-                >
-                  {isRecording ? <Square size={20} fill="currentColor" /> : <Mic size={20} />}
-                </button>
-
-                <input 
-                  type="text" 
-                  value={input} 
-                  onChange={(e) => setInput(e.target.value)} 
-                  placeholder={isRecording ? "Gravando áudio pedagógico..." : "O que vamos planejar agora?"}
-                  disabled={isRecording || !geminiApiKeySelected}
-                  className="flex-1 px-4 py-2 font-medium text-slate-700 outline-none bg-transparent placeholder:text-slate-300 disabled:opacity-50"
+            <form onSubmit={handleSendMessage} className="bg-white p-8 border-t border-slate-100 flex items-center gap-4 sticky bottom-0 z-10">
+              <div className="relative flex-1">
+                {selectedImage && (
+                  <div className="absolute -top-16 left-0 bg-slate-50 p-2 rounded-xl shadow-md flex items-center gap-2 text-xs font-medium text-slate-700">
+                    <img src={selectedImage.data} alt="Preview" className="h-8 w-8 object-cover rounded" />
+                    <span>Imagem anexada</span>
+                    <button type="button" onClick={() => setSelectedImage(null)} className="p-1 rounded-full hover:bg-slate-100">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Envie uma mensagem, solicite um plano de aula, atividade..."
+                  className="w-full bg-slate-50 p-5 rounded-2xl text-sm border-2 border-transparent focus:border-blue-500 transition-all outline-none pr-32"
+                  disabled={isThinking}
                 />
-                <button 
-                  type="submit" 
-                  disabled={isThinking || (!input.trim() && !selectedImage) || isRecording || !geminiApiKeySelected}
-                  className={`p-3 rounded-full transition-all ${
-                    (input.trim() || selectedImage) && geminiApiKeySelected ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400'
-                  }`}
-                >
-                  {isThinking ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
-                </button>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-3 bg-slate-200 text-slate-600 rounded-xl hover:bg-slate-300 transition-all"
+                    title="Anexar Imagem"
+                    disabled={isThinking}
+                  >
+                    <ImageIcon className="w-5 h-5" />
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setSelectedImage({ data: reader.result as string, type: file.type });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  {isRecording ? (
+                    <button
+                      type="button"
+                      onClick={stopRecording}
+                      className="p-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all animate-pulse"
+                      title="Parar Gravação"
+                    >
+                      <Square className="w-5 h-5" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={startRecording}
+                      className="p-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-all"
+                      title="Gravar Mensagem de Voz"
+                      disabled={isThinking}
+                    >
+                      <Mic className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
               </div>
+              <button
+                type="submit"
+                className="p-4 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isThinking || (!input.trim() && !selectedImage && !isRecording)}
+              >
+                {isThinking ? (
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                ) : (
+                  <Send className="w-6 h-6" />
+                )}
+              </button>
             </form>
-            {isRecording && (
-               <div className="max-w-3xl mx-auto mt-2 text-center animate-bounce">
-                  <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Escutando... Clique no quadrado para finalizar.</span>
-               </div>
-            )}
+          </>
+        );
+      case ToolMode.FILES:
+        return <DriveExplorer userEmail={session.email} />;
+      case ToolMode.ADMIN:
+        return session.role === 'ADMIN' ? <AdminDashboard /> : (
+          <div className="flex-1 flex items-center justify-center text-slate-500 text-lg font-medium p-8">
+            <Info className="w-6 h-6 mr-3" /> Acesso negado. Esta área é restrita a administradores.
           </div>
-        </>
-      );
+        );
+      default:
+        return (
+          <div className="flex-1 flex items-center justify-center text-slate-500 text-lg font-medium p-8">
+            <Info className="w-6 h-6 mr-3" /> Modo de ferramenta não implementado.
+          </div>
+        );
     }
   };
 
@@ -579,6 +606,7 @@ const App: React.FC = () => {
         </header>
 
         <div className="flex-1 overflow-hidden relative flex flex-col">
+          {/* Fix: Call renderActiveContent to display content based on activeMode */}
           {renderActiveContent()}
         </div>
       </main>
@@ -652,6 +680,7 @@ const App: React.FC = () => {
         isDriveConnected={!!googleToken}
         isGeminiApiKeySelected={geminiApiKeySelected}
         onSelectGeminiApiKey={handleSelectGeminiApiKey}
+        userEmail={session.email}
       />
     </div>
   );
