@@ -17,7 +17,7 @@ import MarkdownRenderer from './components/MarkdownRenderer';
 import AdminDashboard from './components/AdminDashboard';
 
 // Tipos e Serviços
-import { Message, MessageRole, ToolMode, UserSettings, UserSession } from './types';
+import { Message, MessageRole, ToolMode, UserSettings, UserSession, DriveFile } from './types';
 import { generateProfePlanStream } from './services/geminiService';
 import { exportToDocx } from './services/exportService';
 import { INITIAL_GREETING } from './constants';
@@ -289,6 +289,8 @@ const App: React.FC = () => {
 
     setIsSavingToDrive(true);
     try {
+      const fileName = `PROFEPLAN - ${discipline || 'Plano'} - ${grade || 'Geral'} - ${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}`;
+
       const createResponse = await fetch('https://www.googleapis.com/drive/v3/files', {
         method: 'POST',
         headers: {
@@ -296,7 +298,7 @@ const App: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: `PROFEPLAN - ${discipline || 'Plano'} - ${grade || 'Geral'}`,
+          name: fileName,
           mimeType: 'application/vnd.google-apps.document'
         })
       });
@@ -323,6 +325,20 @@ const App: React.FC = () => {
       });
 
       if (!uploadResponse.ok) throw new Error("Erro ao sincronizar o conteúdo pedagógico.");
+
+      // Salva o metadata do arquivo no localStorage para ser exibido no DriveExplorer
+      const newDriveFile: DriveFile = {
+        id: file.id,
+        name: fileName + '.docx', // Adicionar extensão para melhor visualização, embora seja um Google Doc
+        type: 'DOC',
+        createdAt: new Date(),
+        size: 'Pequeno', // Tamanho real não é facilmente acessível aqui, pode ser um placeholder
+      };
+
+      const existingFilesRaw = localStorage.getItem(`profeplan_drive_${session.email}`);
+      const existingFiles: DriveFile[] = existingFilesRaw ? JSON.parse(existingFilesRaw) : [];
+      localStorage.setItem(`profeplan_drive_${session.email}`, JSON.stringify([...existingFiles, newDriveFile]));
+
 
       window.open(`https://docs.google.com/document/d/${file.id}/edit`, '_blank');
     } catch (error: any) {
@@ -611,7 +627,7 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <aside className="w-72 bg-white border-l border-slate-100 hidden xl:flex flex-col p-8 space-y-8 shrink-0 shadow-xl">
+      <aside className="w-72 bg-white border-l border-slate-100 hidden lg:flex flex-col p-8 space-y-8 shrink-0 shadow-xl">
         <div>
           <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-6">Filtros Rápidos</h3>
           <div className="space-y-5">
