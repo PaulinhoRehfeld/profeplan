@@ -9,7 +9,7 @@ interface LoginScreenProps {
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [accessKey, setAccessKey] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -19,36 +19,54 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     setError('');
 
     try {
-      // 1. Verificar se o e-mail e a chave de acesso (password) coincidem no Supabase
+      // 1. Validação no Banco de Dados Supabase
+      // Verifica se existe um usuário com este e-mail e esta chave de acesso
       const { data: authorizedUser, error: supabaseError } = await supabase
         .from('authorized_users')
         .select('*')
         .eq('email', email.toLowerCase().trim())
-        .eq('access_key', password) // Validação direta via banco de dados
+        .eq('access_key', accessKey.trim())
         .single();
 
-      if (supabaseError || !authorizedUser) {
-        console.error("Erro Supabase:", supabaseError);
-        setError('Acesso negado. E-mail ou Chave de Acesso incorretos.');
+      if (supabaseError) {
+        console.error("Erro de Autenticação Supabase:", supabaseError);
+        
+        // PGRST116 significa que nenhum registro foi encontrado (E-mail ou Senha errados)
+        if (supabaseError.code === 'PGRST116') {
+          setError('E-mail ou Chave de Acesso incorretos.');
+        } else if (supabaseError.message.includes('apiKey')) {
+          setError('Erro de Configuração: Chave de API do Supabase ausente ou inválida.');
+        } else if (supabaseError.message.includes('policy')) {
+          setError('Erro de Segurança: RLS está ativado no Supabase. Desative o RLS para a tabela authorized_users.');
+        } else {
+          setError(`Erro no servidor: ${supabaseError.message}`);
+        }
         setLoading(false);
         return;
       }
 
-      // Se chegamos aqui, os dados são válidos
+      if (!authorizedUser) {
+        setError('Acesso negado. Usuário não localizado.');
+        setLoading(false);
+        return;
+      }
+
+      // 2. Construção da Sessão
       const session: UserSession = {
         email: authorizedUser.email,
         role: authorizedUser.role === 'ADMIN' ? 'ADMIN' : 'TEACHER',
-        accessLevel: authorizedUser.role, // 'BASICO' | 'PRO' | 'ADMIN'
+        accessLevel: (authorizedUser.role || 'BASICO') as any,
         isLoggedIn: true,
         driveConnected: false 
       };
 
+      // 3. Persistência
       localStorage.setItem('profeplan_session', JSON.stringify(session));
       onLogin(session);
       
-    } catch (err) {
-      console.error("Erro crítico de autenticação:", err);
-      setError('Falha na comunicação com o servidor de segurança. Verifique sua conexão.');
+    } catch (err: any) {
+      console.error("Falha Crítica no Login:", err);
+      setError('Não foi possível conectar ao servidor. Verifique sua conexão com a internet.');
     } finally {
       setLoading(false);
     }
@@ -95,8 +113,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 <input 
                   type="password" 
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={accessKey}
+                  onChange={(e) => setAccessKey(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                 />
@@ -104,8 +122,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             </div>
 
             {error && (
-              <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in slide-in-from-top-2">
-                <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+              <div className="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in slide-in-from-top-2">
+                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                 <p className="text-red-400 text-xs font-bold leading-tight">{error}</p>
               </div>
             )}
