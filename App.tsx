@@ -5,7 +5,7 @@ import {
   Image as ImageIcon, Database, 
   PenTool, BrainCircuit, Loader2, Sparkle, 
   RefreshCcw, Info, FileText, Download, Copy, Check, Cloud,
-  Mic, MicOff, Square, Key
+  Mic, MicOff, Square, Key, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 // Componentes Locais
@@ -50,7 +50,7 @@ const App: React.FC = () => {
   const [googleToken, setGoogleToken] = useState<string | null>(() => localStorage.getItem('google_drive_token'));
   const [activeMode, setActiveMode] = useState<ToolMode>(ToolMode.CHAT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false); // Renamed from isSidebarOpen
   const [selectedImage, setSelectedImage] = useState<{data: string, type: string} | null>(null);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -58,7 +58,6 @@ const App: React.FC = () => {
   const [discipline, setDiscipline] = useState('');
   const [grade, setGrade] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  // Fix: Declared missing setError state
   const [error, setError] = useState('');
   
   // Audio states
@@ -69,6 +68,10 @@ const App: React.FC = () => {
   // Gemini API Key state
   const [geminiApiKeySelected, setGeminiApiKeySelected] = useState(false);
   const [checkingApiKey, setCheckingApiKey] = useState(true);
+
+  // States para controlar a expansão/recolhimento dos menus laterais em desktop
+  const [isLeftNavExpanded, setIsLeftNavExpanded] = useState(true);
+  const [isRightNavExpanded, setIsRightNavExpanded] = useState(true);
 
 
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -100,8 +103,6 @@ const App: React.FC = () => {
         setGeminiApiKeySelected(hasKey);
       } else {
         console.warn("window.aistudio não disponível. A API Key do Gemini pode não ser carregada.");
-        // Em um ambiente sem window.aistudio, assumir que a chave está no env
-        // ou que o usuário vai lidar com o erro da API. Para o preview, vamos permitir.
         setGeminiApiKeySelected(true); 
       }
       setCheckingApiKey(false);
@@ -112,9 +113,8 @@ const App: React.FC = () => {
   const handleSelectGeminiApiKey = async () => {
     if (window.aistudio && typeof window.aistudio.openSelectKey === 'function') {
       await window.aistudio.openSelectKey();
-      // Assumimos sucesso após openSelectKey, conforme guidelines
       setGeminiApiKeySelected(true);
-      setError(''); // Limpa qualquer erro anterior de API Key
+      setError(''); 
     } else {
       alert("A funcionalidade de seleção de chave de API do Gemini não está disponível neste ambiente.");
     }
@@ -581,15 +581,25 @@ const App: React.FC = () => {
         activeMode={activeMode} 
         setActiveMode={setActiveMode} 
         onOpenSettings={() => setIsSettingsOpen(true)} 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
-        userRole={session.role} 
+        isOpen={isMobileNavOpen} // Controls mobile overlay
+        onClose={() => setIsMobileNavOpen(false)} 
+        userRole={session.role}
+        isDesktopExpanded={isLeftNavExpanded} // Controls desktop width
+        onToggleDesktopExpand={() => setIsLeftNavExpanded(prev => !prev)}
       />
       
-      <main className="flex-1 lg:ml-64 flex flex-col relative h-full">
+      <main 
+        className={`flex-1 flex flex-col relative h-full transition-all duration-300 
+          ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'} 
+          ${isRightNavExpanded ? 'lg:mr-72' : 'lg:mr-20'} {/* CORREÇÃO AQUI: lg:mr-20 quando recolhido */}
+        `}
+      >
         <header className="h-20 bg-white/80 backdrop-blur-2xl border-b border-slate-100 flex items-center justify-between px-8 z-50 sticky top-0 shadow-sm">
           <div className="flex items-center gap-6">
-            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-3 text-slate-500 hover:bg-slate-50 rounded-2xl"><Menu /></button>
+            {/* Toggle para o sidebar esquerdo em mobile */}
+            <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-3 text-slate-500 hover:bg-slate-50 rounded-2xl">
+              <Menu />
+            </button>
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
                 <span className="text-[9px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full uppercase tracking-tighter border border-blue-100">
@@ -622,46 +632,72 @@ const App: React.FC = () => {
         </header>
 
         <div className="flex-1 overflow-hidden relative flex flex-col">
-          {/* Fix: Call renderActiveContent to display content based on activeMode */}
           {renderActiveContent()}
         </div>
       </main>
 
-      <aside className="w-72 bg-white border-l border-slate-100 hidden lg:flex flex-col p-8 space-y-8 shrink-0 shadow-xl">
-        <div>
-          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-6">Filtros Rápidos</h3>
-          <div className="space-y-5">
-            <div className="space-y-2">
-              <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Disciplina</label>
-              <input 
-                type="text" 
-                value={discipline} 
-                onChange={e => setDiscipline(e.target.value)} 
-                placeholder="Ex: Geografia" 
-                className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none" 
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Turma / Série</label>
-              <input 
-                type="text" 
-                value={grade} 
-                onChange={e => setGrade(e.target.value)} 
-                placeholder="Ex: 9º Ano" 
-                className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none" 
-              />
-            </div>
-          </div>
+      <aside 
+        className={`h-screen bg-white border-l border-slate-100 flex-col space-y-8 shrink-0 shadow-xl transition-all duration-300 lg:flex
+          ${isRightNavExpanded ? 'lg:w-72 p-8' : 'lg:w-20 p-2'}
+        `}
+      >
+        {/* Toggle button always visible at the top of the aside */}
+        <div className={`flex items-center ${isRightNavExpanded ? 'justify-between' : 'justify-center'} mb-4`}> {/* Ajuste de justify aqui */}
+          {/* Botão de toggle à esquerda quando expandido */}
+          <button 
+            onClick={() => setIsRightNavExpanded(prev => !prev)} 
+            className="p-2 text-slate-500 hover:bg-slate-100 rounded-full"
+            title={isRightNavExpanded ? 'Recolher menu lateral' : 'Expandir menu lateral'}
+          >
+            {/* Lógica do ícone: ChevronRight para recolher (aponta para a direita), ChevronLeft para expandir (aponta para a esquerda) */}
+            {isRightNavExpanded ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          </button>
+          {isRightNavExpanded && ( // Título "Filtros Rápidos" à direita do botão quando expandido
+            <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic">Filtros Rápidos</h3>
+          )}
         </div>
 
+        {isRightNavExpanded && ( // Content only visible when expanded
+          <>
+            <div>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Disciplina</label>
+                  <input 
+                    type="text" 
+                    value={discipline} 
+                    onChange={e => setDiscipline(e.target.value)} 
+                    placeholder="Ex: Geografia" 
+                    className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Turma / Série</label>
+                  <input 
+                    type="text" 
+                    value={grade} 
+                    onChange={e => setGrade(e.target.value)} 
+                    placeholder="Ex: 9º Ano" 
+                    className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold border-2 border-transparent focus:border-blue-500 transition-all outline-none" 
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Export buttons - always visible, but adapt content based on expanded state */}
         <div className="pt-2">
-          <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-4">Exportação</h3>
-          <div className="grid grid-cols-1 gap-3">
+          {isRightNavExpanded && <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-4">Exportação</h3>}
+          <div className={`grid grid-cols-1 gap-3 ${isRightNavExpanded ? '' : 'flex flex-col items-center'}`}>
             <button 
               onClick={handleExportDocx}
-              className="flex items-center gap-3 w-full p-4 bg-blue-50 text-blue-700 rounded-2xl text-[11px] font-black uppercase tracking-tight border border-blue-100 hover:bg-blue-100 transition-all"
+              className={`flex items-center gap-3 w-full p-4 bg-blue-50 text-blue-700 rounded-2xl text-[11px] font-black uppercase tracking-tight border border-blue-100 hover:bg-blue-100 transition-all
+                ${!isRightNavExpanded ? 'justify-center !p-2' : ''}
+              `}
+              title={!isRightNavExpanded ? 'Salvar como Word' : 'Salvar como Word'}
             >
-              <Download size={16} /> Salvar como Word
+              <Download size={16} /> {isRightNavExpanded && 'Salvar como Word'}
             </button>
             <button 
               onClick={handleSaveGoogleDocs}
@@ -670,21 +706,26 @@ const App: React.FC = () => {
                 isSavingToDrive 
                   ? 'bg-slate-100 text-slate-400 border-slate-200 shadow-none' 
                   : 'bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100 shadow-sm'
-              }`}
+              }
+                ${!isRightNavExpanded ? 'justify-center !p-2' : ''}
+              `}
+              title={!isRightNavExpanded ? 'Google Docs' : 'Google Docs'}
             >
               {isSavingToDrive ? <Loader2 size={16} className="animate-spin" /> : <Cloud size={16} />} 
-              Google Docs
+              {isRightNavExpanded && 'Google Docs'}
             </button>
           </div>
         </div>
 
-        <div className="mt-auto pt-8 border-t border-slate-100">
-          <div className="rounded-[2.5rem] p-6 text-white shadow-xl relative overflow-hidden group bg-gradient-to-br from-blue-600 to-indigo-700">
-            <Sparkle className="absolute -bottom-6 -left-6 w-24 h-24 opacity-10 transition-transform group-hover:scale-125" />
-            <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-70 italic">IA DOCENTE</p>
-            <p className="text-sm font-bold italic uppercase leading-tight tracking-tight">Gemini Workspace<br/>Sync Ativo</p>
+        {isRightNavExpanded && ( // Card de IA Docente só visível quando expandido
+          <div className="mt-auto pt-8 border-t border-slate-100">
+            <div className="rounded-[2.5rem] p-6 text-white shadow-xl relative overflow-hidden group bg-gradient-to-br from-blue-600 to-indigo-700">
+              <Sparkle className="absolute -bottom-6 -left-6 w-24 h-24 opacity-10 transition-transform group-hover:scale-125" />
+              <p className="text-[9px] font-black uppercase tracking-widest mb-1 opacity-70 italic">IA DOCENTE</p>
+              <p className="text-sm font-bold italic uppercase leading-tight tracking-tight">Gemini Workspace<br/>Sync Ativo</p>
+            </div>
           </div>
-        </div>
+        )}
       </aside>
 
       <SettingsModal 
