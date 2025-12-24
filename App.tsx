@@ -5,7 +5,7 @@ import {
   Image as ImageIcon, Database, 
   PenTool, BrainCircuit, Loader2, Sparkle, 
   RefreshCcw, Info, FileText, Download, Copy, Check, Cloud,
-  Mic, MicOff, Square
+  Mic, MicOff, Square, Key
 } from 'lucide-react';
 
 // Componentes Locais
@@ -25,6 +25,7 @@ import { INITIAL_GREETING } from './constants';
 // Client ID oficial (Sanitizado)
 const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com';
 
+// window.aistudio is now declared in types.ts
 const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(() => {
     try {
@@ -57,11 +58,18 @@ const App: React.FC = () => {
   const [discipline, setDiscipline] = useState('');
   const [grade, setGrade] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  // Fix: Declared missing setError state
+  const [error, setError] = useState('');
   
   // Audio states
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // Gemini API Key state
+  const [geminiApiKeySelected, setGeminiApiKeySelected] = useState(false);
+  const [checkingApiKey, setCheckingApiKey] = useState(true);
+
 
   const [messages, setMessages] = useState<Message[]>(() => {
     if (!session) return [];
@@ -84,6 +92,34 @@ const App: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, session]);
 
+  // Efeito para verificar a Gemini API Key ao iniciar
+  useEffect(() => {
+    const checkKey = async () => {
+      if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
+        const hasKey = await window.aistudio.hasSelectedApiKey();
+        setGeminiApiKeySelected(hasKey);
+      } else {
+        console.warn("window.aistudio não disponível. A API Key do Gemini pode não ser carregada.");
+        // Em um ambiente sem window.aistudio, assumir que a chave está no env
+        // ou que o usuário vai lidar com o erro da API. Para o preview, vamos permitir.
+        setGeminiApiKeySelected(true); 
+      }
+      setCheckingApiKey(false);
+    };
+    checkKey();
+  }, []);
+
+  const handleSelectGeminiApiKey = async () => {
+    if (window.aistudio && typeof window.aistudio.openSelectKey === 'function') {
+      await window.aistudio.openSelectKey();
+      // Assumimos sucesso após openSelectKey, conforme guidelines
+      setGeminiApiKeySelected(true);
+      setError(''); // Limpa qualquer erro anterior de API Key
+    } else {
+      alert("A funcionalidade de seleção de chave de API do Gemini não está disponível neste ambiente.");
+    }
+  };
+
   if (!session || !session.isLoggedIn) {
     return <LoginScreen onLogin={setSession} />;
   }
@@ -99,6 +135,10 @@ const App: React.FC = () => {
   };
 
   const startRecording = async () => {
+    if (!geminiApiKeySelected) {
+      alert("Por favor, selecione sua chave de API do Gemini nas configurações para usar o microfone.");
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = getSupportedMimeType();
@@ -149,6 +189,11 @@ const App: React.FC = () => {
   };
 
   const handleSendVoice = async (blob: Blob) => {
+    if (!geminiApiKeySelected) {
+      alert("Chave de API do Gemini não selecionada. Por favor, configure nas 'Configurações'.");
+      return;
+    }
+
     setIsThinking(true);
     try {
       const base64Audio = await blobToBase64(blob);
@@ -182,13 +227,15 @@ const App: React.FC = () => {
       setMessages(prev => [...prev, { id: aiId, role: MessageRole.ASSISTANT, content: '', timestamp: new Date() }]);
 
       for await (const chunk of stream) {
-        if (isThinking) setIsThinking(false);
         fullText += chunk.text || '';
         setMessages(prev => prev.map(m => m.id === aiId ? { ...m, content: fullText } : m));
       }
     } catch (error: any) {
-      setIsThinking(false);
       console.error(error);
+      if (error.message && error.message.includes("Requested entity was not found.")) {
+        alert("Sua chave de API do Gemini pode estar inválida ou expirada. Por favor, re-selecione nas configurações.");
+        setGeminiApiKeySelected(false);
+      }
       const errorMsgText = "### ⚠️ FALHA NO PROCESSAMENTO DE ÁUDIO\nO motor de IA não conseguiu processar sua mensagem de voz. Tente falar mais perto do microfone ou digite sua solicitação.";
       setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
     } finally {
@@ -303,6 +350,11 @@ const App: React.FC = () => {
     e.preventDefault();
     if (!input.trim() && !selectedImage) return;
 
+    if (!geminiApiKeySelected) {
+      alert("Chave de API do Gemini não selecionada. Por favor, configure nas 'Configurações'.");
+      return;
+    }
+
     const currentMsg = input;
     const currentImg = selectedImage;
     const userMsg: Message = { id: Date.now().toString(), role: MessageRole.USER, content: currentMsg, timestamp: new Date() };
@@ -328,12 +380,15 @@ const App: React.FC = () => {
       setMessages(prev => [...prev, { id: aiId, role: MessageRole.ASSISTANT, content: '', timestamp: new Date() }]);
 
       for await (const chunk of stream) {
-        if (isThinking) setIsThinking(false);
         fullText += chunk.text || '';
         setMessages(prev => prev.map(m => m.id === aiId ? { ...m, content: fullText } : m));
       }
     } catch (error: any) {
-      setIsThinking(false);
+      console.error(error);
+      if (error.message && error.message.includes("Requested entity was not found.")) {
+        alert("Sua chave de API do Gemini pode estar inválida ou expirada. Por favor, re-selecione nas configurações.");
+        setGeminiApiKeySelected(false);
+      }
       const errorMsgText = "### ⚠️ ERRO NO MOTOR DE IA\nNão foi possível completar o processamento técnico agora. Verifique sua conexão.";
       setMessages(prev => [...prev, { id: Date.now().toString(), role: MessageRole.ASSISTANT, content: errorMsgText, timestamp: new Date() }]);
     } finally {
@@ -342,6 +397,38 @@ const App: React.FC = () => {
   };
 
   const renderActiveContent = () => {
+    if (checkingApiKey) {
+      return (
+        <div className="flex-1 flex items-center justify-center flex-col gap-4 text-center p-8">
+          <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+          <p className="text-xl font-bold text-slate-700">Verificando Credenciais PROFEPLAN...</p>
+          <p className="text-slate-500">Aguarde enquanto preparamos seu workspace.</p>
+        </div>
+      );
+    }
+
+    if (!geminiApiKeySelected) {
+      return (
+        <div className="flex-1 flex items-center justify-center flex-col gap-6 text-center p-8 bg-slate-100">
+          <Key className="w-16 h-16 text-red-500" />
+          <h3 className="text-2xl font-bold text-red-700">Chave de API do Gemini Ausente!</h3>
+          <p className="text-slate-600 text-lg max-w-lg">
+            Para o PROFEPLAN funcionar, é essencial que você selecione sua chave de API do Gemini. 
+            Isso permite que a IA processe suas solicitações pedagógicas.
+          </p>
+          <button 
+            onClick={handleSelectGeminiApiKey}
+            className="mt-4 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl text-lg hover:bg-blue-700 transition-colors shadow-lg"
+          >
+            Conectar Chave de API do Gemini
+          </button>
+          <p className="text-xs text-slate-500 mt-4">
+            <Info className="inline w-3 h-3 mr-1" /> Um link para a documentação de faturamento será fornecido.
+          </p>
+        </div>
+      );
+    }
+
     switch(activeMode) {
       case ToolMode.FILES: return <div className="p-8 h-full overflow-y-auto"><DriveExplorer userEmail={session.email} /></div>;
       case ToolMode.ADMIN: return <div className="p-8 h-full overflow-y-auto"><AdminDashboard /></div>;
@@ -420,14 +507,14 @@ const App: React.FC = () => {
                   value={input} 
                   onChange={(e) => setInput(e.target.value)} 
                   placeholder={isRecording ? "Gravando áudio pedagógico..." : "O que vamos planejar agora?"}
-                  disabled={isRecording}
+                  disabled={isRecording || !geminiApiKeySelected}
                   className="flex-1 px-4 py-2 font-medium text-slate-700 outline-none bg-transparent placeholder:text-slate-300 disabled:opacity-50"
                 />
                 <button 
                   type="submit" 
-                  disabled={isThinking || (!input.trim() && !selectedImage) || isRecording}
+                  disabled={isThinking || (!input.trim() && !selectedImage) || isRecording || !geminiApiKeySelected}
                   className={`p-3 rounded-full transition-all ${
-                    (input.trim() || selectedImage) ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400'
+                    (input.trim() || selectedImage) && geminiApiKeySelected ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400'
                   }`}
                 >
                   {isThinking ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
@@ -478,6 +565,16 @@ const App: React.FC = () => {
               <Database className="w-3.5 h-3.5 text-blue-400" />
               <span className="text-[9px] font-black text-white uppercase tracking-widest">{session.accessLevel}</span>
             </div>
+            {!geminiApiKeySelected && (
+              <button 
+                onClick={handleSelectGeminiApiKey}
+                className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition-colors"
+                title="API Key do Gemini não selecionada"
+              >
+                <Key className="w-4 h-4" />
+                <span>API Key</span>
+              </button>
+            )}
           </div>
         </header>
 
@@ -553,6 +650,8 @@ const App: React.FC = () => {
         setSettings={setSettings} 
         onConnectDrive={handleConnectDrive}
         isDriveConnected={!!googleToken}
+        isGeminiApiKeySelected={geminiApiKeySelected}
+        onSelectGeminiApiKey={handleSelectGeminiApiKey}
       />
     </div>
   );

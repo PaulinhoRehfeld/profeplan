@@ -1,4 +1,6 @@
 
+
+
 export enum MessageRole {
   USER = 'user',
   ASSISTANT = 'assistant',
@@ -58,4 +60,17 @@ export interface DriveFile {
   type: 'DOC' | 'PDF' | 'IMAGE';
   createdAt: Date;
   size: string;
+}
+
+// Fix: Define the AIStudio interface to satisfy the expected named type
+// and resolve the "subsequent property declarations" and "identical modifiers" errors.
+interface AIStudio {
+  hasSelectedApiKey: () => Promise<boolean>;
+  openSelectKey: () => Promise<void>;
+}
+
+// In a module, directly declaring `interface Window` augments the global Window interface.
+// This is the correct pattern and often resolves "subsequent property declarations" errors.
+interface Window {
+  aistudio: AIStudio;
 }

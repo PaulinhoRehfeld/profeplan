@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { X, User, BookOpen, Settings, Zap } from 'lucide-react';
+import { X, User, BookOpen, Settings, Zap, Key, Info } from 'lucide-react';
 import { UserSettings } from '../types';
 
 interface SettingsModalProps {
@@ -8,9 +7,11 @@ interface SettingsModalProps {
   onClose: () => void;
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
-  // --- NOVAS PROPS CONECTADAS ---
+  // --- PROPS CONECTADAS ---
   onConnectDrive: () => void;
   isDriveConnected: boolean;
+  isGeminiApiKeySelected: boolean; // Nova prop para o estado da chave Gemini
+  onSelectGeminiApiKey: () => void; // Nova prop para a ação de selecionar a chave Gemini
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ 
@@ -19,7 +20,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   settings, 
   setSettings,
   onConnectDrive,
-  isDriveConnected
+  isDriveConnected,
+  isGeminiApiKeySelected,
+  onSelectGeminiApiKey
 }) => {
   if (!isOpen) return null;
 
@@ -102,11 +105,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          {/* Seção 3: Google Drive (Botão Funcional Solicitado) */}
+          {/* Seção 3: Ecossistema Cloud */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
               <Zap className="w-4 h-4" /> Ecossistema Cloud
             </div>
+            {/* Google Drive Integration */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-4">
@@ -124,7 +128,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 </div>
 
-                {/* BOTÃO FUNCIONAL COM INDICADOR PULSANTE */}
                 <button 
                   onClick={onConnectDrive}
                   className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
@@ -143,6 +146,48 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   )}
                 </button>
               </div>
+            </div>
+
+            {/* Gemini API Key Integration */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center shadow-sm">
+                    <Key className="w-6 h-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900">Google Gemini API</h4>
+                    <p className="text-xs text-slate-500">Chave de API para o motor de IA</p>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={onSelectGeminiApiKey}
+                  className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
+                    isGeminiApiKeySelected 
+                    ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-inner cursor-default' 
+                    : 'bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0'
+                  }`}
+                >
+                  {isGeminiApiKeySelected ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                      Ativada ✓
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <Info className="w-3.5 h-3.5" />
+                      Ativar
+                    </span>
+                  )}
+                </button>
+              </div>
+              {!isGeminiApiKeySelected && (
+                <p className="text-xs text-red-500 mt-3 flex items-start gap-2">
+                  <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                  A funcionalidade do PROFEPLAN exige uma chave de API do Gemini, que pode ser vinculada à sua conta Google Cloud faturável.
+                </p>
+              )}
             </div>
           </section>
         </div>
