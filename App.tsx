@@ -17,13 +17,14 @@ import MarkdownRenderer from './components/MarkdownRenderer';
 import AdminDashboard from './components/AdminDashboard';
 
 // Tipos e Serviços
-import { Message, MessageRole, ToolMode, UserSettings, UserSession, DriveFile } from './types';
+import { Message, MessageRole, ToolMode, UserSettings, UserSession } from './types'; // Removed DriveFile
 import { generateProfePlanStream } from './services/geminiService';
 import { exportToDocx } from './services/exportService';
 import { saveGeneratedContent, updateLearningProfile } from './services/databaseService';
 import { INITIAL_GREETING } from './constants';
 
-const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com';
+// REMOVIDO: GOOGLE_CLIENT_ID
+// const GOOGLE_CLIENT_ID = '1074092770295-v0k138s26e7v69n56n614p11f7o06990.apps.googleusercontent.com';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<UserSession | null>(() => {
@@ -66,19 +67,21 @@ const App: React.FC = () => {
     localStorage.setItem('profeplan_settings', JSON.stringify(settings));
   }, [settings]);
 
-  const [googleToken, setGoogleToken] = useState<string | null>(() => localStorage.getItem('google_drive_token'));
+  // REMOVIDO: Estados relacionados ao Google Drive
+  // const [googleToken, setGoogleToken] = useState<string | null>(() => localStorage.getItem('google_drive_token'));
   const [activeMode, setActiveMode] = useState<ToolMode>(ToolMode.CHAT);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{data: string, type: string} | null>(null);
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
-  const [isSavingToDrive, setIsSavingToDrive] = useState(false);
+  // REMOVIDO: Estado isSavingToDrive
+  // const [isSavingToDrive, setIsSavingToDrive] = useState(false);
   const [discipline, setDiscipline] = useState('');
   const [grade, setGrade] = useState('');
   const [error, setError] = useState('');
   
-  const [geminiApiKeySelected, setGeminiApiKeySelected] = useState(false);
+  // const [geminiApiKeySelected, setGeminiApiKeySelected] = useState(false); // REMOVIDO
   const [isLeftNavExpanded, setIsLeftNavExpanded] = useState(true);
 
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -103,6 +106,8 @@ const App: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, session]);
 
+  // REMOVIDO: Lógica de verificação da chave de API do Gemini pelo window.aistudio
+  /*
   useEffect(() => {
     const checkKey = async () => {
       if (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') {
@@ -114,7 +119,10 @@ const App: React.FC = () => {
     };
     checkKey();
   }, []);
+  */
 
+  // REMOVIDO: Função para seleção da chave de API do Gemini
+  /*
   const handleSelectGeminiApiKey = async () => {
     if (window.aistudio && typeof window.aistudio.openSelectKey === 'function') {
       await window.aistudio.openSelectKey();
@@ -122,11 +130,14 @@ const App: React.FC = () => {
       setError(''); 
     }
   };
+  */
 
   if (!session || !session.isLoggedIn) {
     return <LoginScreen onLogin={setSession} />;
   }
 
+  // REMOVIDO: handleConnectDrive
+  /*
   const handleConnectDrive = () => {
     const google = (window as any).google;
     if (!google) return;
@@ -142,7 +153,10 @@ const App: React.FC = () => {
     });
     client.requestAccessToken({ prompt: 'consent' });
   };
+  */
 
+  // REMOVIDO: handleSaveGoogleDocs
+  /*
   const handleSaveGoogleDocs = async () => {
     if (!googleToken) { setIsSettingsOpen(true); return; }
     const lastAiMessage = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
@@ -173,6 +187,7 @@ const App: React.FC = () => {
       setIsSavingToDrive(false); 
     }
   };
+  */
 
   const handleExportDocx = async () => {
     const lastAiMsg = [...messages].reverse().find(m => m.role === MessageRole.ASSISTANT && m.id !== 'initial');
@@ -193,7 +208,7 @@ const App: React.FC = () => {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() && !selectedImage) return;
-    if (!geminiApiKeySelected) { handleSelectGeminiApiKey(); return; }
+    // if (!geminiApiKeySelected) { handleSelectGeminiApiKey(); return; } // REMOVIDO: Validação da chave de API
 
     const currentMsg = input;
     const currentImg = selectedImage;
@@ -222,9 +237,15 @@ const App: React.FC = () => {
       // Persistência automática no Supabase após geração completa
       if (fullText.trim().length > 50) {
         const type = mapModeToType(activeMode);
-        const title = `${type.toUpperCase()} - ${discipline || 'Geral'} - ${new Date().toLocaleDateString('pt-BR')}`;
         
-        await saveGeneratedContent(session.id, type, title, fullText);
+        // Geração do título a partir da solicitação do professor
+        const cleanedPrompt = currentMsg
+          .replace(/^(crie (um|uma)|elabore (um|uma)|gere (um|uma)|desenvolva (um|uma)|faça (um|uma)|escreva (um|uma)|sobre a|sobre o|uma|um|o|a)\s*/i, '')
+          .trim();
+        const topicForTitle = cleanedPrompt.length > 70 ? cleanedPrompt.substring(0, 70) + '...' : cleanedPrompt;
+        const finalTitle = `${type.toUpperCase()} - ${topicForTitle.charAt(0).toUpperCase() + topicForTitle.slice(1) || 'Documento'}`;
+
+        await saveGeneratedContent(session.id, type, finalTitle, fullText);
         await updateLearningProfile(session.id, {
           last_mode: activeMode,
           last_discipline: discipline,
@@ -233,7 +254,8 @@ const App: React.FC = () => {
       }
     } catch (err) {
       console.error("Erro API:", err);
-      setError("Houve uma falha na geração. Verifique sua Chave de API ou conexão.");
+      // ALTERADO: Mensagem de erro sem referência à chave de API Gemini
+      setError("Houve uma falha na geração. Verifique sua conexão com a internet.");
     } finally { 
       setIsThinking(false); 
     }
@@ -249,7 +271,7 @@ const App: React.FC = () => {
         onToggleDesktopExpand={() => setIsLeftNavExpanded(prev => !prev)}
       />
       
-      <main className={`flex-1 flex flex-col relative h-full transition-all duration-300 ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'} lg:mr-72`}>
+      <main className={`flex-1 flex flex-col relative h-full transition-all duration-300 ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-10 z-50 sticky top-0 shadow-sm">
           <div className="flex items-center gap-4">
              <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-2 text-slate-500"><Menu size={24} /></button>
@@ -262,11 +284,14 @@ const App: React.FC = () => {
              </div>
           </div>
           <div className="flex items-center gap-4">
+            {/* REMOVIDO: Botão de Configurar API Key */}
+            {/*
             {!geminiApiKeySelected && (
               <button onClick={handleSelectGeminiApiKey} className="px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-200 animate-pulse">
                  Configurar API Key
               </button>
             )}
+            */}
             <div className="h-8 w-px bg-slate-100 mx-2"></div>
             <div className="flex items-center gap-3">
                <div className="text-right hidden sm:block">
@@ -290,8 +315,8 @@ const App: React.FC = () => {
                 <AdminDashboard />
              </div>
           ) : (
-            <>
-              <div className="flex-1 overflow-y-auto custom-scrollbar px-10 py-10 pb-40">
+            <div className="flex-1 flex flex-col overflow-hidden relative">
+              <div className="flex-1 overflow-y-auto custom-scrollbar px-10 py-10">
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.role === MessageRole.USER ? 'justify-end' : 'justify-start'} mb-10`}>
                     <div className={`flex items-start gap-5 max-w-[85%]`}>
@@ -324,10 +349,10 @@ const App: React.FC = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className={`fixed bottom-0 z-10 left-0 right-0 ${isLeftNavExpanded ? 'lg:left-64' : 'lg:left-20'} lg:right-72 bg-white/80 backdrop-blur-2xl border-t border-slate-100 p-8 pt-4 transition-all duration-300`}>
+              {/* Barra de Entrada Ajustada para ser flexível e dinâmica */}
+              <div className="bg-white/80 backdrop-blur-2xl border-t border-slate-100 p-8 pt-4">
                 {error && (
                   <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-red-100 flex items-center gap-3 animate-in slide-in-from-bottom-2">
-                    {/* Fixed: AlertCircle is now imported */}
                     <AlertCircle className="w-4 h-4" /> {error}
                   </div>
                 )}
@@ -376,7 +401,7 @@ const App: React.FC = () => {
                   </div>
                 )}
               </div>
-            </>
+            </div>
           )}
         </div>
       </main>
@@ -388,9 +413,11 @@ const App: React.FC = () => {
             <button onClick={handleExportDocx} className="flex items-center gap-4 w-full p-5 bg-blue-50 text-blue-700 rounded-2xl font-black uppercase text-[10px] border border-blue-100 hover:bg-blue-100 transition-all active:scale-95 shadow-sm group">
               <Download size={18} className="group-hover:translate-y-0.5 transition-transform" /> Exportar Word
             </button>
+            {/* REMOVIDO: Botão Google Docs
             <button onClick={handleSaveGoogleDocs} disabled={isSavingToDrive} className="flex items-center gap-4 w-full p-5 bg-emerald-50 text-emerald-700 rounded-2xl font-black uppercase text-[10px] border border-emerald-100 hover:bg-emerald-100 transition-all active:scale-95 shadow-sm group disabled:opacity-50">
               {isSavingToDrive ? <Loader2 size={18} className="animate-spin" /> : <Cloud size={18} className="group-hover:-translate-y-0.5 transition-transform" />} Google Docs
             </button>
+            */}
           </div>
         </div>
 
@@ -433,8 +460,9 @@ const App: React.FC = () => {
       <SettingsModal 
         isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} 
         settings={settings} setSettings={setSettings} 
-        onConnectDrive={handleConnectDrive} isDriveConnected={!!googleToken}
-        isGeminiApiKeySelected={geminiApiKeySelected} onSelectGeminiApiKey={handleSelectGeminiApiKey}
+        // REMOVIDO: Props relacionadas ao Google Drive
+        // onConnectDrive={handleConnectDrive} isDriveConnected={!!googleToken}
+        // isGeminiApiKeySelected={geminiApiKeySelected} onSelectGeminiApiKey={handleSelectGeminiApiKey} // REMOVIDO
         userEmail={session.email}
       />
     </div>

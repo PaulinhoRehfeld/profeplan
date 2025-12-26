@@ -1,18 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 
 /**
- * Supabase Client Configuration
+ * Supabase Client Initialization
  * 
- * Prioritiza variáveis de ambiente injetadas pelo Vercel (SUPABASE_URL, SUPABASE_ANON_KEY)
- * e prefixes comuns de frameworks (NEXT_PUBLIC_, VITE_) para garantir compatibilidade
- * máxima entre ambientes de desenvolvimento e produção.
+ * Prioritizes environment variables following Vercel's standard (NEXT_PUBLIC_)
+ * to ensure seamless integration with the deployment platform while maintaining
+ * fallback support for development and initial setup.
  */
 
-const getEnv = (keys: string[]): string | undefined => {
-  if (typeof process === 'undefined' || !process.env) return undefined;
-  
-  for (const key of keys) {
+const getEnv = (key: string): string | undefined => {
+  if (typeof process !== 'undefined' && process.env) {
     const value = process.env[key];
+    // Valida se o valor existe, não é a string literal "undefined" (comum em alguns builds)
+    // e se não é apenas espaço em branco.
     if (value && value !== 'undefined' && value.trim() !== '') {
       return value;
     }
@@ -20,20 +20,17 @@ const getEnv = (keys: string[]): string | undefined => {
   return undefined;
 };
 
-// Definição de chaves por ordem de prioridade (Integração Vercel > Public Keys)
-const URL_KEYS = ['SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'VITE_SUPABASE_URL'];
-const KEY_KEYS = ['SUPABASE_ANON_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'VITE_SUPABASE_ANON_KEY'];
+// Priority: NEXT_PUBLIC_SUPABASE_URL > SUPABASE_URL > Hardcoded Fallback
+const supabaseUrl = 
+  getEnv('NEXT_PUBLIC_SUPABASE_URL') || 
+  getEnv('SUPABASE_URL') || 
+  'https://uatejrgmbzgoeayfascf.supabase.co';
 
-// Fallbacks para o ambiente de demonstração específico do PROFEPLAN
-const DEFAULT_URL = 'https://uatejrgmbzgoeayfascf.supabase.co';
-const DEFAULT_KEY = 'sb_publishable_B3kDSe1fX5KILgPHlBIOBQ_LNkoJjvC';
+// Priority: NEXT_PUBLIC_SUPABASE_ANON_KEY > SUPABASE_ANON_KEY > Hardcoded Fallback
+const supabaseAnonKey = 
+  getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') || 
+  getEnv('SUPABASE_ANON_KEY') || 
+  'sb_publishable_B3kDSe1fX5KILgPHlBIOBQ_LNkoJjvC';
 
-const supabaseUrl = getEnv(URL_KEYS) || DEFAULT_URL;
-const supabaseAnonKey = getEnv(KEY_KEYS) || DEFAULT_KEY;
-
-// Validação em tempo de execução
-if (!supabaseUrl.startsWith('https://')) {
-  console.warn('PROFEPLAN Supabase Warning: URL de conexão inválida ou ausente.');
-}
-
+// Initialize the client. This will throw if supabaseUrl is missing or invalid.
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

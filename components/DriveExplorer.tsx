@@ -238,7 +238,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
       </div>
 
       {/* Files List Area */}
-      <div className="bg-white rounded-[4rem] border border-slate-200 overflow-hidden shadow-2xl">
+      <div className="bg-white rounded-[4rem] border border-slate-200 shadow-2xl overflow-hidden">
         <div className="p-10 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">

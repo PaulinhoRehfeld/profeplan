@@ -30,17 +30,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         .single();
 
       if (supabaseError) {
-        console.error("Erro de Autenticação Supabase:", supabaseError);
+        console.error("Erro de Autenticação Supabase:", JSON.stringify(supabaseError, null, 2));
         
         // PGRST116 significa que nenhum registro foi encontrado (E-mail ou Senha errados)
         if (supabaseError.code === 'PGRST116') {
           setError('E-mail ou Chave de Acesso incorretos.');
-        } else if (supabaseError.message.includes('apiKey')) {
+        } else if (supabaseError.message && supabaseError.message.includes('apiKey')) {
           setError('Erro de Configuração: Chave de API do Supabase ausente ou inválida.');
-        } else if (supabaseError.message.includes('policy')) {
-          setError('Erro de Segurança: RLS está ativado no Supabase. Desative o RLS para a tabela authorized_users.');
+        } else if (supabaseError.message && supabaseError.message.includes('policy')) {
+          setError('Erro de Segurança: RLS está ativado na tabela \'authorized_users\'. Desative o RLS ou configure uma política adequada.');
         } else {
-          setError(`Erro no servidor: ${supabaseError.message}`);
+          setError(`Erro no servidor: ${supabaseError.message || 'Falha desconhecida.'}`);
         }
         setLoading(false);
         return;
@@ -59,7 +59,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         role: authorizedUser.role === 'ADMIN' ? 'ADMIN' : 'TEACHER',
         accessLevel: (authorizedUser.role || 'BASICO') as any,
         isLoggedIn: true,
-        driveConnected: false 
+        // driveConnected: false // REMOVIDO: Integração com Google Drive
       };
 
       // 3. Persistência
@@ -68,7 +68,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       onLogin(session);
       
     } catch (err: any) {
-      console.error("Falha Crítica no Login:", err);
+      console.error("Falha Crítica no Login:", JSON.stringify(err, null, 2));
       setError('Não foi possível conectar ao servidor. Verifique sua conexão com a internet.');
     } finally {
       setLoading(false);

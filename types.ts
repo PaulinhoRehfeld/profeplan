@@ -22,7 +22,7 @@ export interface UserSession {
   role: UserRole;
   accessLevel: AccessLevel;
   isLoggedIn: boolean;
-  driveConnected: boolean;
+  // driveConnected: boolean; // REMOVIDO: Integração com Google Drive
 }
 
 export interface UserSettings {
@@ -51,6 +51,8 @@ export enum ToolMode {
   FILES = 'files'
 }
 
+// REMOVIDO: Interfaces para Google Drive
+/*
 export interface DriveFolder {
   id: string;
   name: string;
@@ -64,14 +66,4 @@ export interface DriveFile {
   createdAt: Date;
   size: string;
 }
-
-declare global {
-  interface AIStudio {
-    hasSelectedApiKey: () => Promise<boolean>;
-    openSelectKey: () => Promise<void>;
-  }
-
-  interface Window {
-    aistudio?: AIStudio;
-  }
-}
+*/

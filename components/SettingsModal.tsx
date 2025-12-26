@@ -9,10 +9,11 @@ interface SettingsModalProps {
   onClose: () => void;
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
-  onConnectDrive: () => void;
-  isDriveConnected: boolean;
-  isGeminiApiKeySelected: boolean;
-  onSelectGeminiApiKey: () => void;
+  // REMOVIDO: Props de Google Drive
+  // onConnectDrive: () => void;
+  // isDriveConnected: boolean;
+  // isGeminiApiKeySelected: boolean; // REMOVIDO
+  // onSelectGeminiApiKey: () => void; // REMOVIDO
   userEmail: string;
 }
 
@@ -21,10 +22,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose, 
   settings, 
   setSettings,
-  onConnectDrive,
-  isDriveConnected,
-  isGeminiApiKeySelected,
-  onSelectGeminiApiKey,
+  // REMOVIDO: Props de Google Drive
+  // onConnectDrive,
+  // isDriveConnected,
+  // isGeminiApiKeySelected, // REMOVIDO
+  // onSelectGeminiApiKey, // REMOVIDO
   userEmail
 }) => {
   const [newPassword, setNewPassword] = useState('');
@@ -278,7 +280,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          {/* Ecossistema Cloud */}
+          {/* REMOVIDO: Ecossistema Cloud (Google Drive) */}
+          {/*
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
               <Zap className="w-4 h-4" /> Ecossistema Cloud
@@ -309,6 +312,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
             </div>
           </section>
+          */}
         </div>
 
         <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
