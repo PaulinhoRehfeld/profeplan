@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PenTool, Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { UserSession } from '../types';
@@ -53,6 +54,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
       // 2. Construção da Sessão
       const session: UserSession = {
+        id: authorizedUser.id, // Adicionado: Salva o ID do usuário
         email: authorizedUser.email,
         role: authorizedUser.role === 'ADMIN' ? 'ADMIN' : 'TEACHER',
         accessLevel: (authorizedUser.role || 'BASICO') as any,
@@ -62,6 +64,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
       // 3. Persistência
       localStorage.setItem('profeplan_session', JSON.stringify(session));
+      localStorage.setItem('supabase_user_id', authorizedUser.id); // Salva o ID no localStorage para uso direto
       onLogin(session);
       
     } catch (err: any) {

@@ -3,6 +3,7 @@ import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google
 import { SYSTEM_PROMPT } from "../constants";
 
 // Utilitários de áudio internos (PCM decoding)
+// Manual implementation following the coding guidelines for audio processing.
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -13,6 +14,7 @@ function decode(base64: string) {
   return bytes;
 }
 
+// Manual implementation of raw PCM audio decoding as required by the Gemini API documentation.
 async function decodeAudioData(
   data: Uint8Array,
   ctx: AudioContext,
@@ -46,6 +48,7 @@ export const generateProfePlanStream = async (
   imagePart?: { inlineData: { data: string; mimeType: string } },
   audioPart?: { inlineData: { data: string; mimeType: string } }
 ) => {
+  // Creating GoogleGenAI instance right before making an API call to ensure it uses the most up-to-date API key.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
@@ -73,13 +76,15 @@ export const generateProfePlanStream = async (
   contents.push({ role: 'user', parts: currentParts });
 
   try {
+    // Upgraded model to gemini-3-pro-preview to match the "Gemini 3 Pro" requirement in the app UI and constants.
     return await ai.models.generateContentStream({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-pro-preview',
       contents: contents,
       config: {
         systemInstruction: specificInstruction,
         temperature: 0.8,
-        thinkingConfig: { thinkingBudget: 24576 },
+        // Using the maximum thinking budget for gemini-3-pro-preview to ensure deep pedagogical reasoning.
+        thinkingConfig: { thinkingBudget: 32768 },
         safetySettings,
       },
     });
@@ -90,6 +95,7 @@ export const generateProfePlanStream = async (
 };
 
 export const speakPedagogicalText = async (text: string) => {
+  // Creating GoogleGenAI instance right before making an API call for real-time key synchronization.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   try {
     const response = await ai.models.generateContent({

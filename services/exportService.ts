@@ -1,18 +1,13 @@
 
 import { 
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, 
-  Table, TableCell, TableRow, WidthType, BorderStyle 
+  Table, TableCell, TableRow, WidthType, BorderStyle, Header, Footer, ImageRun
 } from "docx";
 import saveAs from "file-saver";
+import { UserSettings } from "../types";
 
-/**
- * Transforma texto com markdown ** em um array de TextRuns para o docx.
- * Suporta detecção de negritos no meio de frases.
- */
 const parseInlineFormatting = (text: string, options: { isHeading?: boolean; size?: number } = {}) => {
   const { isHeading = false, size = 22 } = options;
-  
-  // Limpa o texto de marcações de metadados se houver
   const cleanText = text.replace(/\[.*?\]/g, '').trim();
 
   if (isHeading) {
@@ -25,7 +20,6 @@ const parseInlineFormatting = (text: string, options: { isHeading?: boolean; siz
   }
 
   const parts = cleanText.split(/(\*\*.*?\*\*)/g);
-  
   return parts.map(part => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return new TextRun({
@@ -44,13 +38,51 @@ const parseInlineFormatting = (text: string, options: { isHeading?: boolean; siz
 };
 
 /**
- * Exporta o conteúdo pedagógico para um arquivo Word (.docx) com suporte a tabelas e negritos.
+ * Helper para converter base64 em Buffer de imagem para o DOCX
  */
-export const exportToDocx = async (content: string, title: string) => {
+const base64ToUint8Array = (base64: string) => {
+  const binaryString = window.atob(base64.split(',')[1]);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+};
+
+export const exportToDocx = async (content: string, title: string, settings: UserSettings) => {
   const lines = content.split('\n');
   const docElements: any[] = [];
 
-  // Título do documento
+  // Cabeçalho Oficial do Documento
+  const headerChildren: any[] = [];
+  
+  if (settings.logoBase64) {
+    headerChildren.push(
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        children: [
+          new ImageRun({
+            data: base64ToUint8Array(settings.logoBase64),
+            transformation: { width: 80, height: 80 },
+          }),
+        ],
+      })
+    );
+  }
+
+  if (settings.headerText) {
+    settings.headerText.split('\n').forEach(headerLine => {
+      headerChildren.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [new TextRun({ text: headerLine, bold: true, size: 20, font: "Arial" })],
+        })
+      );
+    });
+  }
+
+  // Título do documento no corpo
   docElements.push(
     new Paragraph({
       text: "PROFEPLAN - PLANEJAMENTO PEDAGÓGICO",
@@ -63,70 +95,39 @@ export const exportToDocx = async (content: string, title: string) => {
   let i = 0;
   while (i < lines.length) {
     const line = lines[i].trim();
+    if (!line) { i++; continue; }
 
-    if (!line) {
-      i++;
-      continue;
-    }
-
-    // --- LÓGICA DE DETECÇÃO DE TABELA ---
     if (line.startsWith('|')) {
       const tableRows: TableRow[] = [];
       let isFirstRow = true;
-
       while (i < lines.length && lines[i].trim().startsWith('|')) {
         const rawLine = lines[i].trim();
-        
-        // Ignora a linha de separação do markdown (ex: | :--- | :--- |)
-        if (rawLine.includes('---')) {
-          i++;
-          continue;
-        }
-
-        // Extrai as células (ignora o primeiro e último pipe se houver)
-        const cells = rawLine
-          .split('|')
-          .filter((_, index, array) => index > 0 && index < array.length - 1)
-          .map(cell => cell.trim());
-
+        if (rawLine.includes('---')) { i++; continue; }
+        const cells = rawLine.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1).map(cell => cell.trim());
         if (cells.length > 0) {
-          tableRows.push(
-            new TableRow({
-              children: cells.map(cellText => 
-                new TableCell({
-                  children: [new Paragraph({ 
-                    children: parseInlineFormatting(cellText, { size: 20 }) 
-                  })],
-                  padding: { top: 120, bottom: 120, left: 120, right: 120 },
-                  background: isFirstRow ? { fill: "F1F5F9", color: "F1F5F9" } : undefined,
-                  borders: {
-                    top: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
-                    bottom: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
-                    left: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
-                    right: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
-                  }
-                })
-              ),
-            })
-          );
+          tableRows.push(new TableRow({
+            children: cells.map(cellText => new TableCell({
+              children: [new Paragraph({ children: parseInlineFormatting(cellText, { size: 20 }) })],
+              padding: { top: 120, bottom: 120, left: 120, right: 120 },
+              background: isFirstRow ? { fill: "F1F5F9", color: "F1F5F9" } : undefined,
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
+                bottom: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
+                left: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "E2E8F0" },
+              }
+            }))
+          }));
           isFirstRow = false;
         }
         i++;
       }
-
       if (tableRows.length > 0) {
-        docElements.push(
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            rows: tableRows,
-            margins: { bottom: 300 },
-          })
-        );
+        docElements.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: tableRows, margins: { bottom: 300 } }));
       }
       continue;
     }
 
-    // --- LÓGICA DE CABEÇALHOS ---
     if (line.startsWith('# ')) {
       docElements.push(new Paragraph({
         children: parseInlineFormatting(line.replace('# ', ''), { isHeading: true, size: 28 }),
@@ -146,7 +147,6 @@ export const exportToDocx = async (content: string, title: string) => {
         spacing: { before: 200, after: 100 }
       }));
     } else {
-      // --- PARÁGRAFO COMUM COM SUPORTE A NEGRITO ---
       docElements.push(new Paragraph({
         children: parseInlineFormatting(line),
         spacing: { after: 120 },
@@ -156,25 +156,34 @@ export const exportToDocx = async (content: string, title: string) => {
     i++;
   }
 
-  // Rodapé com data
-  docElements.push(
+  // Rodapé Oficial
+  const footerChildren = [
     new Paragraph({
+      alignment: AlignmentType.CENTER,
       children: [
         new TextRun({
-          text: `Gerado automaticamente pelo sistema PROFEPLAN v3.0 em ${new Date().toLocaleDateString('pt-BR')}`,
-          italics: true,
+          text: settings.footerText || `Documento gerado automaticamente pelo PROFEPLAN v3.0 em ${new Date().toLocaleDateString('pt-BR')}`,
           size: 16,
-          color: "666666"
+          color: "666666",
+          font: "Arial"
         })
       ],
-      alignment: AlignmentType.RIGHT,
-      spacing: { before: 600 }
+      spacing: { before: 200 }
     })
-  );
+  ];
 
   const doc = new Document({
     sections: [{
-      properties: {},
+      headers: {
+        default: new Header({
+          children: headerChildren,
+        }),
+      },
+      footers: {
+        default: new Footer({
+          children: footerChildren,
+        }),
+      },
       children: docElements,
     }],
   });

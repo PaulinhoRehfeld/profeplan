@@ -1,6 +1,4 @@
 
-
-
 export enum MessageRole {
   USER = 'user',
   ASSISTANT = 'assistant',
@@ -19,6 +17,7 @@ export type UserRole = 'ADMIN' | 'TEACHER';
 export type AccessLevel = 'BASICO' | 'PRO' | 'ADMIN';
 
 export interface UserSession {
+  id: string; 
   email: string;
   role: UserRole;
   accessLevel: AccessLevel;
@@ -35,6 +34,10 @@ export interface UserSettings {
   toneOfVoice: 'Técnico e Formal' | 'Prático e Inspiracional';
   detailLevel: 'Resumido' | 'Completo';
   theme: 'light' | 'dark';
+  // Novos campos para personalização de documentos
+  headerText?: string;
+  footerText?: string;
+  logoBase64?: string;
 }
 
 export enum ToolMode {
@@ -62,15 +65,13 @@ export interface DriveFile {
   size: string;
 }
 
-// Fix: Define the AIStudio interface to satisfy the expected named type
-// and resolve the "subsequent property declarations" and "identical modifiers" errors.
-interface AIStudio {
-  hasSelectedApiKey: () => Promise<boolean>;
-  openSelectKey: () => Promise<void>;
-}
+declare global {
+  interface AIStudio {
+    hasSelectedApiKey: () => Promise<boolean>;
+    openSelectKey: () => Promise<void>;
+  }
 
-// In a module, directly declaring `interface Window` augments the global Window interface.
-// This is the correct pattern and often resolves "subsequent property declarations" errors.
-interface Window {
-  aistudio: AIStudio;
+  interface Window {
+    aistudio?: AIStudio;
+  }
 }
