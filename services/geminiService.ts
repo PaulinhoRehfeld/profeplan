@@ -1,6 +1,7 @@
 
 import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
 import { SYSTEM_PROMPT } from "../constants";
+import { AccessLevel } from "../types"; // Importar AccessLevel
 
 // Utilitários de áudio internos (PCM decoding)
 // Manual implementation following the coding guidelines for audio processing.
@@ -46,7 +47,8 @@ export const generateProfePlanStream = async (
   history: { role: string; parts: { text: string }[] }[],
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } },
-  audioPart?: { inlineData: { data: string; mimeType: string } }
+  audioPart?: { inlineData: { data: string; mimeType: string } },
+  userAccessLevel?: AccessLevel // Novo parâmetro para o nível de acesso
 ) => {
   // Creating GoogleGenAI instance right before making an API call to ensure it uses the most up-to-date API key.
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -75,16 +77,26 @@ export const generateProfePlanStream = async (
 
   contents.push({ role: 'user', parts: currentParts });
 
+  let modelName: string;
+  let thinkingBudget: number;
+
+  // Seleção do modelo e budget baseado no nível de acesso
+  if (userAccessLevel === 'ADMIN') {
+    modelName = 'gemini-3-pro-preview';
+    thinkingBudget = 32768; // Max thinking budget for gemini-3-pro-preview
+  } else { // BASICO or PRO
+    modelName = 'gemini-3-flash-preview';
+    thinkingBudget = 24576; // Max thinking budget for gemini-3-flash-preview
+  }
+
   try {
-    // Upgraded model to gemini-3-pro-preview to match the "Gemini 3 Pro" requirement in the app UI and constants.
     return await ai.models.generateContentStream({
-      model: 'gemini-3-pro-preview',
+      model: modelName, // Modelo dinâmico
       contents: contents,
       config: {
         systemInstruction: specificInstruction,
         temperature: 0.8,
-        // Using the maximum thinking budget for gemini-3-pro-preview to ensure deep pedagogical reasoning.
-        thinkingConfig: { thinkingBudget: 32768 },
+        thinkingConfig: { thinkingBudget: thinkingBudget }, // Thinking budget dinâmico
         safetySettings,
       },
     });

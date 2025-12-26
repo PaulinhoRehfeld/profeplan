@@ -223,7 +223,15 @@ const App: React.FC = () => {
         role: m.role === MessageRole.USER ? 'user' : 'model', 
         parts: [{ text: m.content }] 
       }));
-      const stream = await generateProfePlanStream(currentMsg, history, activeMode, currentImg ? { inlineData: { data: currentImg.data.split(',')[1], mimeType: currentImg.type } } : undefined);
+      // Passa o accessLevel do usuário para generateProfePlanStream
+      const stream = await generateProfePlanStream(
+        currentMsg, 
+        history, 
+        activeMode, 
+        currentImg ? { inlineData: { data: currentImg.data.split(',')[1], mimeType: currentImg.type } } : undefined,
+        undefined, // audioPart (não utilizado neste contexto)
+        session.accessLevel // Passa o nível de acesso do usuário
+      );
       
       let fullText = '';
       const aiId = (Date.now() + 1).toString();
@@ -341,7 +349,7 @@ const App: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-xs font-black text-slate-900 uppercase tracking-widest italic">Processando Engenharia Pedagógica...</p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase">Thinking Mode Ativado (32k Tokens)</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">Thinking Mode Ativado</p> {/* REMOVIDO: (32k Tokens) */}
                       </div>
                     </div>
                   </div>
