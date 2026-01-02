@@ -1,6 +1,6 @@
 
-import { 
-  Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, 
+import {
+  Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
   Table, TableCell, TableRow, WidthType, BorderStyle, Header, Footer, ImageRun
 } from "docx";
 import saveAs from "file-saver";
@@ -56,7 +56,7 @@ export const exportToDocx = async (content: string, title: string, settings: Use
 
   // Cabeçalho Oficial do Documento
   const headerChildren: any[] = [];
-  
+
   if (settings.logoBase64) {
     headerChildren.push(
       new Paragraph({
@@ -190,4 +190,41 @@ export const exportToDocx = async (content: string, title: string, settings: Use
 
   const blob = await Packer.toBlob(doc);
   saveAs(blob, `${title.replace(/\s+/g, '_')}.docx`);
+};
+
+import PptxGenJS from "pptxgenjs";
+
+export const exportToPptx = async (content: string, title: string) => {
+  const pres = new PptxGenJS();
+  pres.layout = 'LAYOUT_16x9';
+
+  // Capa
+  const slide = pres.addSlide();
+  slide.background = { color: 'FFFFFF' };
+  slide.addText(title, { x: 1, y: 2, w: '80%', fontSize: 36, bold: true, color: '000000', align: 'center' });
+  slide.addText('Gerado por PROFEPLAN', { x: 1, y: 4, w: '80%', fontSize: 18, color: '666666', align: 'center' });
+
+  // Parsing simples para slides (Markdown headers)
+  const slidesContent = content.split(/^## /gm).slice(1); // Ignora texto antes do primeiro ##
+
+  slidesContent.forEach(slideText => {
+    const lines = slideText.trim().split('\n');
+    const slideTitle = lines[0].trim();
+    const slideBody = lines.slice(1).join('\n').trim();
+
+    const slide = pres.addSlide();
+    slide.addText(slideTitle, { x: 0.5, y: 0.5, w: '90%', fontSize: 24, bold: true, color: '363636' });
+
+    // Tentativa de limpar markdown
+    const cleanBody = slideBody.replace(/\*\*/g, '').replace(/\*/g, '').replace(/\[.*?\]/g, '');
+
+    slide.addText(cleanBody, {
+      x: 0.5, y: 1.5, w: '90%', h: '70%',
+      fontSize: 18, color: '363636',
+      bullet: true,
+      valign: 'top'
+    });
+  });
+
+  await pres.writeFile({ fileName: `${title}.pptx` });
 };

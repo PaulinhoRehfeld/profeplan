@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector } from 'lucide-react';
 import { ToolMode, UserRole } from '../types';
 
 interface SidebarProps {
@@ -15,24 +15,27 @@ interface SidebarProps {
   onToggleDesktopExpand?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-  activeMode, 
-  setActiveMode, 
-  onOpenSettings, 
-  isOpen, 
-  onClose, 
+const Sidebar: React.FC<SidebarProps> = ({
+  activeMode,
+  setActiveMode,
+  onOpenSettings,
+  isOpen,
+  onClose,
   userRole,
   isDesktopExpanded = true,
   onToggleDesktopExpand
 }) => {
   const menuItems = [
     { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)' },
-    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planejamento' },
+    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planejamento de Aula' },
+    { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral' }, // NOVO
     { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos' },
     { id: ToolMode.AUDITOR, icon: ShieldCheck, label: 'Auditor BNCC' },
     { id: ToolMode.ACTIVITIES, icon: BookOpen, label: 'Atividades e Projetos' },
     { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptação PDI/DUA' },
     { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb' },
+    { id: ToolMode.ENEM_BANK, icon: LibraryBig, label: 'Banco de Questões ENEM' },
+    { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides' }, // NOVO
   ];
 
   const handleModeSelection = (mode: ToolMode) => {
@@ -43,19 +46,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] lg:hidden"
           onClick={onClose}
         />
       )}
-      
+
       {/* Adjusted width based on expansion state */}
-      <div className={`${isDesktopExpanded ? 'w-64' : 'w-20'} bg-slate-900 h-screen text-slate-300 flex flex-col fixed left-0 top-0 z-[70] transition-all duration-300 transform ${
-        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
+      <div className={`${isDesktopExpanded ? 'w-64' : 'w-20'} bg-slate-900 h-screen text-slate-300 flex flex-col fixed left-0 top-0 z-[70] transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}>
         <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-8">
-            <button 
+            <button
               onClick={() => handleModeSelection(ToolMode.CHAT)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left group overflow-hidden"
             >
@@ -72,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <X className="w-6 h-6" />
               </button>
               {/* Desktop toggle button for collapsing/expanding the sidebar */}
-              <button 
+              <button
                 onClick={onToggleDesktopExpand}
                 className="hidden lg:flex p-1 text-slate-500 hover:text-white transition-colors"
                 title={isDesktopExpanded ? "Recolher menu" : "Expandir menu"}
@@ -87,11 +89,10 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  activeMode === item.id 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold' 
-                    : 'hover:bg-slate-800 hover:text-white'
-                }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeMode === item.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                  : 'hover:bg-slate-800 hover:text-white'
+                  }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
                 <item.icon className={`w-5 h-5 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
@@ -106,11 +107,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 )}
                 <button
                   onClick={() => handleModeSelection(ToolMode.ADMIN)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                    activeMode === ToolMode.ADMIN 
-                      ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20 font-bold' 
-                      : 'hover:bg-slate-800 hover:text-white'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeMode === ToolMode.ADMIN
+                    ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20 font-bold'
+                    : 'hover:bg-slate-800 hover:text-white'
+                    }`}
                   title={!isDesktopExpanded ? 'Painel de Controle' : undefined}
                 >
                   <Crown className={`w-5 h-5 shrink-0 ${activeMode === ToolMode.ADMIN ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
@@ -121,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </nav>
 
           <div className="mt-6 pt-6 border-t border-slate-800 space-y-2">
-            <button 
+            <button
               onClick={() => { onOpenSettings(); onClose(); }}
               className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
               title={!isDesktopExpanded ? 'Configurações' : undefined}
@@ -129,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <Settings className="w-5 h-5 shrink-0" />
               {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Configurações</span>}
             </button>
-            <button 
+            <button
               onClick={() => {
                 localStorage.removeItem('profeplan_session');
                 window.location.reload();

@@ -5,18 +5,18 @@ import { supabase } from './supabaseClient';
  */
 export const saveGeneratedContent = async (
   userId: string,
-  type: 'plano' | 'aula' | 'avaliacao' | 'documento',
+  type: 'plano' | 'aula' | 'avaliacao' | 'documento' | 'trimestral' | 'enem',
   title: string,
   content: string
 ) => {
   const { data, error } = await supabase
     .from('generated_contents')
     .insert([
-      { 
-        user_id: userId, 
-        type: type, 
-        title: title, 
-        content: content 
+      {
+        user_id: userId,
+        type: type,
+        title: title,
+        content: content
       }
     ])
     .select();
@@ -86,8 +86,8 @@ export const deleteGeneratedContent = async (id: string) => {
 export const updateLearningProfile = async (userId: string, preferences: object) => {
   const { error } = await supabase
     .from('user_learning_profile')
-    .upsert({ 
-      user_id: userId, 
+    .upsert({
+      user_id: userId,
       preferences: preferences,
       last_updated: new Date().toISOString()
     });
@@ -95,4 +95,32 @@ export const updateLearningProfile = async (userId: string, preferences: object)
   if (error) {
     console.error("Erro ao atualizar perfil de aprendizado:", error.message);
   }
+};
+
+/**
+ * Busca questões do ENEM filtrando por critérios.
+ */
+export const fetchEnemQuestions = async (
+  area: string,
+  subject?: string,
+  limit: number = 5
+) => {
+  let query = supabase
+    .from('enem_questions')
+    .select('*')
+    .eq('area', area)
+    .limit(limit);
+
+  if (subject) {
+    query = query.eq('subject', subject);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Erro ao buscar questões do ENEM:", error.message);
+    return [];
+  }
+
+  return data;
 };

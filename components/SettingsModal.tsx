@@ -17,10 +17,10 @@ interface SettingsModalProps {
   userEmail: string;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  settings, 
+const SettingsModal: React.FC<SettingsModalProps> = ({
+  isOpen,
+  onClose,
+  settings,
   setSettings,
   // REMOVIDO: Props de Google Drive
   // onConnectDrive,
@@ -111,8 +111,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome de Exibição</label>
-                <input 
-                  type="text" value={settings.userName} 
+                <input
+                  type="text" value={settings.userName}
                   onChange={(e) => handleChange('userName', e.target.value)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                   placeholder="Ex: Prof. Ricardo Silva"
@@ -120,8 +120,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Escola / Instituição</label>
-                <input 
-                  type="text" value={settings.institution} 
+                <input
+                  type="text" value={settings.institution}
                   onChange={(e) => handleChange('institution', e.target.value)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                   placeholder="Nome da Escola"
@@ -139,7 +139,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logo da Instituição</label>
-                  <div 
+                  <div
                     onClick={() => logoInputRef.current?.click()}
                     className="w-32 h-32 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all relative group overflow-hidden"
                   >
@@ -159,8 +159,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                   <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
                   {settings.logoBase64 && (
-                    <button 
-                      onClick={() => setSettings({...settings, logoBase64: undefined})}
+                    <button
+                      onClick={() => setSettings({ ...settings, logoBase64: undefined })}
                       className="text-[9px] font-bold text-red-500 flex items-center gap-1 mt-1 hover:underline"
                     >
                       <Trash2 className="w-3 h-3" /> Remover Logo
@@ -171,8 +171,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cabeçalho Personalizado</label>
-                    <textarea 
-                      value={settings.headerText || ''} 
+                    <textarea
+                      value={settings.headerText || ''}
                       onChange={(e) => handleChange('headerText', e.target.value)}
                       placeholder="Ex: Secretaria de Estado de Educação de MG&#10;Escola Estadual Machado de Assis"
                       className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-xs font-bold transition-all min-h-[80px]"
@@ -180,9 +180,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rodapé Personalizado</label>
-                    <input 
-                      type="text" 
-                      value={settings.footerText || ''} 
+                    <input
+                      type="text"
+                      value={settings.footerText || ''}
                       onChange={(e) => handleChange('footerText', e.target.value)}
                       placeholder="Ex: Av. Brasil, 1000 - Centro | (31) 3333-4444"
                       className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-xs font-bold transition-all"
@@ -203,8 +203,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nova Senha</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
@@ -213,8 +213,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirmar Senha</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
@@ -236,7 +236,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               )}
 
-              <button 
+              <button
                 onClick={handleChangePassword}
                 disabled={passwordChangeLoading || !newPassword.trim() || !confirmPassword.trim()}
                 className="w-full px-6 py-3 bg-blue-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest transition-all hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-50"
@@ -255,21 +255,46 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Metodologia Padrão</label>
-                <select 
-                  value={settings.favoriteMethodology} 
+                <select
+                  value={settings.favoriteMethodology}
                   onChange={(e) => handleChange('favoriteMethodology', e.target.value)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                 >
                   <option value="Gamification">Gamificação</option>
-                  <option value="Inverted Classroom">Sala Invertida</option>
                   <option value="Problem Based">ABP (Problemas)</option>
                   <option value="Traditional">Tradicional</option>
                 </select>
               </div>
               <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Estilo Pedagógico</label>
+                <select
+                  value={settings.teachingStyle}
+                  onChange={(e) => handleChange('teachingStyle', e.target.value as any)}
+                  className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="Tradicional">Tradicional</option>
+                  <option value="Construtivista">Construtivista</option>
+                  <option value="Sociointeracionista">Sociointeracionista</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Foco Avaliativo</label>
+                <select
+                  value={settings.assessmentFocus}
+                  onChange={(e) => handleChange('assessmentFocus', e.target.value as any)}
+                  className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
+                >
+                  <option value="">Selecione...</option>
+                  <option value="Somativa">Somativa</option>
+                  <option value="Formativa">Formativa</option>
+                  <option value="Diagnóstica">Diagnóstica</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tom de Escrita</label>
-                <select 
-                  value={settings.toneOfVoice} 
+                <select
+                  value={settings.toneOfVoice}
                   onChange={(e) => handleChange('toneOfVoice', e.target.value as any)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                 >
@@ -316,7 +341,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-          <button 
+          <button
             onClick={onClose}
             className="px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all active:scale-95"
           >

@@ -1,10 +1,10 @@
 
-import { GoogleGenAI, HarmBlockThreshold, HarmCategory, Modality } from "@google/genai";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import { SYSTEM_PROMPT } from "../constants";
-import { AccessLevel } from "../types"; // Importar AccessLevel
+import { AccessLevel } from "../types";
+import { fetchEnemQuestions } from "./databaseService";
 
 // Utilitários de áudio internos (PCM decoding)
-// Manual implementation following the coding guidelines for audio processing.
 function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -15,7 +15,6 @@ function decode(base64: string) {
   return bytes;
 }
 
-// Manual implementation of raw PCM audio decoding as required by the Gemini API documentation.
 async function decodeAudioData(
   data: Uint8Array,
   ctx: AudioContext,
@@ -47,90 +46,131 @@ export const generateProfePlanStream = async (
   history: { role: string; parts: { text: string }[] }[],
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } },
-  audioPart?: { inlineData: { data: string; mimeType: string } },
-  userAccessLevel?: AccessLevel // Novo parâmetro para o nível de acesso
+  audioPart?: { inlineData: { data: string; mimeType: string } }, // Mantido interface, mas pode não ser usado
+  userAccessLevel?: AccessLevel
 ) => {
-  // Creating GoogleGenAI instance right before making an API call to ensure it uses the most up-to-date API key.
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
-  const specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
+  // Inicialização Simples com a Chave de API
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
 
-  const contents = [...history];
+  if (!apiKey) {
+    throw new Error("A chave de API (VITE_GEMINI_API_KEY) não foi encontrada no arquivo .env. Verifique se o arquivo .env existe na raiz do projeto e se a chave está configurada corretamente.");
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  // Configuração da instrução do sistema
+  let specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
+
+  if (mode === 'quarterly') {
+    specificInstruction += `\n\n[DIRETRIZ DE PLANEJAMENTO]: Você está gerando um Planejamento Trimestral.
+    
+    PROTOCOLO DE ENTREVISTA (OBRIGATÓRIO):
+    Antes de gerar a tabela final, verifique se o professor forneceu:
+    1. Valor total do trimestre e distribuição de pontos.
+    2. Datas ou semanas reservadas para provas.
+    
+    SE FALTAR ALGUMA DESSA INFORMAÇÕES: Não gere o plano ainda. Responda perguntando amigavelmente sobre esses detalhes para personalizar o cronograma.
+    
+    SE TIVER AS INFORMAÇÕES: Gere a tabela cruzando Semanas x BNCC x Avaliações.
+    
+    GATILHO ABP: Se o texto conter "PROJETO", estruture como Aprendizagem Baseada em Projetos (Etapas, Entregas, Rubricas).`;
+  } else if (mode === 'enem') {
+    specificInstruction += `\n\n[DIRETRIZ ENEM]: Você está atuando como um especialista do INEP. A questão deve ser inédita ou adaptada, seguindo a Matriz de Referência.`;
+
+    try {
+      const lastUserMessage = history.find(m => m.role === 'user')?.parts[0].text || message;
+      const area = lastUserMessage.toLowerCase().includes('matemática') ? 'Matemática' :
+        lastUserMessage.toLowerCase().includes('humana') ? 'Ciências Humanas' :
+          lastUserMessage.toLowerCase().includes('linguagen') ? 'Linguagens' :
+            lastUserMessage.toLowerCase().includes('natureza') ? 'Ciências da Natureza' : null;
+
+      if (area) {
+        // Nota: fetchEnemQuestions deve retornar array de objetos com question_text
+        const examples = await fetchEnemQuestions(area, undefined, 2);
+        if (examples && examples.length > 0) {
+          specificInstruction += `\n\n[EXEMPLOS DE QUESTÕES DO BANCO]:\n${JSON.stringify(examples.map(q => q.question_text))}`;
+        }
+      }
+    } catch (e) {
+      console.warn("Falha ao buscar questões ENEM:", e);
+    }
+  } else if (mode === 'presentations') {
+    specificInstruction += `\n\n[DIRETRIZ DE APRESENTAÇÃO]:
+    O usuário quer transformar conteúdo em SLIDES.
+    ESTRUTURA DE SAÍDA (MARKDOWN):
+    Use headers (##) para cada Slide.
+    
+    Exemplo:
+    ## Slide 1: Título 
+    - Tópico A
+    - Tópico B
+    [Imagem Sugerida]: Descrição visual
+    
+    Gere 8 a 10 slides. Seja sintético e visual.`;
+  }
+  // A chave nova suporta modelos 2.0+. Configurando para o 2.0 Flash estável.
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: specificInstruction,
+    safetySettings
+  });
+
+  // Convertendo histórico para o formato do SDK generative-ai
+  // O SDK novo usa { role: 'user' | 'model', parts: [{ text: '...' }] }
+  // Verificando compatibilidade: history já está nesse formato
+
+  const chat = model.startChat({
+    history: history.map(h => ({
+      role: h.role,
+      parts: h.parts
+    })),
+    generationConfig: {
+      temperature: 0.8,
+    }
+  });
+
+  // Montando a mensagem atual
   const currentParts: any[] = [];
-  
-  if (message) {
-    currentParts.push({ text: message });
-  }
-  
-  if (imagePart) {
-    currentParts.push(imagePart);
-  }
-  
-  if (audioPart) {
-    currentParts.push(audioPart);
-  }
-
-  // Fallback se não houver conteúdo nenhum (embora improvável com o UI)
-  if (currentParts.length === 0) {
-    currentParts.push({ text: "Olá" });
-  }
-
-  contents.push({ role: 'user', parts: currentParts });
-
-  let modelName: string;
-  let thinkingBudget: number;
-
-  // Seleção do modelo e budget baseado no nível de acesso
-  if (userAccessLevel === 'ADMIN') {
-    modelName = 'gemini-3-pro-preview';
-    thinkingBudget = 32768; // Max thinking budget for gemini-3-pro-preview
-  } else { // BASICO or PRO
-    modelName = 'gemini-3-flash-preview';
-    thinkingBudget = 24576; // Max thinking budget for gemini-3-flash-preview
-  }
+  if (message) currentParts.push({ text: message });
+  if (imagePart) currentParts.push(imagePart);
+  // audioPart ignorado nesta versão simples para garantir estabilidade, ou adaptar se suportado
 
   try {
-    return await ai.models.generateContentStream({
-      model: modelName, // Modelo dinâmico
-      contents: contents,
-      config: {
-        systemInstruction: specificInstruction,
-        temperature: 0.8,
-        thinkingConfig: { thinkingBudget: thinkingBudget }, // Thinking budget dinâmico
-        safetySettings,
-      },
-    });
+    const result = await chat.sendMessageStream(currentParts);
+
+    // Adaptador para garantir compatibilidade com o App.tsx que espera chunk.text
+    async function* streamAdapter() {
+      for await (const chunk of result.stream) {
+        const chunkText = chunk.text();
+        yield { text: chunkText };
+      }
+    }
+
+    return streamAdapter();
   } catch (error: any) {
     console.error("Erro na Chamada do Gemini API:", error);
     throw error;
   }
 };
 
-export const speakPedagogicalText = async (text: string) => {
-  // Creating GoogleGenAI instance right before making an API call for real-time key synchronization.
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Como um professor experiente e acolhedor: ${text.substring(0, 500)}` }] }],
-      config: {
-        responseModalities: [Modality.AUDIO],
-        speechConfig: {
-          voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
-        },
-      },
-    });
+export const generateCanvaData = async (content: string) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    if (base64Audio) {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-      const audioBuffer = await decodeAudioData(decode(base64Audio), audioContext, 24000, 1);
-      const source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContext.destination);
-      source.start();
-    }
-  } catch (error) {
-    console.error("Erro TTS:", error);
-  }
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const instruction = `${SYSTEM_PROMPT}`;
+
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: instruction, safetySettings });
+
+  const userMessage = `[CANVA_ARCHITECT]
+  Analise o conteúdo abaixo e gere a TABELA DE DADOS (CSV) para o Canva:
+  
+  ${content}`;
+
+  const result = await model.generateContent(userMessage);
+  return result.response.text();
+};
+
+export const speakPedagogicalText = async (text: string) => {
+  console.log("TTS solicitado para:", text);
 };

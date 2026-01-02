@@ -17,7 +17,7 @@ export type UserRole = 'ADMIN' | 'TEACHER';
 export type AccessLevel = 'BASICO' | 'PRO' | 'ADMIN';
 
 export interface UserSession {
-  id: string; 
+  id: string;
   email: string;
   role: UserRole;
   accessLevel: AccessLevel;
@@ -38,13 +38,19 @@ export interface UserSettings {
   headerText?: string;
   footerText?: string;
   logoBase64?: string;
+  // Preferências de Estilo Estendidas
+  teachingStyle?: 'Tradicional' | 'Construtivista' | 'Sociointeracionista';
+  assessmentFocus?: 'Somativa' | 'Formativa' | 'Diagnóstica';
 }
 
 export enum ToolMode {
   PLANNING = 'planning',
+  QUARTERLY_PLANNING = 'quarterly', // NOVO
   ACTIVITIES = 'activities',
   INCLUSION = 'inclusion',
   SIMULATION = 'simulation',
+  ENEM_BANK = 'enem',
+  PRESENTATIONS = 'presentations', // NOVO
   AUDITOR = 'auditor',
   CHAT = 'chat',
   ADMIN = 'admin',
