@@ -5,7 +5,7 @@ import { supabase } from './supabaseClient';
  */
 export const saveGeneratedContent = async (
   userId: string,
-  type: 'plano' | 'aula' | 'avaliacao' | 'documento' | 'trimestral' | 'enem',
+  type: 'plano' | 'aula' | 'avaliacao' | 'documento' | 'trimestral' | 'enem' | 'presentation',
   title: string,
   content: string
 ) => {

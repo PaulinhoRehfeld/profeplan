@@ -17,6 +17,15 @@ ALTER TABLE generated_contents
 ADD CONSTRAINT generated_contents_type_check 
 CHECK (type IN ('plano', 'aula', 'avaliacao', 'documento', 'trimestral', 'enem'));
 
+-- Habilitar RLS para generated_contents (Segurança)
+ALTER TABLE generated_contents ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own generated_contents" ON generated_contents FOR SELECT TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own generated_contents" ON generated_contents FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own generated_contents" ON generated_contents FOR UPDATE TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own generated_contents" ON generated_contents FOR DELETE TO authenticated USING (auth.uid() = user_id);
+
+
 -- 2. Tabela: enem_questions (NOVA)
 -- Armazena questões do ENEM para consulta e geração de simulados.
 
@@ -80,3 +89,33 @@ WITH CHECK (auth.uid() = user_id);
 -- Índices para performance
 CREATE INDEX IF NOT EXISTS idx_enem_questions_area ON enem_questions(area);
 CREATE INDEX IF NOT EXISTS idx_enem_questions_subject ON enem_questions(subject);
+
+-- 4. Tabela: pdi_logs (NOVA)
+-- Armazena o histórico de adaptações validadas pelo professor para gerar relatórios.
+
+CREATE TABLE IF NOT EXISTS pdi_logs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    student_id TEXT NOT NULL, -- UUID or 'student_...' (No FK to support local)
+    class_id TEXT NOT NULL,   -- UUID or 'class_...' (No FK to support local)
+    lesson_id TEXT,           -- UUID or 'lesson_...' (No FK to support local)
+    teacher_id UUID NOT NULL REFERENCES auth.users(id),
+    content TEXT NOT NULL,    -- O conteúdo da adaptação validada
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Habilitar RLS
+ALTER TABLE pdi_logs ENABLE ROW LEVEL SECURITY;
+
+-- Políticas
+CREATE POLICY "Users can insert own logs" 
+ON pdi_logs FOR INSERT 
+TO authenticated 
+WITH CHECK (auth.uid() = teacher_id);
+
+CREATE POLICY "Users can view own logs" 
+ON pdi_logs FOR SELECT 
+TO authenticated 
+USING (auth.uid() = teacher_id);
+
+-- Índices
+CREATE INDEX IF NOT EXISTS idx_pdi_logs_student ON pdi_logs(student_id);

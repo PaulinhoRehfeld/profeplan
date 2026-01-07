@@ -1,8 +1,11 @@
-
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import { SYSTEM_PROMPT } from "../constants";
 import { AccessLevel } from "../types";
 import { fetchEnemQuestions } from "./databaseService";
+import { getTeacherContext } from "./supabaseService";
+import { checkUsageQuota, incrementUserUsage } from "./userService";
+import { hybridSearchProfeplan } from "./searchService";
+
 
 // Utilitários de áudio internos (PCM decoding)
 function decode(base64: string) {
@@ -47,7 +50,8 @@ export const generateProfePlanStream = async (
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } },
   audioPart?: { inlineData: { data: string; mimeType: string } }, // Mantido interface, mas pode não ser usado
-  userAccessLevel?: AccessLevel
+  userAccessLevel?: AccessLevel,
+  userId?: string
 ) => {
   // Inicialização Simples com a Chave de API
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
@@ -58,8 +62,54 @@ export const generateProfePlanStream = async (
 
   const genAI = new GoogleGenerativeAI(apiKey);
 
-  // Configuração da instrução do sistema
+  // Configuração da instrução do sistema base
   let specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
+
+
+
+  // Injeção de Memória (Teacher Context)
+  if (userId) {
+    try {
+      const { recentLessons, preferences } = await getTeacherContext(userId);
+
+      if (preferences || (recentLessons && recentLessons.length > 0)) {
+        const preferred_tone = preferences?.preferred_tone || 'não definido';
+        const recentLessons_list = recentLessons && recentLessons.length > 0
+          ? recentLessons.map((l: any, i: number) => `Aula ${i + 1}: ${l.topic}\nConteúdo: ${l.content.substring(0, 500)}...`).join('\n\n')
+          : 'Nenhuma aula anterior disponível.';
+
+        specificInstruction += `\n\nVocê deve seguir o estilo das aulas anteriores do professor (se houver) e respeitar o tom preferido: ${preferred_tone}. Aqui estão exemplos de aulas passadas para referência: ${recentLessons_list}`;
+      }
+    } catch (e) {
+      console.warn("Falha ao recuperar Memória do Professor:", e);
+    }
+  }
+
+  // [REGRA DE OURO] Busca Automática de Questões para Ensino Médio
+  const isHighSchoolContext = message.toLowerCase().includes('ensino médio') ||
+    message.toLowerCase().match(/\b(1º|2º|3º)\s*ano\b/i) ||
+    message.toLowerCase().includes('enem');
+
+  if (isHighSchoolContext) {
+    console.log('🔍 Detectado contexto de Ensino Médio/ENEM. Iniciando Busca Híbrida...');
+    try {
+      // Usa a mensagem do usuário (ex: "Planeje aula sobre Revolução Industrial") como query
+      const searchResults = await hybridSearchProfeplan({
+        textoBusca: message,
+        limit: 3, // Pega 3 para garantir
+        matchThreshold: 0.5
+      });
+
+      if (searchResults && searchResults.length > 0) {
+        specificInstruction += `\n\n[DADOS DO BUSCADOR (SISTEMA INTEGRADO)]:\nEncontrei estas questões relevantes no banco vetorial. Selecione as melhores para integrar ao plano:\n${JSON.stringify(searchResults)}`;
+      } else {
+        console.log('🔍 Busca retornou 0 resultados.');
+      }
+    } catch (searchError) {
+      console.error('⚠️ Falha na busca automática de questões:', searchError);
+      // Não bloqueia o fluxo, apenas loga
+    }
+  }
 
   if (mode === 'quarterly') {
     specificInstruction += `\n\n[DIRETRIZ DE PLANEJAMENTO]: Você está gerando um Planejamento Trimestral.
@@ -135,8 +185,21 @@ export const generateProfePlanStream = async (
   if (imagePart) currentParts.push(imagePart);
   // audioPart ignorado nesta versão simples para garantir estabilidade, ou adaptar se suportado
 
+  // Check Quota
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
   try {
     const result = await chat.sendMessageStream(currentParts);
+
+    // Increment Usage only after stream starts successfully
+    if (userId) {
+      await incrementUserUsage(userId);
+    }
 
     // Adaptador para garantir compatibilidade com o App.tsx que espera chunk.text
     async function* streamAdapter() {
@@ -173,4 +236,520 @@ export const generateCanvaData = async (content: string) => {
 
 export const speakPedagogicalText = async (text: string) => {
   console.log("TTS solicitado para:", text);
+};
+
+/**
+ * [CLASS_PARSER_MODE]
+ * Extrai Nome da Turma, Disciplina e Lista de Alunos em formato JSON a partir do texto bruto do PDF.
+ * Padrão otimizado para listas escolares do formato: "EE PROFESSOR ANTÔNIO LAGO - SRE DIAMANTINA"
+ */
+export const parseClassListFromText = async (rawText: string) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const instruction = `Age como um assistente administrativo escolar especializado em processar listas de chamada.
+  
+  INSTRUÇÕES DE EXTRAÇÃO:
+  1. METADADOS: Identifique palavras-chave como "Turma:", "Componente Curricular:", "Componente:", "Disciplina:" no topo do documento.
+  2. IDENTIFICAÇÃO DE ALUNOS: Os nomes dos alunos geralmente aparecem em LETRAS MAIÚSCULAS e seguem sequências numéricas (ex: "1", "8974339", "JOÃO VÍTOR DE MACÉDO COELHO").
+  3. LIMPEZA: Ignore códigos numéricos, strings de sistema como "Pág. 1 de 1", carimbos de data/hora, endereços de escola, e cabeçalhos de tabela ("Código", "Nome").
+  4. PADRÃO DE NOMES: Extraia apenas o nome completo em maiúsculas. Exemplos válidos: "JOÃO VÍTOR DE MACÉDO COELHO", "MARCOS VINICIUS ALVES DE SOUSA".
+  
+  Retorna APENAS um JSON puro, sem markdown, no seguinte formato:
+  { 
+    "className": "Nome da Turma (ex: 1° EM REG 5)", 
+    "subject": "Disciplina (ex: SOCIOLOGIA)", 
+    "students": ["NOME COMPLETO DO ALUNO 1", "NOME COMPLETO DO ALUNO 2"] 
+  }`;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: instruction
+  });
+
+  const prompt = `Extraia desta lista escolar: o nome da turma, a disciplina/matéria e a lista completa de nomes de alunos.
+  
+  FOQUE em encontrar padrões de nomes em letras maiúsculas que seguem uma sequência numérica.
+  Ignore rodapés, cabeçalhos administrativos e códigos de identificação.
+  
+  CONTEÚDO DO PDF:
+  ${rawText}`;
+
+  const result = await model.generateContent(prompt);
+  const responseText = result.response.text();
+
+  // Tenta extrair o JSON se houver blocos de markdown em volta
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    return JSON.parse(responseText);
+  } catch (e) {
+    console.error("Erro ao parsear JSON do Gemini:", responseText);
+    throw new Error("Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis.");
+  }
+};
+
+/**
+ * [ASSESSMENT_WITH_CONTEXT_MODE]
+ * Gera avaliações baseadas no histórico de aulas dadas (Ciclo de Feedback Fechado)
+ */
+export const generateAssessmentWithContext = async (
+  className: string,
+  subject: string,
+  lessonsContext: any[],
+  additionalTopic: string = '',
+  academicPeriod: string = '',
+  objectiveCount: number = 10,
+  dissertativeCount: number = 2,
+  numEnem: number = 0,
+  difficulty: string = 'Médio'
+) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const lessonsToReference = lessonsContext.map((lesson, i) =>
+    `Aula ${i + 1}: ${lesson.topic}\nConteúdo: ${lesson.content?.substring(0, 500)}...`
+  ).join('\n\n');
+
+  const instruction = `Age como um Professor Avaliador Pedagógico do PROFEPLAN.
+  
+  OBJETIVO: Gerar uma avaliação oficial, coerente e contextualizada.
+  
+  CONTEXTO DAS AULAS DADAS:
+  ${lessonsToReference || 'Nenhuma aula anterior disponível como base.'}
+  
+  ASSUNTO ESPECÍFICO ADICIONAL:
+  ${additionalTopic || 'Nenhum'}
+  
+  PERÍODO LETIVO: ${academicPeriod}
+  
+  ESTRUTURA DA AVALIAÇÃO:
+  - ${objectiveCount} questões OBJETIVAS baseadas nas aulas contextuais.
+  - ${dissertativeCount} questões DISSERTATIVAS (abertas) baseadas nas aulas contextuais.
+  - ${numEnem} questões ESTILO ENEM: Devem ser SEMPRE OBJETIVAS (múltipla escolha).
+  
+  NÍVEL DE DIFICULDADE GERAL: ${difficulty}
+  
+  REGRAS TÉCNICAS:
+  1. Todas as questões OBJETIVAS (Contextuais e ENEM) devem ter EXATAMENTE 5 alternativas (A, B, C, D, E).
+  2. Referência ENEM: Para cada questão estilo ENEM, comece o enunciado com a referência entre colchetes, ex: "[ENEM 2022] ...", "[ENEM 2023] ...".
+  3. Coerência Pedagógica: As questões contextuais devem focar no que foi ensinado nas aulas fornecidas.
+  4. Matriz ENEM: As questões estilo ENEM devem abordar competências oficiais no nível ${difficulty}.
+  5. Formato: Retorne um JSON puro para ser processado pelo sistema.
+  6. Gabarito: Inclua a resposta correta para objetivas e rubrica para dissertativas.
+  
+  Retorne APENAS um JSON puro:
+  {
+    "title": "Título da Avaliação (Ex: Avaliação de ${subject} - ${academicPeriod})",
+    "questions": [
+      {
+        "id": "q1",
+        "type": "objective",
+        "question": "[ENEM 2023] Enunciado...",
+        "options": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
+        "correctAnswer": "A",
+        "maxPoints": 1,
+        "difficulty": "${difficulty}"
+      },
+      {
+        "id": "q2",
+        "type": "dissertative",
+        "question": "Enunciado aberto...",
+        "rubric": "Critérios: 1. Explicação do conceito (X pts)...",
+        "maxPoints": 10,
+        "difficulty": "${difficulty}"
+      }
+    ]
+  }`;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: instruction
+  });
+
+  const prompt = `Crie uma avaliação de ${subject} para a turma ${className}, referente ao ${academicPeriod}.`;
+  const result = await model.generateContent(prompt);
+  const responseText = result.response.text();
+
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    return JSON.parse(responseText);
+  } catch (e) {
+    console.error("Erro ao parsear JSON da avaliação:", responseText);
+    throw new Error("Não foi possível gerar a avaliação. Tente novamente.");
+  }
+};
+
+/**
+ * [GRADING_MODE - Gemini Vision]
+ * Corrige questões dissertativas via OCR + Análise Pedagógica
+ */
+export const gradeWrittenAnswer = async (
+  questionText: string,
+  rubric: string,
+  imageBase64: string // Foto da resposta escrita
+) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const instruction = `Age como um Professor Corretor Pedagógico.
+  
+  TAREFA: Corrigir uma questão dissertativa escrita à mão.
+  
+  PASSOS:
+  1. Leia a escrita do aluno (OCR)
+  2. Compare com a RUBRICA de correção
+  3. Atribua uma nota de 0 a 10
+  4. Dê um FEEDBACK PEDAGÓGICO construtivo
+  
+  Retorne APENAS um JSON:
+  {
+    "studentAnswer": "Texto extraído da imagem",
+    "score": 7.5,
+    "maxScore": 10,
+    "feedback": "Você demonstrou compreensão de X, mas faltou mencionar Y..."
+  }`;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: instruction
+  });
+
+  const prompt = `QUESTÃO: ${questionText}\n\nRUBRICA DE CORREÇÃO:\n${rubric}\n\nAgora analise a resposta escrita do aluno na imagem.`;
+
+  const result = await model.generateContent([
+    { text: prompt },
+    {
+      inlineData: {
+        data: imageBase64.split(',')[1] || imageBase64,
+        mimeType: 'image/jpeg'
+      }
+    }
+  ]);
+
+  const responseText = result.response.text();
+
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    return JSON.parse(responseText);
+  } catch (e) {
+    console.error("Erro ao parsear resultado de correção:", responseText);
+    throw new Error("Não foi possível processar a correção. Tente novamente.");
+  }
+};
+
+/**
+ * [PRESENTATION_MODE - Structured JSON]
+ * Gera roteiro de slides estruturado em JSON para o módulo de Apresentações
+ */
+export const generatePresentationJSON = async (
+  topic: string,
+  context: string,
+  slideCount: number,
+  style: string,
+  includeInteractions: boolean
+) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const instruction = `Age como um Designer Instrucional e Especialista em Apresentações Visuais.
+
+  OBJETIVO: Criar um roteiro de apresentação de alto impacto, estruturado em JSON.
+
+  PARÂMETROS:
+  - TEMA/ASSUNTO: ${topic}
+  - CONTEXTO/AULA BASE: ${context || 'Criar do zero'}
+  - QUANTIDADE DE SLIDES: Aprox. ${slideCount}
+  - ESTILO VISUAL: ${style}
+  - INCLUIR INTERAÇÕES: ${includeInteractions ? 'Sim (Perguntas, Enquetes, Reflexões)' : 'Não (Apenas conteúdo)'}
+
+  ESTRUTURA DO JSON DE SAÍDA:
+  Retorne APENAS um JSON com a seguinte estrutura:
+  {
+    "title": "Título Criativo da Apresentação",
+    "theme": "${style}",
+    "slides": [
+      {
+        "order": 1,
+        "type": "capa" | "conteudo" | "interacao" | "conclusao",
+        "title": "Título do Slide",
+        "contentBulletPoints": ["Tópico 1", "Tópico 2", "Tópico 3"],
+        "imageSuggestion": "Descrição visual detalhada para IA generativa de imagens",
+        "speakerNotes": "Roteiro do que o professor deve falar neste slide"
+      }
+    ]
+  }
+
+  DIRETRIZES DE CONTEÚDO:
+  1. Seja sintético nos bullet points (regra 6x6).
+  2. Use linguagem adequada ao estilo visual escolhido.
+  3. Se interações estiverem ativadas, insira pelo menos 1 slide de "interacao" a cada 3-4 slides de conteúdo.
+  4. As 'imageSuggestion' devem ser prompts artísticos e descritivos.
+  `;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: instruction,
+    generationConfig: { responseMimeType: "application/json" }
+  });
+
+  const prompt = `Gere o roteiro da apresentação sobre: ${topic}`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    return JSON.parse(text);
+  } catch (e) {
+    console.error("Erro ao gerar slides:", e);
+    throw new Error("Falha ao gerar o roteiro da apresentação.");
+  }
+};
+
+/**
+ * [PDI_MODE]
+ * Gera uma adaptação PDI/DUA para um aluno específico baseada em uma aula original.
+ */
+export const generateStudentAdaptation = async (
+  originalContent: string,
+  studentName: string,
+  deficiencies: string[],
+  observations: string,
+  gradeLevel: string,
+  context?: { stateBase?: string; educationSphere?: string; userId?: string }
+) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  // Check Quota
+  if (context?.userId) {
+    const quotaStatus = await checkUsageQuota(context.userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const prompt = `
+    ATUE COMO UM ESPECIALISTA EM INCLUSÃO E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
+    
+    AULA ORIGINAL:
+    "${originalContent.substring(0, 3000)}"
+    
+    PERFIL DO ALUNO:
+    Nome: ${studentName}
+    Série: ${gradeLevel}
+    Necessidades/Diagnósticos: ${deficiencies.join(', ')}
+    Observações do Professor: ${observations}
+    ${context?.stateBase ? `CONTEXTO CURRICULAR:\n    Base: ${context.stateBase} (${context.educationSphere || 'Geral'})` : ''}
+    
+    TAREFA:
+    Crie uma adaptação desta aula especificamente para este aluno. Não simplifique o currículo a ponto de perder o objetivo, mas altere a FORMA de acesso e expressão.
+    
+    RETORNE APENAS O CONTEÚDO ADAPTADO NO SEGUINTE FORMATO MARKDOWN:
+    
+    ## 🎯 Objetivos Adaptados
+    (Liste 2-3 objetivos focais para este aluno)
+    
+    ## 🛠️ Estratégias de Acesso
+    (Como o aluno vai acessar o conteúdo? Ex: texto fatiado, apoio visual, áudio...)
+    
+    ## 📝 Atividade Adaptada
+    (A atividade reescrita para o perfil dele)
+    
+    ## 📏 Avaliação Diferenciada
+    (Como verificar o aprendizado dele nesta aula)
+    `;
+
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+
+    // Increment Usage
+    if (context?.userId) {
+      await incrementUserUsage(context.userId);
+    }
+
+    return response.text();
+  } catch (error) {
+    console.error("Erro ao gerar adaptação PDI:", error);
+    throw error;
+  }
+};
+
+/**
+ * [PDI_REPORT_MODE]
+ * Gera um Relatório Bimestral de PDI baseado nos logs de adaptação.
+ */
+export const generatePdiReport = async (logs: any[], studentName: string, period: string) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  // Sintetiza os logs para não estourar o contexto
+  const logsSummary = logs.map(l => `- Em ${new Date(l.created_at).toLocaleDateString()}: Adaptação focada em ${l.content?.substring(0, 100) || 'Conteúdo adaptado'}...`).join('\n');
+
+  const prompt = `
+    ATUE COMO UM ESPECIALISTA EM EDUCAÇÃO ESPECIAL E INCLUSIVA COM 20 ANOS DE EXPERIÊNCIA EM ESCRITA DE LAUDOS E RELATÓRIOS DE PDI.
+    
+    DADOS DO ALUNO: ${studentName}
+    PERÍODO: ${period}
+    
+    HISTÓRICO DE ADAPTAÇÕES REALIZADAS (LOGS DO SISTEMA):
+    ${logsSummary}
+    
+    TAREFA:
+    Escreva um relatório técnico-pedagógico narrativo, pronto para ser assinado e entregue à coordenação ou aos pais.
+    
+    ESTRUTURA OBRIGATÓRIA:
+    1. Cabeçalho Institucional (Identificação e Contexto): Mencione o período letivo e base curricular.
+    2. Desenvolvimento (Ações de Adaptação): Transforme os logs em parágrafos narrativos e fluidos. NÃO USE LISTAS OU MARCADORES. Exemplo: "Durante o trabalho com Frações, a estratégia de manipulação de objetos concretos foi fundamental...". Use termos técnicos como "fragmentação de comandos", "suportes visuais", "flexibilização".
+    3. Síntese de Engajamento e Conclusão: Destaque os avanços e a importância da manutenção das adaptações.
+    
+    REGRAS DE FORMATAÇÃO:
+    - Texto corrido (prosa), sem bullet points.
+    - Tom formal, acolhedor e técnico.
+    - Sem cabeçalhos Markdown (##), use apenas negrito para dar ênfase se necessário.
+    `;
+
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const generateTermPlan = async (
+  context: {
+    subject: string;
+    grade: string;
+    period: number;
+    regime: string;
+    stateBase: string;
+    educationSphere: string;
+    teacherName: string;
+    totalClasses: number;
+    reserves: any;
+    userId?: string;
+  }
+) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  // Check Quota
+  if (context.userId) {
+    const quotaStatus = await checkUsageQuota(context.userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  const prompt = `
+    Atue como um Coordenador Pedagógico especialista em BNCC e currículos locais.
+    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo e profissional.
+
+    DADOS DO CONTEXTO:
+    - Estado (Base Curricular): ${context.stateBase}
+    - Esfera: ${context.educationSphere}
+    - Professor: ${context.teacherName}
+    - Componente: ${context.subject}
+    - Ano/Série: ${context.grade}
+    - Período: ${context.period}º ${context.regime}
+    - Total de Aulas Previstas: ${context.totalClasses}
+
+    ESTRUTURA OBRIGATÓRIA (Siga exatamente este formato):
+
+    MAPA DE PLANEJAMENTO DE AULA/2026
+    Planejamento de ${context.subject} - ${context.grade} - ${context.period}º ${context.regime}
+    Área de Conhecimento: [Inserir Área BNCC]
+    Componente Curricular: ${context.subject}
+    Ano: ${context.grade}
+    Período: ${context.period}º ${context.regime} de 2026
+
+    1. Objetivos Gerais:
+    Professor: ${context.teacherName}
+    • [Objetivo 1]
+    • [Objetivo 2]
+    • [Objetivo 3]
+
+    2. Competências e Habilidades (de acordo com o Currículo de ${context.stateBase} e BNCC):
+    • (CÓDIGO ALFANUMÉRICO): [Descrição da Habilidade]
+    • (CÓDIGO ALFANUMÉRICO): [Descrição da Habilidade]
+
+    3. Conteúdos a Serem Trabalhados:
+    • [Conteúdo 1]
+    • [Conteúdo 2]
+    • [Conteúdo 3]
+    • [Conteúdo 4]
+    • [Conteúdo 5]
+
+    4. Metodologia:
+    • Aulas expositivas dialogadas...
+    • [Metodologia ativa específica para a disciplina]
+    • [Atividade prática sugerida]
+
+    5. Recursos Didáticos:
+    • Projetor multimídia...
+    • [Recurso específico]
+    • [Recurso específico]
+
+    6. Cronograma das Aulas (Total: ${context.totalClasses} encontros):
+    • Aula 1: [Tópico Introdutório]
+    • Aula 2: [Desenvolvimento]
+    ...
+    • Aula ${context.totalClasses - 2}: Revisão geral
+    • Aula ${context.totalClasses - 1}: ${context.reserves.bimonthlyExam ? `Prova ${context.regime}` : 'Atividade Avaliativa'}
+    • Aula ${context.totalClasses}: Recuperação e encerramento.
+
+    7. Avaliação:
+    • Diagnóstica: ...
+    • Formativa: ...
+    • Somativa: ...
+
+    IMPORTANTE:
+    - Adapte o conteúdo especificamente para a disciplina de ${context.subject} no ${context.grade}.
+    - Cite códigos reais da BNCC ou do Currículo de ${context.stateBase} se possível.
+    - Seja detalhado no cronograma, distribuindo bem os conteúdos.
+    `;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+
+    // Increment Usage
+    if (context.userId) {
+      await incrementUserUsage(context.userId);
+    }
+
+    return response.text();
+  } catch (e) {
+    console.error("Erro ao gerar planejamento:", e);
+    throw e;
+  }
 };

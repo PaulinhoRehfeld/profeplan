@@ -31,7 +31,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
       if (supabaseError) {
         console.error("Erro de Autenticação Supabase:", JSON.stringify(supabaseError, null, 2));
-        
+
         // PGRST116 significa que nenhum registro foi encontrado (E-mail ou Senha errados)
         if (supabaseError.code === 'PGRST116') {
           setError('E-mail ou Chave de Acesso incorretos.');
@@ -52,6 +52,32 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         return;
       }
 
+      // 2.1 Bootstrapping de Perfil (Migração para nova arquitetura)
+      // Verifica se o perfil existe na tabela 'profiles', se não, cria.
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', authorizedUser.id)
+        .single();
+
+      if (!existingProfile) {
+        console.log("Perfil não encontrado, criando novo para:", authorizedUser.email);
+        const { error: createError } = await supabase.from('profiles').insert({
+          id: authorizedUser.id,
+          email: authorizedUser.email,
+          tier: 'SILVER',
+          credits: 10,
+          is_unlimited: false,
+          is_admin: authorizedUser.role === 'ADMIN', // Sync initial role
+          allowed_features: ['all'] // Default features
+        });
+
+        if (createError) {
+          console.error("Erro ao criar perfil bootstrap:", createError);
+          // Não bloqueia login, mas loga erro
+        }
+      }
+
       // 2. Construção da Sessão
       const session: UserSession = {
         id: authorizedUser.id, // Adicionado: Salva o ID do usuário
@@ -66,7 +92,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       localStorage.setItem('profeplan_session', JSON.stringify(session));
       localStorage.setItem('supabase_user_id', authorizedUser.id); // Salva o ID no localStorage para uso direto
       onLogin(session);
-      
+
     } catch (err: any) {
       console.error("Falha Crítica no Login:", JSON.stringify(err, null, 2));
       setError('Não foi possível conectar ao servidor. Verifique sua conexão com a internet.');
@@ -76,30 +102,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 md:px-20 py-4 relative overflow-hidden">
       {/* Background Decorativo */}
       <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-      
+
       <div className="w-full max-w-lg z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center p-5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl shadow-2xl mb-6 transform hover:rotate-3 transition-transform">
-            <PenTool className="w-12 h-12 text-white" />
+          <div className="inline-flex items-center justify-center mb-6 transform hover:scale-105 transition-transform">
+            <img src="/logo-profeplan.png" alt="PROFEPLAN" className="w-16 h-16 object-contain drop-shadow-2xl" />
           </div>
           <h1 className="text-5xl font-black text-white tracking-tighter mb-2 italic">PROFEPLAN</h1>
           <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-[10px]">Ecossistema de Inteligência Pedagógica</p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-10 rounded-[40px] shadow-3xl">
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 md:p-10 rounded-[40px] shadow-3xl">
           <h2 className="text-2xl font-bold text-white mb-8 text-center tracking-tight">Identificação do Docente</h2>
-          
+
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail Cadastrado</label>
               <div className="relative group">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -113,8 +139,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Chave de Acesso</label>
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   required
                   value={accessKey}
                   onChange={(e) => setAccessKey(e.target.value)}
@@ -131,8 +157,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               </div>
             )}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-600/20 flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-50"
             >

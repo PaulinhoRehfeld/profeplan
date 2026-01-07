@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector } from 'lucide-react';
+import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector, Clock, Users, ClipboardCheck } from 'lucide-react';
 import { ToolMode, UserRole } from '../types';
+import { UserProfile, hasFeaturePattern, isAdmin } from '../services/userService';
 
 interface SidebarProps {
   activeMode: ToolMode;
@@ -13,6 +14,7 @@ interface SidebarProps {
   // Added missing props passed from App.tsx
   isDesktopExpanded?: boolean;
   onToggleDesktopExpand?: () => void;
+  userProfile?: UserProfile | null;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -23,20 +25,28 @@ const Sidebar: React.FC<SidebarProps> = ({
   onClose,
   userRole,
   isDesktopExpanded = true,
-  onToggleDesktopExpand
+  onToggleDesktopExpand,
+  userProfile
 }) => {
   const menuItems = [
-    { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)' },
-    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planejamento de Aula' },
-    { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral' }, // NOVO
-    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos' },
-    { id: ToolMode.AUDITOR, icon: ShieldCheck, label: 'Auditor BNCC' },
-    { id: ToolMode.ACTIVITIES, icon: BookOpen, label: 'Atividades e Projetos' },
-    { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptação PDI/DUA' },
-    { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb' },
-    { id: ToolMode.ENEM_BANK, icon: LibraryBig, label: 'Banco de Questões ENEM' },
-    { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides' }, // NOVO
+    { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'chat' },
+    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Plano de Aula', feature: 'planning' },
+    { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning' },
+    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management' },
+
+    { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptação PDI/DUA', feature: 'pdi' },
+    { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb', feature: 'enem' },
+
+    { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content' },
+    { id: ToolMode.HISTORY, icon: Clock, label: 'Memória do Professor', feature: 'management' },
+    { id: ToolMode.CLASSES, icon: Users, label: 'Minhas Turmas', feature: 'management' },
+    { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content' },
   ];
+
+  const filteredItems = menuItems.filter(item => {
+    if (!userProfile) return true; // Show all if check not ready (or fallback)
+    return hasFeaturePattern(userProfile.allowed_features || [], item.feature);
+  });
 
   const handleModeSelection = (mode: ToolMode) => {
     setActiveMode(mode);
@@ -61,8 +71,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => handleModeSelection(ToolMode.CHAT)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left group overflow-hidden"
             >
-              <div className="bg-blue-600 p-2 rounded-lg group-hover:scale-110 transition-transform shrink-0">
-                <PenTool className="text-white w-6 h-6" />
+              <div className="p-1 rounded-lg group-hover:scale-110 transition-transform shrink-0">
+                <img src="/logo-profeplan.png" alt="P" className="w-8 h-8 object-contain" />
               </div>
               {/* Only show title when expanded */}
               {isDesktopExpanded && (
@@ -85,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <nav className="space-y-1 flex-1 overflow-y-auto pr-2 scrollbar-hide">
-            {menuItems.map((item) => (
+            {filteredItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
@@ -100,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </button>
             ))}
 
-            {userRole === 'ADMIN' && (
+            {isAdmin(userProfile) && (
               <div className="pt-4 mt-4 border-t border-slate-800">
                 {isDesktopExpanded && (
                   <p className="text-[10px] font-bold text-slate-500 uppercase px-4 mb-2 tracking-widest whitespace-nowrap">Administração</p>
@@ -120,26 +130,44 @@ const Sidebar: React.FC<SidebarProps> = ({
             )}
           </nav>
 
-          <div className="mt-6 pt-6 border-t border-slate-800 space-y-2">
-            <button
-              onClick={() => { onOpenSettings(); onClose(); }}
-              className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
-              title={!isDesktopExpanded ? 'Configurações' : undefined}
-            >
-              <Settings className="w-5 h-5 shrink-0" />
-              {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Configurações</span>}
-            </button>
-            <button
-              onClick={() => {
-                localStorage.removeItem('profeplan_session');
-                window.location.reload();
-              }}
-              className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-red-900/20 transition-colors text-slate-400 hover:text-red-400"
-              title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}
-            >
-              <X className="w-5 h-5 shrink-0" />
-              {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Sair do Sistema</span>}
-            </button>
+          <div className="mt-auto pt-6 border-t border-slate-800">
+            <div className="px-4 mb-4">
+              {userProfile?.tier === 'GOLD' || userProfile?.is_unlimited ? (
+                isDesktopExpanded ? (
+                  <div className="bg-amber-500/10 border border-amber-500/20 p-2 rounded-lg text-amber-500 font-bold text-xs flex items-center gap-2 justify-center">
+                    <Crown size={14} /> GOLD (Ilimitado)
+                  </div>
+                ) : <Crown size={20} className="text-amber-500 mx-auto" />
+              ) : (
+                isDesktopExpanded ? (
+                  <div className="bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-blue-400 font-bold text-xs flex items-center gap-2 justify-center">
+                    <FolderClosed size={14} /> {userProfile?.credits || 0} Créditos
+                  </div>
+                ) : <div className="text-xs font-bold text-blue-400 text-center">{userProfile?.credits || 0}</div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => { onOpenSettings(); onClose(); }}
+                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
+                title={!isDesktopExpanded ? 'Configurações' : undefined}
+              >
+                <Settings className="w-5 h-5 shrink-0" />
+                {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Configurações</span>}
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('profeplan_session');
+                  window.location.reload();
+                }}
+                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-red-900/20 transition-colors text-slate-400 hover:text-red-400"
+                title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}
+              >
+                <X className="w-5 h-5 shrink-0" />
+                {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Sair do Sistema</span>}
+              </button>
+            </div>
           </div>
         </div>
       </div>

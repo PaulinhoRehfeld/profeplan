@@ -54,7 +54,44 @@ export enum ToolMode {
   AUDITOR = 'auditor',
   CHAT = 'chat',
   ADMIN = 'admin',
-  FILES = 'files'
+  FILES = 'files',
+  HISTORY = 'history',
+  CLASSES = 'classes',
+  ASSESSMENT = 'assessment'
+}
+
+// Assessment Types (Ciclo de Feedback Fechado)
+export interface AssessmentQuestion {
+  id: string;
+  type: 'objective' | 'dissertative';
+  question: string;
+  options?: string[]; // [A, B, C, D, E] para objetivas
+  correctAnswer?: string; // Letra correta (A-E)
+  rubric?: string; // Critérios de correção para dissertativas
+  maxPoints: number;
+  difficulty?: 'Fácil' | 'Médio' | 'Difícil';
+}
+
+export interface Assessment {
+  id: string;
+  title: string;
+  classId?: string;
+  className?: string;
+  subject: string;
+  questions: AssessmentQuestion[];
+  createdAt: string;
+  totalPoints: number;
+  academicPeriod?: string;
+  difficulty?: 'Fácil' | 'Médio' | 'Difícil';
+  numEnem?: number;
+}
+
+export interface GradingResult {
+  questionId: string;
+  studentAnswer: string; // Texto extraído via OCR
+  score: number;
+  maxScore: number;
+  feedback: string;
 }
 
 // REMOVIDO: Interfaces para Google Drive
@@ -73,3 +110,39 @@ export interface DriveFile {
   size: string;
 }
 */
+
+export interface Student {
+  id: string;
+  name: string;
+  class_id?: string;
+  needs_adaptation: boolean;
+  deficiencies: string[];
+  pedagogical_observations: string;
+}
+
+export interface Class {
+  id: string;
+  name: string;
+  subject: string;
+  created_at: string;
+  students?: Student[];
+}
+
+export interface PdiLog {
+  id: string;
+  student_id: string;
+  class_id: string;
+  lesson_id?: string;
+  teacher_id: string;
+  created_at: string;
+  content: string;
+  status: string;
+}
+
+export interface StudentAdaptation {
+  studentId: string;
+  studentName: string;
+  originalContent: string;
+  adaptedContent: string;
+  status: 'pending' | 'generating' | 'completed' | 'validated';
+}

@@ -1,0 +1,53 @@
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { supabase } from "./supabaseClient";
+
+interface HybridSearchParams {
+    textoBusca: string;
+    disciplina?: string | null;
+    nivel?: string | null;
+    limit?: number;
+    matchThreshold?: number;
+}
+
+export const hybridSearchProfeplan = async ({
+    textoBusca,
+    disciplina = null,
+    nivel = null,
+    limit = 10,
+    matchThreshold = 0.5
+}: HybridSearchParams) => {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+    if (!apiKey) {
+        throw new Error("API Key missing");
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+
+    try {
+        // 1. Transformar a busca do professor em vetor
+        const result = await model.embedContent(textoBusca);
+        const embedding = result.embedding;
+
+        // 2. Chamar a função 'mágica' no Supabase
+        const { data, error } = await supabase.rpc('buscar_questoes_profeplan', {
+            query_embedding: embedding.values,
+            match_threshold: matchThreshold,
+            match_count: limit,
+            filtro_disciplina: disciplina,
+            filtro_nivel: nivel
+        });
+
+        if (error) {
+            console.error("Erro na busca híbrida:", error);
+            throw error;
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("Erro ao realizar busca híbrida:", error);
+        throw error;
+    }
+};
