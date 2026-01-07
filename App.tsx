@@ -146,7 +146,7 @@ const App: React.FC = () => {
             <div className="flex items-center gap-4">
               <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-2 text-slate-500"><Menu size={24} /></button>
               <div className="flex flex-col">
-                <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN v3.3</h2>
+                <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN v1.0</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{activeMode}</span>
@@ -237,7 +237,7 @@ const App: React.FC = () => {
             </div>
           ) : (
             <div>
-              <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V3</h3>
+              <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V1.0</h3>
               <p className="text-xs text-slate-500 font-medium">Selecione uma ferramenta no menu ou comece uma conversa para planejar sua aula.</p>
             </div>
           )}
