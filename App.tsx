@@ -168,6 +168,7 @@ const App: React.FC = () => {
           </header>
 
           <div className="layout-wrapper flex-1 overflow-hidden relative flex flex-col bg-white">
+            {/* Mobile Grid Adjustment: Ensure children components use responsive grids if not handled internally */}
             {activeMode === ToolMode.FILES ? (
               <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">
                 <DriveExplorer userId={session.id} userEmail={session.email} settings={settings} />
