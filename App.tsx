@@ -23,7 +23,8 @@ import PresentationCreator from './components/PresentationCreator';
 import PDIManager from './features/PDI/PDIManager'; // NOVO: Renomeado de InclusionWorkbench
 import TermPlanningManager from './features/TermPlanning/TermPlanningManager'; // NOVO: Agente Coordenador
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext'; // NOVO: Contexto Global
-import { getUserProfile, UserProfile } from './services/userService';
+import { getUserProfile, UserProfile, isAdmin } from './services/userService';
+import SubscriptionModal from './components/SubscriptionModal';
 // import PresentationModal from './components/PresentationModal'; // REMOVIDO
 
 // Tipos e Serviços
@@ -107,8 +108,7 @@ const App: React.FC = () => {
     setCustomSidebar(null);
   }, [activeMode]);
 
-
-
+  const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
 
   if (!session || !session.isLoggedIn) {
     return <LoginScreen onLogin={setSession} />;
@@ -139,10 +139,11 @@ const App: React.FC = () => {
           userRole={session.role} isDesktopExpanded={isLeftNavExpanded}
           onToggleDesktopExpand={() => setIsLeftNavExpanded(prev => !prev)}
           userProfile={userProfile}
+          onOpenSubscription={() => setIsSubscriptionOpen(true)}
         />
 
         <main className={`main-content flex-1 flex flex-col relative h-full transition-all duration-300 ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
-          <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-4 md:px-10 z-50 sticky top-0 shadow-sm">
+          <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-4 md:px-6 z-50 sticky top-0 shadow-sm">
             <div className="flex items-center gap-4">
               <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-2 text-slate-500"><Menu size={24} /></button>
               <div className="flex flex-col">
@@ -174,9 +175,17 @@ const App: React.FC = () => {
                 <DriveExplorer userId={session.id} userEmail={session.email} settings={settings} />
               </div>
             ) : activeMode === ToolMode.ADMIN ? (
-              <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10">
-                <AdminPanel />
-              </div>
+              // Protect Admin Route
+              isAdmin(userProfile) ? (
+                <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10">
+                  <AdminPanel />
+                </div>
+              ) : (
+                <div className="flex-1 flex items-center justify-center flex-col text-slate-400">
+                  <Lock size={48} className="mb-4 text-slate-300" />
+                  <p>Acesso Restrito</p>
+                </div>
+              )
             ) : activeMode === ToolMode.HISTORY ? (
               <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">
                 <HistoryList
@@ -230,7 +239,7 @@ const App: React.FC = () => {
           </div>
         </main>
 
-        <aside className={`h-screen bg-white border-l border-slate-100 flex-col shrink-0 lg:flex lg:w-72 p-10 space-y-10 overflow-y-auto ${activeMode === ToolMode.QUARTERLY_PLANNING ? 'hidden' : 'hidden lg:flex'}`}>
+        <aside className={`h-screen bg-white border-l border-slate-100 flex-col shrink-0 lg:flex lg:w-64 p-6 space-y-6 overflow-y-auto ${activeMode === ToolMode.QUARTERLY_PLANNING ? 'hidden' : 'hidden lg:flex'}`}>
           {customSidebar ? (
             // Renderiza a Sidebar Customizada (Injetada pelos componentes filhos)
             <div className="animate-in fade-in slide-in-from-right-10 duration-500">
@@ -281,6 +290,12 @@ const App: React.FC = () => {
           isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}
           settings={settings} setSettings={setSettings}
           userEmail={session.email}
+        />
+
+        <SubscriptionModal
+          isOpen={isSubscriptionOpen}
+          onClose={() => setIsSubscriptionOpen(false)}
+          userProfile={userProfile}
         />
       </div >
     </GlobalPlanningProvider>

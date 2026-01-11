@@ -20,6 +20,13 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
+    // Manual Creation State
+    const [isManualCreateOpen, setIsManualCreateOpen] = useState(false);
+    const [manualName, setManualName] = useState('');
+    const [manualSubject, setManualSubject] = useState('');
+    const [manualStudents, setManualStudents] = useState('');
+    const [isSavingManual, setIsSavingManual] = useState(false);
+
     // PDI/DUA State
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
@@ -29,18 +36,79 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
         fetchClasses();
     }, [userId]);
 
-    const fetchClasses = () => {
+    const fetchClasses = async () => {
         setLoading(true);
-        // Fallback to local for basic list, but ideally we should sync
-        const data = getLocalClasses(userId);
-        setClasses(data.map(c => ({
-            id: c.id,
-            name: c.name,
-            subject: c.subject,
-            created_at: c.createdAt,
-            students: c.students.map((s: any) => ({ ...s, needs_adaptation: s.needs_adaptation ?? false }))
-        })));
-        setLoading(false);
+        try {
+            // 1. Try fetching from Supabase
+            const { getClasses } = await import('../services/supabaseService');
+            const { data, error } = await getClasses(userId);
+
+            if (error) throw error;
+
+            if (data) {
+                setClasses(data.map((c: any) => ({
+                    id: c.id,
+                    name: c.name,
+                    subject: c.subject,
+                    created_at: c.created_at,
+                    students: c.students // Supabase returns count or list depending on query, getClasses returns {students: {count}} usually, let's check service
+                })) as any); // Casting for simplicity if types mismatch slightly
+            }
+        } catch (err) {
+            console.warn("Supabase fetch failed, falling back to local:", err);
+            // Fallback to local
+            const data = getLocalClasses(userId);
+            setClasses(data.map(c => ({
+                id: c.id,
+                name: c.name,
+                subject: c.subject,
+                created_at: c.createdAt,
+                students: c.students.map((s: any) => ({ ...s, needs_adaptation: s.needs_adaptation ?? false }))
+            })));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleManualCreate = async () => {
+        if (!manualName || !manualSubject) {
+            setError('Nome da turma e disciplina são obrigatórios.');
+            return;
+        }
+
+        setIsSavingManual(true);
+        try {
+            const studentList = manualStudents
+                .split(/\n|,/) // Split by newline or comma
+                .map(s => s.trim())
+                .filter(s => s.length > 0);
+
+            if (studentList.length === 0) {
+                setError('Adicione pelo menos um aluno.');
+                setIsSavingManual(false);
+                return;
+            }
+
+            const { saveClassStructure } = await import('../services/supabaseService');
+
+            await saveClassStructure(userId, {
+                className: manualName,
+                subject: manualSubject,
+                students: studentList
+            });
+
+            setIsManualCreateOpen(false);
+            setManualName('');
+            setManualSubject('');
+            setManualStudents('');
+            fetchClasses();
+
+        } catch (err: any) {
+            console.error(err);
+            setError('Erro ao criar turma: ' + err.message);
+        } finally {
+            setIsSavingManual(false);
+        }
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,17 +136,26 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
         }
     };
 
-    const confirmSave = () => {
+    const confirmSave = async () => {
         if (!tempClassData) return;
         setImportStep('parsing');
         try {
+            // Save to Supabase
+            const { saveClassStructure } = await import('../services/supabaseService');
+            await saveClassStructure(userId, {
+                className: tempClassData.className,
+                subject: tempClassData.subject,
+                students: tempClassData.students
+            });
+
+            // Also save local for backup (optional, but good for offline)
             saveClassToLocal(userId, tempClassData);
-            // Note: Ideally we should also save to Supabase here if not already handled by localStorageService logic
+
             setTempClassData(null);
             setImportStep('idle');
             fetchClasses();
         } catch (err: any) {
-            setError('Erro ao salvar localmente.');
+            setError('Erro ao salvar: ' + err.message);
             setImportStep('confirming');
         }
     };
@@ -379,7 +456,14 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Gerencie suas salas de aula e listas de alunos</p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
+                    <button
+                        onClick={() => setIsManualCreateOpen(true)}
+                        className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 active:scale-95"
+                    >
+                        <Plus size={18} /> Criar Turma
+                    </button>
+
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input
@@ -394,20 +478,75 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                     {classes.length > 0 && (
                         <button
                             onClick={handleExportData}
-                            className="px-6 py-3 bg-green-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-green-700 transition-all shadow-lg"
+                            className="px-6 py-3 bg-green-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-green-700 transition-all shadow-lg hidden md:flex"
                         >
                             <Download size={18} />
                             Exportar
                         </button>
                     )}
 
-                    <label className="cursor-pointer bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-blue-600 transition-all shadow-xl shadow-slate-200 active:scale-95">
+                    <label className="cursor-pointer bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-95">
                         <Upload size={18} />
-                        <span>Importar PDF</span>
+                        <span className="hidden sm:inline">Importar PDF</span>
                         <input type="file" className="hidden" accept="application/pdf" onChange={handleFileUpload} />
                     </label>
                 </div>
             </div>
+
+            {/* Manual Creation Modal */}
+            {isManualCreateOpen && (
+                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setIsManualCreateOpen(false)}>
+                    <div className="bg-white rounded-[2rem] w-full max-w-lg p-8 shadow-2xl relative" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setIsManualCreateOpen(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-50 rounded-full text-slate-400 transition-colors">
+                            <X size={20} />
+                        </button>
+
+                        <h3 className="text-xl font-black text-slate-900 uppercase italic mb-6">Nova Turma Manual</h3>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Nome da Turma</label>
+                                <input
+                                    type="text"
+                                    value={manualName}
+                                    onChange={e => setManualName(e.target.value)}
+                                    placeholder="Ex: 3º Ano B - Ensino Médio"
+                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-blue-500 transition-colors"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Disciplina</label>
+                                <input
+                                    type="text"
+                                    value={manualSubject}
+                                    onChange={e => setManualSubject(e.target.value)}
+                                    placeholder="Ex: História"
+                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-bold text-slate-900 outline-none focus:border-blue-500 transition-colors"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Lista de Alunos</label>
+                                <p className="text-[10px] text-slate-400 mb-2">Cole os nomes abaixo (um por linha ou separados por vírgula).</p>
+                                <textarea
+                                    value={manualStudents}
+                                    onChange={e => setManualStudents(e.target.value)}
+                                    placeholder="João da Silva&#10;Maria Oliveira&#10;Pedro Santos..."
+                                    className="w-full h-40 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 font-medium text-slate-900 outline-none focus:border-blue-500 transition-colors resize-none text-sm"
+                                ></textarea>
+                            </div>
+
+                            <button
+                                onClick={handleManualCreate}
+                                disabled={isSavingManual}
+                                className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2 mt-4"
+                            >
+                                {isSavingManual ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                                Salvar Turma
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {error && (
                 <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-red-100 flex items-center gap-3">

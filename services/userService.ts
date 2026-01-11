@@ -10,9 +10,12 @@ export interface UserProfile {
     allowed_features: string[];
 }
 
+// --- CONFIGURATION ---
+const IS_BETA_TESTING = true; // Set to TRUE for Play Store Beta (Free Gold for Testers)
+
 export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
     const { data, error } = await supabase
-        .from('profiles') // CHANGED TABLE NAME PER PROMPT
+        .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
@@ -21,6 +24,17 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
         console.error("Error fetching user profile:", error);
         return null;
     }
+
+    // BETA OVERRIDE: Grant Gold + Unlimited to everyone during testing
+    if (IS_BETA_TESTING && data) {
+        return {
+            ...data,
+            tier: 'GOLD',
+            is_unlimited: true,
+            credits: 9999 // Visual sugar
+        };
+    }
+
     return data;
 };
 

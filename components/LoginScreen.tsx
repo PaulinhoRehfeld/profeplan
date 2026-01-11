@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { PenTool, Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle, Chrome } from 'lucide-react';
 import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
 
@@ -10,93 +10,108 @@ interface LoginScreenProps {
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
-  const [accessKey, setAccessKey] = useState('');
+  const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
+  // Verifica se o usuário já está logado
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        handleAuthSuccess(session.user);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        handleAuthSuccess(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleAuthSuccess = async (user: any) => {
+    // Busca ou cria o perfil
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile) {
+      // Cria perfil padrão se não existir
+      await supabase.from('profiles').insert({
+        id: user.id,
+        email: user.email,
+        tier: 'FREE',
+        credits: 10,
+        is_unlimited: false,
+        is_admin: false,
+        allowed_features: ['all']
+      });
+    }
+
+    const sessionData: UserSession = {
+      id: user.id,
+      email: user.email || '',
+      role: profile?.is_admin ? 'ADMIN' : 'TEACHER', // Use profile role or default
+      accessLevel: profile?.tier || 'BASICO',
+      isLoggedIn: true,
+    };
+
+    localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
+    localStorage.setItem('supabase_user_id', user.id);
+    onLogin(sessionData);
+  };
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMsg('');
 
     try {
-      // 1. Validação no Banco de Dados Supabase
-      // Verifica se existe um usuário com este e-mail e esta chave de acesso
-      const { data: authorizedUser, error: supabaseError } = await supabase
-        .from('authorized_users')
-        .select('*')
-        .eq('email', email.toLowerCase().trim())
-        .eq('access_key', accessKey.trim())
-        .single();
-
-      if (supabaseError) {
-        console.error("Erro de Autenticação Supabase:", JSON.stringify(supabaseError, null, 2));
-
-        // PGRST116 significa que nenhum registro foi encontrado (E-mail ou Senha errados)
-        if (supabaseError.code === 'PGRST116') {
-          setError('E-mail ou Chave de Acesso incorretos.');
-        } else if (supabaseError.message && supabaseError.message.includes('apiKey')) {
-          setError('Erro de Configuração: Chave de API do Supabase ausente ou inválida.');
-        } else if (supabaseError.message && supabaseError.message.includes('policy')) {
-          setError('Erro de Segurança: RLS está ativado na tabela \'authorized_users\'. Desative o RLS ou configure uma política adequada.');
-        } else {
-          setError(`Erro no servidor: ${supabaseError.message || 'Falha desconhecida.'}`);
-        }
-        setLoading(false);
-        return;
-      }
-
-      if (!authorizedUser) {
-        setError('Acesso negado. Usuário não localizado.');
-        setLoading(false);
-        return;
-      }
-
-      // 2.1 Bootstrapping de Perfil (Migração para nova arquitetura)
-      // Verifica se o perfil existe na tabela 'profiles', se não, cria.
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', authorizedUser.id)
-        .single();
-
-      if (!existingProfile) {
-        console.log("Perfil não encontrado, criando novo para:", authorizedUser.email);
-        const { error: createError } = await supabase.from('profiles').insert({
-          id: authorizedUser.id,
-          email: authorizedUser.email,
-          tier: 'SILVER',
-          credits: 10,
-          is_unlimited: false,
-          is_admin: authorizedUser.role === 'ADMIN', // Sync initial role
-          allowed_features: ['all'] // Default features
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
         });
-
-        if (createError) {
-          console.error("Erro ao criar perfil bootstrap:", createError);
-          // Não bloqueia login, mas loga erro
-        }
+        if (error) throw error;
+        setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
+        setIsSignUp(false);
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        // O onAuthStateChange vai capturar o sucesso
       }
-
-      // 2. Construção da Sessão
-      const session: UserSession = {
-        id: authorizedUser.id, // Adicionado: Salva o ID do usuário
-        email: authorizedUser.email,
-        role: authorizedUser.role === 'ADMIN' ? 'ADMIN' : 'TEACHER',
-        accessLevel: (authorizedUser.role || 'BASICO') as any,
-        isLoggedIn: true,
-        // driveConnected: false // REMOVIDO: Integração com Google Drive
-      };
-
-      // 3. Persistência
-      localStorage.setItem('profeplan_session', JSON.stringify(session));
-      localStorage.setItem('supabase_user_id', authorizedUser.id); // Salva o ID no localStorage para uso direto
-      onLogin(session);
-
     } catch (err: any) {
-      console.error("Falha Crítica no Login:", JSON.stringify(err, null, 2));
-      setError('Não foi possível conectar ao servidor. Verifique sua conexão com a internet.');
+      console.error("Auth Error:", err);
+      setError(err.message || 'Erro na autenticação.');
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message);
       setLoading(false);
     }
   };
@@ -117,11 +132,27 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         </div>
 
         <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 md:p-10 rounded-[40px] shadow-3xl">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center tracking-tight">Identificação do Docente</h2>
+          <h2 className="text-2xl font-bold text-white mb-8 text-center tracking-tight">
+            {isSignUp ? 'Criar Nova Conta' : 'Acesse seu Workspace'}
+          </h2>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-4 mb-8">
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full bg-white text-slate-900 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-100 transition-colors shadow-lg"
+            >
+              <Chrome className="w-5 h-5 text-blue-600" />
+              Entrar com Google
+            </button>
+            <div className="relative flex items-center justify-center">
+              <div className="h-px bg-white/10 w-full absolute"></div>
+              <span className="bg-slate-900/80 px-4 text-xs text-slate-500 relative z-10 font-bold uppercase tracking-widest">ou continue com e-mail</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleEmailAuth} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail Cadastrado</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail</label>
               <div className="relative group">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
                 <input
@@ -129,21 +160,21 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ex: professor@escola.mg.gov.br"
+                  placeholder="Seu melhor e-mail"
                   className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Chave de Acesso</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Senha</label>
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
                 <input
                   type="password"
                   required
-                  value={accessKey}
-                  onChange={(e) => setAccessKey(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                 />
@@ -157,6 +188,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               </div>
             )}
 
+            {successMsg && (
+              <div className="flex items-start gap-3 p-4 bg-green-500/10 border border-green-500/20 rounded-2xl animate-in slide-in-from-top-2">
+                <Sparkles className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                <p className="text-green-400 text-xs font-bold leading-tight">{successMsg}</p>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
@@ -165,10 +203,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
               {loading ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
-                <>Acessar Workspace <ArrowRight className="w-5 h-5" /></>
+                <>{isSignUp ? 'Criar Conta Grátis' : 'Acessar Workspace'} <ArrowRight className="w-5 h-5" /></>
               )}
             </button>
           </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => { setIsSignUp(!isSignUp); setError(''); setSuccessMsg(''); }}
+              className="text-slate-400 hover:text-white text-xs font-bold transition-colors"
+            >
+              {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
+            </button>
+          </div>
 
           <div className="mt-8 flex justify-center gap-6 opacity-20">
             <ShieldCheck className="w-5 h-5 text-white" />
@@ -177,7 +224,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Restrito • PROFEPLAN IA v3.0</p>
+          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v3.5</p>
         </div>
       </div>
     </div>

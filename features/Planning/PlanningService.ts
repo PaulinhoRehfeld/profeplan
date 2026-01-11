@@ -75,7 +75,7 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
         .insert({
             user_id: userId,
             type: plan.type,
-            folder: plan.folder, // New Column
+            folder: plan.folder,
             title: plan.title,
             content: plan.content,
             created_at: plan.createdAt

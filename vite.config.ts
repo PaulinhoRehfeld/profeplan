@@ -16,12 +16,12 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
         manifest: {
-          name: 'Profeplan - Engenharia Pedagógica',
+          name: 'Profeplan',
           short_name: 'Profeplan',
           description: 'Planejamento Pedagógico Inteligente com IA',
-          theme_color: '#ffffff',
+          theme_color: '#ffffff', // User requested Blue and White theme, assuming white background is safer for general UI, but header is blue.
           background_color: '#ffffff',
-          display: 'standalone', // Transforma o site em App (sem barra de URL)
+          display: 'standalone',
           orientation: 'portrait',
           icons: [
             {

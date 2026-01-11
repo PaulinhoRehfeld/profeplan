@@ -90,17 +90,27 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
             workloadWeekly,
             reserves,
             totalClasses,
-            gradingGrid: grading
+            gradingGrid: grading,
+            stateBase,
+            educationSphere,
+            generatedText
         };
 
         try {
             // 1. Update Global Context (Coordinator Agent)
             updateCurrentPlan(plan);
 
-            // 2. Persist
+            // 2. Persist Structure (For Planning Tool)
             await saveTermPlan(userId, plan);
 
-            alert('✅ Planejamento Salvo! O contexto foi atualizado para todos os módulos.');
+            // 3. Persist to Memory/Files (For History & Drive)
+            if (generatedText) {
+                const { saveGeneratedContent } = await import('../../services/databaseService');
+                const title = `Planejamento ${period}º ${regime} - ${subject} (${grade})`;
+                await saveGeneratedContent(userId, 'trimestral', title, generatedText);
+            }
+
+            alert('✅ Planejamento Salvo e Sincronizado com Sucesso!');
         } catch (e) {
             console.error(e);
             alert('Erro ao salvar.');

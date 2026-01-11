@@ -212,3 +212,33 @@ export const getPdiLogs = async (studentId: string) => {
         .order('created_at', { ascending: false });
     return { data, error };
 };
+
+/**
+ * [TRACKING]
+ * Busca o status de preparo das aulas de um planejamento
+ */
+export const getLessonTracking = async (termPlanId: string) => {
+    const { data, error } = await supabase
+        .from('lesson_tracking')
+        .select('*')
+        .eq('term_plan_id', termPlanId);
+    return { data, error };
+};
+
+/**
+ * [TRACKING]
+ * Atualiza o status de uma aula (Ex: 'prepared')
+ */
+export const updateLessonTracking = async (userId: string, termPlanId: string, lessonIndex: number, status: 'pending' | 'prepared' | 'taught' = 'prepared') => {
+    const { data, error } = await supabase
+        .from('lesson_tracking')
+        .upsert({
+            user_id: userId,
+            term_plan_id: termPlanId,
+            lesson_index: lessonIndex,
+            status: status,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'term_plan_id, lesson_index' });
+
+    return { data, error };
+};

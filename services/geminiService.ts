@@ -720,6 +720,7 @@ export const generateTermPlan = async (
     • [Recurso específico]
 
     6. Cronograma das Aulas (Total: ${context.totalClasses} encontros):
+    [MUITO IMPORTANTE: Mantenha ESTRITAMENTE o formato "Aula X: Tópico" para que o sistema possa agendar corretamente]
     • Aula 1: [Tópico Introdutório]
     • Aula 2: [Desenvolvimento]
     ...
@@ -733,9 +734,10 @@ export const generateTermPlan = async (
     • Somativa: ...
 
     IMPORTANTE:
+    - O cronograma deve listar AULA POR AULA (ou agrupamentos claros Aula X e Y).
+    - Use "Aula X:" no início de cada linha do cronograma.
     - Adapte o conteúdo especificamente para a disciplina de ${context.subject} no ${context.grade}.
     - Cite códigos reais da BNCC ou do Currículo de ${context.stateBase} se possível.
-    - Seja detalhado no cronograma, distribuindo bem os conteúdos.
     `;
 
   try {

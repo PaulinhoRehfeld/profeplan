@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Folder, FileText, HardDrive, Search, Download, Trash2, 
-  Cloud, UserCheck, Edit3, ChevronLeft, Save, 
-  Loader2, AlertCircle, CheckCircle2, FileEdit
+import {
+  Folder, FileText, HardDrive, Search, Download, Trash2,
+  Cloud, UserCheck, Edit3, ChevronLeft, Save,
+  Loader2, AlertCircle, CheckCircle2, FileEdit, Calendar, Target
 } from 'lucide-react';
 import { UserSettings } from '../types';
 import { getGeneratedContents, updateGeneratedContent, deleteGeneratedContent } from '../services/databaseService';
@@ -50,10 +50,12 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   }, [userId]);
 
   const folders = [
-    { id: 'plano', name: 'PLANOS', icon: Folder },
-    { id: 'aula', name: 'AULAS', icon: Folder },
-    { id: 'avaliacao', name: 'AVALIAÇÕES', icon: Folder },
-    { id: 'documento', name: 'OUTROS', icon: Folder },
+    { id: 'plano', name: 'PLANOS DE AULA', icon: Folder },
+    { id: 'trimestral', name: 'TRIMESTRAIS', icon: Calendar },
+    { id: 'aula', name: 'ATIVIDADES', icon: FileText },
+    { id: 'avaliacao', name: 'SIMULADOS', icon: CheckCircle2 },
+    { id: 'enem', name: 'BANCO ENEM', icon: Target },
+    { id: 'documento', name: 'OUTROS', icon: HardDrive },
   ];
 
   const getFilteredFiles = () => {
@@ -110,7 +112,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
       <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setEditingFile(null)}
               className="p-3 bg-slate-50 text-slate-500 hover:text-blue-600 rounded-2xl transition-all"
             >
@@ -121,29 +123,28 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
               <p className="text-[10px] font-bold text-slate-400 uppercase">Ajuste o conteúdo gerado pela IA</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => handleExport(editingFile)}
               className="px-5 py-3 bg-emerald-50 text-emerald-700 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-100 transition-all flex items-center gap-2 border border-emerald-100"
             >
               <Download size={14} /> Baixar Word
             </button>
-            <button 
+            <button
               onClick={handleSave}
               disabled={saveLoading}
               className="px-6 py-3 bg-blue-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 flex items-center gap-2 disabled:opacity-50"
             >
-              {saveLoading ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} 
+              {saveLoading ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
               {saveLoading ? 'Sincronizando...' : 'Salvar na Nuvem'}
             </button>
           </div>
         </header>
 
         {feedback && (
-          <div className={`p-4 rounded-2xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${
-            feedback.type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-700'
-          }`}>
+          <div className={`p-4 rounded-2xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${feedback.type === 'success' ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-700'
+            } `}>
             {feedback.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
             <p className="text-xs font-bold">{feedback.message}</p>
           </div>
@@ -152,14 +153,14 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 h-[calc(100vh-320px)]">
           {/* Editor Area */}
           <div className="flex flex-col gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
               className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-black text-slate-800 outline-none focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all italic"
               placeholder="Título do documento..."
             />
-            <textarea 
+            <textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               className="flex-1 w-full p-6 bg-slate-50 border border-slate-100 rounded-[2rem] text-sm font-medium outline-none focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all resize-none font-mono leading-relaxed"
@@ -182,166 +183,161 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   }
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-700 pb-20">
+    <div className="space-y-6 animate-in fade-in duration-700 pb-20 h-[calc(100vh-100px)] flex flex-col">
       {/* Header Dashboard */}
-      <div className="bg-slate-950 p-12 rounded-[3.5rem] text-white flex flex-col md:flex-row justify-between items-center gap-8 shadow-3xl relative overflow-hidden group">
+      <div className="bg-slate-950 p-8 rounded-[3rem] text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl relative overflow-hidden group shrink-0">
         <div className="absolute top-[-20%] left-[-10%] w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-1000"></div>
         <div className="z-10 text-center md:text-left">
-          <h1 className="text-5xl font-black tracking-tighter italic mb-3">Workspace Digital</h1>
-          <div className="flex items-center justify-center md:justify-start gap-2 text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">
-            <UserCheck size={16} className="text-blue-500" /> Professor: {userEmail}
+          <h1 className="text-3xl font-black tracking-tighter italic mb-1">Meus Arquivos</h1>
+          <div className="flex items-center justify-center md:justify-start gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+            <Cloud size={14} className="text-blue-500" /> Gestão de Documentos
           </div>
         </div>
-        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-8 rounded-[3rem] flex items-center gap-6 shadow-inner z-10 hover:bg-white/10 transition-all">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[1.5rem] flex items-center justify-center shadow-2xl shadow-blue-500/20">
-            <HardDrive className="text-white" size={32} />
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-6 py-3 rounded-[2rem] flex items-center gap-4 shadow-inner z-10 hover:bg-white/10 transition-all">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <HardDrive className="text-white" size={20} />
           </div>
           <div>
-            <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-1">Status do Servidor</p>
-            <p className="text-2xl font-black italic tracking-tight text-emerald-400 flex items-center gap-2">
-              SINCRONIZADO <CheckCircle2 size={20} />
+            <p className="text-[9px] uppercase font-black text-slate-400 tracking-widest mb-0.5">Servidor</p>
+            <p className="text-xs font-black italic tracking-tight text-emerald-400 flex items-center gap-1.5">
+              ONLINE <CheckCircle2 size={12} />
             </p>
           </div>
         </div>
       </div>
 
-      {/* Folders Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {folders.map((folder) => {
-          const count = allContents.filter(f => f.type === folder.id).length;
-          const isActive = activeFolder === folder.id;
-          return (
-            <button
-              key={folder.id}
-              onClick={() => setActiveFolder(isActive ? null : folder.id)}
-              className={`group p-10 rounded-[3rem] border-2 transition-all text-left relative overflow-hidden ${
-                isActive 
-                  ? 'bg-blue-600 border-blue-400 text-white shadow-2xl shadow-blue-600/40 -translate-y-2' 
-                  : 'bg-white border-slate-100 hover:border-blue-200 hover:shadow-xl'
-              }`}
-            >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all ${
-                isActive ? 'bg-white/20 scale-110' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
-              }`}>
-                <folder.icon className="w-8 h-8" />
-              </div>
-              <p className="font-black text-xl tracking-tighter uppercase italic">{folder.name}</p>
-              <div className="flex items-center justify-between mt-2">
-                <p className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
-                  {count} {count === 1 ? 'doc' : 'docs'}
-                </p>
-                {isActive && <CheckCircle2 size={16} className="text-white animate-pulse" />}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      <div className="flex flex-col lg:flex-row gap-6 flex-1 overflow-hidden">
+        {/* Left Sidebar - Folders */}
+        <div className="w-full lg:w-72 flex flex-col gap-3 shrink-0 overflow-y-auto pr-2 custom-scrollbar">
+          <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4 mb-1">Pastas</h3>
+          {folders.map((folder) => {
+            const count = allContents.filter(f => f.type === folder.id).length;
+            const isActive = activeFolder === folder.id;
 
-      {/* Files List Area */}
-      <div className="bg-white rounded-[4rem] border border-slate-200 shadow-2xl overflow-hidden">
-        <div className="p-10 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-               <FileText size={20} className="text-blue-600" />
-            </div>
-            <h2 className="font-black text-slate-900 uppercase tracking-[0.2em] text-xs">
-              {activeFolder ? folders.find(f => f.id === activeFolder)?.name : 'Histórico de Produção'}
-            </h2>
-          </div>
-          <div className="bg-slate-200/50 px-4 py-2 rounded-full text-[10px] font-black text-slate-500">
-            {getFilteredFiles().length} REGISTROS
-          </div>
+            return (
+              <button
+                key={folder.id}
+                onClick={() => setActiveFolder(isActive ? null : folder.id)}
+                className={`w-full p-4 rounded-[1.5rem] border transition-all text-left flex items-center gap-4 group relative overflow-hidden ${isActive
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30'
+                    : 'bg-white border-transparent hover:bg-white hover:border-slate-200 hover:shadow-md text-slate-500'
+                  }`}
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
+                  }`}>
+                  <folder.icon size={18} />
+                </div>
+
+                <div className="flex-1">
+                  <p className={`font-black text-sm uppercase tracking-tight ${isActive ? 'text-white' : 'text-slate-700'}`}>
+                    {folder.name}
+                  </p>
+                  <p className={`text-[10px] font-bold ${isActive ? 'text-blue-200' : 'text-slate-400'}`}>
+                    {count} {count === 1 ? 'arquivo' : 'arquivos'}
+                  </p>
+                </div>
+
+                {isActive && (
+                  <div className="absolute right-4 w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+                )}
+              </button>
+            );
+          })}
         </div>
-        
-        {loading ? (
-          <div className="p-32 flex flex-col items-center justify-center gap-6 text-center">
-            <div className="relative">
-              <Loader2 className="w-16 h-16 text-blue-600 animate-spin" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-ping"></div>
+
+        {/* Right Content - Files List */}
+        <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-white rounded-xl border border-slate-100 shadow-sm">
+                <FileText size={18} className="text-blue-600" />
               </div>
+              <h2 className="font-black text-slate-900 uppercase tracking-[0.15em] text-xs">
+                {activeFolder ? folders.find(f => f.id === activeFolder)?.name : 'Todos os Arquivos'}
+              </h2>
             </div>
-            <p className="text-[11px] font-black uppercase text-slate-400 tracking-[0.5em] animate-pulse">Consultando Banco Supabase...</p>
+            <div className="bg-slate-200/50 px-3 py-1.5 rounded-full text-[10px] font-black text-slate-500">
+              {getFilteredFiles().length} DOCUMENTOS
+            </div>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-slate-50/80 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                  <th className="px-12 py-8">Documento Pedagógico</th>
-                  <th className="px-12 py-8">Status / Data</th>
-                  <th className="px-12 py-8 text-right">Ações Rápidas</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {getFilteredFiles().map(file => (
-                  <tr key={file.id} className="group hover:bg-slate-50/50 transition-all cursor-default">
-                    <td className="px-12 py-8">
-                      <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 bg-white border border-slate-100 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
-                          <FileText size={22} />
-                        </div>
-                        <div>
-                          <p className="font-black text-slate-900 text-base tracking-tight mb-0.5 group-hover:text-blue-600 transition-colors">{file.title}</p>
-                          <div className="flex items-center gap-2">
-                             <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-2 py-0.5 bg-slate-100 rounded-md">DOCX</span>
-                             <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500">Cloud Sync OK</span>
+
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-0">
+            {loading ? (
+              <div className="h-full flex flex-col items-center justify-center gap-6 text-center opacity-50">
+                <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+                <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em]">Carregando...</p>
+              </div>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <tbody className="divide-y divide-slate-50">
+                  {getFilteredFiles().map(file => (
+                    <tr key={file.id} className="group hover:bg-slate-50 transition-all cursor-default">
+                      <td className="px-8 py-6 w-full">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                              {file.type === 'plano' ? <Folder size={18} /> :
+                                file.type === 'trimestral' ? <Calendar size={18} /> :
+                                  file.type === 'enem' ? <Target size={18} /> :
+                                    <FileText size={18} />}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-800 text-sm mb-1 group-hover:text-blue-700 transition-colors line-clamp-1">
+                                {file.title}
+                              </p>
+                              <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                <span>{new Date(file.created_at).toLocaleDateString('pt-BR')}</span>
+                                <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                <span>{folders.find(f => f.id === file.type)?.name || 'OUTRO'}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-4 group-hover:translate-x-0 duration-300">
+                            <button
+                              onClick={() => handleEdit(file)}
+                              className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-blue-600 hover:border-blue-600 hover:text-white rounded-xl transition-all shadow-sm"
+                              title="Editar"
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleExport(file)}
+                              className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white rounded-xl transition-all shadow-sm"
+                              title="Baixar"
+                            >
+                              <Download size={16} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(file.id)}
+                              className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-red-500 hover:border-red-500 hover:text-white rounded-xl transition-all shadow-sm"
+                              title="Excluir"
+                            >
+                              <Trash2 size={16} />
+                            </button>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-12 py-8">
-                      <div className="flex flex-col">
-                        <span className="text-xs font-black text-slate-600 uppercase italic">
-                          {new Date(file.created_at).toLocaleDateString('pt-BR')}
-                        </span>
-                        <span className="text-[10px] font-bold text-slate-400">
-                          Horário: {new Date(file.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-12 py-8 text-right">
-                      <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button 
-                          onClick={() => handleEdit(file)}
-                          className="p-3.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-2xl transition-all shadow-sm"
-                          title="Abrir Editor"
-                        >
-                          <Edit3 size={18} />
-                        </button>
-                        <button 
-                          onClick={() => handleExport(file)}
-                          className="p-3.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-2xl transition-all shadow-sm"
-                          title="Baixar para Word"
-                        >
-                          <Download size={18} />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(file.id)}
-                          className="p-3.5 bg-red-50 text-red-400 hover:bg-red-500 hover:text-white rounded-2xl transition-all shadow-sm"
-                          title="Excluir Permanentemente"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                
-                {getFilteredFiles().length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="p-48 text-center">
-                      <div className="flex flex-col items-center gap-6 opacity-20">
-                        <HardDrive className="w-24 h-24" />
-                        <p className="font-black text-base uppercase tracking-[0.3em] italic">Workspace Vazio</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {getFilteredFiles().length === 0 && (
+                    <tr>
+                      <td className="p-20 text-center">
+                        <div className="flex flex-col items-center gap-4 opacity-30">
+                          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center">
+                            <Folder className="w-8 h-8 text-slate-400" />
+                          </div>
+                          <p className="font-black text-xs uppercase tracking-[0.2em] text-slate-400">Nenhum arquivo encontrado</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

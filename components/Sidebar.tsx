@@ -15,6 +15,7 @@ interface SidebarProps {
   isDesktopExpanded?: boolean;
   onToggleDesktopExpand?: () => void;
   userProfile?: UserProfile | null;
+  onOpenSubscription: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -26,7 +27,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   userRole,
   isDesktopExpanded = true,
   onToggleDesktopExpand,
-  userProfile
+  userProfile,
+  onOpenSubscription
 }) => {
   const menuItems = [
     { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'chat' },
@@ -63,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* Adjusted width based on expansion state */}
-      <div className={`${isDesktopExpanded ? 'w-64' : 'w-20'} bg-slate-900 h-screen text-slate-300 flex flex-col fixed left-0 top-0 z-[70] transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      <div className={`${isDesktopExpanded ? 'w-60' : 'w-20'} bg-slate-900 h-screen text-slate-300 flex flex-col fixed left-0 top-0 z-[70] transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}>
         <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-8">
@@ -94,23 +96,24 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          <nav className="space-y-1 flex-1 overflow-y-auto pr-2 scrollbar-hide">
+          <nav className="flex-1 overflow-y-auto pr-2 scrollbar-hide grid grid-cols-2 gap-2 lg:block lg:space-y-1 content-start">
             {filteredItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeMode === item.id
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-4 py-4 lg:py-2.5 rounded-xl transition-all duration-200 group ${activeMode === item.id
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
-                  : 'hover:bg-slate-800 hover:text-white'
+                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
                   }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
-                <item.icon className={`w-5 h-5 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {isDesktopExpanded && <span className="text-sm whitespace-nowrap">{item.label}</span>}
+                <item.icon className={`w-6 h-6 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                {isDesktopExpanded && <span className="text-xs lg:text-[13px] text-center lg:text-left leading-tight">{item.label}</span>}
               </button>
             ))}
 
-            {isAdmin(userProfile) && (
+
+            {(isAdmin(userProfile)) && (
               <div className="pt-4 mt-4 border-t border-slate-800">
                 {isDesktopExpanded && (
                   <p className="text-[10px] font-bold text-slate-500 uppercase px-4 mb-2 tracking-widest whitespace-nowrap">Administração</p>
@@ -139,11 +142,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                 ) : <Crown size={20} className="text-amber-500 mx-auto" />
               ) : (
-                isDesktopExpanded ? (
-                  <div className="bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-blue-400 font-bold text-xs flex items-center gap-2 justify-center">
-                    <FolderClosed size={14} /> {userProfile?.credits || 0} Créditos
-                  </div>
-                ) : <div className="text-xs font-bold text-blue-400 text-center">{userProfile?.credits || 0}</div>
+                <div
+                  onClick={onOpenSubscription}
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
+                  title="Gerenciar Assinatura e Créditos"
+                >
+                  {isDesktopExpanded ? (
+                    <div className="bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-blue-400 font-bold text-xs flex items-center gap-2 justify-center">
+                      <FolderClosed size={14} /> {userProfile?.credits || 0} Créditos
+                    </div>
+                  ) : <div className="text-xs font-bold text-blue-400 text-center">{userProfile?.credits || 0}</div>}
+                </div>
               )}
             </div>
 
@@ -170,7 +179,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 };

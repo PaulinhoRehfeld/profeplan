@@ -36,19 +36,93 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
-        const data = getLocalClasses(userId);
-        setClasses(data);
+        const fetchClasses = async () => {
+            try {
+                // 1. Try fetching from Supabase (Cloud) - Priority
+                const { getClasses } = await import('../../services/supabaseService');
+                const { data, error } = await getClasses(userId);
+
+                if (error) throw error;
+
+                if (data) {
+                    setClasses(data.map((c: any) => ({
+                        id: c.id,
+                        name: c.name,
+                        subject: c.subject,
+                        // Fix for student count: Supabase returns { count: N }, UI expects array for .length
+                        students: Array(c.students?.[0]?.count || 0).fill({})
+                    })));
+                }
+            } catch (err) {
+                console.warn("Supabase fetch class error, falling back to local:", err);
+                // 2. Fallback to LocalStorage
+                const data = getLocalClasses(userId);
+                setClasses(data);
+            }
+        };
+
+        fetchClasses();
     }, [userId]);
 
+    /* --- SMART LESSON FILTERING --- */
     useEffect(() => {
-        if (selectedClassId) {
-            const lessons = getLessonsByClass(selectedClassId);
-            setAvailableLessons(lessons);
+        const fetchAndFilterLessons = async () => {
+            if (!selectedClassId) {
+                setAvailableLessons([]);
+                return;
+            }
+
+            const selectedClass = classes.find(c => c.id === selectedClassId);
+            if (!selectedClass) return;
+
+            let allLessons: any[] = [];
+
+            // 1. Fetch ALL lessons (Cloud Priority)
+            try {
+                const { getLessons } = await import('../../services/supabaseService');
+                const { data } = await getLessons(userId);
+                if (data) allLessons = data;
+            } catch (error) {
+                console.warn("Using local lessons fallback");
+                const { getLocalLessons } = await import('../../services/localStorageService');
+                allLessons = getLocalLessons(userId);
+            }
+
+            // 2. Smart Filter Logic
+            const filtered = allLessons.filter(lesson => {
+                // A. Direct Link (if exists)
+                if (lesson.class_id === selectedClassId) return true;
+
+                // B. Content/Context Match (The "Smart" Part)
+                const textToSearch = (lesson.topic + ' ' + lesson.content).toLowerCase();
+                const className = selectedClass.name.toLowerCase();
+                const subject = selectedClass.subject.toLowerCase();
+
+                // Grade Detection (1º, 2º, 3º or 100, 200, 300 series)
+                const isFirstYear = className.includes('1º') || className.includes('1ano') || /\b10\d\b/.test(className);
+                const isSecondYear = className.includes('2º') || className.includes('2ano') || /\b20\d\b/.test(className);
+                const isThirdYear = className.includes('3º') || className.includes('3ano') || /\b30\d\b/.test(className);
+
+                let gradeMatch = false;
+                if (isFirstYear && (textToSearch.includes('1º') || textToSearch.includes('1ano') || textToSearch.includes('1 ano'))) gradeMatch = true;
+                if (isSecondYear && (textToSearch.includes('2º') || textToSearch.includes('2ano') || textToSearch.includes('2 ano'))) gradeMatch = true;
+                if (isThirdYear && (textToSearch.includes('3º') || textToSearch.includes('3ano') || textToSearch.includes('3 ano'))) gradeMatch = true;
+
+                // Subject Match
+                const subjectMatch = textToSearch.includes(subject);
+
+                // Permissive: If matches grade AND subject, it's a strong candidate. 
+                // We also include if it JUST matches the Subject closely to be helpful.
+                return gradeMatch || subjectMatch;
+            });
+
+            // 3. Fallback: If smart filter finds nothing, show recent lessons (Safety Net)
+            setAvailableLessons(filtered.length > 0 ? filtered : allLessons.slice(0, 15));
             setSelectedLessonIds([]);
-        } else {
-            setAvailableLessons([]);
-        }
-    }, [selectedClassId]);
+        };
+
+        fetchAndFilterLessons();
+    }, [selectedClassId, classes, userId]);
 
     /* SIDEBAR EFFECT */
     useEffect(() => {
