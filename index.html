@@ -13,136 +13,7 @@
   <script src="https://apis.google.com/js/api.js" async defer></script>
 
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    .markdown-content table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 1rem;
-    }
-
-    .markdown-content th,
-    .markdown-content td {
-      border: 1px solid #e2e8f0;
-      padding: 0.75rem;
-      text-align: left;
-    }
-
-    .markdown-content th {
-      background-color: #f8fafc;
-      font-weight: 600;
-    }
-
-    .markdown-content h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .markdown-content h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .markdown-content h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .markdown-content p {
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-
-    .markdown-content ul,
-    .markdown-content ol {
-      margin-left: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .markdown-content li {
-      margin-bottom: 0.25rem;
-    }
-
-    /* Esconder scrollbar mas manter funcionalidade */
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    @keyframes spin-slow {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .animate-spin-slow {
-      animation: spin-slow 3s linear infinite;
-    }
-
-    /* === PRINT FIXES (CURA DEFINITIVA) === */
-    @media print {
-
-      /* 1. Reset de toda a estrutura do Dashboard */
-      html,
-      body,
-      #root,
-      .app-container,
-      .main-content,
-      .layout-wrapper {
-        height: auto !important;
-        min-height: auto !important;
-        overflow: visible !important;
-        display: block !important;
-        position: static !important;
-      }
-
-      /* 2. Esconde menus, sidebars e cabeçalhos do site */
-      aside,
-      nav,
-      header,
-      .no-print,
-      .sidebar,
-      .top-bar {
-        display: none !important;
-      }
-
-      /* 3. Garante que a folha A4 seja o único elemento visível e ocupe o topo */
-      .a4-page {
-        margin: 0 !important;
-        box-shadow: none !important;
-        width: 100% !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        display: block !important;
-        overflow: visible !important;
-      }
-
-      /* 4. Força a quebra de página correta */
-      .question-block {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        display: block !important;
-        margin-bottom: 20px !important;
-      }
-    }
+    /* Styles moved to index.css */
   </style>
   <script type="importmap">
 {
@@ -165,7 +36,7 @@
 
 <body class="bg-slate-50 text-slate-900">
   <div id="root"></div>
-  <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/src/index.tsx"></script>
 </body>
 
 </html>

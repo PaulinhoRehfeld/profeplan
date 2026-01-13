@@ -12,9 +12,15 @@ export const createCheckoutSession = async (priceId: string, userId: string, mod
     try {
         const { data: { session } } = await supabase.auth.getSession();
 
+        // Determine Return URL (Mobile vs Web)
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window as any).Capacitor?.isNative;
+        const returnUrl = isMobile
+            ? 'com.profeplan.app://stripe-callback'
+            : window.location.origin;
+
         // Call Supabase Edge Function to create session
         const { data, error } = await supabase.functions.invoke('create-checkout', {
-            body: { priceId, userId, mode, planType },
+            body: { priceId, userId, mode, planType, returnUrl },
             headers: {
                 Authorization: `Bearer ${session?.access_token}`
             }

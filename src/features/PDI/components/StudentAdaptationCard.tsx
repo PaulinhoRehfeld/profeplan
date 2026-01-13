@@ -21,7 +21,7 @@ const StudentAdaptationCard: React.FC<StudentAdaptationCardProps> = ({
 }) => {
     return (
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300">
-            <div className="bg-slate-50 border-b border-slate-100 p-6 flex justify-between items-start">
+            <div className="bg-slate-50 border-b border-slate-100 p-4 md:p-6 flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div>
                     <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                         {student.name} <span className="text-teal-600 animate-pulse text-xs bg-teal-50 px-2 py-1 rounded-full">PDI ATIVO</span>
@@ -43,7 +43,7 @@ const StudentAdaptationCard: React.FC<StudentAdaptationCardProps> = ({
                     <button
                         onClick={() => onGenerate(student)}
                         disabled={isGenerating || !hasLessonSelected}
-                        className="bg-teal-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 hover:bg-teal-700 disabled:opacity-50 transition-all shadow-lg shadow-teal-200"
+                        className="bg-teal-600 text-white w-full sm:w-auto px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-700 disabled:opacity-50 transition-all shadow-lg shadow-teal-200"
                     >
                         {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
                         Gerar Adaptação
@@ -57,9 +57,9 @@ const StudentAdaptationCard: React.FC<StudentAdaptationCardProps> = ({
                         {adaptation.adaptedContent}
                     </div>
 
-                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-50">
+                    <div className="flex flex-col sm:flex-row items-center justify-between mt-6 pt-4 border-t border-slate-50 gap-4">
                         <div className="flex items-center gap-2">
-                            <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-xl border transition-all ${adaptation.status === 'validated' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
+                            <label className={`w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer px-6 py-3 rounded-xl border transition-all ${adaptation.status === 'validated' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
                                 <input
                                     type="checkbox"
                                     className="hidden"

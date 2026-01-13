@@ -150,7 +150,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
           </div>
         )}
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 h-[calc(100vh-320px)]">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 h-[calc(100dvh-320px)]">
           {/* Editor Area */}
           <div className="flex flex-col gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
             <input
@@ -183,7 +183,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-700 pb-20 h-[calc(100vh-100px)] flex flex-col">
+    <div className="space-y-6 animate-in fade-in duration-700 pb-20 h-[calc(100dvh-100px)] flex flex-col">
       {/* Header Dashboard */}
       <div className="bg-slate-950 p-8 rounded-[3rem] text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl relative overflow-hidden group shrink-0">
         <div className="absolute top-[-20%] left-[-10%] w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-1000"></div>
@@ -206,9 +206,9 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 flex-1 overflow-hidden">
-        {/* Left Sidebar - Folders */}
-        <div className="w-full lg:w-72 flex flex-col gap-3 shrink-0 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 overflow-hidden px-6 md:px-0 pb-4 md:pb-0">
+        {/* Left Sidebar - Folders (Horizontal on Mobile, Vertical on Desktop) */}
+        <div className="w-full lg:w-72 flex lg:flex-col gap-3 shrink-0 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto custom-scrollbar pb-2 lg:pb-0">
           <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4 mb-1">Pastas</h3>
           {folders.map((folder) => {
             const count = allContents.filter(f => f.type === folder.id).length;
@@ -218,17 +218,17 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
               <button
                 key={folder.id}
                 onClick={() => setActiveFolder(isActive ? null : folder.id)}
-                className={`w-full p-4 rounded-[1.5rem] border transition-all text-left flex items-center gap-4 group relative overflow-hidden ${isActive
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30'
-                    : 'bg-white border-transparent hover:bg-white hover:border-slate-200 hover:shadow-md text-slate-500'
+                className={`min-w-[160px] lg:w-full p-3 lg:p-4 rounded-[1.5rem] border transition-all text-left flex items-center gap-3 lg:gap-4 group relative overflow-hidden ${isActive
+                  ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white border-transparent hover:bg-white hover:border-slate-200 hover:shadow-md text-slate-500'
                   }`}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
                   }`}>
                   <folder.icon size={18} />
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 whitespace-nowrap">
                   <p className={`font-black text-sm uppercase tracking-tight ${isActive ? 'text-white' : 'text-slate-700'}`}>
                     {folder.name}
                   </p>
@@ -272,8 +272,8 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                 <tbody className="divide-y divide-slate-50">
                   {getFilteredFiles().map(file => (
                     <tr key={file.id} className="group hover:bg-slate-50 transition-all cursor-default">
-                      <td className="px-8 py-6 w-full">
-                        <div className="flex items-center justify-between">
+                      <td className="px-4 md:px-8 py-6 w-full">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
                               {file.type === 'plano' ? <Folder size={18} /> :
@@ -293,7 +293,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-4 group-hover:translate-x-0 duration-300">
+                          <div className="flex items-center gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity transform translate-x-0 lg:translate-x-4 lg:group-hover:translate-x-0 duration-300">
                             <button
                               onClick={() => handleEdit(file)}
                               className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-blue-600 hover:border-blue-600 hover:text-white rounded-xl transition-all shadow-sm"

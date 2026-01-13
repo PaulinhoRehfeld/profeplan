@@ -45,6 +45,9 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
     const { currentPlan } = useGlobalPlanning();
     const [contextBadge, setContextBadge] = useState<boolean>(false);
 
+    // Mobile Tabs State
+    const [mobileTab, setMobileTab] = useState<'source' | 'workbench'>('workbench');
+
     useEffect(() => {
         // Auto-fill from Coordinator Agent
         if (currentPlan) {
@@ -360,10 +363,26 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                     </div>
                 </div>
 
+                {/* Mobile Tabs Header */}
+                <div className="md:hidden flex border-b border-slate-200 bg-white">
+                    <button
+                        onClick={() => setMobileTab('source')}
+                        className={`flex-1 py-3 text-xs font-black uppercase tracking-wider ${mobileTab === 'source' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-slate-400'}`}
+                    >
+                        Aula Original
+                    </button>
+                    <button
+                        onClick={() => setMobileTab('workbench')}
+                        className={`flex-1 py-3 text-xs font-black uppercase tracking-wider ${mobileTab === 'workbench' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-slate-400'}`}
+                    >
+                        Adaptação ({studentsWithNeeds.length})
+                    </button>
+                </div>
+
                 {/* Split View */}
-                <div className="flex-1 flex overflow-hidden">
-                    {/* Left: Original Content */}
-                    <div className="w-1/3 border-r border-slate-100 bg-white p-8 overflow-y-auto hidden md:block">
+                <div className="flex-1 flex overflow-hidden relative">
+                    {/* Left: Original Content (Hidden on Mobile unless active) */}
+                    <div className={`w-full md:w-1/3 border-r border-slate-100 bg-white p-6 md:p-8 overflow-y-auto absolute md:relative inset-0 z-10 md:z-auto transition-transform duration-300 ${mobileTab === 'source' ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                         <div className="sticky top-0 bg-white pb-4 border-b border-slate-50 mb-4 z-10">
                             <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                 <BookOpen size={14} /> Aula Original
@@ -383,8 +402,8 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                         </div>
                     </div>
 
-                    {/* Right: Adaptation Workbench */}
-                    <div className="flex-1 bg-slate-50/50 p-8 overflow-y-auto">
+                    {/* Right: Adaptation Workbench (Hidden on Mobile unless active) */}
+                    <div className={`w-full md:flex-1 bg-slate-50/50 p-6 md:p-8 overflow-y-auto absolute md:relative inset-0 z-10 md:z-auto transition-transform duration-300 ${mobileTab === 'workbench' ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
                         <div className="max-w-3xl mx-auto space-y-6">
                             {selectedClass && studentsWithNeeds.length === 0 && (
                                 <div className="bg-orange-50 text-orange-600 p-6 rounded-2xl border border-orange-100 text-center">

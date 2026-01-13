@@ -319,8 +319,8 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                             <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic">Lista de Chamada Digital</h3>
                             <span className="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Sincronizado</span>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
+                        <div className="overflow-x-auto pb-4">
+                            <table className="w-full text-left min-w-[600px]">
                                 <thead>
                                     <tr className="border-b border-slate-50">
                                         <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">#</th>
@@ -495,7 +495,7 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
 
             {/* Manual Creation Modal */}
             {isManualCreateOpen && (
-                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setIsManualCreateOpen(false)}>
+                <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 overflow-y-auto" onClick={() => setIsManualCreateOpen(false)}>
                     <div className="bg-white rounded-[2rem] w-full max-w-lg p-8 shadow-2xl relative" onClick={e => e.stopPropagation()}>
                         <button onClick={() => setIsManualCreateOpen(false)} className="absolute top-6 right-6 p-2 hover:bg-slate-50 rounded-full text-slate-400 transition-colors">
                             <X size={20} />

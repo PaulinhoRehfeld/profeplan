@@ -740,7 +740,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                 </div>
 
                 {/* Clean Input Area */}
-                <div className="p-4 md:p-6 bg-white/80 backdrop-blur-md border-t border-slate-100 z-10 sticky bottom-0">
+                <div className="p-4 md:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-white/80 backdrop-blur-md border-t border-slate-100 z-10 sticky bottom-0">
                     <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto relative group">
                         <div className="relative flex items-end gap-2 bg-white rounded-[2rem] p-2 shadow-lg border border-slate-100 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
                             <textarea
@@ -753,7 +753,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                                     }
                                 }}
                                 placeholder="Digite sua dúvida ou solicitação pedagógica..."
-                                className="flex-1 bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 font-medium py-3 max-h-32 resize-none custom-scrollbar"
+                                className="flex-1 bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 font-medium py-3 max-h-32 resize-none custom-scrollbar text-base md:text-sm"
                                 rows={1}
                             />
                             <button type="submit" disabled={!input.trim() || isThinking} className="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95">
@@ -774,7 +774,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     // 2. SIMULATION MODE (Factory of Assessments)
     if (isSimulationMode) {
         return (
-            <div className="flex flex-col h-full bg-slate-50 relative overflow-hidden">
+            <div className="flex flex-col h-[100dvh] bg-slate-50 relative overflow-hidden">
                 {/* Top: Sim History (Placeholder) */}
                 <div className="h-20 bg-white border-b border-slate-200 flex items-center px-6 gap-4">
                     <div className="flex items-center gap-2 opacity-50 pr-4 border-r border-slate-200">
@@ -1020,6 +1020,31 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                             })
                         )}
                     </div>
+                </div>
+
+                {/* MOBILE ACTIONS BAR (Only Visible on Mobile) */}
+                <div className="md:hidden p-3 border-b border-slate-200 bg-white flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 z-30">
+                    <button
+                        onClick={() => handleQuickAction('plan')}
+                        className="flex-1 min-w-[120px] bg-indigo-50 border border-indigo-100 text-indigo-700 py-2 px-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm"
+                    >
+                        <Book size={16} />
+                        <span className="text-[10px] font-black uppercase tracking-wide">Planejar</span>
+                    </button>
+                    <button
+                        onClick={() => handleQuickAction('material')}
+                        className="flex-1 min-w-[120px] bg-emerald-50 border border-emerald-100 text-emerald-700 py-2 px-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm"
+                    >
+                        <FileText size={16} />
+                        <span className="text-[10px] font-black uppercase tracking-wide">Material</span>
+                    </button>
+                    <button
+                        onClick={() => handleQuickAction('enem')}
+                        className="flex-1 min-w-[120px] bg-amber-50 border border-amber-100 text-amber-700 py-2 px-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm"
+                    >
+                        <Search size={16} />
+                        <span className="text-[10px] font-black uppercase tracking-wide">Questões</span>
+                    </button>
                 </div>
 
                 {/* 2. CENTER: Chat Output (Maximized) */}

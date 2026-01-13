@@ -162,7 +162,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-0 md:p-8 space-y-10 animate-in fade-in duration-500 pb-24">
+        <div className="max-w-5xl mx-auto p-6 md:p-8 space-y-6 md:space-y-10 animate-in fade-in duration-500 pb-24">
 
             {/* Header */}
             <div className="text-center space-y-2">
@@ -184,7 +184,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                         <h2 className="font-black uppercase tracking-widest text-sm">Contexto do Período</h2>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-400 uppercase">Regime</label>
                             <div className="flex bg-slate-100 p-1 rounded-xl">
@@ -225,7 +225,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-400 uppercase">Série</label>
                             <input
@@ -254,7 +254,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                         <h2 className="font-black uppercase tracking-widest text-sm">Metas e Avaliação</h2>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-400 uppercase">Aulas Semanais</label>
                             <input
@@ -272,7 +272,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
 
                     <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-400 uppercase">Reservas de Calendário</label>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col md:flex-row gap-4">
                             {[
                                 { k: 'monthlyExam', label: 'Prova Mensal' },
                                 { k: 'bimonthlyExam', label: `Prova ${regime}` },
@@ -295,7 +295,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
 
                     <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
                         <label className="text-xs font-bold text-slate-400 uppercase mb-4 block">Grade de Distribuição (Total: {Object.values(grading).reduce((a: number, b: number) => a + b, 0)})</label>
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {Object.entries(grading).map(([key, val]) => (
                                 <div key={key}>
                                     <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
@@ -349,10 +349,10 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
             </div>
 
             {/* Actions */}
-            <div className="flex gap-4 justify-end">
+            <div className="flex flex-col md:flex-row gap-4 justify-end pt-6 md:pt-0">
                 <button
                     onClick={handleExport}
-                    className="px-8 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-slate-50 transition-all shadow-sm"
+                    className="w-full md:w-auto px-8 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 transition-all shadow-sm"
                 >
                     <FileText size={18} /> Gerar Documento Word
                 </button>
@@ -360,7 +360,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="px-10 py-4 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-xl hover:shadow-blue-200 hover:scale-105 active:scale-95 transition-all disabled:opacity-70 disabled:scale-100"
+                    className="w-full md:w-auto px-10 py-4 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl hover:shadow-blue-200 hover:scale-105 active:scale-95 transition-all disabled:opacity-70 disabled:scale-100"
                 >
                     {isSaving ? <Clock className="animate-spin" /> : <Save size={18} />}
                     Salvar Planejamento

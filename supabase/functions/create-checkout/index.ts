@@ -33,7 +33,7 @@ serve(async (req) => {
             throw new Error('User not authenticated')
         }
 
-        const { priceId, userId, mode, planType } = await req.json()
+        const { priceId, userId, mode, planType, returnUrl } = await req.json()
 
         // Create Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
@@ -45,8 +45,8 @@ serve(async (req) => {
                 },
             ],
             mode: mode || 'payment',
-            success_url: `${req.headers.get('origin')}/?session_id={CHECKOUT_SESSION_ID}&success=true`,
-            cancel_url: `${req.headers.get('origin')}/?canceled=true`,
+            success_url: `${mode === 'subscription' ? (req.headers.get('origin') || '') : ''}${returnUrl || req.headers.get('origin')}/?session_id={CHECKOUT_SESSION_ID}&success=true`,
+            cancel_url: `${returnUrl || req.headers.get('origin')}/?canceled=true`,
             client_reference_id: userId,
             metadata: {
                 user_id: userId,

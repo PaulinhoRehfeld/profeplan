@@ -6,12 +6,13 @@ import { supabase } from '../services/supabaseClient';
 
 interface LoginScreenProps {
   onLogin: (session: UserSession) => void;
+  initialMode?: 'login' | 'signup';
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -106,7 +107,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: /android|ios/.test(navigator.userAgent.toLowerCase())
+            ? 'com.profeplan.app://login-callback'
+            : window.location.origin,
+          skipBrowserRedirect: false // Force browser for mobile to ensure redirect works
         }
       });
       if (error) throw error;

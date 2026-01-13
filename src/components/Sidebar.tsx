@@ -59,14 +59,17 @@ const Sidebar: React.FC<SidebarProps> = ({
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] lg:hidden"
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9998] lg:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Adjusted width based on expansion state */}
-      <div className={`${isDesktopExpanded ? 'w-60' : 'w-20'} bg-slate-900 h-screen text-slate-300 flex flex-col fixed left-0 top-0 z-[70] transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}>
+      <div className={`
+        fixed top-0 left-0 h-screen bg-slate-900 text-slate-300 flex flex-col z-[9999] transition-transform duration-300
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        w-[85vw] lg:w-auto ${isDesktopExpanded ? 'lg:w-60' : 'lg:w-20'}
+      `}>
         <div className="p-6 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-8">
             <button

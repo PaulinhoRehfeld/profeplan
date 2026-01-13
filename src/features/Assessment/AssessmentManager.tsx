@@ -494,7 +494,7 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
                     />
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div>
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
                             Questões Aula

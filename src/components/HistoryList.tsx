@@ -206,23 +206,23 @@ const HistoryList: React.FC<{ userId: string; onSelectLesson: (content: string) 
                                 {item.title}
                             </h3>
 
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">
-                                <Calendar size={12} />
+                            <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">
+                                <Calendar size={14} />
                                 {new Date(item.created_at).toLocaleDateString('pt-BR')}
                                 <span className="mx-1">•</span>
-                                <Clock size={12} />
+                                <Clock size={14} />
                                 {new Date(item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                             </div>
 
                             <div className="flex gap-2 relative z-10 mt-auto">
                                 <button
                                     onClick={() => onSelectLesson(item.content)}
-                                    className={`flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2 ${item.type === 'presentation'
-                                            ? 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                                            : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                                    className={`flex-1 py-4 rounded-xl font-black text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2 ${item.type === 'presentation'
+                                        ? 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+                                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
                                         }`}
                                 >
-                                    <ExternalLink size={14} /> Abrir
+                                    <ExternalLink size={16} /> Abrir
                                 </button>
                                 {item.canva_json && (
                                     <button
