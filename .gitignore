@@ -26,3 +26,7 @@ dist-ssr
 
 .env
 .vercel
+
+# PDF documentation
+public/knowledge_base/**/*.pdf
+android/app/src/main/assets/public/knowledge_base/**/*.pdf

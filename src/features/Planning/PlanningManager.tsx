@@ -326,7 +326,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                     <div className="grid grid-cols-1 gap-3">
                         <button
                             onClick={() => handleQuickAction('plan')}
-                            className="bg-white border border-slate-200 text-slate-600 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 py-3 px-4 rounded-xl flex items-center gap-3 transition-all shadow-sm group"
+                            className="bg-white border border-slate-200 text-slate-600 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 py-2 px-3 rounded-xl flex items-center gap-3 transition-all shadow-sm group"
                         >
                             <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                                 <Book size={18} />
@@ -335,7 +335,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                         </button>
                         <button
                             onClick={() => handleQuickAction('material')}
-                            className="bg-white border border-slate-200 text-slate-600 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 py-3 px-4 rounded-xl flex items-center gap-3 transition-all shadow-sm group"
+                            className="bg-white border border-slate-200 text-slate-600 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 py-2 px-3 rounded-xl flex items-center gap-3 transition-all shadow-sm group"
                         >
                             <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                                 <FileText size={18} />
@@ -344,7 +344,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                         </button>
                         <button
                             onClick={() => handleQuickAction('enem')}
-                            className="bg-white border border-slate-200 text-slate-600 hover:border-amber-500 hover:bg-amber-50 hover:text-amber-700 py-3 px-4 rounded-xl flex items-center gap-3 transition-all shadow-sm group"
+                            className="bg-white border border-slate-200 text-slate-600 hover:border-amber-500 hover:bg-amber-50 hover:text-amber-700 py-2 px-3 rounded-xl flex items-center gap-3 transition-all shadow-sm group"
                         >
                             <div className="p-2 bg-amber-100 text-amber-600 rounded-lg group-hover:bg-amber-600 group-hover:text-white transition-colors">
                                 <Search size={18} />
@@ -705,7 +705,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
         // --- CLEAN CHAT UI (For Assistant/Home) ---
         return (
             <div className="flex-1 flex flex-col h-full relative bg-slate-50/50">
-                <div className="flex-1 overflow-y-auto px-4 md:px-20 py-6 custom-scrollbar space-y-6 scroll-smooth">
+                <div className="flex-1 overflow-y-auto px-4 md:px-10 py-4 custom-scrollbar space-y-4 scroll-smooth">
                     {messages.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full opacity-30 select-none pointer-events-none">
                             <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-500">
@@ -723,7 +723,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                             <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white' : 'bg-white text-emerald-600 border border-emerald-100'}`}>
                                 {msg.role === MessageRole.USER ? <User size={18} /> : <Bot size={18} />}
                             </div>
-                            <div className={`max-w-[85%] p-6 rounded-[2rem] shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
+                            <div className={`max-w-[85%] p-4 rounded-[2rem] shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
                                 {msg.content}
                             </div>
                         </div>
@@ -740,7 +740,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                 </div>
 
                 {/* Clean Input Area */}
-                <div className="p-4 md:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-white/80 backdrop-blur-md border-t border-slate-100 z-10 sticky bottom-0">
+                <div className="p-3 md:p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-white/80 backdrop-blur-md border-t border-slate-100 z-10 sticky bottom-0">
                     <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto relative group">
                         <div className="relative flex items-end gap-2 bg-white rounded-[2rem] p-2 shadow-lg border border-slate-100 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
                             <textarea

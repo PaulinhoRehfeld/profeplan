@@ -162,11 +162,11 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-6 md:p-8 space-y-6 md:space-y-10 animate-in fade-in duration-500 pb-24">
+        <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-24">
 
             {/* Header */}
             <div className="text-center space-y-2">
-                <h1 className="text-3xl font-black text-slate-800 tracking-tight uppercase italic relative inline-block">
+                <h1 className="text-2xl font-black text-slate-800 tracking-tight uppercase italic relative inline-block">
                     Agente Coordenador
                     <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                 </h1>
@@ -174,7 +174,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
             </div>
 
             {/* Main Form Card */}
-            <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 p-4 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden">
+            <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl -z-10"></div>
 
                 {/* Left Col: Contexto */}
@@ -220,7 +220,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                         <label className="text-xs font-bold text-slate-400 uppercase">Disciplina</label>
                         <input
                             type="text" value={subject} onChange={e => setSubject(e.target.value)}
-                            className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-700 focus:ring-2 focus:ring-blue-100"
+                            className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-blue-100"
                             placeholder="Ex: Filosofia"
                         />
                     </div>
@@ -230,7 +230,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                             <label className="text-xs font-bold text-slate-400 uppercase">Série</label>
                             <input
                                 type="text" value={grade} onChange={e => setGrade(e.target.value)}
-                                className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-700 focus:ring-2 focus:ring-blue-100"
+                                className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-blue-100"
                                 placeholder="Ex: 3º Ano"
                             />
                         </div>
@@ -238,7 +238,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                             <label className="text-xs font-bold text-slate-400 uppercase">Nível</label>
                             <select
                                 value={level} onChange={e => setLevel(e.target.value as any)}
-                                className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-700 outline-none"
+                                className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold text-slate-700 outline-none"
                             >
                                 <option>Ensino Médio</option>
                                 <option>Ensino Fundamental</option>
@@ -259,12 +259,12 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                             <label className="text-xs font-bold text-slate-400 uppercase">Aulas Semanais</label>
                             <input
                                 type="number" value={workloadWeekly} onChange={e => setWorkloadWeekly(Number(e.target.value))}
-                                className="w-full p-4 bg-slate-50 border-none rounded-2xl font-mono font-bold text-slate-700"
+                                className="w-full p-3 bg-slate-50 border-none rounded-xl font-mono font-bold text-slate-700"
                             />
                         </div>
                         <div className="space-y-2 opacity-70">
                             <label className="text-xs font-bold text-slate-400 uppercase">Total Período (Est.)</label>
-                            <div className="w-full p-4 bg-slate-100 border-none rounded-2xl font-mono font-bold text-slate-500">
+                            <div className="w-full p-3 bg-slate-100 border-none rounded-xl font-mono font-bold text-slate-500">
                                 {totalClasses} aulas
                             </div>
                         </div>
@@ -314,7 +314,7 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
             </div>
 
             {/* AI Generation Result */}
-            <div className="bg-white rounded-[2.5rem] shadow-xl border border-indigo-100 p-4 md:p-8 relative overflow-hidden">
+            <div className="bg-white rounded-[2rem] shadow-xl border border-indigo-100 p-4 md:p-6 relative overflow-hidden">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3 text-indigo-600">
                         <Sparkles className="w-6 h-6 animate-pulse" />

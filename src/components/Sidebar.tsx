@@ -68,20 +68,20 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className={`
         fixed top-0 left-0 h-screen bg-slate-900 text-slate-300 flex flex-col z-[9999] transition-transform duration-300
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        w-[85vw] lg:w-auto ${isDesktopExpanded ? 'lg:w-60' : 'lg:w-20'}
+        w-[85vw] lg:w-auto ${isDesktopExpanded ? 'lg:w-56' : 'lg:w-16'}
       `}>
-        <div className="p-6 flex flex-col h-full overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
+        <div className="p-4 flex flex-col h-full overflow-hidden">
+          <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => handleModeSelection(ToolMode.CHAT)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left group overflow-hidden"
             >
               <div className="p-1 rounded-lg group-hover:scale-110 transition-transform shrink-0">
-                <img src="/logo-profeplan.png" alt="P" className="w-8 h-8 object-contain" />
+                <img src="/logo-profeplan.png" alt="P" className="w-7 h-7 object-contain" />
               </div>
               {/* Only show title when expanded */}
               {isDesktopExpanded && (
-                <h1 className="text-xl font-bold text-white tracking-tight whitespace-nowrap">PROFEPLAN</h1>
+                <h1 className="text-lg font-bold text-white tracking-tight whitespace-nowrap">PROFEPLAN</h1>
               )}
             </button>
             <div className="flex items-center">
@@ -104,14 +104,14 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-4 py-4 lg:py-2.5 rounded-xl transition-all duration-200 group ${activeMode === item.id
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
                   : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
                   }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
-                <item.icon className={`w-6 h-6 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {isDesktopExpanded && <span className="text-xs lg:text-[13px] text-center lg:text-left leading-tight">{item.label}</span>}
+                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
               </button>
             ))}
 
@@ -162,7 +162,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div className="space-y-2">
               <button
                 onClick={() => { onOpenSettings(); onClose(); }}
-                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
+                className="flex items-center gap-3 px-3 py-2 w-full rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
                 title={!isDesktopExpanded ? 'Configurações' : undefined}
               >
                 <Settings className="w-5 h-5 shrink-0" />
@@ -173,7 +173,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   localStorage.removeItem('profeplan_session');
                   window.location.reload();
                 }}
-                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-red-900/20 transition-colors text-slate-400 hover:text-red-400"
+                className="flex items-center gap-3 px-3 py-2 w-full rounded-xl hover:bg-red-900/20 transition-colors text-slate-400 hover:text-red-400"
                 title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}
               >
                 <X className="w-5 h-5 shrink-0" />

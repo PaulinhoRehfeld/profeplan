@@ -128,14 +128,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
       <div className="w-full max-w-lg z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center mb-6 transform hover:scale-105 transition-transform">
-            <img src="/logo-profeplan.png" alt="PROFEPLAN" className="w-16 h-16 object-contain drop-shadow-2xl" />
+          <div className="inline-flex items-center justify-center mb-4 transform hover:scale-105 transition-transform">
+            <img src="/logo-profeplan.png" alt="PROFEPLAN" className="w-14 h-14 object-contain drop-shadow-2xl" />
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter mb-2 italic">PROFEPLAN</h1>
-          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-[10px]">Ecossistema de Inteligência Pedagógica</p>
+          <h1 className="text-4xl font-black text-white tracking-tighter mb-2 italic">PROFEPLAN</h1>
+          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-[9px]">Ecossistema de Inteligência Pedagógica</p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 md:p-10 rounded-[40px] shadow-3xl">
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 md:p-8 rounded-[32px] shadow-3xl">
           <h2 className="text-2xl font-bold text-white mb-8 text-center tracking-tight">
             {isSignUp ? 'Criar Nova Conta' : 'Acesse seu Workspace'}
           </h2>
@@ -143,9 +143,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           <div className="space-y-4 mb-8">
             <button
               onClick={handleGoogleLogin}
-              className="w-full bg-white text-slate-900 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-100 transition-colors shadow-lg"
+              className="w-full bg-white text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-100 transition-colors shadow-lg"
             >
-              <Chrome className="w-5 h-5 text-blue-600" />
+              <Chrome className="w-4 h-4 text-blue-600" />
               Entrar com Google
             </button>
             <div className="relative flex items-center justify-center">
@@ -165,7 +165,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Seu melhor e-mail"
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-sm"
                 />
               </div>
             </div>
@@ -180,7 +180,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-sm"
                 />
               </div>
             </div>
@@ -202,7 +202,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-600/20 flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-50"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-xl shadow-xl shadow-blue-600/20 flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {loading ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
