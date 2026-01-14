@@ -82,6 +82,8 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
 
         setIsSaving(true);
         const plan: TermPlan = {
+            id: `temp_${Date.now()}`,
+            created_at: new Date().toISOString(),
             period,
             regime,
             subject,

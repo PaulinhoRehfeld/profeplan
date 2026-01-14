@@ -755,3 +755,58 @@ export const generateTermPlan = async (
     throw e;
   }
 };
+
+// --- ADAPTADORES ---
+
+import { Message } from "../types"; // Import Message type if not already available or redeclare if simple
+// Note: Message is in ../types, but we are in services folder.
+// Let's assume we can use 'any' for history to avoid circle dependency if needed, or import properly.
+// But wait, replace_file_content replaces a block.
+// I will just append it.
+
+/**
+ * [SIMPLE_CHAT_ADAPTER]
+ * Versão simplificada para o PlanningManager que espera uma Promise<string>
+ * em vez de stream.
+ */
+export const generateGeminiContent = async (
+  prompt: string,
+  history: any[] = [], // using any to avoid type import collision here
+  context: string = '',
+  userId?: string
+) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  // Constrói o histórico no formato Gemini
+  const chatHistory = history.map(msg => ({
+    role: msg.role === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.content }]
+  }));
+
+  const systemInstruction = `${SYSTEM_PROMPT}\n\n[CONTEXTO ATUAL]: ${context}`;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: systemInstruction
+  });
+
+  const chat = model.startChat({
+    history: chatHistory
+  });
+
+  // Check Quota
+  if (userId) {
+    const quota = await checkUsageQuota(userId);
+    if (!quota.allowed) throw new Error(quota.message);
+  }
+
+  const result = await chat.sendMessage(prompt);
+  const response = result.response.text();
+
+  if (userId) await incrementUserUsage(userId);
+
+  return response;
+};

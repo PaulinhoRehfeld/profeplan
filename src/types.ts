@@ -146,3 +146,27 @@ export interface StudentAdaptation {
   adaptedContent: string;
   status: 'pending' | 'generating' | 'completed' | 'validated';
 }
+
+export interface EnemQuestion {
+  id: number;
+  similarity?: number;
+  // NÃO use o campo 'content' para exibição visual. Use o metadata.
+  metadata: {
+    id_original: number;
+    year: number;
+    discipline: string;
+    // O texto da questão é dividido em duas partes:
+    context: string; // O texto base, a história ou cenário.
+    alternativesIntroduction: string; // A pergunta final (comando).
+
+    // Array de alternativas
+    alternatives: Array<{
+      letter: string; // "A", "B", "C"...
+      text: string;   // O texto da resposta
+      isCorrect: boolean; // Se é a correta
+    }>;
+
+    bncc: string[];
+    tags: string[];
+  };
+}

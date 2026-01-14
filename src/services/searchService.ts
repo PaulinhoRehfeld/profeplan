@@ -44,7 +44,32 @@ export const hybridSearchProfeplan = async ({
             throw error;
         }
 
-        return data;
+        let finalResults = data || [];
+
+        // SE o RPC não retornar 'metadata' completo, buscamos manualmente
+        const needsHydration = finalResults.some((q: any) => !q.metadata || !q.metadata.alternatives || q.metadata.alternatives.length === 0);
+
+        if (finalResults.length > 0 && needsHydration) {
+            const ids = finalResults.map((q: any) => q.id);
+
+            // Fetch metadata directly from enem_questions
+            let { data: details, error: tableError } = await supabase
+                .from('enem_questions')
+                .select('id, metadata')
+                .in('id', ids);
+
+            if (details) {
+                finalResults = finalResults.map((q: any) => {
+                    const detail = details.find((d: any) => d.id === q.id);
+                    return {
+                        ...q,
+                        metadata: detail ? detail.metadata : q.metadata
+                    };
+                });
+            }
+        }
+
+        return finalResults;
 
     } catch (error) {
         console.error("Erro ao realizar busca híbrida:", error);

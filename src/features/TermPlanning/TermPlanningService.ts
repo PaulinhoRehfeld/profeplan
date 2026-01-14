@@ -8,18 +8,14 @@ const LOCAL_STORAGE_KEY = 'profeplan_term_plans_history';
  */
 export const saveTermPlan = async (userId: string, plan: TermPlan) => {
     // 1. Save Local
-    const planWithMeta = {
+    const planWithMeta: TermPlan = {
         ...plan,
         id: plan.id || `term_${Date.now()}`,
-        userId,
-        synced: false,
-        updatedAt: new Date().toISOString()
+        created_at: plan.created_at || new Date().toISOString()
     };
 
     try {
-        const history = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-        // Upsert based on ID logic if we were editing list, but for now just push new or replace last active
-        // Simplification: We add to history logic
+        const history: TermPlan[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
         history.push(planWithMeta);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(history));
     } catch (e) {
@@ -87,7 +83,7 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
                 stateBase: d.state_base,
                 educationSphere: d.education_sphere,
                 generatedText: d.generated_text,
-                createdAt: d.created_at
+                created_at: d.created_at || d.updated_at
             } as TermPlan));
         }
 
@@ -103,7 +99,7 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
         if (!genericError && genericData) {
             const genericPlans: TermPlan[] = genericData.map((d: any) => ({
                 id: d.id,
-                subject: d.title.split('-')[0]?.trim() || 'Geral', // Tenta extrair do titulo ex: "TRIMESTRAL - Geografia..."
+                subject: d.title?.split('-')[0]?.trim() || 'Geral', // Tenta extrair do titulo ex: "TRIMESTRAL - Geografia..."
                 grade: 'Geral', // Generic fallback
                 period: 1,
                 regime: 'Trimestre',
@@ -111,15 +107,16 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
                 workloadWeekly: 0,
                 reserves: { monthlyExam: false, bimonthlyExam: false, recovery: false },
                 totalClasses: 0,
-                gradingGrid: {},
+                gradingGrid: { vistos: 0, trabalhos: 0, monthlyExam: 0, bimonthlyExam: 0, others: 0 },
                 stateBase: 'Geral',
                 educationSphere: 'Geral',
-                generatedText: d.content,
-                createdAt: d.created_at
+                generatedText: d.content || '',
+                created_at: d.created_at
             } as TermPlan));
 
             // Merge avoiding duplicates (prefer structured if exists)
             // Mas IDs serão diferentes (uuid vs local_...), então apenas concatena
+            // Filtrar duplicatas pode ser complexo se ID mudar, vamos permitir por enquanto
             plans = [...plans, ...genericPlans];
         }
 
