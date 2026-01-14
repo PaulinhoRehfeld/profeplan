@@ -19,10 +19,7 @@ export const hybridSearchProfeplan = async ({
 }: HybridSearchParams) => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
     if (!apiKey) {
-        console.error("❌ VITE_GEMINI_API_KEY hiany no searchService!");
         throw new Error("API Key missing");
-    } else {
-        console.log("🔑 API Key presente no searchService.");
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
