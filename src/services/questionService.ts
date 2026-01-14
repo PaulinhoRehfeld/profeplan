@@ -4,7 +4,15 @@ import { supabase } from './supabaseClient';
 import { EnemQuestion } from '../types';
 
 // Inicializa o cliente Google AI
-const googleAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+    console.error("❌ VITE_GEMINI_API_KEY não encontrada! Verifique as variáveis de ambiente.");
+} else {
+    console.log(`🔑 API Key encontrada (termina com ...${apiKey.slice(-4)})`);
+}
+
+const googleAI = new GoogleGenerativeAI(apiKey || '');
 
 export const searchQuestions = async (query: string): Promise<EnemQuestion[]> => {
     try {
