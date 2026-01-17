@@ -1,8 +1,9 @@
 
-import React, { useRef, useEffect } from 'react';
-import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send } from 'lucide-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare } from 'lucide-react';
 import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
+import { CurriculumMatcher } from './CurriculumMatcher';
 
 interface PlanningCockpitProps {
     termPlans: TermPlan[];
@@ -17,7 +18,7 @@ interface PlanningCockpitProps {
     handleExportDocx: (content: string) => void;
     isThinking: boolean;
     input: string;
-    setInput: (val: string) => void;
+    setInput: (val: string | ((prev: string) => string)) => void;
     handleSendMessage: (e: React.FormEvent) => void;
     messagesEndRef: React.RefObject<HTMLDivElement>;
 }
@@ -27,6 +28,17 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     parsedLessons, lessonTracking, selectedLesson, setSelectedLesson,
     handleQuickAction, messages, handleExportDocx, isThinking, input, setInput, handleSendMessage, messagesEndRef
 }) => {
+    const [activeTab, setActiveTab] = useState<'chat' | 'curriculum'>('chat');
+
+    const handleAddQuestionToInput = (content: string) => {
+        setInput((prev) => {
+            const newContent = `[ADICIONAR AO PLANO]:\n${content}`;
+            return prev ? `${prev}\n\n${newContent}` : newContent;
+        });
+        // Optional: Switch back to chat to show it's added?
+        // setActiveTab('chat'); 
+    };
+
     return (
         <div className="flex flex-col h-full bg-slate-50 relative overflow-hidden">
 
@@ -155,94 +167,127 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                         <span className="text-[10px] font-black uppercase tracking-wide">Material</span>
                     </button>
                     <button
-                        onClick={() => handleQuickAction('enem')}
-                        className="flex-1 min-w-[120px] bg-amber-50 border border-amber-100 text-amber-700 py-2 px-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm"
+                        onClick={() => setActiveTab('curriculum')}
+                        className={`flex-1 min-w-[120px] border py-2 px-3 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm ${activeTab === 'curriculum'
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'bg-amber-50 border-amber-100 text-amber-700'
+                            }`}
                     >
                         <Search size={16} />
                         <span className="text-[10px] font-black uppercase tracking-wide">Questões</span>
                     </button>
                 </div>
 
-                {/* 2. CENTER: Chat Output (Maximized) */}
+                {/* 2. CENTER: Chat Output vs Curriculum Matcher */}
                 <div className="flex-1 flex flex-col relative min-w-0">
 
-                    {/* Chat Output (Scrollable) */}
-                    <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 custom-scrollbar space-y-6 bg-slate-50/50">
-                        {messages.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full opacity-40 select-none">
-                                <Bot size={48} className="mb-4 text-slate-300" />
-                                <p className="text-xs font-black uppercase tracking-widest text-slate-400 text-center">
-                                    Selecione uma Aula à esquerda<br />e escolha uma Ação à direita.
-                                </p>
-                            </div>
-                        ) : (
-                            messages.map((msg) => (
-                                <div key={msg.id} className={`flex gap-3 ${msg.role === MessageRole.USER ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white' : 'bg-white text-emerald-600 border border-emerald-100'}`}>
-                                        {msg.role === MessageRole.USER ? <User size={14} /> : <Bot size={14} />}
-                                    </div>
-                                    <div className={`max-w-[90%] flex flex-col items-start`}>
-                                        <div className={`p-4 rounded-xl shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
-                                            {msg.content}
-                                        </div>
+                    {/* TABS (Desktop mainly, but also visible on mobile top of chat area) */}
+                    <div className="flex border-b border-slate-200 bg-white">
+                        <button
+                            onClick={() => setActiveTab('chat')}
+                            className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-b-2 transition-all ${activeTab === 'chat'
+                                    ? 'border-indigo-600 text-indigo-600 bg-indigo-50'
+                                    : 'border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                                }`}
+                        >
+                            <MessageSquare size={16} />
+                            Chat & Planejamento
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('curriculum')}
+                            className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 border-b-2 transition-all ${activeTab === 'curriculum'
+                                    ? 'border-emerald-500 text-emerald-600 bg-emerald-50'
+                                    : 'border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+                                }`}
+                        >
+                            <Database size={16} />
+                            Banco de Questões
+                        </button>
+                    </div>
 
-                                        {/* Assistant Message Actions Toolbar */}
-                                        {msg.role === MessageRole.ASSISTANT && !msg.content.startsWith('❌') && !msg.content.startsWith('✅') && (
-                                            <div className="flex items-center gap-2 mt-2 ml-2">
-                                                <button
-                                                    onClick={() => handleExportDocx(msg.content)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-sm shadow-indigo-200"
-                                                >
-                                                    <Download size={12} /> Salvar e Exportar
-                                                </button>
-                                                <button
-                                                    onClick={() => navigator.clipboard.writeText(msg.content)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all"
-                                                >
-                                                    <Copy size={12} /> Copiar
-                                                </button>
+                    {activeTab === 'chat' ? (
+                        <>
+                            {/* Chat Output (Scrollable) */}
+                            <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 custom-scrollbar space-y-6 bg-slate-50/50">
+                                {messages.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center h-full opacity-40 select-none">
+                                        <Bot size={48} className="mb-4 text-slate-300" />
+                                        <p className="text-xs font-black uppercase tracking-widest text-slate-400 text-center">
+                                            Selecione uma Aula à esquerda<br />e escolha uma Ação à direita.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    messages.map((msg) => (
+                                        <div key={msg.id} className={`flex gap-3 ${msg.role === MessageRole.USER ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white' : 'bg-white text-emerald-600 border border-emerald-100'}`}>
+                                                {msg.role === MessageRole.USER ? <User size={14} /> : <Bot size={14} />}
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                        {isThinking && (
-                            <div className="flex gap-4 animate-pulse">
-                                <div className="w-8 h-8 rounded-lg bg-white border border-emerald-100 flex items-center justify-center shrink-0">
-                                    <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
-                                </div>
-                                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest py-2">
-                                    Processando...
-                                </div>
-                            </div>
-                        )}
-                        <div ref={messagesEndRef} />
-                    </div>
+                                            <div className={`max-w-[90%] flex flex-col items-start`}>
+                                                <div className={`p-4 rounded-xl shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
+                                                    {msg.content}
+                                                </div>
 
-                    {/* Bottom Input Area (Standard Chat) */}
-                    <div className="p-4 bg-white border-t border-slate-200 z-10 sticky bottom-0">
-                        <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto relative group">
-                            <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl p-2 shadow-sm border border-slate-200 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-                                <textarea
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            handleSendMessage(e);
-                                        }
-                                    }}
-                                    placeholder="Peça ajustes ao assistente (ex: 'Reescreva com exemplos mais simples')..."
-                                    className="flex-1 bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 font-medium py-3 max-h-32 resize-none custom-scrollbar text-sm"
-                                    rows={1}
-                                />
-                                <button type="submit" disabled={!input.trim() || isThinking} className="p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95 shadow-md shadow-indigo-200">
-                                    {isThinking ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
-                                </button>
+                                                {/* Assistant Message Actions Toolbar */}
+                                                {msg.role === MessageRole.ASSISTANT && !msg.content.startsWith('❌') && !msg.content.startsWith('✅') && (
+                                                    <div className="flex items-center gap-2 mt-2 ml-2">
+                                                        <button
+                                                            onClick={() => handleExportDocx(msg.content)}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-sm shadow-indigo-200"
+                                                        >
+                                                            <Download size={12} /> Salvar e Exportar
+                                                        </button>
+                                                        <button
+                                                            onClick={() => navigator.clipboard.writeText(msg.content)}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all"
+                                                        >
+                                                            <Copy size={12} /> Copiar
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                                {isThinking && (
+                                    <div className="flex gap-4 animate-pulse">
+                                        <div className="w-8 h-8 rounded-lg bg-white border border-emerald-100 flex items-center justify-center shrink-0">
+                                            <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
+                                        </div>
+                                        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest py-2">
+                                            Processando...
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={messagesEndRef} />
                             </div>
-                        </form>
-                    </div>
+
+                            {/* Bottom Input Area (Standard Chat) */}
+                            <div className="p-4 bg-white border-t border-slate-200 z-10 sticky bottom-0">
+                                <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto relative group">
+                                    <div className="relative flex items-end gap-2 bg-slate-50 rounded-2xl p-2 shadow-sm border border-slate-200 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+                                        <textarea
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault();
+                                                    handleSendMessage(e);
+                                                }
+                                            }}
+                                            placeholder="Peça ajustes ao assistente (ex: 'Reescreva com exemplos mais simples')..."
+                                            className="flex-1 bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 font-medium py-3 max-h-32 resize-none custom-scrollbar text-sm"
+                                            rows={1}
+                                        />
+                                        <button type="submit" disabled={!input.trim() || isThinking} className="p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95 shadow-md shadow-indigo-200">
+                                            {isThinking ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </>
+                    ) : (
+                        <CurriculumMatcher onAddContent={handleAddQuestionToInput} />
+                    )}
                 </div>
             </div>
         </div>

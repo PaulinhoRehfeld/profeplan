@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/geminiService';
+import { searchCurriculum } from '../../services/searchService';
 import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan } from './PlanningService';
 import { Loader2 } from 'lucide-react';
@@ -135,6 +136,22 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
             // Context Builder
             const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
             let context = `Você é um assistente pedagógico especialista.`;
+
+            // --- RAG: Busca no Currículo Oficial ---
+            const retrievalResults = await searchCurriculum(input, {
+                disciplina: selectedPlan?.subject,
+                ano: selectedPlan?.grade
+            });
+
+            if (retrievalResults.length > 0) {
+                const formattedContext = retrievalResults.map((r: any) =>
+                    `- [Fonte: ${r.metadata?.source || 'Oficial'}] (${r.similarity.toFixed(2)}): ${r.content}`
+                ).join('\n\n');
+
+                context += `\n\n[CONTEXTO DO CURRÍCULO OFICIAL MINEIRO RECUPERADO]:\n${formattedContext}\n\n[FIM DO CONTEXTO]`;
+            } else {
+                context += `\n\n[AVISO]: Não foi encontrado contexto específico no currículo oficial para esta solicitação.`;
+            }
 
             if (selectedPlan) {
                 context += `\nContexto do Plano Trimestral: ${selectedPlan.grade} - ${selectedPlan.subject}.`;

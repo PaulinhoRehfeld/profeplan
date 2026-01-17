@@ -8,9 +8,9 @@ import { UserProfile } from '../services/userService';
 // You can find these inside the Products: 
 // SILVER (Credits): prod_TkuQ7BqvkRoU3N
 // GOLD (Subscription): prod_TkuTMOoQHPPY6V
-const PRICE_IDS = {
-    CREDITS_40: 'price_1SnObxGxr8HDVhR2JY3pVlsx', // Atualizado: PROFEPLAN SILVER (Recorrente)
-    GOLD_MONTHLY: 'price_1SnOeZGxr8HDVhR2pvfFlTBY' // Atualizado: PROFEPLAN GOLD
+const PAYMENT_LINKS = {
+    SILVER_LINK: 'https://buy.stripe.com/7sY5kD88Gb5z3aA4qLfbq05',
+    GOLD_LINK: 'https://buy.stripe.com/00w00j3Sq7TnaD25uPfbq04'
 };
 
 interface SubscriptionModalProps {
@@ -25,18 +25,19 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
 
     if (!isOpen) return null;
 
-    const handlePurchase = async (priceId: string, planType: string) => {
+    const handlePurchase = async (planType: 'gold' | 'silver') => {
         if (!userProfile) return;
-        setLoading(priceId);
+        setLoading(planType);
         setError('');
 
-        // ATENÇÃO: Ambos os planos foram criados como "Recorrentes" no Stripe,
-        // então o modo deve ser 'subscription' para ambos funcionarem.
-        const mode = 'subscription';
-
         try {
-            await createCheckoutSession(priceId, userProfile.id, mode, planType);
-            // Determine what to do after redirect initiation? Usually nothing as page redirects.
+            const link = planType === 'gold' ? PAYMENT_LINKS.GOLD_LINK : PAYMENT_LINKS.SILVER_LINK;
+            // Construct dynamic URL with client_reference_id (userId) and prefilled_email
+            const paymentUrl = `${link}?client_reference_id=${userProfile.id}&prefilled_email=${userProfile.email}`;
+
+            // Redirect to Stripe
+            window.location.href = paymentUrl;
+
         } catch (err: any) {
             setError(err.message || 'Erro ao iniciar pagamento');
             setLoading(null);
@@ -65,7 +66,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
                             <ShieldCheck className="w-8 h-8 text-slate-400" />
                         </div>
                         <h4 className="text-xl font-bold text-slate-700 mb-2">Básico</h4>
-                        <p className="text-slate-500 text-sm mb-6 flex-1">Acesso essencial às ferramentas de IA.</p>
+                        <p className="text-slate-500 text-sm mb-6 flex-1">Plano de entrada para conhecer a plataforma.</p>
                         <ul className="text-left space-y-3 mb-8 w-full">
                             <li className="flex items-center gap-2 text-sm text-slate-600"><Check size={16} className="text-green-500" /> 10 Créditos Iniciais</li>
                             <li className="flex items-center gap-2 text-sm text-slate-600"><Check size={16} className="text-green-500" /> Acesso ao Chat</li>
@@ -83,21 +84,21 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
                         <div className="mb-4 p-4 bg-blue-100 rounded-full">
                             <Zap className="w-8 h-8 text-blue-600" />
                         </div>
-                        <h4 className="text-xl font-bold text-slate-900 mb-2">Recarga</h4>
-                        <p className="text-slate-500 text-sm mb-6 flex-1">Adicione créditos conforme sua necessidade.</p>
+                        <h4 className="text-xl font-bold text-slate-900 mb-2">Profeplan Silver</h4>
+                        <p className="text-slate-500 text-sm mb-6 flex-1">Flexibilidade e produtividade sob medida.</p>
 
                         <div className="w-full space-y-3">
                             <button
-                                onClick={() => handlePurchase(PRICE_IDS.CREDITS_40, 'credits_40')}
+                                onClick={() => handlePurchase('silver')}
                                 disabled={!!loading}
                                 className="w-full py-3 bg-white border border-blue-200 hover:border-blue-500 hover:shadow-md text-slate-700 font-bold rounded-xl transition-all flex items-center justify-between px-4"
                             >
                                 <span>40 Créditos</span>
-                                <span className="text-blue-600">R$ 29,90</span>
+                                <span className="text-blue-600">R$ 30,00</span>
                             </button>
                         </div>
-                        {loading && (loading.includes('CREDITS') || loading === PRICE_IDS.CREDITS_40) && (
-                            <p className="text-xs text-blue-500 font-bold mt-2 animate-pulse">Iniciando checkout...</p>
+                        {loading === 'silver' && (
+                            <p className="text-xs text-blue-500 font-bold mt-2 animate-pulse">Redirecionando...</p>
                         )}
                     </div>
 
@@ -111,19 +112,19 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
                         <div className="mb-4 p-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full shadow-lg shadow-amber-500/30">
                             <Crown className="w-8 h-8 text-white" />
                         </div>
-                        <h4 className="text-xl font-bold text-slate-900 mb-2">PROFEPLAN GOLD</h4>
-                        <p className="text-amber-800/70 text-sm mb-6 flex-1">Ilimitado. Todo o poder da IA sem restrições.</p>
+                        <h4 className="text-xl font-bold text-slate-900 mb-2">Profeplan Gold</h4>
+                        <p className="text-amber-800/70 text-sm mb-6 flex-1">Produtividade sem limites. IA Ilimitada.</p>
                         <ul className="text-left space-y-3 mb-8 w-full">
                             <li className="flex items-center gap-2 text-sm text-slate-700"><Check size={16} className="text-amber-500" /> <b>Gerações Ilimitadas</b></li>
                             <li className="flex items-center gap-2 text-sm text-slate-700"><Check size={16} className="text-amber-500" /> Tutoria Personalizada</li>
                             <li className="flex items-center gap-2 text-sm text-slate-700"><Check size={16} className="text-amber-500" /> Acesso Antecipado a Features</li>
                         </ul>
                         <button
-                            onClick={() => handlePurchase(PRICE_IDS.GOLD_MONTHLY, 'gold')}
+                            onClick={() => handlePurchase('gold')}
                             disabled={!!loading}
                             className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-black rounded-xl shadow-xl shadow-amber-600/20 transition-all transform active:scale-[0.98]"
                         >
-                            {loading?.includes('GOLD') ? 'Processando...' : 'Assinar Agora - R$ 97/mês'}
+                            {loading === 'gold' ? 'Processando...' : 'Assinar Agora - R$ 50/mês'}
                         </button>
                         <p className="text-[10px] text-amber-700/60 mt-3 font-medium">Cancele quando quiser.</p>
                     </div>

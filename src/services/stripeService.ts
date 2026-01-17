@@ -4,7 +4,10 @@ import { supabase } from './supabaseClient';
 
 // Replace with your actual Publishable Key from Stripe Dashboard
 // Ideally this should be in import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
-const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_live_51SnNl2Gxr8HDVhR2Su1mflmZ9cLKR4NCUEL0OmFDVpvCrr3Dvs39n1xaMHGR2lqKmPnnoITyQh5kJqWnSULoR3iL00OdfGtitP';
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+if (!STRIPE_PUBLISHABLE_KEY) {
+    console.error("VITE_STRIPE_PUBLISHABLE_KEY is missing via import.meta.env");
+}
 
 export const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 

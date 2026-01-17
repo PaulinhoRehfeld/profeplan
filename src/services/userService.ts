@@ -11,7 +11,7 @@ export interface UserProfile {
 }
 
 // --- CONFIGURATION ---
-const IS_BETA_TESTING = true; // Set to TRUE for Play Store Beta (Free Gold for Testers)
+const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for Testers)
 
 export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
     const { data, error } = await supabase
@@ -19,6 +19,19 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
         .select('*')
         .eq('id', userId)
         .single();
+
+    // DEV ADMIN MOCK (Bypass DB)
+    if (userId === 'dev-admin-id') {
+        return {
+            id: 'dev-admin-id',
+            email: 'admin@dev.local',
+            tier: 'GOLD',
+            credits: 9999,
+            is_unlimited: true,
+            is_admin: true,
+            allowed_features: ['all']
+        };
+    }
 
     if (error) {
         console.error("Error fetching user profile:", error);

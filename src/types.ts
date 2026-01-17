@@ -14,7 +14,7 @@ export interface Message {
 }
 
 export type UserRole = 'ADMIN' | 'TEACHER';
-export type AccessLevel = 'BASICO' | 'PRO' | 'ADMIN';
+export type AccessLevel = 'BASICO' | 'PRO' | 'ADMIN' | 'SILVER' | 'GOLD';
 
 export interface UserSession {
   id: string;
@@ -22,6 +22,7 @@ export interface UserSession {
   role: UserRole;
   accessLevel: AccessLevel;
   isLoggedIn: boolean;
+  isEmailConfirmed?: boolean; // New field for security lock
   // driveConnected: boolean; // REMOVIDO: Integração com Google Drive
 }
 

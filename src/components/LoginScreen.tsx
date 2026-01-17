@@ -37,6 +37,22 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
   }, []);
 
   const handleAuthSuccess = async (user: any) => {
+    // DEV MODE BYPASS
+    if (user.id === 'dev-admin-id') {
+      const sessionData: UserSession = {
+        id: user.id,
+        email: user.email,
+        role: 'ADMIN',
+        accessLevel: 'GOLD',
+        isLoggedIn: true,
+        isEmailConfirmed: true
+      };
+      localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
+      localStorage.setItem('supabase_user_id', user.id);
+      onLogin(sessionData);
+      return;
+    }
+
     // Busca ou cria o perfil
     const { data: profile } = await supabase
       .from('profiles')
@@ -49,7 +65,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       await supabase.from('profiles').insert({
         id: user.id,
         email: user.email,
-        tier: 'FREE',
+        tier: 'SILVER',
         credits: 10,
         is_unlimited: false,
         is_admin: false,
@@ -63,6 +79,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       role: profile?.is_admin ? 'ADMIN' : 'TEACHER', // Use profile role or default
       accessLevel: profile?.tier || 'BASICO',
       isLoggedIn: true,
+      isEmailConfirmed: !!user.email_confirmed_at // Check if email is confirmed
     };
 
     localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
@@ -86,16 +103,52 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
         setIsSignUp(false);
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        // 1. Tenta Login Padrão (Supabase Auth)
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
-        // O onAuthStateChange vai capturar o sucesso
+
+        if (error) {
+          // 2. Se falhar, tenta Login VIP (Authorized Users Table)
+          // Isso permite login para usuários criados manualmente pelo Admin
+          console.log("Supabase Auth falhou, tentando fallback para authorized_users...");
+
+          // 2. Se falhar, tenta Login VIP via RPC (bypassing RLS)
+          console.log("Supabase Auth falhou, tentando RPC check_admin_credentials...");
+
+          const { data: vipData, error: vipError } = await supabase
+            .rpc('check_admin_credentials', {
+              check_email: email,
+              check_key: password
+            });
+
+          if (vipError || !vipData || vipData.length === 0) {
+            console.error("RPC Error or No User:", vipError);
+            throw error; // Lança o erro original do Supabase Auth se o VIP também falhar
+          }
+
+          const vipUser = vipData[0]; // RPC returns array
+
+          // Login VIP Sucesso!
+          handleAuthSuccess({
+            id: vipUser.user_id,
+            email: email,
+            email_confirmed_at: new Date().toISOString()
+          });
+
+        } else {
+          // Login Padrão Sucesso
+        }
       }
     } catch (err: any) {
       console.error("Auth Error:", err);
-      setError(err.message || 'Erro na autenticação.');
+      // Personalizando msg de erro
+      if (err.message === 'Invalid login credentials') {
+        setError('E-mail ou senha incorretos.');
+      } else {
+        setError(err.message || 'Erro na autenticação.');
+      }
     } finally {
       setLoading(false);
     }
@@ -220,6 +273,29 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
               {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
             </button>
           </div>
+
+          {/* Dev Mode Auto Login */}
+          {import.meta.env.DEV && (
+            <div className="mt-4 pt-4 border-t border-white/10 text-center">
+              <button
+                onClick={async () => {
+                  // Force logout first to kill any Silver cookies
+                  await supabase.auth.signOut();
+                  localStorage.removeItem('profeplan_session');
+                  localStorage.removeItem('supabase_user_id');
+
+                  handleAuthSuccess({
+                    id: 'dev-admin-id',
+                    email: 'admin@dev.local',
+                    email_confirmed_at: new Date().toISOString()
+                  });
+                }}
+                className="text-[10px] bg-red-500/20 text-red-300 px-3 py-1 rounded hover:bg-red-500/30 font-mono uppercase tracking-widest border border-red-500/30"
+              >
+                [DEV] Auto-Login Admin (Force)
+              </button>
+            </div>
+          )}
 
           <div className="mt-8 flex justify-center gap-6 opacity-20">
             <ShieldCheck className="w-5 h-5 text-white" />

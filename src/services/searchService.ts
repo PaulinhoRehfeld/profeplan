@@ -76,3 +76,37 @@ export const hybridSearchProfeplan = async ({
         throw error;
     }
 };
+
+export const searchCurriculum = async (
+    queryText: string,
+    filters?: { disciplina?: string; ano?: string; periodo?: string },
+    limit: number = 5,
+    matchThreshold: number = 0.5
+) => {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+    if (!apiKey) throw new Error("API Key missing");
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+
+    try {
+        const result = await model.embedContent(queryText);
+        const embedding = result.embedding;
+
+        const { data, error } = await supabase.rpc('search_curriculum_rag', {
+            query_embedding: embedding.values,
+            match_threshold: matchThreshold,
+            match_count: limit,
+            filter_disciplina: filters?.disciplina || null,
+            filter_ano: filters?.ano || null,
+            filter_periodo: filters?.periodo || null
+        });
+
+        if (error) throw error;
+        return data || [];
+
+    } catch (error) {
+        console.error("Erro na busca de currículo:", error);
+        return [];
+    }
+};

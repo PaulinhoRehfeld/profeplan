@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
     Check, X, Sparkles, Smartphone, Heart, Layout,
-    ArrowRight, Play, Star, ShieldCheck, Users
+    ArrowRight, Play, Star, ShieldCheck, Users, Crown
 } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
@@ -24,6 +24,7 @@ const LandingPage: React.FC = () => {
                     {/* Links (Desktop) */}
                     <div className="hidden md:flex items-center gap-8 font-medium text-slate-600">
                         <a href="#features" className="hover:text-blue-600 transition-colors">Funcionalidades</a>
+                        <a href="#pricing" className="hover:text-amber-500 transition-colors font-bold text-amber-600">Planos</a>
                         <a href="#benefits" className="hover:text-blue-600 transition-colors">Benefícios</a>
                         <a href="#schools" className="hover:text-blue-600 transition-colors">Para Escolas</a>
                     </div>
@@ -245,6 +246,99 @@ const LandingPage: React.FC = () => {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+
+            {/* 4.b Planos (Pricing) - NOVO */}
+            <section id="pricing" className="py-24 bg-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-blue-600/5 rounded-full blur-3xl"></div>
+
+                <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <span className="text-emerald-600 font-bold tracking-widest uppercase text-xs mb-3 block">Investimento no seu Tempo</span>
+                        <h2 className="text-3xl md:text-4xl font-black text-slate-900">Escolha o Plano Ideal</h2>
+                        <p className="text-slate-500 mt-4 text-lg">Comece grátis e evolua conforme sua necessidade.</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+                        {/* PLANO SILVER */}
+                        <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl flex flex-col relative group hover:border-blue-400 transition-colors">
+                            <div className="absolute top-0 w-full h-1 bg-blue-500 left-0 rounded-t-3xl"></div>
+                            <h3 className="text-2xl font-black text-slate-900 mb-2">Profeplan Silver</h3>
+                            <p className="text-slate-500 text-sm mb-6 min-h-[40px]">O plano ideal para quem busca flexibilidade e produtividade sob medida.</p>
+
+                            <div className="mb-6">
+                                <span className="text-4xl font-black text-slate-900">R$ 30,00</span>
+                                <span className="text-slate-400 text-sm"> / recarga</span>
+                            </div>
+
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-start gap-3 text-slate-700 text-sm">
+                                    <Check size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                                    <span><b>40 Créditos</b> para usar como quiser</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-700 text-sm">
+                                    <Check size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                                    <span>Gere planos de aula, materiais e simulados</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-700 text-sm">
+                                    <Check size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                                    <span>Sem mensalidade fixa (Pague o que usar)</span>
+                                </li>
+                            </ul>
+
+                            <Link to="/signup" className="w-full py-4 bg-white border-2 border-slate-200 text-slate-700 hover:border-blue-500 hover:text-blue-600 font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                                Começar com Silver
+                            </Link>
+                        </div>
+
+                        {/* PLANO GOLD */}
+                        <div className="bg-slate-900 rounded-3xl p-8 border border-amber-500 shadow-2xl flex flex-col relative overflow-hidden transform md:-translate-y-4">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 blur-3xl rounded-full"></div>
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="text-2xl font-black text-white">Profeplan Gold</h3>
+                                <div className="px-3 py-1 bg-amber-500 text-amber-950 font-bold text-[10px] uppercase tracking-wide rounded-full">Recomendado</div>
+                            </div>
+                            <p className="text-slate-400 text-sm mb-6 min-h-[40px]">O plano definitivo para o professor que exige produtividade sem limites.</p>
+
+                            <div className="mb-6">
+                                <span className="text-4xl font-black text-white">R$ 50</span>
+                                <span className="text-slate-400 text-sm"> / mês</span>
+                            </div>
+
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-start gap-3 text-slate-300 text-sm">
+                                    <Check size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                                    <span><b>Acesso Ilimitado</b> a todas as ferramentas</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-300 text-sm">
+                                    <Check size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                                    <span>Gere planejamentos sem se preocupar com créditos</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-300 text-sm">
+                                    <Check size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                                    <span>Prioridade nas atualizações</span>
+                                </li>
+                            </ul>
+
+                            <Link to="/signup" className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:scale-105">
+                                <Crown size={18} />
+                                Quero Ser Gold
+                            </Link>
+                        </div>
+
+                    </div>
+
+                    <div className="mt-12 text-center bg-blue-50/50 rounded-2xl p-6 max-w-2xl mx-auto border border-blue-100">
+                        <p className="text-blue-900 font-bold mb-2 flex items-center justify-center gap-2">
+                            <Sparkles size={18} className="text-blue-500" /> Promoção Especial de Lançamento
+                        </p>
+                        <p className="text-slate-600 text-sm">
+                            Crie sua conta agora e ganhe automaticamente <b>10 Créditos Grátis</b> no plano Silver para testar a plataforma.
+                        </p>
+                    </div>
+
                 </div>
             </section>
 

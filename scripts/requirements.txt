@@ -1,0 +1,7 @@
+langchain
+langchain-google-genai
+supabase
+langchain-community
+pandas
+python-dotenv
+tiktoken

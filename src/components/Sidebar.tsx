@@ -16,6 +16,7 @@ interface SidebarProps {
   onToggleDesktopExpand?: () => void;
   userProfile?: UserProfile | null;
   onOpenSubscription: () => void;
+  onLogout: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -28,7 +29,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   isDesktopExpanded = true,
   onToggleDesktopExpand,
   userProfile,
-  onOpenSubscription
+  onOpenSubscription,
+  onLogout
 }) => {
   const menuItems = [
     { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'chat' },
@@ -45,10 +47,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content' },
   ];
 
-  const filteredItems = menuItems.filter(item => {
-    if (!userProfile) return true; // Show all if check not ready (or fallback)
-    return hasFeaturePattern(userProfile.allowed_features || [], item.feature);
-  });
+  // REMOVED FILTER: User wants all items visible
+  const filteredItems = menuItems;
 
   const handleModeSelection = (mode: ToolMode) => {
     setActiveMode(mode);
@@ -157,6 +157,15 @@ const Sidebar: React.FC<SidebarProps> = ({
                   ) : <div className="text-xs font-bold text-blue-400 text-center">{userProfile?.credits || 0}</div>}
                 </div>
               )}
+
+              {/* Botão de Renovar / Mudar Plano (EXPLICITO) */}
+              <button
+                onClick={onOpenSubscription}
+                className="w-full mt-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-bold text-[10px] uppercase tracking-wide py-2 rounded-lg shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
+              >
+                <Crown size={12} />
+                {isDesktopExpanded && <span>Mudar de Plano</span>}
+              </button>
             </div>
 
             <div className="space-y-2">
@@ -169,10 +178,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Configurações</span>}
               </button>
               <button
-                onClick={() => {
-                  localStorage.removeItem('profeplan_session');
-                  window.location.reload();
-                }}
+                onClick={onLogout}
                 className="flex items-center gap-3 px-3 py-2 w-full rounded-xl hover:bg-red-900/20 transition-colors text-slate-400 hover:text-red-400"
                 title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}
               >
@@ -182,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
         </div>
-      </div >
+      </div>
     </>
   );
 };

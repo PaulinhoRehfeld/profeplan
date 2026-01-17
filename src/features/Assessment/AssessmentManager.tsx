@@ -8,6 +8,8 @@ import { exportAssessmentToDocx } from '../../services/exportService';
 import PrintableEvaluation from '../../components/PrintableEvaluation';
 import type { Assessment } from '../../types';
 import { saveAssessment } from './AssessmentService'; // New Service
+import { searchQuestions } from '../../services/questionService';
+import { EnemQuestion } from '../../types';
 
 interface AssessmentManagerProps {
     userId: string;
@@ -217,6 +219,8 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
 
             const selectedLessons = availableLessons.filter(l => selectedLessonIds.includes(l.id));
 
+            // 1. Gera as questões contextuais (Objetivas e Dissertativas) via IA
+            // Passamos 0 no numEnem para a IA não gerar questões fake
             const result = await generateAssessmentWithContext(
                 selectedClass.name,
                 selectedClass.subject,
@@ -225,13 +229,57 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
                 academicPeriod,
                 objectiveCount,
                 dissertativeCount,
-                numEnem,
+                0, // 0 ENEM via IA
                 difficulty
             );
 
+            let finalQuestions = [...result.questions];
+
+            // 2. Busca questões REAIS do ENEM no Banco de Dados
+            if (numEnem > 0) {
+                // Constrói query de busca baseada no contexto
+                const topics = selectedLessons.map(l => l.topic).join(' ');
+                const searchQuery = `${selectedClass.subject} ${additionalTopics} ${topics}`.trim();
+
+                try {
+                    console.log("🔍 Buscando questões ENEM reais para:", searchQuery);
+                    const enemResults = await searchQuestions(searchQuery);
+
+                    // Pega as top N questões
+                    const selectedEnem = enemResults.slice(0, numEnem);
+
+                    // Mapeia para o formato de AssessmentQuestion
+                    const mappedEnemQuestions = selectedEnem.map(q => {
+                        const meta = q.metadata;
+                        // Combina contexto e enunciado
+                        const fullQuestionText = [meta.context, meta.alternativesIntroduction]
+                            .filter(Boolean)
+                            .join('\n\n');
+
+                        return {
+                            id: `enem_${q.id}`,
+                            type: 'objective',
+                            question: `[Questão ENEM ${meta.year || ''}] ${fullQuestionText}`,
+                            options: meta.alternatives.map((alt: any) => `${alt.letter}) ${alt.text}`),
+                            correctAnswer: meta.alternatives.find((a: any) => a.isCorrect)?.letter || 'A',
+                            maxPoints: 1.0, // Valor padrão, pode ser ajustado
+                            difficulty: difficulty,
+                            rubric: null
+                        };
+                    });
+
+                    finalQuestions = [...finalQuestions, ...mappedEnemQuestions];
+
+                } catch (enemError) {
+                    console.error("Erro ao buscar questões ENEM reais:", enemError);
+                    alert("Aviso: Não foi possível buscar questões do banco ENEM. A prova foi gerada apenas com as questões contextuais.");
+                }
+            }
+
             const assessment: Assessment = {
                 id: `assessment_${Date.now()}`,
-                ...result,
+                title: result.title,
+                questions: finalQuestions,
                 classId: selectedClassId,
                 className: selectedClass.name,
                 subject: selectedClass.subject,
