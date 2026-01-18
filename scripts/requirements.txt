@@ -5,3 +5,4 @@ langchain-community
 pandas
 python-dotenv
 tiktoken
+langchain-text-splitters

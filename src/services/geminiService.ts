@@ -44,6 +44,41 @@ const safetySettings = [
   { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
 ];
 
+/**
+ * Extrai contexto de Ensino Médio (1ANO, 2ANO, 3ANO) e Disciplina
+ * Suporta o padrão pedido: 1ANO_EM_MATÉRIA (implícito na mensagem do usuário)
+ */
+function extractHighSchoolContext(message: string): { grade: string, subject: string | null } | null {
+  const normalized = message.toUpperCase(); // Normaliza para facilitar
+
+  // 1. Detecta Série (1ANO, 2ANO, 3ANO ou variações 1º Ano, etc)
+  let grade = null;
+  if (normalized.includes('1ANO') || normalized.includes('1º ANO') || normalized.includes('1 ANO') || normalized.includes('PRIMEIRO ANO')) grade = '1ANO';
+  else if (normalized.includes('2ANO') || normalized.includes('2º ANO') || normalized.includes('2 ANO') || normalized.includes('SEGUNDO ANO')) grade = '2ANO';
+  else if (normalized.includes('3ANO') || normalized.includes('3º ANO') || normalized.includes('3 ANO') || normalized.includes('TERCEIRO ANO')) grade = '3ANO';
+
+  // Se não achou série mas tem menção explícita a Ensino Médio, podemos tentar inferir ou retornar null
+  // O usuário pediu especificamente para interpretar arquivos "1ANO_EM_MATÉRIA", então o foco é quando TEM série.
+  if (!grade) return null;
+
+  // 2. Tenta extrair disciplina comum
+  const subjects = [
+    'MATEMATICA', 'MATEMÁTICA', 'PORTUGUES', 'PORTUGUÊS', 'HISTORIA', 'HISTÓRIA',
+    'GEOGRAFIA', 'BIOLOGIA', 'FISICA', 'FÍSICA', 'QUIMICA', 'QUÍMICA',
+    'FILOSOFIA', 'SOCIOLOGIA', 'INGLES', 'INGLÊS', 'ARTES', 'EDUCACAO FISICA'
+  ];
+
+  let subject = null;
+  for (const s of subjects) {
+    if (normalized.includes(s)) {
+      subject = s.replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U').replace('Ç', 'C').replace('Ã', 'A').replace('Õ', 'O').replace('Ê', 'E'); // Normaliza para busca simples (sem acento)
+      break;
+    }
+  }
+
+  return { grade, subject };
+}
+
 export const generateProfePlanStream = async (
   message: string,
   history: { role: string; parts: { text: string }[] }[],
@@ -86,28 +121,29 @@ export const generateProfePlanStream = async (
   }
 
   // [REGRA DE OURO] Busca Automática de Questões para Ensino Médio
-  const isHighSchoolContext = message.toLowerCase().includes('ensino médio') ||
-    message.toLowerCase().match(/\b(1º|2º|3º)\s*ano\b/i) ||
-    message.toLowerCase().includes('enem');
+  const context = extractHighSchoolContext(message);
 
-  if (isHighSchoolContext) {
-    console.log('🔍 Detectado contexto de Ensino Médio/ENEM. Iniciando Busca Híbrida...');
+  if (context) {
+    console.log(`🔍 Detectado contexto de Ensino Médio: ${context.grade} - ${context.subject}`);
     try {
-      // Usa a mensagem do usuário (ex: "Planeje aula sobre Revolução Industrial") como query
+      // Usa a mensagem do usuário + contexto extraído
       const searchResults = await hybridSearchProfeplan({
         textoBusca: message,
-        limit: 3, // Pega 3 para garantir
-        matchThreshold: 0.5
+        limit: 3,
+        matchThreshold: 0.5,
+        // Passa os filtros para o Supabase (que deve suportar ou ignorar se null)
+        // O formato '1ANO' é passado como 'nivel' se a RPC suportar, ou concatenado na busca
+        nivel: context.grade,     // Ex: "1ANO"
+        disciplina: context.subject // Ex: "BIOLOGIA"
       });
 
       if (searchResults && searchResults.length > 0) {
-        specificInstruction += `\n\n[DADOS DO BUSCADOR (SISTEMA INTEGRADO)]:\nEncontrei estas questões relevantes no banco vetorial. Selecione as melhores para integrar ao plano:\n${JSON.stringify(searchResults)}`;
+        specificInstruction += `\n\n[DADOS DO BUSCADOR (SISTEMA INTEGRADO)]:\nEncontrei estas questões relevantes no banco vetorial (Filtro: ${context.grade}/${context.subject}). Selecione as melhores para integrar ao plano:\n${JSON.stringify(searchResults)}`;
       } else {
         console.log('🔍 Busca retornou 0 resultados.');
       }
     } catch (searchError) {
       console.error('⚠️ Falha na busca automática de questões:', searchError);
-      // Não bloqueia o fluxo, apenas loga
     }
   }
 
@@ -771,9 +807,10 @@ import { Message } from "../types"; // Import Message type if not already availa
  */
 export const generateGeminiContent = async (
   prompt: string,
-  history: any[] = [], // using any to avoid type import collision here
+  history: any[] = [],
   context: string = '',
-  userId?: string
+  userId?: string,
+  temperature: number = 0.7 // Default to creative
 ) => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
   if (!apiKey) throw new Error("API Key missing");
@@ -794,7 +831,10 @@ export const generateGeminiContent = async (
   });
 
   const chat = model.startChat({
-    history: chatHistory
+    history: chatHistory,
+    generationConfig: {
+      temperature: temperature
+    }
   });
 
   // Check Quota

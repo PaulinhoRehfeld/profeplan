@@ -24,7 +24,13 @@ const splitMarkdownByHeaders = (text: string, source: string): IngestedDocument[
     const docs: IngestedDocument[] = [];
 
     let currentDisciplina = 'Geral';
+    // 1. Tenta extrair o Ano do nome do arquivo (Ex: "7ano_GEOGRAFIA.md" -> "7º Ano")
     let currentAno = 'Geral';
+    const anoMatch = source.match(/(\d+)\s*ano/i);
+    if (anoMatch) {
+        currentAno = `${anoMatch[1]}º Ano`;
+    }
+
     let currentPeriodo = 'Geral';
     let currentUnidade = '';
 
@@ -35,7 +41,8 @@ const splitMarkdownByHeaders = (text: string, source: string): IngestedDocument[
             const content = currentBuffer.join('\n').trim();
             if (content) {
                 // Enrich content with context
-                const richContent = `Contexto: ${currentDisciplina}, ${currentAno}, ${currentPeriodo}. Unidade: ${currentUnidade}. Habilidade/Conteúdo: ${content}`;
+                // INCLUINDO AS PÁGINAS NO TEXTO DO CONTEXTO PARA O LLM VER
+                const richContent = `Contexto: ${currentDisciplina} | ${currentAno} | ${currentPeriodo} (Páginas incluídas se disponíveis). Unidade: ${currentUnidade}. Conteúdo: ${content}`;
 
                 docs.push({
                     content: richContent,
@@ -43,7 +50,7 @@ const splitMarkdownByHeaders = (text: string, source: string): IngestedDocument[
                         source,
                         disciplina: currentDisciplina,
                         ano_escolar: currentAno,
-                        periodo: currentPeriodo,
+                        periodo: currentPeriodo, // Agora contém "1º BIMESTRE (págs 96-97)"
                         unidade_tematica: currentUnidade
                     }
                 });
@@ -57,13 +64,19 @@ const splitMarkdownByHeaders = (text: string, source: string): IngestedDocument[
             flushBuffer();
             currentDisciplina = line.replace('# ', '').trim();
         } else if (line.startsWith('## ')) {
+            // CORRECTION: H2 is Period/Bimester in standard MG files (contains page numbers)
             flushBuffer();
-            currentAno = line.replace('## ', '').trim();
+            currentPeriodo = line.replace('## ', '').trim();
         } else if (line.startsWith('### ')) {
+            // H3 usually is "Habilidades" or "Unidade Temática" depending on file
+            // We keep it as Unidade or just part of content context implicitly?
+            // Let's treat H3 as the start of a broad section (Unidade)
             flushBuffer();
-            currentPeriodo = line.replace('### ', '').trim();
+            currentUnidade = line.replace('### ', '').trim();
         } else if (line.startsWith('#### ')) {
+            // Deeper level
             flushBuffer();
+            // Append to unit or keep separate? Let's just update unit
             currentUnidade = line.replace('#### ', '').trim();
         } else {
             currentBuffer.push(line);

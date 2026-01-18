@@ -27,6 +27,7 @@ import PDIManager from './features/PDI/PDIManager'; // NOVO: Renomeado de Inclus
 import TermPlanningManager from './features/TermPlanning/TermPlanningManager'; // NOVO: Agente Coordenador
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext'; // NOVO: Contexto Global
 import { getUserProfile, UserProfile, isAdmin } from './services/userService';
+import { supabase } from './services/supabaseClient';
 import SubscriptionModal from './components/SubscriptionModal';
 import { Lock, Zap } from 'lucide-react'; // Added Lock, Zap imports
 // import PresentationModal from './components/PresentationModal'; // REMOVIDO
@@ -226,7 +227,8 @@ const App: React.FC = () => {
                     onToggleDesktopExpand={() => setIsLeftNavExpanded(prev => !prev)}
                     userProfile={userProfile}
                     onOpenSubscription={() => setIsSubscriptionOpen(true)}
-                    onLogout={() => {
+                    onLogout={async () => {
+                      await supabase.auth.signOut();
                       setSession(null);
                       localStorage.removeItem('profeplan_session');
                       localStorage.removeItem('supabase_user_id'); // Optional: clear exact keys if any

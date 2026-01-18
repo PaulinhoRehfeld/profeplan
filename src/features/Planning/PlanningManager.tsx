@@ -12,6 +12,7 @@ import { supabase } from '../../services/supabaseClient';
 import { SimulationWorkspace } from './components/SimulationWorkspace';
 import { PlanningCockpit } from './components/PlanningCockpit';
 import { CleanChat } from './components/CleanChat';
+import { getRelevantMemories } from '../../services/memoryService'; // Import Memory Service
 
 // --- Services ---
 import { exportToDocx } from '../../services/exportService';
@@ -137,6 +138,17 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
             const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
             let context = `Você é um assistente pedagógico especialista.`;
 
+            // --- Contexto de Memória do Professor (Learning) ---
+            try {
+                const memories = await getRelevantMemories(userId, input);
+                if (memories.length > 0) {
+                    const memoryText = memories.map(m => `- ${m.content}`).join('\n');
+                    context += `\n\n[MEMÓRIA DE PREFERÊNCIAS DO USUÁRIO]:\n${memoryText}\n(Use estas preferências para personalizar o tom e o estilo da resposta.)`;
+                }
+            } catch (err) {
+                console.warn("Failed to fetch memories", err);
+            }
+
             // --- RAG: Busca no Currículo Oficial ---
             const retrievalResults = await searchCurriculum(input, {
                 disciplina: selectedPlan?.subject,
@@ -145,10 +157,10 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
 
             if (retrievalResults.length > 0) {
                 const formattedContext = retrievalResults.map((r: any) =>
-                    `- [Fonte: ${r.metadata?.source || 'Oficial'}] (${r.similarity.toFixed(2)}): ${r.content}`
+                    `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
                 ).join('\n\n');
 
-                context += `\n\n[CONTEXTO DO CURRÍCULO OFICIAL MINEIRO RECUPERADO]:\n${formattedContext}\n\n[FIM DO CONTEXTO]`;
+                context += `\n\n[CONTEXTO DO CURRÍCULO OFICIAL MINEIRO RECUPERADO]:\n${formattedContext}\n\n[INSTRUÇÃO]: PARA O PLANEJAMENTO O AGENTE DEVERÁ UTILIZAR "TODAS" AS INFORMAÇÕES DO BIMESTRE. APENAS AS ORIENTAÇÕES PEDAGÓGICAS É QUE DEVEM ESTAR INTRÍNSECAS.\n[FIM DO CONTEXTO]`;
             } else {
                 context += `\n\n[AVISO]: Não foi encontrado contexto específico no currículo oficial para esta solicitação.`;
             }
@@ -160,7 +172,15 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                 context += `\nFoco Atual: Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição: ${selectedLesson.description}`;
             }
 
-            const response = await generateGeminiContent(input, [], context, userId);
+            // --- Dynamic Temperature Control ---
+            // User Request: "PRÁTICAS DE LINGUAGEM HABILIDADE... temperatura precisa ser zero"
+            // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
+            const keywordsStrict = ['habilidade', 'bncc', 'objeto de conhecimento', 'práticas de linguagem', 'descritor', 'saeb', 'código'];
+            const isStrictQuery = keywordsStrict.some(k => input.toLowerCase().includes(k.toLowerCase()));
+
+            const dynamicTemp = isStrictQuery ? 0.0 : 0.7;
+
+            const response = await generateGeminiContent(input, [], context, userId, dynamicTemp);
             const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {
