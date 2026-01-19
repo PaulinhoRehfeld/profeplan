@@ -56,12 +56,14 @@ def processar_arquivos(should_truncate=False):
     print(f"📄 Arquivos encontrados: {len(arquivos_md)}")
 
     # Headers para split inteligente
+    # Headers para split inteligente: Apenas até o Trimestre para manter o contexto UNIFICADO.
     headers_to_split_on = [
         ("#", "disciplina"),
         ("##", "ano_escolar"),
         ("###", "periodo"), 
-        ("####", "unidade_tematica"),
-        ("#####", "objeto_conhecimento")
+        # REMOVIDO: ("####", "unidade_tematica"),
+        # REMOVIDO: ("#####", "objeto_conhecimento")
+        # MOTIVO: Queremos o bloco INTEIRO do trimestre para evitar alucinação no planejamento macro.
     ]
     
     splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
@@ -90,20 +92,62 @@ def processar_arquivos(should_truncate=False):
                 doc.metadata["estado"] = "MG"
                 
                 # Resgate seguro de metadados
-                disc = doc.metadata.get('disciplina', 'Geral')
-                ano = doc.metadata.get('ano_escolar', 'N/A')
-                per = doc.metadata.get('periodo', 'Geral')
-                unid = doc.metadata.get('unidade_tematica', '')
-                obj = doc.metadata.get('objeto_conhecimento', '')
+                # PRIORIDADE: Filename (Fonte de Verdade Estrutural)
+                # Formato esperado: RAIO_NIVEL_MATERIA.md (ex: 2ANO_EM_HISTORIA.md)
+                
+                parts = nome_arquivo.replace('.md', '').split('_')
+                
+                # Defaults vindos do header
+                disc_header = doc.metadata.get('disciplina', 'Geral')
+                ano_header = doc.metadata.get('ano_escolar', 'N/A')
+                per_header = doc.metadata.get('periodo', 'Geral')
+                
+                # Normalização via Filename (se possível)
+                if len(parts) >= 3:
+                    raw_ano = parts[0] # 2ANO
+                    raw_nivel = parts[1] # EM ou EF
+                    raw_disc = parts[2] # HISTORIA
+                    
+                    # Normalizar Ano
+                    if "EM" in raw_nivel.upper():
+                        # Ex: 1ANO -> 1º Ano EM
+                        numero_ano = ''.join(filter(str.isdigit, raw_ano))
+                        ano = f"{numero_ano}º Ano EM"
+                    else:
+                        # Ex: 6ANO -> 6º Ano
+                        numero_ano = ''.join(filter(str.isdigit, raw_ano))
+                        ano = f"{numero_ano}º Ano" # Fundamental assume padrão "Xº Ano"
+                        
+                    # Normalizar Disciplina (Capitalize bonitinho)
+                    # Mapeamento básico ou Capitalize
+                    disciplina = raw_disc.title() 
+                    # Ajustes finos
+                    if "Historia" in disciplina: disciplina = "História"
+                    if "Matematica" in disciplina: disciplina = "Matemática"
+                    if "Lingua" in disciplina: disciplina = raw_disc.replace("LINGUA", "Língua ").title()
+                else:
+                    # Fallback para o header se o nome do arquivo fugir do padrão
+                    ano = ano_header
+                    disciplina = disc_header
 
-                # Limpeza básica do conteúdo
-                conteudo_limpo = doc.page_content.replace('\n', ' ').strip()
+                # Atualiza metadados no doc
+                doc.metadata['ano_escolar'] = ano
+                doc.metadata['disciplina'] = disciplina
+                
+                # Periodo vem do Header mesmo (### 1º Bimestre)
+                # Normalizar Periodo: Remover quebras de linha ou espaços extras
+                per = per_header.replace('\n', ' ').strip()
+                doc.metadata['periodo'] = per
+                
+                # Limpeza básica do conteúdo (mantendo quebras de linha para legibilidade do LLM)
+                conteudo_limpo = doc.page_content.strip()
 
-                # Texto Rico para Embedding
+                # Texto Rico para Embedding (Opcional, mas bom para busca híbrida se precisar)
+                # O importante agora é que 'content' tem TUDO desse trimestre.
                 texto_rico = (
-                    f"Disciplina: {disc}. Ano: {ano}. Período: {per}. "
-                    f"Unidade: {unid}. Objeto: {obj}. "
-                    f"Conteúdo: {conteudo_limpo}"
+                    f"Disciplina: {disciplina}. Ano: {ano}. Período: {per}.\n"
+                    f"---\n"
+                    f"{conteudo_limpo}"
                 )
                 
                 doc.page_content = texto_rico

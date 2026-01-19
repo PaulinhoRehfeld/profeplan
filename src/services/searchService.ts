@@ -110,3 +110,23 @@ export const searchCurriculum = async (
         return [];
     }
 };
+
+export const getDeterministicCurriculum = async (
+    disciplina: string,
+    periodo: string,
+    ano?: string
+) => {
+    try {
+        const { data, error } = await supabase.rpc('get_curriculo_completo', {
+            p_disciplina: disciplina,
+            p_periodo: periodo,
+            p_ano_escolar: ano || null
+        });
+
+        if (error) throw error;
+        return data || '';
+    } catch (error) {
+        console.error("Erro ao buscar currículo completo:", error);
+        return null;
+    }
+};

@@ -1,5 +1,5 @@
 import { supabase } from '../../services/supabaseClient';
-import { TermPlan } from '../../contexts/GlobalPlanningContext';
+import { TermPlan } from '../../types';
 
 const LOCAL_STORAGE_KEY = 'profeplan_term_plans_history';
 
@@ -24,31 +24,37 @@ export const saveTermPlan = async (userId: string, plan: TermPlan) => {
 
     // 2. Sync to Supabase
     try {
-        const { error } = await supabase
-            .from('term_plans')
-            .upsert({
-                id: planWithMeta.id,
-                user_id: userId,
-                period: plan.period,
-                regime: plan.regime,
-                subject: plan.subject,
-                grade: plan.grade,
-                level: plan.level,
-                workload_weekly: plan.workloadWeekly,
-                reserves: plan.reserves,
-                total_classes: plan.totalClasses,
-                grading_grid: plan.gradingGrid,
-                state_base: plan.stateBase,
-                education_sphere: plan.educationSphere,
-                generated_text: plan.generatedText,
-                updated_at: new Date().toISOString()
-            });
+        const payload = {
+            id: planWithMeta.id,
+            user_id: userId,
+            period: plan.period,
+            regime: plan.regime,
+            subject: plan.subject,
+            grade: plan.grade,
+            level: plan.level, // New column
+            workload_weekly: plan.workloadWeekly,
+            reserves: plan.reserves,
+            total_classes: plan.totalClasses,
+            grading_grid: plan.gradingGrid,
+            state_base: plan.stateBase,
+            education_sphere: plan.educationSphere,
+            generated_text: plan.generatedText,
+            updated_at: new Date().toISOString()
+        };
 
-        if (error) throw error;
+        const { error } = await supabase.from('term_plans').upsert(payload);
+
+        if (error) {
+            // FALLBACK: Try without 'level' column if it fails (Migration safety)
+            console.warn("Upsert failed, trying fallback without 'level'...", error.message);
+            const { level, ...fallbackPayload } = payload;
+            const { error: fallbackError } = await supabase.from('term_plans').upsert(fallbackPayload);
+            if (fallbackError) throw fallbackError;
+        }
 
         console.log('☁️ Term plan synced to Supabase');
     } catch (e) {
-        console.warn('⚠️ Sync failed (offline?):', e);
+        console.warn('⚠️ Sync failed (offline or schema mismatch):', e);
     }
 
     return planWithMeta;
@@ -59,6 +65,7 @@ export const saveTermPlan = async (userId: string, plan: TermPlan) => {
  */
 export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
     let plans: TermPlan[] = [];
+    console.log(`[DEBUG] fetchTermPlans called for userId: ${userId}`);
 
     try {
         // 1. Fetch Structured Plans (term_plans)
@@ -67,6 +74,12 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
             .select('*')
             .eq('user_id', userId)
             .order('updated_at', { ascending: false });
+
+        if (structuredError) {
+            console.error('[DEBUG] Structured Fetch Error:', structuredError);
+        } else {
+            console.log(`[DEBUG] Structured Plans Found: ${structuredData?.length || 0}`);
+        }
 
         if (!structuredError && structuredData) {
             plans = structuredData.map((d: any) => ({
@@ -95,6 +108,12 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
             .eq('user_id', userId)
             .eq('type', 'trimestral')
             .order('created_at', { ascending: false });
+
+        if (genericError) {
+            console.error('[DEBUG] Generic Fetch Error:', genericError);
+        } else {
+            console.log(`[DEBUG] Generic Plans Found: ${genericData?.length || 0}`);
+        }
 
         if (!genericError && genericData) {
             const genericPlans: TermPlan[] = genericData.map((d: any) => ({
@@ -127,6 +146,7 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
     // 3. Mescla com LocalStorage (prioridade para local se mais recente ou offline)
     try {
         const localData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+        console.log(`[DEBUG] LocalStorage Plans Found: ${localData.length}`);
         if (plans.length === 0) {
             plans = localData;
         }
@@ -134,5 +154,6 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
         console.error('Local fetch failed', e);
     }
 
+    console.log(`[DEBUG] Total merged plans returned: ${plans.length}`);
     return plans;
 };

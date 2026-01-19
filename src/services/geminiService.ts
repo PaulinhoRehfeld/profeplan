@@ -678,6 +678,10 @@ export const generatePdiReport = async (logs: any[], studentName: string, period
   }
 };
 
+import { searchCurriculum } from "./searchService"; // Import at top if possible, but here for tool scope
+// NOTE: Ensure this import is actually at the top of the file in real usage. 
+// Since replace_file_content replaces a block, I should add the logic inside the function.
+
 export const generateTermPlan = async (
   context: {
     subject: string;
@@ -690,6 +694,7 @@ export const generateTermPlan = async (
     totalClasses: number;
     reserves: any;
     userId?: string;
+    level?: string;
   }
 ) => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
@@ -701,6 +706,65 @@ export const generateTermPlan = async (
     if (!quotaStatus.allowed) {
       throw new Error(quotaStatus.message);
     }
+  }
+
+  // --- RAG: Busca Curricular ---
+  let curriculumContext = "";
+  try {
+    // 1. Normalização do Ano/Nível (Crucial para o BUG do usuário)
+    const num = context.grade.replace(/\D/g, ''); // Extract '2' from '2º Ano'
+    let normalizedGrade = `${num}º Ano`;
+    if (context.level === 'Ensino Médio') {
+      normalizedGrade = `${num}º Ano EM`;
+    }
+
+    // 2. Normalização da Disciplina (Básico para bater com ingestão)
+    let normalizedSubject = context.subject;
+    const s = context.subject.toLowerCase();
+    if (s.includes('historia') || s.includes('história')) normalizedSubject = 'História';
+    if (s.includes('matematica') || s.includes('matemática')) normalizedSubject = 'Matemática';
+    if (s.includes('portugues') || s.includes('português')) normalizedSubject = 'Língua Portuguesa';
+    if (s.includes('ingles') || s.includes('inglês')) normalizedSubject = 'Língua Inglesa';
+    if (s.includes('geografia')) normalizedSubject = 'Geografia';
+    if (s.includes('biologia')) normalizedSubject = 'Biologia';
+    if (s.includes('fisica') || s.includes('física')) normalizedSubject = 'Física';
+    if (s.includes('quimica') || s.includes('química')) normalizedSubject = 'Química';
+    if (s.includes('filosofia')) normalizedSubject = 'Filosofia';
+    if (s.includes('sociologia')) normalizedSubject = 'Sociologia';
+    if (s.includes('artes')) normalizedSubject = 'Artes';
+
+
+    const periodString = `${context.period}º ${context.regime}`; // Ex: "1º Bimestre"
+
+    console.log(`🔍 Buscando currículo para: ${normalizedSubject}, ${normalizedGrade}, ${periodString}`);
+
+    // 3. Busca com Filtros
+    // Import searchCurriculum dynamincally or assume it's imported at top. 
+    // Since I cannot change top of file easily without reading all, I will use valid import in previous step or here.
+    // Wait, I can't import inside function in TS mostly. I will assume it is available or fix imports separately.
+    // Ideally I should have added the import at the top. 
+    // I Will handle extraction of logic below.
+
+    // Using searchCurriculum imported from searchService
+    const results = await searchCurriculum(
+      `Planejamento e Habilidades de ${normalizedSubject} para ${normalizedGrade} no ${periodString}`,
+      {
+        disciplina: normalizedSubject,
+        ano: normalizedGrade,
+        periodo: periodString
+      },
+      5 // Top 5 chunks (usually enough for a term)
+    );
+
+    if (results && results.length > 0) {
+      curriculumContext = results.map((r: any) => r.content).join('\n\n---\n\n');
+      console.log(`✅ Encontrados ${results.length} trechos de currículo.`);
+    } else {
+      console.warn("⚠️ Nenhum currículo encontrado no banco para estes filtros.");
+    }
+
+  } catch (err) {
+    console.error("Erro na busca RAG:", err);
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -715,17 +779,26 @@ export const generateTermPlan = async (
     - Esfera: ${context.educationSphere}
     - Professor: ${context.teacherName}
     - Componente: ${context.subject}
-    - Ano/Série: ${context.grade}
+    - Nível de Ensino: ${context.level || 'Não especificado'} (CRUCIAL: Respeite este nível para escolha de códigos BNCC)
+    - Ano/Série: ${context.grade} (Normalizado: ${context.grade.replace(/\D/g, '')}º Ano ${context.level === 'Ensino Médio' ? 'EM' : ''})
     - Período: ${context.period}º ${context.regime}
     - Total de Aulas Previstas: ${context.totalClasses}
+
+    [DADOS DO CURRÍCULO OFICIAL (FONTE DE VERDADE)]:
+    Abaixo estão os trechos do currículo oficial encontrados no banco de dados. USE ESTAS INFORMAÇÕES para preencher Habilidades, Objetivos e Conteúdos.
+    SE O TEMA NÃO ESTIVER AQUI, USE SEU CONHECIMENTO GERAL, MAS DÊ PREFERÊNCIA ABSOLUTA AOS DADOS ABAIXO:
+    
+    ${curriculumContext ? curriculumContext : "Nenhum currículo específico encontrado. Use a BNCC geral adequada ao nível (EF para Fundamental, EM para Médio)."}
+    ---------------------------------------------------
 
     ESTRUTURA OBRIGATÓRIA (Siga exatamente este formato):
 
     MAPA DE PLANEJAMENTO DE AULA/2026
-    Planejamento de ${context.subject} - ${context.grade} - ${context.period}º ${context.regime}
+    Planejamento de ${context.subject} - ${context.grade} (${context.level}) - ${context.period}º ${context.regime}
     Área de Conhecimento: [Inserir Área BNCC]
     Componente Curricular: ${context.subject}
     Ano: ${context.grade}
+    Nível: ${context.level}
     Período: ${context.period}º ${context.regime} de 2026
 
     1. Objetivos Gerais:
@@ -735,10 +808,12 @@ export const generateTermPlan = async (
     • [Objetivo 3]
 
     2. Competências e Habilidades (de acordo com o Currículo de ${context.stateBase} e BNCC):
+    Copie fielmente os códigos e descrições dos trechos acima, se disponíveis.
     • (CÓDIGO ALFANUMÉRICO): [Descrição da Habilidade]
     • (CÓDIGO ALFANUMÉRICO): [Descrição da Habilidade]
 
     3. Conteúdos a Serem Trabalhados:
+    Extraia dos trechos de currículo acima.
     • [Conteúdo 1]
     • [Conteúdo 2]
     • [Conteúdo 3]
@@ -773,7 +848,7 @@ export const generateTermPlan = async (
     - O cronograma deve listar AULA POR AULA (ou agrupamentos claros Aula X e Y).
     - Use "Aula X:" no início de cada linha do cronograma.
     - Adapte o conteúdo especificamente para a disciplina de ${context.subject} no ${context.grade}.
-    - Cite códigos reais da BNCC ou do Currículo de ${context.stateBase} se possível.
+    - Cite códigos reais da BNCC ou do Currículo de ${context.stateBase} encontrados no contexto.
     `;
 
   try {

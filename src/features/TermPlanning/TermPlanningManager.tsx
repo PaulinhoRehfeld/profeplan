@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Save, FileText, Calendar, BookOpen, Clock, Target, CheckCircle2, Sparkles } from 'lucide-react';
 import { useGlobalPlanning, TermPlan } from '../../contexts/GlobalPlanningContext';
+import { PlanningAuthority } from '../../services/PlanningAuthorityService'; // Import Authority
+import { KnowledgeManifest } from '../../components/Governance/KnowledgeManifest'; // Import Manifest
+import { saveGeneratedContent } from '../../services/databaseService';
 import { saveTermPlan } from './TermPlanningService';
 import { exportToDocx } from '../../services/exportService';
-import { generateTermPlan } from '../../services/geminiService';
 
 interface TermPlanningManagerProps {
     userId: string;
     settings: any;
     setSidebarContent?: (content: React.ReactNode) => void;
 }
+
+
+// ... imports remain ...
 
 const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, settings, setSidebarContent }) => {
     const { updateCurrentPlan } = useGlobalPlanning();
@@ -55,9 +60,11 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
 
     const handleGenerate = async () => {
         if (!subject || !grade) return alert('Preencha a Matéria e a Série antes de gerar.');
+
         setIsGenerating(true);
         try {
-            const text = await generateTermPlan({
+            // GOVERNANCE: Use PlanningAuthority instead of direct service
+            const text = await PlanningAuthority.executePlanning({
                 subject,
                 grade,
                 period,
@@ -67,11 +74,12 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
                 teacherName: settings.userName || 'Professor(a)',
                 totalClasses,
                 reserves,
-                userId: userId // Pass userId for quota check
+                userId: userId,
+                level // Pass level for validation
             });
             setGeneratedText(text);
-        } catch (e) {
-            alert('Erro ao gerar planejamento: ' + e);
+        } catch (e: any) {
+            alert('⛔ BLOQUEIO DO GESTOR DE IA:\n' + e.message);
         } finally {
             setIsGenerating(false);
         }
@@ -103,19 +111,32 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
             updateCurrentPlan(plan);
 
             // 2. Persist Structure (For Planning Tool)
+            console.log("Saving to TermPlans structure...");
             await saveTermPlan(userId, plan);
 
             // 3. Persist to Memory/Files (For History & Drive)
             if (generatedText) {
-                const { saveGeneratedContent } = await import('../../services/databaseService');
+                console.log("Saving to Generated Contents...");
                 const title = `Planejamento ${period}º ${regime} - ${subject} (${grade})`;
-                await saveGeneratedContent(userId, 'trimestral', title, generatedText);
+                // Use static import (already imported at top if not I need to add it)
+                // Wait, I need to add the import at the top first if I haven't.
+                // Assuming I will add it in the next step or this one handles imports lines too? 
+                // replace_file_content chunk is local.
+                // I'll assume I need to fix imports separately or use the global function if available?
+                // No, I should use the imported function.
+
+                // Let's use the function directly. I need to make sure it's imported.
+                const savedDoc = await saveGeneratedContent(userId, 'trimestral', title, generatedText);
+                if (savedDoc) console.log("Saved to Drive successfully");
+                else console.warn("Failed to save to Drive");
+            } else {
+                console.warn("No generated text to save to Drive");
             }
 
-            alert('✅ Planejamento Salvo e Sincronizado com Sucesso!');
-        } catch (e) {
-            console.error(e);
-            alert('Erro ao salvar.');
+            alert('✅ Planejamento Salvo! Verifique em "Meus Arquivos > Trimestrais".');
+        } catch (e: any) {
+            console.error("Save Error:", e);
+            alert(`Erro ao salvar: ${e.message}`);
         } finally {
             setIsSaving(false);
         }
@@ -174,6 +195,9 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                 </h1>
                 <p className="text-slate-500 font-medium">Defina o contexto global para o período letivo.</p>
             </div>
+
+            {/* GOVERNANCE LAYER: KNOWLEDGE MANIFEST */}
+            <KnowledgeManifest />
 
             {/* Main Form Card */}
             <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 relative overflow-hidden">

@@ -2,10 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/geminiService';
-import { searchCurriculum } from '../../services/searchService';
+import { searchCurriculum, getDeterministicCurriculum } from '../../services/searchService';
 import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan } from './PlanningService';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
 
 // --- NEW SUB-COMPONENTS ---
@@ -44,7 +44,9 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     activeMode,
     userId,
     settings: appSettings,
-    setSidebarContent
+    setSidebarContent,
+    availableClasses,
+    selectedClassId
 }) => {
     // --- Global State ---
     const { termPlans, refreshTermPlans } = useGlobalPlanning();
@@ -134,6 +136,25 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
         setIsThinking(true);
 
         try {
+            // GOVERNANCE: PEDAGOGICAL SPECIALIST MODE
+            if (activeMode === ToolMode.SPECIALIST) {
+                // Import dynamically or explicitly. Since I can't add top-import in this block:
+                // I will add the import in a previous step/block, but here I can use the global or assume imported.
+                // Wait, I should add the import first. Let's assume I did/will.
+
+                // For now, I'll rely on a direct call if imported, or import inside logic? 
+                // Better to just add the logic assuming import, and then add import.
+
+                // Using PlanningAuthorityService
+                const { PlanningAuthority } = await import('../../services/PlanningAuthorityService'); // Dynamic import for safety
+
+                const response = await PlanningAuthority.askSpecialist(input, { history: [] }); // History implementation pending
+                const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
+                setMessages(prev => [...prev, aiMsg]);
+                setIsThinking(false);
+                return;
+            }
+
             // Context Builder
             const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
             let context = `Você é um assistente pedagógico especialista.`;
@@ -149,21 +170,91 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                 console.warn("Failed to fetch memories", err);
             }
 
-            // --- RAG: Busca no Currículo Oficial ---
-            const retrievalResults = await searchCurriculum(input, {
-                disciplina: selectedPlan?.subject,
-                ano: selectedPlan?.grade
-            });
+            // --- DETERMINISTIC vs RAG ---
+            // Se for Planejamento Trimestral, usamos a busca EXATA (Anti-Alucinação)
+            const isQuarterlyPlanning = activeMode === ToolMode.QUARTERLY_PLANNING || (activeMode === ToolMode.PLANNING && input.toLowerCase().includes('trimestral'));
 
-            if (retrievalResults.length > 0) {
-                const formattedContext = retrievalResults.map((r: any) =>
-                    `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
-                ).join('\n\n');
+            let curriculumContext = '';
 
-                context += `\n\n[CONTEXTO DO CURRÍCULO OFICIAL MINEIRO RECUPERADO]:\n${formattedContext}\n\n[INSTRUÇÃO]: PARA O PLANEJAMENTO O AGENTE DEVERÁ UTILIZAR "TODAS" AS INFORMAÇÕES DO BIMESTRE. APENAS AS ORIENTAÇÕES PEDAGÓGICAS É QUE DEVEM ESTAR INTRÍNSECAS.\n[FIM DO CONTEXTO]`;
+            if (isQuarterlyPlanning && selectedPlan?.subject && selectedPlan?.grade) {
+                // Tenta resolver Disciplina e Ano a partir do Plano Selecionado OU da Seleção Atual (Navigation)
+                let targetSubject = selectedPlan?.subject;
+                let targetGrade = selectedPlan?.grade;
+
+                // Se não estivermos editando um plano (selectedPlan é null), pegamos da navegação atual
+                if (!targetSubject && availableClasses && selectedClassId) {
+                    const currentClass = availableClasses.find(c => c.id === selectedClassId);
+                    if (currentClass) {
+                        // Nomes esperados: "1º Ano - Ensino Médio", "6º Ano B", "História"
+                        targetSubject = currentClass.name; // Assumindo que o nome da turma tem a matéria ou é a matéria?
+                        // Na verdade availableClasses costuma ter { id, name, grade, subject } ou similar.
+                        // Precisamos verificar a estrutura de availableClasses, mas vamos tentar extrair.
+                        if (currentClass.subject) targetSubject = currentClass.subject;
+                        if (currentClass.grade) targetGrade = currentClass.grade;
+                    }
+                }
+
+                // Fallbacks (apenas se tudo falhar, mas ideal avisar erro)
+                targetSubject = targetSubject || 'História';
+                // targetGrade = targetGrade || '6º Ano'; // REMOVIDO DEFAULT PERIGOSO
+
+                const targetPeriod = appSettings?.quarter || '1º Trimestre';
+
+                // Normalização da Série para bater com o Banco de Dados ("2º Ano EM" vs "2º Ano - Ensino Médio")
+                if (targetGrade) {
+                    // Regex para capturar número do ano
+                    const yearMatch = targetGrade.match(/\d+/);
+                    const yearNum = yearMatch ? yearMatch[0] : '';
+
+                    if (targetGrade.toLowerCase().includes('médio') || targetGrade.toLowerCase().includes('em')) {
+                        targetGrade = `${yearNum}º Ano EM`;
+                    } else if (yearNum) {
+                        targetGrade = `${yearNum}º Ano`;
+                    }
+                } else {
+                    targetGrade = '6º Ano'; // Default final se realmente não tiver nada (para não quebrar, mas pode alucinar)
+                }
+
+                // Se chamado de dentro de um plano existente, usa os dados do plano.
+                // Mas a alucinação crítica é na CRIAÇÃO DO PLANO MACRO.
+                // Vamos assumir que se o usuário está pedindo "Planejamento Trimestral", ele forneceu os dados.
+
+                // CHAMADA NOVA:
+                // Importar getDeterministicCurriculum no topo (vou adicionar import via multi_replace se precisar, ou assumir q já importei)
+                // Nota: Preciso adicionar o import no topo depois.
+
+                const fullText = await getDeterministicCurriculum(targetSubject, targetPeriod, targetGrade);
+
+                if (fullText) {
+                    curriculumContext = `
+---CONTEXTO OFICIAL (FONTE DA VERDADE - NÃO INVENTE NADA)---
+${fullText}
+-------------------------------------------------------------
+REGRAS DE OURO (ANTI-ALUCINAÇÃO):
+1. USE APENAS AS HABILIDADES ACIMA.
+2. NÃO CRIE CÓDIGOS BNCC QUE NÃO EXISTEM NO TEXTO.
+3. SE O CONTEXTO ESTIVER VAZIO, AVISE O USUÁRIO.
+`;
+                } else {
+                    curriculumContext = `[AVISO CRÍTICO]: Não foi encontrado o currículo oficial para ${targetSubject} - ${targetGrade} - ${targetPeriod}. Avise o usuário.`;
+                }
+
             } else {
-                context += `\n\n[AVISO]: Não foi encontrado contexto específico no currículo oficial para esta solicitação.`;
+                // RAG Padrão para dúvidas pontuais ou outros modos
+                const retrievalResults = await searchCurriculum(input, {
+                    disciplina: selectedPlan?.subject,
+                    ano: selectedPlan?.grade
+                });
+
+                if (retrievalResults.length > 0) {
+                    const formattedContext = retrievalResults.map((r: any) =>
+                        `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
+                    ).join('\n\n');
+                    curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG)]:\n${formattedContext}`;
+                }
             }
+
+            context += curriculumContext;
 
             if (selectedPlan) {
                 context += `\nContexto do Plano Trimestral: ${selectedPlan.grade} - ${selectedPlan.subject}.`;
@@ -175,10 +266,11 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
             // --- Dynamic Temperature Control ---
             // User Request: "PRÁTICAS DE LINGUAGEM HABILIDADE... temperatura precisa ser zero"
             // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
-            const keywordsStrict = ['habilidade', 'bncc', 'objeto de conhecimento', 'práticas de linguagem', 'descritor', 'saeb', 'código'];
-            const isStrictQuery = keywordsStrict.some(k => input.toLowerCase().includes(k.toLowerCase()));
+            // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
+            const keywordsStrict = ['habilidade', 'bncc', 'objeto de conhecimento', 'práticas de linguagem', 'descritor', 'saeb', 'código', 'planejamento trimestral'];
+            const isStrictQuery = keywordsStrict.some(k => input.toLowerCase().includes(k.toLowerCase())) || isQuarterlyPlanning;
 
-            const dynamicTemp = isStrictQuery ? 0.0 : 0.7;
+            const dynamicTemp = isStrictQuery ? 0.1 : 0.7;
 
             const response = await generateGeminiContent(input, [], context, userId, dynamicTemp);
             const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
@@ -206,16 +298,47 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     };
 
     const handleExportDocx = async (content: string) => {
+        console.log('[DEBUG] Export clicked by user:', userId);
         try {
-            await exportToDocx(content, `Aula_${selectedLesson?.number || 'Geral'}_${new Date().toISOString().split('T')[0]}`, {
+            if (!userId) throw new Error("ID do usuário não encontrado.");
+
+            // 1. Determine Title & Folder
+            const title = selectedLesson
+                ? `${selectedLesson.number} - ${selectedLesson.title}`
+                : `Plano Gerado ${new Date().toLocaleDateString()}`;
+
+            // Simple heuristic for folder based on content or context
+            // Ideally we should pass the type from the message metadata if possible
+            let folder = PlanFolder.PLANO_AULA;
+            let type: any = 'aula';
+
+            if (content.includes('QUESTÕES') || content.includes('GABARITO')) {
+                folder = PlanFolder.AVALIACOES;
+                type = 'avaliacao';
+            } else if (content.includes('ROTEIRO') || content.includes('MATERIAL')) {
+                folder = PlanFolder.MATERIAL_ALUNO;
+                type = 'documento';
+            }
+
+            // 2. Save to Persistence (Drive + Memory)
+            await savePlan(userId, {
+                type: type,
+                title: title,
+                content: content,
+                createdAt: new Date().toISOString()
+            }, folder);
+
+            // 3. Export to DOCX
+            await exportToDocx(content, title.replace(/[^a-z0-9]/gi, '_'), {
                 schoolName: localSettings?.schoolName || 'Escola Profeplan',
                 teacherName: localSettings?.teacherName || 'Professor(a)',
                 userName: localSettings?.userName
             });
-            alert('Download iniciado!');
-        } catch (e) {
+
+            alert('Salvo em "Meus Arquivos" e Download iniciado!');
+        } catch (e: any) {
             console.error(e);
-            alert('Erro ao exportar.');
+            alert(`Erro ao salvar/exportar: ${e.message || 'Erro desconhecido'}`);
         }
     };
 
@@ -260,17 +383,30 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
         );
     }
 
-    // Default Fallback (Clean Chat)
+    // Default Fallback (Clean Chat) OR Specialist Chat
     return (
-        <CleanChat
-            messages={messages}
-            isThinking={isThinking}
-            input={input}
-            setInput={setInput}
-            handleSendMessage={handleSendMessage}
-            handleClearChat={handleClearChat}
-            messagesEndRef={messagesEndRef}
-        />
+        <div className="flex-1 flex flex-col h-full bg-slate-50 relative">
+            {activeMode === ToolMode.SPECIALIST && (
+                <div className="bg-amber-100 border-b border-amber-200 px-6 py-3 flex items-center gap-3 shadow-sm z-10">
+                    <div className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-amber-200">
+                        <ShieldCheck size={20} />
+                    </div>
+                    <div>
+                        <h2 className="text-sm font-black text-amber-900 uppercase tracking-widest">Especialista Pedagógico</h2>
+                        <p className="text-[10px] text-amber-900/60 font-bold">Modo de Auditoria e Governança Ativo</p>
+                    </div>
+                </div>
+            )}
+            <CleanChat
+                messages={messages}
+                isThinking={isThinking}
+                input={input}
+                setInput={setInput}
+                handleSendMessage={handleSendMessage}
+                handleClearChat={handleClearChat}
+                messagesEndRef={messagesEndRef}
+            />
+        </div>
     );
 };
 

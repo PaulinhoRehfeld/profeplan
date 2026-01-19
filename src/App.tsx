@@ -55,7 +55,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (session?.id) {
-      getUserProfile(session.id).then(setUserProfile);
+      // Added error handling to prevent "Uncaught (in promise) Object"
+      getUserProfile(session.id)
+        .then(setUserProfile)
+        .catch(err => {
+          console.error('[App] Failed to load user profile:', err);
+        });
     }
   }, [session?.id]);
 
@@ -188,13 +193,14 @@ const App: React.FC = () => {
 
 
 
-  const mapModeToType = (mode: ToolMode): 'plano' | 'aula' | 'avaliacao' | 'documento' | 'trimestral' | 'enem' => {
+  const mapModeToType = (mode: ToolMode): 'plano' | 'aula' | 'avaliacao' | 'documento' | 'trimestral' | 'enem' | 'chat' => {
     switch (mode) {
       case ToolMode.PLANNING: return 'plano';
       case ToolMode.QUARTERLY_PLANNING: return 'trimestral';
       case ToolMode.ACTIVITIES: return 'aula';
       case ToolMode.SIMULATION: return 'avaliacao';
       case ToolMode.ENEM_BANK: return 'enem';
+      case ToolMode.SPECIALIST: return 'chat'; // Reuses chat interface but with different prompts
       default: return 'documento';
     }
   };

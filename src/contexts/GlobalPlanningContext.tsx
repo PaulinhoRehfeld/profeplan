@@ -1,33 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../services/supabaseClient';
+import { fetchTermPlans as serviceFetchTermPlans } from '../features/TermPlanning/TermPlanningService';
 
-// Define the shape of our Term Plan Data
-export interface TermPlan {
-    id: string; // Made mandatory for list keying
-    period: number;
-    regime: 'Bimestre' | 'Trimestre';
-    subject: string;
-    grade: string;
-    level: 'Ensino Fundamental' | 'Ensino Médio';
-    workloadWeekly: number;
-    reserves: {
-        monthlyExam: boolean;
-        bimonthlyExam: boolean;
-        recovery: boolean;
-    };
-    totalClasses: number;
-    gradingGrid: {
-        vistos: number;
-        trabalhos: number;
-        monthlyExam: number;
-        bimonthlyExam: number;
-        others: number;
-    };
-    stateBase?: string;
-    educationSphere?: string;
-    generatedText: string; // Made mandatory
-    created_at: string;
-}
+import { TermPlan } from '../types';
+export type { TermPlan };
 
 interface GlobalPlanningContextType {
     currentPlan: TermPlan | null;
@@ -62,54 +38,21 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
         refreshTermPlans();
     }, []);
 
+
+
     const refreshTermPlans = async () => {
         try {
-            // Fetch from Supabase 'generated_contents' where type is 'trimestral'
-            // We need to parse the content JSON back to objects if they are stored as JSON strings
-            // OR if they are basic records, we might need to map them.
-            // Assuming for now that TermPlanningManager saves them as 'trimestral' type.
-
             const { data: session } = await supabase.auth.getSession();
             if (!session.session?.user) return;
 
-            const { data, error } = await supabase
-                .from('generated_contents')
-                .select('*')
-                .eq('user_id', session.session.user.id)
-                .eq('type', 'trimestral')
-                .order('created_at', { ascending: false });
+            console.log('[GlobalContext] Calling serviceFetchTermPlans for user:', session.session.user.id);
+            const plans = await serviceFetchTermPlans(session.session.user.id);
+            console.log('[GlobalContext] Received plans:', plans?.length);
+            setTermPlans(plans);
 
-            if (error) throw error;
-
-            if (data) {
-                // Map DB content to TermPlan
-                // Caution: 'content' in generated_contents is string (likely JSON or text).
-                // If TermManager saves the JSON object stringified in 'content', we parse it.
-                const plans: TermPlan[] = data.map(item => {
-                    let parsedContent: any = {};
-                    try {
-                        parsedContent = typeof item.content === 'string' && item.content.startsWith('{')
-                            ? JSON.parse(item.content)
-                            : { generatedText: item.content }; // Fallback if plain text
-                    } catch (e) {
-                        parsedContent = { generatedText: item.content };
-                    }
-
-                    return {
-                        id: item.id,
-                        created_at: item.created_at,
-                        subject: parsedContent.subject || item.title || 'Sem disciplina', // Fallback
-                        grade: parsedContent.grade || 'Geral',
-                        period: parsedContent.period || 1,
-                        regime: parsedContent.regime || 'Trimestre',
-                        generatedText: parsedContent.generatedText || item.content,
-                        ...parsedContent // Spread other fields like reserves, gradingGrid if they exist
-                    } as TermPlan;
-                });
-                setTermPlans(plans);
-            }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching term plans:', error);
+            console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
         }
     };
 

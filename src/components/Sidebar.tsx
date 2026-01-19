@@ -45,8 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: ToolMode.HISTORY, icon: Clock, label: 'Memória do Professor', feature: 'management' },
     { id: ToolMode.CLASSES, icon: Users, label: 'Minhas Turmas', feature: 'management' },
     { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content' },
+    { id: ToolMode.SPECIALIST, icon: ShieldCheck, label: 'Especialista Pedagógico', feature: 'chat' } // Action 5
   ];
-
   // REMOVED FILTER: User wants all items visible
   const filteredItems = menuItems;
 

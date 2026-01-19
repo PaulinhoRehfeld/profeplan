@@ -58,7 +58,8 @@ export enum ToolMode {
   FILES = 'files',
   HISTORY = 'history',
   CLASSES = 'classes',
-  ASSESSMENT = 'assessment'
+  ASSESSMENT = 'assessment',
+  SPECIALIST = 'specialist' // Action 5
 }
 
 // Assessment Types (Ciclo de Feedback Fechado)
@@ -170,4 +171,31 @@ export interface EnemQuestion {
     bncc: string[];
     tags: string[];
   };
+}
+
+export interface TermPlan {
+  id: string; // Made mandatory for list keying
+  period: number;
+  regime: 'Bimestre' | 'Trimestre';
+  subject: string;
+  grade: string;
+  level: 'Ensino Fundamental' | 'Ensino Médio';
+  workloadWeekly: number;
+  reserves: {
+    monthlyExam: boolean;
+    bimonthlyExam: boolean;
+    recovery: boolean;
+  };
+  totalClasses: number;
+  gradingGrid: {
+    vistos: number;
+    trabalhos: number;
+    monthlyExam: number;
+    bimonthlyExam: number;
+    others: number;
+  };
+  stateBase?: string;
+  educationSphere?: string;
+  generatedText: string; // Made mandatory
+  created_at: string;
 }
