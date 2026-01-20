@@ -1,6 +1,5 @@
-
 import React, { useRef, useEffect, useState } from 'react';
-import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save } from 'lucide-react';
+import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock } from 'lucide-react';
 import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
@@ -16,6 +15,7 @@ interface PlanningCockpitProps {
     handleQuickAction: (action: 'plan' | 'material' | 'enem') => void;
     messages: Message[];
     handleExportDocx: (content: string) => void;
+    handleSavePlan: (content: string) => Promise<boolean>;
     isThinking: boolean;
     input: string;
     setInput: (val: string | ((prev: string) => string)) => void;
@@ -26,43 +26,119 @@ interface PlanningCockpitProps {
 export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     termPlans, selectedTermPlanId, setSelectedTermPlanId,
     parsedLessons, lessonTracking, selectedLesson, setSelectedLesson,
-    handleQuickAction, messages, handleExportDocx, isThinking, input, setInput, handleSendMessage, messagesEndRef
+    handleQuickAction, messages, handleExportDocx, handleSavePlan, isThinking, input, setInput, handleSendMessage, messagesEndRef
 }) => {
     const [observations, setObservations] = useState('');
+
+    // Material do Aluno Sates
+    const [showMaterialOptions, setShowMaterialOptions] = useState(false);
+    const [materialType, setMaterialType] = useState<'resumo' | 'teorico' | 'exercicios' | null>(null);
+    const [materialInstructions, setMaterialInstructions] = useState('');
+
+    // Assessment States
+    const [showAssessmentOptions, setShowAssessmentOptions] = useState(false);
+    const [enemCount, setEnemCount] = useState(1);
+    const [objectiveCount, setObjectiveCount] = useState(2);
+    const [dissertativeCount, setDissertativeCount] = useState(1);
+    const [difficulty, setDifficulty] = useState<'Fácil' | 'Médio' | 'Difícil'>('Médio');
+
+    // Message ID -> Saved State Mapping
+    const [savedMessages, setSavedMessages] = useState<Record<string, boolean>>({});
+    const [isSaving, setIsSaving] = useState<Record<string, boolean>>({});
 
     const handleActionClick = (action: 'plan' | 'material' | 'enem') => {
         if (!selectedLesson) return alert('Selecione uma aula primeiro!');
 
+        if (action === 'material') {
+            setShowMaterialOptions(true);
+            setShowAssessmentOptions(false);
+            return;
+        }
+
+        if (action === 'enem') {
+            setShowAssessmentOptions(true);
+            setShowMaterialOptions(false);
+            return;
+        }
+
+        // Reset Options if switching to plan
+        setShowMaterialOptions(false);
+        setShowAssessmentOptions(false);
+        setMaterialType(null);
+
         let prompt = '';
         if (action === 'plan') prompt = `[AÇÃO: PLANO DE AULA DETALHADO]\nCrie um plano de aula completo para a Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição Original: ${selectedLesson.description}`;
-        if (action === 'material') prompt = `[AÇÃO: MATERIAL DIDÁTICO]\nCrie um roteiro de estudo/material de apoio para o aluno sobre o tema: ${selectedLesson.title}.`;
-        if (action === 'enem') prompt = `[AÇÃO: QUESTÕES DE PROVA]\nCrie 3 questões inéditas estilo ENEM/SAEB sobre o tema: ${selectedLesson.title}, com gabarito e comentários.`;
 
         if (observations.trim()) {
             prompt += `\n\n[OBSERVAÇÕES DO PROFESSOR]:\n${observations}`;
         }
 
-        // We need to inject this into the parent's handler
-        // Since handleSendMessage expects a FormEvent, we'll manually set input and call it
-        // OR better: we can construct a synthetic event or just call setInput and let the user press send?
-        // No, the user wants buttons to trigger.
-        // We need to expose a direct send method from parent or simulate it.
-        // For now, let's use a workaround: setInput(prompt) then wait a tick and submit? 
-        // Or update parent to accept text.
-        // Let's assume we can setInput and then the user confirms or we auto-send.
-        // Ideally we should auto-send.
-
-        // Let's update the input state and trigger the logic.
         setInput(prompt);
+        triggerSend();
+    };
 
-        // This is a bit hacky because handleSendMessage takes an event. 
-        // We will execute a timeout to submit it if possible, or key off a change.
-        // Actually, let's just create a synthetic event.
+    const handleAssessmentGenerate = () => {
+        if (!selectedLesson) return;
+
+        let prompt = `[AÇÃO: QUESTÕES DE PROVA]\nCrie uma avaliação sobre o tema: ${selectedLesson.title}.`;
+
+        prompt += `\n\n[CONFIGURAÇÃO DA PROVA]:
+- Questões Estilo ENEM (Banco de Dados): ${enemCount}
+- Questões Objetivas Contextuais (IA): ${objectiveCount}
+- Questões Discursivas/Subjetivas: ${dissertativeCount}
+- Nível de Dificuldade: ${difficulty}`;
+
+        if (observations.trim()) {
+            prompt += `\n\n[OBSERVAÇÕES ADICIONAIS]:\n${observations}`;
+        }
+
+        setInput(prompt);
+        triggerSend();
+
+        // Reset UI
+        setShowAssessmentOptions(false);
+        setObservations('');
+    };
+
+    const handleMaterialGenerate = () => {
+        if (!selectedLesson) return;
+        if (!materialType) return alert('Selecione o tipo de material!');
+
+        let typeLabel = '';
+        if (materialType === 'resumo') typeLabel = 'RESUMO EM TÓPICOS';
+        if (materialType === 'teorico') typeLabel = 'TEXTO TEÓRICO COMPLETO';
+        if (materialType === 'exercicios') typeLabel = 'LISTA DE EXERCÍCIOS DE FIXAÇÃO';
+
+        let prompt = `[AÇÃO: MATERIAL DIDÁTICO - ${typeLabel}]\nCrie um material didático para a Aula ${selectedLesson.number}: ${selectedLesson.title}.`;
+
+        if (materialInstructions.trim()) {
+            prompt += `\n\n[DETALHES DA OPÇÃO SELECIONADA]:\n${materialInstructions}`;
+        }
+
+        setInput(prompt);
+        triggerSend();
+
+        // Reset UI
+        setShowMaterialOptions(false);
+        setMaterialType(null);
+        setMaterialInstructions('');
+    };
+
+    const triggerSend = () => {
         setTimeout(() => {
             const syntheticEvent = { preventDefault: () => { } } as React.FormEvent;
             handleSendMessage(syntheticEvent);
-            setObservations(''); // Clear observations after sending
+            setObservations('');
         }, 100);
+    };
+
+    const onSaveMessage = async (msgId: string, content: string) => {
+        setIsSaving(prev => ({ ...prev, [msgId]: true }));
+        const success = await handleSavePlan(content);
+        if (success) {
+            setSavedMessages(prev => ({ ...prev, [msgId]: true }));
+        }
+        setIsSaving(prev => ({ ...prev, [msgId]: false }));
     };
 
     return (
@@ -145,67 +221,177 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     )}
                 </div>
 
-                {/* C. Action Buttons */}
+                {/* C. Action Buttons or Material Wizard */}
                 <div className="p-4 border-t border-slate-200 bg-white space-y-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">O que deseja criar?</p>
+                    {showMaterialOptions ? (
+                        <div className="animate-in slide-in-from-right-4 duration-300">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Configurar Material</p>
+                                <button onClick={() => setShowMaterialOptions(false)} className="text-slate-400 hover:text-red-500 text-[10px] font-bold">CANCELAR</button>
+                            </div>
 
-                    <div className="grid grid-cols-1 gap-2">
-                        <button
-                            onClick={() => handleActionClick('plan')}
-                            disabled={!selectedLesson || isThinking}
-                            className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
-                        >
-                            <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                <Book size={16} strokeWidth={2.5} />
+                            <div className="grid grid-cols-1 gap-2 mb-3">
+                                {[
+                                    { id: 'resumo', label: 'Resumo em Tópicos' },
+                                    { id: 'teorico', label: 'Texto Teórico' },
+                                    { id: 'exercicios', label: 'Exercícios' }
+                                ].map(opt => (
+                                    <button
+                                        key={opt.id}
+                                        onClick={() => setMaterialType(opt.id as any)}
+                                        className={`p-3 rounded-lg border text-xs font-bold text-left transition-all ${materialType === opt.id
+                                            ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                                            }`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
                             </div>
-                            <div>
-                                <span className="block text-xs font-black uppercase tracking-wide">Plano de Aula</span>
-                                <span className="text-[10px] text-slate-400 font-medium">Metodologia e objetivos</span>
-                            </div>
-                        </button>
 
-                        <button
-                            onClick={() => handleActionClick('material')}
-                            disabled={!selectedLesson || isThinking}
-                            className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
-                        >
-                            <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                                <FileText size={16} strokeWidth={2.5} />
+                            <div className="mb-3">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Detalhes da Opção Selecionada</p>
+                                <textarea
+                                    value={materialInstructions}
+                                    onChange={(e) => setMaterialInstructions(e.target.value)}
+                                    placeholder="Ex: Incluir analogias simples..."
+                                    className="w-full p-2 rounded-lg border border-slate-200 bg-slate-50 text-xs h-16 resize-none focus:bg-white focus:ring-2 ring-indigo-100 outline-none"
+                                />
                             </div>
-                            <div>
-                                <span className="block text-xs font-black uppercase tracking-wide">Material do Aluno</span>
-                                <span className="text-[10px] text-slate-400 font-medium">Resumos e fixação</span>
-                            </div>
-                        </button>
 
-                        <button
-                            onClick={() => handleActionClick('enem')}
-                            disabled={!selectedLesson || isThinking}
-                            className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
-                        >
-                            <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                                <CheckCircle2 size={16} strokeWidth={2.5} />
+                            <button
+                                onClick={handleMaterialGenerate}
+                                disabled={!materialType}
+                                className="w-full py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 transition-all"
+                            >
+                                Gerar Material
+                            </button>
+                        </div>
+                    ) : showAssessmentOptions ? (
+                        <div className="animate-in slide-in-from-right-4 duration-300">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Configurar Avaliação</p>
+                                <button onClick={() => setShowAssessmentOptions(false)} className="text-slate-400 hover:text-red-500 text-[10px] font-bold">CANCELAR</button>
                             </div>
-                            <div>
-                                <span className="block text-xs font-black uppercase tracking-wide">Avaliação</span>
-                                <span className="text-[10px] text-slate-400 font-medium">Questões e gabarito</span>
+
+                            <div className="space-y-4 mb-4">
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Questões ENEM ({enemCount})</label>
+                                    <input
+                                        type="range" min="0" max="10" step="1"
+                                        value={enemCount}
+                                        onChange={(e) => setEnemCount(Number(e.target.value))}
+                                        className="w-full accent-amber-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Questões Objetivas ({objectiveCount})</label>
+                                    <input
+                                        type="range" min="0" max="10" step="1"
+                                        value={objectiveCount}
+                                        onChange={(e) => setObjectiveCount(Number(e.target.value))}
+                                        className="w-full accent-amber-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Questões Discursivas ({dissertativeCount})</label>
+                                    <input
+                                        type="range" min="0" max="5" step="1"
+                                        value={dissertativeCount}
+                                        onChange={(e) => setDissertativeCount(Number(e.target.value))}
+                                        className="w-full accent-amber-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-2">Dificuldade</label>
+                                    <div className="flex gap-2">
+                                        {['Fácil', 'Médio', 'Difícil'].map(d => (
+                                            <button
+                                                key={d}
+                                                onClick={() => setDifficulty(d as any)}
+                                                className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${difficulty === d
+                                                        ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                                        : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-white'
+                                                    }`}
+                                            >
+                                                {d}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                        </button>
+
+                            <button
+                                onClick={handleAssessmentGenerate}
+                                className="w-full py-3 bg-amber-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-all shadow-sm shadow-amber-200"
+                            >
+                                Gerar Avaliação
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">O que deseja criar?</p>
+                            <div className="grid grid-cols-1 gap-2">
+                                <button
+                                    onClick={() => handleActionClick('plan')}
+                                    disabled={!selectedLesson || isThinking}
+                                    className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                        <Book size={16} strokeWidth={2.5} />
+                                    </div>
+                                    <div>
+                                        <span className="block text-xs font-black uppercase tracking-wide">Plano de Aula</span>
+                                        <span className="text-[10px] text-slate-400 font-medium">Metodologia e objetivos</span>
+                                    </div>
+                                </button>
+
+                                <button
+                                    onClick={() => handleActionClick('material')}
+                                    disabled={!selectedLesson || isThinking}
+                                    className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                        <FileText size={16} strokeWidth={2.5} />
+                                    </div>
+                                    <div>
+                                        <span className="block text-xs font-black uppercase tracking-wide">Material do Aluno</span>
+                                        <span className="text-[10px] text-slate-400 font-medium">Resumos e fixação</span>
+                                    </div>
+                                </button>
+
+                                <button
+                                    onClick={() => handleActionClick('enem')}
+                                    disabled={!selectedLesson || isThinking}
+                                    className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                                        <CheckCircle2 size={16} strokeWidth={2.5} />
+                                    </div>
+                                    <div>
+                                        <span className="block text-xs font-black uppercase tracking-wide">Avaliação</span>
+                                        <span className="text-[10px] text-slate-400 font-medium">Questões e gabarito</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                {/* D. Observation Input (Hidden if Wizard visible to save space) */}
+                {!showMaterialOptions && !showAssessmentOptions && (
+                    <div className="p-4 border-t border-slate-200 bg-slate-50">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
+                            <MessageSquare size={10} /> Observações Específicas
+                        </p>
+                        <textarea
+                            value={observations}
+                            onChange={(e) => setObservations(e.target.value)}
+                            placeholder="Ex: Focar em exemplos práticos do cotidiano..."
+                            className="w-full p-3 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-600 focus:ring-2 focus:ring-indigo-100 outline-none resize-none h-20"
+                        />
                     </div>
-                </div>
-
-                {/* D. Observation Input */}
-                <div className="p-4 border-t border-slate-200 bg-slate-50">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
-                        <MessageSquare size={10} /> Observações Específicas
-                    </p>
-                    <textarea
-                        value={observations}
-                        onChange={(e) => setObservations(e.target.value)}
-                        placeholder="Ex: Focar em exemplos práticos do cotidiano..."
-                        className="w-full p-3 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-600 focus:ring-2 focus:ring-indigo-100 outline-none resize-none h-20"
-                    />
-                </div>
+                )}
             </div>
 
             {/* 2. RIGHT CONTENT: OUTPUT & CHAT (Flex 1) */}
@@ -216,20 +402,6 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     <div className="flex items-center gap-2 text-indigo-600">
                         <Bot size={18} />
                         <span className="text-xs font-black uppercase tracking-widest">Assistente Pedagógico</span>
-                    </div>
-
-                    {/* Global Actions for Last Message */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => {
-                                const lastMsg = messages.filter(m => m.role === MessageRole.ASSISTANT).pop();
-                                if (lastMsg) handleExportDocx(lastMsg.content);
-                                else alert('Gere um conteúdo primeiro!');
-                            }}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-[10px] font-black uppercase tracking-wide transition-all"
-                        >
-                            <Save size={14} /> Salvar / Imprimir
-                        </button>
                     </div>
                 </div>
 
@@ -256,18 +428,42 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                                         {msg.content}
                                     </div>
 
-                                    {/* Assistant Message Actions Toolbar */}
+                                    {/* ACTIONS BAR (BELOW CONTENT) */}
                                     {msg.role === MessageRole.ASSISTANT && !msg.content.startsWith('❌') && !msg.content.startsWith('✅') && (
-                                        <div className="flex items-center gap-2 mt-2 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center gap-2 mt-3 w-full animate-in fade-in duration-300">
+
+                                            {/* 1. SAVE BUTTON */}
+                                            <button
+                                                onClick={() => onSaveMessage(msg.id, msg.content)}
+                                                disabled={savedMessages[msg.id] || isSaving[msg.id]}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-sm ${savedMessages[msg.id]
+                                                    ? 'bg-green-100 text-green-700 border border-green-200 cursor-default'
+                                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-200'
+                                                    }`}
+                                            >
+                                                {isSaving[msg.id] ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                                {savedMessages[msg.id] ? 'Salvo' : 'Salvar'}
+                                            </button>
+
+                                            {/* 2. EXPORT DOCX (LOCKED UNTIL SAVED) */}
                                             <button
                                                 onClick={() => handleExportDocx(msg.content)}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-sm"
+                                                disabled={!savedMessages[msg.id]}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border ${savedMessages[msg.id]
+                                                    ? 'bg-white border-blue-200 text-blue-700 hover:bg-blue-50 cursor-pointer'
+                                                    : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-70'
+                                                    }`}
+                                                title={!savedMessages[msg.id] ? "Salve o documento primeiro para exportar" : "Exportar para Word"}
                                             >
-                                                <Download size={12} /> Exportar DOCX
+                                                {!savedMessages[msg.id] ? <Lock size={12} /> : <Download size={14} />}
+                                                Salvar em Word
                                             </button>
+
+                                            <div className="h-4 w-px bg-slate-200 mx-2"></div>
+
                                             <button
                                                 onClick={() => navigator.clipboard.writeText(msg.content)}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-500 hover:text-slate-700 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all shadow-sm"
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-slate-400 hover:text-slate-600 text-[10px] font-bold uppercase tracking-wide transition-all"
                                             >
                                                 <Copy size={12} /> Copiar
                                             </button>

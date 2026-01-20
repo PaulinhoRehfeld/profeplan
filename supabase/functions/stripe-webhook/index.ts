@@ -6,8 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.21.0";
 
 // --- CONFIGURATION ---
 // PRODUCTION KEYS
-const STRIPE_SECRET_KEY =
-    "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";
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") as string;
 const STRIPE_WEBHOOK_SIGNING_SECRET = Deno.env.get("STRIPE_WEBHOOK_SIGNING_SECRET");
 
 // PRODUCT IDs (Production)
@@ -45,8 +44,9 @@ serve(async (req) => {
                     STRIPE_WEBHOOK_SIGNING_SECRET
                 );
             } catch (err) {
-                console.error(`Webhook signature verification failed: ${err.message}`);
-                return new Response(err.message, { status: 400 });
+                const errorMessage = (err as Error).message;
+                console.error(`Webhook signature verification failed: ${errorMessage}`);
+                return new Response(errorMessage, { status: 400 });
             }
         } else {
             // Fallback for development/testing without signing secret
@@ -150,7 +150,8 @@ serve(async (req) => {
             headers: { "Content-Type": "application/json" },
         });
     } catch (err) {
-        console.error(`Webhook Error: ${err.message}`);
-        return new Response(err.message, { status: 400 });
+        const errorMessage = (err as Error).message;
+        console.error(`Webhook Error: ${errorMessage}`);
+        return new Response(errorMessage, { status: 400 });
     }
 });

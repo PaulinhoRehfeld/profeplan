@@ -185,10 +185,10 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   return (
     <div className="space-y-6 animate-in fade-in duration-700 pb-20 h-[calc(100dvh-100px)] flex flex-col">
 
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 overflow-hidden px-6 md:px-0 pb-4 md:pb-0">
-        {/* Left Sidebar - Folders (Horizontal on Mobile, Vertical on Desktop) */}
-        <div className="w-full lg:w-72 flex lg:flex-col gap-3 shrink-0 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto custom-scrollbar pb-2 lg:pb-0">
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest ml-4 mb-1">Pastas</h3>
+      <div className="flex flex-row gap-4 lg:gap-6 flex-1 overflow-hidden px-2 md:px-0 pb-4 md:pb-0">
+        {/* Left Sidebar - Folders (Vertical Always, Slim on Mobile) */}
+        <div className="w-16 lg:w-72 flex flex-col gap-3 shrink-0 overflow-y-auto custom-scrollbar pb-2 lg:pb-0 border-r lg:border-r-0 border-slate-100 pr-2 lg:pr-0">
+          <h3 className="hidden lg:block text-xs font-black text-slate-400 uppercase tracking-widest ml-4 mb-1">Pastas</h3>
           {folders.map((folder) => {
             const count = allContents.filter(f => f.type === folder.id).length;
             const isActive = activeFolder === folder.id;
@@ -197,17 +197,17 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
               <button
                 key={folder.id}
                 onClick={() => setActiveFolder(isActive ? null : folder.id)}
-                className={`min-w-[160px] lg:w-full p-3 lg:p-4 rounded-[1.5rem] border transition-all text-left flex items-center gap-3 lg:gap-4 group relative overflow-hidden ${isActive
+                className={`w-full p-2 lg:p-4 rounded-xl lg:rounded-[1.5rem] border transition-all text-left flex flex-col lg:flex-row items-center lg:items-center justify-center lg:justify-start gap-1 lg:gap-4 group relative overflow-hidden ${isActive
                   ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/30'
                   : 'bg-white border-transparent hover:bg-white hover:border-slate-200 hover:shadow-md text-slate-500'
                   }`}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
+                <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl flex items-center justify-center transition-all shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
                   }`}>
                   <folder.icon size={18} />
                 </div>
 
-                <div className="flex-1 whitespace-nowrap">
+                <div className="hidden lg:block flex-1 whitespace-nowrap">
                   <p className={`font-black text-sm uppercase tracking-tight ${isActive ? 'text-white' : 'text-slate-700'}`}>
                     {folder.name}
                   </p>
@@ -217,7 +217,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                 </div>
 
                 {isActive && (
-                  <div className="absolute right-4 w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
+                  <div className="hidden lg:block absolute right-4 w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
                 )}
               </button>
             );

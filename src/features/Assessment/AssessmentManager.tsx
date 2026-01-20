@@ -542,48 +542,55 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
                     />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
-                            Questões Aula
-                        </label>
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="number"
-                                min="0" max="20"
-                                value={objectiveCount}
-                                onChange={(e) => setObjectiveCount(parseInt(e.target.value) || 0)}
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:bg-white"
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
-                            Dissertativas
-                        </label>
-                        <input
-                            type="number"
-                            min="0" max="10"
-                            value={dissertativeCount}
-                            onChange={(e) => setDissertativeCount(parseInt(e.target.value) || 0)}
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none focus:bg-white"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-emerald-600">
-                            Estilo ENEM
+                {/* 3. Configuração da Prova */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                        <label className="block text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-3">
+                            Questões ENEM (Banco de Dados)
                         </label>
                         <input
                             type="number"
                             min="0" max="10"
                             value={numEnem}
                             onChange={(e) => setNumEnem(parseInt(e.target.value) || 0)}
-                            className="w-full px-4 py-3 bg-slate-50 border border-emerald-100 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-emerald-100"
+                            className="w-full px-4 py-3 bg-white border border-emerald-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-emerald-200"
                         />
+                        <p className="text-[9px] text-emerald-600 mt-2 font-medium leading-tight">Busca questões reais do INEP baseadas nos temas das aulas.</p>
                     </div>
+
+                    <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                        <label className="block text-[10px] font-black text-blue-700 uppercase tracking-widest mb-3">
+                            Objetivas Contextuais (IA)
+                        </label>
+                        <input
+                            type="number"
+                            min="0" max="20"
+                            value={objectiveCount}
+                            onChange={(e) => setObjectiveCount(parseInt(e.target.value) || 0)}
+                            className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-blue-200"
+                        />
+                        <p className="text-[9px] text-blue-600 mt-2 font-medium leading-tight">Questões inéditas criadas pela IA com base no contexto da turma.</p>
+                    </div>
+
+                    <div className="bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                        <label className="block text-[10px] font-black text-purple-700 uppercase tracking-widest mb-3">
+                            Subjetivas / Dissertativas (IA)
+                        </label>
+                        <input
+                            type="number"
+                            min="0" max="10"
+                            value={dissertativeCount}
+                            onChange={(e) => setDissertativeCount(parseInt(e.target.value) || 0)}
+                            className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-purple-200"
+                        />
+                        <p className="text-[9px] text-purple-600 mt-2 font-medium leading-tight">Questões abertas para avaliar argumentação e escrita.</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                     <div>
                         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
-                            Dificuldade
+                            Dificuldade Geral
                         </label>
                         <select
                             value={difficulty}
@@ -594,6 +601,18 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
                             <option value="Médio">Médio</option>
                             <option value="Difícil">Difícil</option>
                         </select>
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">
+                            Valor Total da Avaliação
+                        </label>
+                        <input
+                            type="number"
+                            min="0" max="100"
+                            value={assessmentValue}
+                            onChange={(e) => setAssessmentValue(parseInt(e.target.value) || 10)}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold outline-none"
+                        />
                     </div>
                 </div>
 

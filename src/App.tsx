@@ -55,6 +55,20 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (session?.id) {
+      // --- LEGACY ID CLEANUP (NEW) ---
+      if (session.id === 'dev-admin-id') {
+        console.warn("Detected invalid legacy ID. Forcing logout.");
+        // Force cleanup
+        supabase.auth.signOut().then(() => {
+          localStorage.removeItem('profeplan_session');
+          localStorage.removeItem('supabase_user_id');
+          setSession(null);
+          setUserProfile(null);
+          window.location.reload();
+        });
+        return;
+      }
+
       // Added error handling to prevent "Uncaught (in promise) Object"
       getUserProfile(session.id)
         .then(setUserProfile)
@@ -246,7 +260,7 @@ const App: React.FC = () => {
                       <div className="flex items-center gap-4">
                         <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-2 text-slate-500"><Menu size={24} /></button>
                         <div className="flex flex-col">
-                          <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN v1.0</h2>
+                          <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V3.1</h2>
                           <div className="flex items-center gap-2 mt-1">
                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{activeMode}</span>
@@ -340,7 +354,7 @@ const App: React.FC = () => {
                     </div>
                   </main>
 
-                  <aside className={`h-screen bg-white border-l border-slate-100 flex-col shrink-0 lg:flex lg:w-64 p-6 space-y-6 overflow-y-auto ${activeMode === ToolMode.QUARTERLY_PLANNING ? 'hidden' : 'hidden lg:flex'}`}>
+                  <aside className={`h-screen bg-white border-l border-slate-100 shrink-0 lg:flex lg:flex-col lg:w-64 p-6 space-y-6 overflow-y-auto ${activeMode === ToolMode.QUARTERLY_PLANNING ? 'hidden' : 'hidden lg:flex'}`}>
                     {customSidebar ? (
                       // Renderiza a Sidebar Customizada (Injetada pelos componentes filhos)
                       <div className="animate-in fade-in slide-in-from-right-10 duration-500">
@@ -348,7 +362,7 @@ const App: React.FC = () => {
                       </div>
                     ) : (
                       <div>
-                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V1.0</h3>
+                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V3.1</h3>
                         <p className="text-xs text-slate-500 font-medium">Selecione uma ferramenta no menu ou comece uma conversa para planejar sua aula.</p>
                       </div>
                     )}

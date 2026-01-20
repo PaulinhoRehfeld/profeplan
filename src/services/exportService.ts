@@ -103,22 +103,48 @@ export const generatePdiReportDoc = (studentName: string, period: string, report
 
 // --- General Export Functions (Restored) ---
 
+const markdownToHtml = (text: string) => {
+  let html = text
+    // Headers
+    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+    // Bold
+    .replace(/\*\*(.*?)\*\*/gim, '<b>$1</b>')
+    // Lists (Simple implementation)
+    .replace(/^\s*-\s+(.*$)/gim, '<ul><li>$1</li></ul>')
+    .replace(/<\/ul>\s*<ul>/gim, '') // Merge adjacent lists
+    // Line breaks
+    .replace(/\n/g, '<br/>');
+
+  return html;
+};
+
 export const exportToDocx = async (content: string, title: string, settings: any) => {
+  // Convert Markdown to HTML for Word
+  const encodedContent = markdownToHtml(content);
+
   const htmlContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
             <meta charset="utf-8">
             <title>${title}</title>
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.5; }
-                h1 { color: #2E3A59; }
+                body { font-family: Arial, sans-serif; line-height: 1.5; color: #000; }
+                h1 { color: #2E3A59; font-size: 24px; border-bottom: 2px solid #2E3A59; margin-bottom: 15px; }
+                h2 { color: #2E3A59; font-size: 18px; margin-top: 20px; font-weight: bold; }
+                h3 { color: #4B5563; font-size: 14px; margin-top: 15px; font-weight: bold; }
+                b { font-weight: bold; }
+                ul { margin-left: 20px; }
+                li { margin-bottom: 5px; }
             </style>
         </head>
         <body>
             <h1>${title}</h1>
-            <p><strong>Autor:</strong> ${settings?.userName || 'Professor'}</p>
+            <p><strong>Professor(a):</strong> ${settings?.teacherName || settings?.userName || 'Professor(a)'}</p>
+            <p><strong>Escola:</strong> ${settings?.schoolName || 'Instituição de Ensino'}</p>
             <hr/>
-            <div>${content.replace(/\n/g, '<br/>')}</div>
+            <div style="margin-top: 20px;">${encodedContent}</div>
         </body>
         </html>
     `;
@@ -211,10 +237,32 @@ export const exportSimuladoToDocx = async (questions: any[], headerText: string,
   contentHtml += `<div style="column-count: 2; column-gap: 40px; text-align: justify;">`;
 
   questions.forEach((q, index) => {
+    // Construct Enunciado (Context + Command)
+    const context = q.metadata?.context || '';
+    const command = q.metadata?.alternativesIntroduction || ''; // Some questions might call it 'text' or 'question', adjusting based on types.ts
+    // Fallback if metadata is missing (legacy questions)
+    const questionText = (context || command) ?
+      `${context ? `<div class="context">${context.replace(/\n/g, '<br/>')}</div>` : ''} 
+         ${command ? `<div class="command" style="margin-top: 10px; font-weight: bold;">${command.replace(/\n/g, '<br/>')}</div>` : ''}`
+      : q.content?.replace(/\n/g, '<br/>') || 'Texto da questão indisponível.';
+
+    // Construct Alternatives
+    let alternativesHtml = '';
+    if (q.metadata?.alternatives && Array.isArray(q.metadata.alternatives)) {
+      alternativesHtml = '<ul style="list-style-type: none; padding-left: 0; margin-top: 10px;">';
+      q.metadata.alternatives.forEach((alt: any) => {
+        const letter = alt.letter || '?';
+        const text = alt.text || '';
+        alternativesHtml += `<li style="margin-bottom: 5px;"><strong>${letter})</strong> ${text}</li>`;
+      });
+      alternativesHtml += '</ul>';
+    }
+
     contentHtml += `
             <div style="break-inside: avoid; margin-bottom: 25px; font-size: 11px;">
-                <p style="margin-bottom: 5px;"><strong>QUESTÃO ${index + 1}</strong> <span style="font-size: 9px; color: #666;">(${q.metadata?.ano || 'BANCO'} | ${q.metadata?.disciplina?.substring(0, 3).toUpperCase() || ''})</span></p>
-                <div style="margin-bottom: 10px;">${q.content.replace(/\n/g, '<br/>')}</div>
+                <p style="margin-bottom: 5px;"><strong>QUESTÃO ${index + 1}</strong> <span style="font-size: 9px; color: #666;">(${q.metadata?.year || q.metadata?.ano || 'BANCO'} | ${q.metadata?.discipline || q.metadata?.disciplina || 'GERAL'})</span></p>
+                <div style="margin-bottom: 10px;">${questionText}</div>
+                ${alternativesHtml}
             </div>
         `;
   });

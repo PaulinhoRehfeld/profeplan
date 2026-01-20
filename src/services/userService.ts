@@ -21,9 +21,9 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
         .single();
 
     // DEV ADMIN MOCK (Bypass DB)
-    if (userId === 'dev-admin-id') {
+    if (userId === '00000000-0000-0000-0000-000000000001') {
         return {
-            id: 'dev-admin-id',
+            id: '00000000-0000-0000-0000-000000000001',
             email: 'admin@dev.local',
             tier: 'GOLD',
             credits: 9999,

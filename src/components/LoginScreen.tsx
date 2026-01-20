@@ -38,7 +38,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
   const handleAuthSuccess = async (user: any) => {
     // DEV MODE BYPASS
-    if (user.id === 'dev-admin-id') {
+    if (user.id === '00000000-0000-0000-0000-000000000001') {
       const sessionData: UserSession = {
         id: user.id,
         email: user.email,
@@ -285,7 +285,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
                   localStorage.removeItem('supabase_user_id');
 
                   handleAuthSuccess({
-                    id: 'dev-admin-id',
+                    id: '00000000-0000-0000-0000-000000000001',
                     email: 'admin@dev.local',
                     email_confirmed_at: new Date().toISOString()
                   });

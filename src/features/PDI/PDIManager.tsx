@@ -325,35 +325,60 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
     }, [adaptations, studentsWithNeeds, error, selectedLesson, selectedClass]);
 
     return (
-        <div className="flex h-full bg-slate-50 animate-in fade-in duration-500">
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col h-full overflow-hidden">
-                {/* Header / Selectors */}
-                <div className="bg-white border-b border-slate-100 p-6 shadow-sm z-10 flex flex-col md:flex-row gap-4 justify-between items-center">
-                    <div>
-                        <h2 className="text-xl font-black text-slate-900 uppercase italic tracking-tight flex items-center gap-2">
-                            <BrainCircuit className="text-teal-600" /> Workbench de Inclusão
-                        </h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Adaptação PDI e DUA Inteligente</p>
-                    </div>
+        <div className="flex flex-col lg:flex-row h-full bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
 
-                    <div className="flex gap-4 w-full md:w-auto">
+            {/* LEFT CONTROL PANEL (Sidebar on Desktop, Top Stack on Mobile) */}
+            <div className="w-full lg:w-80 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 p-6 flex flex-col gap-6 shrink-0 overflow-y-auto z-20 shadow-sm">
+
+                {/* Header Title */}
+                <div>
+                    <h2 className="text-lg font-black text-slate-900 uppercase italic tracking-tight flex items-center gap-2">
+                        <BrainCircuit className="text-teal-600" size={24} />
+                        <span className="leading-tight">Workbench<br />de Inclusão</span>
+                    </h2>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">Adaptação PDI e DUA Inteligente</p>
+                </div>
+
+                {/* Context Badge */}
+                {contextBadge && (
+                    <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center gap-3">
+                        <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-sm">
+                            <Globe size={14} />
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Contexto Ativo</p>
+                            <p className="text-xs font-black text-blue-700 leading-tight">
+                                {currentPlan?.subject || 'Disciplina'} - {currentPlan?.grade || 'Série'}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Controls */}
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">1. Aula Base</label>
                         <select
-                            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-teal-500"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-teal-500 transition-all cursor-pointer hover:bg-slate-100"
                             onChange={(e) => {
                                 const l = lessons.find(l => l.id === e.target.value);
                                 setSelectedLesson(l || null);
                             }}
+                            value={selectedLesson?.id || ''}
                         >
-                            <option value="">Selecione a Aula Base...</option>
+                            <option value="">Selecione a Aula...</option>
                             {lessons.map(l => (
-                                <option key={l.id} value={l.id}>{l.topic ? l.topic.substring(0, 40) : 'Sem tópico'}</option>
+                                <option key={l.id} value={l.id}>{l.topic ? l.topic.substring(0, 35) + (l.topic.length > 35 ? '...' : '') : 'Sem tópico'}</option>
                             ))}
                         </select>
+                    </div>
 
+                    <div>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">2. Turma Alvo</label>
                         <select
-                            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-teal-500"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-teal-500 transition-all cursor-pointer hover:bg-slate-100"
                             onChange={(e) => handleClassSelect(e.target.value)}
+                            value={selectedClass?.id || ''}
                         >
                             <option value="">Selecione a Turma...</option>
                             {classes.map(c => (
@@ -363,85 +388,82 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                     </div>
                 </div>
 
-                {/* Mobile Tabs Header */}
-                <div className="md:hidden flex border-b border-slate-200 bg-white">
-                    <button
-                        onClick={() => setMobileTab('source')}
-                        className={`flex-1 py-3 text-xs font-black uppercase tracking-wider ${mobileTab === 'source' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-slate-400'}`}
-                    >
-                        Aula Original
-                    </button>
-                    <button
-                        onClick={() => setMobileTab('workbench')}
-                        className={`flex-1 py-3 text-xs font-black uppercase tracking-wider ${mobileTab === 'workbench' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-slate-400'}`}
-                    >
-                        Adaptação ({studentsWithNeeds.length})
-                    </button>
+                <div className="mt-auto pt-6 border-t border-slate-100 hidden lg:block">
+                    <p className="text-xs text-slate-400 text-center font-medium italic">
+                        "A inclusão acontece quando se aprende com as diferenças e não com as igualdades."
+                    </p>
                 </div>
+            </div>
 
-                {/* Split View */}
-                <div className="flex-1 flex overflow-hidden relative">
-                    {/* Left: Original Content (Hidden on Mobile unless active) */}
-                    <div className={`w-full md:w-1/3 border-r border-slate-100 bg-white p-6 md:p-8 overflow-y-auto absolute md:relative inset-0 z-10 md:z-auto transition-transform duration-300 ${mobileTab === 'source' ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-                        <div className="sticky top-0 bg-white pb-4 border-b border-slate-50 mb-4 z-10">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                <BookOpen size={14} /> Aula Original
-                            </h3>
-                            {selectedLesson && <p className="font-bold text-slate-900 mt-1">{selectedLesson.topic}</p>}
-                        </div>
-                        <div className="prose prose-sm prose-slate max-w-none">
-                            {selectedLesson ? (
-                                <div className="whitespace-pre-wrap font-serif text-slate-600 leading-relaxed">
-                                    {selectedLesson.content}
-                                </div>
-                            ) : (
-                                <div className="text-center py-20 text-slate-300 italic">
-                                    Selecione uma aula para visualizar o conteúdo base.
-                                </div>
-                            )}
-                        </div>
-                    </div>
+            {/* MAIN CONTENT AREA */}
+            <div className="flex-1 bg-slate-50 p-4 md:p-8 overflow-y-auto custom-scrollbar relative">
+                <div className="max-w-4xl mx-auto space-y-6 pb-20">
 
-                    {/* Right: Adaptation Workbench (Hidden on Mobile unless active) */}
-                    <div className={`w-full md:flex-1 bg-slate-50/50 p-6 md:p-8 overflow-y-auto absolute md:relative inset-0 z-10 md:z-auto transition-transform duration-300 ${mobileTab === 'workbench' ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}`}>
-                        <div className="max-w-3xl mx-auto space-y-6">
-                            {selectedClass && studentsWithNeeds.length === 0 && (
-                                <div className="bg-orange-50 text-orange-600 p-6 rounded-2xl border border-orange-100 text-center">
-                                    <div className="flex items-center gap-2">
-                                        <h2 className="text-xl font-black text-slate-800 tracking-tight">Adaptação PDI/DUA</h2>
-                                        {contextBadge && (
-                                            <div className="flex items-center gap-1 bg-gradient-to-r from-blue-100 to-indigo-100 px-3 py-1 rounded-full border border-blue-200" title={`Contexto Ativo: ${currentPlan?.subject} - ${currentPlan?.grade}`}>
-                                                <Globe size={12} className="text-blue-600" />
-                                                <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wider">
-                                                    Agente Coordenador Ativo
-                                                </span>
-                                            </div>
-                                        )}
+                    {/* Empty State / Welcome */}
+                    {!selectedClass && !selectedLesson && (
+                        <div className="flex flex-col items-center justify-center py-20 opacity-50 space-y-4">
+                            <div className="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center text-slate-400">
+                                <BrainCircuit size={40} />
+                            </div>
+                            <p className="text-sm font-black uppercase text-slate-400 tracking-widest">Selecione Aula e Turma para iniciar</p>
+                        </div>
+                    )}
+
+                    {/* No Students Alert */}
+                    {selectedClass && studentsWithNeeds.length === 0 && (
+                        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm text-center">
+                            <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <Sparkles size={24} />
+                            </div>
+                            <h2 className="text-lg font-black text-slate-800 tracking-tight mb-2">Turma sem PDI Identificado</h2>
+                            <p className="text-sm text-slate-500 max-w-md mx-auto">
+                                Não encontramos alunos marcados com "Necessita Adaptação" nesta turma. Você pode adicionar essa marcação no menu "Minhas Turmas".
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Student Cards List */}
+                    {studentsWithNeeds.map(student => (
+                        <StudentAdaptationCard
+                            key={student.id}
+                            student={student}
+                            adaptation={adaptations[student.id]}
+                            isGenerating={generatingId === student.id}
+                            hasLessonSelected={!!selectedLesson}
+                            onGenerate={handleGenerateAdaptation}
+                            onValidate={handleValidate}
+                        />
+                    ))}
+
+                    {/* ACTIONS FOOTER (Export Button) */}
+                    {studentsWithNeeds.length > 0 && selectedLesson && (
+                        <div className="pt-8 border-t border-slate-200/60 mt-8 flex flex-col items-center gap-4 animate-in slide-in-from-bottom-4">
+                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ações Finais</p>
+
+                            <button
+                                onClick={handleExportDoc}
+                                className="group relative px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl shadow-xl shadow-teal-600/20 transition-all hover:scale-[1.02] active:scale-95 w-full md:w-auto"
+                            >
+                                <div className="flex items-center gap-3 font-black uppercase tracking-widest text-xs">
+                                    <span>Gerar Documento Unificado (.DOC)</span>
+                                    <div className="bg-white/20 p-1 rounded-lg">
+                                        <BookOpen size={14} className="text-white" />
                                     </div>
-                                    <p className="text-xs mt-1">Esta turma não possui alunos marcados com "Necessita Adaptação" no gerenciador.</p>
                                 </div>
-                            )}
+                            </button>
 
-                            {studentsWithNeeds.map(student => (
-                                <StudentAdaptationCard
-                                    key={student.id}
-                                    student={student}
-                                    adaptation={adaptations[student.id]}
-                                    isGenerating={generatingId === student.id}
-                                    hasLessonSelected={!!selectedLesson}
-                                    onGenerate={handleGenerateAdaptation}
-                                    onValidate={handleValidate}
-                                />
-                            ))}
-
-                            {selectedClass && studentsWithNeeds.length > 0 && (
-                                <div className="text-center py-10 opacity-50">
-                                    <div className="w-2 h-2 bg-slate-200 rounded-full mx-auto mb-2"></div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">Fim da lista de prioridade</p>
-                                </div>
-                            )}
+                            <p className="text-xs text-slate-400 text-center max-w-sm">
+                                Gera um arquivo Word contendo o plano original e todas as adaptações validadas acima.
+                            </p>
                         </div>
-                    </div>
+                    )}
+
+                    {selectedClass && studentsWithNeeds.length > 0 && (
+                        <div className="text-center py-10 opacity-30 mt-10">
+                            <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mx-auto mb-2"></div>
+                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Fim da lista</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/geminiService';
 import { searchCurriculum, getDeterministicCurriculum } from '../../services/searchService';
+import { searchQuestions } from '../../services/questionService';
 import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan } from './PlanningService';
 import { Loader2, ShieldCheck } from 'lucide-react';
@@ -259,6 +260,49 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 context += `\nFoco Atual: Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição: ${selectedLesson.description}`;
             }
 
+            // --- RAG: QUESTÕES DO BANCO DE DADOS (ENEM/SAEB) ---
+            if (input.includes('[AÇÃO: QUESTÕES DE PROVA]') && selectedLesson) {
+                try {
+                    // Determinar Área do Conhecimento com base na disciplina do plano
+                    const subject = termPlans.find(p => p.id === selectedTermPlanId)?.subject || '';
+                    let area = '';
+
+                    const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    const s = normalize(subject);
+
+                    if (s.match(/historia|geografia|filosofia|sociologia|humanas/)) area = 'Humanas';
+                    else if (s.match(/fisica|quimica|biologia|natureza|ciencias/)) area = 'Natureza';
+                    else if (s.match(/portugues|ingles|espanhol|artes|educacao fisica|linguagens/)) area = 'Linguagens';
+                    else if (s.match(/matematica/)) area = 'Matemática';
+
+                    console.log(`[RAG] Buscando questões sobre: ${selectedLesson.title} [Disciplina: ${subject} -> Área: ${area}]`);
+
+                    const dbQuestions = await searchQuestions(selectedLesson.title, area);
+
+                    if (dbQuestions && dbQuestions.length > 0) {
+                        const questionsText = dbQuestions.slice(0, 3).map((q, idx) => {
+                            const enunciado = [q.metadata?.context, q.metadata?.alternativesIntroduction]
+                                .filter(Boolean)
+                                .join('\n\n');
+
+                            return `
+                        ----- QUESTÃO BANCO DE DADOS ${idx + 1} -----
+                        ENUNCIADO: ${enunciado || 'Sem enunciado'}
+                        ALTERNATIVAS:
+                        ${q.metadata?.alternatives?.map((alt: any) => `- ${alt.text} ${alt.isCorrect ? '(CORRETA)' : ''}`).join('\n') || 'Sem alternativas'}
+                        ---------------------------------------------
+                        `;
+                        }).join('\n');
+
+                        context += `\n\n[BANCO DE QUESTÕES VIA RAG - USE ESTAS QUESTÕES]:\n${questionsText}\n\n[INSTRUÇÃO]: Use OBRIGATORIAMENTE as questões do banco acima para a seção "Questões Estilo ENEM". Copie o enunciado e as alternativas EXATAMENTE como estão.`;
+                    } else {
+                        context += `\n\n[BANCO DE QUESTÕES]: Nenhuma questão exata encontrada no banco para este tema. Crie questões inéditas baseadas no currículo.`;
+                    }
+                } catch (ragError) {
+                    console.error('[RAG] Falha ao buscar questões:', ragError);
+                }
+            }
+
             // --- Dynamic Temperature Control ---
             // User Request: "PRÁTICAS DE LINGUAGEM HABILIDADE... temperatura precisa ser zero"
             // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
@@ -331,18 +375,14 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
         setInput(prompt);
     };
 
-    const handleExportDocx = async (content: string) => {
-        console.log('[DEBUG] Export clicked by user:', userId);
+    const handleSavePlan = async (content: string) => {
         try {
             if (!userId) throw new Error("ID do usuário não encontrado.");
 
-            // 1. Determine Title & Folder
             const title = selectedLesson
                 ? `${selectedLesson.number} - ${selectedLesson.title}`
                 : `Plano Gerado ${new Date().toLocaleDateString()}`;
 
-            // Simple heuristic for folder based on content or context
-            // Ideally we should pass the type from the message metadata if possible
             let folder = PlanFolder.PLANO_AULA;
             let type: any = 'aula';
 
@@ -354,7 +394,6 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 type = 'documento';
             }
 
-            // 2. Save to Persistence (Drive + Memory)
             await savePlan(userId, {
                 type: type,
                 title: title,
@@ -362,17 +401,34 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 createdAt: new Date().toISOString()
             }, folder);
 
-            // 3. Export to DOCX
+            // alert('Salvo com sucesso em "Meus Arquivos"!'); // UI feedback handled by button state usually, but alert is ok for now or toast
+            return true;
+        } catch (e: any) {
+            console.error(e);
+            alert(`Erro ao salvar: ${e.message}`);
+            return false;
+        }
+    };
+
+    const handleExportDocx = async (content: string) => {
+        console.log('[DEBUG] Export clicked by user:', userId);
+        try {
+            if (!userId) throw new Error("ID do usuário não encontrado.");
+
+            const title = selectedLesson
+                ? `${selectedLesson.number} - ${selectedLesson.title}`
+                : `Plano Gerado ${new Date().toLocaleDateString()}`;
+
             await exportToDocx(content, title.replace(/[^a-z0-9]/gi, '_'), {
                 schoolName: localSettings?.schoolName || 'Escola Profeplan',
                 teacherName: localSettings?.teacherName || 'Professor(a)',
                 userName: localSettings?.userName
             });
 
-            alert('Salvo em "Meus Arquivos" e Download iniciado!');
+            // alert('Download iniciado!');
         } catch (e: any) {
             console.error(e);
-            alert(`Erro ao salvar/exportar: ${e.message || 'Erro desconhecido'}`);
+            alert(`Erro ao exportar: ${e.message || 'Erro desconhecido'}`);
         }
     };
 
@@ -408,6 +464,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 handleQuickAction={handleQuickAction}
                 messages={messages}
                 handleExportDocx={handleExportDocx}
+                handleSavePlan={handleSavePlan}
                 isThinking={isThinking}
                 input={input}
                 setInput={setInput}
