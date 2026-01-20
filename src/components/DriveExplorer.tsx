@@ -184,27 +184,6 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700 pb-20 h-[calc(100dvh-100px)] flex flex-col">
-      {/* Header Dashboard */}
-      <div className="bg-slate-950 p-8 rounded-[3rem] text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl relative overflow-hidden group shrink-0">
-        <div className="absolute top-[-20%] left-[-10%] w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full group-hover:scale-110 transition-transform duration-1000"></div>
-        <div className="z-10 text-center md:text-left">
-          <h1 className="text-3xl font-black tracking-tighter italic mb-1">Meus Arquivos</h1>
-          <div className="flex items-center justify-center md:justify-start gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">
-            <Cloud size={14} className="text-blue-500" /> Gestão de Documentos
-          </div>
-        </div>
-        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 px-6 py-3 rounded-[2rem] flex items-center gap-4 shadow-inner z-10 hover:bg-white/10 transition-all">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <HardDrive className="text-white" size={20} />
-          </div>
-          <div>
-            <p className="text-[9px] uppercase font-black text-slate-400 tracking-widest mb-0.5">Servidor</p>
-            <p className="text-xs font-black italic tracking-tight text-emerald-400 flex items-center gap-1.5">
-              ONLINE <CheckCircle2 size={12} />
-            </p>
-          </div>
-        </div>
-      </div>
 
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 flex-1 overflow-hidden px-6 md:px-0 pb-4 md:pb-0">
         {/* Left Sidebar - Folders (Horizontal on Mobile, Vertical on Desktop) */}
@@ -293,7 +272,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity transform translate-x-0 lg:translate-x-4 lg:group-hover:translate-x-0 duration-300">
+                          <div className="flex items-center gap-2 transition-all">
                             <button
                               onClick={() => handleEdit(file)}
                               className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-blue-600 hover:border-blue-600 hover:text-white rounded-xl transition-all shadow-sm"

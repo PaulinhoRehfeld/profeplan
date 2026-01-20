@@ -1,6 +1,6 @@
 
 import React, { useRef, useEffect, useState } from 'react';
-import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare } from 'lucide-react';
+import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save } from 'lucide-react';
 import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
@@ -217,7 +217,20 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                         <Bot size={18} />
                         <span className="text-xs font-black uppercase tracking-widest">Assistente Pedagógico</span>
                     </div>
-                    {/* Clear Chat Button could go here */}
+
+                    {/* Global Actions for Last Message */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => {
+                                const lastMsg = messages.filter(m => m.role === MessageRole.ASSISTANT).pop();
+                                if (lastMsg) handleExportDocx(lastMsg.content);
+                                else alert('Gere um conteúdo primeiro!');
+                            }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-[10px] font-black uppercase tracking-wide transition-all"
+                        >
+                            <Save size={14} /> Salvar / Imprimir
+                        </button>
+                    </div>
                 </div>
 
                 {/* Chat Output (Scrollable) */}

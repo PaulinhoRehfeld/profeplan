@@ -7,12 +7,14 @@ import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan } from './PlanningService';
 import { Loader2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
+import { addMemory } from '../../services/memoryService'; // Import addMemory
 
 // --- NEW SUB-COMPONENTS ---
 import { SimulationWorkspace } from './components/SimulationWorkspace';
 import { PlanningCockpit } from './components/PlanningCockpit';
 import { CleanChat } from './components/CleanChat';
 import { getRelevantMemories } from '../../services/memoryService'; // Import Memory Service
+import { parseMarkdownToLessons } from '../../utils/markdownParser';
 
 // --- Services ---
 import { exportToDocx } from '../../services/exportService';
@@ -73,15 +75,33 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
 
     // --- Effects ---
     useEffect(() => {
-        refreshTermPlans();
+        if (userId) {
+            refreshTermPlans(userId);
+        } else {
+            refreshTermPlans();
+        }
+
         if (appSettings) setLocalSettings(appSettings);
-    }, [appSettings, refreshTermPlans]);
+    }, [appSettings, userId, refreshTermPlans]);
 
     useEffect(() => {
         if (selectedTermPlanId) {
             const plan = termPlans.find(p => p.id === selectedTermPlanId);
             if (plan) {
-                parseTermPlan(plan.generatedText);
+                // STRATEGY: Hybrid Cache + Source of Truth
+                // 1. Try Structured Cache (Fastest) from DB
+                if (plan.lessons && plan.lessons.length > 0) {
+                    console.log("[PlanningManager] Using cached lessons from DB");
+                    setParsedLessons(plan.lessons);
+                }
+                // 2. Fallback / Source of Truth: Parse the Text
+                else if (plan.generatedText) {
+                    console.log("[PlanningManager] Hydrating from Markdown Source");
+                    const lessons = parseMarkdownToLessons(plan.generatedText);
+                    setParsedLessons(lessons);
+                } else {
+                    setParsedLessons([]);
+                }
                 loadLessonTracking(plan.id);
             }
         } else {
@@ -95,31 +115,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     }, [messages]);
 
     // --- Logic: Parse Term Plan Text into Lessons ---
-    const parseTermPlan = (text: string) => {
-        const lines = text.split('\n');
-        const lessons: Lesson[] = [];
-        let currentLesson: Partial<Lesson> | null = null;
-
-        lines.forEach(line => {
-            const match = line.match(/^(Aula|Semana)\s+(\d+)[:|-](.*)/i);
-            if (match) {
-                if (currentLesson) lessons.push(currentLesson as Lesson);
-                currentLesson = {
-                    number: parseInt(match[2]),
-                    title: match[3].trim(),
-                    description: '',
-                    objectives: [],
-                    bncc: []
-                };
-            } else if (currentLesson) {
-                if (line.trim().startsWith('-')) {
-                    currentLesson.description += line.trim() + '\n';
-                }
-            }
-        });
-        if (currentLesson) lessons.push(currentLesson as Lesson);
-        setParsedLessons(lessons);
-    };
+    // Old parseTermPlan removed in favor of utils/markdownParser
 
     const loadLessonTracking = async (planId: string) => {
         // Mock implementation
@@ -273,6 +269,44 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             const dynamicTemp = isStrictQuery ? 0.1 : 0.7;
 
             const response = await generateGeminiContent(input, [], context, userId, dynamicTemp);
+
+            // --- AUTO-PERSISTENCE & MEMORY ---
+            // Detect if response looks like a plan, material, or exam
+            if (response.length > 50) { // Simple heuristic: real content is long
+                // 1. Determine Type
+                let type: any = 'outros';
+                let folder = PlanFolder.MATERIAL_ALUNO; // Default fallback
+                let title = `Conteúdo Gerado ${new Date().toLocaleTimeString()}`;
+
+                if (response.includes('[AÇÃO: PLANO DE AULA DETALHADO]') || response.includes('PLANO DE AULA')) {
+                    type = 'plano'; folder = PlanFolder.PLANO_AULA;
+                    title = selectedLesson ? `Plano - Aula ${selectedLesson.number}` : 'Plano de Aula';
+                }
+                else if (response.includes('[AÇÃO: MATERIAL DIDÁTICO]') || response.includes('ROTEIRO DE ESTUDO')) {
+                    type = 'aula'; folder = PlanFolder.MATERIAL_ALUNO; // 'aula' maps to Activities in DriveExplorer
+                    title = selectedLesson ? `Material - Aula ${selectedLesson.number}` : 'Material Didático';
+                }
+                else if (response.includes('[AÇÃO: QUESTÕES DE PROVA]') || response.includes('QUESTÕES')) {
+                    type = 'avaliacao'; folder = PlanFolder.AVALIACOES;
+                    title = selectedLesson ? `Questões - Aula ${selectedLesson.number}` : 'Avaliação';
+                }
+
+                if (type !== 'outros') {
+                    // 2. Save to Drive (Async)
+                    savePlan(userId, {
+                        type,
+                        title,
+                        content: response,
+                        createdAt: new Date().toISOString()
+                    }, folder).then(() => console.log('Auto-saved to Drive')).catch(e => console.error('Auto-save failed', e));
+
+                    // 3. Save to Memory (Async) - Context for AI
+                    addMemory(userId, `Gerou ${title}: ${input.substring(0, 100)}...`, [type, 'auto-generated'])
+                        .then(() => console.log('Memory added'))
+                        .catch(e => console.error('Memory failed', e));
+                }
+            }
+
             const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
             setMessages(prev => [...prev, aiMsg]);
         } catch (error) {

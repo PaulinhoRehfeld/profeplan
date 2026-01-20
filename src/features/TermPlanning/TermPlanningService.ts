@@ -39,6 +39,7 @@ export const saveTermPlan = async (userId: string, plan: TermPlan) => {
             state_base: plan.stateBase,
             education_sphere: plan.educationSphere,
             generated_text: plan.generatedText,
+            lessons: plan.lessons, // New column
             updated_at: new Date().toISOString()
         };
 
@@ -96,6 +97,7 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
                 stateBase: d.state_base,
                 educationSphere: d.education_sphere,
                 generatedText: d.generated_text,
+                lessons: d.lessons || [],
                 created_at: d.created_at || d.updated_at
             } as TermPlan));
         }
@@ -116,22 +118,25 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
         }
 
         if (!genericError && genericData) {
-            const genericPlans: TermPlan[] = genericData.map((d: any) => ({
-                id: d.id,
-                subject: d.title?.split('-')[0]?.trim() || 'Geral', // Tenta extrair do titulo ex: "TRIMESTRAL - Geografia..."
-                grade: 'Geral', // Generic fallback
-                period: 1,
-                regime: 'Trimestre',
-                level: 'Ensino Médio',
-                workloadWeekly: 0,
-                reserves: { monthlyExam: false, bimonthlyExam: false, recovery: false },
-                totalClasses: 0,
-                gradingGrid: { vistos: 0, trabalhos: 0, monthlyExam: 0, bimonthlyExam: 0, others: 0 },
-                stateBase: 'Geral',
-                educationSphere: 'Geral',
-                generatedText: d.content || '',
-                created_at: d.created_at
-            } as TermPlan));
+            const genericPlans: TermPlan[] = genericData.map((d: any) => {
+                const meta = parseTitleMetadata(d.title || '', d.content || '');
+                return {
+                    id: d.id,
+                    subject: meta.subject,
+                    grade: meta.grade,
+                    period: meta.period,
+                    regime: meta.regime as 'Bimestre' | 'Trimestre',
+                    level: 'Ensino Médio', // Default fallback
+                    workloadWeekly: 2,
+                    reserves: { monthlyExam: false, bimonthlyExam: false, recovery: false },
+                    totalClasses: 0,
+                    gradingGrid: { vistos: 0, trabalhos: 0, monthlyExam: 0, bimonthlyExam: 0, others: 0 },
+                    stateBase: 'Geral',
+                    educationSphere: 'Geral',
+                    generatedText: d.content || '',
+                    created_at: d.created_at
+                } as TermPlan;
+            });
 
             // Merge avoiding duplicates (prefer structured if exists)
             // Mas IDs serão diferentes (uuid vs local_...), então apenas concatena
@@ -156,4 +161,42 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
 
     console.log(`[DEBUG] Total merged plans returned: ${plans.length}`);
     return plans;
+};
+
+// --- Helpers ---
+const parseTitleMetadata = (title: string, content: string) => {
+    // Expected Format: "Planejamento 2º Bimestre - Geografia" or "2º Trimestre - História"
+    let subject = 'Geral';
+    let period = 1;
+    let regime = 'Trimestre';
+    let grade = 'Geral';
+
+    // 1. Try to extract Subject (everything after " - ")
+    if (title.includes(' - ')) {
+        const parts = title.split(' - ');
+        if (parts.length > 1) {
+            subject = parts[parts.length - 1].trim().replace(/\(\d+\)$/, '').trim(); // Remove suffix like (2)
+        }
+    } else {
+        subject = title;
+    }
+
+    // 2. Try to extract Period (Number)
+    const periodMatch = title.match(/(\d+)º/);
+    if (periodMatch) {
+        period = parseInt(periodMatch[1]);
+    }
+
+    // 3. Try to extract Regime
+    if (title.toLowerCase().includes('bimestre')) regime = 'Bimestre';
+    if (title.toLowerCase().includes('trimestre')) regime = 'Trimestre';
+
+    // 4. Try to extract Grade/Class from content if possible
+    // (Simple heuristic looking for "Turma:" or "Série:")
+    const gradeMatch = content.match(/(Turma|Série):\s*(.*?)\n/i);
+    if (gradeMatch) {
+        grade = gradeMatch[2].trim();
+    }
+
+    return { subject, period, regime, grade };
 };

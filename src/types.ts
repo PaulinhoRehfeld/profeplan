@@ -173,6 +173,15 @@ export interface EnemQuestion {
   };
 }
 
+export interface Lesson {
+  number: number;
+  title: string;
+  description: string;
+  objectives: string[];
+  bncc: string[];
+  content?: string;
+}
+
 export interface TermPlan {
   id: string; // Made mandatory for list keying
   period: number;
@@ -197,5 +206,6 @@ export interface TermPlan {
   stateBase?: string;
   educationSphere?: string;
   generatedText: string; // Made mandatory
+  lessons?: Lesson[]; // Structured data
   created_at: string;
 }

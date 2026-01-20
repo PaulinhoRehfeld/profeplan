@@ -768,99 +768,77 @@ export const generateTermPlan = async (
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    // REMOVED JSON MODE: We want rich Markdown text
+  });
 
   const prompt = `
     Atue como um Coordenador Pedagógico especialista em BNCC e currículos locais.
-    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo e profissional.
+    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo.
 
     DADOS DO CONTEXTO:
     - Estado (Base Curricular): ${context.stateBase}
     - Esfera: ${context.educationSphere}
     - Professor: ${context.teacherName}
     - Componente: ${context.subject}
-    - Nível de Ensino: ${context.level || 'Não especificado'} (CRUCIAL: Respeite este nível para escolha de códigos BNCC)
-    - Ano/Série: ${context.grade} (Normalizado: ${context.grade.replace(/\D/g, '')}º Ano ${context.level === 'Ensino Médio' ? 'EM' : ''})
+    - Nível de Ensino: ${context.level || 'Não especificado'}
+    - Ano/Série: ${context.grade}
     - Período: ${context.period}º ${context.regime}
-    - Total de Aulas Previstas: ${context.totalClasses}
+    - Total de Aulas: ${context.totalClasses}
 
-    [DADOS DO CURRÍCULO OFICIAL (FONTE DE VERDADE)]:
-    Abaixo estão os trechos do currículo oficial encontrados no banco de dados. USE ESTAS INFORMAÇÕES para preencher Habilidades, Objetivos e Conteúdos.
-    SE O TEMA NÃO ESTIVER AQUI, USE SEU CONHECIMENTO GERAL, MAS DÊ PREFERÊNCIA ABSOLUTA AOS DADOS ABAIXO:
-    
-    ${curriculumContext ? curriculumContext : "Nenhum currículo específico encontrado. Use a BNCC geral adequada ao nível (EF para Fundamental, EM para Médio)."}
+    [DADOS DO CURRÍCULO OFICIAL]:
+    ${curriculumContext ? curriculumContext : "Use a BNCC geral."}
     ---------------------------------------------------
 
-    ESTRUTURA OBRIGATÓRIA (Siga exatamente este formato):
+    TAREFA:
+    Gere um documento Markdown BEM FORMATADO que servirá como a única fonte da verdade.
+    
+    ESTRUTURA OBRIGATÓRIA (Siga exatamente os cabeçalhos para que o sistema possa ler):
 
-    MAPA DE PLANEJAMENTO DE AULA/2026
-    Planejamento de ${context.subject} - ${context.grade} (${context.level}) - ${context.period}º ${context.regime}
-    Área de Conhecimento: [Inserir Área BNCC]
-    Componente Curricular: ${context.subject}
-    Ano: ${context.grade}
-    Nível: ${context.level}
-    Período: ${context.period}º ${context.regime} de 2026
+    # PLANEJAMENTO DE ENSINO - ${context.subject.toUpperCase()}
 
-    1. Objetivos Gerais:
-    Professor: ${context.teacherName}
-    • [Objetivo 1]
-    • [Objetivo 2]
-    • [Objetivo 3]
+    ## 1. Dados Gerais
+    Breve resumo do contexto...
 
-    2. Competências e Habilidades (de acordo com o Currículo de ${context.stateBase} e BNCC):
-    Copie fielmente os códigos e descrições dos trechos acima, se disponíveis.
-    • (CÓDIGO ALFANUMÉRICO): [Descrição da Habilidade]
-    • (CÓDIGO ALFANUMÉRICO): [Descrição da Habilidade]
+    ## 2. Competências e Habilidades
+    Liste as principais...
 
-    3. Conteúdos a Serem Trabalhados:
-    Extraia dos trechos de currículo acima.
-    • [Conteúdo 1]
-    • [Conteúdo 2]
-    • [Conteúdo 3]
-    • [Conteúdo 4]
-    • [Conteúdo 5]
+    ## 3. Cronograma de Aulas
+    [SISTEMA: CADA AULA DEVE TER SEU PRÓPRIO CABEÇALHO "### Aula X: Título"]
 
-    4. Metodologia:
-    • Aulas expositivas dialogadas...
-    • [Metodologia ativa específica para a disciplina]
-    • [Atividade prática sugerida]
+    ### Aula 1: [Título da Aula]
+    **Descrição:**
+    Detalhe da metodologia, início, meio e fim.
+    **Objetivos:**
+    - Objetivo 1
+    - Objetivo 2
+    **BNCC:**
+    - CODI01
+    - CODI02
 
-    5. Recursos Didáticos:
-    • Projetor multimídia...
-    • [Recurso específico]
-    • [Recurso específico]
-
-    6. Cronograma das Aulas (Total: ${context.totalClasses} encontros):
-    [MUITO IMPORTANTE: Mantenha ESTRITAMENTE o formato "Aula X: Tópico" para que o sistema possa agendar corretamente]
-    • Aula 1: [Tópico Introdutório]
-    • Aula 2: [Desenvolvimento]
+    ### Aula 2: [Título da Aula]
     ...
-    • Aula ${context.totalClasses - 2}: Revisão geral
-    • Aula ${context.totalClasses - 1}: ${context.reserves.bimonthlyExam ? `Prova ${context.regime}` : 'Atividade Avaliativa'}
-    • Aula ${context.totalClasses}: Recuperação e encerramento.
 
-    7. Avaliação:
-    • Diagnóstica: ...
-    • Formativa: ...
-    • Somativa: ...
+    ...
 
-    IMPORTANTE:
-    - O cronograma deve listar AULA POR AULA (ou agrupamentos claros Aula X e Y).
-    - Use "Aula X:" no início de cada linha do cronograma.
-    - Adapte o conteúdo especificamente para a disciplina de ${context.subject} no ${context.grade}.
-    - Cite códigos reais da BNCC ou do Currículo de ${context.stateBase} encontrados no contexto.
-    `;
+    ### Aula ${context.totalClasses}: [Encerramento/Prova]
+    ...
+
+    ## 4. Avaliação
+    Critérios de avaliação...
+  `;
 
   try {
     const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const text = result.response.text();
 
     // Increment Usage
     if (context.userId) {
       await incrementUserUsage(context.userId);
     }
 
-    return response.text();
+    return text; // Return raw Markdown
   } catch (e) {
     console.error("Erro ao gerar planejamento:", e);
     throw e;
@@ -898,7 +876,7 @@ export const generateGeminiContent = async (
     parts: [{ text: msg.content }]
   }));
 
-  const systemInstruction = `${SYSTEM_PROMPT}\n\n[CONTEXTO ATUAL]: ${context}`;
+  const systemInstruction = `${SYSTEM_PROMPT} \n\n[CONTEXTO ATUAL]: ${context} `;
 
   const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",

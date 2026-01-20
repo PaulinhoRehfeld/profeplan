@@ -6,6 +6,7 @@ import { KnowledgeManifest } from '../../components/Governance/KnowledgeManifest
 import { saveGeneratedContent } from '../../services/databaseService';
 import { saveTermPlan } from './TermPlanningService';
 import { exportToDocx } from '../../services/exportService';
+import { parseMarkdownToLessons } from '../../utils/markdownParser';
 
 interface TermPlanningManagerProps {
     userId: string;
@@ -24,6 +25,7 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
     const [stateBase, setStateBase] = useState('Minas Gerais');
     const [educationSphere, setEducationSphere] = useState('Estadual');
     const [generatedText, setGeneratedText] = useState('');
+    const [lessons, setLessons] = useState<any[]>([]); // New state
     const [isGenerating, setIsGenerating] = useState(false);
 
     // Form State
@@ -64,7 +66,8 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
         setIsGenerating(true);
         try {
             // GOVERNANCE: Use PlanningAuthority instead of direct service
-            const text = await PlanningAuthority.executePlanning({
+            // Returns pure string (Markdown-First)
+            const text: any = await PlanningAuthority.executePlanning({
                 subject,
                 grade,
                 period,
@@ -77,7 +80,19 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
                 userId: userId,
                 level // Pass level for validation
             });
+
             setGeneratedText(text);
+
+            // Auto-parse for UI feedback, though Source of Truth is text
+            // We can safely assume text is string now
+            if (typeof text === 'string') {
+                const parsed = parseMarkdownToLessons(text);
+                setLessons(parsed);
+            } else {
+                console.error("Unexpected result type", text);
+                setGeneratedText(JSON.stringify(text));
+            }
+
         } catch (e: any) {
             alert('⛔ BLOQUEIO DO GESTOR DE IA:\n' + e.message);
         } finally {
@@ -89,6 +104,10 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
         if (!subject || !grade) return alert('Preencha a Matéria e a Série.');
 
         setIsSaving(true);
+
+        // Ensure lessons are synced with current text before saving (Source of Truth)
+        const currentLessons = parseMarkdownToLessons(generatedText);
+
         const plan: TermPlan = {
             id: `temp_${Date.now()}`,
             created_at: new Date().toISOString(),
@@ -103,7 +122,8 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
             gradingGrid: grading,
             stateBase,
             educationSphere,
-            generatedText
+            generatedText,
+            lessons: currentLessons // Save structured version derived from Markdown
         };
 
         try {

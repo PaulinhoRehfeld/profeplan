@@ -9,7 +9,7 @@ interface GlobalPlanningContextType {
     currentPlan: TermPlan | null;
     termPlans: TermPlan[];
     updateCurrentPlan: (plan: TermPlan) => void;
-    refreshTermPlans: () => Promise<void>;
+    refreshTermPlans: (userId?: string) => Promise<void>;
     clearPlan: () => void;
 }
 
@@ -40,13 +40,25 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
 
 
 
-    const refreshTermPlans = async () => {
+    const refreshTermPlans = async (userId?: string) => {
         try {
-            const { data: session } = await supabase.auth.getSession();
-            if (!session.session?.user) return;
+            let targetUserId = userId;
 
-            console.log('[GlobalContext] Calling serviceFetchTermPlans for user:', session.session.user.id);
-            const plans = await serviceFetchTermPlans(session.session.user.id);
+            // If no explicit ID, try session
+            if (!targetUserId) {
+                const { data: session } = await supabase.auth.getSession();
+                if (session.session?.user) {
+                    targetUserId = session.session.user.id;
+                }
+            }
+
+            if (!targetUserId) {
+                console.warn('[GlobalContext] Cannot refresh plans: No User ID found.');
+                return;
+            }
+
+            console.log('[GlobalContext] Calling serviceFetchTermPlans for user:', targetUserId);
+            const plans = await serviceFetchTermPlans(targetUserId);
             console.log('[GlobalContext] Received plans:', plans?.length);
             setTermPlans(plans);
 
