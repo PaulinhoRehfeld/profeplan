@@ -1,4 +1,4 @@
-package com.profeplan.app;
+package br.com.profeplan;
 
 import com.getcapacitor.BridgeActivity;
 

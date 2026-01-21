@@ -149,11 +149,14 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     };
 
     // --- Handlers ---
-    const handleSendMessage = async (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent, overrideInput?: string) => {
         e.preventDefault();
-        if (!input.trim()) return;
+        // Resolve input priority: Direct Argument > State
+        const activeInput = overrideInput || input;
 
-        const userMsg: Message = { id: Date.now().toString(), role: MessageRole.USER, content: input, timestamp: new Date() };
+        if (!activeInput.trim()) return;
+
+        const userMsg: Message = { id: Date.now().toString(), role: MessageRole.USER, content: activeInput, timestamp: new Date() };
         setMessages(prev => [...prev, userMsg]);
         setInput('');
         setIsThinking(true);
@@ -171,7 +174,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                 // Using PlanningAuthorityService
                 const { PlanningAuthority } = await import('../../services/PlanningAuthorityService'); // Dynamic import for safety
 
-                const response = await PlanningAuthority.askSpecialist(input, { history: [] }); // History implementation pending
+                const response = await PlanningAuthority.askSpecialist(activeInput, { history: [] }); // History implementation pending
                 const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
                 setMessages(prev => [...prev, aiMsg]);
                 setIsThinking(false);
@@ -184,7 +187,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
 
             // --- Contexto de Memória do Professor (Learning) ---
             try {
-                const memories = await getRelevantMemories(userId, input);
+                const memories = await getRelevantMemories(userId, activeInput);
                 if (memories.length > 0) {
                     const memoryText = memories.map(m => `- ${m.content}`).join('\n');
                     context += `\n\n[MEMÓRIA DE PREFERÊNCIAS DO USUÁRIO]:\n${memoryText}\n(Use estas preferências para personalizar o tom e o estilo da resposta.)`;
@@ -195,7 +198,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
 
             // --- DETERMINISTIC vs RAG ---
             // Se for Planejamento Trimestral, usamos a busca EXATA (Anti-Alucinação)
-            const isQuarterlyPlanning = activeMode === ToolMode.QUARTERLY_PLANNING || (activeMode === ToolMode.PLANNING && input.toLowerCase().includes('trimestral'));
+            const isQuarterlyPlanning = activeMode === ToolMode.QUARTERLY_PLANNING || (activeMode === ToolMode.PLANNING && activeInput.toLowerCase().includes('trimestral'));
 
             let curriculumContext = '';
 
@@ -264,7 +267,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 
             } else {
                 // RAG Padrão para dúvidas pontuais ou outros modos
-                const retrievalResults = await searchCurriculum(input, {
+                const retrievalResults = await searchCurriculum(activeInput, {
                     disciplina: selectedPlan?.subject,
                     ano: selectedPlan?.grade
                 });
@@ -287,7 +290,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             }
 
             // --- RAG: QUESTÕES DO BANCO DE DADOS (ENEM/SAEB) ---
-            if (input.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') && selectedLesson) {
+            if (activeInput.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') && selectedLesson) {
                 try {
                     // Determinar Área do Conhecimento com base na disciplina do plano
                     const subject = termPlans.find(p => p.id === selectedTermPlanId)?.subject || '';
@@ -334,11 +337,11 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
             // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
             const keywordsStrict = ['habilidade', 'bncc', 'objeto de conhecimento', 'práticas de linguagem', 'descritor', 'saeb', 'código', 'planejamento trimestral'];
-            const isStrictQuery = keywordsStrict.some(k => input.toLowerCase().includes(k.toLowerCase())) || isQuarterlyPlanning;
+            const isStrictQuery = keywordsStrict.some(k => activeInput.toLowerCase().includes(k.toLowerCase())) || isQuarterlyPlanning;
 
             const dynamicTemp = isStrictQuery ? 0.1 : 0.7;
 
-            const response = await generateGeminiContent(input, [], context, userId, dynamicTemp);
+            const response = await generateGeminiContent(activeInput, [], context, userId, dynamicTemp);
 
             // --- AUTO-PERSISTENCE & MEMORY ---
             // Detect if response looks like a plan, material, or exam
@@ -371,7 +374,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                     }, folder).then(() => console.log('Auto-saved to Drive')).catch(e => console.error('Auto-save failed', e));
 
                     // 3. Save to Memory (Async) - Context for AI
-                    addMemory(userId, `Gerou ${title}: ${input.substring(0, 100)}...`, [type, 'auto-generated'])
+                    addMemory(userId, `Gerou ${title}: ${activeInput.substring(0, 100)}...`, [type, 'auto-generated'])
                         .then(() => console.log('Memory added'))
                         .catch(e => console.error('Memory failed', e));
                 }

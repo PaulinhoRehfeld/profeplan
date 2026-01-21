@@ -6,7 +6,7 @@ import { getClasses, getClassDetails, getPdiLogs, supabase } from '../../service
 import { getGeneratedContents } from '../../services/databaseService';
 
 import { generateStudentAdaptation, generatePdiReport } from '../../services/geminiService';
-import { generateInclusionDoc, generatePdiReportDoc, buildInclusionDocHtml } from '../../services/exportService';
+import { generatePdiReportDoc, exportToDocx } from '../../services/exportService';
 import { saveGeneratedContent } from '../../services/databaseService';
 import { Class, Student, StudentAdaptation } from '../../types';
 import {
@@ -235,36 +235,42 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
 
     const handleExportDoc = async () => {
         if (!selectedLesson) return;
-        const validAdaptations = (Object.values(adaptations) as StudentAdaptation[]).filter(a => a.status === 'completed' || a.status === 'validated').map(a => ({
-            studentName: a.studentName,
-            content: a.adaptedContent
-        }));
+        const validAdaptations = (Object.values(adaptations) as StudentAdaptation[]).filter(a => a.status === 'completed' || a.status === 'validated');
 
         if (validAdaptations.length === 0) {
             setError('Nenhuma adaptação gerada para exportar.');
             return;
         }
 
+        // 1. Build Markdown Content
+        let markdownContent = `# Aula Base: ${selectedLesson.topic}\n\n`;
+        markdownContent += `${selectedLesson.content}\n\n`;
+        markdownContent += `---\n\n`; // Separator
+        markdownContent += `# Adaptações Curriculares\n\n`;
+
+        validAdaptations.forEach(adapt => {
+            markdownContent += `## Aluno: ${adapt.studentName}\n\n`;
+            markdownContent += `${adapt.adaptedContent}\n\n`;
+            markdownContent += `---\n\n`;
+        });
+
+        // 2. Export using the robust service
         try {
-            const htmlContent = buildInclusionDocHtml(
-                { title: selectedLesson.topic, content: selectedLesson.content },
-                validAdaptations,
-                false // includeOriginal: false
+            await exportToDocx(
+                markdownContent,
+                `KIT_INCLUSAO_${selectedLesson.topic.substring(0, 20).replace(/[^a-z0-9]/gi, '_')}`,
+                {
+                    userName: 'Professor(a)', // Could fetch profile if needed
+                    schoolName: 'Instituição de Ensino'
+                }
             );
-            await saveGeneratedContent(
-                userId,
-                'documento',
-                `PDI - ${selectedLesson.topic.substring(0, 40)}`,
-                htmlContent
-            );
-        } catch (e) {
-            console.warn("Falha no autosave", e);
+
+            // Optional: Auto-save the generated doc content (HTML/MD) to history if needed
+            // For now, we just download.
+        } catch (e: any) {
+            console.error(e);
+            setError(`Erro ao exportar: ${e.message}`);
         }
-        generateInclusionDoc(
-            { title: selectedLesson.topic, content: selectedLesson.content },
-            validAdaptations,
-            false // includeOriginal: false
-        );
     };
 
     const handleGenerateReport = async () => {
@@ -296,6 +302,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                 await saveGeneratedContent(
                     userId,
                     'documento',
+                    'PDI', // Folder
                     `RELATORIO PDI - ${student.name}`,
                     reportHtml
                 );

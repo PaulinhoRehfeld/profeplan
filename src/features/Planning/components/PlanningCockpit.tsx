@@ -21,7 +21,7 @@ interface PlanningCockpitProps {
     isThinking: boolean;
     input: string;
     setInput: (val: string | ((prev: string) => string)) => void;
-    handleSendMessage: (e: React.FormEvent) => void;
+    handleSendMessage: (e: React.FormEvent, overrideInput?: string) => void;
     messagesEndRef: React.RefObject<HTMLDivElement>;
     userId: string; // NEW Prop
 }
@@ -114,8 +114,12 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
             prompt += `\n\n[OBSERVAÇÕES DO PROFESSOR]:\n${observations}`;
         }
 
-        setInput(prompt);
-        triggerSend();
+        if (observations.trim()) {
+            prompt += `\n\n[OBSERVAÇÕES DO PROFESSOR]:\n${observations}`;
+        }
+
+        // Pass prompt directly, bypassing state delay
+        triggerSend(prompt);
     };
 
     const handleAssessmentGenerate = () => {
@@ -133,8 +137,11 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
             prompt += `\n\n[OBSERVAÇÕES ADICIONAIS]:\n${observations}`;
         }
 
-        setInput(prompt);
-        triggerSend();
+        if (observations.trim()) {
+            prompt += `\n\n[OBSERVAÇÕES ADICIONAIS]:\n${observations}`;
+        }
+
+        triggerSend(prompt);
 
         // Reset UI
         setShowAssessmentOptions(false);
@@ -156,8 +163,11 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
             prompt += `\n\n[DETALHES DA OPÇÃO SELECIONADA]:\n${materialInstructions}`;
         }
 
-        setInput(prompt);
-        triggerSend();
+        if (materialInstructions.trim()) {
+            prompt += `\n\n[DETALHES DA OPÇÃO SELECIONADA]:\n${materialInstructions}`;
+        }
+
+        triggerSend(prompt);
 
         // Reset UI
         setShowMaterialOptions(false);
@@ -165,10 +175,10 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
         setMaterialInstructions('');
     };
 
-    const triggerSend = () => {
+    const triggerSend = (prompt?: string) => {
         setTimeout(() => {
             const syntheticEvent = { preventDefault: () => { } } as React.FormEvent;
-            handleSendMessage(syntheticEvent);
+            handleSendMessage(syntheticEvent, prompt);
             setObservations('');
         }, 100);
     };
