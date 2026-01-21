@@ -410,6 +410,33 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
                             </div>
                         ))}
                     </div>
+
+                    {/* MOBILE ACTION BAR (Visible when Sidebar is hidden on small screens) */}
+                    <div className="lg:hidden grid grid-cols-1 gap-3 pt-4 pb-10">
+                        <button
+                            onClick={handleSave}
+                            disabled={isSaving}
+                            className="w-full bg-purple-600 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg disabled:opacity-50"
+                        >
+                            {isSaving ? <Loader2 className="animate-spin" /> : <Save size={18} />}
+                            {isSaving ? 'Salvando...' : 'Salvar Avaliação'}
+                        </button>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={handlePrint}
+                                className="w-full bg-indigo-100 text-indigo-700 px-4 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"
+                            >
+                                <Printer size={16} /> Imprimir
+                            </button>
+                            <button
+                                onClick={handleExportWord}
+                                className="w-full bg-blue-100 text-blue-700 px-4 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"
+                            >
+                                <FileText size={16} /> Baixar Word
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

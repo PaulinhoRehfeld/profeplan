@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-import { SYSTEM_PROMPT } from "../constants";
+import { SYSTEM_PROMPT, SYSTEM_PROMPT_CHAT } from "../constants";
 import { AccessLevel } from "../types";
 import { fetchEnemQuestions } from "./databaseService";
 import { getTeacherContext } from "./supabaseService";
@@ -98,7 +98,10 @@ export const generateProfePlanStream = async (
   const genAI = new GoogleGenerativeAI(apiKey);
 
   // Configuração da instrução do sistema base
-  let specificInstruction = `${SYSTEM_PROMPT}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
+  // [MODIFICAÇÃO V3.2]: O Chat Geral usa SYSTEM_PROMPT_CHAT (com fallback).
+  // Agentes especializados (Quarterly, Planning) mantêm SYSTEM_PROMPT (estrito/RAG only).
+  const basePrompt = (mode === 'quarterly' || mode === 'planning') ? SYSTEM_PROMPT : SYSTEM_PROMPT_CHAT;
+  let specificInstruction = `${basePrompt}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
 
 
 

@@ -5,7 +5,7 @@ import { generateGeminiContent } from '../../services/geminiService';
 import { searchCurriculum, getDeterministicCurriculum } from '../../services/searchService';
 import { searchQuestions } from '../../services/questionService';
 import { Message, MessageRole, ToolMode } from '../../types';
-import { PlanFolder, savePlan } from './PlanningService';
+import { PlanFolder, savePlan, GeneratedPlan } from './PlanningService';
 import { Loader2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
 import { addMemory } from '../../services/memoryService'; // Import addMemory
@@ -19,6 +19,7 @@ import { parseMarkdownToLessons } from '../../utils/markdownParser';
 
 // --- Services ---
 import { exportToDocx } from '../../services/exportService';
+import { getGeneratedContents } from '../../services/databaseService';
 
 // Updated Props Interface to match App.tsx
 interface PlanningManagerProps {
@@ -94,16 +95,17 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
                 if (plan.lessons && plan.lessons.length > 0) {
                     console.log("[PlanningManager] Using cached lessons from DB");
                     setParsedLessons(plan.lessons);
+                    loadLessonTracking(plan.id, plan.lessons);
                 }
                 // 2. Fallback / Source of Truth: Parse the Text
                 else if (plan.generatedText) {
                     console.log("[PlanningManager] Hydrating from Markdown Source");
                     const lessons = parseMarkdownToLessons(plan.generatedText);
                     setParsedLessons(lessons);
+                    loadLessonTracking(plan.id, lessons);
                 } else {
                     setParsedLessons([]);
                 }
-                loadLessonTracking(plan.id);
             }
         } else {
             setParsedLessons([]);
@@ -118,8 +120,32 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     // --- Logic: Parse Term Plan Text into Lessons ---
     // Old parseTermPlan removed in favor of utils/markdownParser
 
-    const loadLessonTracking = async (planId: string) => {
-        // Mock implementation
+    const loadLessonTracking = async (planId: string, currentLessons?: Lesson[]) => {
+        if (!userId) return;
+        const lessonsToCheck = currentLessons || parsedLessons;
+
+        try {
+            const contents = await getGeneratedContents(userId);
+            const tracking: Record<number, string> = {};
+
+            if (lessonsToCheck && lessonsToCheck.length > 0) {
+                lessonsToCheck.forEach(lesson => {
+                    // Check for Planos de Aula (type 'plano') matching the lesson number
+                    const hasPlan = contents.some((c: any) =>
+                        c.type === 'plano' &&
+                        (c.title.startsWith(`${lesson.number} -`) || c.title.includes(`Aula ${lesson.number}`))
+                    );
+
+                    if (hasPlan) {
+                        tracking[lesson.number] = 'prepared';
+                    }
+                });
+            }
+
+            setLessonTracking(tracking);
+        } catch (error) {
+            console.error("Error loading lesson tracking:", error);
+        }
     };
 
     // --- Handlers ---
@@ -261,7 +287,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             }
 
             // --- RAG: QUESTÕES DO BANCO DE DADOS (ENEM/SAEB) ---
-            if (input.includes('[AÇÃO: QUESTÕES DE PROVA]') && selectedLesson) {
+            if (input.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') && selectedLesson) {
                 try {
                     // Determinar Área do Conhecimento com base na disciplina do plano
                     const subject = termPlans.find(p => p.id === selectedTermPlanId)?.subject || '';
@@ -277,7 +303,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 
                     console.log(`[RAG] Buscando questões sobre: ${selectedLesson.title} [Disciplina: ${subject} -> Área: ${area}]`);
 
-                    const dbQuestions = await searchQuestions(selectedLesson.title, area);
+                    const dbQuestions = await searchQuestions(selectedLesson.title, [area]);
 
                     if (dbQuestions && dbQuestions.length > 0) {
                         const questionsText = dbQuestions.slice(0, 3).map((q, idx) => {
@@ -318,7 +344,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             // Detect if response looks like a plan, material, or exam
             if (response.length > 50) { // Simple heuristic: real content is long
                 // 1. Determine Type
-                let type: any = 'outros';
+                let type: GeneratedPlan['type'] = 'documento';
                 let folder = PlanFolder.MATERIAL_ALUNO; // Default fallback
                 let title = `Conteúdo Gerado ${new Date().toLocaleTimeString()}`;
 
@@ -327,15 +353,15 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                     title = selectedLesson ? `Plano - Aula ${selectedLesson.number}` : 'Plano de Aula';
                 }
                 else if (response.includes('[AÇÃO: MATERIAL DIDÁTICO]') || response.includes('ROTEIRO DE ESTUDO')) {
-                    type = 'aula'; folder = PlanFolder.MATERIAL_ALUNO; // 'aula' maps to Activities in DriveExplorer
+                    type = 'material'; folder = PlanFolder.MATERIAL_ALUNO;
                     title = selectedLesson ? `Material - Aula ${selectedLesson.number}` : 'Material Didático';
                 }
-                else if (response.includes('[AÇÃO: QUESTÕES DE PROVA]') || response.includes('QUESTÕES')) {
-                    type = 'avaliacao'; folder = PlanFolder.AVALIACOES;
-                    title = selectedLesson ? `Questões - Aula ${selectedLesson.number}` : 'Avaliação';
+                else if (response.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') || response.includes('QUESTÕES') || response.includes('EXERCÍCIOS')) {
+                    type = 'exercicio'; folder = PlanFolder.ATIVIDADES;
+                    title = selectedLesson ? `Exercícios - Aula ${selectedLesson.number}` : 'Lista de Exercícios';
                 }
 
-                if (type !== 'outros') {
+                if (type !== 'documento') {
                     // 2. Save to Drive (Async)
                     savePlan(userId, {
                         type,
@@ -369,8 +395,8 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 
         let prompt = '';
         if (action === 'plan') prompt = `Crie um plano de aula detalhado para a Aula ${selectedLesson.number}: ${selectedLesson.title} (${selectedLesson.description}). Inclua objetivos, metodologia, recursos e avaliação.`;
-        if (action === 'material') prompt = `Crie um roteiro de material didático (resumo para alunos) sobre o tema: ${selectedLesson.title}.`;
-        if (action === 'enem') prompt = `Sugira 3 questões estilo ENEM/SAEB sobre o tema: ${selectedLesson.title}.`;
+        if (action === 'material') prompt = `[TYPE: MATERIAL]\nCrie um roteiro de material didático (resumo para alunos) sobre o tema: ${selectedLesson.title}.`;
+        if (action === 'enem') prompt = `[TYPE: EXERCISES]\nCrie uma lista de exercícios de fixação sobre o tema: ${selectedLesson.title}.`;
 
         setInput(prompt);
     };
@@ -384,14 +410,25 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 : `Plano Gerado ${new Date().toLocaleDateString()}`;
 
             let folder = PlanFolder.PLANO_AULA;
-            let type: any = 'aula';
+            let type: GeneratedPlan['type'] = 'plano'; // Default to 'plano' (Planos de Aula)
 
-            if (content.includes('QUESTÕES') || content.includes('GABARITO')) {
-                folder = PlanFolder.AVALIACOES;
-                type = 'avaliacao';
-            } else if (content.includes('ROTEIRO') || content.includes('MATERIAL')) {
+            const upperContent = content.toUpperCase();
+
+            // 1. Explicit Tag Detection (Highest Priority)
+            if (upperContent.includes('[TYPE: EXERCISES]')) {
+                folder = PlanFolder.ATIVIDADES;
+                type = 'exercicio';
+            } else if (upperContent.includes('[TYPE: MATERIAL]')) {
                 folder = PlanFolder.MATERIAL_ALUNO;
-                type = 'documento';
+                type = 'material';
+            }
+            // 2. Keyword Fallback (Case Insensitive)
+            else if (upperContent.includes('QUESTÕES') || upperContent.includes('GABARITO') || upperContent.includes('EXERCÍCIOS') || upperContent.includes('LISTA')) {
+                folder = PlanFolder.ATIVIDADES;
+                type = 'exercicio';
+            } else if (upperContent.includes('ROTEIRO') || upperContent.includes('MATERIAL') || upperContent.includes('RESUMO')) {
+                folder = PlanFolder.MATERIAL_ALUNO;
+                type = 'material';
             }
 
             await savePlan(userId, {
@@ -402,6 +439,11 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             }, folder);
 
             // alert('Salvo com sucesso em "Meus Arquivos"!'); // UI feedback handled by button state usually, but alert is ok for now or toast
+            // Refresh tracking to update UI (strikethrough and count)
+            if (selectedTermPlanId) {
+                await loadLessonTracking(selectedTermPlanId);
+            }
+
             return true;
         } catch (e: any) {
             console.error(e);
@@ -463,6 +505,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 setSelectedLesson={setSelectedLesson}
                 handleQuickAction={handleQuickAction}
                 messages={messages}
+                userId={userId} // Pass userId
                 handleExportDocx={handleExportDocx}
                 handleSavePlan={handleSavePlan}
                 isThinking={isThinking}

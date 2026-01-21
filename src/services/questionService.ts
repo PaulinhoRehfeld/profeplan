@@ -14,11 +14,11 @@ const AREA_MAP: Record<string, string[]> = {
     'Matemática': ['Matemática']
 };
 
-export const searchQuestions = async (query: string, area?: string): Promise<EnemQuestion[]> => {
+export const searchQuestions = async (query: string, areas?: string[]): Promise<EnemQuestion[]> => {
     try {
         if (!query.trim()) return [];
 
-        console.log(`🔍 Gerando embedding para: "${query}" [Área: ${area || 'Todas'}]`);
+        console.log(`🔍 Gerando embedding para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
         // 1. Gera o embedding da query
         const model = googleAI.getGenerativeModel({ model: "text-embedding-004" });
@@ -31,7 +31,7 @@ export const searchQuestions = async (query: string, area?: string): Promise<Ene
         const { data, error } = await supabase.rpc('match_questions', {
             query_embedding: embedding,
             match_threshold: 0.35, // Ligeiramente mais estrito
-            match_count: 30 // Busca mais para ter margem de filtro
+            match_count: 50 // Busca mais para ter margem de filtro (aumentado de 30 para 50)
         });
 
         if (error) {
@@ -62,21 +62,23 @@ export const searchQuestions = async (query: string, area?: string): Promise<Ene
             }
         }
 
-        // 4. Filtragem Client-Side por Área
-        if (area && finalQuestions.length > 0) {
-            const targetDisciplines = AREA_MAP[area] || [];
+        // 4. Filtragem Client-Side por Área(s)
+        if (areas && areas.length > 0 && finalQuestions.length > 0) {
+            // Collect all disciplines from all selected areas
+            const targetDisciplines = areas.flatMap(area => AREA_MAP[area] || []);
+
             if (targetDisciplines.length > 0) {
-                console.log(`🎯 Filtrando por Área: ${area} (Disciplinas: ${targetDisciplines.join(', ')})`);
+                console.log(`🎯 Filtrando por Áreas: ${areas.join(', ')} (Disciplinas: ${targetDisciplines.join(', ')})`);
 
                 finalQuestions = finalQuestions.filter(q => {
                     const qDisc = q.metadata?.discipline || '';
-                    const qTags = q.metadata?.tags || [];
 
-                    // Verifica se a disciplina da questão está na lista da área alvo
+                    // Verifica se a disciplina da questão está na lista combinada
                     // Normaliza para lowercase e remove acentos para comparação segura
                     const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    const normalizedDisc = normalize(qDisc);
 
-                    const isMatch = targetDisciplines.some(td => normalize(qDisc).includes(normalize(td)) || qDisc === td);
+                    const isMatch = targetDisciplines.some(td => normalizedDisc.includes(normalize(td)) || qDisc === td);
                     return isMatch;
                 });
             }

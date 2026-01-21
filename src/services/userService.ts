@@ -3,11 +3,12 @@ import { supabase } from './supabaseClient';
 export interface UserProfile {
     id: string;
     email: string;
-    tier: 'SILVER' | 'GOLD';        // NEW
-    credits: number;                // NEW (Remaining)
-    is_unlimited: boolean;          // NEW (Gold)
-    is_admin: boolean;              // NEW
+    tier: 'SILVER' | 'GOLD';
+    credits: number;
+    is_unlimited: boolean;
+    is_admin: boolean;
     allowed_features: string[];
+    phone?: string;                 // NEW
 }
 
 // --- CONFIGURATION ---
@@ -126,4 +127,85 @@ export const hasFeaturePattern = (userFeatures: string[] | null | undefined, req
     if (!userFeatures || !Array.isArray(userFeatures)) return false;
     if (userFeatures.includes('all')) return true;
     return userFeatures.includes(requiredFeature);
+};
+
+// --- REFERRAL & REWARDS ---
+
+export const registerPhone = async (userId: string, phone: string) => {
+    // 1. Check if user already has phone (to avoid double reward abuse)
+    const { data: profile } = await supabase.from('profiles').select('phone, credits').eq('id', userId).single();
+    if (profile?.phone) return { success: false, message: 'Telefone já cadastrado anteriormente.' };
+
+    // 2. Update phone and Add 10 credits
+    const { error } = await supabase
+        .from('profiles')
+        .update({
+            phone: phone,
+            credits: (profile?.credits || 0) + 10
+        })
+        .eq('id', userId);
+
+    if (error) return { success: false, message: error.message };
+    return { success: true, message: 'Telefone cadastrado! Você ganhou 10 créditos.' };
+};
+
+export const addReferral = async (referrerId: string, refereeEmail: string) => {
+    // Check if referral already exists
+    const { data: existing } = await supabase
+        .from('referrals')
+        .select('*')
+        .eq('referrer_id', referrerId)
+        .eq('referee_email', refereeEmail)
+        .single();
+
+    if (existing) return { success: false, message: 'Você já indicou esta pessoa.' };
+
+    const { error } = await supabase
+        .from('referrals')
+        .insert({
+            referrer_id: referrerId,
+            referee_email: refereeEmail,
+            status: 'pending'
+        });
+
+    if (error) return { success: false, message: error.message };
+    return { success: true, message: 'Indicação enviada com sucesso!' };
+};
+
+export const checkAndRewardReferrer = async (newUserEmail: string) => {
+    // 1. Find pending referral for this email
+    const { data: referral } = await supabase
+        .from('referrals')
+        .select('*')
+        .eq('referee_email', newUserEmail)
+        .eq('status', 'pending')
+        .single();
+
+    if (!referral) return; // No referral found
+
+    // 2. Mark as completed
+    await supabase.from('referrals').update({ status: 'completed' }).eq('id', referral.id);
+
+    // 3. Reward Referrer (+10 Credits)
+    // We need to fetch referrer current credits first to increment safely (or use RPC if available)
+    const { data: referrerProfile } = await supabase
+        .from('profiles')
+        .select('credits')
+        .eq('id', referral.referrer_id)
+        .single();
+
+    if (referrerProfile) {
+        await supabase
+            .from('profiles')
+            .update({ credits: (referrerProfile.credits || 0) + 10 })
+            .eq('id', referral.referrer_id);
+    }
+};
+
+export const addUserCredits = async (userId: string, amount: number) => {
+    const { data: profile } = await supabase.from('profiles').select('credits').eq('id', userId).single();
+    if (!profile) return { error: { message: 'Usuário não encontrado' } };
+
+    const newCredits = (profile.credits || 0) + amount;
+    return await supabase.from('profiles').update({ credits: newCredits }).eq('id', userId);
 };

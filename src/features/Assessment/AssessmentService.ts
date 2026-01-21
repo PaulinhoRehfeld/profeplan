@@ -45,6 +45,7 @@ const syncAssessmentToCloud = async (userId: string, assessment: Assessment) => 
         .insert({
             user_id: userId,
             type: 'avaliacao',
+            folder: 'AVALIAÇÕES', // Hardcoded fallback or import PlanFolder if possible, but string is safer for now
             title: assessment.title,
             content: markdown
         });

@@ -248,7 +248,8 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
         try {
             const htmlContent = buildInclusionDocHtml(
                 { title: selectedLesson.topic, content: selectedLesson.content },
-                validAdaptations
+                validAdaptations,
+                false // includeOriginal: false
             );
             await saveGeneratedContent(
                 userId,
@@ -261,7 +262,8 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
         }
         generateInclusionDoc(
             { title: selectedLesson.topic, content: selectedLesson.content },
-            validAdaptations
+            validAdaptations,
+            false // includeOriginal: false
         );
     };
 

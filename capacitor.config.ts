@@ -1,14 +1,9 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.profeplan.app',
+  appId: 'br.com.profeplan',
   appName: 'PROFEPLAN',
-  webDir: 'dist',
-  plugins: {
-    Keyboard: {
-      resize: 'body',
-    },
-  },
+  webDir: 'dist'
 };
 
 export default config;

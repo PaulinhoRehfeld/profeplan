@@ -3,19 +3,21 @@ import { checkUsageQuota, incrementUserUsage } from '../../services/userService'
 
 // --- FOLDER STRUCTURE ENUM ---
 export enum PlanFolder {
-    PLANEJAMENTO_TRI_BI = 'PLANEJAMENTO TRI/BI',
-    PLANO_AULA = 'PLANO AULA',
-    MATERIAL_ALUNO = 'MATERIAL ALUNO',
-    APRESENTACOES = 'APRESENTAÇÕES',
+    TRIMESTRAIS = 'TRIMESTRAIS',
+    PLANO_AULA = 'PLANOS DE AULA',
+    MATERIAL_ALUNO = 'MATERIAIS ALUNOS',
+    ATIVIDADES = 'ATIVIDADES',
+    SIMULADOS = 'SIMULADOS',
     AVALIACOES = 'AVALIAÇÕES',
-    SIMULADOS = 'SIMULADOS'
+    APRESENTACOES = 'APRESENTAÇÕES',
+    OUTROS = 'OUTROS'
 }
 
 const LOCAL_STORAGE_HISTORY_KEY = 'profeplan_history_buffer';
 
 export interface GeneratedPlan {
     id: string;
-    type: 'plano' | 'aula' | 'avaliacao' | 'documento' | 'trimestral' | 'enem';
+    type: 'plano' | 'material' | 'exercicio' | 'simulado' | 'avaliacao' | 'apresentacao' | 'trimestral' | 'documento' | 'outros' | 'aula' | 'enem';
     folder: PlanFolder; // New Field
     title: string;
     content: string;

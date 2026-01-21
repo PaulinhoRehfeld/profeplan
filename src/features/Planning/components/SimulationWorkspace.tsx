@@ -26,12 +26,22 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
     const [simObservations, setSimObservations] = useState('');
     const [previewQuestion, setPreviewQuestion] = useState<EnemQuestion | null>(null);
 
+    // Areas Filter State
+    const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
+
+    const toggleArea = (area: string) => {
+        setSelectedAreas(prev =>
+            prev.includes(area) ? prev.filter(a => a !== area) : [...prev, area]
+        );
+    };
+
     // --- Simulation Handlers ---
     const handleSimSearch = async () => {
         if (!simSearchQuery.trim()) return;
         setSimLoading(true);
+
         try {
-            const results = await searchQuestions(simSearchQuery);
+            const results = await searchQuestions(simSearchQuery, selectedAreas);
             setSimSearchResults(results || []);
         } catch (e) {
             console.error(e);
@@ -86,7 +96,7 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                 const contentSummary = simCart.map(q => q.metadata?.alternativesIntroduction || q.metadata?.context).join('\n---\n');
 
                 await savePlan(userId, {
-                    type: 'avaliacao',
+                    type: 'simulado',
                     title: title,
                     content: contentSummary,
                     createdAt: new Date().toISOString(),
@@ -102,7 +112,7 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                 const contentSummary = `Geração A/B com ${simCart.length} questões.`;
 
                 await savePlan(userId, {
-                    type: 'avaliacao',
+                    type: 'simulado',
                     title: title,
                     content: contentSummary,
                     createdAt: new Date().toISOString(),
@@ -144,7 +154,31 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                             <button onClick={() => setSimMode('mirror')} className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${simMode === 'mirror' ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
                                 Modo Espelho (Via Plano)
                             </button>
+
                         </div>
+
+                        {/* Area Filters */}
+                        {simMode === 'manual' && (
+                            <div className="flex flex-wrap gap-3 mb-4 animate-in slide-in-from-top-2">
+                                {['Linguagens', 'Matemática', 'Humanas', 'Natureza'].map(area => (
+                                    <label key={area} className={`
+                                        flex items-center gap-2 px-3 py-1.5 rounded-full border cursor-pointer select-none text-[10px] font-black uppercase tracking-wide transition-all
+                                        ${selectedAreas.includes(area)
+                                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
+                                            : 'bg-white border-slate-200 text-slate-400 hover:border-indigo-200'
+                                        }
+                                    `}>
+                                        <input
+                                            type="checkbox"
+                                            className="hidden"
+                                            checked={selectedAreas.includes(area)}
+                                            onChange={() => toggleArea(area)}
+                                        />
+                                        {area}
+                                    </label>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="flex gap-2">
                             <div className="relative flex-1">
@@ -270,93 +304,95 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
             </div>
 
             {/* --- MODAL DE PRÉ-VISUALIZAÇÃO --- */}
-            {previewQuestion && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="absolute inset-0" onClick={() => setPreviewQuestion(null)}></div>
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative z-10 animate-in zoom-in-95 duration-200 overflow-hidden">
-                        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
-                                    <BookOpen size={18} />
+            {
+                previewQuestion && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                        <div className="absolute inset-0" onClick={() => setPreviewQuestion(null)}></div>
+                        <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative z-10 animate-in zoom-in-95 duration-200 overflow-hidden">
+                            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                                        <BookOpen size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                            Questão #{previewQuestion.id}
+                                            <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-full font-normal">
+                                                {previewQuestion.metadata?.year}
+                                            </span>
+                                        </h3>
+                                        <p className="text-xs text-slate-500">{previewQuestion.metadata?.discipline}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                        Questão #{previewQuestion.id}
-                                        <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-full font-normal">
-                                            {previewQuestion.metadata?.year}
-                                        </span>
-                                    </h3>
-                                    <p className="text-xs text-slate-500">{previewQuestion.metadata?.discipline}</p>
-                                </div>
-                            </div>
-                            <button onClick={() => setPreviewQuestion(null)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all">
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div className="p-5 overflow-y-auto custom-scrollbar flex-1 bg-white">
-                            {/* Enunciado (Contexto + Comando) */}
-                            <div className="mb-6 space-y-4">
-                                <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-line">
-                                    {previewQuestion.metadata?.context}
-                                </p>
-                                <p className="text-slate-900 font-medium text-sm">
-                                    {previewQuestion.metadata?.alternativesIntroduction}
-                                </p>
+                                <button onClick={() => setPreviewQuestion(null)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all">
+                                    <X size={20} />
+                                </button>
                             </div>
 
-                            {/* Alternativas */}
-                            <div className="space-y-2">
-                                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Alternativas</h4>
-                                {previewQuestion.metadata?.alternatives?.map((alt) => {
-                                    const isCorrect = alt.isCorrect;
-                                    return (
-                                        <div
-                                            key={alt.letter}
-                                            className={`flex gap-3 p-3 rounded-lg border text-sm transition-all ${isCorrect
-                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-900 shadow-sm ring-1 ring-emerald-100'
-                                                : 'bg-white border-slate-200 text-slate-600'
-                                                }`}
-                                        >
-                                            <div className={`
+                            <div className="p-5 overflow-y-auto custom-scrollbar flex-1 bg-white">
+                                {/* Enunciado (Contexto + Comando) */}
+                                <div className="mb-6 space-y-4">
+                                    <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-line">
+                                        {previewQuestion.metadata?.context}
+                                    </p>
+                                    <p className="text-slate-900 font-medium text-sm">
+                                        {previewQuestion.metadata?.alternativesIntroduction}
+                                    </p>
+                                </div>
+
+                                {/* Alternativas */}
+                                <div className="space-y-2">
+                                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Alternativas</h4>
+                                    {previewQuestion.metadata?.alternatives?.map((alt) => {
+                                        const isCorrect = alt.isCorrect;
+                                        return (
+                                            <div
+                                                key={alt.letter}
+                                                className={`flex gap-3 p-3 rounded-lg border text-sm transition-all ${isCorrect
+                                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900 shadow-sm ring-1 ring-emerald-100'
+                                                    : 'bg-white border-slate-200 text-slate-600'
+                                                    }`}
+                                            >
+                                                <div className={`
                                                 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0
                                                 ${isCorrect ? 'bg-emerald-200 text-emerald-800' : 'bg-slate-100 text-slate-500'}
                                             `}>
-                                                {alt.letter}
+                                                    {alt.letter}
+                                                </div>
+                                                <div className="flex-1 pt-0.5">
+                                                    {alt.text}
+                                                </div>
+                                                {isCorrect && <CheckCircle size={18} className="text-emerald-500 shrink-0" />}
                                             </div>
-                                            <div className="flex-1 pt-0.5">
-                                                {alt.text}
-                                            </div>
-                                            {isCorrect && <CheckCircle size={18} className="text-emerald-500 shrink-0" />}
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Metadados Adicionais */}
+                                <div className="mt-6 pt-4 border-t border-slate-100 grid grid-cols-2 gap-4 text-xs text-slate-500">
+                                    <div>
+                                        <span className="font-bold text-slate-700 block mb-1">BNCC</span>
+                                        {previewQuestion.metadata?.bncc?.join(', ') || 'N/A'}
+                                    </div>
+                                    <div>
+                                        <span className="font-bold text-slate-700 block mb-1">Tags</span>
+                                        {previewQuestion.metadata?.tags?.join(', ') || 'N/A'}
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Metadados Adicionais */}
-                            <div className="mt-6 pt-4 border-t border-slate-100 grid grid-cols-2 gap-4 text-xs text-slate-500">
-                                <div>
-                                    <span className="font-bold text-slate-700 block mb-1">BNCC</span>
-                                    {previewQuestion.metadata?.bncc?.join(', ') || 'N/A'}
-                                </div>
-                                <div>
-                                    <span className="font-bold text-slate-700 block mb-1">Tags</span>
-                                    {previewQuestion.metadata?.tags?.join(', ') || 'N/A'}
-                                </div>
+                            <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-end gap-3 z-20">
+                                <button onClick={() => setPreviewQuestion(null)} className="px-4 py-2 text-sm font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors">
+                                    Fechar
+                                </button>
+                                <button onClick={() => { handleAddToCart(previewQuestion); setPreviewQuestion(null); }} className="px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm hover:shadow hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                                    <Plus size={16} /> Adicionar
+                                </button>
                             </div>
-                        </div>
-
-                        <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-end gap-3 z-20">
-                            <button onClick={() => setPreviewQuestion(null)} className="px-4 py-2 text-sm font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors">
-                                Fechar
-                            </button>
-                            <button onClick={() => { handleAddToCart(previewQuestion); setPreviewQuestion(null); }} className="px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm hover:shadow hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                                <Plus size={16} /> Adicionar
-                            </button>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };

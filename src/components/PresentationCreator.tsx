@@ -168,7 +168,8 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
             // 2. Salvar localmente (Generated Contents)
             await saveGeneratedContent(
                 userId,
-                'presentation',
+                'apresentacao',
+                'APRESENTAÇÕES',
                 generatedPresentation.title,
                 contentMarkdown
             );

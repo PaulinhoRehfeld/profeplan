@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock } from 'lucide-react';
+import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock, Menu, X } from 'lucide-react';
 import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
+import { LowCreditModal } from '../../../components/LowCreditModal';
+import { getUserProfile, UserProfile } from '../../../services/userService';
 
 interface PlanningCockpitProps {
     termPlans: TermPlan[];
@@ -21,14 +23,47 @@ interface PlanningCockpitProps {
     setInput: (val: string | ((prev: string) => string)) => void;
     handleSendMessage: (e: React.FormEvent) => void;
     messagesEndRef: React.RefObject<HTMLDivElement>;
+    userId: string; // NEW Prop
 }
 
 export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     termPlans, selectedTermPlanId, setSelectedTermPlanId,
     parsedLessons, lessonTracking, selectedLesson, setSelectedLesson,
-    handleQuickAction, messages, handleExportDocx, handleSavePlan, isThinking, input, setInput, handleSendMessage, messagesEndRef
+    handleQuickAction, messages, handleExportDocx, handleSavePlan, isThinking, input, setInput, handleSendMessage, messagesEndRef,
+    userId
 }) => {
     const [observations, setObservations] = useState('');
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [showLowCreditModal, setShowLowCreditModal] = useState(false);
+    const hasShownWarning = useRef<number | null>(null); // Track last level shown to avoid spam
+
+    useEffect(() => {
+        refreshProfile();
+    }, [userId]);
+
+    const refreshProfile = async () => {
+        if (!userId) return;
+        const profile = await getUserProfile(userId);
+        if (profile) {
+            setUserProfile(profile);
+            checkCreditWarning(profile.credits);
+        }
+    };
+
+    const checkCreditWarning = (credits: number) => {
+        // Trigger on 4, 3, 2, 1
+        if (credits <= 4 && credits > 0) {
+            // Only show if we haven't shown for this level or lower in this session
+            // actually just show once per session or per credit drop?
+            // Requirement says "repeat with 3, 2 and 1".
+            // So if current is 3, and last shown was 4 (or null), show.
+            // If last shown was 3, don't show.
+            if (hasShownWarning.current !== credits) {
+                setShowLowCreditModal(true);
+                hasShownWarning.current = credits;
+            }
+        }
+    };
 
     // Material do Aluno Sates
     const [showMaterialOptions, setShowMaterialOptions] = useState(false);
@@ -46,6 +81,9 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     const [savedMessages, setSavedMessages] = useState<Record<string, boolean>>({});
     const [isSaving, setIsSaving] = useState<Record<string, boolean>>({});
 
+    // Mobile Menu State
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
+
     const handleActionClick = (action: 'plan' | 'material' | 'enem') => {
         if (!selectedLesson) return alert('Selecione uma aula primeiro!');
 
@@ -60,6 +98,9 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
             setShowMaterialOptions(false);
             return;
         }
+
+        // Auto-close menu on mobile
+        setIsMobileMenuOpen(false);
 
         // Reset Options if switching to plan
         setShowMaterialOptions(false);
@@ -80,7 +121,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     const handleAssessmentGenerate = () => {
         if (!selectedLesson) return;
 
-        let prompt = `[AÇÃO: QUESTÕES DE PROVA]\nCrie uma avaliação sobre o tema: ${selectedLesson.title}.`;
+        let prompt = `[AÇÃO: LISTA DE EXERCÍCIOS]\n[TYPE: EXERCISES]\nCrie uma lista de exercícios sobre o tema: ${selectedLesson.title}.`;
 
         prompt += `\n\n[CONFIGURAÇÃO DA PROVA]:
 - Questões Estilo ENEM (Banco de Dados): ${enemCount}
@@ -109,7 +150,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
         if (materialType === 'teorico') typeLabel = 'TEXTO TEÓRICO COMPLETO';
         if (materialType === 'exercicios') typeLabel = 'LISTA DE EXERCÍCIOS DE FIXAÇÃO';
 
-        let prompt = `[AÇÃO: MATERIAL DIDÁTICO - ${typeLabel}]\nCrie um material didático para a Aula ${selectedLesson.number}: ${selectedLesson.title}.`;
+        let prompt = `[AÇÃO: MATERIAL DIDÁTICO - ${typeLabel}]\n[TYPE: MATERIAL]\nCrie um material didático para a Aula ${selectedLesson.number}: ${selectedLesson.title}.`;
 
         if (materialInstructions.trim()) {
             prompt += `\n\n[DETALHES DA OPÇÃO SELECIONADA]:\n${materialInstructions}`;
@@ -142,13 +183,25 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     };
 
     return (
-        <div className="flex bg-slate-50 h-full relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row bg-slate-50 h-full relative overflow-hidden">
 
-            {/* 1. LEFT SIDEBAR: WIZARD CONTROLS (35% Width) */}
-            <div className="w-96 flex flex-col border-r border-slate-200 bg-white shadow-xl z-20 shrink-0">
+            {/* 1. LEFT SIDEBAR: WIZARD CONTROLS (Mobile: Overlay / Desktop: Left 35%) */}
+            <div className={`
+                fixed inset-0 z-50 bg-white flex flex-col transition-transform duration-300 shadow-2xl
+                lg:relative lg:translate-x-0 lg:w-96 lg:shadow-xl lg:z-20
+                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}>
 
                 {/* A. Plan Selector (Dropdown) */}
-                <div className="p-6 border-b border-slate-100 space-y-3 bg-slate-50/50">
+                <div className="p-4 lg:p-6 border-b border-slate-100 space-y-3 bg-slate-50/50 relative">
+                    {/* Mobile Close Button */}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 lg:hidden"
+                    >
+                        <X size={20} />
+                    </button>
+
                     <div className="flex items-center gap-2 text-slate-400 mb-1">
                         <LayoutList size={14} />
                         <span className="text-[10px] font-black uppercase tracking-widest">Selecione o Planejamento</span>
@@ -270,7 +323,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     ) : showAssessmentOptions ? (
                         <div className="animate-in slide-in-from-right-4 duration-300">
                             <div className="flex items-center justify-between mb-2">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Configurar Avaliação</p>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">Configurar Exercícios</p>
                                 <button onClick={() => setShowAssessmentOptions(false)} className="text-slate-400 hover:text-red-500 text-[10px] font-bold">CANCELAR</button>
                             </div>
 
@@ -310,8 +363,8 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                                                 key={d}
                                                 onClick={() => setDifficulty(d as any)}
                                                 className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${difficulty === d
-                                                        ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                                                        : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-white'
+                                                    ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                                                    : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-white'
                                                     }`}
                                             >
                                                 {d}
@@ -325,7 +378,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                                 onClick={handleAssessmentGenerate}
                                 className="w-full py-3 bg-amber-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-all shadow-sm shadow-amber-200"
                             >
-                                Gerar Avaliação
+                                Gerar Exercícios
                             </button>
                         </div>
                     ) : (
@@ -369,8 +422,8 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                                         <CheckCircle2 size={16} strokeWidth={2.5} />
                                     </div>
                                     <div>
-                                        <span className="block text-xs font-black uppercase tracking-wide">Avaliação</span>
-                                        <span className="text-[10px] text-slate-400 font-medium">Questões e gabarito</span>
+                                        <span className="block text-xs font-black uppercase tracking-wide">Exercícios</span>
+                                        <span className="text-[10px] text-slate-400 font-medium">Lista de fixação</span>
                                     </div>
                                 </button>
                             </div>
@@ -380,7 +433,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
 
                 {/* D. Observation Input (Hidden if Wizard visible to save space) */}
                 {!showMaterialOptions && !showAssessmentOptions && (
-                    <div className="p-4 border-t border-slate-200 bg-slate-50">
+                    <div className="p-4 border-t border-slate-200 bg-slate-50 hidden lg:block">
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
                             <MessageSquare size={10} /> Observações Específicas
                         </p>
@@ -394,12 +447,19 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                 )}
             </div>
 
-            {/* 2. RIGHT CONTENT: OUTPUT & CHAT (Flex 1) */}
-            <div className="flex-1 flex flex-col h-full bg-slate-50 border-l border-slate-200 relative">
+            {/* 2. RIGHT CONTENT: OUTPUT & CHAT (Mobile: Full Screen / Desktop: Flex 1) */}
+            <div className="flex-1 flex flex-col h-full bg-slate-50 border-l border-slate-200 relative w-full">
 
                 {/* Header for Chat Area */}
-                <div className="h-14 bg-white border-b border-slate-200 flex items-center px-6 justify-between shrink-0">
+                <div className="h-14 bg-white border-b border-slate-200 flex items-center px-4 lg:px-6 justify-between shrink-0">
                     <div className="flex items-center gap-2 text-indigo-600">
+                        {/* Mobile Menu Toggle */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className="lg:hidden p-1 mr-1 text-slate-500 hover:text-indigo-600 transition-colors"
+                        >
+                            <Menu size={20} />
+                        </button>
                         <Bot size={18} />
                         <span className="text-xs font-black uppercase tracking-widest">Assistente Pedagógico</span>
                     </div>
@@ -486,6 +546,18 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     <div ref={messagesEndRef} />
                 </div>
             </div>
+            {userProfile && (
+                <LowCreditModal
+                    isOpen={showLowCreditModal}
+                    onClose={() => setShowLowCreditModal(false)}
+                    currentCredits={userProfile.credits}
+                    userId={userId}
+                    userPhone={userProfile.phone}
+                    onSuccess={() => {
+                        refreshProfile();
+                    }}
+                />
+            )}
         </div>
     );
 };

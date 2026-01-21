@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Folder, FileText, HardDrive, Search, Download, Trash2,
   Cloud, UserCheck, Edit3, ChevronLeft, Save,
-  Loader2, AlertCircle, CheckCircle2, FileEdit, Calendar, Target
+  Loader2, AlertCircle, CheckCircle2, FileEdit, Calendar, Target, Book, Play
 } from 'lucide-react';
 import { UserSettings } from '../types';
 import { getGeneratedContents, updateGeneratedContent, deleteGeneratedContent } from '../services/databaseService';
@@ -50,11 +50,13 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   }, [userId]);
 
   const folders = [
-    { id: 'plano', name: 'PLANOS DE AULA', icon: Folder },
     { id: 'trimestral', name: 'TRIMESTRAIS', icon: Calendar },
-    { id: 'aula', name: 'ATIVIDADES', icon: FileText },
-    { id: 'avaliacao', name: 'SIMULADOS', icon: CheckCircle2 },
-    { id: 'enem', name: 'BANCO ENEM', icon: Target },
+    { id: 'plano', name: 'PLANOS DE AULA', icon: Folder },
+    { id: 'material', name: 'MATERIAIS ALUNOS', icon: Book },
+    { id: 'exercicio', name: 'ATIVIDADES', icon: FileText },
+    { id: 'simulado', name: 'SIMULADOS', icon: Target },
+    { id: 'avaliacao', name: 'AVALIAÇÕES', icon: CheckCircle2 },
+    { id: 'apresentacao', name: 'APRESENTAÇÕES', icon: Play },
     { id: 'documento', name: 'OUTROS', icon: HardDrive },
   ];
 

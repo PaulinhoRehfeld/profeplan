@@ -5,7 +5,8 @@ import { saveAs } from 'file-saver';
 
 export const buildInclusionDocHtml = (
   originalLesson: { title: string, content: string },
-  adaptations: { studentName: string, content: string }[]
+  adaptations: { studentName: string, content: string }[],
+  includeOriginal: boolean = true
 ) => {
   // Create Semantic HTML structure for the Word Doc
   let htmlContent = `
@@ -23,16 +24,35 @@ export const buildInclusionDocHtml = (
             </style>
         </head>
         <body>
-            <!-- Capa / Aula Original -->
+            <!-- Capa / Aula Original (Opcional) -->
             <div class="header">PROFEPLAN - DOCUMENTO DE INCLUSÃO</div>
-            <h1>Aula Original: ${originalLesson.title}</h1>
-            <div>${originalLesson.content.replace(/\n/g, '<br/>')}</div>
     `;
 
-  // Append each student's adaptation with a page break
-  adaptations.forEach(adapt => {
+  if (includeOriginal) {
     htmlContent += `
+            <h1>Aula Original: ${originalLesson.title}</h1>
+            <div>${originalLesson.content.replace(/\n/g, '<br/>')}</div>
             <div class="page-break"></div>
+        `;
+  } else {
+    htmlContent += `
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1>Adaptações Curriculares</h1>
+                <p><strong>Referência:</strong> ${originalLesson.title}</p>
+            </div>
+        `;
+  }
+
+  // Append each student's adaptation with a page break
+  adaptations.forEach((adapt, index) => {
+    // If it's the first item and we skipped original, we don't strictly need a page break before it, 
+    // but usually consistency is good. 
+    // If includeOriginal is FALSE, the first item is at the top (after header).
+    if (includeOriginal || index > 0) {
+      htmlContent += `<div class="page-break"></div>`;
+    }
+
+    htmlContent += `
             <div class="header">PROFEPLAN - PDI INDIVIDUAL</div>
             <h1>Adaptação para: ${adapt.studentName}</h1>
             <div class="adaptation-card">
@@ -47,9 +67,10 @@ export const buildInclusionDocHtml = (
 
 export const generateInclusionDoc = async (
   originalLesson: { title: string, content: string },
-  adaptations: { studentName: string, content: string }[]
+  adaptations: { studentName: string, content: string }[],
+  includeOriginal: boolean = true
 ) => {
-  const htmlContent = buildInclusionDocHtml(originalLesson, adaptations);
+  const htmlContent = buildInclusionDocHtml(originalLesson, adaptations, includeOriginal);
 
   // Create Blob
   const blob = new Blob(['\ufeff', htmlContent], {

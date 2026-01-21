@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { UserProfile, getAllUsers, updateUserProfileAdmin } from '../../services/userService';
+import { UserProfile, getAllUsers, updateUserProfileAdmin, addUserCredits } from '../../services/userService';
 import { Shield, Plus, Edit, Check, X, Search, Coins, Crown, Trash2, Upload, FileText, Database } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
 import { ingestFiles, clearExistingSource } from '../../services/ingestionService';
@@ -17,6 +17,11 @@ export const AdminPanel: React.FC = () => {
     const [newUserPass, setNewUserPass] = useState('123456');
     const [newUserTier, setNewUserTier] = useState<'SILVER' | 'GOLD'>('SILVER');
     const [newUserCredits, setNewUserCredits] = useState(10);
+
+    // Add Credits Modal State
+    const [isCreditModalOpen, setIsCreditModalOpen] = useState(false);
+    const [creditUser, setCreditUser] = useState<UserProfile | null>(null);
+    const [creditAmount, setCreditAmount] = useState(10);
 
     // Database Update State
     const [isUpdatingDb, setIsUpdatingDb] = useState(false);
@@ -90,6 +95,19 @@ export const AdminPanel: React.FC = () => {
             loadUsers();
         } catch (e: any) {
             alert('Erro: ' + e.message);
+        }
+    };
+    const handleIncrementCredits = async () => {
+        if (!creditUser) return;
+        const res = await addUserCredits(creditUser.id, creditAmount);
+        if (res.error) {
+            alert('Erro ao adicionar créditos: ' + res.error.message);
+        } else {
+            alert('Créditos adicionados com sucesso!');
+            setIsCreditModalOpen(false);
+            setCreditUser(null);
+            setCreditAmount(10);
+            loadUsers();
         }
     };
 
@@ -300,6 +318,17 @@ export const AdminPanel: React.FC = () => {
                                                             <Trash2 size={16} />
                                                         </button>
                                                     )}
+
+                                                    <button
+                                                        onClick={() => {
+                                                            setCreditUser(user);
+                                                            setIsCreditModalOpen(true);
+                                                        }}
+                                                        className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded transition"
+                                                        title="Adicionar Créditos"
+                                                    >
+                                                        <Coins size={16} />
+                                                    </button>
                                                 </div>
                                             )}
                                         </td>
@@ -342,6 +371,53 @@ export const AdminPanel: React.FC = () => {
                         <div className="flex gap-3 mt-8">
                             <button onClick={() => setIsAddModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200">Cancelar</button>
                             <button onClick={handleCreateUser} className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700">Criar Usuário</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add Credits Modal */}
+            {isCreditModalOpen && creditUser && (
+                <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-in zoom-in-95 duration-200">
+                        <div className="bg-amber-100 w-12 h-12 rounded-full flex items-center justify-center mb-4 mx-auto text-amber-600">
+                            <Coins size={24} />
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Adicionar Créditos</h2>
+                        <p className="text-sm text-slate-500 text-center mb-6">
+                            Para: <span className="font-bold text-slate-700">{creditUser.email}</span>
+                            <br />
+                            Saldo Atual: {creditUser.credits}
+                        </p>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Quantidade a Adicionar</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={creditAmount}
+                                    onChange={e => setCreditAmount(parseInt(e.target.value))}
+                                    className="w-full px-4 py-3 border border-slate-300 rounded-xl text-center text-lg font-bold text-indigo-700 focus:ring-2 focus:ring-amber-200 outline-none"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-4 gap-2">
+                                {[10, 50, 100, 500].map(v => (
+                                    <button
+                                        key={v}
+                                        onClick={() => setCreditAmount(v)}
+                                        className={`py-1 rounded-lg text-xs font-bold transition-colors ${creditAmount === v ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                    >
+                                        +{v}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-8">
+                            <button onClick={() => setIsCreditModalOpen(false)} className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200">Cancelar</button>
+                            <button onClick={handleIncrementCredits} className="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 shadow-lg shadow-amber-200">Confirmar</button>
                         </div>
                     </div>
                 </div>

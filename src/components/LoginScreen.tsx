@@ -4,6 +4,8 @@ import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle, Ch
 import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
 
+import { checkAndRewardReferrer } from '../services/userService';
+
 interface LoginScreenProps {
   onLogin: (session: UserSession) => void;
   initialMode?: 'login' | 'signup';
@@ -71,6 +73,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         is_admin: false,
         allowed_features: ['all']
       });
+      // NEW: Check for referral reward
+      await checkAndRewardReferrer(user.email);
     }
 
     const sessionData: UserSession = {
