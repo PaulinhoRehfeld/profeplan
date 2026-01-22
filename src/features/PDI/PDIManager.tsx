@@ -200,6 +200,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
 
         const student = studentsWithNeeds.find(s => s.id === studentId);
         const studentName = student ? student.name : 'Aluno Desconhecido';
+        const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
 
         // PILAR C: Sanitization (Remove Word/Office XML garbage)
         const sanitizedContent = content
@@ -219,9 +220,24 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
             original_content: selectedLesson.content
         };
 
-        // LOCAL FIRST STRATEGY (Unified Service)
-        // Service handles LocalStorage + Background Sync
+        // 1. LOCAL LOG (Service handles LocalStorage + Background Sync)
         await savePdiLog(logPayload);
+
+        // 2. AUTO-SAVE DOCUMENT (Separated File for Compilation)
+        // Naming Convention: "NomeDoAluno_Data.md"
+        try {
+            const fileName = `${studentName}_${dateStr}.md`;
+            await saveGeneratedContent(
+                userId,
+                'documento',
+                'adaptacao_curricular', // Hardcoded folder PDI/Adaptation
+                fileName,
+                `# Adaptação: ${studentName}\nData: ${dateStr}\nAula: ${selectedLesson.topic}\n\n${finalContent}`
+            );
+            console.log(`Auto-saved adaptation file: ${fileName}`);
+        } catch (e) {
+            console.error("Auto-save failed", e);
+        }
 
         // Optimistic Update UI
         setAdaptations(prev => ({
@@ -231,6 +247,26 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                 status: 'validated'
             }
         }));
+    };
+
+    const handleDownloadStudentDoc = async (student: Student, content: string) => {
+        if (!selectedLesson) return;
+
+        try {
+            const markdownContent = `# Aula Base: ${selectedLesson.topic}\n\n${selectedLesson.content}\n\n---\n\n# Adaptação para ${student.name}\n\n${content}`;
+
+            await exportToDocx(
+                markdownContent,
+                `ADAPTACAO_${student.name.replace(/[^a-z0-9]/gi, '_')}`,
+                {
+                    userName: 'Professor(a)',
+                    schoolName: selectedClass?.name || 'Escola'
+                }
+            );
+        } catch (e: any) {
+            console.error(e);
+            setError(`Erro ao exportar doc do aluno: ${e.message}`);
+        }
     };
 
     const handleExportDoc = async () => {
@@ -441,6 +477,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                             hasLessonSelected={!!selectedLesson}
                             onGenerate={handleGenerateAdaptation}
                             onValidate={handleValidate}
+                            onDownload={handleDownloadStudentDoc}
                         />
                     ))}
 

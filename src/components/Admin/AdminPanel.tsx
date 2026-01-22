@@ -144,7 +144,7 @@ export const AdminPanel: React.FC = () => {
         setUpdateStatus('Iniciando...');
 
         try {
-            const fileArray = Array.from(files);
+            const fileArray = Array.from(files) as File[];
             const filenames = fileArray.map(f => f.name);
 
             // 1. Limpar versões antigas
@@ -177,7 +177,7 @@ export const AdminPanel: React.FC = () => {
     return (
         <div className="flex flex-col h-full bg-slate-50 overflow-hidden">
             {/* Header */}
-            <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm">
+            <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shadow-sm">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-indigo-100 rounded-lg text-indigo-700">
                         <Shield size={24} />
@@ -196,7 +196,7 @@ export const AdminPanel: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="p-8 overflow-y-auto">
+            <div className="p-4 md:p-8 overflow-y-auto">
                 {/* Search */}
                 <div className="max-w-md mb-6 relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -251,14 +251,14 @@ export const AdminPanel: React.FC = () => {
                 </div>
 
                 {/* Table */}
-                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <table className="w-full text-left border-collapse">
+                <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[600px]">
                         <thead className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-bold">
                             <tr>
-                                <th className="px-6 py-4">Usuário</th>
-                                <th className="px-6 py-4">Nível (Tier)</th>
-                                <th className="px-6 py-4">Saldo de Créditos</th>
-                                <th className="px-6 py-4 text-center">Ações</th>
+                                <th className="px-3 md:px-6 py-4">Usuário</th>
+                                <th className="px-3 md:px-6 py-4">Nível (Tier)</th>
+                                <th className="px-3 md:px-6 py-4">Saldo de Créditos</th>
+                                <th className="px-3 md:px-6 py-4 text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="text-sm divide-y divide-slate-100">
@@ -269,11 +269,11 @@ export const AdminPanel: React.FC = () => {
                             ) : (
                                 filteredUsers.map(user => (
                                     <tr key={user.id} className="hover:bg-slate-50 transition">
-                                        <td className="px-6 py-4 font-medium text-slate-700">
+                                        <td className="px-3 md:px-6 py-4 font-medium text-slate-700">
                                             {user.email}
                                             {user.is_admin && <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] rounded-full uppercase font-bold">Admin</span>}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-3 md:px-6 py-4">
                                             {editingUser?.id === user.id ? (
                                                 <select
                                                     className="border rounded px-2 py-1 text-xs"
@@ -290,7 +290,7 @@ export const AdminPanel: React.FC = () => {
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 font-mono font-bold text-slate-600">
+                                        <td className="px-3 md:px-6 py-4 font-mono font-bold text-slate-600">
                                             {editingUser?.id === user.id ? (
                                                 <input
                                                     type="number"
@@ -302,7 +302,7 @@ export const AdminPanel: React.FC = () => {
                                                 user.is_unlimited ? '∞ (Ilimitado)' : `${user.credits} CR`
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-center">
+                                        <td className="px-3 md:px-6 py-4 text-center">
                                             {editingUser?.id === user.id ? (
                                                 <div className="flex items-center justify-center gap-2">
                                                     <button onClick={() => handleUpdateUser(user.id, { tier: editingUser.tier, credits: editingUser.credits, is_unlimited: editingUser.tier === 'GOLD' })} className="p-1.5 bg-green-100 text-green-700 rounded hover:bg-green-200"><Check size={16} /></button>

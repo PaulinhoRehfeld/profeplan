@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader2, Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Loader2, Sparkles, CheckCircle2, RefreshCw, Download } from 'lucide-react';
 import { Student, StudentAdaptation } from '../../../types';
 
 interface StudentAdaptationCardProps {
@@ -9,6 +9,7 @@ interface StudentAdaptationCardProps {
     hasLessonSelected: boolean;
     onGenerate: (student: Student) => void;
     onValidate: (studentId: string, content: string) => void;
+    onDownload: (student: Student, content: string) => void;
 }
 
 const StudentAdaptationCard: React.FC<StudentAdaptationCardProps> = ({
@@ -17,7 +18,8 @@ const StudentAdaptationCard: React.FC<StudentAdaptationCardProps> = ({
     isGenerating,
     hasLessonSelected,
     onGenerate,
-    onValidate
+    onValidate,
+    onDownload
 }) => {
     return (
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg transition-all duration-300">
@@ -80,6 +82,15 @@ const StudentAdaptationCard: React.FC<StudentAdaptationCardProps> = ({
                             >
                                 <RefreshCw size={16} />
                             </button>
+                            {adaptation.status === 'validated' && (
+                                <button
+                                    onClick={() => onDownload(student, adaptation.adaptedContent)}
+                                    className="px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors border border-indigo-200"
+                                    title="Baixar DOCX Individual"
+                                >
+                                    <Download size={14} /> Baixar
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

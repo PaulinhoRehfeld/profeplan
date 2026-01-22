@@ -323,7 +323,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                         `;
                         }).join('\n');
 
-                        context += `\n\n[BANCO DE QUESTÕES VIA RAG - USE ESTAS QUESTÕES]:\n${questionsText}\n\n[INSTRUÇÃO]: Use OBRIGATORIAMENTE as questões do banco acima para a seção "Questões Estilo ENEM". Copie o enunciado e as alternativas EXATAMENTE como estão.`;
+                        context += `\n\n[BANCO DE QUESTÕES VIA RAG - USE ESTAS QUESTÕES]:\n${questionsText}\n\n[INSTRUÇÃO RAG]: Encontrei ${dbQuestions.length} questões no banco de dados. Use OBRIGATORIAMENTE essas questões. Somente se o usuário solicitou mais do que ${dbQuestions.length}, crie questões inéditas para completar.`;
                     } else {
                         context += `\n\n[BANCO DE QUESTÕES]: Nenhuma questão exata encontrada no banco para este tema. Crie questões inéditas baseadas no currículo.`;
                     }

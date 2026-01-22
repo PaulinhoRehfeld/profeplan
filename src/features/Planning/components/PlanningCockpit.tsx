@@ -41,6 +41,13 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
         refreshProfile();
     }, [userId]);
 
+    // Fix: Auto-collapse mobile menu when AI starts thinking (Generating content)
+    useEffect(() => {
+        if (isThinking) {
+            setIsMobileMenuOpen(false);
+        }
+    }, [isThinking]);
+
     const refreshProfile = async () => {
         if (!userId) return;
         const profile = await getUserProfile(userId);
@@ -146,6 +153,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
         // Reset UI
         setShowAssessmentOptions(false);
         setObservations('');
+        setIsMobileMenuOpen(false); // Fix: Collapse menu to show generation
     };
 
     const handleMaterialGenerate = () => {
@@ -173,6 +181,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
         setShowMaterialOptions(false);
         setMaterialType(null);
         setMaterialInstructions('');
+        setIsMobileMenuOpen(false); // Fix: Collapse menu to show generation
     };
 
     const triggerSend = (prompt?: string) => {

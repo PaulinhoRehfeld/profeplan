@@ -157,6 +157,7 @@ export interface EnemQuestion {
     id_original: number;
     year: number;
     discipline: string;
+    disciplina?: string; // Legacy/Portuguese field support
     // O texto da questão é dividido em duas partes:
     context: string; // O texto base, a história ou cenário.
     alternativesIntroduction: string; // A pergunta final (comando).

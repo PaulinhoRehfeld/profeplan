@@ -18,74 +18,115 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
     try {
         if (!query.trim()) return [];
 
-        console.log(`🔍 Gerando embedding para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
+        console.log(`🔍 [Hybrid] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
-        // 1. Gera o embedding da query
+        // 1. Gera o embedding da query (Busca Semântica)
         const model = googleAI.getGenerativeModel({ model: "text-embedding-004" });
         const result = await model.embedContent(query);
         const embedding = result.embedding.values;
 
-        console.log('📐 Embedding gerado, chamando RPC...');
-
-        // 2. Chama a RPC no Supabase (Busca mais ampla para filtrar depois)
-        const { data, error } = await supabase.rpc('match_questions', {
-            query_embedding: embedding,
-            match_threshold: 0.35, // Ligeiramente mais estrito
-            match_count: 50 // Busca mais para ter margem de filtro (aumentado de 30 para 50)
-        });
-
-        if (error) {
-            console.error('❌ Erro na RPC Supabase:', error);
-            throw new Error(error.message);
-        }
-
-        let finalQuestions = data as EnemQuestion[];
-
-        // 3. Hidratação de Metadata (se necessário)
-        const needsHydration = finalQuestions.some(q => !q.metadata || !q.metadata.alternatives || q.metadata.alternatives.length === 0);
-
-        if (finalQuestions.length > 0 && needsHydration) {
-            console.log('⚠️ Hydrating metadata from enem_questions table...');
-            const ids = finalQuestions.map(q => q.id);
-            const { data: details, error: tableError } = await supabase
+        // 2. Executa buscas em paralelo: Vetorial (RPC) + Palavra-Chave (Text)
+        const [vectorResponse, textResponse] = await Promise.all([
+            supabase.rpc('match_questions', {
+                query_embedding: embedding,
+                match_threshold: 0.35,
+                match_count: 100 // Aumentado para 100 para melhorar recall antes do filtro
+            }),
+            supabase
                 .from('enem_questions')
                 .select('id, metadata')
-                .in('id', ids);
+                .or(`metadata->>context.ilike.%${query}%, metadata->>alternativesIntroduction.ilike.%${query}%`)
+                .limit(20) // Limite de segurança para busca textual
+        ]);
 
-            if (tableError) console.error("Erro ao hidratar metadata:", tableError);
+        if (vectorResponse.error) {
+            console.error('❌ Erro na RPC Supabase:', vectorResponse.error);
+            // Não lança erro fatal, tenta usar só o texto se houver
+        }
 
-            if (details) {
-                finalQuestions = finalQuestions.map(q => {
-                    const detail = details.find((d: any) => d.id === q.id);
-                    return { ...q, metadata: detail ? detail.metadata : q.metadata };
-                });
+        if (textResponse.error) {
+            console.error('❌ Erro na Busca Textual:', textResponse.error);
+        }
+
+        const vectorQuestions = (vectorResponse.data as EnemQuestion[]) || [];
+        const textQuestions = (textResponse.data as any[] || []).map(row => ({
+            id: row.id,
+            //  Questões via Select direto já tem o metadata conforme o banco, mas precisamos garantir compatibilidade
+            metadata: row.metadata,
+            // Adiciona flag para debug se necessário
+            _source: 'text'
+        })) as EnemQuestion[];
+
+        console.log(`📊 Stats: Vetorial=${vectorQuestions.length}, Textual=${textQuestions.length}`);
+
+        // 3. Merge e Deduplicação
+        const combinedMap = new Map<number, EnemQuestion>();
+
+        // Prioridade para Vetorial (pontuação de similaridade implícita na ordem)
+        vectorQuestions.forEach(q => combinedMap.set(q.id, q));
+        // Adiciona Textual (se não existir, é um ganho de recall)
+        textQuestions.forEach(q => {
+            if (!combinedMap.has(q.id)) {
+                combinedMap.set(q.id, q);
+            }
+        });
+
+        let finalQuestions = Array.from(combinedMap.values());
+
+        // 4. Hidratação de Metadata 
+        // Nota: Se a busca vetorial retornar partial objects (dependendo da RPC), hidratamos.
+        // Se a busca textual selecionou 'metadata', já temos.
+        // A RPC 'match_questions' geralmente retorna colunas completas se configurado assim.
+        // Se houver necessidade, mantemos a hidratação apenas para quem falta.
+        const needsHydration = finalQuestions.some(q => !q.metadata || !q.metadata.alternatives);
+
+        if (needsHydration && finalQuestions.length > 0) {
+            console.log('⚠️ Hydrating metadata...');
+            const ids = finalQuestions.filter(q => !q.metadata || !q.metadata.alternatives).map(q => q.id);
+
+            if (ids.length > 0) {
+                const { data: details } = await supabase
+                    .from('enem_questions')
+                    .select('id, metadata')
+                    .in('id', ids);
+
+                if (details) {
+                    finalQuestions = finalQuestions.map(q => {
+                        const detail = details.find((d: any) => d.id === q.id);
+                        return detail ? { ...q, metadata: detail.metadata } : q;
+                    });
+                }
             }
         }
 
-        // 4. Filtragem Client-Side por Área(s)
+        // 5. Filtragem Client-Side por Área(s)
         if (areas && areas.length > 0 && finalQuestions.length > 0) {
-            // Collect all disciplines from all selected areas
             const targetDisciplines = areas.flatMap(area => AREA_MAP[area] || []);
 
             if (targetDisciplines.length > 0) {
-                console.log(`🎯 Filtrando por Áreas: ${areas.join(', ')} (Disciplinas: ${targetDisciplines.join(', ')})`);
+                console.log(`🎯 Filtrando por Disciplinas: ${targetDisciplines.join(', ')}`);
 
                 finalQuestions = finalQuestions.filter(q => {
-                    const qDisc = q.metadata?.discipline || '';
+                    // Check both possible keys
+                    const qDisc = q.metadata?.discipline || q.metadata?.disciplina || '';
 
-                    // Verifica se a disciplina da questão está na lista combinada
-                    // Normaliza para lowercase e remove acentos para comparação segura
-                    const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    // Improved normalization: remove accents, lowercase, AND remove non-alphanumeric chars (like hyphens)
+                    const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+
                     const normalizedDisc = normalize(qDisc);
 
-                    const isMatch = targetDisciplines.some(td => normalizedDisc.includes(normalize(td)) || qDisc === td);
+                    const isMatch = targetDisciplines.some(td => {
+                        const normalizedTd = normalize(td);
+                        return normalizedDisc.includes(normalizedTd) || normalizedTd.includes(normalizedDisc);
+                    });
+
                     return isMatch;
                 });
             }
         }
 
-        console.log(`✅ ${finalQuestions?.length || 0} questões encontradas (após filtro).`);
-        return finalQuestions.slice(0, 10); // Retorna top 10 filtradas
+        console.log(`✅ ${finalQuestions.length} questões retornadas após merge e filtros.`);
+        return finalQuestions.slice(0, 15); // Retorna top 15 combinadas
 
     } catch (error: any) {
         console.error('❌ Erro no serviço searchQuestions:', error);
