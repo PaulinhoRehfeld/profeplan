@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { UserProfile, getAllUsers, updateUserProfileAdmin, addUserCredits } from '../../services/userService';
+import { getAllUsers, updateUserProfileAdmin, addUserCredits } from '../../services/userService';
+import { UserProfile } from '../../types';
 import { Shield, Plus, Edit, Check, X, Search, Coins, Crown, Trash2, Upload, FileText, Database } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
 import { ingestFiles, clearExistingSource } from '../../services/ingestionService';
+import { SchoolService } from '../../services/SchoolService';
 
 export const AdminPanel: React.FC = () => {
     const [users, setUsers] = useState<UserProfile[]>([]);
@@ -15,6 +17,9 @@ export const AdminPanel: React.FC = () => {
     // Add User Form State
     const [newUserEmail, setNewUserEmail] = useState('');
     const [newUserPass, setNewUserPass] = useState('123456');
+    const [newUserRole, setNewUserRole] = useState<'TEACHER' | 'SCHOOL_MANAGER' | 'ADMIN'>('TEACHER');
+    const [newUserSchoolId, setNewUserSchoolId] = useState('');
+    const [schools, setSchools] = useState<{ id: string, name: string }[]>([]);
     const [newUserTier, setNewUserTier] = useState<'SILVER' | 'GOLD'>('SILVER');
     const [newUserCredits, setNewUserCredits] = useState(10);
 
@@ -31,7 +36,13 @@ export const AdminPanel: React.FC = () => {
 
     useEffect(() => {
         loadUsers();
+        loadSchools();
     }, []);
+
+    const loadSchools = async () => {
+        const { data } = await SchoolService.getAllSchools();
+        if (data) setSchools(data);
+    };
 
     const loadUsers = async () => {
         setLoading(true);
@@ -53,36 +64,76 @@ export const AdminPanel: React.FC = () => {
         if (!newUserEmail || !newUserPass) return alert('Preencha E-mail e Senha');
 
         try {
-            // 1. Insert into custom auth table (authorized_users)
-            // This bypasses Supabase Auth rate limits and matches LoginScreen logic
-            const { data: authUser, error: authError } = await supabase
-                .from('authorized_users')
-                .insert({
-                    email: newUserEmail,
-                    access_key: newUserPass, // Using password input as access_key
-                    role: 'TEACHER' // Default role
-                })
-                .select()
-                .single();
+            // Map UI Role to Database Role Profile
+            // DB Roles: 'teacher', 'manager', 'admin'
+            let dbRole = 'teacher';
+            if (newUserRole === 'SCHOOL_MANAGER') {
+                dbRole = 'manager';
+                if (!newUserSchoolId) return alert('Selecione uma Escola para o Gestor.');
+            }
+            if (newUserRole === 'ADMIN') dbRole = 'admin';
 
-            if (authError) throw new Error('Erro ao criar login: ' + authError.message);
-            if (!authUser) throw new Error('Erro ao obter ID do usuário criado.');
-
-            // 2. Insert into profiles with the same ID
-            const { error: profileError } = await supabase.from('profiles').insert({
-                id: authUser.id,
+            // SOLUÇÃO DEFINITIVA: Criar no Supabase Auth com configurações corretas
+            const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: newUserEmail,
-                tier: newUserTier,
-                credits: newUserCredits,
-                is_unlimited: newUserTier === 'GOLD',
-                is_admin: false,
-                allowed_features: ['all']
+                password: newUserPass,
+                options: {
+                    emailRedirectTo: window.location.origin,
+                    data: {
+                        full_name: '',
+                        role: dbRole
+                    }
+                }
             });
 
-            if (profileError) {
-                console.error("Erro ao criar perfil:", profileError);
-                throw new Error('Login criado, mas perfil falhou: ' + profileError.message);
+            // Tratamento melhorado de erros
+            if (authError) {
+                console.error('Auth Error Details:', authError);
+
+                // Erros específicos
+                if (authError.message.includes('already registered')) {
+                    throw new Error('Este email já está cadastrado. Use outro email ou faça login.');
+                } else if (authError.message.includes('Database error')) {
+                    throw new Error('Erro no banco de dados. Verifique se o email já existe ou contate o suporte.');
+                } else {
+                    throw new Error('Erro ao criar usuário: ' + authError.message);
+                }
             }
+            if (!authData.user) throw new Error('Erro: usuário não foi criado.');
+
+            const userId = authData.user.id;
+
+            // 2. Atualizar/Criar perfil com role e school corretos
+            // O LoginScreen já cria um perfil básico, mas vamos garantir que tenha os dados corretos
+            const { error: profileError } = await supabase.from('profiles')
+                .upsert({
+                    id: userId,
+                    email: newUserEmail,
+                    role: dbRole,
+                    tier: newUserTier,
+                    credits: newUserCredits,
+                    is_unlimited: newUserTier === 'GOLD',
+                    is_admin: newUserRole === 'ADMIN',
+                    school_id: newUserRole === 'SCHOOL_MANAGER' ? newUserSchoolId : null,
+                    allowed_features: ['all']
+                }, {
+                    onConflict: 'id'  // Se já existe, atualiza
+                });
+
+            if (profileError) {
+                console.error("Erro ao atualizar perfil:", profileError);
+                throw new Error('Usuário criado, mas perfil falhou: ' + profileError.message);
+            }
+
+            // 3. OPCIONAL: Também salvar em authorized_users para compatibilidade com login VIP
+            await supabase.from('authorized_users').upsert({
+                id: userId,
+                email: newUserEmail,
+                access_key: newUserPass,
+                role: dbRole
+            }, {
+                onConflict: 'id'
+            });
 
             alert('Usuário criado com sucesso! Use a senha informada como Chave de Acesso.');
             setIsAddModalOpen(false);
@@ -90,6 +141,8 @@ export const AdminPanel: React.FC = () => {
             // Clear Form
             setNewUserEmail('');
             setNewUserPass('123456');
+            setNewUserRole('TEACHER');
+            setNewUserSchoolId('');
             setNewUserCredits(10);
 
             loadUsers();
@@ -272,6 +325,8 @@ export const AdminPanel: React.FC = () => {
                                         <td className="px-3 md:px-6 py-4 font-medium text-slate-700">
                                             {user.email}
                                             {user.is_admin && <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] rounded-full uppercase font-bold">Admin</span>}
+                                            {user.role === 'manager' && <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full uppercase font-bold">Gestor</span>}
+                                            {user.role === 'teacher' && <span className="ml-2 px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded-full uppercase font-bold">Professor</span>}
                                         </td>
                                         <td className="px-3 md:px-6 py-4">
                                             {editingUser?.id === user.id ? (
@@ -356,16 +411,35 @@ export const AdminPanel: React.FC = () => {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
+                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Função</label>
+                                    <select value={newUserRole} onChange={(e: any) => setNewUserRole(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
+                                        <option value="TEACHER">Professor</option>
+                                        <option value="SCHOOL_MANAGER">Gestor Escolar</option>
+                                        <option value="ADMIN">Admin Sistema</option>
+                                    </select>
+                                </div>
+                                <div>
                                     <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nível</label>
                                     <select value={newUserTier} onChange={(e: any) => setNewUserTier(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
                                         <option value="SILVER">SILVER</option>
                                         <option value="GOLD">GOLD</option>
                                     </select>
                                 </div>
+                            </div>
+                            {newUserRole === 'SCHOOL_MANAGER' && (
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Créditos Iniciais</label>
-                                    <input type="number" disabled={newUserTier === 'GOLD'} value={newUserCredits} onChange={e => setNewUserCredits(parseInt(e.target.value))} className="w-full px-4 py-2 border rounded-lg disabled:opacity-50" />
+                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Escola Vinculada</label>
+                                    <select value={newUserSchoolId} onChange={(e) => setNewUserSchoolId(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-blue-50 border-blue-200">
+                                        <option value="">Selecione uma Escola...</option>
+                                        {schools.map(s => (
+                                            <option key={s.id} value={s.id}>{s.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
+                            )}
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Créditos Iniciais</label>
+                                <input type="number" disabled={newUserTier === 'GOLD'} value={newUserCredits} onChange={e => setNewUserCredits(parseInt(e.target.value))} className="w-full px-4 py-2 border rounded-lg disabled:opacity-50" />
                             </div>
                         </div>
                         <div className="flex gap-3 mt-8">

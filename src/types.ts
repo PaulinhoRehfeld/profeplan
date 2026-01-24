@@ -13,22 +13,41 @@ export interface Message {
   drivePath?: string;
 }
 
-export type UserRole = 'ADMIN' | 'TEACHER';
+export type UserRole = 'ADMIN' | 'TEACHER' | 'SCHOOL_MANAGER';
 export type AccessLevel = 'BASICO' | 'PRO' | 'ADMIN' | 'SILVER' | 'GOLD';
+
+// Consolidated UserProfile
+export interface UserProfile {
+  id: string;
+  email: string;
+  role?: 'teacher' | 'manager' | 'admin'; // Database role
+  school_id?: string;
+  school_name?: string; // Fetched via join
+  tier: 'SILVER' | 'GOLD';
+  credits: number;
+  is_unlimited: boolean;
+  is_admin: boolean; // Legacy flag, now used primarily for System Admin
+  allowed_features: string[];
+  phone?: string;
+  created_at?: string;
+}
 
 export interface UserSession {
   id: string;
   email: string;
-  role: UserRole;
+  role: UserRole; // App-level role (ADMIN | TEACHER | SCHOOL_MANAGER)
   accessLevel: AccessLevel;
   isLoggedIn: boolean;
-  isEmailConfirmed?: boolean; // New field for security lock
-  // driveConnected: boolean; // REMOVIDO: Integração com Google Drive
+  isEmailConfirmed?: boolean;
 }
 
 export interface UserSettings {
   userName: string;
   institution: string;
+  schoolCode?: string;           // Novo: Código INEP da escola
+  city?: string;                 // Novo: Cidade onde atua
+  institutionalEmail?: string;   // Novo: Email institucional
+  masp?: string;                 // Novo: MASP formatado
   network: 'Estadual' | 'Municipal' | 'Privada' | '';
   stateUF: string;
   favoriteMethodology: string;
@@ -59,7 +78,8 @@ export enum ToolMode {
   HISTORY = 'history',
   CLASSES = 'classes',
   ASSESSMENT = 'assessment',
-  SPECIALIST = 'specialist' // Action 5
+  SPECIALIST = 'specialist', // Action 5
+  SCHOOL_MANAGER = 'school_manager' // NOVO: Painel de Gestão Escolar (Renomeado)
 }
 
 // Assessment Types (Ciclo de Feedback Fechado)

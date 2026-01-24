@@ -1,23 +1,30 @@
 import { supabase } from './supabaseClient';
-
-export interface UserProfile {
-    id: string;
-    email: string;
-    tier: 'SILVER' | 'GOLD';
-    credits: number;
-    is_unlimited: boolean;
-    is_admin: boolean;
-    allowed_features: string[];
-    phone?: string;                 // NEW
-}
+import { UserProfile } from '../types';
 
 // --- CONFIGURATION ---
 const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for Testers)
 
-export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
-    const { data, error } = await supabase
+// Helper to recover from Session ID mismatch (Ghost ID)
+export const getProfileByEmail = async (email: string) => {
+    const { data } = await supabase
         .from('profiles')
         .select('*')
+        .eq('email', email)
+        .single();
+
+    return { data };
+};
+
+export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
+    // Modified query to join with schools table
+    const { data, error } = await supabase
+        .from('profiles')
+        .select(`
+            *,
+            schools:school_id (
+                name
+            )
+        `)
         .eq('id', userId)
         .single();
 
@@ -34,22 +41,62 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
         };
     }
 
+    // --- DEV ENVIRONMENT OVERRIDE ---
+    const { data: authData } = await supabase.auth.getUser();
+    if (authData?.user?.id === userId) {
+        const email = authData.user.email?.toLowerCase();
+        const devEmails = [
+            'prehfeld@hotmail.com',
+            'paulinho.rehfeld@hotmail.com',
+            // 'paulinho.rehfeld@gmail.com', // REMOVED: Let this user use real DB role (manager)
+            'supervisaoescola31023299@educacao.mg.gov.br'
+        ];
+
+        if (email && devEmails.includes(email)) {
+            // Admin does NOT need a school_id forced
+            console.log(`💎 DEV OVERRIDE: Granting Forced Admin to ${email}`);
+            return {
+                id: userId,
+                email: email,
+                role: 'admin',
+                is_admin: true,
+                tier: 'GOLD',
+                is_unlimited: true,
+                credits: 9999,
+                allowed_features: ['all']
+            };
+        }
+    }
+
     if (error) {
         console.error("Error fetching user profile:", error);
         return null;
     }
 
+    // Transform result to flat UserProfile structure
+    // We treat 'schools' as an array or object depending on One-to-One/Many relationship, 
+    // but typically single() on parent returns it as object or null.
+    // Logic: If role is admin, school_id might be null.
+
+    const profileData = {
+        ...data,
+        school_name: data.schools?.name // Flatten the joined school name
+    };
+    // remove the nested object to match interface perfectly if needed, or just let it be extra.
+    delete profileData.schools;
+
+
     // BETA OVERRIDE: Grant Gold + Unlimited to everyone during testing
     if (IS_BETA_TESTING && data) {
         return {
-            ...data,
+            ...profileData,
             tier: 'GOLD',
             is_unlimited: true,
             credits: 9999 // Visual sugar
         };
     }
 
-    return data;
+    return profileData as UserProfile;
 };
 
 export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolean; message?: string }> => {
@@ -120,7 +167,9 @@ export const updateUserProfileAdmin = async (targetUserId: string, updates: Part
 };
 
 export const isAdmin = (profile: UserProfile | null) => {
-    return profile?.is_admin === true || profile?.email === 'prehfeld@hotmail.com';
+    // Strict check: Must be explicitly 'admin' role or is_admin flag.
+    // School Managers are NOT System Admins.
+    return (profile?.is_admin === true || profile?.role === 'admin') && profile?.role !== 'manager';
 };
 
 export const hasFeaturePattern = (userFeatures: string[] | null | undefined, requiredFeature: string): boolean => {

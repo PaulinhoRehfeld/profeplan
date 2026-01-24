@@ -9,11 +9,6 @@ interface SettingsModalProps {
   onClose: () => void;
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
-  // REMOVIDO: Props de Google Drive
-  // onConnectDrive: () => void;
-  // isDriveConnected: boolean;
-  // isGeminiApiKeySelected: boolean; // REMOVIDO
-  // onSelectGeminiApiKey: () => void; // REMOVIDO
   userEmail: string;
 }
 
@@ -22,11 +17,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   settings,
   setSettings,
-  // REMOVIDO: Props de Google Drive
-  // onConnectDrive,
-  // isDriveConnected,
-  // isGeminiApiKeySelected, // REMOVIDO
-  // onSelectGeminiApiKey, // REMOVIDO
   userEmail
 }) => {
   const [newPassword, setNewPassword] = useState('');
@@ -34,7 +24,124 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const [passwordChangeLoading, setPasswordChangeLoading] = useState(false);
   const [passwordChangeError, setPasswordChangeError] = useState('');
   const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false);
+
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  // School Search State
+  const [schoolResults, setSchoolResults] = useState<any[]>([]);
+  const [isSearchingSchool, setIsSearchingSchool] = useState(false);
+  const [showSchoolResults, setShowSchoolResults] = useState(false);
+
+  const searchSchools = async (term: string, city?: string) => {
+    if (term.length < 3) {
+      setSchoolResults([]);
+      return;
+    }
+
+    setIsSearchingSchool(true);
+    try {
+      // Normalizar termos de busca comuns
+      const normalizedTerm = term
+        .replace(/^E\.E\./i, 'Escola Estadual')
+        .replace(/^E\.M\./i, 'Escola Municipal')
+        .replace(/^E\.E\.I\./i, 'Escola Estadual de Ensino Integral');
+
+      let query = supabase
+        .from('schools')
+        .select('inep_code, name, city, sre')
+        .ilike('name', `%${normalizedTerm}%`)
+        .limit(10);
+
+      // Filtrar por cidade se fornecida
+      if (city && city.trim()) {
+        query = query.ilike('city', `%${city}%`);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('❌ Supabase error searching schools:', error);
+        throw error;
+      }
+
+      setSchoolResults(data || []);
+      setShowSchoolResults(true);
+    } catch (error) {
+      console.error('Erro ao buscar escolas:', error);
+    } finally {
+      setIsSearchingSchool(false);
+    }
+  };
+
+  const handleSchoolInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    handleChange('institution', value);
+
+    // Debounce search
+    const timeoutId = setTimeout(() => searchSchools(value, settings.city), 500);
+    return () => clearTimeout(timeoutId);
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    handleChange('city', value);
+
+    // Re-search schools with new city filter
+    if (settings.institution && settings.institution.length >= 3) {
+      const timeoutId = setTimeout(() => searchSchools(settings.institution, value), 500);
+      return () => clearTimeout(timeoutId);
+    }
+  };
+
+  const selectSchool = (school: any) => {
+    handleChange('institution', school.name);
+    handleChange('city', school.city);
+    handleChange('schoolCode', school.inep_code); // CORRIGIDO: usa inep_code
+    setSchoolResults([]);
+    setShowSchoolResults(false);
+  };
+
+  // Formatação automática do MASP: 1234567-8
+  const handleMaspChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+
+    if (value.length > 8) {
+      value = value.slice(0, 8);
+    }
+
+    // Adiciona hífen automaticamente após 7 dígitos
+    if (value.length > 7) {
+      value = value.slice(0, 7) + '-' + value.slice(7);
+    }
+
+    handleChange('masp', value);
+  };
+
+  // Validação de código INEP: busca escola por código
+  const handleSchoolCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const code = e.target.value;
+    handleChange('schoolCode', code);
+
+    // Se digitou código completo, busca escola
+    if (code.length >= 6) {
+      setTimeout(async () => {
+        try {
+          const { data } = await supabase
+            .from('schools')
+            .select('id, name, city, sre')
+            .eq('id', code)
+            .single();
+
+          if (data) {
+            handleChange('institution', data.name);
+            handleChange('city', data.city);
+          }
+        } catch (error) {
+          console.error('Erro ao buscar escola por código:', error);
+        }
+      }, 500);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -108,24 +215,108 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
               <User className="w-4 h-4" /> Perfil Profissional
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 gap-5">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome de Exibição</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>
                 <input
                   type="text" value={settings.userName}
                   onChange={(e) => handleChange('userName', e.target.value)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                  placeholder="Ex: Prof. Ricardo Silva"
+                  placeholder="Ex: Ricardo Silva Santos"
                 />
               </div>
+
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Escola / Instituição</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Institucional</label>
                 <input
-                  type="text" value={settings.institution}
-                  onChange={(e) => handleChange('institution', e.target.value)}
+                  type="email" value={settings.institutionalEmail || ''}
+                  onChange={(e) => handleChange('institutionalEmail', e.target.value)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                  placeholder="Nome da Escola"
+                  placeholder="seu.nome@educacao.mg.gov.br"
                 />
+                <p className="text-xs text-slate-500 ml-1">Email para vinculação automática à escola</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">MASP</label>
+                <input
+                  type="text"
+                  value={settings.masp || ''}
+                  onChange={handleMaspChange}
+                  maxLength={8}
+                  className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                  placeholder="1234567-8"
+                />
+                <p className="text-xs text-slate-500 ml-1">Matrícula SIAFI do Professor (7 dígitos + verificador)</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cidade onde Atua</label>
+                <input
+                  type="text"
+                  value={settings.city || ''}
+                  onChange={handleCityChange}
+                  className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                  placeholder="Ex: Belo Horizonte"
+                />
+                <p className="text-xs text-slate-500 ml-1">Ajuda a filtrar as escolas disponíveis</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Código INEP da Escola</label>
+                <input
+                  type="text"
+                  value={settings.schoolCode || ''}
+                  onChange={handleSchoolCodeChange}
+                  className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                  placeholder="Digite o código INEP (ex: 31001234)"
+                />
+                <p className="text-xs text-slate-500 ml-1">Digite o código ou selecione a escola abaixo</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo da Escola</label>
+                <div className="relative">
+                  <input
+                    type="text" value={settings.institution}
+                    onChange={handleSchoolInputChange}
+                    onFocus={() => settings.institution && settings.institution.length >= 3 && searchSchools(settings.institution, settings.city)}
+                    onBlur={() => setTimeout(() => setShowSchoolResults(false), 200)}
+                    className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                    placeholder="Digite pelo menos 3 letras (Ex: E.E. ou Escola Estadual...)"
+                  />
+                  {isSearchingSchool && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Loader2 className="animate-spin text-blue-500 w-4 h-4" />
+                    </div>
+                  )}
+
+                  {/* Autocomplete Dropdown */}
+                  {showSchoolResults && schoolResults.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 max-h-64 overflow-y-auto">
+                      {schoolResults.map((school) => (
+                        <button
+                          key={school.inep_code}
+                          onClick={() => selectSchool(school)}
+                          className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-slate-50 last:border-0 transition-colors flex flex-col gap-1"
+                        >
+                          <span className="text-xs font-bold text-slate-700">{school.name}</span>
+                          <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">INEP: {school.inep_code}</span>
+                            <span>{school.city}</span>
+                            <span>{school.sre}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 ml-1">
+                  {settings.schoolCode
+                    ? `✅ Escola validada (INEP: ${settings.schoolCode})`
+                    : 'Selecione da lista para validar'
+                  }
+                </p>
               </div>
             </div>
           </section>
@@ -304,40 +495,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
             </div>
           </section>
-
-          {/* REMOVIDO: Ecossistema Cloud (Google Drive) */}
-          {/*
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
-              <Zap className="w-4 h-4" /> Ecossistema Cloud
-            </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center shadow-sm">
-                    <svg className="w-6 h-6" viewBox="0 0 24 24">
-                        <path fill="#0066DA" d="M7.71 3.5L4.6 9l5.45 9.47L13.14 13L7.71 3.5z" />
-                        <path fill="#00AC47" d="M18.91 13H7.07l-2.47 4.47l2.47 4.53h11.84l2.47-4.53L18.91 13z" />
-                        <path fill="#FFBA00" d="M16.29 3.5H7.71L13.14 13l5.45-9.5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">Google Drive</h4>
-                    <p className="text-xs text-slate-500">Sincronização para exportação automática</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={onConnectDrive}
-                  className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${
-                    isDriveConnected ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 cursor-default' : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  {isDriveConnected ? 'Conectado ✓' : 'Conectar'}
-                </button>
-              </div>
-            </div>
-          </section>
-          */}
         </div>
 
         <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">

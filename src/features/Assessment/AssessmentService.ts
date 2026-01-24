@@ -1,5 +1,6 @@
 import { supabase } from '../../services/supabaseClient';
 import { Assessment } from '../../types';
+import { PdiService } from '../../services/PdiService';
 
 const LOCAL_STORAGE_KEY = 'profeplan_assessments';
 
@@ -63,6 +64,23 @@ const syncAssessmentToCloud = async (userId: string, assessment: Assessment) => 
         });
 
     if (lessonError) console.warn('Erro ao salvar memória da avaliação:', lessonError);
+
+    if (lessonError) console.warn('Erro ao salvar memória da avaliação:', lessonError);
+
+    // C. PDI Automation (Sync to Block X)
+    if (assessment.classId) {
+        PdiService.logEventForClass(
+            assessment.classId,
+            'EVALUATION',
+            `Avaliação: ${assessment.title}`,
+            {
+                subject: assessment.subject,
+                points: assessment.totalPoints,
+                period: assessment.academicPeriod
+            },
+            'Bloco X' // Avaliação da Aprendizagem
+        ).catch(err => console.warn('Erro ao logar PDI automático:', err));
+    }
 
     console.log('☁️ Avaliação sincronizada com a nuvem!');
 };

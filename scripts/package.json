@@ -1,0 +1,7 @@
+{
+    "name": "gerar-sql-escolas",
+    "version": "1.0.0",
+    "type": "commonjs",
+    "description": "Gera SQL a partir do JSON de escolas",
+    "main": "gerar_sql_escolas.js"
+}

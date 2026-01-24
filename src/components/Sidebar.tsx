@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector, Clock, Users, ClipboardCheck } from 'lucide-react';
-import { ToolMode, UserRole } from '../types';
-import { UserProfile, hasFeaturePattern, isAdmin } from '../services/userService';
+import { ToolMode, UserRole, UserProfile } from '../types';
+import { isAdmin } from '../services/userService';
 
 interface SidebarProps {
   activeMode: ToolMode;
@@ -40,11 +40,16 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb', feature: 'enem' },
     { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content' },
     { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content' },
-    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management' },
-    { id: ToolMode.CLASSES, icon: Users, label: 'Minhas Turmas', feature: 'management' }
+    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management' }
   ];
-  // REMOVED FILTER: User wants all items visible
-  const filteredItems = menuItems;
+
+  // Add School Management for admins and managers
+  const isAdminOrManager = userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
+  const allMenuItems = isAdminOrManager
+    ? [...menuItems, { id: ToolMode.SCHOOL_MANAGER, icon: Users, label: 'Gestão Escolar', feature: 'management' }]
+    : menuItems;
+
+  const filteredItems = allMenuItems;
 
   const handleModeSelection = (mode: ToolMode) => {
     setActiveMode(mode);
@@ -112,10 +117,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             ))}
 
 
-            {(isAdmin(userProfile)) && (
-              <div className="pt-4 mt-4 border-t border-slate-800">
+            {/* GESTÃO ESCOLAR REMOVED */}
+
+            {/* ADMINISTRAÇÃO DO SISTEMA (Apenas Admin) */}
+            {(isAdmin(userProfile) || userRole === 'ADMIN') && (
+              <div className="pt-2">
                 {isDesktopExpanded && (
-                  <p className="text-[10px] font-bold text-slate-500 uppercase px-4 mb-2 tracking-widest whitespace-nowrap">Administração</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase px-4 mb-2 tracking-widest whitespace-nowrap">Admin Sistema</p>
                 )}
                 <button
                   onClick={() => handleModeSelection(ToolMode.ADMIN)}
@@ -125,8 +133,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     }`}
                   title={!isDesktopExpanded ? 'Painel de Controle' : undefined}
                 >
-                  <Crown className={`w-5 h-5 shrink-0 ${activeMode === ToolMode.ADMIN ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                  {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Painel de Controle</span>}
+                  <ShieldCheck className={`w-5 h-5 shrink-0 ${activeMode === ToolMode.ADMIN ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                  {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Painel Administrativo</span>}
                 </button>
               </div>
             )}

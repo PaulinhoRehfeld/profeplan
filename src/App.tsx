@@ -26,7 +26,11 @@ import PresentationCreator from './components/PresentationCreator';
 import PDIManager from './features/PDI/PDIManager'; // NOVO: Renomeado de InclusionWorkbench
 import TermPlanningManager from './features/TermPlanning/TermPlanningManager'; // NOVO: Agente Coordenador
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext'; // NOVO: Contexto Global
-import { getUserProfile, UserProfile, isAdmin } from './services/userService';
+import SchoolDashboard from './pages/SchoolDashboard'; // NOVO: Painel de Gestão Escolar
+
+import UserProfileSetup from './pages/UserProfileSetup';
+import { getUserProfile, isAdmin } from './services/userService';
+import { UserProfile } from './types';
 import { supabase } from './services/supabaseClient';
 import SubscriptionModal from './components/SubscriptionModal';
 import { Lock, Zap } from 'lucide-react'; // Added Lock, Zap imports
@@ -56,12 +60,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (session?.id) {
       // --- LEGACY ID CLEANUP (NEW) ---
-      if (session.id === 'dev-admin-id') {
-        console.warn("Detected invalid legacy ID. Forcing logout.");
-        // Force cleanup
+      // We keep this to ensure old 'test-supervisor-id' sessions are cleared.
+      if (session.id === 'test-supervisor-id' || session.id === 'dev-admin-id') {
+        console.warn("Detected mock session. Clearing for clean Dev Auth.");
         supabase.auth.signOut().then(() => {
           localStorage.removeItem('profeplan_session');
-          localStorage.removeItem('supabase_user_id');
           setSession(null);
           setUserProfile(null);
           window.location.reload();
@@ -69,12 +72,66 @@ const App: React.FC = () => {
         return;
       }
 
-      // Added error handling to prevent "Uncaught (in promise) Object"
-      getUserProfile(session.id)
-        .then(setUserProfile)
-        .catch(err => {
-          console.error('[App] Failed to load user profile:', err);
-        });
+      // 1. ASYNC SESSION INITIALIZATION
+      const initSession = async () => {
+        let profileData = null;
+        try {
+          profileData = await getUserProfile(session.id);
+        } catch (e) { console.warn("Primary fetch failed, attempting healing..."); }
+
+        // 2. SELF-HEALING: If ID invalid/mismatch (DbRole=null), try by Email
+        if (!profileData && session.email) {
+          console.warn(`[App] Profile not found for ID ${session.id}. Attempting recovery by email...`);
+          try {
+            // Import dynamically to avoid circular deps if needed, or assume imported
+            const { getProfileByEmail } = await import('./services/userService');
+            const { data: recoveredProfile } = await getProfileByEmail(session.email);
+
+            if (recoveredProfile) {
+              console.log(`[App] 🩹 SESSION HEALED! ID Mismatch detected.`);
+              console.log(`Old ID: ${session.id} -> New ID: ${recoveredProfile.id}`);
+
+              // Patch Session
+              session.id = recoveredProfile.id;
+              profileData = recoveredProfile;
+
+              // Update Storage immediatelly
+              localStorage.setItem('profeplan_session', JSON.stringify(session));
+              localStorage.setItem('supabase_user_id', recoveredProfile.id);
+            }
+          } catch (err) {
+            console.error("Healing failed:", err);
+          }
+        }
+
+        if (profileData) {
+          console.log('[App] Profile loaded:', profileData);
+          setUserProfile(profileData);
+
+          // AUTO-CORRECT SESSION ROLE FROM PROFILE
+          const derivedRole = profileData.role === 'manager'
+            ? 'SCHOOL_MANAGER'
+            : (profileData.is_admin ? 'ADMIN' : 'TEACHER');
+
+          if (session.role !== derivedRole) {
+            console.log(`[App] Correcting Session Role: ${session.role} -> ${derivedRole}`);
+            const newSession = { ...session, role: derivedRole };
+            setSession(newSession);
+            localStorage.setItem('profeplan_session', JSON.stringify(newSession));
+          }
+
+          // Auto-redirect School Manager
+          if (profileData.role === 'manager') {
+            setActiveMode(ToolMode.SCHOOL_MANAGER);
+          }
+        } else {
+          console.error('[App] Failed to load user profile (Fatal)');
+          // Optional: Force Logout if even email fails? 
+          // For now, let it be (User sees TEACHER fallback)
+        }
+      };
+
+      initSession();
     }
   }, [session?.id]);
 
@@ -125,7 +182,7 @@ const App: React.FC = () => {
                   const newSession: UserSession = {
                     id: data.session!.user.id,
                     email: data.session!.user.email || '',
-                    role: profile?.is_admin ? 'ADMIN' : 'TEACHER', // Use profile role or default
+                    role: profile?.role === 'manager' ? 'SCHOOL_MANAGER' : (profile?.is_admin ? 'ADMIN' : 'TEACHER'), // CORRECT MAP
                     accessLevel: (profile?.tier as any) || 'BASICO',
                     isLoggedIn: true,
                     isEmailConfirmed: !!data.session!.user.email_confirmed_at // Check confirmation from session
@@ -228,6 +285,11 @@ const App: React.FC = () => {
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/login" element={!session?.isLoggedIn ? <LoginScreen onLogin={setSession} /> : <Navigate to="/app" replace />} />
         <Route path="/signup" element={!session?.isLoggedIn ? <LoginScreen onLogin={setSession} initialMode="signup" /> : <Navigate to="/app" replace />} />
+
+        {/* Protected Feature Routes */}
+
+        <Route path="/profile-setup" element={session?.isLoggedIn ? <UserProfileSetup /> : <Navigate to="/login" />} />
+
         <Route path="/app" element={
           session?.isLoggedIn ? (
             // SECURITY CHECK: Email must be confirmed
@@ -256,6 +318,11 @@ const App: React.FC = () => {
                   />
 
                   <main className={`main-content flex-1 flex flex-col relative h-full transition-all duration-300 ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+                    {/* DEBUG BANNER */}
+                    <div className="bg-red-500 text-white text-[10px] p-1 text-center font-mono">
+                      DEBUG: AuthRole=[{session.role}] | DbRole=[{userProfile?.role || 'null'}] | Email=[{session.email}]
+                    </div>
+
                     <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-4 md:px-6 z-50 sticky top-0 shadow-sm">
                       <div className="flex items-center gap-4">
                         <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-2 text-slate-500"><Menu size={24} /></button>
@@ -337,6 +404,11 @@ const App: React.FC = () => {
                         <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar bg-slate-50/50">
                           <TermPlanningManager userId={session.id} settings={settings} setSidebarContent={setCustomSidebar} />
                         </div>
+
+                      ) : activeMode === ToolMode.SCHOOL_MANAGER ? (
+                        // School Manager Dashboard - Force render even if profile is null (fallback)
+                        <SchoolDashboard userProfile={userProfile || { id: session.id, role: 'manager', email: session.email, school_name: 'Minha Escola', school_id: '' } as any} />
+
                       ) : (
                         // --- CORE TOOLS (PLANNING, ETC) WITH PAYWALL CHECK ---
                         // --- CORE TOOLS (PLANNING, ETC) - ABERTO (SEM BLOQUEIO) ---

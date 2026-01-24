@@ -1,5 +1,6 @@
 import { supabase } from '../../services/supabaseClient';
 import { checkUsageQuota, incrementUserUsage } from '../../services/userService';
+import { PdiService } from '../../services/PdiService';
 
 // --- FOLDER STRUCTURE ENUM ---
 export enum PlanFolder {
@@ -23,6 +24,7 @@ export interface GeneratedPlan {
     content: string;
     createdAt: string;
     synced: boolean;
+    classId?: string; // Optional link to class for PDI automation
 }
 
 /**
@@ -98,10 +100,25 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
                 user_id: userId,
                 topic: plan.title,
                 content: plan.content,
-                class_id: null // Poderia passar se tivesse
+                class_id: plan.classId || null // Pass class ID context
             });
 
         if (lessonError) console.warn('Erro ao salvar memória da aula:', lessonError);
+
+        // C. PDI Automation (Sync to Block VIII - Proposta Pedagógica/Planejamento)
+        if (plan.classId) {
+            PdiService.logEventForClass(
+                plan.classId,
+                'LESSON_PLAN',
+                `Planejamento: ${plan.title}`,
+                {
+                    type: plan.type,
+                    folder: plan.folder,
+                    summary: 'Aula planejada e adaptada via ProfePlan.'
+                },
+                'Bloco VIII'
+            ).catch(err => console.warn('Erro ao logar PDI automático:', err));
+        }
     }
 
     // C. Atualiza status local para 'synced'

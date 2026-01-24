@@ -292,15 +292,18 @@ export const parseClassListFromText = async (rawText: string) => {
   
   INSTRUÇÕES DE EXTRAÇÃO:
   1. METADADOS: Identifique palavras-chave como "Turma:", "Componente Curricular:", "Componente:", "Disciplina:" no topo do documento.
-  2. IDENTIFICAÇÃO DE ALUNOS: Os nomes dos alunos geralmente aparecem em LETRAS MAIÚSCULAS e seguem sequências numéricas (ex: "1", "8974339", "JOÃO VÍTOR DE MACÉDO COELHO").
-  3. LIMPEZA: Ignore códigos numéricos, strings de sistema como "Pág. 1 de 1", carimbos de data/hora, endereços de escola, e cabeçalhos de tabela ("Código", "Nome").
-  4. PADRÃO DE NOMES: Extraia apenas o nome completo em maiúsculas. Exemplos válidos: "JOÃO VÍTOR DE MACÉDO COELHO", "MARCOS VINICIUS ALVES DE SOUSA".
+  2. IDENTIFICAÇÃO DE ALUNOS: Procure por listas que contenham Nomes e Códigos/Matrículas.
+  3. LIMPEZA: Ignore cabeçalhos repetitivos.
+  4. PADRÃO: Extraia o Nome Completo e o ID (se houver, geralmente numérico).
   
   Retorna APENAS um JSON puro, sem markdown, no seguinte formato:
   { 
     "className": "Nome da Turma (ex: 1° EM REG 5)", 
     "subject": "Disciplina (ex: SOCIOLOGIA)", 
-    "students": ["NOME COMPLETO DO ALUNO 1", "NOME COMPLETO DO ALUNO 2"] 
+    "students": [
+        { "name": "NOME DO ALUNO 1", "id": "12345" },
+        { "name": "NOME DO ALUNO 2", "id": null }
+    ]
   }`;
 
   const model = genAI.getGenerativeModel({
@@ -308,10 +311,10 @@ export const parseClassListFromText = async (rawText: string) => {
     systemInstruction: instruction
   });
 
-  const prompt = `Extraia desta lista escolar: o nome da turma, a disciplina/matéria e a lista completa de nomes de alunos.
+  const prompt = `Extraia desta lista escolar: o nome da turma, a disciplina/matéria e a lista completa de alunos.
   
-  FOQUE em encontrar padrões de nomes em letras maiúsculas que seguem uma sequência numérica.
-  Ignore rodapés, cabeçalhos administrativos e códigos de identificação.
+  Para cada aluno, tente extrair o NOME e o ID (Matrícula/Código) se disponível.
+  O ID geralmente é um número grande ao lado do nome.
   
   CONTEÚDO DO PDF:
   ${rawText}`;

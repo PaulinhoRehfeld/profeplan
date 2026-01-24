@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
     Users, Plus, Trash2, FileText, ChevronRight,
     Upload, Loader2, CheckCircle2, AlertCircle, X, Search, GraduationCap, Download, Cloud,
-    Settings, Save, BrainCircuit
+    Settings, Save, BrainCircuit, Link as LinkIcon, AlertTriangle
 } from 'lucide-react';
+import SchoolStudentSelector from './SchoolStudentSelector';
+import QuickPdiLog from './QuickPdiLog';
 import { extractTextFromPdf } from '../services/pdfService';
 import { parseClassListFromText } from '../services/geminiService';
 import { saveClassToLocal, getLocalClasses, getLocalClassDetails, deleteLocalClass, exportClassesToJSON, updateLocalClass } from '../services/localStorageService';
@@ -14,6 +16,7 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
     const [classes, setClasses] = useState<Class[]>([]);
     const [loading, setLoading] = useState(true);
     const [isImporting, setIsImporting] = useState(false);
+    const [isSchoolImportOpen, setIsSchoolImportOpen] = useState(false);
     const [importStep, setImportStep] = useState<'idle' | 'uploading' | 'parsing' | 'confirming'>('idle');
     const [tempClassData, setTempClassData] = useState<{ className: string, subject: string, students: string[] } | null>(null);
     const [selectedClass, setSelectedClass] = useState<Class | null>(null);
@@ -31,6 +34,10 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [isSavingStart, setIsSavingStart] = useState(false);
+
+    // Quick PDI Log State
+    const [quickLogStudent, setQuickLogStudent] = useState<{ id: string, name: string } | null>(null);
+
 
     useEffect(() => {
         fetchClasses();
@@ -349,7 +356,17 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                                                     </div>
                                                 )}
                                             </td>
-                                            <td className="px-10 py-5 text-right">
+                                            <td className="px-10 py-5 text-right flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => setQuickLogStudent({ id: student.id, name: student.name })}
+                                                    className="p-2 text-yellow-500 hover:bg-yellow-50 rounded-xl transition-colors relative group/btn"
+                                                    title="Registro Rápido (Ocorrência)"
+                                                >
+                                                    <AlertTriangle size={18} />
+                                                    <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-slate-800 text-white text-[9px] font-bold uppercase rounded opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap">
+                                                        Registrar Ocorrência
+                                                    </span>
+                                                </button>
                                                 <button
                                                     onClick={() => openStudentDrawer(student)}
                                                     className="p-2 text-slate-400 hover:text-blue-600 transition-colors relative group/btn"
@@ -504,6 +521,23 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                         <h3 className="text-xl font-black text-slate-900 uppercase italic mb-6">Nova Turma Manual</h3>
 
                         <div className="space-y-4">
+                            {/* SCHOOL IMPORT BUTTON */}
+                            <div className="mb-4">
+                                <button
+                                    onClick={() => setIsSchoolImportOpen(true)}
+                                    className="w-full py-3 bg-indigo-50 border-2 border-dashed border-indigo-200 text-indigo-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <LinkIcon size={16} /> Importar da Escola
+                                </button>
+                                <p className="text-[9px] text-center text-indigo-400 mt-2 font-bold uppercase tracking-wide">Busque alunos já cadastrados na sua instituição</p>
+                            </div>
+
+                            <div className="relative flex py-2 items-center">
+                                <div className="flex-grow border-t border-slate-100"></div>
+                                <span className="flex-shrink-0 mx-4 text-xs font-bold text-slate-300 uppercase">OU Digite Manualmente</span>
+                                <div className="flex-grow border-t border-slate-100"></div>
+                            </div>
+
                             <div>
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Nome da Turma</label>
                                 <input
@@ -546,124 +580,150 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                         </div>
                     </div>
                 </div>
-            )}
+            )
+            }
 
-            {error && (
-                <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-red-100 flex items-center gap-3">
-                    <AlertCircle className="w-4 h-4" /> {error}
-                    <button onClick={() => setError('')} className="ml-auto"><X size={14} /></button>
-                </div>
-            )}
-
-            {importStep !== 'idle' && (
-                <div className="bg-blue-600 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-300">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -mr-32 -mt-32"></div>
-
-                    {importStep === 'uploading' || importStep === 'parsing' ? (
-                        <div className="flex flex-col items-center text-center py-10">
-                            <Loader2 className="w-16 h-16 animate-spin mb-6 text-blue-200" />
-                            <h3 className="text-xl font-black uppercase italic tracking-tight">
-                                {importStep === 'uploading' ? 'Lendo PDF da Lista...' : 'Gemini processando alunos...'}
-                            </h3>
-                            <p className="text-blue-200 text-[10px] font-bold uppercase tracking-[0.3em] mt-3">Extraindo inteligência pedagógica</p>
+            {/* SCHOOL IMPORT MODAL */}
+            {
+                isSchoolImportOpen && (
+                    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[10000] flex items-center justify-center p-4">
+                        <div className="w-full max-w-lg h-[600px]">
+                            <SchoolStudentSelector
+                                onCancel={() => setIsSchoolImportOpen(false)}
+                                onImport={(students) => {
+                                    const currentText = manualStudents ? manualStudents + '\n' : '';
+                                    setManualStudents(currentText + students.join('\n'));
+                                    setIsSchoolImportOpen(false);
+                                }}
+                            />
                         </div>
-                    ) : (
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h3 className="text-2xl font-black uppercase italic tracking-tight">Turma Encontrada!</h3>
-                                    <p className="text-blue-100 text-sm font-bold mt-1">
-                                        Encontramos <span className="text-white font-black">{tempClassData?.students.length} alunos</span> na turma <span className="text-white font-black">{tempClassData?.className}</span> ({tempClassData?.subject}).
-                                    </p>
-                                </div>
-                                <div className="flex gap-4">
-                                    <button
-                                        onClick={() => { setImportStep('idle'); setTempClassData(null); }}
-                                        className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors"
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        onClick={confirmSave}
-                                        className="px-8 py-3 bg-white text-blue-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg active:scale-95"
-                                    >
-                                        Confirmar e Salvar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="bg-white/10 rounded-2xl p-6 max-h-48 overflow-y-auto custom-scrollbar border border-white/10">
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {tempClassData?.students.map((student, i) => (
-                                        <div key={i} className="text-[10px] font-bold uppercase tracking-tight text-blue-100 flex items-center gap-2">
-                                            <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div> {student}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {loading ? (
-                <div className="flex flex-col items-center justify-center h-64 text-slate-300">
-                    <Loader2 className="w-10 h-10 animate-spin mb-4" />
-                    <p className="font-black uppercase tracking-widest text-[10px]">Consultando Turmas Cadastradas...</p>
-                </div>
-            ) : classes.length === 0 ? (
-                <div className="bg-slate-50 border-2 border-dashed border-slate-100 rounded-[2.5rem] p-20 flex flex-col items-center text-center">
-                    <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-sm mb-6">
-                        <GraduationCap className="text-slate-200" size={40} />
                     </div>
-                    <h3 className="text-lg font-black text-slate-900 uppercase italic tracking-tight mb-2">Sua Escola Digital está Vazia</h3>
-                    <p className="text-sm font-bold text-slate-400 uppercase tracking-widest max-w-sm">
-                        Importe seu arquivo PDF de lista de chamada para começar a personalizar suas aulas.
-                    </p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    {classes.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase())).map((cls) => (
-                        <div
-                            key={cls.id}
-                            className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:border-blue-100 transition-all duration-500 relative overflow-hidden"
-                            onClick={() => handleViewClass(cls.id)}
-                        >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-blue-100 transition-colors"></div>
+                )
+            }
 
-                            <div className="flex items-start justify-between mb-6 relative z-10">
-                                <div className="w-14 h-14 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-100 group-hover:scale-110 transition-transform">
-                                    <Users size={24} />
-                                </div>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); handleDeleteClass(cls.id); }}
-                                    className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
+
+            {
+                error && (
+                    <div className="p-4 bg-red-50 text-red-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-red-100 flex items-center gap-3">
+                        <AlertCircle className="w-4 h-4" /> {error}
+                        <button onClick={() => setError('')} className="ml-auto"><X size={14} /></button>
+                    </div>
+                )
+            }
+
+            {
+                importStep !== 'idle' && (
+                    <div className="bg-blue-600 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-300">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -mr-32 -mt-32"></div>
+
+                        {importStep === 'uploading' || importStep === 'parsing' ? (
+                            <div className="flex flex-col items-center text-center py-10">
+                                <Loader2 className="w-16 h-16 animate-spin mb-6 text-blue-200" />
+                                <h3 className="text-xl font-black uppercase italic tracking-tight">
+                                    {importStep === 'uploading' ? 'Lendo PDF da Lista...' : 'Gemini processando alunos...'}
+                                </h3>
+                                <p className="text-blue-200 text-[10px] font-bold uppercase tracking-[0.3em] mt-3">Extraindo inteligência pedagógica</p>
                             </div>
-
-                            <h3 className="font-black text-slate-900 text-xl mb-1 uppercase italic line-clamp-1 tracking-tighter">
-                                {cls.name}
-                            </h3>
-                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{cls.subject || 'Sem Disciplina'}</p>
-
-                            <div className="flex items-center justify-between pt-6 border-t border-slate-50 relative z-10">
-                                <div className="flex flex-col">
-                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Estudantes</p>
-                                    <p className="text-lg font-black text-slate-900 italic">{(cls as any).students?.[0]?.count || ((cls as any).students?.length || 0)}</p>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h3 className="text-2xl font-black uppercase italic tracking-tight">Turma Encontrada!</h3>
+                                        <p className="text-blue-100 text-sm font-bold mt-1">
+                                            Encontramos <span className="text-white font-black">{tempClassData?.students.length} alunos</span> na turma <span className="text-white font-black">{tempClassData?.className}</span> ({tempClassData?.subject}).
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={() => { setImportStep('idle'); setTempClassData(null); }}
+                                            className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            onClick={confirmSave}
+                                            className="px-8 py-3 bg-white text-blue-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all shadow-lg active:scale-95"
+                                        >
+                                            Confirmar e Salvar
+                                        </button>
+                                    </div>
                                 </div>
-                                <button
-                                    className="px-6 py-3 bg-slate-50 text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2 group/btn"
-                                >
-                                    Ver Alunos <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                                </button>
+
+                                <div className="bg-white/10 rounded-2xl p-6 max-h-48 overflow-y-auto custom-scrollbar border border-white/10">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        {tempClassData?.students.map((student, i) => (
+                                            <div key={i} className="text-[10px] font-bold uppercase tracking-tight text-blue-100 flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div> {student}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
+                        )}
+                    </div>
+                )
+            }
+
+            {
+                loading ? (
+                    <div className="flex flex-col items-center justify-center h-64 text-slate-300">
+                        <Loader2 className="w-10 h-10 animate-spin mb-4" />
+                        <p className="font-black uppercase tracking-widest text-[10px]">Consultando Turmas Cadastradas...</p>
+                    </div>
+                ) : classes.length === 0 ? (
+                    <div className="bg-slate-50 border-2 border-dashed border-slate-100 rounded-[2.5rem] p-20 flex flex-col items-center text-center">
+                        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-sm mb-6">
+                            <GraduationCap className="text-slate-200" size={40} />
                         </div>
-                    ))}
-                </div>
-            )}
-        </div>
+                        <h3 className="text-lg font-black text-slate-900 uppercase italic tracking-tight mb-2">Sua Escola Digital está Vazia</h3>
+                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest max-w-sm">
+                            Importe seu arquivo PDF de lista de chamada para começar a personalizar suas aulas.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        {classes.filter(c => c.name.toLowerCase().includes(searchTerm.toLowerCase())).map((cls) => (
+                            <div
+                                key={cls.id}
+                                className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:border-blue-100 transition-all duration-500 relative overflow-hidden"
+                                onClick={() => handleViewClass(cls.id)}
+                            >
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 blur-3xl rounded-full -mr-16 -mt-16 group-hover:bg-blue-100 transition-colors"></div>
+
+                                <div className="flex items-start justify-between mb-6 relative z-10">
+                                    <div className="w-14 h-14 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-100 group-hover:scale-110 transition-transform">
+                                        <Users size={24} />
+                                    </div>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleDeleteClass(cls.id); }}
+                                        className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+
+                                <h3 className="font-black text-slate-900 text-xl mb-1 uppercase italic line-clamp-1 tracking-tighter">
+                                    {cls.name}
+                                </h3>
+                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{cls.subject || 'Sem Disciplina'}</p>
+
+                                <div className="flex items-center justify-between pt-6 border-t border-slate-50 relative z-10">
+                                    <div className="flex flex-col">
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Estudantes</p>
+                                        <p className="text-lg font-black text-slate-900 italic">{(cls as any).students?.[0]?.count || ((cls as any).students?.length || 0)}</p>
+                                    </div>
+                                    <button
+                                        className="px-6 py-3 bg-slate-50 text-slate-900 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2 group/btn"
+                                    >
+                                        Ver Alunos <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

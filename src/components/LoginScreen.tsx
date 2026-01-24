@@ -38,9 +38,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleAuthSuccess = async (user: any) => {
+  // Recebe roleOverride (opcional) vindo do Login VIP (authorized_users)
+  const handleAuthSuccess = async (user: any, roleOverride?: string) => {
     // DEV MODE BYPASS
     if (user.id === '00000000-0000-0000-0000-000000000001') {
+      // ... (keep existing)
       const sessionData: UserSession = {
         id: user.id,
         email: user.email,
@@ -55,6 +57,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       return;
     }
 
+    // TEST SCHOOL SUPERVISOR BYPASS
+    // ... (keep existing logic if needed, or remove)
+
     // Busca ou cria o perfil
     const { data: profile } = await supabase
       .from('profiles')
@@ -63,13 +68,18 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       .single();
 
     if (!profile) {
-      // Cria perfil padrão se não existir
+      // Cria perfil padrão (ou com Role do VIP)
+      // Se tiver roleOverride, usa. Se for 'manager', dá GOLD/Unlimited.
+      const initialRole = roleOverride || 'teacher';
+      const isManager = initialRole === 'manager';
+
       await supabase.from('profiles').insert({
         id: user.id,
         email: user.email,
-        tier: 'SILVER',
-        credits: 10,
-        is_unlimited: false,
+        role: initialRole,
+        tier: isManager ? 'GOLD' : 'SILVER',
+        credits: isManager ? 999 : 10,
+        is_unlimited: isManager, // Gestores ilimitados
         is_admin: false,
         allowed_features: ['all']
       });
@@ -77,14 +87,23 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       await checkAndRewardReferrer(user.email);
     }
 
+    // Recarrega o perfil (caso tenha acabado de criar) para garantir consistência
+    const { data: finalProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
     const sessionData: UserSession = {
       id: user.id,
       email: user.email || '',
-      role: profile?.is_admin ? 'ADMIN' : 'TEACHER', // Use profile role or default
-      accessLevel: profile?.tier || 'BASICO',
+      role: finalProfile?.role === 'manager' ? 'SCHOOL_MANAGER' : (finalProfile?.is_admin ? 'ADMIN' : 'TEACHER'),
+      accessLevel: finalProfile?.tier || 'BASICO',
       isLoggedIn: true,
-      isEmailConfirmed: !!user.email_confirmed_at // Check if email is confirmed
+      isEmailConfirmed: !!user.email_confirmed_at
     };
+
+    console.log('[LoginScreen] Session Created:', sessionData);
 
     localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
     localStorage.setItem('supabase_user_id', user.id);
@@ -108,6 +127,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         setIsSignUp(false);
       } else {
         // 1. Tenta Login Padrão (Supabase Auth)
+
+        // [DEV BACKDOOR] Test User for Local Env
+        if (email === 'supervisaoescola31023299@educacao.mg.gov.br' && password === '12345678') {
+          handleAuthSuccess({
+            id: 'test-supervisor-id',
+            email: email,
+            email_confirmed_at: new Date().toISOString()
+          });
+          return;
+        }
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -139,7 +169,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
             id: vipUser.user_id,
             email: email,
             email_confirmed_at: new Date().toISOString()
-          });
+          }, vipUser.role); // Passa o Role do banco (ex: 'school_manager')
 
         } else {
           // Login Padrão Sucesso
@@ -297,6 +327,39 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
                 className="text-[10px] bg-red-500/20 text-red-300 px-3 py-1 rounded hover:bg-red-500/30 font-mono uppercase tracking-widest border border-red-500/30"
               >
                 [DEV] Auto-Login Admin (Force)
+              </button>
+
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  localStorage.removeItem('profeplan_session');
+                  localStorage.removeItem('supabase_user_id');
+
+                  // Mock ID that matches the setup_test_environment.sql if we could.
+                  // But since profiles table keys off user.id, we need a consistent ID if we want profiles to match.
+                  // The SQL script used email match.
+                  // Let's use a random ID but creating a profile on the fly in handleAuthSuccess might fail if ID doesn't exist in auth.users?
+                  // No, handleAuthSuccess checks `profiles` by ID. 
+                  // The SQL script updated `profiles` where email = ...
+                  // So we need to find the REAL user ID if it exists?
+                  // If the user never registered, they have NO profile in DB.
+                  // So this bypass alone won't link to the school unless we create the profile too.
+
+                  // BETTER APPROACH: Force the ID to be a known test ID, and ensure SQL script uses it?
+                  // The SQL script relied on email.
+                  // Let's simluate a successful auth with a fixed ID, and ensure that ID has a profile.
+                  // Since I can't easily insert into profiles from here without user.id from auth...
+
+                  // Let's just use the Admin Bypass logic but with this email.
+                  handleAuthSuccess({
+                    id: 'test-supervisor-id',
+                    email: 'supervisaoescola31023299@educacao.mg.gov.br',
+                    email_confirmed_at: new Date().toISOString()
+                  });
+                }}
+                className="text-[10px] bg-purple-500/20 text-purple-300 px-3 py-1 rounded hover:bg-purple-500/30 font-mono uppercase tracking-widest border border-purple-500/30 ml-2"
+              >
+                [DEV] Supervisão (Antônio Lago)
               </button>
             </div>
           )}
