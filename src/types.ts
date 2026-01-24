@@ -230,3 +230,6 @@ export interface TermPlan {
   lessons?: Lesson[]; // Structured data
   created_at: string;
 }
+
+// PDI Types - Export all PDI-related types
+export * from './types/pdi';

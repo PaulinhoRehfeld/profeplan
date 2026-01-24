@@ -19,7 +19,11 @@ export const AdminPanel: React.FC = () => {
     const [newUserPass, setNewUserPass] = useState('123456');
     const [newUserRole, setNewUserRole] = useState<'TEACHER' | 'SCHOOL_MANAGER' | 'ADMIN'>('TEACHER');
     const [newUserSchoolId, setNewUserSchoolId] = useState('');
-    const [schools, setSchools] = useState<{ id: string, name: string }[]>([]);
+    const [selectedCity, setSelectedCity] = useState('');
+    const [schoolSearchText, setSchoolSearchText] = useState(''); // Search within schools
+    const [allSchools, setAllSchools] = useState<{ id: string, name: string, city?: string }[]>([]);
+    const [cities, setCities] = useState<string[]>([]);
+    const [filteredSchools, setFilteredSchools] = useState<{ id: string, name: string }[]>([]);
     const [newUserTier, setNewUserTier] = useState<'SILVER' | 'GOLD'>('SILVER');
     const [newUserCredits, setNewUserCredits] = useState(10);
 
@@ -40,8 +44,18 @@ export const AdminPanel: React.FC = () => {
     }, []);
 
     const loadSchools = async () => {
-        const { data } = await SchoolService.getAllSchools();
-        if (data) setSchools(data);
+        // Load schools with city info
+        const { data, error } = await supabase
+            .from('schools')
+            .select('id, name, city')
+            .order('name');
+
+        if (data) {
+            setAllSchools(data as any);
+            // Extract unique cities
+            const uniqueCities = [...new Set(data.map(s => s.city).filter(Boolean))] as string[];
+            setCities(uniqueCities.sort());
+        }
     };
 
     const loadUsers = async () => {
@@ -143,6 +157,9 @@ export const AdminPanel: React.FC = () => {
             setNewUserPass('123456');
             setNewUserRole('TEACHER');
             setNewUserSchoolId('');
+            setSelectedCity('');
+            setSchoolSearchText('');
+            setFilteredSchools([]);
             setNewUserCredits(10);
 
             loadUsers();
@@ -427,15 +444,100 @@ export const AdminPanel: React.FC = () => {
                                 </div>
                             </div>
                             {newUserRole === 'SCHOOL_MANAGER' && (
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Escola Vinculada</label>
-                                    <select value={newUserSchoolId} onChange={(e) => setNewUserSchoolId(e.target.value)} className="w-full px-4 py-2 border rounded-lg bg-blue-50 border-blue-200">
-                                        <option value="">Selecione uma Escola...</option>
-                                        {schools.map(s => (
-                                            <option key={s.id} value={s.id}>{s.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <>
+                                    {/* Option 1: Filter by City */}
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                                            Opção 1: Filtrar por Cidade
+                                        </label>
+                                        <select
+                                            value={selectedCity}
+                                            onChange={(e) => {
+                                                const city = e.target.value;
+                                                setSelectedCity(city);
+                                                setNewUserSchoolId('');
+                                                setSchoolSearchText(''); // Reset text search
+                                                if (city) {
+                                                    const filtered = allSchools
+                                                        .filter(s => s.city === city)
+                                                        .map(s => ({ id: s.id, name: s.name }));
+                                                    setFilteredSchools(filtered);
+                                                } else {
+                                                    setFilteredSchools([]);
+                                                }
+                                            }}
+                                            className="w-full px-4 py-2 border rounded-lg bg-amber-50 border-amber-200"
+                                        >
+                                            <option value="">Escolha a cidade...</option>
+                                            {cities.map(city => (
+                                                <option key={city} value={city}>{city}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* OR Divider */}
+                                    <div className="text-center text-sm font-bold text-slate-400 py-1">OU</div>
+
+                                    {/* Option 2: Text Search */}
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                                            Opção 2: Buscar por Nome da Escola
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Digite o nome da escola..."
+                                            value={schoolSearchText}
+                                            onChange={(e) => {
+                                                const searchText = e.target.value;
+                                                setSchoolSearchText(searchText);
+                                                setSelectedCity(''); // Reset city filter
+                                                setNewUserSchoolId('');
+
+                                                if (searchText.length >= 3) {
+                                                    const filtered = allSchools
+                                                        .filter(s => s.name.toLowerCase().includes(searchText.toLowerCase()))
+                                                        .map(s => ({ id: s.id, name: s.name }))
+                                                        .slice(0, 100); // Limit to 100 results
+                                                    setFilteredSchools(filtered);
+                                                } else {
+                                                    setFilteredSchools([]);
+                                                }
+                                            }}
+                                            className="w-full px-4 py-2 border rounded-lg bg-green-50 border-green-200"
+                                        />
+                                        {schoolSearchText.length > 0 && schoolSearchText.length < 3 && (
+                                            <p className="text-xs text-amber-600 mt-1">Digite pelo menos 3 caracteres</p>
+                                        )}
+                                    </div>
+
+                                    {/* School Dropdown (appears when filtered) */}
+                                    {(selectedCity || schoolSearchText.length >= 3) && filteredSchools.length > 0 && (
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                                                {selectedCity ? `Escolas em ${selectedCity}` : `Resultados da Busca`}
+                                            </label>
+                                            <select
+                                                value={newUserSchoolId}
+                                                onChange={(e) => setNewUserSchoolId(e.target.value)}
+                                                className="w-full px-4 py-2 border rounded-lg bg-blue-50 border-blue-200"
+                                            >
+                                                <option value="">Selecione uma Escola...</option>
+                                                {filteredSchools.map(s => (
+                                                    <option key={s.id} value={s.id}>{s.name}</option>
+                                                ))}
+                                            </select>
+                                            <p className="text-xs text-slate-500 mt-1">
+                                                {filteredSchools.length} escola(s) encontrada(s)
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {(selectedCity || schoolSearchText.length >= 3) && filteredSchools.length === 0 && (
+                                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                                            Nenhuma escola encontrada. Tente outro filtro.
+                                        </div>
+                                    )}
+                                </>
                             )}
                             <div>
                                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Créditos Iniciais</label>

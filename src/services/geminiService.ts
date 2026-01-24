@@ -905,7 +905,478 @@ export const generateGeminiContent = async (
   const result = await chat.sendMessage(prompt);
   const response = result.response.text();
 
+
   if (userId) await incrementUserUsage(userId);
 
   return response;
+};
+
+/**
+ * [PDI_BLOCK_9_MODE]
+ * Gera adaptação curricular automática (Bloco 9 do PDI) quando professor salva planejamento.
+ * Usa o contexto dos Blocos 1-8 do PDI como base de conhecimento.
+ */
+export const generateBlock9Adaptation = async (
+  lessonContent: string,
+  lessonTitle: string,
+  subject: string,
+  gradeLevel: string,
+  habilidadesBncc: string[],
+  studentPdiContext: {
+    nome_completo: string;
+    diagnostico_clinico?: string;
+    necessidades_especificas?: string[];
+    potencialidades?: string[];
+    desafios?: string[];
+    objetivo_geral?: string;
+    recursos_tecnologicos?: string[];
+    materiais_adaptados?: string[];
+  },
+  userId?: string
+): Promise<{
+  adaptacao_metodologica: string;
+  recursos_adaptados: string[];
+  objetivos_adaptados: string[];
+  estrategias_ensino: string[];
+  tempo_estimado?: string;
+}> => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  // Check Quota
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const prompt = `
+ATUE COMO UM ESPECIALISTA EM INCLUSÃO ESCOLAR E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
+
+CONTEXTO:
+Um professor acabou de salvar um planejamento de aula. O sistema deve AUTOMATICAMENTE gerar uma adaptação curricular para um aluno com PDI ativo.
+
+DADOS DA AULA ORIGINAL:
+Título: ${lessonTitle}
+Disciplina: ${subject}
+Série: ${gradeLevel}
+Conteúdo: ${lessonContent.substring(0, 2500)}
+Habilidades BNCC: ${habilidadesBncc.join(', ')}
+
+PERFIL DO ALUNO (BLOCOS 1-8 DO PDI):
+Nome: ${studentPdiContext.nome_completo}
+Diagnóstico: ${studentPdiContext.diagnostico_clinico || 'Não especificado'}
+Necessidades Específicas: ${studentPdiContext.necessidades_especificas?.join(', ') || 'Não especificadas'}
+Potencialidades: ${studentPdiContext.potencialidades?.join(', ') || 'Não especificadas'}
+Desafios: ${studentPdiContext.desafios?.join(', ') || 'Não especificados'}
+Objetivo Geral do PDI: ${studentPdiContext.objetivo_geral || 'Não especificado'}
+Recursos Disponíveis: ${studentPdiContext.recursos_tecnologicos?.join(', ') || 'Padrão'}
+Materiais Adaptados: ${studentPdiContext.materiais_adaptados?.join(', ') || 'Nenhum especificado'}
+
+TAREFA:
+Gere uma ADAPTAÇÃO CURRICULAR ESPECÍFICA desta aula para este aluno, seguindo os princípios do DUA:
+1. ACESSO: Como o aluno vai acessar o conteúdo (múltiplas formas de representação)
+2. ENGAJAMENTO: Como motivar e manter o interesse
+3. EXPRESSÃO: Como o aluno vai demonstrar aprendizado (múltiplas formas de ação/expressão)
+
+IMPORTANTE:
+- NÃO simplifique o currículo a ponto de perder os objetivos da BNCC
+- MANTENHA o rigor acadêmico, mas MUDE a forma de acesso e expressão
+- Use os recursos e materiais disponíveis listados no PDI
+- Seja ESPECÍFICO e APLICÁVEL na sala de aula
+
+FORMATO DE SAÍDA (JSON PURO):
+Retorne APENAS um JSON válido com a seguinte estrutura:
+{
+  "adaptacao_metodologica": "Descrição narrativa detalhada de como a aula será adaptada metodologicamente para este aluno. Inclua início, meio e fim. Mínimo 150 palavras, máximo 400 palavras.",
+  "recursos_adaptados": ["Recurso 1 específico", "Recurso 2 específico", "Recurso 3 específico"],
+  "objetivos_adaptados": ["Objetivo 1 mantendo rigor BNCC", "Objetivo 2 mantendo rigor BNCC"],
+  "estrategias_ensino": ["Estratégia 1 baseada em DUA", "Estratégia 2 baseada em DUA", "Estratégia 3 baseada em DUA"],
+  "tempo_estimado": "Tempo previsto para esta adaptação (ex: '50 minutos', '2 aulas de 45min')"
+}
+
+REGRAS TÉCNICAS:
+- Todos os arrays devem ter pelo menos 2 elementos
+- A adaptacao_metodologica deve ser um texto narrativo, não lista
+- Os objetivos_adaptados devem citar códigos BNCC quando relevante
+- As estrategias_ensino devem ser ações concretas do professor
+  `;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      temperature: 0.7
+    }
+  });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    // Increment Usage
+    if (userId) {
+      await incrementUserUsage(userId);
+    }
+
+    const parsed = JSON.parse(text);
+
+    // Validação básica
+    if (!parsed.adaptacao_metodologica || !parsed.recursos_adaptados || !parsed.objetivos_adaptados || !parsed.estrategias_ensino) {
+      throw new Error("Resposta da IA incompleta");
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error("Erro ao gerar adaptação Bloco 9:", error);
+    throw new Error("Não foi possível gerar a adaptação curricular. Tente novamente.");
+  }
+};
+
+/**
+ * [PDI_BLOCK_10_MODE]
+ * Gera metodologia e diagnóstico pedagógico para complementar avaliação do professor.
+ * Professor preenche: valor, nota, grau de autonomia.
+ * IA completa: metodologia utilizada e diagnóstico pedagógico.
+ */
+export const generateBlock10Diagnosis = async (
+  evaluationData: {
+    atividade_titulo: string;
+    disciplina: string;
+    professor_valor: number;
+    professor_nota_alcancada: number;
+    professor_grau_autonomia: 'total' | 'parcial' | 'dependente';
+  },
+  fullPdiContext: {
+    student_name: string;
+    block_1_8: any; // Blocos 1-8 completos
+    block_9_history: any[]; // Histórico de adaptações
+    block_10_history: any[]; // Histórico de avaliações anteriores
+  },
+  userId?: string
+): Promise<{
+  ia_metodologia: string;
+  ia_diagnostico: string;
+}> => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  // Check Quota
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  // Extrair informações relevantes do contexto
+  const diagnostico_inicial = fullPdiContext.block_1_8?.bloco_1_identificacao?.diagnostico_clinico || 'Não especificado';
+  const necessidades = fullPdiContext.block_1_8?.bloco_2_diagnostico?.necessidades_especificas || [];
+  const potencialidades = fullPdiContext.block_1_8?.bloco_2_diagnostico?.potencialidades || [];
+  const desafios = fullPdiContext.block_1_8?.bloco_2_diagnostico?.desafios || [];
+  const objetivo_geral = fullPdiContext.block_1_8?.bloco_3_objetivos?.objetivo_geral || '';
+
+  // Resumo de adaptações recentes (últimas 3)
+  const adaptacoesRecentes = fullPdiContext.block_9_history
+    .slice(-3)
+    .map((a: any) => `- ${a.lesson_title}: ${a.adaptacao_metodologica?.substring(0, 150)}...`)
+    .join('\n');
+
+  // Resumo de avaliações anteriores (últimas 3)
+  const avaliacoesAnteriores = fullPdiContext.block_10_history
+    .slice(-3)
+    .map((av: any) => {
+      const percentual = ((av.professor_nota_alcancada / av.professor_valor) * 100).toFixed(0);
+      return `- ${av.atividade_titulo}: ${percentual}% (Autonomia: ${av.professor_grau_autonomia})`;
+    })
+    .join('\n');
+
+  const percentualAtual = ((evaluationData.professor_nota_alcancada / evaluationData.professor_valor) * 100).toFixed(1);
+
+  const prompt = `
+ATUE COMO UM ESPECIALISTA EM AVALIAÇÃO PEDAGÓGICA E EDUCAÇÃO INCLUSIVA.
+
+CONTEXTO:
+Um professor registrou uma avaliação para um aluno com PDI. Você deve ANALISAR os dados e gerar:
+1. METODOLOGIA: Como foi realizada a avaliação (inferir a partir do contexto)
+2. DIAGNÓSTICO PEDAGÓGICO: Análise técnica dos potenciais e desafios observados
+
+DADOS DA AVALIAÇÃO ATUAL:
+Atividade: ${evaluationData.atividade_titulo}
+Disciplina: ${evaluationData.disciplina}
+Valor Total: ${evaluationData.professor_valor} pontos
+Nota Alcançada: ${evaluationData.professor_nota_alcancada} pontos (${percentualAtual}%)
+Grau de Autonomia: ${evaluationData.professor_grau_autonomia}
+
+CONTEXTO DO ALUNO (PDI COMPLETO):
+Nome: ${fullPdiContext.student_name}
+Diagnóstico Clínico: ${diagnostico_inicial}
+Necessidades Específicas: ${necessidades.join(', ') || 'Nenhuma'}
+Potencialidades: ${potencialidades.join(', ') || 'Nenhuma'}
+Desafios: ${desafios.join(', ') || 'Nenhum'}
+Objetivo Geral do PDI: ${objetivo_geral}
+
+ADAPTAÇÕES CURRICULARES RECENTES (Bloco 9):
+${adaptacoesRecentes || 'Nenhuma adaptação registrada ainda'}
+
+HISTÓRICO DE AVALIAÇÕES ANTERIORES (Bloco 10):
+${avaliacoesAnteriores || 'Primeira avaliação registrada'}
+
+TAREFA:
+Com base em TODOS os dados acima, gere:
+
+1. METODOLOGIA (150-250 palavras):
+Descreva de forma narrativa e técnica COMO esta avaliação foi provavelmente realizada. Considere:
+- O grau de autonomia registrado
+- As adaptações curriculares que vinham sendo aplicadas
+- O tipo de atividade e disciplina
+- Os recursos disponíveis no PDI
+
+Exemplo de tom: "A avaliação foi conduzida com adaptações metodológicas alinhadas ao DUA, considerando que o estudante apresenta [necessidade]. Foram utilizados recursos como [inferir], e o tempo foi ajustado conforme [inferir]. O suporte do professor foi [total/parcial/mínimo] durante a atividade, evidenciado pelo grau de autonomia [X]."
+
+2. DIAGNÓSTICO PEDAGÓGICO (200-350 palavras):
+Analise de forma técnica e objetiva:
+- POTENCIAIS: O que o aluno demonstrou saber/conseguir fazer (seja específico)
+- DESAFIOS: O que ainda precisa ser trabalhado (seja específico)
+- PROGRESSÃO: Compare com avaliações anteriores se houver
+- RECOMENDAÇÕES: 2-3 ações concretas para próximas aulas
+
+Use terminologia técnica pedagógica: "zona de desenvolvimento proximal", "andaimes pedagógicos", "transferência de aprendizagem", "metacognição", etc.
+
+FORMATO DE SAÍDA (JSON PURO):
+{
+  "ia_metodologia": "Texto narrativo descrevendo como a avaliação foi realizada...",
+  "ia_diagnostico": "Análise técnica estruturada: Potenciais observados: [...]. Desafios identificados: [...]. Progressão em relação a avaliações anteriores: [...]. Recomendações: [...]"
+}
+
+REGRAS:
+- Seja ESPECÍFICO e baseado nos DADOS fornecidos
+- NÃO invente informações que não estão no contexto
+- Use linguagem técnica mas acessível
+- Foque em AÇÃO (o que fazer) e não apenas descrição
+  `;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      temperature: 0.6 // Mais factual
+    }
+  });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    // Increment Usage
+    if (userId) {
+      await incrementUserUsage(userId);
+    }
+
+    const parsed = JSON.parse(text);
+
+    // Validação
+    if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
+      throw new Error("Resposta da IA incompleta");
+    }
+
+    return {
+      ia_metodologia: parsed.ia_metodologia,
+      ia_diagnostico: parsed.ia_diagnostico,
+    };
+  } catch (error) {
+    console.error("Erro ao gerar diagnóstico Bloco 10:", error);
+    throw new Error("Não foi possível gerar o diagnóstico pedagógico. Tente novamente.");
+  }
+};
+
+/**
+ * [PDI_BLOCK_11_MODE]
+ * Gera relatório final consolidado do PDI, sintetizando todos os blocos anteriores.
+ * Usado ao fim do período letivo para documentação oficial.
+ */
+export const generateBlock11Report = async (
+  pdiDocument: {
+    student_name: string;
+    period: string;
+    school_name?: string;
+    block_1_8: any;
+    block_9_content: any[];
+    block_10_entries: any[];
+  },
+  userId?: string
+): Promise<string> => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error("API Key missing");
+
+  // Check Quota
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  // Extrair dados relevantes
+  const identificacao = pdiDocument.block_1_8?.bloco_1_identificacao || {};
+  const diagnostico = pdiDocument.block_1_8?.bloco_2_diagnostico || {};
+  const objetivos = pdiDocument.block_1_8?.bloco_3_objetivos || {};
+
+  // Resumo de adaptações (Bloco 9)
+  const totalAdaptacoes = pdiDocument.block_9_content?.length || 0;
+  const disciplinasAdaptadas = [...new Set(pdiDocument.block_9_content?.map((a: any) => a.subject) || [])];
+
+  // Resumo de avaliações (Bloco 10)
+  const avaliacoes = pdiDocument.block_10_entries || [];
+  const mediaGeral = avaliacoes.length > 0
+    ? (avaliacoes.reduce((sum: number, av: any) =>
+      sum + ((av.professor_nota_alcancada / av.professor_valor) * 100), 0
+    ) / avaliacoes.length).toFixed(1)
+    : 'N/A';
+
+  // Distribuição de autonomia
+  const autonomiaTotal = avaliacoes.filter((av: any) => av.professor_grau_autonomia === 'total').length;
+  const autonomiaParcial = avaliacoes.filter((av: any) => av.professor_grau_autonomia === 'parcial').length;
+  const autonomiaDependente = avaliacoes.filter((av: any) => av.professor_grau_autonomia === 'dependente').length;
+
+  // Últimas 3 avaliações para análise de evolução
+  const ultimasAvaliacoes = avaliacoes.slice(-3).map((av: any) => ({
+    atividade: av.atividade_titulo,
+    percentual: ((av.professor_nota_alcancada / av.professor_valor) * 100).toFixed(0),
+    autonomia: av.professor_grau_autonomia,
+    diagnostico: av.ia_diagnostico?.substring(0, 200) + '...',
+  }));
+
+  const prompt = `
+ATUE COMO UM COORDENADOR PEDAGÓGICO SÊNIOR E ESPECIALISTA EM EDUCAÇÃO INCLUSIVA.
+
+CONTEXTO:
+Você está finalizando o PDI (Plano de Desenvolvimento Individual) de um estudante ao final do período letivo. Este documento será lido por:
+- Equipe gestora da escola
+- Professores do próximo período
+- Família do estudante
+- Órgãos de supervisão educacional
+
+DADOS DO PDI COMPLETO:
+
+═══════════════════════════════════════════════════════
+BLOCO 1: IDENTIFICAÇÃO
+═══════════════════════════════════════════════════════
+Nome: ${identificacao.nome_completo || pdiDocument.student_name}
+Série: ${identificacao.serie || 'Não especificada'}
+Diagnóstico Clínico: ${identificacao.diagnostico_clinico || 'Não especificado'}
+Período do PDI: ${pdiDocument.period}
+${pdiDocument.school_name ? `Instituição: ${pdiDocument.school_name}` : ''}
+
+═══════════════════════════════════════════════════════
+BLOCO 2-3: DIAGNÓSTICO INICIAL E OBJETIVOS
+═══════════════════════════════════════════════════════
+Necessidades Específicas: ${diagnostico.necessidades_especificas?.join(', ') || 'Não especificadas'}
+Potencialidades: ${diagnostico.potencialidades?.join(', ') || 'Não especificadas'}
+Desafios: ${diagnostico.desafios?.join(', ') || 'Não especificados'}
+Objetivo Geral do PDI: ${objetivos.objetivo_geral || 'Não especificado'}
+
+═══════════════════════════════════════════════════════
+BLOCO 9: ADAPTAÇÕES CURRICULARES REALIZADAS
+═══════════════════════════════════════════════════════
+Total de Adaptações: ${totalAdaptacoes}
+Disciplinas Contempladas: ${disciplinasAdaptadas.join(', ') || 'Nenhuma'}
+
+Exemplos de Adaptações Recentes:
+${pdiDocument.block_9_content?.slice(-3).map((a: any, i: number) =>
+    `${i + 1}. ${a.lesson_title} (${a.subject}): ${a.adaptacao_metodologica?.substring(0, 150)}...`
+  ).join('\n') || 'Nenhuma adaptação registrada'}
+
+═══════════════════════════════════════════════════════
+BLOCO 10: DESEMPENHO E AVALIAÇÕES
+═══════════════════════════════════════════════════════
+Total de Avaliações: ${avaliacoes.length}
+Média Geral de Aproveitamento: ${mediaGeral}%
+
+Distribuição de Autonomia:
+- Total (independente): ${autonomiaTotal} avaliações
+- Parcial (com apoio): ${autonomiaParcial} avaliações
+- Dependente (apoio constante): ${autonomiaDependente} avaliações
+
+Últimas 3 Avaliações (Evolução):
+${ultimasAvaliacoes.map((av: any, i: number) =>
+    `${i + 1}. ${av.atividade}: ${av.percentual}% (Autonomia: ${av.autonomia})\n   Diagnóstico: ${av.diagnostico}`
+  ).join('\n\n') || 'Nenhuma avaliação registrada'}
+
+═══════════════════════════════════════════════════════
+TAREFA: GERAR RELATÓRIO FINAL (BLOCO 11)
+═══════════════════════════════════════════════════════
+
+Crie um RELATÓRIO TÉCNICO-PEDAGÓGICO NARRATIVO e OFICIAL seguindo esta estrutura obrigatória:
+
+1. INTRODUÇÃO (100-150 palavras)
+   - Apresente o estudante e o contexto do PDI
+   - Período de vigência
+   - Breve resumo do diagnóstico inicial
+
+2. DESENVOLVIMENTO PEDAGÓGICO (300-450 palavras)
+   - Síntese das adaptações curriculares implementadas
+   - Análise do desempenho acadêmico (use os dados quantitativos)
+   - Evolução observada ao longo do período
+   - Destaque as POTENCIALIDADES demonstradas
+   - Identifique DESAFIOS ainda presentes
+
+3. PROGRESSÃO NA AUTONOMIA (150-200 palavras)
+   - Análise da evolução do grau de autonomia
+   - Relação entre suporte oferecido e resultados
+   - Desenvolvimento de habilidades de autorregulação
+
+4. RECOMENDAÇÕES PARA CONTINUIDADE (200-300 palavras)
+   - Orientações específicas para o próximo período
+   - Estratégias que devem ser mantidas
+   - Novas abordagens a serem testadas
+   - Expectativas de desenvolvimento
+   - Orientações para a família
+
+5. CONSIDERAÇÕES FINAIS (100-150 palavras)
+   - Síntese dos principais avanços
+   - Mensagem positiva sobre o desenvolvimento do estudante
+   - Afirmação do compromisso da equipe escolar
+
+DIRETRIZES DE ESCRITA:
+✓ Use linguagem TÉCNICA mas ACESSÍVEL
+✓ Tom FORMAL e RESPEITOSO
+✓ Seja ESPECÍFICO, use os DADOS fornecidos
+✓ Destaque PROGRESSOS de forma concreta
+✓ Seja REALISTA sobre desafios sem ser negativo
+✓ Use terminologia pedagógica adequada: "zona de desenvolvimento proximal", "andaimes pedagógicos", "mediação docente", "aprendizagem significativa"
+✓ Mantenha formato NARRATIVO (prosa), NÃO use bullet points
+✓ Total de 900-1300 palavras
+
+IMPORTANTE: Este relatório será OFICIALMENTE arquivado. Seja preciso, ético e construtivo.
+  `;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    generationConfig: {
+      temperature: 0.7 // Criativo mas fundamentado
+    }
+  });
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    // Increment Usage
+    if (userId) {
+      await incrementUserUsage(userId);
+    }
+
+    return text;
+  } catch (error) {
+    console.error("Erro ao gerar relatório Bloco 11:", error);
+    throw new Error("Não foi possível gerar o relatório final. Tente novamente.");
+  }
 };
