@@ -58,7 +58,7 @@ const LandingPage: React.FC = () => {
                     {/* Content */}
                     <div className="text-center md:text-left space-y-8 animate-in slide-in-from-bottom-10 fade-in duration-700">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
-                            <Star size={12} fill="currentColor" /> Nova Versão 2.0
+                            <Star size={12} fill="currentColor" /> Nova Versão 3.5
                         </div>
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
                             Planeje aulas <br />
@@ -172,9 +172,10 @@ const LandingPage: React.FC = () => {
                             <ul className="space-y-4">
                                 {[
                                     "IA que cria planos completos em segundos",
-                                    "Alinhamento automático à BNCC",
-                                    "Tudo salvo e organizado na nuvem",
-                                    "Adaptação curricular (PDI) automática",
+                                    "Gestão completa de escola: professores, alunos e turmas",
+                                    "16.712 escolas de MG com autocomplete inteligente",
+                                    "Pré-cadastro e match automático de professores",
+                                    "Adaptação curricular (PDI) e documentos personalizados",
                                     "Mais tempo livre para você e sua família"
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-3 text-slate-800 font-medium">
@@ -206,10 +207,10 @@ const LandingPage: React.FC = () => {
                                 desc: "Converse com nossa IA para criar planos de aula, provas e dinâmicas criativas."
                             },
                             {
-                                icon: <Smartphone size={24} />,
-                                color: "bg-purple-500",
-                                title: "Mobilidade Total",
-                                desc: "App Android nativo para acessar suas turmas e arquivos de qualquer lugar."
+                                icon: <Users size={24} />,
+                                color: "bg-emerald-500",
+                                title: "Gestão Escolar",
+                                desc: "Sistema completo para cadastro de professores, alunos e turmas. 16.712 escolas de MG integradas."
                             },
                             {
                                 icon: <Heart size={24} />,
@@ -219,7 +220,7 @@ const LandingPage: React.FC = () => {
                             },
                             {
                                 icon: <Layout size={24} />,
-                                color: "bg-emerald-500",
+                                color: "bg-purple-500",
                                 title: "Planejamento Visual",
                                 desc: "Arraste e solte conteúdos no planejamento trimestral de forma intuitiva."
                             }
