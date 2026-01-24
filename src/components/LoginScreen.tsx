@@ -19,47 +19,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Verifica se o usuário já está logado
+  // Verifica se o usuário já está logado (apenas na montagem inicial)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         handleAuthSuccess(session.user);
       }
     });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        handleAuthSuccess(session.user);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // Removido onAuthStateChange para evitar conflito com App.tsx
+    // App.tsx gerenciará mudanças de estado de autenticação
   }, []);
 
-  // Recebe roleOverride (opcional) vindo do Login VIP (authorized_users)
-  const handleAuthSuccess = async (user: any, roleOverride?: string) => {
-    // DEV MODE BYPASS
-    if (user.id === '00000000-0000-0000-0000-000000000001') {
-      // ... (keep existing)
-      const sessionData: UserSession = {
-        id: user.id,
-        email: user.email,
-        role: 'ADMIN',
-        accessLevel: 'GOLD',
-        isLoggedIn: true,
-        isEmailConfirmed: true
-      };
-      localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
-      localStorage.setItem('supabase_user_id', user.id);
-      onLogin(sessionData);
-      return;
-    }
-
-    // TEST SCHOOL SUPERVISOR BYPASS
-    // ... (keep existing logic if needed, or remove)
-
+  // Função chamada após autenticação bem-sucedida (apenas na inicialização)
+  const handleAuthSuccess = async (user: any) => {
     // Busca ou cria o perfil
     const { data: profile } = await supabase
       .from('profiles')
@@ -68,26 +40,23 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       .single();
 
     if (!profile) {
-      // Cria perfil padrão (ou com Role do VIP)
-      // Se tiver roleOverride, usa. Se for 'manager', dá GOLD/Unlimited.
-      const initialRole = roleOverride || 'teacher';
-      const isManager = initialRole === 'manager';
-
+      // Cria perfil padrão
       await supabase.from('profiles').insert({
         id: user.id,
         email: user.email,
-        role: initialRole,
-        tier: isManager ? 'GOLD' : 'SILVER',
-        credits: isManager ? 999 : 10,
-        is_unlimited: isManager, // Gestores ilimitados
+        role: 'teacher',
+        tier: 'SILVER',
+        credits: 10,
+        is_unlimited: false,
         is_admin: false,
         allowed_features: ['all']
       });
-      // NEW: Check for referral reward
+
+      // Check for referral reward
       await checkAndRewardReferrer(user.email);
     }
 
-    // Recarrega o perfil (caso tenha acabado de criar) para garantir consistência
+    // Recarrega o perfil (caso tenha acabado de criar)
     const { data: finalProfile } = await supabase
       .from('profiles')
       .select('*')
@@ -97,7 +66,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     const sessionData: UserSession = {
       id: user.id,
       email: user.email || '',
-      role: finalProfile?.role === 'manager' ? 'SCHOOL_MANAGER' : (finalProfile?.is_admin ? 'ADMIN' : 'TEACHER'),
+      role: finalProfile?.is_admin ? 'ADMIN' : (finalProfile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER'),
       accessLevel: finalProfile?.tier || 'BASICO',
       isLoggedIn: true,
       isEmailConfirmed: !!user.email_confirmed_at
@@ -126,54 +95,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
         setIsSignUp(false);
       } else {
-        // 1. Tenta Login Padrão (Supabase Auth)
-
-        // [DEV BACKDOOR] Test User for Local Env
-        if (email === 'supervisaoescola31023299@educacao.mg.gov.br' && password === '12345678') {
-          handleAuthSuccess({
-            id: 'test-supervisor-id',
-            email: email,
-            email_confirmed_at: new Date().toISOString()
-          });
-          return;
-        }
-
+        // Login com Supabase Auth
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) {
-          // 2. Se falhar, tenta Login VIP (Authorized Users Table)
-          // Isso permite login para usuários criados manualmente pelo Admin
-          console.log("Supabase Auth falhou, tentando fallback para authorized_users...");
-
-          // 2. Se falhar, tenta Login VIP via RPC (bypassing RLS)
-          console.log("Supabase Auth falhou, tentando RPC check_admin_credentials...");
-
-          const { data: vipData, error: vipError } = await supabase
-            .rpc('check_admin_credentials', {
-              check_email: email,
-              check_key: password
-            });
-
-          if (vipError || !vipData || vipData.length === 0) {
-            console.error("RPC Error or No User:", vipError);
-            throw error; // Lança o erro original do Supabase Auth se o VIP também falhar
-          }
-
-          const vipUser = vipData[0]; // RPC returns array
-
-          // Login VIP Sucesso!
-          handleAuthSuccess({
-            id: vipUser.user_id,
-            email: email,
-            email_confirmed_at: new Date().toISOString()
-          }, vipUser.role); // Passa o Role do banco (ex: 'school_manager')
-
-        } else {
-          // Login Padrão Sucesso
-        }
+        if (error) throw error;
+        // Sucesso - App.tsx onAuthStateChange cuidará do resto
       }
     } catch (err: any) {
       console.error("Auth Error:", err);
@@ -307,62 +236,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
               {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
             </button>
           </div>
-
-          {/* Dev Mode Auto Login */}
-          {import.meta.env.DEV && (
-            <div className="mt-4 pt-4 border-t border-white/10 text-center">
-              <button
-                onClick={async () => {
-                  // Force logout first to kill any Silver cookies
-                  await supabase.auth.signOut();
-                  localStorage.removeItem('profeplan_session');
-                  localStorage.removeItem('supabase_user_id');
-
-                  handleAuthSuccess({
-                    id: '00000000-0000-0000-0000-000000000001',
-                    email: 'admin@dev.local',
-                    email_confirmed_at: new Date().toISOString()
-                  });
-                }}
-                className="text-[10px] bg-red-500/20 text-red-300 px-3 py-1 rounded hover:bg-red-500/30 font-mono uppercase tracking-widest border border-red-500/30"
-              >
-                [DEV] Auto-Login Admin (Force)
-              </button>
-
-              <button
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  localStorage.removeItem('profeplan_session');
-                  localStorage.removeItem('supabase_user_id');
-
-                  // Mock ID that matches the setup_test_environment.sql if we could.
-                  // But since profiles table keys off user.id, we need a consistent ID if we want profiles to match.
-                  // The SQL script used email match.
-                  // Let's use a random ID but creating a profile on the fly in handleAuthSuccess might fail if ID doesn't exist in auth.users?
-                  // No, handleAuthSuccess checks `profiles` by ID. 
-                  // The SQL script updated `profiles` where email = ...
-                  // So we need to find the REAL user ID if it exists?
-                  // If the user never registered, they have NO profile in DB.
-                  // So this bypass alone won't link to the school unless we create the profile too.
-
-                  // BETTER APPROACH: Force the ID to be a known test ID, and ensure SQL script uses it?
-                  // The SQL script relied on email.
-                  // Let's simluate a successful auth with a fixed ID, and ensure that ID has a profile.
-                  // Since I can't easily insert into profiles from here without user.id from auth...
-
-                  // Let's just use the Admin Bypass logic but with this email.
-                  handleAuthSuccess({
-                    id: 'test-supervisor-id',
-                    email: 'supervisaoescola31023299@educacao.mg.gov.br',
-                    email_confirmed_at: new Date().toISOString()
-                  });
-                }}
-                className="text-[10px] bg-purple-500/20 text-purple-300 px-3 py-1 rounded hover:bg-purple-500/30 font-mono uppercase tracking-widest border border-purple-500/30 ml-2"
-              >
-                [DEV] Supervisão (Antônio Lago)
-              </button>
-            </div>
-          )}
 
           <div className="mt-8 flex justify-center gap-6 opacity-20">
             <ShieldCheck className="w-5 h-5 text-white" />

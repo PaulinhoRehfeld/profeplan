@@ -182,8 +182,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Configurações</span>}
               </button>
               <button
-                onClick={onLogout}
-                className="flex items-center gap-3 px-3 py-2 w-full rounded-xl hover:bg-red-900/20 transition-colors text-slate-400 hover:text-red-400"
+                onClick={async () => {
+                  await onLogout();
+                  window.location.href = '/login';
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all rounded-xl group"
                 title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}
               >
                 <X className="w-5 h-5 shrink-0" />

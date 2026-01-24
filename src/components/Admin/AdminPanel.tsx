@@ -60,8 +60,11 @@ export const AdminPanel: React.FC = () => {
 
     const loadUsers = async () => {
         setLoading(true);
-        const { data } = await getAllUsers();
+        console.log('[AdminPanel] Loading users...');
+        const { data, error } = await getAllUsers();
+        console.log('[AdminPanel] getAllUsers result:', { data, error, count: data?.length });
         if (data) setUsers(data as UserProfile[]);
+        if (error) console.error('[AdminPanel] Error loading users:', error);
         setLoading(false);
     };
 

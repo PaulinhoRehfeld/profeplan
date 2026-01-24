@@ -29,7 +29,7 @@ import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext'; // NO
 import SchoolDashboard from './pages/SchoolDashboard'; // NOVO: Painel de Gestão Escolar
 
 import UserProfileSetup from './pages/UserProfileSetup';
-import { getUserProfile, isAdmin } from './services/userService';
+import { getUserProfile, isAdmin, checkAndRewardReferrer } from './services/userService';
 import { UserProfile } from './types';
 import { supabase } from './services/supabaseClient';
 import SubscriptionModal from './components/SubscriptionModal';
@@ -59,31 +59,17 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (session?.id) {
-      // --- LEGACY ID CLEANUP (NEW) ---
-      // We keep this to ensure old 'test-supervisor-id' sessions are cleared.
-      if (session.id === 'test-supervisor-id' || session.id === 'dev-admin-id') {
-        console.warn("Detected mock session. Clearing for clean Dev Auth.");
-        supabase.auth.signOut().then(() => {
-          localStorage.removeItem('profeplan_session');
-          setSession(null);
-          setUserProfile(null);
-          window.location.reload();
-        });
-        return;
-      }
-
-      // 1. ASYNC SESSION INITIALIZATION
+      // ASYNC SESSION INITIALIZATION
       const initSession = async () => {
         let profileData = null;
         try {
           profileData = await getUserProfile(session.id);
         } catch (e) { console.warn("Primary fetch failed, attempting healing..."); }
 
-        // 2. SELF-HEALING: If ID invalid/mismatch (DbRole=null), try by Email
+        // SELF-HEALING: If ID invalid/mismatch (DbRole=null), try by Email
         if (!profileData && session.email) {
           console.warn(`[App] Profile not found for ID ${session.id}. Attempting recovery by email...`);
           try {
-            // Import dynamically to avoid circular deps if needed, or assume imported
             const { getProfileByEmail } = await import('./services/userService');
             const { data: recoveredProfile } = await getProfileByEmail(session.email);
 
@@ -95,7 +81,7 @@ const App: React.FC = () => {
               session.id = recoveredProfile.id;
               profileData = recoveredProfile;
 
-              // Update Storage immediatelly
+              // Update Storage immediately
               localStorage.setItem('profeplan_session', JSON.stringify(session));
               localStorage.setItem('supabase_user_id', recoveredProfile.id);
             }
@@ -126,8 +112,6 @@ const App: React.FC = () => {
           }
         } else {
           console.error('[App] Failed to load user profile (Fatal)');
-          // Optional: Force Logout if even email fails? 
-          // For now, let it be (User sees TEACHER fallback)
         }
       };
 
@@ -135,68 +119,96 @@ const App: React.FC = () => {
     }
   }, [session?.id]);
 
-  // Listener para Deep Links (OAuth no Mobile)
+  // Listener para mudanças de autenticação (Web e Mobile)
   useEffect(() => {
+    // 1. Setup Auth State Listener (handles OAuth callbacks automatically)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('[App] Auth State Change:', event, session?.user?.email);
+
+      if (event === 'SIGNED_IN' && session) {
+        // Busca o profile
+        let profile = await getUserProfile(session.user.id);
+
+        // Se não existe profile, cria um automaticamente
+        if (!profile) {
+          console.log('[App] Profile not found, creating default profile...');
+
+          const { error: insertError } = await supabase.from('profiles').insert({
+            id: session.user.id,
+            email: session.user.email,
+            role: 'teacher',
+            tier: 'SILVER',
+            credits: 10,
+            is_unlimited: false,
+            is_admin: false,
+            allowed_features: ['all']
+          });
+
+          if (insertError) {
+            console.error('[App] Failed to create profile:', insertError);
+          } else {
+            console.log('[App] Profile created successfully');
+            // Check for referral reward
+            await checkAndRewardReferrer(session.user.email);
+            // Busca novamente o profile recém criado
+            profile = await getUserProfile(session.user.id);
+            console.log('[App] Profile reloaded after creation:', profile);
+          }
+        } else {
+          console.log('[App] Profile found:', profile);
+        }
+
+        const newSession: UserSession = {
+          id: session.user.id,
+          email: session.user.email || '',
+          role: profile?.is_admin ? 'ADMIN' : (profile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER'),
+          accessLevel: (profile?.tier as any) || 'BASICO',
+          isLoggedIn: true,
+          isEmailConfirmed: !!session.user.email_confirmed_at
+        };
+
+        console.log('[App] Updating session after auth state change:', newSession);
+        setSession(newSession);
+        setUserProfile(profile);
+        localStorage.setItem('profeplan_session', JSON.stringify(newSession));
+        localStorage.setItem('supabase_user_id', session.user.id);
+      } else if (event === 'SIGNED_OUT') {
+        console.log('[App] User signed out');
+        setSession(null);
+        setUserProfile(null);
+        localStorage.removeItem('profeplan_session');
+        localStorage.removeItem('supabase_user_id');
+      }
+    });
+
+    // 2. Listener para Deep Links (OAuth no Mobile - Capacitor)
     import('@capacitor/app').then(({ App }) => {
       App.addListener('appUrlOpen', (data) => {
-        // Extrai o hash da URL (ex: com.profeplan.app://login-callback#access_token=...)
-        // O Supabase envia os tokens no fragmento (#)
         const url = new URL(data.url);
 
-        // 1. Handle Stripe Callbacks (Query Params)
-        // URL Format: com.profeplan.app://stripe-callback?session_id=...&success=true
+        // Handle Stripe Callbacks
         if (url.searchParams.get('success') === 'true') {
-          // Not using 'alert' generally but for quick feedback it is fine.
-          // Ideally we would set a toast state.
-          // For now, let's just log or maybe set a query param to trigger a toast if we had one.
-          // But actually default android alert is synchronous and blocking.
-          // Let's use a console log and maybe a simple native dialog if possible, or just let the user see the credits update.
-          // Given the user asked for "redirect", just returning to the app is the main thing.
-          // But I will add a simple alert for feedback as requested in my mental model.
           alert('✅ Pagamento processado! Seus créditos serão atualizados em instantes.');
         }
 
-        const hash = url.hash.substring(1); // remove o #
+        // Handle OAuth Deep Links (Capacitor)
+        const hash = url.hash.substring(1);
         const params = new URLSearchParams(hash);
-
         const access_token = params.get('access_token');
         const refresh_token = params.get('refresh_token');
 
         if (access_token && refresh_token) {
-          // Define a sessão manualmente usando os tokens recebidos
-          // Precisamos da instância do supabase aqui. Vamos importar do services se não tiver.
-          // Mas App.tsx não importa 'supabase' diretamente. Vamos adicionar o import.
-          import('./services/supabaseClient').then(({ supabase }) => {
-            supabase.auth.setSession({
-              access_token,
-              refresh_token,
-            }).then(({ data, error }) => {
-              if (!error && data.session) {
-                // A sessão será atualizada e capturada pelo onAuthStateChange se houver, 
-                // ou podemos forçar um reload ou update de estado.
-                // Como o App.tsx lê do localStorage no inicio, e o LoginScreen salva...
-                // Precisamos garantir que o estado 'session' seja atualizado.
-
-                // Busca o profile e atualiza o estado
-                getUserProfile(data.session.user.id).then(profile => {
-                  const newSession: UserSession = {
-                    id: data.session!.user.id,
-                    email: data.session!.user.email || '',
-                    role: profile?.role === 'manager' ? 'SCHOOL_MANAGER' : (profile?.is_admin ? 'ADMIN' : 'TEACHER'), // CORRECT MAP
-                    accessLevel: (profile?.tier as any) || 'BASICO',
-                    isLoggedIn: true,
-                    isEmailConfirmed: !!data.session!.user.email_confirmed_at // Check confirmation from session
-                  };
-                  setSession(newSession);
-                  setUserProfile(profile);
-                  localStorage.setItem('profeplan_session', JSON.stringify(newSession));
-                });
-              }
-            });
-          });
+          supabase.auth.setSession({ access_token, refresh_token });
+          // onAuthStateChange listener acima cuidará do resto
         }
       });
+    }).catch(() => {
+      // Capacitor não disponível (web), ignorar
     });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const [settings, setSettings] = useState<UserSettings>(() => {
@@ -310,19 +322,17 @@ const App: React.FC = () => {
                     userProfile={userProfile}
                     onOpenSubscription={() => setIsSubscriptionOpen(true)}
                     onLogout={async () => {
+                      console.log('[App] Logout initiated');
                       await supabase.auth.signOut();
                       setSession(null);
-                      localStorage.removeItem('profeplan_session');
-                      localStorage.removeItem('supabase_user_id'); // Optional: clear exact keys if any
+                      setUserProfile(null);
+                      localStorage.clear(); // Clear ALL localStorage
+                      console.log('[App] Logout complete, reloading...');
+                      window.location.href = '/';
                     }}
                   />
 
                   <main className={`main-content flex-1 flex flex-col relative h-full transition-all duration-300 ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
-                    {/* DEBUG BANNER */}
-                    <div className="bg-red-500 text-white text-[10px] p-1 text-center font-mono">
-                      DEBUG: AuthRole=[{session.role}] | DbRole=[{userProfile?.role || 'null'}] | Email=[{session.email}]
-                    </div>
-
                     <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-4 md:px-6 z-50 sticky top-0 shadow-sm">
                       <div className="flex items-center gap-4">
                         <button onClick={() => setIsMobileNavOpen(true)} className="lg:hidden p-2 text-slate-500"><Menu size={24} /></button>

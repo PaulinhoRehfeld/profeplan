@@ -28,63 +28,17 @@ export const getUserProfile = async (userId: string): Promise<UserProfile | null
         .eq('id', userId)
         .single();
 
-    // DEV ADMIN MOCK (Bypass DB)
-    if (userId === '00000000-0000-0000-0000-000000000001') {
-        return {
-            id: '00000000-0000-0000-0000-000000000001',
-            email: 'admin@dev.local',
-            tier: 'GOLD',
-            credits: 9999,
-            is_unlimited: true,
-            is_admin: true,
-            allowed_features: ['all']
-        };
-    }
-
-    // --- DEV ENVIRONMENT OVERRIDE ---
-    const { data: authData } = await supabase.auth.getUser();
-    if (authData?.user?.id === userId) {
-        const email = authData.user.email?.toLowerCase();
-        const devEmails = [
-            'prehfeld@hotmail.com',
-            'paulinho.rehfeld@hotmail.com',
-            // 'paulinho.rehfeld@gmail.com', // REMOVED: Let this user use real DB role (manager)
-            'supervisaoescola31023299@educacao.mg.gov.br'
-        ];
-
-        if (email && devEmails.includes(email)) {
-            // Admin does NOT need a school_id forced
-            console.log(`💎 DEV OVERRIDE: Granting Forced Admin to ${email}`);
-            return {
-                id: userId,
-                email: email,
-                role: 'admin',
-                is_admin: true,
-                tier: 'GOLD',
-                is_unlimited: true,
-                credits: 9999,
-                allowed_features: ['all']
-            };
-        }
-    }
-
     if (error) {
         console.error("Error fetching user profile:", error);
         return null;
     }
 
     // Transform result to flat UserProfile structure
-    // We treat 'schools' as an array or object depending on One-to-One/Many relationship, 
-    // but typically single() on parent returns it as object or null.
-    // Logic: If role is admin, school_id might be null.
-
     const profileData = {
         ...data,
         school_name: data.schools?.name // Flatten the joined school name
     };
-    // remove the nested object to match interface perfectly if needed, or just let it be extra.
     delete profileData.schools;
-
 
     // BETA OVERRIDE: Grant Gold + Unlimited to everyone during testing
     if (IS_BETA_TESTING && data) {
