@@ -255,6 +255,7 @@ const LandingPage: React.FC = () => {
                         {/* PLANO SILVER */}
                         <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl flex flex-col relative group hover:border-blue-400 transition-colors">
                             <div className="absolute top-0 w-full h-1 bg-blue-500 left-0 rounded-t-3xl"></div>
+                            <img src="/PROFEPLAN SILVER.jpg" alt="Profeplan Silver" className="w-32 h-32 object-contain mx-auto mb-4" />
                             <h3 className="text-2xl font-black text-slate-900 mb-2">Profeplan Silver</h3>
                             <p className="text-slate-500 text-sm mb-6 min-h-[40px]">O plano ideal para quem busca flexibilidade e produtividade sob medida.</p>
 
@@ -286,10 +287,11 @@ const LandingPage: React.FC = () => {
                         {/* PLANO GOLD */}
                         <div className="bg-slate-900 rounded-3xl p-8 border border-amber-500 shadow-2xl flex flex-col relative overflow-hidden transform md:-translate-y-4">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 blur-3xl rounded-full"></div>
-                            <div className="flex justify-between items-start mb-2">
-                                <h3 className="text-2xl font-black text-white">Profeplan Gold</h3>
+                            <div className="flex justify-between items-center mb-2">
+                                <img src="/PROFEPLAN GOLD.jpg" alt="Profeplan Gold" className="w-24 h-24 object-contain" />
                                 <div className="px-3 py-1 bg-amber-500 text-amber-950 font-bold text-[10px] uppercase tracking-wide rounded-full">Recomendado</div>
                             </div>
+                            <h3 className="text-2xl font-black text-white mb-2">Profeplan Gold</h3>
                             <p className="text-slate-400 text-sm mb-6 min-h-[40px]">O plano definitivo para o professor que exige produtividade sem limites.</p>
 
                             <div className="mb-6">
@@ -332,7 +334,102 @@ const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* 5. CTA & Footer */}
+            {/* 5. Para Escolas - NOVA SEÇÃO */}
+            <section id="schools" className="py-24 bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 text-white relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full opacity-10" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '50px 50px' }}></div>
+                <div className="absolute top-20 right-20 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-20 left-20 w-96 h-96 bg-emerald-400/10 rounded-full blur-3xl"></div>
+
+                <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <span className="text-blue-300 font-bold tracking-widest uppercase text-xs mb-3 block">Transformação Educacional</span>
+                        <h2 className="text-4xl md:text-5xl font-black mb-6">Sistema Completo para Gestão Escolar</h2>
+                        <p className="text-blue-100 text-lg">Integre sua escola e professores em uma plataforma moderna. Acompanhe planejamentos, gere PDIs automaticamente e tenha total controle pedagógico.</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8 mb-16">
+                        {[
+                            {
+                                icon: <Users size={32} />,
+                                title: "Integração Total",
+                                desc: "Conecte gestores, professores e alunos em uma única plataforma. Cadastro centralizado com 16.712 escolas de MG integradas."
+                            },
+                            {
+                                icon: <Layout size={32} />,
+                                title: "Planejamentos Automáticos",
+                                desc: "Professores criam planejamentos trimestrais que ficam automaticamente disponíveis para a equipe gestora acompanhar e validar."
+                            },
+                            {
+                                icon: <Heart size={32} />,
+                                title: "PDI Inteligente",
+                                desc: "Sistema gera adaptações curriculares (PDI) automaticamente para cada aluno com necessidades específicas, com base nos planejamentos."
+                            }
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all group">
+                                <div className="w-16 h-16 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-300 mb-6 group-hover:scale-110 transition-transform">
+                                    {item.icon}
+                                </div>
+                                <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+                                <p className="text-blue-100 leading-relaxed text-sm">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/10">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h3 className="text-3xl font-black mb-6">Pré-Cadastro e Match Automático</h3>
+                                <ul className="space-y-4">
+                                    <li className="flex items-start gap-3">
+                                        <Check size={20} className="text-emerald-400 shrink-0 mt-1" />
+                                        <span className="text-blue-100">Gestor cadastra professores com <b className="text-white">email institucional e MASP</b></span>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <Check size={20} className="text-emerald-400 shrink-0 mt-1" />
+                                        <span className="text-blue-100">Professor preenche dados no primeiro login</span>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <Check size={20} className="text-emerald-400 shrink-0 mt-1" />
+                                        <span className="text-blue-100"><b className="text-white">Match automático</b> vincula professor à escola</span>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <Check size={20} className="text-emerald-400 shrink-0 mt-1" />
+                                        <span className="text-blue-100">Acompanhamento em tempo real de pendentes e ativos</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="bg-gradient-to-br from-blue-500/20 to-emerald-500/20 rounded-2xl p-8 border border-white/20">
+                                <div className="bg-white/10 rounded-xl p-4 mb-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-xs text-blue-200 font-bold">AGUARDANDO LOGIN</span>
+                                        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 text-xs rounded-full font-bold">Pendente</span>
+                                    </div>
+                                    <p className="text-sm text-white font-semibold">Prof. João Silva</p>
+                                    <p className="text-xs text-blue-200">joao.silva@educacao.mg.gov.br</p>
+                                </div>
+                                <div className="bg-white/10 rounded-xl p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-xs text-blue-200 font-bold">ATIVO</span>
+                                        <span className="px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full font-bold">Vinculado</span>
+                                    </div>
+                                    <p className="text-sm text-white font-semibold">Prof. Maria Santos</p>
+                                    <p className="text-xs text-blue-200">EE Dom Pedro II • 12 planos criados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-12 text-center">
+                        <Link to="/signup" className="inline-flex items-center gap-3 px-10 py-5 bg-white hover:bg-blue-50 text-blue-900 font-black rounded-2xl shadow-2xl text-lg transition-all hover:scale-105">
+                            <Users size={24} />
+                            Integrar Minha Escola Agora
+                        </Link>
+                        <p className="mt-4 text-blue-300 text-sm">Sistema gratuito para gestores • Sem limite de professores</p>
+                    </div>
+                </div>
+            </section>
+
+            {/* 6. CTA & Footer */}
             <footer className="bg-slate-900 text-white pt-24 pb-10 overflow-hidden relative">
                 <div className="absolute top-0 right-0 w-full h-full bg-[url('/grid-pattern.svg')] opacity-5"></div>
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none"></div>
