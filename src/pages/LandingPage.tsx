@@ -15,10 +15,7 @@ const LandingPage: React.FC = () => {
 
                     {/* Logo */}
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-                            <Sparkles size={20} fill="currentColor" className="text-white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight text-blue-900">Profeplan</span>
+                        <img src="/logo-blue.png" alt="Profeplan" className="h-12 w-auto" />
                     </div>
 
                     {/* Links (Desktop) */}
@@ -255,7 +252,7 @@ const LandingPage: React.FC = () => {
                         {/* PLANO SILVER */}
                         <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl flex flex-col relative group hover:border-blue-400 transition-colors">
                             <div className="absolute top-0 w-full h-1 bg-blue-500 left-0 rounded-t-3xl"></div>
-                            <img src="/PROFEPLAN SILVER.jpg" alt="Profeplan Silver" className="w-32 h-32 object-contain mx-auto mb-4" />
+                            <img src="/profeplan-silver.jpg" alt="Profeplan Silver" className="w-32 h-32 object-contain mx-auto mb-4" />
                             <h3 className="text-2xl font-black text-slate-900 mb-2">Profeplan Silver</h3>
                             <p className="text-slate-500 text-sm mb-6 min-h-[40px]">O plano ideal para quem busca flexibilidade e produtividade sob medida.</p>
 
@@ -288,7 +285,7 @@ const LandingPage: React.FC = () => {
                         <div className="bg-slate-900 rounded-3xl p-8 border border-amber-500 shadow-2xl flex flex-col relative overflow-hidden transform md:-translate-y-4">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 blur-3xl rounded-full"></div>
                             <div className="flex justify-between items-center mb-2">
-                                <img src="/PROFEPLAN GOLD.jpg" alt="Profeplan Gold" className="w-24 h-24 object-contain" />
+                                <img src="/profeplan-gold.jpg" alt="Profeplan Gold" className="w-24 h-24 object-contain" />
                                 <div className="px-3 py-1 bg-amber-500 text-amber-950 font-bold text-[10px] uppercase tracking-wide rounded-full">Recomendado</div>
                             </div>
                             <h3 className="text-2xl font-black text-white mb-2">Profeplan Gold</h3>
