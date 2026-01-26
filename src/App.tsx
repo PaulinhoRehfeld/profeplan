@@ -327,12 +327,16 @@ const App: React.FC = () => {
                     onOpenSubscription={() => setIsSubscriptionOpen(true)}
                     onLogout={async () => {
                       console.log('[App] Logout initiated');
-                      await supabase.auth.signOut();
+                      try {
+                        await supabase.auth.signOut();
+                      } catch (err) {
+                        console.error("Logout error:", err);
+                      }
                       setSession(null);
                       setUserProfile(null);
-                      localStorage.clear(); // Clear ALL localStorage
+                      localStorage.clear();
                       console.log('[App] Logout complete, reloading...');
-                      window.location.href = '/';
+                      window.location.href = '/login';
                     }}
                   />
 

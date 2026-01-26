@@ -8,7 +8,9 @@ import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan, GeneratedPlan } from './PlanningService';
 import { Loader2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
+
 import { addMemory } from '../../services/memoryService'; // Import addMemory
+import { feedbackService } from '../../services/feedbackService'; // Feedback Service
 
 // --- NEW SUB-COMPONENTS ---
 import { SimulationWorkspace } from './components/SimulationWorkspace';
@@ -61,6 +63,9 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     const [parsedLessons, setParsedLessons] = useState<Lesson[]>([]);
     const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
     const [lessonTracking, setLessonTracking] = useState<Record<number, string>>({});
+
+    // Feedback Logic
+    const [feedbackContext, setFeedbackContext] = useState<string | null>(null);
 
     // --- Chat State ---
     const [messages, setMessages] = useState<Message[]>([]);
@@ -152,9 +157,37 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     const handleSendMessage = async (e: React.FormEvent, overrideInput?: string) => {
         e.preventDefault();
         // Resolve input priority: Direct Argument > State
-        const activeInput = overrideInput || input;
+        let activeInput = overrideInput || input;
 
         if (!activeInput.trim()) return;
+
+        // --- FEEDBACK LOOP INTERCEPTION ---
+        // Se existe um contexto de feedback pendente, tratamos como solicitação de ajuste
+        if (feedbackContext) {
+            try {
+                // 1. Save Feedback
+                await feedbackService.saveFeedback({
+                    userId,
+                    feature: 'lesson_planning',
+                    feedbackText: activeInput,
+                    originalContentSummary: feedbackContext.substring(0, 100) + '...'
+                });
+
+                // 2. Modify Prompt for Regeneration
+                const originalInstruction = activeInput;
+                activeInput = `[ATENÇÃO: FEEDBACK DO PROFESSOR (PRIORIDADE CRÍTICA)]
+O professor solicitou o seguinte ajuste no plano anterior:
+"${originalInstruction}"
+
+INSTRUÇÃO DE REGENERAÇÃO:
+Ignore qualquer regra anterior que conflite com este pedido. O feedback do professor é soberano. Recrie o plano incorporando esta mudança imediatamente.`;
+
+                // Reset context loop (so next msg is normal unless we re-trigger)
+                setFeedbackContext(null);
+            } catch (e) {
+                console.error("Feedback error", e);
+            }
+        }
 
         const userMsg: Message = { id: Date.now().toString(), role: MessageRole.USER, content: activeInput, timestamp: new Date() };
         setMessages(prev => [...prev, userMsg]);
@@ -382,6 +415,21 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 
             const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
             setMessages(prev => [...prev, aiMsg]);
+
+            // --- AUTO PROMPT FOR FEEDBACK ---
+            // If response is substantial (Plan/Content), trigger the feedback loop
+            if (response.length > 200 && !feedbackContext) {
+                setTimeout(() => {
+                    const followUp: Message = {
+                        id: (Date.now() + 2).toString(),
+                        role: MessageRole.ASSISTANT,
+                        content: "Existem ajustes a serem feitos, professor?",
+                        timestamp: new Date()
+                    };
+                    setMessages(prev => [...prev, followUp]);
+                    setFeedbackContext(response); // Mark context for next user input
+                }, 1000);
+            }
         } catch (error) {
             console.error(error);
             const errorMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: '❌ Erro ao processar. Tente novamente.', timestamp: new Date() };

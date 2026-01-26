@@ -184,7 +184,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 onClick={async () => {
                   await onLogout();
-                  window.location.href = '/login';
                 }}
                 className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-red-500/10 hover:text-red-500 transition-all rounded-xl group"
                 title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}

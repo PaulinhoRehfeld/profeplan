@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, FileText, Calendar, BookOpen, Clock, Target, CheckCircle2, Sparkles } from 'lucide-react';
+import { Save, FileText, Calendar, BookOpen, Clock, Target, CheckCircle2, Sparkles, PenTool } from 'lucide-react';
 import { useGlobalPlanning, TermPlan } from '../../contexts/GlobalPlanningContext';
 import { PlanningAuthority } from '../../services/PlanningAuthorityService'; // Import Authority
 import { KnowledgeManifest } from '../../components/Governance/KnowledgeManifest'; // Import Manifest
@@ -7,6 +7,8 @@ import { saveGeneratedContent } from '../../services/databaseService';
 import { saveTermPlan } from './TermPlanningService';
 import { exportToDocx } from '../../services/exportService';
 import { parseMarkdownToLessons } from '../../utils/markdownParser';
+import { FeedbackWidget } from '../../components/Feedback/FeedbackWidget';
+import { feedbackService } from '../../services/feedbackService';
 
 interface TermPlanningManagerProps {
     userId: string;
@@ -27,6 +29,10 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
     const [generatedText, setGeneratedText] = useState('');
     const [lessons, setLessons] = useState<any[]>([]); // New state
     const [isGenerating, setIsGenerating] = useState(false);
+
+    // Feedback System
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [isRegenerating, setIsRegenerating] = useState(false);
 
     // Form State
     const [period, setPeriod] = useState<number>(1);
@@ -97,6 +103,48 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
             alert('⛔ BLOQUEIO DO GESTOR DE IA:\n' + e.message);
         } finally {
             setIsGenerating(false);
+            if (generatedText || true) { // Force show if success (even if text is empty/error handled elsewhere)
+                setShowFeedback(true);
+            }
+        }
+    };
+
+    const handleFeedbackSubmit = async (feedbackText: string) => {
+        setIsRegenerating(true);
+        try {
+            await feedbackService.saveFeedback({
+                userId,
+                feature: 'term_planning',
+                feedbackText,
+                originalContentSummary: `Grade: ${grade}, Subject: ${subject}`
+            });
+
+            // Regenerate with feedback
+            const text: any = await PlanningAuthority.executePlanning({
+                subject,
+                grade,
+                period,
+                regime,
+                stateBase,
+                educationSphere,
+                teacherName: settings.userName || 'Professor(a)',
+                totalClasses,
+                reserves,
+                userId: userId,
+                level,
+                feedback: feedbackText // The Key
+            });
+
+            setGeneratedText(text);
+            if (typeof text === 'string') {
+                const parsed = parseMarkdownToLessons(text);
+                setLessons(parsed);
+            }
+
+        } catch (e: any) {
+            alert('Erro na regeneração: ' + e.message);
+        } finally {
+            setIsRegenerating(false);
         }
     };
 
@@ -146,7 +194,7 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
                 // No, I should use the imported function.
 
                 // Let's use the function directly. I need to make sure it's imported.
-                const savedDoc = await saveGeneratedContent(userId, 'trimestral', title, generatedText);
+                const savedDoc = await saveGeneratedContent(userId, 'trimestral', 'TermPlans', title, generatedText);
                 if (savedDoc) console.log("Saved to Drive successfully");
                 else console.warn("Failed to save to Drive");
             } else {
@@ -385,6 +433,23 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                             className="w-full h-96 p-6 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-100 outline-none resize-y leading-relaxed"
                             placeholder="O planejamento gerado aparecerá aqui..."
                         />
+                    ) : isGenerating ? (
+                        <div className="w-full h-96 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center justify-center space-y-6 animate-in fade-in duration-700">
+                            {/* Writing Animation */}
+                            <div className="relative">
+                                <div className="absolute -top-4 -right-4 w-12 h-12 bg-blue-100 rounded-full blur-xl animate-pulse"></div>
+                                <PenTool className="w-16 h-16 text-blue-600 animate-bounce" style={{ animationDuration: '3s' }} />
+                            </div>
+
+                            <div className="text-center space-y-2 max-w-md">
+                                <h3 className="text-xl font-black text-slate-800 italic tracking-tight">
+                                    "Entendido, Prof. {settings.userName?.split(' ')[0] || 'Professor'}!"
+                                </h3>
+                                <p className="text-slate-500 font-medium animate-pulse">
+                                    Estamos montando seu Planejamento Personalizado...
+                                </p>
+                            </div>
+                        </div>
                     ) : (
                         <div className="w-full h-32 bg-slate-50 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-slate-400">
                             <Sparkles className="mb-2 opacity-50" />
@@ -412,6 +477,13 @@ ${reserves.recovery ? '- [x] Recuperação' : '- [ ] Recuperação'}
                     Salvar Planejamento
                 </button>
             </div>
+
+            <FeedbackWidget
+                isVisible={showFeedback}
+                onClose={() => setShowFeedback(false)}
+                onSubmitFeedback={handleFeedbackSubmit}
+                isRegenerating={isRegenerating}
+            />
 
         </div>
     );

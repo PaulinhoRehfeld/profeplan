@@ -15,6 +15,7 @@ export interface PlanningIntent {
     totalClasses: number;
     reserves: any;
     userId: string;
+    feedback?: string; // New field for feedback loop
 }
 
 export interface GuardrailCheckResult {
@@ -119,7 +120,8 @@ export const PlanningAuthority = {
         return await generateTermPlan({
             ...safeIntent,
             // Passa o nível explicitamente para o GeminiService (que já consertamos)
-            level: safeIntent.level
+            level: safeIntent.level,
+            feedback: safeIntent.feedback // Pass feedback to generator
         });
     },
 
@@ -133,7 +135,7 @@ export const PlanningAuthority = {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
+            model: "gemini-1.5-flash",
             systemInstruction: `
             VOCÊ É UM ESPECIALISTA PEDAGÓGICO SÊNIOR (AUDITOR).
             NÃO É UM ASSISTENTE PESSOAL. SEU TOM É TÉCNICO, ANALÍTICO E DIRETIVO.

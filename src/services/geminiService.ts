@@ -199,7 +199,7 @@ export const generateProfePlanStream = async (
   }
   // A chave nova suporta modelos 2.0+. Configurando para o 2.0 Flash estável.
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     systemInstruction: specificInstruction,
     safetySettings
   });
@@ -262,7 +262,7 @@ export const generateCanvaData = async (content: string) => {
   const genAI = new GoogleGenerativeAI(apiKey);
   const instruction = `${SYSTEM_PROMPT}`;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: instruction, safetySettings });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: instruction, safetySettings });
 
   const userMessage = `[CANVA_ARCHITECT]
   Analise o conteúdo abaixo e gere a TABELA DE DADOS (CSV) para o Canva:
@@ -307,7 +307,7 @@ export const parseClassListFromText = async (rawText: string) => {
   }`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     systemInstruction: instruction
   });
 
@@ -411,7 +411,7 @@ export const generateAssessmentWithContext = async (
   }`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     systemInstruction: instruction
   });
 
@@ -464,7 +464,7 @@ export const gradeWrittenAnswer = async (
   }`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     systemInstruction: instruction
   });
 
@@ -546,7 +546,7 @@ export const generatePresentationJSON = async (
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     systemInstruction: instruction,
     generationConfig: { responseMimeType: "application/json" }
   });
@@ -562,6 +562,35 @@ export const generatePresentationJSON = async (
     throw new Error("Falha ao gerar o roteiro da apresentação.");
   }
 };
+
+const GENERATION_MODELS = [
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-lite-preview-02-05",
+  "gemini-flash-latest",
+  "gemini-2.0-flash-exp",
+];
+
+async function executeWithFallback<T>(
+  actionName: string,
+  operation: (modelName: string) => Promise<T>
+): Promise<T> {
+  let lastError: any;
+
+  for (const modelName of GENERATION_MODELS) {
+    try {
+      console.log(`[Gemini] Tentando modelo: ${modelName} para ${actionName}...`);
+      return await operation(modelName);
+    } catch (error: any) {
+      console.warn(`[Gemini] Falha no modelo ${modelName}:`, error.message);
+      lastError = error;
+      // Se for erro de cota ou rate limit, talvez não adiante trocar de modelo imediatamente se a chave for a mesma,
+      // mas se for erro de "modelo não encontrado" ou "sobrecarregado", trocar ajuda.
+      // Vamos tentar o próximo.
+    }
+  }
+
+  throw new Error(`Todas as tentativas de modelo falharam para ${actionName}. Último erro: ${lastError?.message}`);
+}
 
 /**
  * [PDI_MODE]
@@ -602,7 +631,7 @@ export const generateStudentAdaptation = async (
     ${context?.stateBase ? `CONTEXTO CURRICULAR:\n    Base: ${context.stateBase} (${context.educationSphere || 'Geral'})` : ''}
     
     TAREFA:
-    Crie uma adaptação desta aula especificamente para este aluno. Não simplifique o currículo a ponto de perder o objetivo, mas altere a FORMA de acesso e expressão.
+    Crie uma adaptação desta aula especificamente para o aluno.
     
     RETORNE APENAS O CONTEÚDO ADAPTADO NO SEGUINTE FORMATO MARKDOWN:
     
@@ -619,23 +648,20 @@ export const generateStudentAdaptation = async (
     (Como verificar o aprendizado dele nesta aula)
     `;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-  try {
+  return executeWithFallback('StudentAdaptation', async (modelName) => {
+    const model = genAI.getGenerativeModel({ model: modelName });
     const result = await model.generateContent(prompt);
     const response = await result.response;
 
-    // Increment Usage
+    // Increment Usage only on success
     if (context?.userId) {
-      await incrementUserUsage(context.userId);
+      await incrementUserUsage(context.userId); // Fire and forget or await? Safe to wait.
     }
 
     return response.text();
-  } catch (error) {
-    console.error("Erro ao gerar adaptação PDI:", error);
-    throw error;
-  }
+  });
 };
+
 
 /**
  * [PDI_REPORT_MODE]
@@ -673,7 +699,7 @@ export const generatePdiReport = async (logs: any[], studentName: string, period
     - Sem cabeçalhos Markdown (##), use apenas negrito para dar ênfase se necessário.
     `;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   try {
     const result = await model.generateContent(prompt);
@@ -701,6 +727,7 @@ export const generateTermPlan = async (
     reserves: any;
     userId?: string;
     level?: string;
+    feedback?: string;
   }
 ) => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
@@ -774,11 +801,6 @@ export const generateTermPlan = async (
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    // REMOVED JSON MODE: We want rich Markdown text
-  });
-
   const prompt = `
     Atue como um Coordenador Pedagógico especialista em BNCC e currículos locais.
     Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo.
@@ -795,6 +817,15 @@ export const generateTermPlan = async (
 
     [DADOS DO CURRÍCULO OFICIAL]:
     ${curriculumContext ? curriculumContext : "Use a BNCC geral."}
+    
+    ${context.feedback ? `
+    [ATENÇÃO: FEEDBACK DO PROFESSOR (PRIORIDADE CRÍTICA)]
+    O professor solicitou o seguinte ajuste no plano anterior:
+    "${context.feedback}"
+    
+    INSTRUÇÃO DE REGENERAÇÃO:
+    Ignore qualquer regra anterior que conflite com este pedido. O feedback do professor é soberano. Recrie o plano incorporando esta mudança imediatamente.
+    ` : ''}
     ---------------------------------------------------
 
     TAREFA:
@@ -835,20 +866,22 @@ export const generateTermPlan = async (
     Critérios de avaliação...
   `;
 
-  try {
+  return executeWithFallback('TermPlan', async (modelName) => {
+    const model = genAI.getGenerativeModel({
+      model: modelName,
+      // REMOVED JSON MODE: We want rich Markdown text
+    });
+
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
-    // Increment Usage
+    // Increment Usage only on success
     if (context.userId) {
       await incrementUserUsage(context.userId);
     }
 
     return text; // Return raw Markdown
-  } catch (e) {
-    console.error("Erro ao gerar planejamento:", e);
-    throw e;
-  }
+  });
 };
 
 // --- ADAPTADORES ---
@@ -885,7 +918,7 @@ export const generateGeminiContent = async (
   const systemInstruction = `${SYSTEM_PROMPT} \n\n[CONTEXTO ATUAL]: ${context} `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     systemInstruction: systemInstruction
   });
 
@@ -1006,7 +1039,7 @@ REGRAS TÉCNICAS:
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     generationConfig: {
       responseMimeType: "application/json",
       temperature: 0.7
@@ -1162,7 +1195,7 @@ REGRAS:
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     generationConfig: {
       responseMimeType: "application/json",
       temperature: 0.6 // Mais factual
@@ -1359,7 +1392,7 @@ IMPORTANTE: Este relatório será OFICIALMENTE arquivado. Seja preciso, ético e
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-1.5-flash",
     generationConfig: {
       temperature: 0.7 // Criativo mas fundamentado
     }
