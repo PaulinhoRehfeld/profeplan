@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle, Chrome } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
 
@@ -137,24 +137,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: /android|ios/.test(navigator.userAgent.toLowerCase())
-            ? 'com.profeplan.app://login-callback'
-            : window.location.origin,
-          skipBrowserRedirect: false // Force browser for mobile to ensure redirect works
-        }
-      });
-      if (error) throw error;
-    } catch (err: any) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 md:px-20 py-4 relative overflow-hidden">
@@ -177,17 +160,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           </h2>
 
           <div className="space-y-4 mb-8">
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full bg-white text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-slate-100 transition-colors shadow-lg"
-            >
-              <Chrome className="w-4 h-4 text-blue-600" />
-              Entrar com Google
-            </button>
-            <div className="relative flex items-center justify-center">
-              <div className="h-px bg-white/10 w-full absolute"></div>
-              <span className="bg-slate-900/80 px-4 text-xs text-slate-500 relative z-10 font-bold uppercase tracking-widest">ou continue com e-mail</span>
-            </div>
+            {/* Google Login removed as per user request (unverified app) */}
           </div>
 
           <form onSubmit={handleEmailAuth} className="space-y-6">
