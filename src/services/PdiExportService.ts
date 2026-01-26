@@ -8,8 +8,8 @@
  * npm install --save-dev @types/file-saver
  */
 
-import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } from 'docx';
-import { saveAs } from 'file-saver';
+
+import type { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } from 'docx';
 import { PdiDocument } from '../types/pdi';
 
 /**
@@ -18,6 +18,12 @@ import { PdiDocument } from '../types/pdi';
  */
 export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
     try {
+        const docx = await import('docx');
+        const fileSaver = await import('file-saver');
+        const saveAs = fileSaver.saveAs;
+
+        const { Document, Paragraph, HeadingLevel, AlignmentType, Packer } = docx;
+
         const studentName = pdi.block_1_8?.bloco_1_identificacao?.nome_completo || 'Estudante';
 
         // Create document
@@ -51,47 +57,47 @@ export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
                         }),
 
                         // Block 1: Identification
-                        ...createBlock1Section(pdi),
+                        ...createBlock1Section(pdi, docx),
 
                         // Block 2: Diagnosis
-                        ...createBlock2Section(pdi),
+                        ...createBlock2Section(pdi, docx),
 
                         // Block 3: Objectives
-                        ...createBlock3Section(pdi),
+                        ...createBlock3Section(pdi, docx),
 
                         // Block 4: Resources
-                        ...createBlock4Section(pdi),
+                        ...createBlock4Section(pdi, docx),
 
                         // Block 5: Team
-                        ...createBlock5Section(pdi),
+                        ...createBlock5Section(pdi, docx),
 
                         // Block 6: Service Plan
-                        ...createBlock6Section(pdi),
+                        ...createBlock6Section(pdi, docx),
 
                         // Block 7: Family
-                        ...createBlock7Section(pdi),
+                        ...createBlock7Section(pdi, docx),
 
                         // Block 8: Observations
-                        ...createBlock8Section(pdi),
+                        ...createBlock8Section(pdi, docx),
 
                         // Block 9: Adaptations Summary
-                        ...createBlock9Summary(pdi),
+                        ...createBlock9Summary(pdi, docx),
 
                         // Block 10: Evaluations Summary
-                        ...createBlock10Summary(pdi),
+                        ...createBlock10Summary(pdi, docx),
 
                         // Block 11: Final Report
-                        ...createBlock11Section(pdi),
+                        ...createBlock11Section(pdi, docx),
 
                         // Signatures
-                        ...createSignatureSection(),
+                        ...createSignatureSection(docx),
                     ],
                 },
             ],
         });
 
         // Generate and download
-        const blob = await doc.toBlob();
+        const blob = await Packer.toBlob(doc);
         saveAs(blob, `PDI_${studentName.replace(/ /g, '_')}_${pdi.period.replace(/ /g, '_')}.docx`);
 
     } catch (error) {
@@ -104,7 +110,8 @@ export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
 // HELPER FUNCTIONS TO CREATE SECTIONS
 // ============================================================================
 
-function createBlock1Section(pdi: PdiDocument): Paragraph[] {
+function createBlock1Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_1_identificacao;
     if (!data) return [];
 
@@ -160,7 +167,8 @@ function createBlock1Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock2Section(pdi: PdiDocument): Paragraph[] {
+function createBlock2Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_2_diagnostico;
     if (!data) return [];
 
@@ -190,7 +198,8 @@ function createBlock2Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock3Section(pdi: PdiDocument): Paragraph[] {
+function createBlock3Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_3_objetivos;
     if (!data) return [];
 
@@ -211,7 +220,8 @@ function createBlock3Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock4Section(pdi: PdiDocument): Paragraph[] {
+function createBlock4Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_4_recursos;
     if (!data) return [];
 
@@ -233,7 +243,8 @@ function createBlock4Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock5Section(pdi: PdiDocument): Paragraph[] {
+function createBlock5Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_5_equipe;
     if (!data) return [];
 
@@ -255,7 +266,8 @@ function createBlock5Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock6Section(pdi: PdiDocument): Paragraph[] {
+function createBlock6Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_6_atendimento;
     if (!data) return [];
 
@@ -276,7 +288,8 @@ function createBlock6Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock7Section(pdi: PdiDocument): Paragraph[] {
+function createBlock7Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_7_familia;
     if (!data) return [];
 
@@ -297,7 +310,8 @@ function createBlock7Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock8Section(pdi: PdiDocument): Paragraph[] {
+function createBlock8Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_8_observacoes;
     if (!data) return [];
 
@@ -315,7 +329,8 @@ function createBlock8Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock9Summary(pdi: PdiDocument): Paragraph[] {
+function createBlock9Summary(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const total = pdi.block_9_content?.length || 0;
 
     return [
@@ -337,10 +352,11 @@ function createBlock9Summary(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock10Summary(pdi: PdiDocument): Paragraph[] {
+function createBlock10Summary(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const avaliacoes = pdi.block_10_entries || [];
     const mediaGeral = avaliacoes.length > 0
-        ? (avaliacoes.reduce((sum, av) =>
+        ? (avaliacoes.reduce((sum: number, av: any) =>
             sum + ((av.professor_nota_alcancada / av.professor_valor) * 100), 0
         ) / avaliacoes.length).toFixed(1)
         : 'N/A';
@@ -369,7 +385,8 @@ function createBlock10Summary(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createBlock11Section(pdi: PdiDocument): Paragraph[] {
+function createBlock11Section(pdi: PdiDocument, docx: any): any[] {
+    const { Paragraph, HeadingLevel } = docx;
     const reportText = pdi.block_11_supervisor_edit || pdi.block_11_ai_generated || '';
 
     return [
@@ -385,7 +402,8 @@ function createBlock11Section(pdi: PdiDocument): Paragraph[] {
     ];
 }
 
-function createSignatureSection(): Paragraph[] {
+function createSignatureSection(docx: any): any[] {
+    const { Paragraph, HeadingLevel, AlignmentType } = docx;
     return [
         new Paragraph({ text: '', spacing: { before: 800, after: 200 } }),
         new Paragraph({

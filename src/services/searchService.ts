@@ -90,10 +90,12 @@ export const searchCurriculum = async (
     const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
 
     try {
+        // 1. Embedding (Fast)
         const result = await model.embedContent(queryText);
         const embedding = result.embedding;
 
-        const { data, error } = await supabase.rpc('search_curriculum_rag', {
+        // 2. RPC Call with Timeout (Prevents "2 minute hang")
+        const rpcPromise = supabase.rpc('search_curriculum_rag', {
             query_embedding: embedding.values,
             match_threshold: matchThreshold,
             match_count: limit,
@@ -102,11 +104,18 @@ export const searchCurriculum = async (
             filter_periodo: filters?.periodo || null
         });
 
+        const timeoutPromise = new Promise<{ data: any, error: any }>((_, reject) =>
+            setTimeout(() => reject(new Error("RAG Timeout")), 15000) // 15s Timeout
+        );
+
+        const { data, error } = await Promise.race([rpcPromise, timeoutPromise]) as any;
+
         if (error) throw error;
         return data || [];
 
     } catch (error) {
-        console.error("Erro na busca de currículo:", error);
+        console.error("Erro ou Timeout na busca de currículo (RAG):", error);
+        // Fail gracefully: proceed without context
         return [];
     }
 };

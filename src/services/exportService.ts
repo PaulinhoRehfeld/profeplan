@@ -1,4 +1,4 @@
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver'; // Removed unused import for performance
 // Note: In a real environment with npm access, we would import { Document, Packer, Paragraph, TextRun } from "docx";
 // Since we cannot run npm install here, we will use a robust HTML-to-Word export strategy
 // which is native and works without heavy dependencies for this specific task.
