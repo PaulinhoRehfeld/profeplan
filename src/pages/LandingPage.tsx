@@ -307,7 +307,7 @@ const LandingPage: React.FC = () => {
                     </div>
 
                     {/* Footer Links */}
-                    <div className="grid md:grid-cols-3 gap-8 mb-12">
+                    <div className="grid md:grid-cols-4 gap-8 mb-12">
                         <div>
                             <h4 className="font-bold text-lg mb-4">ProfePlan</h4>
                             <p className="text-slate-400 text-sm leading-relaxed">
@@ -320,6 +320,13 @@ const LandingPage: React.FC = () => {
                                 <li><a href="#professores" className="hover:text-white transition-colors">Para Professores</a></li>
                                 <li><a href="#escolas" className="hover:text-white transition-colors">Para Escolas</a></li>
                                 <li><a href="#funcionalidades" className="hover:text-white transition-colors">Funcionalidades</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-lg mb-4">Legal</h4>
+                            <ul className="space-y-2 text-slate-400 text-sm">
+                                <li><Link to="/privacy" className="hover:text-white transition-colors">Política de Privacidade</Link></li>
+                                <li><Link to="/terms" className="hover:text-white transition-colors">Termos de Serviço</Link></li>
                             </ul>
                         </div>
                         <div>

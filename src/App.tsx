@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import {
   Send, Bot, User, Menu, X,
   Image as ImageIcon, Database,
@@ -295,6 +297,8 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={!session?.isLoggedIn ? <LandingPage /> : <Navigate to="/app" replace />} />
         <Route path="/landing" element={<LandingPage />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
         <Route path="/login" element={!session?.isLoggedIn ? <LoginScreen onLogin={setSession} /> : <Navigate to="/app" replace />} />
         <Route path="/signup" element={!session?.isLoggedIn ? <LoginScreen onLogin={setSession} initialMode="signup" /> : <Navigate to="/app" replace />} />
 
@@ -340,7 +344,7 @@ const App: React.FC = () => {
                           <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V3.2</h2>
                           <div className="flex items-center gap-2 mt-1">
                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{activeMode}</span>
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{String(activeMode).toUpperCase()}</span>
                           </div>
                         </div>
                       </div>

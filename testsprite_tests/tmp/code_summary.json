@@ -1,0 +1,53 @@
+{
+    "tech_stack": [
+        "TypeScript",
+        "React",
+        "Vite",
+        "TailwindCSS",
+        "Supabase"
+    ],
+    "features": [
+        {
+            "name": "Assessment",
+            "description": "Assessment management functionality",
+            "files": [
+                "src/features/Assessment"
+            ]
+        },
+        {
+            "name": "PDI",
+            "description": "Individual Development Plan (PDI) features",
+            "files": [
+                "src/features/PDI"
+            ]
+        },
+        {
+            "name": "Planning",
+            "description": "Planning tools and features",
+            "files": [
+                "src/features/Planning"
+            ]
+        },
+        {
+            "name": "TermPlanning",
+            "description": "Term planning functionality",
+            "files": [
+                "src/features/TermPlanning"
+            ]
+        },
+        {
+            "name": "Services",
+            "description": "API and backend services",
+            "files": [
+                "src/services"
+            ]
+        },
+        {
+            "name": "Components",
+            "description": "Reusable UI components",
+            "files": [
+                "src/components"
+            ]
+        }
+    ]
+}

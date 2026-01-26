@@ -87,13 +87,33 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
     try {
       if (isSignUp) {
+        // Verifica se é email da educação para auto-login (bypass de confirmação via trigger no banco)
+        const isEducacao = email.trim().toLowerCase().endsWith('@educacao.mg.gov.br');
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
         });
         if (error) throw error;
-        setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
-        setIsSignUp(false);
+
+        if (isEducacao) {
+          setSuccessMsg('Conta educacional verificada! Entrando automaticamente...');
+          // Tenta login imediato pois o trigger já confirmou o email
+          const { error: loginError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (loginError) {
+            console.error('Erro no auto-login:', loginError);
+            setSuccessMsg('Conta criada! Por favor realize o login.');
+            setIsSignUp(false);
+          }
+          // Se sucesso no login, App.tsx vai detectar a sessão
+        } else {
+          setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
+          setIsSignUp(false);
+        }
       } else {
         // Login com Supabase Auth
         const { data, error } = await supabase.auth.signInWithPassword({

@@ -1,0 +1,352 @@
+[
+  {
+    "id": "TC001",
+    "title": "Successful user login with valid credentials",
+    "description": "Verify that users can log in successfully using valid credentials through Supabase Auth on the login screen.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login screen."
+      },
+      {
+        "type": "action",
+        "description": "Enter valid username/email and password."
+      },
+      {
+        "type": "action",
+        "description": "Click the login button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is authenticated and redirected to the dashboard."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Failed login with invalid credentials",
+    "description": "Verify that login fails and appropriate error message is shown when invalid credentials are submitted.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login screen."
+      },
+      {
+        "type": "action",
+        "description": "Enter invalid username/email and/or password."
+      },
+      {
+        "type": "action",
+        "description": "Click the login button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login failure and display of error message indicating invalid credentials."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Custom auto-login on specialized domains",
+    "description": "Verify that users accessing the application from specialized domains are automatically logged in without manual authentication steps.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access the web application via a specialized domain configured for auto-login."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that user is automatically authenticated and taken to the dashboard without requiring manual login."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Admin Panel: Add new school",
+    "description": "Verify administrators can add a new school with valid data via the Admin Panel.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as an administrator."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the Admin Panel and open the 'Add School' form."
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid school details (name, address, contact info)."
+      },
+      {
+        "type": "action",
+        "description": "Submit the form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new school is listed in the schools management table with accurate details."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Admin Panel: Edit existing user details",
+    "description": "Verify administrator can successfully update details of an existing user including role changes and contact info.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as an administrator."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the Admin Panel and select an existing user from the user list."
+      },
+      {
+        "type": "action",
+        "description": "Modify user details such as name, email, and role."
+      },
+      {
+        "type": "action",
+        "description": "Submit the changes."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user details are updated correctly and saved in the system."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Admin Panel: Prevent invalid school creation",
+    "description": "Verify that attempting to create a school with missing mandatory fields results in validation errors and prevents submission.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as an administrator."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to 'Add School' in Admin Panel."
+      },
+      {
+        "type": "action",
+        "description": "Leave mandatory fields empty or enter invalid data."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to submit the form."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that form submission is blocked and appropriate validation error messages are displayed."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "School data integration: Add and retrieve school info",
+    "description": "Verify school data can be added and later retrieved correctly via School Management services API.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Use the schoolService API to add a new school with valid data."
+      },
+      {
+        "type": "action",
+        "description": "Retrieve school data using schoolService API."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the retrieved school data matches the data originally submitted."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "PDI: Create Individual Development Plan successfully",
+    "description": "Verify users can create a new Individual Development Plan for a student with complete and valid data.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as a teacher or planner."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to PDI management module."
+      },
+      {
+        "type": "action",
+        "description": "Create a new PDI with valid input fields including goals, interventions, and timelines."
+      },
+      {
+        "type": "action",
+        "description": "Submit the PDI."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new PDI is saved and visible in the student's profile."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "PDI: Update existing Individual Development Plan",
+    "description": "Verify users can update information of an existing PDI and changes are saved correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to an existing student's PDI."
+      },
+      {
+        "type": "action",
+        "description": "Modify some fields such as goals and timelines."
+      },
+      {
+        "type": "action",
+        "description": "Save the changes."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the updates persist and display correctly on retrieval."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "PDI: Delete an Individual Development Plan",
+    "description": "Verify that a user can delete an Individual Development Plan and that it is removed from the system.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access an existing PDI."
+      },
+      {
+        "type": "action",
+        "description": "Perform the delete action on the PDI."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the PDI is no longer listed or accessible in the student's profile."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Planning Module: Create a new lesson plan",
+    "description": "Verify teachers or planners can create a new lesson plan with all required content including objectives and materials.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as a planner or teacher."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the Planning module and open the new lesson plan form."
+      },
+      {
+        "type": "action",
+        "description": "Enter lesson plan details including title, objectives, materials, and schedule."
+      },
+      {
+        "type": "action",
+        "description": "Submit and save the lesson plan."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the lesson plan is saved and appears correctly in the list of lesson plans."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Planning Module: Adjust and update an existing lesson plan",
+    "description": "Verify that lesson plans can be updated by editing their contents and changes are saved correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select an existing lesson plan."
+      },
+      {
+        "type": "action",
+        "description": "Edit its fields such as objectives or scheduling."
+      },
+      {
+        "type": "action",
+        "description": "Save the updated lesson plan."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the lesson plan changes persist and display properly."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Planning Module: Simulate curriculum scenarios successfully",
+    "description": "Verify that users can simulate lesson plans and curriculum scenarios within the Simulation Workspace module without errors.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Simulation Workspace."
+      },
+      {
+        "type": "action",
+        "description": "Select lesson plans and curriculum modules to run simulation."
+      },
+      {
+        "type": "action",
+        "description": "Trigger the simulation process."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the simulation completes successfully and provides expected feedback and scenario outputs."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Planning Module: Handle invalid lesson plan inputs",
+    "description": "Verify validation prevents creation of lesson plans with missing mandatory fields or invalid data formats.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open new lesson plan form."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to submit with missing required fields or invalid values."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate inline validation messages are displayed and submission is blocked."
+      }
+    ]
+  }
+]

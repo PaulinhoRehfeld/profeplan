@@ -1,0 +1,16 @@
+{
+  "status": "init",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3001/",
+  "executionArgs": {
+    "projectName": "PROFEPLAN",
+    "projectPath": "c:\\Users\\Admin\\PROFEPLAN\\PROFEPLAN",
+    "testIds": [],
+    "additionalInstruction": "Execute all tests.",
+    "envs": {
+      "API_KEY": "sk-user-T3Zl5oaBRwM6wK3ij96b89bMnFH6kqvPGDpHma6uGT3BmMEFtr4elsAokhxKicaVms22LDWkhuHnw-fbSBvS0tmaD79PLmTzT2z73zW15JuWrVAK16HI6rIV21_A-nzrAQ0"
+    }
+  },
+  "proxy": "http://b9c4033d-d206-48a2-8403-9164cf7189af:9KSVefGkmGnk1VPvfdUA2m0L9Z0bj5rx@tun.testsprite.com:8080"
+}
