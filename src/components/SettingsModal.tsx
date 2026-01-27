@@ -32,7 +32,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const [isSearchingSchool, setIsSearchingSchool] = useState(false);
   const [showSchoolResults, setShowSchoolResults] = useState(false);
 
-  const searchSchools = async (term: string, city?: string) => {
+
+  const searchSchools = async (term: string, cityContext?: string) => {
     if (term.length < 3) {
       setSchoolResults([]);
       return;
@@ -40,38 +41,45 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
     setIsSearchingSchool(true);
     try {
-      // Normalizar termos de busca comuns
-      const normalizedTerm = term
-        .replace(/^E\.E\./i, 'Escola Estadual')
-        .replace(/^E\.M\./i, 'Escola Municipal')
-        .replace(/^E\.E\.I\./i, 'Escola Estadual de Ensino Integral');
+      let schoolsSource = (window as any).schoolsCache || [];
 
-      let query = supabase
-        .from('schools')
-        .select('inep_code, name, city, sre')
-        .ilike('name', `%${normalizedTerm}%`)
-        .limit(10);
+      // 1. Carregar JSON se cache estiver vazio
+      if (schoolsSource.length === 0) {
+        console.log("🔄 Carregando base de escolas estática...");
+        const response = await fetch('/schools_data.json');
+        if (!response.ok) throw new Error("Falha ao carregar escolas");
+        const data = await response.json();
 
-      // Filtrar por cidade se fornecida
-      if (city && city.trim()) {
-        query = query.ilike('city', `%${city}%`);
+        schoolsSource = data;
+        (window as any).schoolsCache = data; // Cache global na sessão
       }
 
-      const { data, error } = await query;
+      // 2. Filtragem Client-Side
+      const termNorm = term.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const cityNorm = (cityContext || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-      if (error) {
-        console.error('❌ Supabase error searching schools:', error);
-        throw error;
-      }
+      const filtered = schoolsSource.filter((school: any) => {
+        const nameEscola = school.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const cityEscola = school.city.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-      setSchoolResults(data || []);
+        const matchesName = nameEscola.includes(termNorm);
+        const matchesCity = cityNorm ? cityEscola.includes(cityNorm) : true;
+
+        return matchesName && matchesCity;
+      }).slice(0, 50); // Limite de resultados
+
+      setSchoolResults(filtered);
       setShowSchoolResults(true);
+
     } catch (error) {
-      console.error('Erro ao buscar escolas:', error);
+      console.error('Erro ao buscar escolas (JSON):', error);
+      setSchoolResults([]);
     } finally {
       setIsSearchingSchool(false);
     }
   };
+
+
 
   const handleSchoolInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -96,7 +104,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   const selectSchool = (school: any) => {
     handleChange('institution', school.name);
     handleChange('city', school.city);
-    handleChange('schoolCode', school.inep_code); // CORRIGIDO: usa inep_code
+    handleChange('schoolCode', school.id); // FIXED: uses id (which is the INEP code in current schema)
     setSchoolResults([]);
     setShowSchoolResults(false);
   };
@@ -296,13 +304,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 max-h-64 overflow-y-auto">
                       {schoolResults.map((school) => (
                         <button
-                          key={school.inep_code}
+                          key={school.id}
                           onClick={() => selectSchool(school)}
                           className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-slate-50 last:border-0 transition-colors flex flex-col gap-1"
                         >
                           <span className="text-xs font-bold text-slate-700">{school.name}</span>
                           <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                            <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">INEP: {school.inep_code}</span>
+                            <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">INEP: {school.id}</span>
                             <span>{school.city}</span>
                             <span>{school.sre}</span>
                           </div>

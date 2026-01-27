@@ -199,7 +199,7 @@ export const generateProfePlanStream = async (
   }
   // A chave nova suporta modelos 2.0+. Configurando para o 2.0 Flash estável.
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: specificInstruction,
     safetySettings
   });
@@ -262,7 +262,7 @@ export const generateCanvaData = async (content: string) => {
   const genAI = new GoogleGenerativeAI(apiKey);
   const instruction = `${SYSTEM_PROMPT}`;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", systemInstruction: instruction, safetySettings });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: instruction, safetySettings });
 
   const userMessage = `[CANVA_ARCHITECT]
   Analise o conteúdo abaixo e gere a TABELA DE DADOS (CSV) para o Canva:
@@ -307,7 +307,7 @@ export const parseClassListFromText = async (rawText: string) => {
   }`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: instruction
   });
 
@@ -411,7 +411,7 @@ export const generateAssessmentWithContext = async (
   }`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: instruction
   });
 
@@ -464,7 +464,7 @@ export const gradeWrittenAnswer = async (
   }`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: instruction
   });
 
@@ -546,7 +546,7 @@ export const generatePresentationJSON = async (
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: instruction,
     generationConfig: { responseMimeType: "application/json" }
   });
@@ -699,7 +699,7 @@ export const generatePdiReport = async (logs: any[], studentName: string, period
     - Sem cabeçalhos Markdown (##), use apenas negrito para dar ênfase se necessário.
     `;
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   try {
     const result = await model.generateContent(prompt);
@@ -918,7 +918,7 @@ export const generateGeminiContent = async (
   const systemInstruction = `${SYSTEM_PROMPT} \n\n[CONTEXTO ATUAL]: ${context} `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: systemInstruction
   });
 
@@ -1039,7 +1039,7 @@ REGRAS TÉCNICAS:
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     generationConfig: {
       responseMimeType: "application/json",
       temperature: 0.7
@@ -1195,7 +1195,7 @@ REGRAS:
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     generationConfig: {
       responseMimeType: "application/json",
       temperature: 0.6 // Mais factual
@@ -1392,7 +1392,7 @@ IMPORTANTE: Este relatório será OFICIALMENTE arquivado. Seja preciso, ético e
   `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     generationConfig: {
       temperature: 0.7 // Criativo mas fundamentado
     }

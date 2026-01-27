@@ -5,6 +5,7 @@ import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
 
 import { checkAndRewardReferrer } from '../services/userService';
+import { getRoleByEmail } from '../utils/authUtils';
 
 interface LoginScreenProps {
   onLogin: (session: UserSession) => void;
@@ -44,7 +45,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       await supabase.from('profiles').insert({
         id: user.id,
         email: user.email,
-        role: 'teacher',
+        role: getRoleByEmail(user.email || ''),
         tier: 'SILVER',
         credits: 10,
         is_unlimited: false,

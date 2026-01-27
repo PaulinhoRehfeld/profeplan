@@ -38,27 +38,37 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
+        if (!userId) return;
+
         const fetchClasses = async () => {
             try {
+                console.log(`[Assessment] Buscando turmas para o usuário: ${userId}`);
                 // 1. Try fetching from Supabase (Cloud) - Priority
                 const { getClasses } = await import('../../services/supabaseService');
                 const { data, error } = await getClasses(userId);
 
                 if (error) throw error;
 
-                if (data) {
+                if (data && data.length > 0) {
+                    console.log(`[Assessment] ${data.length} turmas encontradas no Supabase.`);
                     setClasses(data.map((c: any) => ({
                         id: c.id,
                         name: c.name,
                         subject: c.subject,
-                        // Fix for student count: Supabase returns { count: N }, UI expects array for .length
-                        students: Array(c.students?.[0]?.count || 0).fill({})
+                        // Fix for student count: Handle both list and count object
+                        students: Array.isArray(c.students)
+                            ? c.students
+                            : Array(c.students?.[0]?.count || 0).fill({})
                     })));
+                } else {
+                    console.warn("[Assessment] Nenhuma turma encontrada no Supabase, tentando local...");
+                    throw new Error("No data from cloud");
                 }
             } catch (err) {
-                console.warn("Supabase fetch class error, falling back to local:", err);
+                console.warn("[Assessment] Supabase fetch error, fallback to local:", err);
                 // 2. Fallback to LocalStorage
                 const data = getLocalClasses(userId);
+                console.log(`[Assessment] ${data.length} turmas encontradas no LocalStorage.`);
                 setClasses(data);
             }
         };

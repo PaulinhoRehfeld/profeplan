@@ -104,6 +104,13 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
                 students: studentList
             });
 
+            // ALSO save local for backup and immediate UI availability in other components
+            saveClassToLocal(userId, {
+                className: manualName,
+                subject: manualSubject,
+                students: studentList
+            });
+
             setIsManualCreateOpen(false);
             setManualName('');
             setManualSubject('');

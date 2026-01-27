@@ -34,6 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const menuItems = [
     { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'chat' },
+    { id: ToolMode.CLASSES, icon: LibraryBig, label: 'Minhas Turmas', feature: 'management' },
     { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning' },
     { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planos de Aula', feature: 'planning' },
     { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptações PDI/DUA', feature: 'pdi' },

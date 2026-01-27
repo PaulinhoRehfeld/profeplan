@@ -135,7 +135,7 @@ export const PlanningAuthority = {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash",
             systemInstruction: `
             VOCÊ É UM ESPECIALISTA PEDAGÓGICO SÊNIOR (AUDITOR).
             NÃO É UM ASSISTENTE PESSOAL. SEU TOM É TÉCNICO, ANALÍTICO E DIRETIVO.

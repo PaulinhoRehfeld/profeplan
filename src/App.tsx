@@ -18,6 +18,7 @@ import { supabase } from './services/supabaseClient';
 import { INITIAL_GREETING } from './constants';
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext';
 import { runDiagnostics } from './services/diagnosticService';
+import { getRoleByEmail } from './utils/authUtils';
 
 // Lazy Imports (Code Splitting)
 const LandingPage = React.lazy(() => import('./pages/LandingPage'));
@@ -143,7 +144,7 @@ const App: React.FC = () => {
           const { error: insertError } = await supabase.from('profiles').insert({
             id: session.user.id,
             email: session.user.email,
-            role: 'teacher',
+            role: getRoleByEmail(session.user.email || ''),
             tier: 'SILVER',
             credits: 10,
             is_unlimited: false,

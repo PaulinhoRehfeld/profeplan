@@ -376,41 +376,49 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 
             const response = await generateGeminiContent(activeInput, [], context, userId, dynamicTemp);
 
+
             // --- AUTO-PERSISTENCE & MEMORY ---
             // Detect if response looks like a plan, material, or exam
-            if (response.length > 50) { // Simple heuristic: real content is long
-                // 1. Determine Type
-                let type: GeneratedPlan['type'] = 'documento';
-                let folder = PlanFolder.MATERIAL_ALUNO; // Default fallback
-                let title = `Conteúdo Gerado ${new Date().toLocaleTimeString()}`;
+            const upperResponse = response.toUpperCase();
+            let type: GeneratedPlan['type'] = 'documento';
+            let folder = PlanFolder.MATERIAL_ALUNO; // Default fallback
+            let title = `Conteúdo Gerado ${new Date().toLocaleTimeString()}`;
 
-                if (response.includes('[AÇÃO: PLANO DE AULA DETALHADO]') || response.includes('PLANO DE AULA')) {
-                    type = 'plano'; folder = PlanFolder.PLANO_AULA;
-                    title = selectedLesson ? `Plano - Aula ${selectedLesson.number}` : 'Plano de Aula';
-                }
-                else if (response.includes('[AÇÃO: MATERIAL DIDÁTICO]') || response.includes('ROTEIRO DE ESTUDO')) {
-                    type = 'material'; folder = PlanFolder.MATERIAL_ALUNO;
-                    title = selectedLesson ? `Material - Aula ${selectedLesson.number}` : 'Material Didático';
-                }
-                else if (response.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') || response.includes('QUESTÕES') || response.includes('EXERCÍCIOS')) {
-                    type = 'exercicio'; folder = PlanFolder.ATIVIDADES;
-                    title = selectedLesson ? `Exercícios - Aula ${selectedLesson.number}` : 'Lista de Exercícios';
+            if (upperResponse.includes('[AÇÃO: PLANO DE AULA DETALHADO]') || upperResponse.includes('PLANO DE AULA')) {
+                type = 'plano'; folder = PlanFolder.PLANO_AULA;
+                title = selectedLesson ? `Plano - Aula ${selectedLesson.number}` : 'Plano de Aula';
+            }
+            else if (upperResponse.includes('[AÇÃO: MATERIAL DIDÁTICO]') || upperResponse.includes('ROTEIRO DE ESTUDO') || upperResponse.includes('MATERIAL DO ALUNO')) {
+                type = 'material'; folder = PlanFolder.MATERIAL_ALUNO;
+                title = selectedLesson ? `Material - Aula ${selectedLesson.number}` : 'Material Didático';
+            }
+            else if (upperResponse.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') || upperResponse.includes('QUESTÕES') || upperResponse.includes('EXERCÍCIOS') || upperResponse.includes('ATIVIDADE')) {
+                type = 'exercicio'; folder = PlanFolder.ATIVIDADES;
+                title = selectedLesson ? `Exercícios - Aula ${selectedLesson.number}` : 'Lista de Exercícios';
+            }
+
+            if (type !== 'documento' || upperResponse.includes('# ')) {
+                // Support quick action [TYPE:] tags in input for better accuracy
+                if (type === 'documento' && activeInput.includes('[TYPE:')) {
+                    if (activeInput.includes('MATERIAL')) { type = 'material'; folder = PlanFolder.MATERIAL_ALUNO; }
+                    if (activeInput.includes('EXERCISES')) { type = 'exercicio'; folder = PlanFolder.ATIVIDADES; }
                 }
 
-                if (type !== 'documento') {
-                    // 2. Save to Drive (Async)
-                    savePlan(userId, {
-                        type,
-                        title,
-                        content: response,
-                        createdAt: new Date().toISOString()
-                    }, folder).then(() => console.log('Auto-saved to Drive')).catch(e => console.error('Auto-save failed', e));
+                // 2. Save to Drive (Async) with tracking
+                console.log(`[Drive] Iniciando salvamento automático: ${title} (${type})`);
+                savePlan(userId, {
+                    type,
+                    title,
+                    content: response,
+                    createdAt: new Date().toISOString()
+                }, folder)
+                    .then(() => console.log('✅ Conteúdo salvo no Drive com sucesso!'))
+                    .catch(e => console.error('❌ Falha no salvamento automático:', e));
 
-                    // 3. Save to Memory (Async) - Context for AI
-                    addMemory(userId, `Gerou ${title}: ${activeInput.substring(0, 100)}...`, [type, 'auto-generated'])
-                        .then(() => console.log('Memory added'))
-                        .catch(e => console.error('Memory failed', e));
-                }
+                // 3. Save to Memory (Async) - Context for AI
+                addMemory(userId, `Gerou ${title}: ${activeInput.substring(0, 100)}...`, [type, 'auto-generated'])
+                    .then(() => console.log('🧠 Memória pedagógica atualizada.'))
+                    .catch(e => console.error('Memory failed', e));
             }
 
             const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
@@ -438,6 +446,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             setIsThinking(false);
         }
     };
+
 
     const handleClearChat = () => setMessages([]);
 
