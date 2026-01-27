@@ -1,7 +1,8 @@
 
 import React, { useState, useRef } from 'react';
-import { X, User, BookOpen, Settings, Zap, Key, Info, Shield, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, FileText, Trash2 } from 'lucide-react';
-import { UserSettings } from '../types';
+import { X, User, BookOpen, Settings, Zap, Key, Info, Shield, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, FileText, Trash2, Users } from 'lucide-react';
+import { UserSettings, ToolMode } from '../types';
+import { updateUserRole } from '../services/userService';
 import { supabase } from '../services/supabaseClient';
 
 interface SettingsModalProps {
@@ -10,6 +11,8 @@ interface SettingsModalProps {
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
   userEmail: string;
+  userProfile: any | null;
+  onRefreshProfile?: () => Promise<void>;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -17,7 +20,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   settings,
   setSettings,
-  userEmail
+  userEmail,
+  userProfile,
+  onRefreshProfile
 }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -204,6 +209,33 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   };
 
+  const [roleChangeLoading, setRoleChangeLoading] = useState(false);
+
+  const handleToggleRole = async () => {
+    if (!userProfile?.id) return;
+
+    setRoleChangeLoading(true);
+    try {
+      const newRole = userProfile.role === 'manager' ? 'teacher' : 'manager';
+      const { error } = await updateUserRole(userProfile.id, newRole);
+
+      if (error) throw error;
+
+      // Refresh profile in App.tsx
+      if (onRefreshProfile) {
+        await onRefreshProfile();
+      }
+
+      // Feedback opicional
+      alert(`Status alterado para ${newRole === 'manager' ? 'Gestor' : 'Professor'} com sucesso!`);
+
+    } catch (err: any) {
+      alert('Erro ao alterar status: ' + err.message);
+    } finally {
+      setRoleChangeLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -218,6 +250,40 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-8 space-y-8">
+          {/* Mudança de Status de Login (Role Switching) */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-indigo-600 font-bold text-[10px] uppercase tracking-[0.15em]">
+              <Users className="w-4 h-4" /> Status de Login e Workspace
+            </div>
+            <div className="bg-indigo-50 border border-indigo-100 rounded-3xl p-6">
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h4 className="font-bold text-slate-900 text-sm">Alternar Visão do Sistema</h4>
+                  <p className="text-xs text-slate-500">
+                    Atualmente você está como <span className="font-black text-indigo-600 uppercase italic">
+                      {userProfile?.role === 'manager' ? 'Gestor Escolar' : 'Professor'}
+                    </span>
+                  </p>
+                </div>
+                <button
+                  onClick={handleToggleRole}
+                  disabled={roleChangeLoading}
+                  className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg ${userProfile?.role === 'manager'
+                      ? 'bg-slate-900 text-white hover:bg-slate-800'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-200'
+                    } disabled:opacity-50`}
+                >
+                  {roleChangeLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+                  Mudar para {userProfile?.role === 'manager' ? 'Professor' : 'Gestor'}
+                </button>
+              </div>
+              <p className="mt-4 text-[10px] text-indigo-400 font-medium bg-white/50 p-3 rounded-xl border border-indigo-100/50">
+                <Info className="w-3 h-3 inline mr-1 mb-0.5" />
+                A visão de **Gestor** permite gerenciar turmas, professores e emitir PDIs em lote. A visão de **Professor** foca em planejamento individual e aulas.
+              </p>
+            </div>
+          </section>
+
           {/* Perfil Profissional */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">

@@ -519,6 +519,32 @@ const App: React.FC = () => {
                         isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)}
                         settings={settings} setSettings={setSettings}
                         userEmail={session.email}
+                        userProfile={userProfile}
+                        onRefreshProfile={async () => {
+                          if (session?.id) {
+                            const profileData = await getUserProfile(session.id);
+                            if (profileData) {
+                              setUserProfile(profileData);
+                              // Manually trigger session update to reflect role change
+                              const derivedRole = profileData.role === 'manager'
+                                ? 'SCHOOL_MANAGER'
+                                : (profileData.is_admin ? 'ADMIN' : 'TEACHER');
+
+                              if (session.role !== derivedRole) {
+                                const newSession = { ...session, role: derivedRole };
+                                setSession(newSession);
+                                localStorage.setItem('profeplan_session', JSON.stringify(newSession));
+
+                                // Auto-redirect School Manager
+                                if (profileData.role === 'manager') {
+                                  setActiveMode(ToolMode.SCHOOL_MANAGER);
+                                } else {
+                                  setActiveMode(ToolMode.CHAT); // Fallback to chat for teachers
+                                }
+                              }
+                            }
+                          }
+                        }}
                       />
 
                       <SubscriptionModal

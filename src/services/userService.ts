@@ -212,3 +212,11 @@ export const addUserCredits = async (userId: string, amount: number) => {
     const newCredits = (profile.credits || 0) + amount;
     return await supabase.from('profiles').update({ credits: newCredits }).eq('id', userId);
 };
+
+export const updateUserRole = async (userId: string, newRole: 'teacher' | 'manager') => {
+    const { data, error } = await supabase
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', userId);
+    return { data, error };
+};
