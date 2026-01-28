@@ -8,6 +8,7 @@ import StudentManagement from '../components/School/StudentManagement';
 
 interface SchoolDashboardProps {
     userProfile: UserProfile;
+    onOpenSettings: () => void;
 }
 
 interface SchoolStats {
@@ -17,7 +18,7 @@ interface SchoolStats {
     schoolName: string;
 }
 
-export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile }) => {
+export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, onOpenSettings }) => {
     const [stats, setStats] = useState<SchoolStats>({
         totalTeachers: 0,
         totalStudents: 0,
@@ -33,6 +34,8 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile })
     useEffect(() => {
         if (userProfile.school_id) {
             loadDashboardData();
+        } else {
+            setLoading(false);
         }
     }, [userProfile.school_id]);
 
@@ -80,6 +83,45 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile })
         return (
             <div className="flex items-center justify-center h-full">
                 <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            </div>
+        );
+    }
+
+    if (!userProfile.school_id) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                <div className="bg-orange-100 p-6 rounded-full mb-6">
+                    <School className="w-12 h-12 text-orange-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-800 mb-2">Nenhuma Escola Vinculada</h2>
+                <p className="text-slate-500 max-w-md mb-8">
+                    Você está acessando como <strong>Gestor Escolar</strong>, mas sua conta ainda não está vinculada a uma instituição.
+                </p>
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm max-w-md w-full text-left">
+                    <h3 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                        <UserPlus className="w-5 h-5 text-blue-500" /> Como resolver?
+                    </h3>
+                    <ul className="space-y-3 text-sm text-slate-600 mb-6">
+                        <li className="flex items-start gap-2">
+                            <span className="w-5 h-5 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
+                            Acesse <strong>Configurações</strong> no menu lateral ou clique abaixo.
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <span className="w-5 h-5 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
+                            Preencha o <strong>Código INEP</strong> e selecione sua escola.
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <span className="w-5 h-5 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
+                            Salve as alterações para liberar o acesso.
+                        </li>
+                    </ul>
+                    <button
+                        onClick={onOpenSettings}
+                        className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                    >
+                        Abrir Configurações
+                    </button>
+                </div>
             </div>
         );
     }

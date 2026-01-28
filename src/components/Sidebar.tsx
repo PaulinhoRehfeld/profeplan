@@ -45,7 +45,10 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   // Add School Management for admins and managers
-  const isAdminOrManager = userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
+  const hardcodedAdmins = ['prehfeld@hotmail.com', 'paulo.rehfeld@educacao.mg.gov.br'];
+  const isHardcodedAdmin = userProfile?.email && hardcodedAdmins.includes(userProfile.email.toLowerCase());
+
+  const isAdminOrManager = isHardcodedAdmin || userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
   const allMenuItems = isAdminOrManager
     ? [...menuItems, { id: ToolMode.SCHOOL_MANAGER, icon: Users, label: 'Gestão Escolar', feature: 'management' }]
     : menuItems;

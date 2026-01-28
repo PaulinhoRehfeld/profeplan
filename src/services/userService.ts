@@ -9,36 +9,60 @@ export const getProfileByEmail = async (email: string) => {
     const { data } = await supabase
         .from('profiles')
         .select('*')
-        .eq('email', email)
-        .single();
+        .eq('email', email);
 
-    return { data };
+    // Handle duplicates gracefully by taking the first match
+    // Filters out potential nulls if any (though select * shouldn't return nulls in array)
+    const profile = data && data.length > 0 ? data[0] : null;
+
+    return { data: profile };
 };
 
-export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
-    // Modified query to join with schools table
+export const getUserProfile = async (userId: string, email?: string): Promise<UserProfile | null> => {
+    // 1. Try fetching by ID first
     const { data, error } = await supabase
         .from('profiles')
-        .select(`
-            *,
-            schools:school_id (
-                name
-            )
-        `)
+        .select('*')
         .eq('id', userId)
         .single();
+
+    // 2. Fallback: If ID not found/mismatched but we have email, try email
+    if ((error || !data) && email) {
+        console.warn(`[userService] Profile not found for ID ${userId}. Attempting fallback by email: ${email}`);
+        const { data: recovered } = await getProfileByEmail(email);
+        if (recovered) {
+            console.log('[userService] Profile recovered by email!');
+            // We return the recovered profile, even if IDs mismatch.
+            // This effectively "heals" the session data access.
+            return recovered as UserProfile;
+        }
+    }
 
     if (error) {
         console.error("Error fetching user profile:", error);
         return null;
     }
 
-    // Transform result to flat UserProfile structure
+    // Attempt to fetch school name separately if school_id exists
+    let schoolName = undefined;
+    if (data.school_id) {
+        const { data: schoolData } = await supabase
+            .from('schools')
+            .select('name')
+            .eq('id', data.school_id)
+            .single();
+        if (schoolData) {
+            schoolName = schoolData.name;
+        }
+    }
+
+    // Transform result
     const profileData = {
         ...data,
-        school_name: data.schools?.name // Flatten the joined school name
+        school_name: schoolName || data.school_name // Use fetched name or existing field
     };
-    delete profileData.schools;
+    // schools join removed
+    // delete profileData.schools;
 
     // BETA OVERRIDE: Grant Gold + Unlimited to everyone during testing
     if (IS_BETA_TESTING && data) {
@@ -105,11 +129,19 @@ export const incrementUserUsage = async (userId: string): Promise<void> => {
 // --- ADMIN FUNCTIONS ---
 
 export const getAllUsers = async () => {
-    const { data, error } = await supabase
+    // Attempt Secure RPC first (Bypasses RLS issues)
+    const { data, error } = await supabase.rpc('get_all_profiles_secure');
+
+    if (!error && data) {
+        return { data, error };
+    }
+
+    // Fallback to standard select if RPC missing/failed
+    console.warn('[userService] RPC failed/missing, falling back to standard select:', error);
+    return await supabase
         .from('profiles')
         .select('*')
         .order('email');
-    return { data, error };
 };
 
 export const updateUserProfileAdmin = async (targetUserId: string, updates: Partial<UserProfile>) => {

@@ -35,7 +35,8 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
 
     // Initial fetch
     useEffect(() => {
-        refreshTermPlans();
+        // Safe execution to prevent app crash on mount
+        refreshTermPlans().catch(err => console.error("Critical: Initial plan fetch failed", err));
     }, []);
 
 

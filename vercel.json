@@ -4,5 +4,11 @@
     "outputDirectory": "dist",
     "regions": [
         "gru1"
+    ],
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/"
+        }
     ]
 }

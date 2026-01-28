@@ -1,6 +1,6 @@
-
+﻿
 import React, { useState, useRef } from 'react';
-import { X, User, BookOpen, Settings, Zap, Key, Info, Shield, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, FileText, Trash2, Users } from 'lucide-react';
+import { X, User, BookOpen, Settings, Zap, Key, Info, Shield, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, FileText, Trash2, Users, Crown } from 'lucide-react';
 import { UserSettings, ToolMode } from '../types';
 import { updateUserRole } from '../services/userService';
 import { supabase } from '../services/supabaseClient';
@@ -50,13 +50,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
       // 1. Carregar JSON se cache estiver vazio
       if (schoolsSource.length === 0) {
-        console.log("🔄 Carregando base de escolas estática...");
+        console.log("ðŸ”„ Carregando base de escolas estÃ¡tica...");
         const response = await fetch('/schools_data.json');
         if (!response.ok) throw new Error("Falha ao carregar escolas");
         const data = await response.json();
 
         schoolsSource = data;
-        (window as any).schoolsCache = data; // Cache global na sessão
+        (window as any).schoolsCache = data; // Cache global na sessÃ£o
       }
 
       // 2. Filtragem Client-Side
@@ -114,15 +114,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     setShowSchoolResults(false);
   };
 
-  // Formatação automática do MASP: 1234567-8
+  // FormataÃ§Ã£o automÃ¡tica do MASP: 1234567-8
   const handleMaspChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+    let value = e.target.value.replace(/\D/g, ''); // Remove tudo que nÃ£o Ã© nÃºmero
 
     if (value.length > 8) {
       value = value.slice(0, 8);
     }
 
-    // Adiciona hífen automaticamente após 7 dígitos
+    // Adiciona hÃ­fen automaticamente apÃ³s 7 dÃ­gitos
     if (value.length > 7) {
       value = value.slice(0, 7) + '-' + value.slice(7);
     }
@@ -130,12 +130,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     handleChange('masp', value);
   };
 
-  // Validação de código INEP: busca escola por código
+  // ValidaÃ§Ã£o de cÃ³digo INEP: busca escola por cÃ³digo
   const handleSchoolCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const code = e.target.value;
     handleChange('schoolCode', code);
 
-    // Se digitou código completo, busca escola
+    // Se digitou cÃ³digo completo, busca escola
     if (code.length >= 6) {
       setTimeout(async () => {
         try {
@@ -150,7 +150,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             handleChange('city', data.city);
           }
         } catch (error) {
-          console.error('Erro ao buscar escola por código:', error);
+          console.error('Erro ao buscar escola por cÃ³digo:', error);
         }
       }, 500);
     }
@@ -179,13 +179,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     setPasswordChangeSuccess(false);
 
     if (!newPassword.trim()) {
-      setPasswordChangeError('A nova senha não pode ser vazia.');
+      setPasswordChangeError('A nova senha nÃ£o pode ser vazia.');
       setPasswordChangeLoading(false);
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordChangeError('As senhas não coincidem.');
+      setPasswordChangeError('As senhas nÃ£o coincidem.');
       setPasswordChangeLoading(false);
       return;
     }
@@ -236,13 +236,57 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   };
 
+  const [saveLoading, setSaveLoading] = useState(false);
+
+  const handleSaveProfile = async () => {
+    setSaveLoading(true);
+    try {
+      // 1. Save Settings to LocalStorage (Preferences)
+      // JSON.stringify handled by App.tsx useEffect if we update state, but on close we assume state is already updated via setSettings
+
+      // 2. Save Profile Data to Supabase (if user is logged in)
+      if (userProfile?.id) {
+        const updates: any = {
+          full_name: settings.userName,
+          email: settings.institutionalEmail, // Updates 'email' column to trigger Manager role check
+          masp: settings.masp,
+          city: settings.city,
+          updated_at: new Date()
+        };
+
+        // If School Code is valid, link school
+        if (settings.schoolCode) {
+          updates.school_id = settings.schoolCode;
+        }
+
+        const { error } = await supabase
+          .from('profiles')
+          .update(updates)
+          .eq('id', userProfile.id);
+
+        if (error) throw error;
+
+        // Refresh App Profile
+        if (onRefreshProfile) {
+          await onRefreshProfile();
+        }
+      }
+
+      onClose();
+    } catch (error: any) {
+      alert('Erro ao salvar perfil: ' + error.message);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-3">
             <Settings className="w-5 h-5 text-blue-600" />
-            <h2 className="text-xl font-bold text-slate-800 tracking-tight">Configurações do Sistema</h2>
+            <h2 className="text-xl font-bold text-slate-800 tracking-tight">ConfiguraÃ§Ãµes do Sistema</h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors">
             <X className="w-5 h-5 text-slate-500" />
@@ -250,7 +294,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-8 space-y-8">
-          {/* Mudança de Status de Login (Role Switching) */}
+          {/* MudanÃ§a de Status de Login (Role Switching) */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-indigo-600 font-bold text-[10px] uppercase tracking-[0.15em]">
               <Users className="w-4 h-4" /> Status de Login e Workspace
@@ -258,29 +302,30 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="bg-indigo-50 border border-indigo-100 rounded-3xl p-6">
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-900 text-sm">Alternar Visão do Sistema</h4>
-                  <p className="text-xs text-slate-500">
-                    Atualmente você está como <span className="font-black text-indigo-600 uppercase italic">
-                      {userProfile?.role === 'manager' ? 'Gestor Escolar' : 'Professor'}
+                  <h4 className="font-bold text-slate-900 text-sm">Nível de Acesso</h4>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-slate-500">
+                      Seu perfil atual é:
+                    </p>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${userProfile?.role === 'manager' ? 'bg-slate-900 text-white' :
+                      (userProfile?.role === 'admin' || userProfile?.is_admin) ? 'bg-red-600 text-white' :
+                        'bg-indigo-100 text-indigo-700'
+                      }`}>
+                      {userProfile?.role === 'manager' ? 'Gestor Escolar' :
+                        (userProfile?.role === 'admin' || userProfile?.is_admin) ? 'ADMINISTRADOR' : 'Professor'}
                     </span>
-                  </p>
+                  </div>
                 </div>
-                <button
-                  onClick={handleToggleRole}
-                  disabled={roleChangeLoading}
-                  className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg ${userProfile?.role === 'manager'
-                      ? 'bg-slate-900 text-white hover:bg-slate-800'
-                      : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-indigo-200'
-                    } disabled:opacity-50`}
-                >
-                  {roleChangeLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
-                  Mudar para {userProfile?.role === 'manager' ? 'Professor' : 'Gestor'}
-                </button>
+
+                {/* Visual Indicator Only */}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${userProfile?.role === 'manager' ? 'bg-slate-900 text-white' :
+                  (userProfile?.role === 'admin' || userProfile?.is_admin) ? 'bg-red-600 text-white' :
+                    'bg-indigo-100 text-indigo-600'
+                  }`}>
+                  {userProfile?.role === 'manager' ? <Shield className="w-5 h-5" /> :
+                    (userProfile?.role === 'admin' || userProfile?.is_admin) ? <Crown className="w-5 h-5" /> : <User className="w-5 h-5" />}
+                </div>
               </div>
-              <p className="mt-4 text-[10px] text-indigo-400 font-medium bg-white/50 p-3 rounded-xl border border-indigo-100/50">
-                <Info className="w-3 h-3 inline mr-1 mb-0.5" />
-                A visão de **Gestor** permite gerenciar turmas, professores e emitir PDIs em lote. A visão de **Professor** foca em planejamento individual e aulas.
-              </p>
             </div>
           </section>
 
@@ -308,7 +353,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                   placeholder="seu.nome@educacao.mg.gov.br"
                 />
-                <p className="text-xs text-slate-500 ml-1">Email para vinculação automática à escola</p>
+                <p className="text-xs text-slate-500 ml-1">Email para vinculaÃ§Ã£o automÃ¡tica Ã  escola</p>
               </div>
 
               <div className="space-y-1.5">
@@ -321,7 +366,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                   placeholder="1234567-8"
                 />
-                <p className="text-xs text-slate-500 ml-1">Matrícula SIAFI do Professor (7 dígitos + verificador)</p>
+                <p className="text-xs text-slate-500 ml-1">MatrÃ­cula SIAFI do Professor (7 dÃ­gitos + verificador)</p>
               </div>
 
               <div className="space-y-1.5">
@@ -333,19 +378,19 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                   placeholder="Ex: Belo Horizonte"
                 />
-                <p className="text-xs text-slate-500 ml-1">Ajuda a filtrar as escolas disponíveis</p>
+                <p className="text-xs text-slate-500 ml-1">Ajuda a filtrar as escolas disponÃ­veis</p>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Código INEP da Escola</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">CÃ³digo INEP da Escola</label>
                 <input
                   type="text"
                   value={settings.schoolCode || ''}
                   onChange={handleSchoolCodeChange}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                  placeholder="Digite o código INEP (ex: 31001234)"
+                  placeholder="Digite o cÃ³digo INEP (ex: 31001234)"
                 />
-                <p className="text-xs text-slate-500 ml-1">Digite o código ou selecione a escola abaixo</p>
+                <p className="text-xs text-slate-500 ml-1">Digite o cÃ³digo ou selecione a escola abaixo</p>
               </div>
 
               <div className="space-y-1.5">
@@ -387,7 +432,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
                 <p className="text-xs text-slate-500 ml-1">
                   {settings.schoolCode
-                    ? `✅ Escola validada (INEP: ${settings.schoolCode})`
+                    ? `âœ… Escola validada (INEP: ${settings.schoolCode})`
                     : 'Selecione da lista para validar'
                   }
                 </p>
@@ -395,15 +440,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          {/* NOVO: Personalização de Documentos */}
+          {/* NOVO: PersonalizaÃ§Ã£o de Documentos */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
-              <FileText className="w-4 h-4" /> Personalização de Documentos (Exportação)
+              <FileText className="w-4 h-4" /> PersonalizaÃ§Ã£o de Documentos (ExportaÃ§Ã£o)
             </div>
             <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 space-y-6">
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logo da Instituição</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Logo da InstituiÃ§Ã£o</label>
                   <div
                     onClick={() => logoInputRef.current?.click()}
                     className="w-32 h-32 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all relative group overflow-hidden"
@@ -435,16 +480,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
                 <div className="flex-1 space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cabeçalho Personalizado</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">CabeÃ§alho Personalizado</label>
                     <textarea
                       value={settings.headerText || ''}
                       onChange={(e) => handleChange('headerText', e.target.value)}
-                      placeholder="Ex: Secretaria de Estado de Educação de MG&#10;Escola Estadual Machado de Assis"
+                      placeholder="Ex: Secretaria de Estado de EducaÃ§Ã£o de MG&#10;Escola Estadual Machado de Assis"
                       className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-xs font-bold transition-all min-h-[80px]"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rodapé Personalizado</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">RodapÃ© Personalizado</label>
                     <input
                       type="text"
                       value={settings.footerText || ''}
@@ -458,10 +503,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          {/* Segurança da Conta */}
+          {/* SeguranÃ§a da Conta */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
-              <Shield className="w-4 h-4" /> Segurança da Conta
+              <Shield className="w-4 h-4" /> SeguranÃ§a da Conta
             </div>
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-4">
               <h4 className="font-bold text-slate-900">Alterar Chave de Acesso</h4>
@@ -473,7 +518,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                    placeholder="••••••••"
+                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -483,7 +528,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                    placeholder="••••••••"
+                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   />
                 </div>
               </div>
@@ -512,26 +557,26 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </section>
 
-          {/* Inteligência e Metodologia */}
+          {/* InteligÃªncia e Metodologia */}
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
-              <BookOpen className="w-4 h-4" /> Preferências de IA
+              <BookOpen className="w-4 h-4" /> PreferÃªncias de IA
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Metodologia Padrão</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Metodologia PadrÃ£o</label>
                 <select
                   value={settings.favoriteMethodology}
                   onChange={(e) => handleChange('favoriteMethodology', e.target.value)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                 >
-                  <option value="Gamification">Gamificação</option>
+                  <option value="Gamification">GamificaÃ§Ã£o</option>
                   <option value="Problem Based">ABP (Problemas)</option>
                   <option value="Traditional">Tradicional</option>
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Estilo Pedagógico</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Estilo PedagÃ³gico</label>
                 <select
                   value={settings.teachingStyle}
                   onChange={(e) => handleChange('teachingStyle', e.target.value as any)}
@@ -553,7 +598,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   <option value="">Selecione...</option>
                   <option value="Somativa">Somativa</option>
                   <option value="Formativa">Formativa</option>
-                  <option value="Diagnóstica">Diagnóstica</option>
+                  <option value="DiagnÃ³stica">DiagnÃ³stica</option>
                 </select>
               </div>
               <div className="space-y-1.5">
@@ -563,21 +608,28 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   onChange={(e) => handleChange('toneOfVoice', e.target.value as any)}
                   className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                 >
-                  <option value="Prático e Inspiracional">Prático e Inspiracional</option>
-                  <option value="Técnico e Formal">Técnico e Formal</option>
+                  <option value="PrÃ¡tico e Inspiracional">PrÃ¡tico e Inspiracional</option>
+                  <option value="TÃ©cnico e Formal">TÃ©cnico e Formal</option>
                 </select>
               </div>
             </div>
           </section>
         </div>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all active:scale-95"
-          >
-            Confirmar Alterações
-          </button>
+        <div className="p-6 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
+          <div className="text-[10px] text-slate-400 font-mono select-all" title="User ID">
+            {userProfile?.id}
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={handleSaveProfile}
+              disabled={saveLoading}
+              className="px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+            >
+              {saveLoading && <Loader2 className="w-3 h-3 animate-spin" />}
+              {saveLoading ? 'Salvando...' : 'Confirmar AlteraÃ§Ãµes'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

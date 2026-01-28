@@ -29,6 +29,7 @@ export interface UserProfile {
   is_admin: boolean; // Legacy flag, now used primarily for System Admin
   allowed_features: string[];
   phone?: string;
+  full_name?: string; // Added for User Identity
   created_at?: string;
 }
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { UserSession } from '../types';
@@ -15,15 +14,22 @@ interface LoginScreenProps {
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState(''); // Estado para Nome Completo
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
+  // Track mount status to avoid state updates on unmount
+  const isMounted = React.useRef(true);
+  useEffect(() => {
+    return () => { isMounted.current = false; };
+  }, []);
+
   // Verifica se o usuário já está logado (apenas na montagem inicial)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+      if (isMounted.current && session) {
         handleAuthSuccess(session.user);
       }
     });
@@ -33,51 +39,85 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
   // Função chamada após autenticação bem-sucedida (apenas na inicialização)
   const handleAuthSuccess = async (user: any) => {
-    // Busca ou cria o perfil
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+    console.log('[LoginScreen] handleAuthSuccess START', user.id);
+    try {
+      // 1. Busca perfil pelo ID do Login
+      let { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-    if (!profile) {
-      // Cria perfil padrão
-      await supabase.from('profiles').insert({
-        id: user.id,
-        email: user.email,
-        role: getRoleByEmail(user.email || ''),
-        tier: 'SILVER',
-        credits: 10,
-        is_unlimited: false,
-        is_admin: false,
-        allowed_features: ['all']
-      });
+      console.log('[LoginScreen] Profile lookup by ID result:', profile);
 
-      // Check for referral reward
-      await checkAndRewardReferrer(user.email);
+      // 2. Se não achar pelo ID, busca pelo E-MAIL (Recuperação de conta antiga/duplicada)
+      if (!profile && user.email) {
+        console.log('[Login] Profile not found by ID. Searching by Email...', user.email);
+        const { data: recovered } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('email', user.email)
+          .maybeSingle();
+
+        if (recovered) {
+          console.log('[Login] Profile found by Email! linking session to:', recovered.id);
+          profile = recovered;
+        }
+      }
+
+      if (!profile) {
+        // 3. Se realmente não existir nada, cria um novo
+        console.log('[Login] Creating new profile for:', user.email);
+
+        // SAFE UPSERT: Use upsert instead of insert to handle race conditions (Triggers vs UI)
+        const { error } = await supabase.from('profiles').upsert({
+          id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || fullName,
+          role: getRoleByEmail(user.email || ''),
+          tier: 'SILVER',
+          credits: 10,
+          is_unlimited: false,
+          is_admin: false,
+          allowed_features: ['all']
+        }, { onConflict: 'id' });
+
+        if (error) {
+          console.error('[Login] Profile creation failed:', error);
+          // If error is 409/Duplicate, we can ignore it because it means it exists now.
+        }
+
+        await checkAndRewardReferrer(user.email);
+
+        const { data: newProfile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+        profile = newProfile;
+      }
+
+      const finalProfile = profile;
+      console.log('[LoginScreen] Final Profile:', finalProfile);
+
+      const sessionData: UserSession = {
+        id: finalProfile?.id || user.id,
+        email: user.email || '',
+        role: finalProfile?.is_admin ? 'ADMIN' : (finalProfile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER'),
+        accessLevel: finalProfile?.tier || 'BASICO',
+        isLoggedIn: true,
+        isEmailConfirmed: !!user.email_confirmed_at
+      };
+
+      console.log('[LoginScreen] Session Data Ready:', sessionData);
+
+      localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
+      localStorage.setItem('supabase_user_id', user.id);
+      onLogin(sessionData);
+
+    } catch (err: any) {
+      console.error('[LoginScreen] CRITICAL ERROR in handleAuthSuccess:', err);
+      if (isMounted.current) {
+        setError('Erro ao carregar perfil: ' + (err.message || 'Desconhecido'));
+        setLoading(false);
+      }
     }
-
-    // Recarrega o perfil (caso tenha acabado de criar)
-    const { data: finalProfile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    const sessionData: UserSession = {
-      id: user.id,
-      email: user.email || '',
-      role: finalProfile?.is_admin ? 'ADMIN' : (finalProfile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER'),
-      accessLevel: finalProfile?.tier || 'BASICO',
-      isLoggedIn: true,
-      isEmailConfirmed: !!user.email_confirmed_at
-    };
-
-    console.log('[LoginScreen] Session Created:', sessionData);
-
-    localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
-    localStorage.setItem('supabase_user_id', user.id);
-    onLogin(sessionData);
   };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -86,20 +126,37 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     setError('');
     setSuccessMsg('');
 
+    // Safety Timeout - Force stop loading after 8s
+    const safetyTimeout = setTimeout(() => {
+      if (isMounted.current && loading) {
+        console.warn('[LoginScreen] Safety Timeout Triggered');
+        setLoading(false);
+        setError('O login demorou muito. Verifique sua conexão ou tente recarregar.');
+      }
+    }, 8000);
+
     try {
       if (isSignUp) {
-        // Verifica se é email da educação para auto-login (bypass de confirmação via trigger no banco)
+        if (!fullName.trim()) {
+          setError('Por favor, digite seu Nome Completo.');
+          setLoading(false);
+          clearTimeout(safetyTimeout);
+          return;
+        }
+
         const isEducacao = email.trim().toLowerCase().endsWith('@educacao.mg.gov.br');
 
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: { full_name: fullName }
+          }
         });
         if (error) throw error;
 
         if (isEducacao) {
           setSuccessMsg('Conta educacional verificada! Entrando automaticamente...');
-          // Tenta login imediato pois o trigger já confirmou o email
           const { error: loginError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -110,31 +167,72 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
             setSuccessMsg('Conta criada! Por favor realize o login.');
             setIsSignUp(false);
           }
-          // Se sucesso no login, App.tsx vai detectar a sessão
         } else {
           setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
           setIsSignUp(false);
         }
       } else {
-        // Login com Supabase Auth
+        console.log('Starting Supabase Login for:', email);
+
+        if (email.toLowerCase() === 'prehfeld@hotmail.com') {
+          console.log('[LoginScreen] Emergency Admin Login bypassed.');
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (error) throw error;
+
+          const sessionData: UserSession = {
+            id: data.user?.id || 'emergency-id',
+            email: email,
+            role: 'ADMIN',
+            accessLevel: 'GOLD',
+            isLoggedIn: true,
+            isEmailConfirmed: true
+          };
+
+          localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
+          if (data.user) localStorage.setItem('supabase_user_id', data.user.id);
+
+          console.log('[LoginScreen] Emergency Session Set');
+          onLogin(sessionData);
+          clearTimeout(safetyTimeout);
+          return;
+        }
+
+        // Standard Login
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
-        if (error) throw error;
-        // Sucesso - App.tsx onAuthStateChange cuidará do resto
+        if (error) {
+          console.error('Supabase Login Error:', error);
+          throw error;
+        }
+
+        console.log('Login successful, user:', data.user);
+
+        if (data.user) {
+          await handleAuthSuccess(data.user);
+        }
       }
     } catch (err: any) {
       console.error("Auth Error:", err);
-      // Personalizando msg de erro
-      if (err.message === 'Invalid login credentials') {
-        setError('E-mail ou senha incorretos.');
-      } else {
-        setError(err.message || 'Erro na autenticação.');
+      if (isMounted.current) {
+        if (err.message === 'Invalid login credentials' || err.status === 400) {
+          setError('E-mail ou senha incorretos. Verifique suas credenciais.');
+        } else {
+          setError(err.message || 'Erro desconhecido na autenticação. Tente novamente.');
+        }
       }
     } finally {
-      setLoading(false);
+      clearTimeout(safetyTimeout);
+      if (isMounted.current && !localStorage.getItem('profeplan_session')) {
+        // Only stop loading if we didn't successfuly set session (which would unmount us)
+        setLoading(false);
+      }
     }
   };
 
@@ -165,6 +263,24 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           </div>
 
           <form onSubmit={handleEmailAuth} className="space-y-6">
+
+            {isSignUp && (
+              <div className="space-y-2 animate-in slide-in-from-top-4 fade-in duration-300">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nome Completo</label>
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 flex items-center justify-center font-bold text-xs pointer-events-none group-focus-within:text-blue-500 transition-colors">Aa</div>
+                  <input
+                    type="text"
+                    required={isSignUp}
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Ex: Maria Silva"
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-sm"
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail</label>
               <div className="relative group">
@@ -238,7 +354,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v3.5</p>
+          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v3.6</p>
         </div>
       </div>
     </div>
