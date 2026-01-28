@@ -341,7 +341,7 @@ const LandingPage: React.FC = () => {
                     {/* Copyright */}
                     <div className="text-center pt-8 border-t border-slate-700">
                         <p className="text-slate-500 text-sm">
-                            © 2024 ProfePlan - Engenharia Pedagógica. Todos os direitos reservados.
+                            © 2025 ProfePlan - Engenharia Pedagógica. Todos os direitos reservados. v3.6
                         </p>
                     </div>
                 </div>
