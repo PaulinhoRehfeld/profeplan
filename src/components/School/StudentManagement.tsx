@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
-import { Plus, Users, Trash2, Edit2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Users, Trash2, Edit2, Search, Filter, AlertTriangle, Save, X, ArrowRightLeft } from 'lucide-react';
+import { supabase } from '../../services/supabaseClient';
+
+// Constants
+const PDI_OPTIONS = [
+    'TDAH', 'TOD', 'DISLEXIA', 'DISCALCULIA', 'TEA',
+    'PARAPLEGIA', 'SURDO', 'CEGO', 'VISÃO MONOCULAR',
+    'DEFICIÊNCIA INTELECTUAL', 'ALTAS HABILIDADES'
+];
+
+const DELETION_REASONS = [
+    'Transferência de Escola',
+    'Evasão Escolar',
+    'Duplicidade de Registro',
+    'Outro'
+];
 
 interface Student {
-    id: string;
+    id: string; // TEXT
     name: string;
     student_code?: string;
-    serie?: string;
-    special_needs?: string;
+    class_id?: string;
+    // Map both new and legacy fields to ensure compatibility
+    pdi_needs?: string[];
+    deficiencies?: string[]; // Legacy column support
+    observations?: string;
+    pedagogical_observations?: string; // Legacy column support
+}
+
+interface ClassItem {
+    id: string;
+    name: string;
+    year: number;
 }
 
 interface StudentManagementProps {
@@ -16,212 +41,450 @@ interface StudentManagementProps {
 }
 
 export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, students, onRefresh }) => {
-    const [isAddingStudent, setIsAddingStudent] = useState(false);
-    const [newStudentName, setNewStudentName] = useState('');
-    const [newStudentCode, setNewStudentCode] = useState('');
-    const [newStudentSerie, setNewStudentSerie] = useState('');
-    const [newStudentNeeds, setNewStudentNeeds] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    // Mode State
+    const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const handleCreateStudent = async () => {
-        if (!newStudentName.trim()) {
-            alert('Digite o nome do aluno');
-            return;
-        }
+    // Modal States
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+    const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
 
-        setIsSubmitting(true);
-        try {
-            const { createStudent } = await import('../../services/studentService');
-            const result = await createStudent({
-                name: newStudentName,
-                student_code: newStudentCode || undefined,
-                current_school_id: schoolId,
-                serie: newStudentSerie || undefined,
-                special_needs: newStudentNeeds || undefined
+    // Form States
+    const [formData, setFormData] = useState({
+        name: '',
+        student_code: '',
+        class_id: '',
+        pdi_needs: [] as string[],
+        observations: ''
+    });
+
+    // Deletion Form
+    const [deletionReason, setDeletionReason] = useState(DELETION_REASONS[0]);
+    const [deletionDetails, setDeletionDetails] = useState('');
+
+    // Data
+    const [availableClasses, setAvailableClasses] = useState<ClassItem[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    // Load Classes on mount
+    useEffect(() => {
+        loadClasses();
+    }, [schoolId]);
+
+    const loadClasses = async () => {
+        const { data } = await supabase
+            .from('classes')
+            .select('id, name, year')
+            .eq('school_id', schoolId)
+            .order('year')
+            .order('name');
+        if (data) setAvailableClasses(data);
+    };
+
+    // Filtered Students
+    const filteredStudents = students.filter(s =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.student_code?.includes(searchTerm)
+    );
+
+    // Handlers
+    const handleOpenModal = (student?: Student) => {
+        if (student) {
+            setEditingStudent(student);
+            setFormData({
+                name: student.name,
+                student_code: student.student_code || '',
+                class_id: student.class_id || '',
+                // Fallback to legacy fields if new ones are empty
+                pdi_needs: student.pdi_needs || student.deficiencies || [],
+                observations: student.observations || student.pedagogical_observations || ''
             });
+        } else {
+            setEditingStudent(null); // Create mode
+            setFormData({
+                name: '',
+                student_code: '',
+                class_id: '',
+                pdi_needs: [],
+                observations: ''
+            });
+        }
+        setIsModalOpen(true);
+    };
+
+    const handleSave = async () => {
+        if (!formData.name.trim()) return alert('Nome é obrigatório');
+
+        setLoading(true);
+        try {
+            const { createStudent, updateStudent } = await import('../../services/studentService');
+
+            const payload = {
+                name: formData.name,
+                student_code: formData.student_code,
+                class_id: formData.class_id || undefined,
+                // Save to BOTH new and legacy columns to ensure data sticks regardless of which one Supabase uses
+                pdi_needs: formData.pdi_needs,
+                deficiencies: formData.pdi_needs,
+                observations: formData.observations,
+                pedagogical_observations: formData.observations,
+                current_school_id: schoolId
+            };
+
+            let result;
+            if (editingStudent) {
+                result = await updateStudent(editingStudent.id, payload);
+            } else {
+                result = await createStudent(payload);
+            }
 
             if (result.success) {
-                alert('Aluno cadastrado com sucesso!');
-                setIsAddingStudent(false);
-                setNewStudentName('');
-                setNewStudentCode('');
-                setNewStudentSerie('');
-                setNewStudentNeeds('');
+                alert(editingStudent ? 'Aluno atualizado!' : 'Aluno criado!');
+                setIsModalOpen(false);
                 onRefresh();
             } else {
-                alert('Erro ao cadastrar aluno: ' + result.error);
+                alert('Erro: ' + result.error);
             }
         } catch (error: any) {
             alert('Erro: ' + error.message);
         } finally {
-            setIsSubmitting(false);
+            setLoading(false);
         }
     };
 
-    const handleDeleteStudent = async (studentId: string, studentName: string) => {
-        if (!confirm(`Tem certeza que deseja excluir o aluno ${studentName}?`)) {
+    const handleDeleteClick = (student: Student) => {
+        setStudentToDelete(student);
+        setDeletionReason(DELETION_REASONS[0]);
+        setDeletionDetails('');
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!studentToDelete) return;
+
+        if (deletionReason === 'Outro' && !deletionDetails.trim()) {
+            alert('Por favor, descreva o motivo da exclusão.');
             return;
         }
 
+        setLoading(true);
         try {
-            const { deleteStudent } = await import('../../services/studentService');
-            const result = await deleteStudent(studentId);
+            const { archiveStudent } = await import('../../services/studentService');
+            const result = await archiveStudent(studentToDelete.id, deletionReason, deletionDetails);
 
             if (result.success) {
-                alert('Aluno excluído com sucesso!');
+                alert('Aluno movido para o arquivo de excluídos com sucesso.');
+                setIsDeleteModalOpen(false);
+                setStudentToDelete(null);
                 onRefresh();
             } else {
-                alert('Erro ao excluir aluno: ' + result.error);
+                alert('Erro ao excluir: ' + result.error);
             }
         } catch (error: any) {
             alert('Erro: ' + error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
+    const togglePDI = (need: string) => {
+        setFormData(prev => {
+            const exists = prev.pdi_needs.includes(need);
+            return {
+                ...prev,
+                pdi_needs: exists
+                    ? prev.pdi_needs.filter(n => n !== need)
+                    : [...prev.pdi_needs, need]
+            };
+        });
+    };
+
+    // Helper to get class name
+    const getClassName = (id?: string) => {
+        if (!id) return '-';
+        return availableClasses.find(c => c.id === id)?.name || 'Turma desconhecida';
+    };
+
+    // Helper for Transfer logic (Filtering classes of same year)
+    const currentClass = availableClasses.find(c => c.id === formData.class_id);
+    const transferOptions = currentClass
+        ? availableClasses.filter(c => c.year === currentClass.year && c.id !== currentClass.id)
+        : availableClasses;
+
+
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-slate-800">Alunos</h2>
+            {/* Header / Controls */}
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div className="relative w-full md:w-96">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                    <input
+                        type="text"
+                        placeholder="Buscar por nome ou código..."
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 outline-none"
+                    />
+                </div>
                 <button
-                    onClick={() => setIsAddingStudent(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition"
+                    onClick={() => handleOpenModal()}
+                    className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition w-full md:w-auto justify-center"
                 >
-                    <Plus size={16} />
-                    Adicionar Aluno
+                    <Plus size={20} />
+                    Novo Aluno
                 </button>
             </div>
 
-            {/* Students Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {students.length === 0 ? (
-                    <div className="col-span-full bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
-                        <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <p className="text-slate-400 text-sm">
-                            Nenhum aluno cadastrado ainda.
-                            <br />
-                            Clique em "Adicionar Aluno" para começar.
-                        </p>
-                    </div>
-                ) : (
-                    students.map((student) => (
-                        <div
-                            key={student.id}
-                            className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition"
-                        >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-slate-800">{student.name}</h3>
-                                    {student.student_code && (
-                                        <p className="text-sm text-slate-500">Código: {student.student_code}</p>
-                                    )}
-                                </div>
-                                <div className="p-2 bg-green-100 rounded-lg">
-                                    <Users className="w-5 h-5 text-green-600" />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2 text-sm text-slate-600 mb-4">
-                                {student.serie && (
-                                    <p className="flex items-center gap-2">
-                                        <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                                        Série: {student.serie}
-                                    </p>
-                                )}
-                                {student.special_needs && (
-                                    <p className="flex items-center gap-2">
-                                        <span className="w-2 h-2 bg-amber-400 rounded-full"></span>
-                                        <span className="text-xs">{student.special_needs}</span>
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="flex gap-2 pt-4 border-t border-slate-100">
-                                <button
-                                    onClick={() => handleDeleteStudent(student.id, student.name)}
-                                    className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700 font-bold"
-                                >
-                                    <Trash2 size={14} />
-                                    Excluir
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                )}
+            {/* List View (Table) */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <table className="w-full text-left">
+                    <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th className="px-6 py-4 font-bold text-slate-700">Nome Completo</th>
+                            <th className="px-6 py-4 font-bold text-slate-700">Código</th>
+                            <th className="px-6 py-4 font-bold text-slate-700">Turma</th>
+                            <th className="px-6 py-4 font-bold text-slate-700 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                        {filteredStudents.length === 0 ? (
+                            <tr>
+                                <td colSpan={4} className="px-6 py-12 text-center text-slate-500">
+                                    Nenhum aluno encontrado.
+                                </td>
+                            </tr>
+                        ) : (
+                            filteredStudents.map(student => (
+                                <tr key={student.id} className="hover:bg-slate-50 transition">
+                                    <td className="px-6 py-4">
+                                        <div className="font-bold text-slate-800">{student.name}</div>
+                                        {student.pdi_needs && student.pdi_needs.length > 0 && (
+                                            <div className="flex flex-wrap gap-1 mt-1">
+                                                {student.pdi_needs.slice(0, 3).map(pdi => (
+                                                    <span key={pdi} className="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full border border-amber-200">
+                                                        {pdi}
+                                                    </span>
+                                                ))}
+                                                {student.pdi_needs.length > 3 && (
+                                                    <span className="text-[10px] text-slate-500 font-medium">+{student.pdi_needs.length - 3}</span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 font-mono text-sm text-slate-600">
+                                        {student.student_code || '-'}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-slate-600">
+                                        {getClassName(student.class_id)}
+                                    </td>
+                                    <td className="px-6 py-4 text-right space-x-2">
+                                        <button
+                                            onClick={() => handleOpenModal(student)}
+                                            className="inline-flex items-center justify-center p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                            title="Editar"
+                                        >
+                                            <Edit2 size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteClick(student)}
+                                            className="inline-flex items-center justify-center p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                                            title="Excluir"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
             </div>
 
-            {/* Add Student Modal */}
-            {isAddingStudent && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-slate-800 mb-4">Adicionar Aluno</h3>
+            {/* EDIT/CREATE MODAL */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-8 flex flex-col max-h-[90vh]">
+                        {/* Modal Header */}
+                        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white rounded-t-2xl z-10">
+                            <h3 className="text-xl font-bold text-slate-800">
+                                {editingStudent ? 'Editar Aluno' : 'Novo Aluno'}
+                            </h3>
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                                <X size={24} />
+                            </button>
+                        </div>
 
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Nome Completo *</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ex: Maria Santos"
-                                    value={newStudentName}
-                                    onChange={(e) => setNewStudentName(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                />
+                        {/* Modal Content - Scrollable */}
+                        <div className="p-6 space-y-6 overflow-y-auto">
+                            {/* Basic Info */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Nome Completo</label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg font-medium focus:ring-2 focus:ring-green-500 outline-none"
+                                        placeholder="Nome do Aluno"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Código / Matrícula</label>
+                                    <input
+                                        type="text"
+                                        value={formData.student_code}
+                                        onChange={e => setFormData({ ...formData, student_code: e.target.value })}
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono text-sm focus:ring-2 focus:ring-green-500 outline-none"
+                                        placeholder="Automático se vazio"
+                                    />
+                                </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Código do Aluno (opcional)</label>
-                                <input
-                                    type="text"
-                                    placeholder="Auto-gerado se vazio"
-                                    value={newStudentCode}
-                                    onChange={(e) => setNewStudentCode(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                />
+                            {/* Class / Transfer */}
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div className="flex items-center justify-between mb-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-2">
+                                        <Users size={14} /> Turma / Transferência
+                                    </label>
+                                    {editingStudent && formData.class_id && (
+                                        <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold">
+                                            Transferência Rápida
+                                        </span>
+                                    )}
+                                </div>
+                                <select
+                                    value={formData.class_id}
+                                    onChange={e => setFormData({ ...formData, class_id: e.target.value })}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none bg-white"
+                                >
+                                    <option value="">Selecione uma turma...</option>
+                                    {/* Show all classes if no class selected, otherwise prioritize same year */}
+                                    {availableClasses.map(cls => (
+                                        <option key={cls.id} value={cls.id}>
+                                            {cls.name} ({cls.year}º Ano)
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="text-xs text-slate-400 mt-1">
+                                    Selecione a turma para vincular ou transferir o aluno.
+                                </p>
                             </div>
 
+                            {/* PDI Section */}
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Série/Ano (opcional)</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ex: 3º Ano"
-                                    value={newStudentSerie}
-                                    onChange={(e) => setNewStudentSerie(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                />
+                                <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-2 mb-2">
+                                    <AlertTriangle size={14} className="text-amber-500" />
+                                    Necessidades Especiais (PDI)
+                                </label>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {PDI_OPTIONS.map(option => (
+                                        <button
+                                            key={option}
+                                            onClick={() => togglePDI(option)}
+                                            className={`text-left px-3 py-2 rounded-lg text-xs font-bold transition border ${formData.pdi_needs.includes(option)
+                                                ? 'bg-amber-100 text-amber-800 border-amber-200'
+                                                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                                                }`}
+                                        >
+                                            {formData.pdi_needs.includes(option) ? '✓ ' : ''}{option}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Necessidades Especiais (opcional)</label>
+                            {/* Observations */}
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-500 uppercase">Observações Pedagógicas</label>
                                 <textarea
-                                    placeholder="Ex: Dislexia, TDAH, etc."
-                                    value={newStudentNeeds}
-                                    onChange={(e) => setNewStudentNeeds(e.target.value)}
-                                    rows={3}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                                    value={formData.observations}
+                                    onChange={e => setFormData({ ...formData, observations: e.target.value })}
+                                    rows={4}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
+                                    placeholder="Informações importantes para os professores..."
                                 />
                             </div>
                         </div>
 
-                        <div className="flex gap-3 mt-6">
+                        {/* Footer */}
+                        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl flex justify-end gap-3 sticky bottom-0">
                             <button
-                                onClick={() => {
-                                    setIsAddingStudent(false);
-                                    setNewStudentName('');
-                                    setNewStudentCode('');
-                                    setNewStudentSerie('');
-                                    setNewStudentNeeds('');
-                                }}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition disabled:opacity-50"
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-200 rounded-lg transition"
                             >
                                 Cancelar
                             </button>
                             <button
-                                onClick={handleCreateStudent}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition disabled:opacity-50"
+                                onClick={handleSave}
+                                disabled={loading}
+                                className="px-6 py-2 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition flex items-center gap-2 disabled:opacity-50"
                             >
-                                {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
+                                {loading ? 'Salvando...' : <><Save size={18} /> Salvar Aluno</>}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* DELETE REASON MODAL */}
+            {isDeleteModalOpen && studentToDelete && (
+                <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center gap-3 mb-4 text-red-600">
+                            <div className="p-3 bg-red-100 rounded-full">
+                                <Trash2 size={24} />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-800">Excluir Aluno</h3>
+                        </div>
+
+                        <p className="text-slate-600 mb-6">
+                            Você está prestes a remover <strong>{studentToDelete.name}</strong>.
+                            <br />Esta ação moverá o aluno para o arquivo morto.
+                        </p>
+
+                        <div className="space-y-4 mb-6">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Motivo da Exclusão</label>
+                                <select
+                                    value={deletionReason}
+                                    onChange={e => setDeletionReason(e.target.value)}
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg font-medium outline-none focus:ring-2 focus:ring-red-500"
+                                >
+                                    {DELETION_REASONS.map(r => (
+                                        <option key={r} value={r}>{r}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Show details only if 'Outro' */}
+                            {deletionReason === 'Outro' && (
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Detalhes</label>
+                                    <textarea
+                                        value={deletionDetails}
+                                        onChange={e => setDeletionDetails(e.target.value)}
+                                        placeholder="Descreva o motivo..."
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm resize-none outline-none focus:ring-2 focus:ring-red-500"
+                                        rows={2}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsDeleteModalOpen(false)}
+                                className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg transition"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={loading}
+                                className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition"
+                            >
+                                {loading ? 'Excluindo...' : 'Confirmar Exclusão'}
                             </button>
                         </div>
                     </div>

@@ -17,6 +17,7 @@ export const useProfeplanAuth = () => {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
+    // Initial Load & Self-Healing
     useEffect(() => {
         if (session?.id) {
             const initSession = async () => {
@@ -29,8 +30,11 @@ export const useProfeplanAuth = () => {
                 if (!profileData && session.email) {
                     console.warn(`[App] Profile not found for ID ${session.id}. Attempting recovery by email...`);
                     try {
-                        const { getProfileByEmail } = await import('../services/userService');
-                        const { data: recoveredProfile } = await getProfileByEmail(session.email);
+                        const { data: recoveredProfile } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('email', session.email)
+                            .maybeSingle();
 
                         if (recoveredProfile) {
                             console.log(`[App] 🩹 SESSION HEALED! ID Mismatch detected.`);
@@ -49,8 +53,8 @@ export const useProfeplanAuth = () => {
                     }
                 }
 
-                // 3. EMERGENCY FALLBACK: Blocked by RLS? Construct Fake Admin
-                if (!profileData && session.email === 'prehfeld@hotmail.com') {
+                // EMERGENCY FALLBACK (Bypass RLS/Auth issues for admin)
+                if (!profileData && (session.email === 'prehfeld@hotmail.com' || session.email === 'suporte@profeplan.com.br')) {
                     console.warn('[App] 🚨 RLS Blocked Profile Read. Constructing Emergency Admin Profile.');
                     profileData = {
                         id: session.id,
@@ -66,28 +70,25 @@ export const useProfeplanAuth = () => {
                 }
 
                 if (profileData) {
-                    // --- GOD MODE & ROLE FIX ---
-                    const hardcodedAdminEmails = ['prehfeld@hotmail.com', 'paulo.rehfeld@educacao.mg.gov.br'];
+                    // --- GOD MODE ---
+                    const hardcodedAdminEmails = ['prehfeld@hotmail.com', 'suporte@profeplan.com.br'];
                     const isHardcodedAdmin = profileData.email && hardcodedAdminEmails.includes(profileData.email.toLowerCase());
 
                     if (isHardcodedAdmin) {
-                        console.log('[App] 🛡️ Applying GOD MODE override');
                         profileData.role = 'admin';
                         profileData.is_admin = true;
                         profileData.tier = 'GOLD';
                         profileData.is_unlimited = true;
                     }
 
-                    console.log('[App] Profile loaded:', profileData);
                     setUserProfile(profileData);
 
-                    // AUTO-CORRECT SESSION ROLE FROM PROFILE
+                    // AUTO-CORRECT SESSION ROLE
                     const derivedRole = profileData.role === 'manager'
                         ? 'SCHOOL_MANAGER'
                         : (isHardcodedAdmin || profileData.is_admin || profileData.role === 'admin' ? 'ADMIN' : 'TEACHER');
 
                     if (session.role !== derivedRole) {
-                        console.log(`[App] Correcting Session Role: ${session.role} -> ${derivedRole}`);
                         const newSession = { ...session, role: derivedRole };
                         setSession(newSession);
                         localStorage.setItem('profeplan_session', JSON.stringify(newSession));
@@ -102,45 +103,69 @@ export const useProfeplanAuth = () => {
         } else {
             setLoading(false);
         }
-    }, [session?.id]); // Only re-run if session ID changes (login)
+    }, [session?.id]);
 
-    // Listener para mudanças de autenticação (Web e Mobile)
+    // Listener for Auth Changes (Login, Signout, Deep Links)
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, authSession) => {
             console.log('[App] Auth State Change:', event, authSession?.user?.email);
 
             if (event === 'SIGNED_IN' && authSession) {
-                let profile = await getUserProfile(authSession.user.id);
+                const userId = authSession.user.id;
+                const userEmail = authSession.user.email;
+                let profile = await getUserProfile(userId);
+
+                // If profile not found by ID, try recovery by email (Healing inside Listener)
+                if (!profile && userEmail) {
+                    console.log('[App] Profile not found by ID. Checking for existing profile by email...');
+                    const { data: recoveredProfile } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('email', userEmail)
+                        .maybeSingle();
+
+                    if (recoveredProfile) {
+                        console.log('[App] Existing profile found by email. Using it.');
+                        profile = recoveredProfile;
+                        // Note: We authenticate with `userId` (Supabase Auth ID), but profile might be different?
+                        // If they are different, we might have a split brain. 
+                        // But usually we want to respect the profile.
+                    }
+                }
 
                 if (!profile) {
-                    console.log('[App] Profile not found, creating default profile...');
-                    const { error: insertError } = await supabase.from('profiles').insert({
-                        id: authSession.user.id,
-                        email: authSession.user.email,
-                        role: getRoleByEmail(authSession.user.email || ''),
+                    console.log('[App] Profile not found (Standard or Recovered), creating new profile...');
+
+                    // Use Upsert to be safe
+                    const { error: upsertError } = await supabase.from('profiles').upsert({
+                        id: userId, // Link to the current Auth ID
+                        email: userEmail,
+                        full_name: authSession.user.user_metadata?.full_name || '',
+                        role: getRoleByEmail(userEmail || ''),
                         tier: 'SILVER',
                         credits: 10,
                         is_unlimited: false,
                         is_admin: false,
                         allowed_features: ['all']
-                    });
+                    }, { onConflict: 'id' });
 
-                    if (insertError) {
-                        console.error('[App] Failed to create profile:', insertError);
+                    if (upsertError) {
+                        console.error('[App] Failed to create profile:', upsertError);
                     } else {
                         console.log('[App] Profile created successfully');
-                        await checkAndRewardReferrer(authSession.user.email || '');
-                        profile = await getUserProfile(authSession.user.id);
-                        console.log('[App] Profile reloaded after creation:', profile);
+                        await checkAndRewardReferrer(userEmail || '');
+                        profile = await getUserProfile(userId);
                     }
-                } else {
-                    console.log('[App] Profile found:', profile);
                 }
 
+                // Construct Session
+                // Fallback role if profile is still missing (shouldn't happen unless DB error)
+                const role = profile?.is_admin || profile?.role === 'admin' ? 'ADMIN' : (profile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER');
+
                 const newSession: UserSession = {
-                    id: authSession.user.id,
-                    email: authSession.user.email || '',
-                    role: profile?.is_admin || profile?.role === 'admin' ? 'ADMIN' : (profile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER'),
+                    id: profile?.id || userId,
+                    email: userEmail || '',
+                    role: role,
                     accessLevel: (profile?.tier as any) || 'BASICO',
                     isLoggedIn: true,
                     isEmailConfirmed: !!authSession.user.email_confirmed_at
@@ -149,18 +174,19 @@ export const useProfeplanAuth = () => {
                 console.log('[App] Updating session after auth state change:', newSession);
                 setSession(newSession);
                 setUserProfile(profile);
+
                 localStorage.setItem('profeplan_session', JSON.stringify(newSession));
-                localStorage.setItem('supabase_user_id', authSession.user.id);
+                localStorage.setItem('supabase_user_id', userId);
+
             } else if (event === 'SIGNED_OUT') {
                 console.log('[App] User signed out');
                 setSession(null);
                 setUserProfile(null);
-                localStorage.removeItem('profeplan_session');
-                localStorage.removeItem('supabase_user_id');
+                localStorage.clear(); // Clear all to be safe
             }
         });
 
-        // Capacitor Deep Links
+        // Capacitor Deep Links logic...
         import('@capacitor/app').then(({ App }) => {
             App.addListener('appUrlOpen', (data) => {
                 const url = new URL(data.url);
@@ -183,7 +209,6 @@ export const useProfeplanAuth = () => {
         };
     }, []);
 
-    // Helper for Settings Modal or Refresh Actions
     const refreshProfile = async () => {
         if (session?.id) {
             const profileData = await getUserProfile(session.id, session.email);

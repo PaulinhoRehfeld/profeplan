@@ -3,9 +3,6 @@ import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } f
 import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
 
-import { checkAndRewardReferrer } from '../services/userService';
-import { getRoleByEmail } from '../utils/authUtils';
-
 interface LoginScreenProps {
   onLogin: (session: UserSession) => void;
   initialMode?: 'login' | 'signup';
@@ -14,111 +11,16 @@ interface LoginScreenProps {
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState(''); // Estado para Nome Completo
+  const [fullName, setFullName] = useState('');
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Track mount status to avoid state updates on unmount
   const isMounted = React.useRef(true);
   useEffect(() => {
     return () => { isMounted.current = false; };
   }, []);
-
-  // Verifica se o usuário já está logado (apenas na montagem inicial)
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (isMounted.current && session) {
-        handleAuthSuccess(session.user);
-      }
-    });
-    // Removido onAuthStateChange para evitar conflito com App.tsx
-    // App.tsx gerenciará mudanças de estado de autenticação
-  }, []);
-
-  // Função chamada após autenticação bem-sucedida (apenas na inicialização)
-  const handleAuthSuccess = async (user: any) => {
-    console.log('[LoginScreen] handleAuthSuccess START', user.id);
-    try {
-      // 1. Busca perfil pelo ID do Login
-      let { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      console.log('[LoginScreen] Profile lookup by ID result:', profile);
-
-      // 2. Se não achar pelo ID, busca pelo E-MAIL (Recuperação de conta antiga/duplicada)
-      if (!profile && user.email) {
-        console.log('[Login] Profile not found by ID. Searching by Email...', user.email);
-        const { data: recovered } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('email', user.email)
-          .maybeSingle();
-
-        if (recovered) {
-          console.log('[Login] Profile found by Email! linking session to:', recovered.id);
-          profile = recovered;
-        }
-      }
-
-      if (!profile) {
-        // 3. Se realmente não existir nada, cria um novo
-        console.log('[Login] Creating new profile for:', user.email);
-
-        // SAFE UPSERT: Use upsert instead of insert to handle race conditions (Triggers vs UI)
-        const { error } = await supabase.from('profiles').upsert({
-          id: user.id,
-          email: user.email,
-          full_name: user.user_metadata?.full_name || fullName,
-          role: getRoleByEmail(user.email || ''),
-          tier: 'SILVER',
-          credits: 10,
-          is_unlimited: false,
-          is_admin: false,
-          allowed_features: ['all']
-        }, { onConflict: 'id' });
-
-        if (error) {
-          console.error('[Login] Profile creation failed:', error);
-          // If error is 409/Duplicate, we can ignore it because it means it exists now.
-        }
-
-        await checkAndRewardReferrer(user.email);
-
-        const { data: newProfile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-        profile = newProfile;
-      }
-
-      const finalProfile = profile;
-      console.log('[LoginScreen] Final Profile:', finalProfile);
-
-      const sessionData: UserSession = {
-        id: finalProfile?.id || user.id,
-        email: user.email || '',
-        role: finalProfile?.is_admin ? 'ADMIN' : (finalProfile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER'),
-        accessLevel: finalProfile?.tier || 'BASICO',
-        isLoggedIn: true,
-        isEmailConfirmed: !!user.email_confirmed_at
-      };
-
-      console.log('[LoginScreen] Session Data Ready:', sessionData);
-
-      localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
-      localStorage.setItem('supabase_user_id', user.id);
-      onLogin(sessionData);
-
-    } catch (err: any) {
-      console.error('[LoginScreen] CRITICAL ERROR in handleAuthSuccess:', err);
-      if (isMounted.current) {
-        setError('Erro ao carregar perfil: ' + (err.message || 'Desconhecido'));
-        setLoading(false);
-      }
-    }
-  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,14 +28,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     setError('');
     setSuccessMsg('');
 
-    // Safety Timeout - Force stop loading after 8s
+    // Safety Timeout
     const safetyTimeout = setTimeout(() => {
       if (isMounted.current && loading) {
-        console.warn('[LoginScreen] Safety Timeout Triggered');
         setLoading(false);
         setError('O login demorou muito. Verifique sua conexão ou tente recarregar.');
       }
-    }, 8000);
+    }, 10000);
 
     try {
       if (isSignUp) {
@@ -163,7 +64,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           });
 
           if (loginError) {
-            console.error('Erro no auto-login:', loginError);
+            // Sign up success but login failed (maybe validation)
             setSuccessMsg('Conta criada! Por favor realize o login.');
             setIsSignUp(false);
           }
@@ -172,71 +73,45 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           setIsSignUp(false);
         }
       } else {
-        console.log('Starting Supabase Login for:', email);
+        // --- LOGIN ---
+        console.log('[LoginScreen] Attempting Login:', email);
 
-        if (email.toLowerCase() === 'prehfeld@hotmail.com') {
-          console.log('[LoginScreen] Emergency Admin Login bypassed.');
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-
-          if (error) throw error;
-
-          const sessionData: UserSession = {
-            id: data.user?.id || 'emergency-id',
-            email: email,
-            role: 'ADMIN',
-            accessLevel: 'GOLD',
-            isLoggedIn: true,
-            isEmailConfirmed: true
-          };
-
-          localStorage.setItem('profeplan_session', JSON.stringify(sessionData));
-          if (data.user) localStorage.setItem('supabase_user_id', data.user.id);
-
-          console.log('[LoginScreen] Emergency Session Set');
-          onLogin(sessionData);
-          clearTimeout(safetyTimeout);
-          return;
-        }
-
-        // Standard Login
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) {
-          console.error('Supabase Login Error:', error);
           throw error;
         }
 
-        console.log('Login successful, user:', data.user);
+        console.log('[LoginScreen] Supabase Login Success:', data);
 
-        if (data.user) {
-          await handleAuthSuccess(data.user);
-        }
+        // We do NOT manually call handleAuthSuccess or onLogin here anymore.
+        // We rely on useProfeplanAuth hook listening to onAuthStateChange.
+        // However, we need to keep the spinner spinning until the redirect happens.
+        // If we set loading=false, the user sees the form again before redirect.
       }
     } catch (err: any) {
       console.error("Auth Error:", err);
       if (isMounted.current) {
+        setLoading(false); // Only stop loading on error
         if (err.message === 'Invalid login credentials' || err.status === 400) {
           setError('E-mail ou senha incorretos. Verifique suas credenciais.');
         } else {
-          setError(err.message || 'Erro desconhecido na autenticação. Tente novamente.');
+          setError(err.message || 'Erro desconhecido na autenticação.');
         }
       }
     } finally {
-      clearTimeout(safetyTimeout);
-      if (isMounted.current && !localStorage.getItem('profeplan_session')) {
-        // Only stop loading if we didn't successfuly set session (which would unmount us)
-        setLoading(false);
+      // Do NOT clear timeout or set loading false if success, 
+      // because we want to stay in "loading" state until App unmounts us (redirects).
+      // But if we are Sign Up (and not auto-login), we should stop loading.
+      if (isSignUp && !successMsg.includes('Entrando')) {
+        clearTimeout(safetyTimeout);
+        if (isMounted.current) setLoading(false);
       }
     }
   };
-
-
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 md:px-20 py-4 relative overflow-hidden">
@@ -257,10 +132,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           <h2 className="text-2xl font-bold text-white mb-8 text-center tracking-tight">
             {isSignUp ? 'Criar Nova Conta' : 'Acesse seu Workspace'}
           </h2>
-
-          <div className="space-y-4 mb-8">
-            {/* Google Login removed as per user request (unverified app) */}
-          </div>
 
           <form onSubmit={handleEmailAuth} className="space-y-6">
 

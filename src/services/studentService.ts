@@ -6,8 +6,10 @@ export interface Student {
     name: string;
     student_code?: string;
     current_school_id: string;
-    serie?: string;
-    special_needs?: string;
+    class_id?: string; // Added class_id
+    serie?: string; // Keep for legacy, but we might rely on class link
+    pdi_needs?: string[]; // New: Array of needs
+    observations?: string; // New: Pedagogical observations
     created_at: string;
 }
 
@@ -15,8 +17,9 @@ export interface CreateStudentDTO {
     name: string;
     student_code?: string;
     current_school_id: string;
-    serie?: string;
-    special_needs?: string;
+    class_id?: string;
+    pdi_needs?: string[];
+    observations?: string;
 }
 
 /**
@@ -42,7 +45,7 @@ export const getStudentsBySchool = async (schoolId: string): Promise<Student[]> 
  */
 export const createStudent = async (studentData: CreateStudentDTO): Promise<{ success: boolean; data?: Student; error?: string }> => {
     // Generate student code if not provided
-    const studentCode = studentData.student_code || `STD${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    const studentCode = studentData.student_code || `STD${Date.now()}`;
 
     const { data, error } = await supabase
         .from('students')
@@ -80,16 +83,27 @@ export const updateStudent = async (
 };
 
 /**
- * Delete a student
+ * Archive and Delete a student (Safe Delete)
  */
-export const deleteStudent = async (studentId: string): Promise<{ success: boolean; error?: string }> => {
-    const { error } = await supabase
-        .from('students')
-        .delete()
-        .eq('id', studentId);
+export const archiveStudent = async (
+    studentId: string,
+    reason: string,
+    details: string
+): Promise<{ success: boolean; error?: string }> => {
+    const { data, error } = await supabase.rpc('archive_and_delete_student', {
+        p_student_id: studentId,
+        p_reason: reason,
+        p_details: details
+    });
 
     if (error) {
         return { success: false, error: error.message };
+    }
+
+    // RPC returns JSONB { success: boolean, error?: string }
+    // Supabase returns it as 'data'
+    if (data && !data.success) {
+        return { success: false, error: data.error };
     }
 
     return { success: true };

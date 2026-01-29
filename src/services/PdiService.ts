@@ -75,3 +75,16 @@ export const PdiService = {
         return data || [];
     }
 };
+
+/**
+ * Legacy/Compat: Fetch PDI logs with {data, error} signature
+ */
+export const getPdiLogs = async (studentId: string) => {
+    const { data, error } = await supabase
+        .from('pdi_records')
+        .select('*')
+        .eq('student_id', studentId)
+        .order('date', { ascending: false });
+
+    return { data, error };
+};

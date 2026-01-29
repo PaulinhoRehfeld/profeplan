@@ -134,3 +134,20 @@ export const deleteClass = async (classId: string): Promise<{ success: boolean; 
 
     return { success: true };
 };
+
+/**
+ * Merge two classes
+ */
+export const mergeClasses = async (sourceClassId: string, targetClassId: string): Promise<{ success: boolean; message?: string; error?: string }> => {
+    const { data, error } = await supabase.rpc('merge_classes', {
+        p_source_class_id: sourceClassId,
+        p_target_class_id: targetClassId
+    });
+
+    if (error) return { success: false, error: error.message };
+
+    // RPC returns: { success: boolean, message?: string, error?: string }
+    if (data && !data.success) return { success: false, error: data.error };
+
+    return { success: true, message: data.message };
+};

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-    BookOpen, BrainCircuit, AlertCircle
+    BookOpen, BrainCircuit, AlertCircle, Sparkles, Globe, FileText, ClipboardList
 } from 'lucide-react';
-import { getClasses, getClassDetails, getPdiLogs, supabase } from '../../services/supabaseService';
+import { supabase } from '../../services/supabaseClient';
+import { getClassesBySchool as getClasses, getStudentsByClass as getClassDetails } from '../../services/classService';
+import { getPdiLogs } from '../../services/PdiService';
 import { getGeneratedContents } from '../../services/databaseService';
 
 import { generateStudentAdaptation, generatePdiReport } from '../../services/geminiService';
@@ -13,15 +15,17 @@ import {
     getLocalClasses,
     getLocalClassDetails,
     savePdiLogToLocal,
-    getLocalPdiLogs
 } from '../../services/localStorageService';
 
 // New Architecture
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { savePdiLog } from './PDIService';
-import { Sparkles, Globe } from 'lucide-react';
 import PDISidebar from './components/PDISidebar';
 import StudentAdaptationCard from './components/StudentAdaptationCard';
+
+// PDI Module Components
+import { StudentPDIProfile } from '../../components/School/PDI/StudentPDIProfile';
+import { PDIConsolidator } from '../../components/School/PDI/PDIConsolidator';
 
 interface WorkbenchProps {
     userId: string;
@@ -41,37 +45,23 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
     const [generatingId, setGeneratingId] = useState<string | null>(null);
     const [error, setError] = useState('');
 
+    // PDI Modal States
+    const [pdiProfileStudent, setPdiProfileStudent] = useState<Student | null>(null);
+    const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);
+
     // Global Context (Coordinator Agent)
     const { currentPlan } = useGlobalPlanning();
     const [contextBadge, setContextBadge] = useState<boolean>(false);
-
-    // Mobile Tabs State
-    const [mobileTab, setMobileTab] = useState<'source' | 'workbench'>('workbench');
 
     useEffect(() => {
         // Auto-fill from Coordinator Agent
         if (currentPlan) {
             console.log("Receiving Context from Coordinator:", currentPlan);
             setContextBadge(true);
-            // Here we could filter classes or lessons based on the plan
-            // For now, we just indicate the connection exists
         }
     }, [currentPlan]);
 
     useEffect(() => {
-        // Connectivity Test (Migration Check)
-        const checkConnection = async () => {
-            console.log("Testing connection to NEW Supabase Project...");
-            try {
-                const { count, error } = await supabase.from('students').select('*', { count: 'exact', head: true });
-                if (error) console.error("Connection Check Failed:", error);
-                else console.log("Connection Check SUCCESS! Student count:", count);
-            } catch (err) {
-                console.error("Connection Check Exception:", err);
-            }
-        };
-        checkConnection();
-
         loadInitialData();
     }, [userId]);
 
@@ -93,7 +83,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
 
         // Fetch Classes (Mixed Source)
         try {
-            const { data: sbClasses } = await getClasses(userId);
+            const sbClasses = await getClasses(userId);
             const localClassesRaw = getLocalClasses(userId);
             const localClassesMapped: Class[] = localClassesRaw.map(c => ({
                 id: c.id,
@@ -146,10 +136,11 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
             // Supabase fallback
             const cls = classes.find(c => c.id === classId);
             if (cls) {
-                const { data } = await getClassDetails(classId);
-                if (data) {
-                    setSelectedClass(data);
-                    const needs = data.students?.filter((s: Student) => s.needs_adaptation || (s.deficiencies && s.deficiencies.length > 0)) || [];
+                const students = await getClassDetails(classId);
+                if (students) {
+                    const fullClass = { ...cls, students };
+                    setSelectedClass(fullClass);
+                    const needs = students?.filter((s: any) => s.needs_adaptation || (s.deficiencies && s.deficiencies.length > 0)) || [];
                     setStudentsWithNeeds(needs);
                     setAdaptations({});
                 }
@@ -202,7 +193,6 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
         const studentName = student ? student.name : 'Aluno Desconhecido';
         const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
 
-        // PILAR C: Sanitization (Remove Word/Office XML garbage)
         const sanitizedContent = content
             .replace(/<html[\s\S]*?>[\s\S]*?<\/head>/gi, "")
             .replace(/<[^>]+>/g, "")
@@ -220,17 +210,14 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
             original_content: selectedLesson.content
         };
 
-        // 1. LOCAL LOG (Service handles LocalStorage + Background Sync)
         await savePdiLog(logPayload);
 
-        // 2. AUTO-SAVE DOCUMENT (Separated File for Compilation)
-        // Naming Convention: "NomeDoAluno_Data.md"
         try {
             const fileName = `${studentName}_${dateStr}.md`;
             await saveGeneratedContent(
                 userId,
                 'documento',
-                'adaptacao_curricular', // Hardcoded folder PDI/Adaptation
+                'adaptacao_curricular',
                 fileName,
                 `# Adaptação: ${studentName}\nData: ${dateStr}\nAula: ${selectedLesson.topic}\n\n${finalContent}`
             );
@@ -239,7 +226,6 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
             console.error("Auto-save failed", e);
         }
 
-        // Optimistic Update UI
         setAdaptations(prev => ({
             ...prev,
             [studentId]: {
@@ -278,10 +264,9 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
             return;
         }
 
-        // 1. Build Markdown Content
         let markdownContent = `# Aula Base: ${selectedLesson.topic}\n\n`;
         markdownContent += `${selectedLesson.content}\n\n`;
-        markdownContent += `---\n\n`; // Separator
+        markdownContent += `---\n\n`;
         markdownContent += `# Adaptações Curriculares\n\n`;
 
         validAdaptations.forEach(adapt => {
@@ -290,19 +275,15 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
             markdownContent += `---\n\n`;
         });
 
-        // 2. Export using the robust service
         try {
             await exportToDocx(
                 markdownContent,
                 `KIT_INCLUSAO_${selectedLesson.topic.substring(0, 20).replace(/[^a-z0-9]/gi, '_')}`,
                 {
-                    userName: 'Professor(a)', // Could fetch profile if needed
+                    userName: 'Professor(a)',
                     schoolName: 'Instituição de Ensino'
                 }
             );
-
-            // Optional: Auto-save the generated doc content (HTML/MD) to history if needed
-            // For now, we just download.
         } catch (e: any) {
             console.error(e);
             setError(`Erro ao exportar: ${e.message}`);
@@ -313,8 +294,6 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
         if (studentsWithNeeds.length === 0) return;
         const student = studentsWithNeeds[0];
         try {
-            // DEBUG: Ensure we can read
-            console.log(`Checking logs for student ${student.id} (${student.name})`);
             const { data: logs, error: logsError } = await getPdiLogs(student.id);
 
             if (logsError) throw logsError;
@@ -338,7 +317,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                 await saveGeneratedContent(
                     userId,
                     'documento',
-                    'PDI', // Folder
+                    'PDI',
                     `RELATORIO PDI - ${student.name}`,
                     reportHtml
                 );
@@ -370,144 +349,129 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
     }, [adaptations, studentsWithNeeds, error, selectedLesson, selectedClass]);
 
     return (
-        <div className="flex flex-col lg:flex-row h-full bg-slate-50 animate-in fade-in duration-500 overflow-hidden">
+        <div className="flex flex-col h-full bg-slate-50 relative animate-in fade-in duration-500">
+            {/* PDI MODULE INTEGRATION: Modals */}
+            {pdiProfileStudent && (
+                <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+                        <StudentPDIProfile
+                            studentId={pdiProfileStudent.id}
+                            onClose={() => setPdiProfileStudent(null)}
+                        />
+                    </div>
+                </div>
+            )}
 
-            {/* LEFT CONTROL PANEL (Sidebar on Desktop, Top Stack on Mobile) */}
-            <div className="w-full lg:w-80 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 p-6 flex flex-col gap-6 shrink-0 overflow-y-auto z-20 shadow-sm">
+            {consolidatorStudent && (
+                <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+                        <PDIConsolidator
+                            studentId={consolidatorStudent.id}
+                            studentName={consolidatorStudent.name}
+                            onClose={() => setConsolidatorStudent(null)}
+                        />
+                    </div>
+                </div>
+            )}
 
-                {/* Header Title */}
+            {/* HEADER / TOOLBAR */}
+            <div className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
                 <div>
-                    <h2 className="text-lg font-black text-slate-900 uppercase italic tracking-tight flex items-center gap-2">
-                        <BrainCircuit className="text-teal-600" size={24} />
-                        <span className="leading-tight">Workbench<br />de Inclusão</span>
-                    </h2>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">Adaptação PDI e DUA Inteligente</p>
-                </div>
-
-                {/* Context Badge */}
-                {contextBadge && (
-                    <div className="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-center gap-3">
-                        <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-sm">
-                            <Globe size={14} />
-                        </div>
-                        <div>
-                            <p className="text-[9px] font-bold text-blue-400 uppercase tracking-wider">Contexto Ativo</p>
-                            <p className="text-xs font-black text-blue-700 leading-tight">
-                                {currentPlan?.subject || 'Disciplina'} - {currentPlan?.grade || 'Série'}
-                            </p>
-                        </div>
-                    </div>
-                )}
-
-                {/* Controls */}
-                <div className="space-y-4">
-                    <div>
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">1. Aula Base</label>
-                        <select
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-teal-500 transition-all cursor-pointer hover:bg-slate-100"
-                            onChange={(e) => {
-                                const l = lessons.find(l => l.id === e.target.value);
-                                setSelectedLesson(l || null);
-                            }}
-                            value={selectedLesson?.id || ''}
-                        >
-                            <option value="">Selecione a Aula...</option>
-                            {lessons.map(l => (
-                                <option key={l.id} value={l.id}>{l.topic ? l.topic.substring(0, 35) + (l.topic.length > 35 ? '...' : '') : 'Sem tópico'}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block">2. Turma Alvo</label>
-                        <select
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-teal-500 transition-all cursor-pointer hover:bg-slate-100"
-                            onChange={(e) => handleClassSelect(e.target.value)}
-                            value={selectedClass?.id || ''}
-                        >
-                            <option value="">Selecione a Turma...</option>
-                            {classes.map(c => (
-                                <option key={c.id} value={c.id}>{c.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                <div className="mt-auto pt-6 border-t border-slate-100 hidden lg:block">
-                    <p className="text-xs text-slate-400 text-center font-medium italic">
-                        "A inclusão acontece quando se aprende com as diferenças e não com as igualdades."
+                    <h1 className="text-xl font-black text-slate-800 flex items-center gap-2">
+                        <BrainCircuit className="text-indigo-600" />
+                        Gestão de Inclusão & PDI
+                    </h1>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+                        {selectedClass ? `Turma: ${selectedClass.name}` : 'Selecione uma turma para gerenciar'}
                     </p>
                 </div>
             </div>
 
-            {/* MAIN CONTENT AREA */}
-            <div className="flex-1 bg-slate-50 p-4 md:p-8 overflow-y-auto custom-scrollbar relative">
-                <div className="max-w-4xl mx-auto space-y-6 pb-20">
-
-                    {/* Empty State / Welcome */}
-                    {!selectedClass && !selectedLesson && (
-                        <div className="flex flex-col items-center justify-center py-20 opacity-50 space-y-4">
-                            <div className="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center text-slate-400">
-                                <BrainCircuit size={40} />
-                            </div>
-                            <p className="text-sm font-black uppercase text-slate-400 tracking-widest">Selecione Aula e Turma para iniciar</p>
-                        </div>
-                    )}
-
-                    {/* No Students Alert */}
-                    {selectedClass && studentsWithNeeds.length === 0 && (
-                        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm text-center">
-                            <div className="w-16 h-16 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <Sparkles size={24} />
-                            </div>
-                            <h2 className="text-lg font-black text-slate-800 tracking-tight mb-2">Turma sem PDI Identificado</h2>
-                            <p className="text-sm text-slate-500 max-w-md mx-auto">
-                                Não encontramos alunos marcados com "Necessita Adaptação" nesta turma. Você pode adicionar essa marcação no menu "Minhas Turmas".
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Student Cards List */}
-                    {studentsWithNeeds.map(student => (
-                        <StudentAdaptationCard
-                            key={student.id}
-                            student={student}
-                            adaptation={adaptations[student.id]}
-                            isGenerating={generatingId === student.id}
-                            hasLessonSelected={!!selectedLesson}
-                            onGenerate={handleGenerateAdaptation}
-                            onValidate={handleValidate}
-                            onDownload={handleDownloadStudentDoc}
-                        />
-                    ))}
-
-                    {/* ACTIONS FOOTER (Export Button) */}
-                    {studentsWithNeeds.length > 0 && selectedLesson && (
-                        <div className="pt-8 border-t border-slate-200/60 mt-8 flex flex-col items-center gap-4 animate-in slide-in-from-bottom-4">
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ações Finais</p>
-
+            <div className="flex-1 flex overflow-hidden">
+                {/* SIDEBAR - Class List */}
+                <div className="w-80 bg-white border-r border-slate-200 flex flex-col overflow-y-auto hidden md:flex">
+                    <div className="p-4 bg-slate-50 border-b border-slate-100">
+                        <h3 className="text-xs font-black uppercase text-slate-400">Minhas Turmas</h3>
+                    </div>
+                    <div className="p-2 space-y-1">
+                        {classes.map(cls => (
                             <button
-                                onClick={handleExportDoc}
-                                className="group relative px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl shadow-xl shadow-teal-600/20 transition-all hover:scale-[1.02] active:scale-95 w-full md:w-auto"
+                                key={cls.id}
+                                onClick={() => handleClassSelect(cls.id)}
+                                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all ${selectedClass?.id === cls.id ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-slate-600 hover:bg-slate-50'}`}
                             >
-                                <div className="flex items-center gap-3 font-black uppercase tracking-widest text-xs">
-                                    <span>Gerar Documento Unificado (.DOC)</span>
-                                    <div className="bg-white/20 p-1 rounded-lg">
-                                        <BookOpen size={14} className="text-white" />
-                                    </div>
-                                </div>
+                                {cls.name}
+                                <span className="block text-[10px] font-normal opacity-60 mt-0.5">{cls.subject}</span>
                             </button>
+                        ))}
+                    </div>
+                </div>
 
-                            <p className="text-xs text-slate-400 text-center max-w-sm">
-                                Gera um arquivo Word contendo o plano original e todas as adaptações validadas acima.
-                            </p>
+                {/* MAIN CONTENT AREA */}
+                <div className="flex-1 overflow-y-auto p-6 md:p-10">
+                    {!selectedClass ? (
+                        <div className="flex flex-col items-center justify-center h-full text-slate-400 opacity-60">
+                            <BookOpen size={64} className="mb-4 text-slate-300" />
+                            <p className="font-bold text-lg">Selecione uma turma para iniciar</p>
                         </div>
-                    )}
+                    ) : (
+                        <div className="max-w-5xl mx-auto">
+                            {/* STUDENTS LIST */}
+                            {studentsWithNeeds.length === 0 ? (
+                                <div className="p-10 bg-white rounded-2xl border border-slate-200 text-center">
+                                    <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                                    <h3 className="text-slate-600 font-bold">Nenhum aluno com PDI nesta turma</h3>
+                                    <button className="mt-4 text-indigo-600 font-bold text-sm hover:underline">
+                                        + Cadastrar Aluno de Inclusão
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-6">
+                                    {studentsWithNeeds.map(student => (
+                                        <div key={student.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col md:flex-row gap-6 transition-all hover:shadow-md">
+                                            {/* Student Info */}
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-black text-sm">
+                                                        {student.name.substring(0, 2).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-lg font-black text-slate-800 leading-tight">{student.name}</h3>
+                                                        <div className="flex gap-2 mt-1">
+                                                            {student.deficiencies?.map((def, i) => (
+                                                                <span key={i} className="px-2 py-0.5 bg-rose-50 text-rose-600 text-[10px] font-bold uppercase rounded-md border border-rose-100">
+                                                                    {def}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                    {selectedClass && studentsWithNeeds.length > 0 && (
-                        <div className="text-center py-10 opacity-30 mt-10">
-                            <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mx-auto mb-2"></div>
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Fim da lista</p>
+                                                <p className="text-sm text-slate-600 mt-3 line-clamp-2 bg-slate-50 p-3 rounded-lg border border-slate-100 italic">
+                                                    "{student.pedagogical_observations || 'Sem observações registradas.'}"
+                                                </p>
+                                            </div>
+
+                                            {/* Actions Bar */}
+                                            <div className="flex flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 justify-center">
+                                                <button
+                                                    onClick={() => setPdiProfileStudent(student)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 rounded-lg text-xs font-bold uppercase text-slate-500 transition-all text-left"
+                                                >
+                                                    <ClipboardList size={16} /> Ver Prontuário
+                                                </button>
+
+                                                <button
+                                                    onClick={() => setConsolidatorStudent(student)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold uppercase transition-all shadow-lg shadow-indigo-100 text-left"
+                                                >
+                                                    <FileText size={16} /> Relatório PDI
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

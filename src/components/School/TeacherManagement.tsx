@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, GraduationCap, Mail, Users, Trash2, Clock, CheckCircle } from 'lucide-react';
+import { Plus, GraduationCap, Mail, Users, Trash2, Clock, CheckCircle, Check } from 'lucide-react';
 
 interface Teacher {
     id: string;
@@ -160,17 +160,41 @@ export const TeacherManagement: React.FC<TeacherManagementProps> = ({ schoolId, 
                                         </p>
                                     </div>
 
-                                    <button
-                                        onClick={() => handleDeletePending(pending.id, pending.full_name)}
-                                        className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700 font-bold"
-                                    >
-                                        <Trash2 size={14} />
-                                        Remover
-                                    </button>
+                                    <div className="flex items-center gap-2 pt-4 mt-2 border-t border-amber-200">
+                                        <button
+                                            onClick={() => handleDeletePending(pending.id, pending.full_name)}
+                                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 font-bold rounded-lg border border-transparent hover:border-red-200 transition"
+                                        >
+                                            <Trash2 size={16} />
+                                            Remover
+                                        </button>
+                                        <button
+                                            onClick={async () => {
+                                                if (!confirm(`Confirmar aprovação de ${pending.full_name}?`)) return;
+                                                try {
+                                                    const { approveTeacher } = await import('../../services/teacherService');
+                                                    const result = await approveTeacher(pending.id);
+                                                    if (result.success) {
+                                                        alert(result.message);
+                                                        loadPendingTeachers();
+                                                        onRefresh();
+                                                    } else {
+                                                        alert('Erro: ' + result.error);
+                                                    }
+                                                } catch (err: any) {
+                                                    alert('Erro: ' + err.message);
+                                                }
+                                            }}
+                                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-green-700 bg-green-100 hover:bg-green-200 font-bold rounded-lg border border-green-200 transition"
+                                        >
+                                            <Check size={16} />
+                                            Aprovar
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                     </div>
-                </div>
+                </div >
             )}
 
             {/* Active Teachers Section */}
@@ -226,75 +250,77 @@ export const TeacherManagement: React.FC<TeacherManagementProps> = ({ schoolId, 
             </div>
 
             {/* Add Teacher Modal */}
-            {isAddingTeacher && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-                        <h3 className="text-lg font-bold text-slate-800 mb-2">Cadastrar Professor</h3>
-                        <p className="text-sm text-slate-600 mb-4">
-                            O professor será vinculado automaticamente quando fizer login com esses dados.
-                        </p>
+            {
+                isAddingTeacher && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+                            <h3 className="text-lg font-bold text-slate-800 mb-2">Cadastrar Professor</h3>
+                            <p className="text-sm text-slate-600 mb-4">
+                                O professor será vinculado automaticamente quando fizer login com esses dados.
+                            </p>
 
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Nome Completo *</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ex: João da Silva"
-                                    value={newTeacherName}
-                                    onChange={(e) => setNewTeacherName(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                />
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-1">Nome Completo *</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Ex: João da Silva"
+                                        value={newTeacherName}
+                                        onChange={(e) => setNewTeacherName(e.target.value)}
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-1">Email Institucional *</label>
+                                    <input
+                                        type="email"
+                                        placeholder="nome@educacao.mg.gov.br"
+                                        value={newTeacherEmail}
+                                        onChange={(e) => setNewTeacherEmail(e.target.value)}
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">Deve terminar com @educacao.mg.gov.br</p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-1">MASP *</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Ex: 1234567"
+                                        value={newTeacherMasp}
+                                        onChange={(e) => setNewTeacherMasp(e.target.value)}
+                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">Email Institucional *</label>
-                                <input
-                                    type="email"
-                                    placeholder="nome@educacao.mg.gov.br"
-                                    value={newTeacherEmail}
-                                    onChange={(e) => setNewTeacherEmail(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                />
-                                <p className="text-xs text-slate-500 mt-1">Deve terminar com @educacao.mg.gov.br</p>
+                            <div className="flex gap-3 mt-6">
+                                <button
+                                    onClick={() => {
+                                        setIsAddingTeacher(false);
+                                        setNewTeacherEmail('');
+                                        setNewTeacherName('');
+                                        setNewTeacherMasp('');
+                                    }}
+                                    disabled={isSubmitting}
+                                    className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition disabled:opacity-50"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleCreatePendingTeacher}
+                                    disabled={isSubmitting}
+                                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50"
+                                >
+                                    {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
+                                </button>
                             </div>
-
-                            <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-1">MASP *</label>
-                                <input
-                                    type="text"
-                                    placeholder="Ex: 1234567"
-                                    value={newTeacherMasp}
-                                    onChange={(e) => setNewTeacherMasp(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex gap-3 mt-6">
-                            <button
-                                onClick={() => {
-                                    setIsAddingTeacher(false);
-                                    setNewTeacherEmail('');
-                                    setNewTeacherName('');
-                                    setNewTeacherMasp('');
-                                }}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50 transition disabled:opacity-50"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleCreatePendingTeacher}
-                                disabled={isSubmitting}
-                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50"
-                            >
-                                {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
-                            </button>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { School, Users, GraduationCap, BookOpen, Loader2, UserPlus, Upload } from 'lucide-react';
+import { School, Users, GraduationCap, BookOpen, Loader2, UserPlus, Upload, Shield, MapPin, Building2, Search } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
 import { UserProfile } from '../types';
 import ClassManagement from '../components/School/ClassManagement';
@@ -19,59 +19,156 @@ interface SchoolStats {
 }
 
 export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, onOpenSettings }) => {
+    // Determine active school ID (Admin override or User's school)
+    const [activeSchoolId, setActiveSchoolId] = useState<string | null>(userProfile.school_id || null);
+
+    // Stats State
     const [stats, setStats] = useState<SchoolStats>({
         totalTeachers: 0,
         totalStudents: 0,
         totalClasses: 0,
         schoolName: userProfile.school_name || 'Escola'
     });
+
+    // Content State
     const [teachers, setTeachers] = useState<any[]>([]);
     const [students, setStudents] = useState<any[]>([]);
     const [classes, setClasses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'teachers' | 'classes' | 'students'>('teachers');
 
-    useEffect(() => {
-        if (userProfile.school_id) {
-            loadDashboardData();
-        } else {
-            setLoading(false);
-        }
-    }, [userProfile.school_id]);
+    // Admin Selector State
+    const isAdmin = userProfile.role === 'admin' || userProfile.is_admin === true;
+    const [cities, setCities] = useState<string[]>([]);
+    const [selectedCity, setSelectedCity] = useState('');
+    const [citySchools, setCitySchools] = useState<any[]>([]);
+    const [selectedAdminSchool, setSelectedAdminSchool] = useState<string>('');
+    const [isSearchingSchools, setIsSearchingSchools] = useState(false);
 
-    const loadDashboardData = async () => {
+    // Initial Load & Admin Setup
+    useEffect(() => {
+        if (isAdmin) {
+            loadCities();
+        }
+
+        if (userProfile.school_id) {
+            setActiveSchoolId(userProfile.school_id);
+        } else if (!isAdmin) {
+            setLoading(false); // Stop loading if regular user has no school
+        }
+    }, [userProfile, isAdmin]);
+
+    // React to Active School Change
+    useEffect(() => {
+        if (activeSchoolId) {
+            loadDashboardData(activeSchoolId);
+        }
+    }, [activeSchoolId]);
+
+    // Admin: Load Cities
+    // Admin: Load Cities
+    const loadCities = async () => {
+        try {
+            // Try to use the efficient RPC function first (Gets ALL cities, not just 1000)
+            const { data, error } = await supabase.rpc('get_cities');
+
+            if (!error && data) {
+                // RPC returns objects like { city: "Name" }
+                const citiesList = data.map((item: any) => item.city);
+                setCities(citiesList);
+            } else {
+                console.warn("RPC get_cities failed, falling back to limited select:", error);
+                // Fallback: This will still be limited to 1000 rows but better than nothing
+                const { data: fallbackData } = await supabase
+                    .from('schools')
+                    .select('city')
+                    .order('city');
+
+                if (fallbackData) {
+                    const unique = Array.from(new Set(fallbackData.map(i => i.city).filter(Boolean)));
+                    setCities(unique);
+                }
+            }
+        } catch (err) {
+            console.error("Error loading cities:", err);
+        }
+    };
+
+    // Admin: Load Schools when City Selected
+    useEffect(() => {
+        if (selectedCity) {
+            const loadSchools = async () => {
+                setIsSearchingSchools(true);
+                const { data } = await supabase
+                    .from('schools')
+                    .select('id, name, city')
+                    .eq('city', selectedCity)
+                    .order('name');
+                setCitySchools(data || []);
+                setIsSearchingSchools(false);
+            };
+            loadSchools();
+        } else {
+            setCitySchools([]);
+        }
+    }, [selectedCity]);
+
+    const handleAdminConnect = () => {
+        if (selectedAdminSchool) {
+            const school = citySchools.find(s => s.id === selectedAdminSchool);
+            if (school) {
+                setActiveSchoolId(school.id);
+                // Fake the update for UI immediate feedback
+                setStats(prev => ({ ...prev, schoolName: school.name }));
+            }
+        }
+    };
+
+    const loadDashboardData = async (schoolId: string) => {
         setLoading(true);
         try {
-            // Load teachers
+            // Get School Name if missing
+            if (!stats.schoolName || stats.schoolName === 'Escola') {
+                const { data: schoolData } = await supabase.from('schools').select('name').eq('id', schoolId).single();
+                if (schoolData) setStats(prev => ({ ...prev, schoolName: schoolData.name }));
+            }
+
+            // Load teachers (Active + Pending)
             const { data: teachersData } = await supabase
                 .from('profiles')
                 .select('id, email, masp, full_name, created_at')
-                .eq('school_id', userProfile.school_id)
+                .eq('school_id', schoolId)
                 .eq('role', 'teacher');
 
-            // Load students
+            const { data: pendingTeachersData } = await supabase
+                .from('pending_teachers')
+                .select('id')
+                .eq('school_id', schoolId)
+                .eq('status', 'pending');
+
+            // Load students (from correct table 'students')
             const { data: studentsData } = await supabase
                 .from('students')
                 .select('*')
-                .eq('current_school_id', userProfile.school_id)
+                .eq('current_school_id', schoolId)
                 .order('name');
 
             // Load classes
             const { data: classesData } = await supabase
                 .from('classes')
                 .select('*')
-                .eq('school_id', userProfile.school_id)
+                .eq('school_id', schoolId)
                 .order('name');
 
             setTeachers(teachersData || []);
             setStudents(studentsData || []);
             setClasses(classesData || []);
-            setStats({
-                totalTeachers: teachersData?.length || 0,
+            setStats(prev => ({
+                ...prev,
+                totalTeachers: (teachersData?.length || 0) + (pendingTeachersData?.length || 0),
                 totalStudents: studentsData?.length || 0,
                 totalClasses: classesData?.length || 0,
-                schoolName: userProfile.school_name || 'Escola'
-            });
+            }));
         } catch (error) {
             console.error('Error loading dashboard data:', error);
         } finally {
@@ -79,7 +176,7 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
         }
     };
 
-    if (loading) {
+    if (loading && !activeSchoolId && !isAdmin) {
         return (
             <div className="flex items-center justify-center h-full">
                 <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
@@ -87,9 +184,10 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
         );
     }
 
-    if (!userProfile.school_id) {
+    // STATE: No School Linked & Not Admin
+    if (!activeSchoolId && !isAdmin) {
         return (
-            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-slate-50">
                 <div className="bg-orange-100 p-6 rounded-full mb-6">
                     <School className="w-12 h-12 text-orange-600" />
                 </div>
@@ -110,10 +208,6 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
                             <span className="w-5 h-5 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
                             Preencha o <strong>Código INEP</strong> e selecione sua escola.
                         </li>
-                        <li className="flex items-start gap-2">
-                            <span className="w-5 h-5 bg-slate-100 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
-                            Salve as alterações para liberar o acesso.
-                        </li>
                     </ul>
                     <button
                         onClick={onOpenSettings}
@@ -126,19 +220,98 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
         );
     }
 
+    // STATE: Admin Selector (If no school active OR explicit toggle)
+    if (!activeSchoolId && isAdmin) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-8 bg-slate-900">
+                <div className="w-full max-w-lg bg-white rounded-3xl p-10 shadow-2xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-slate-900 text-white rounded-xl">
+                            <Shield size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-black text-slate-800 uppercase italic tracking-tight">Suporte à Escola</h2>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Acesso Administrativo</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                <MapPin size={12} /> Cidade
+                            </label>
+                            <select
+                                value={selectedCity}
+                                onChange={e => setSelectedCity(e.target.value)}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all custom-select"
+                            >
+                                <option value="">Selecione a Cidade...</option>
+                                {cities.map(city => (
+                                    <option key={city} value={city}>{city}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1">
+                                <Building2 size={12} /> Escola
+                            </label>
+                            <div className="relative">
+                                <select
+                                    value={selectedAdminSchool}
+                                    onChange={e => setSelectedAdminSchool(e.target.value)}
+                                    disabled={!selectedCity || isSearchingSchools}
+                                    className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-50"
+                                >
+                                    <option value="">{isSearchingSchools ? "Carregando..." : "Selecione a Escola..."}</option>
+                                    {citySchools.map(school => (
+                                        <option key={school.id} value={school.id}>{school.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={handleAdminConnect}
+                            disabled={!selectedAdminSchool}
+                            className="w-full py-4 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                        >
+                            <Search size={16} /> Acessar Painel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // MAIN DASHBOARD VIEW
     return (
         <div className="flex flex-col h-full bg-slate-50 overflow-hidden">
             {/* Header */}
-            <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shadow-sm">
+            <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shadow-sm relative z-20">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-100 rounded-lg text-blue-700">
                         <School size={24} />
                     </div>
                     <div>
                         <h1 className="text-lg font-bold text-slate-800">Painel de Gestão Escolar</h1>
-                        <p className="text-xs text-slate-500">{stats.schoolName}</p>
+                        <p className="text-xs text-slate-500 font-medium flex items-center gap-1">
+                            {isAdmin && <Shield size={10} className="text-red-500" />}
+                            {stats.schoolName}
+                        </p>
                     </div>
                 </div>
+
+                {isAdmin && (
+                    <button
+                        onClick={() => setActiveSchoolId(null)}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold uppercase tracking-wide transition-colors"
+                    >
+                        Trocar Escola
+                    </button>
+                )}
             </div>
 
             {/* Content */}
@@ -171,7 +344,7 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
                 </div>
 
                 {/* Tabs Navigation */}
-                <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-sm border border-slate-200 mb-6">
+                <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-sm border border-slate-200 mb-6 w-full max-w-md mx-auto md:mx-0">
                     <button
                         onClick={() => setActiveTab('teachers')}
                         className={`flex-1 px-4 py-2.5 rounded-md text-sm font-bold transition ${activeTab === 'teachers'
@@ -202,31 +375,32 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
                 </div>
 
                 {/* Tab Content */}
-                {activeTab === 'teachers' && (
-                    <TeacherManagement
-                        schoolId={userProfile.school_id || ''}
-                        teachers={teachers}
-                        onRefresh={loadDashboardData}
-                    />
-                )}
+                <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-2">
+                    {activeTab === 'teachers' && activeSchoolId && (
+                        <TeacherManagement
+                            schoolId={activeSchoolId}
+                            teachers={teachers}
+                            onRefresh={() => loadDashboardData(activeSchoolId)}
+                        />
+                    )}
 
-                {/* Classes Tab */}
-                {activeTab === 'classes' && (
-                    <ClassManagement
-                        schoolId={userProfile.school_id || ''}
-                        classes={classes}
-                        onRefresh={loadDashboardData}
-                    />
-                )}
+                    {activeTab === 'classes' && activeSchoolId && (
+                        <ClassManagement
+                            schoolId={activeSchoolId}
+                            userId={userProfile.id}
+                            classes={classes}
+                            onRefresh={() => loadDashboardData(activeSchoolId)}
+                        />
+                    )}
 
-                {/* Students Tab */}
-                {activeTab === 'students' && (
-                    <StudentManagement
-                        schoolId={userProfile.school_id || ''}
-                        students={students}
-                        onRefresh={loadDashboardData}
-                    />
-                )}
+                    {activeTab === 'students' && activeSchoolId && (
+                        <StudentManagement
+                            schoolId={activeSchoolId}
+                            students={students}
+                            onRefresh={() => loadDashboardData(activeSchoolId)}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     );

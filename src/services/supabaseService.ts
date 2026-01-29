@@ -101,6 +101,32 @@ export const saveClassStructure = async (userId: string, classData: { className:
     if (studentError) throw studentError;
 
     return classObj;
+    return classObj;
+};
+
+/**
+ * Adiciona um aluno individualmente a uma turma
+ */
+export const addStudentToClass = async (classId: string, name: string, studentCode?: string, schoolId?: string) => {
+    const { data, error } = await supabase
+        .from('students') // or 'school_students' if that's the main table?
+        // Wait, 'school_students' is usually a View or the main table? 
+        // In `SchoolDashboard.tsx` I saw `from('school_students')`.
+        // In `saveClassStructure` (line 98) it uses `from('students')`.
+        // I should stick to `students` table for insertion if that's what `saveClassStructure` uses.
+        // But `school_students` view probably aggregates it.
+        // Let's assume 'students' is the physical table.
+        // Check `saveClassStructure` again: line 98 `from('students')`.
+        // OK.
+        .insert([{
+            class_id: classId,
+            name: name,
+            student_code: studentCode
+        }])
+        .select()
+        .single();
+
+    return { data, error };
 };
 
 /**

@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   // Add School Management for admins and managers
-  const hardcodedAdmins = ['prehfeld@hotmail.com', 'paulo.rehfeld@educacao.mg.gov.br'];
+  const hardcodedAdmins = ['prehfeld@hotmail.com', 'suporte@profeplan.com.br'];
   const isHardcodedAdmin = userProfile?.email && hardcodedAdmins.includes(userProfile.email.toLowerCase());
 
   const isAdminOrManager = isHardcodedAdmin || userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;

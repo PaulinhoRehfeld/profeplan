@@ -206,3 +206,19 @@ export const deletePendingTeacher = async (pendingTeacherId: string): Promise<{ 
     return { success: true };
 };
 
+/**
+ * Approve a pending teacher (Manually link profile)
+ */
+export const approveTeacher = async (pendingId: string): Promise<{ success: boolean; message?: string; error?: string }> => {
+    const { data, error } = await supabase.rpc('approve_teacher', {
+        p_pending_id: pendingId
+    });
+
+    if (error) return { success: false, error: error.message };
+
+    // RPC returns: { success, message, error }
+    if (data && !data.success) return { success: false, error: data.error };
+
+    return { success: true, message: data.message };
+};
+
