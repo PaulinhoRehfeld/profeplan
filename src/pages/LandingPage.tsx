@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
     Check, Brain, Clock, FileCheck, BookOpen, Users,
-    Target, BarChart, FileText, ArrowRight
+    Target, BarChart, FileText, ArrowRight, Building2, Sparkles, Gift
 } from 'lucide-react';
+import ContactSection from '../components/ContactSection';
 
 const LandingPage: React.FC = () => {
     return (
@@ -23,6 +24,7 @@ const LandingPage: React.FC = () => {
                         <a href="#professores" className="hover:text-blue-600 transition-colors">Para Professores</a>
                         <a href="#escolas" className="hover:text-blue-600 transition-colors">Para Escolas</a>
                         <a href="#funcionalidades" className="hover:text-blue-600 transition-colors">Funcionalidades</a>
+                        <a href="#contato" className="hover:text-blue-600 transition-colors">Contato</a>
                     </div>
 
                     {/* Buttons */}
@@ -75,17 +77,150 @@ const LandingPage: React.FC = () => {
                         </Link>
                     </div>
 
-                    {/* Visual Placeholder */}
+                    {/* Hero Animation Video */}
                     <div className="pt-12 max-w-4xl mx-auto">
-                        <div className="bg-slate-100 border-2 border-slate-200 rounded-2xl shadow-2xl p-8 md:p-12 flex items-center justify-center min-h-[300px]">
-                            <div className="text-center space-y-3">
-                                <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
-                                    <FileCheck size={32} className="text-blue-600" />
+                        <div className="relative bg-slate-100 border-2 border-slate-200 rounded-2xl shadow-2xl overflow-hidden">
+                            {/* Wrapper para fazer crop do vídeo - oculta barra superior */}
+                            <div className="relative w-full overflow-hidden" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+                                <video
+                                    className="absolute top-0 left-0 w-full h-auto"
+                                    style={{
+                                        transform: 'scale(1.15) translateY(-8%) translateX(8%)',
+                                        transformOrigin: 'center center'
+                                    }}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    preload="metadata"
+                                    aria-label="Demonstração da plataforma ProfePlan gerando planejamento de aula"
+                                >
+                                    <source src="/videos/hero-animation.mp4" type="video/mp4" />
+                                    {/* Fallback para navegadores que não suportam vídeo */}
+                                    <div className="bg-slate-100 p-8 md:p-12 flex items-center justify-center min-h-[300px]">
+                                        <div className="text-center space-y-3">
+                                            <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                                                <FileCheck size={32} className="text-blue-600" />
+                                            </div>
+                                            <p className="text-slate-500 font-medium text-sm md:text-base">
+                                                Demonstração: Plataforma gerando planejamento pedagógico
+                                            </p>
+                                        </div>
+                                    </div>
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 2.5 BANNER DE PROMOÇÃO - INÍCIO DE ANO */}
+            <section className="py-6 px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600">
+                <div className="max-w-6xl mx-auto">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-white">
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                                <Gift size={32} className="text-white" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Sparkles size={16} className="text-yellow-300" />
+                                    <span className="text-xs font-black uppercase tracking-wider text-yellow-300">Promoção Início de Ano</span>
                                 </div>
-                                <p className="text-slate-500 font-medium text-sm md:text-base italic">
-                                    [Aqui entrará um GIF da plataforma gerando um plano de aula]
+                                <h3 className="text-2xl md:text-3xl font-black">
+                                    10 Créditos de Boas-Vindas!
+                                </h3>
+                                <p className="text-sm text-blue-100 mt-1">
+                                    Faça login com seu <strong>email institucional</strong> e ganhe 10 créditos para conhecer a plataforma.
                                 </p>
                             </div>
+                        </div>
+                        <Link
+                            to="/signup"
+                            className="whitespace-nowrap px-8 py-4 bg-white text-blue-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                        >
+                            Resgatar Agora
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* 2.6 NOVIDADES 2026 */}
+            <section className="py-16 md:py-20 px-4 bg-white border-y border-slate-100">
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-full text-sm font-black uppercase text-blue-600 mb-4">
+                            <Sparkles size={16} />
+                            Novidades 2026
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">
+                            O que há de novo?
+                        </h2>
+                        <p className="text-lg text-slate-600">
+                            Recursos exclusivos para facilitar ainda mais sua rotina pedagógica.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {/* Cartão 1: Link Escola-Professor */}
+                        <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border-2 border-blue-200 rounded-3xl p-8 hover:shadow-2xl transition-all">
+                            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                                <Building2 size={32} className="text-white" />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-900 mb-3">
+                                Link Direto Escola→Professor
+                            </h3>
+                            <p className="text-slate-600 leading-relaxed mb-4">
+                                Gestores podem integrar professores diretamente ao sistema da escola.
+                                Acabou a confusão de criar contas separadas!
+                            </p>
+                            <ul className="space-y-2">
+                                <li className="flex items-start gap-2 text-sm text-slate-700">
+                                    <Check size={18} className="text-blue-600 shrink-0 mt-0.5" />
+                                    <span>Sincronização automática de turmas</span>
+                                </li>
+                                <li className="flex items-start gap-2 text-sm text-slate-700">
+                                    <Check size={18} className="text-blue-600 shrink-0 mt-0.5" />
+                                    <span>Visibilidade total dos planejamentos</span>
+                                </li>
+                                <li className="flex items-start gap-2 text-sm text-slate-700">
+                                    <Check size={18} className="text-blue-600 shrink-0 mt-0.5" />
+                                    <span>Dados centralizados em tempo real</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Cartão 2: Modo Multi-Escolas */}
+                        <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 border-2 border-purple-200 rounded-3xl p-8 hover:shadow-2xl transition-all">
+                            <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                                <Users size={32} className="text-white" />
+                            </div>
+                            <div className="flex items-center gap-2 mb-3">
+                                <h3 className="text-2xl font-black text-slate-900">
+                                    Modo Multi-Escolas
+                                </h3>
+                                <span className="px-2 py-1 bg-purple-100 text-purple-700 text-[10px] font-black uppercase rounded-full">
+                                    2º Cargo
+                                </span>
+                            </div>
+                            <p className="text-slate-600 leading-relaxed mb-4">
+                                Trabalha em mais de uma escola? Agora você pode alternar entre escolas
+                                com um clique, sem precisar fazer logout!
+                            </p>
+                            <ul className="space-y-2">
+                                <li className="flex items-start gap-2 text-sm text-slate-700">
+                                    <Check size={18} className="text-purple-600 shrink-0 mt-0.5" />
+                                    <span>Seletor de escola no header</span>
+                                </li>
+                                <li className="flex items-start gap-2 text-sm text-slate-700">
+                                    <Check size={18} className="text-purple-600 shrink-0 mt-0.5" />
+                                    <span>Dados separados por instituição</span>
+                                </li>
+                                <li className="flex items-start gap-2 text-sm text-slate-700">
+                                    <Check size={18} className="text-purple-600 shrink-0 mt-0.5" />
+                                    <span>Troca instantânea de contexto</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -185,6 +320,12 @@ const LandingPage: React.FC = () => {
                                         "Adeus ao Ctrl+C / Ctrl+V".
                                     </span>
                                 </li>
+                                <li className="flex items-start gap-3">
+                                    <Check size={24} className="text-blue-600 shrink-0 mt-0.5" />
+                                    <span className="text-slate-700 font-medium">
+                                        <strong className="text-blue-600">Novo:</strong> Modo Multi-Escolas para 2º cargo.
+                                    </span>
+                                </li>
                             </ul>
 
                             <div className="pt-4">
@@ -227,6 +368,12 @@ const LandingPage: React.FC = () => {
                                     <Check size={24} className="text-emerald-600 shrink-0 mt-0.5" />
                                     <span className="text-slate-700 font-medium">
                                         <strong>Novo:</strong> Gestão Integrada de PDI (Plano de Desenvolvimento Individual).
+                                    </span>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <Check size={24} className="text-emerald-600 shrink-0 mt-0.5" />
+                                    <span className="text-slate-700 font-medium">
+                                        <strong className="text-emerald-600">Novo:</strong> Link direto escola→professor.
                                     </span>
                                 </li>
                                 <li className="flex items-start gap-3">
@@ -289,7 +436,10 @@ const LandingPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* 6. FOOTER */}
+            {/* 6. SECTION CONTATO */}
+            <ContactSection />
+
+            {/* 7. FOOTER */}
             <footer className="bg-slate-900 text-white py-16 px-4">
                 <div className="max-w-6xl mx-auto">
                     {/* CTA Final */}
@@ -341,7 +491,7 @@ const LandingPage: React.FC = () => {
                     {/* Copyright */}
                     <div className="text-center pt-8 border-t border-slate-700">
                         <p className="text-slate-500 text-sm">
-                            © 2025 ProfePlan - Engenharia Pedagógica. Todos os direitos reservados. v3.7
+                            © 2025 ProfePlan - Engenharia Pedagógica. Todos os direitos reservados. v3.8
                         </p>
                     </div>
                 </div>
