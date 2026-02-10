@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Users, Trash2, Edit2, Search, Filter, AlertTriangle, Save, X, ArrowRightLeft, ClipboardList } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
+import { createStudent, updateStudent, archiveStudent } from '../../services/studentService';
 import { StudentPDIProfile } from './PDI/StudentPDIProfile';
 
 // Constants
@@ -17,16 +18,16 @@ const DELETION_REASONS = [
     'Outro'
 ];
 
+// Garantir que o tipo Student definido localmente seja utilizado corretamente
 interface Student {
     id: string; // TEXT
     name: string;
     student_code?: string;
     class_id?: string;
-    // Map both new and legacy fields to ensure compatibility
     pdi_needs?: string[];
-    deficiencies?: string[]; // Legacy column support
+    deficiencies?: string[];
     observations?: string;
-    pedagogical_observations?: string; // Legacy column support
+    pedagogical_observations?: string;
 }
 
 interface ClassItem {
@@ -122,8 +123,6 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
 
         setLoading(true);
         try {
-            const { createStudent, updateStudent } = await import('../../services/studentService');
-
             const payload = {
                 name: formData.name,
                 student_code: formData.student_code,
@@ -136,12 +135,9 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
                 current_school_id: schoolId
             };
 
-            let result;
-            if (editingStudent) {
-                result = await updateStudent(editingStudent.id, payload);
-            } else {
-                result = await createStudent(payload);
-            }
+            const result = editingStudent
+                ? await updateStudent(editingStudent.id, payload)
+                : await createStudent(payload);
 
             if (result.success) {
                 alert(editingStudent ? 'Aluno atualizado!' : 'Aluno criado!');
@@ -174,7 +170,6 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
 
         setLoading(true);
         try {
-            const { archiveStudent } = await import('../../services/studentService');
             const result = await archiveStudent(studentToDelete.id, deletionReason, deletionDetails);
 
             if (result.success) {

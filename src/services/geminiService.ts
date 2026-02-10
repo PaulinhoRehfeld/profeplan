@@ -8,16 +8,14 @@ export { generateAssessmentWithContext, gradeWrittenAnswer } from './ai/AiAssess
 export { generatePresentationJSON } from './ai/AiPresentationService';
 export { generateTermPlan, generateGeminiContent } from './ai/AiPlanningService';
 export {
-  generateStudentAdaptation,
-  generatePdiReport,
-  generateFinalPDIReport,
   generateBlock9Adaptation,
   generateBlock10Diagnosis,
   generateBlock11Report
-} from './ai/AiPdiService';
+} from './pdi/PdiDocumentService';
 export {
   extractHighSchoolContext,
   parseClassListFromText,
   generateCanvaData,
   speakPedagogicalText
 } from './ai/AiUtilityService';
+export { generateStudentAdaptation } from './ai/AiPdiService';

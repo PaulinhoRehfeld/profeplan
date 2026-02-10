@@ -5,6 +5,7 @@ import { UserProfile } from '../types';
 import ClassManagement from '../components/School/ClassManagement';
 import TeacherManagement from '../components/School/TeacherManagement';
 import StudentManagement from '../components/School/StudentManagement';
+import { getStudentsBySchool } from '../services/studentService';
 
 interface SchoolDashboardProps {
     userProfile: UserProfile;
@@ -207,12 +208,8 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
                 .eq('school_id', resolvedSchoolId)
                 .eq('status', 'pending');
 
-            // Load students (usando UUID resolvido)
-            const { data: studentsData } = await supabase
-                .from('students')
-                .select('*')
-                .eq('current_school_id', resolvedSchoolId)
-                .order('name');
+            // Load students using StudentService
+            const studentsData = await getStudentsBySchool(resolvedSchoolId);
 
             // Load classes (usando UUID resolvido)
             const { data: classesData } = await supabase

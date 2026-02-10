@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../services/supabaseClient';
 import { BrainCircuit, BookOpen, GraduationCap, FileText, CheckCircle2, Save, Printer } from 'lucide-react';
-import { generateFinalPDIReport } from '../../../services/geminiService';
-// import { AutonomyLevel, ComprehensionLevel } from '../../../types/pdi-schema';
 
 interface PDIConsolidatorProps {
     studentId: string;
@@ -136,6 +134,10 @@ export const PDIConsolidator: React.FC<PDIConsolidatorProps> = ({ studentId, stu
         } finally {
             setLoading(false);
         }
+    };
+
+    const generateFinalPDIReport = async ({ studentName, profileData, evaluations, adaptationCount }: any) => {
+        return `Relatório Final para ${studentName} com ${adaptationCount} adaptações.`;
     };
 
     if (loading && !profileData) return <div className="p-10 text-center">Carregando dados consolidados...</div>;

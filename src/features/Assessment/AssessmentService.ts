@@ -1,6 +1,6 @@
 import { supabase } from '../../services/supabaseClient';
 import { Assessment } from '../../types';
-import { PdiService } from '../../services/PdiService';
+import { PdiDocumentService } from '../../services/pdi/PdiDocumentService'; // Updated from PdiService
 
 const LOCAL_STORAGE_KEY = 'profeplan_assessments';
 
@@ -69,7 +69,7 @@ const syncAssessmentToCloud = async (userId: string, assessment: Assessment) => 
 
     // C. PDI Automation (Sync to Block X)
     if (assessment.classId) {
-        PdiService.logEventForClass(
+        PdiDocumentService.logEventForClass(
             assessment.classId,
             'EVALUATION',
             `Avaliação: ${assessment.title}`,

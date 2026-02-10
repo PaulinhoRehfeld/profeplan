@@ -1,6 +1,6 @@
 import { supabase } from '../../services/supabaseClient';
 import { checkUsageQuota, incrementUserUsage } from '../../services/userService';
-import { PdiService } from '../../services/PdiService';
+import { PdiDocumentService } from '../../services/pdi/PdiDocumentService'; // Updated from PdiService
 
 // --- FOLDER STRUCTURE ENUM ---
 export enum PlanFolder {
@@ -107,7 +107,7 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
 
         // C. PDI Automation (Sync to Block VIII - Proposta Pedagógica/Planejamento)
         if (plan.classId) {
-            PdiService.logEventForClass(
+            PdiDocumentService.logEventForClass(
                 plan.classId,
                 'LESSON_PLAN',
                 `Planejamento: ${plan.title}`,

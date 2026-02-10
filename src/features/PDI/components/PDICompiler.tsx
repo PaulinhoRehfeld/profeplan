@@ -50,7 +50,7 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
         setExporting(true);
         try {
             // Import dynamically to avoid bundle bloat
-            const { exportPdiToDocx } = await import('../../../services/PdiExportService');
+            const { exportPdiToDocx } = await import('../../../services/pdi/PdiDocumentService');
             await exportPdiToDocx(pdi);
         } catch (error: any) {
             console.error('Error exporting to DOCX:', error);

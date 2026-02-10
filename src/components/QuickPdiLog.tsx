@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { PdiService, PdiRecordType } from '../services/PdiService';
+import { PdiDocumentService } from '../services/pdi/PdiDocumentService'; // Updated from PdiService
 import { AlertCircle, Save, Loader2, X, CheckCircle2 } from 'lucide-react';
+import { PdiRecordType } from '../services/pdi/PdiDocumentService';
 
 interface QuickPdiLogProps {
     studentId: string; // The centralized school_student_id
@@ -19,7 +20,7 @@ const QuickPdiLog: React.FC<QuickPdiLogProps> = ({ studentId, studentName, onClo
 
         setLoading(true);
         try {
-            await PdiService.logEvent(
+            await PdiDocumentService.logEvent(
                 studentId,
                 type,
                 type === 'OCCURRENCE' ? 'Ocorrência Comportamental' : 'Observação Pedagógica',

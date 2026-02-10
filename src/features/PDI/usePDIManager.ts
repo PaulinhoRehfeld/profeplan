@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { getClassesBySchool as getClasses, getStudentsByClass as getClassDetails } from '../../services/classService';
 import { getGeneratedContents, saveGeneratedContent } from '../../services/databaseService';
-import { getPdiLogs } from '../../services/PdiService'; // Note: Check capitalization in imports
-import { PdiService } from '../../services/PdiService';
-import { generatePdiReport } from '../../services/geminiService';
+import { PdiDocumentService } from '../../services/pdi/PdiDocumentService';
 import { generateBlock9Adaptation } from '../../services/ai/AiPdiService';
 import { generatePdiReportDoc, exportToDocx } from '../../services/exportService';
 import { Class, Student, StudentAdaptation, Lesson, UserProfile } from '../../types';
@@ -214,7 +212,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
         // Save PDI Log to Supabase using the correct service
         try {
-            const data = await PdiService.logEvent(
+            const data = await PdiDocumentService.logEvent(
                 studentId,
                 'ADAPTATION',
                 `Adaptação: ${selectedLesson.topic}`,
@@ -380,16 +378,10 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             }
 
             setLoading(true);
-            const report = await generatePdiReport(logs, student.name, 'Trimestre Atual');
+            const logsContent = logs.map(log => `- ${log}`).join('\n');
+            const reportHtml = generatePdiReportDoc(student.name, 'Trimestre Atual', logsContent);
 
             try {
-                const reportHtml = `
-                    <html><body>
-                    <h1>Relatório de Desenvolvimento Individual</h1>
-                    <p><strong>Estudante:</strong> ${student.name}</p>
-                    <div>${report.replace(/\n/g, '<br/>')}</div>
-                    </body></html>
-                `;
                 await saveGeneratedContent(
                     userId,
                     'documento',
@@ -400,7 +392,6 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             } catch (e) {
                 console.warn("Falha no autosave", e);
             }
-            generatePdiReportDoc(student.name, 'Trimestre Atual', report);
         } catch (e: any) {
             console.error(e);
             setError(`Erro: ${e.message || 'Falha ao gerar relatório'}`);
@@ -434,7 +425,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                     ...record.content,
                     feedback: feedbackData
                 };
-                await PdiService.updateRecordContent(lastAdaptationDetails.id, newContent);
+                await PdiDocumentService.updateRecordContent(lastAdaptationDetails.id, newContent);
                 // alert("Avaliação registrada com sucesso!"); // Optional feedback
             }
         } catch (e) {
@@ -498,4 +489,8 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
         handleEvaluate,
         setFeedbackModalOpen
     };
+};
+
+const getPdiLogs = async (studentId: string) => {
+    return PdiDocumentService.getLogs(studentId);
 };

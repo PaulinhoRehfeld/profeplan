@@ -90,7 +90,7 @@ export const generateInclusionDoc = async (
   document.body.removeChild(link);
 };
 
-export const generatePdiReportDoc = (studentName: string, period: string, reportContent: string) => {
+export const generatePdiReportDoc = (studentName: string, period: string, reportContent: string): string => {
   const htmlContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
@@ -120,6 +120,8 @@ export const generatePdiReportDoc = (studentName: string, period: string, report
   a.href = url;
   a.download = `RELATORIO_PDI_${studentName}_${period}.doc`;
   a.click();
+
+  return htmlContent;
 };
 
 // --- General Export Functions (Restored) ---
