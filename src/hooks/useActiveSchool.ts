@@ -8,8 +8,6 @@ export interface ActiveSchool {
     inep_code: string;
     city?: string;
 }
-    };
-}
 
 const STORAGE_KEY = 'profeplan_active_school';
 
