@@ -1,0 +1,45 @@
+{
+  "titulo": "PLANO DE CURSO 2026 – Currículo Referência de Minas Gerais – Ensino Médio",
+  "disciplina": "Matemática",
+  "nivel": "2º ano",
+  "conteudo_vetorial": [
+    {
+      "pagina": 1,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "(EM13MAT201) Propor ou participar de ações adequadas às demandas da região, preferencialmente para sua comunidade, envolvendo medições e cálculos de perímetro, de área, de volume, de capacidade ou de massa.",
+      "tags": [
+        "perímetro",
+        "área",
+        "volume",
+        "capacidade",
+        "massa",
+        "medições",
+        "cálculos"
+      ]
+    },
+    {
+      "pagina": 1,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EM13MAT302B): Construir modelos empregando as funções polinomiais de 2º, para resolver problemas em contextos diversos, com ou sem apoio de tecnologias digitais",
+      "tags": [
+        "funções polinomiais",
+        "modelos matemáticos",
+        "equações",
+        "tecnologias digitais"
+      ]
+    },
+    {
+      "pagina": 1,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EM13MAT303) Interpretar e comparar situações que envolvam juros simples com as que",
+      "tags": [
+        "juros simples",
+        "juros compostos",
+        "crescimento linear",
+        "crescimento exponencial"
+      ]
+    }
+  ],
+  "meta_arquivo": "2°ANO_MATEMÁTICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:16:08"
+}

@@ -1,0 +1,81 @@
+{
+  "titulo": null,
+  "disciplina": "Biologia",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT202X**) Analisar as diversas<br>formas de manifestação da vida em<br>seus diferentes níveis de organização,<br>bem como as condições ambientais<br>favoráveis e os fatores limitantes a elas,<br>tanto na Terra quanto em outros<br>planetas, com ou sem o uso de<br>dispositivos e aplicativos digitais.|Introdução à Ecologia|Construir e utilizar interpretações<br>sobre a dinâmica da Vida, da Terra e<br>do<br>Cosmos<br>para<br>elaborar<br>argumentos, realizar previsões sobre<br>o funcionamento e a evolução dos<br>seres<br>vivos<br>e <br>do<br>Universo,<br>e <br>fundamentar<br>decisões<br>éticas<br>e <br>responsáveis.|",
+      "tags": [
+        "ecologia",
+        "vida",
+        "terra",
+        "cosmos",
+        "organização",
+        "ambiente"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT203X**) <br>Avaliar<br>e <br>prever<br>efeitos<br>de<br>intervenções<br>nos<br>ecossistemas, e seus impactos nos<br>seres vivos e no corpo humano, com<br>base nos mecanismos de manutenção<br>da vida, nos ciclos da matéria e nas<br>transformações e transferências de<br>energia, utilizando representações e<br>simulações sobre tais fatores, com ou<br>sem o uso de dispositivos e aplicativos<br>digitais.|Introdução à Ecologia|Construir e utilizar interpretações<br>sobre a dinâmica da Vida, da Terra e<br>do<br>Cosmos<br>para<br>elaborar<br>argumentos, realizar previsões sobre<br>o funcionamento e a evolução dos<br>seres<br>vivos<br>e <br>do<br>Universo,<br>e <br>fundamentar<br>decisões<br>éticas<br>e <br>responsáveis.|",
+      "tags": [
+        "ecossistemas",
+        "impactos",
+        "seres vivos",
+        "corpo humano",
+        "energia"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Matéria e Energia|(**EM13CNT101**) Analisar e representar,<br>com ou sem o uso de dispositivos e de<br>aplicativos<br>digitais<br>especíﬁcos,<br>as<br>transformações e conservações em<br>sistemas que envolvam quantidade de<br>matéria, de energia e de movimento<br>para realizar previsões sobre seus<br>comportamentos<br>em<br>situações<br>cotidianas e em processos produtivos<br>que<br>priorizem<br>o <br>desenvolvimento<br>sustentável, o uso consciente dos<br>recursos naturais e a preservação da<br>vida em todas as suas formas.|Fluxo de Matéria e Energia no<br>Ecossistema|Analisar<br>fenômenos<br>naturais<br>e <br>processos tecnológicos, com base<br>nas relações entre matéria e energia,<br>para propor ações individuais e<br>coletivas que aperfeiçoem processos<br>produtivos,<br>minimizem<br>impactos<br>socioambientais<br>e <br>melhorem<br>as<br>condições de vida em âmbito local,<br>regional e/ou global.|",
+      "tags": [
+        "matéria",
+        "energia",
+        "ecossistema",
+        "transformações",
+        "conservação"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Matéria e Energia|(**EM13CNT104**) Avaliar os benefícios e<br>os riscos à saúde e ao ambiente,<br>considerando<br>a <br>composição,<br>a <br>toxicidade<br>e <br>a <br>reatividade<br>de<br>diferentes materiais e produtos, como<br>também o nível de exposição a eles,<br>posicionando-se<br>criticamente<br>e <br>propondo soluções individuais e/ou<br>coletivas para seus usos e descartes<br>responsáveis.|Fluxo de Matéria e Energia no<br>Ecossistema|Analisar<br>fenômenos<br>naturais<br>e <br>processos tecnológicos, com base<br>nas relações entre matéria e energia,<br>para propor ações individuais e<br>coletivas que aperfeiçoem processos<br>produtivos,<br>minimizem<br>impactos<br>socioambientais<br>e <br>melhorem<br>as<br>condições de vida em âmbito local,<br>regional e/ou global.|",
+      "tags": [
+        "saúde",
+        "ambiente",
+        "toxicidade",
+        "materiais",
+        "descarte"
+      ]
+    },
+    {
+      "pagina": 9,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT203X**) <br>Avaliar<br>e <br>prever<br>efeitos<br>de<br>intervenções<br>nos<br>ecossistemas, e seus impactos nos<br>seres vivos e no corpo humano, com<br>base nos mecanismos de manutenção<br>da vida, nos ciclos da matéria e nas<br>transformações e transferências de<br>energia, utilizando representações e<br>simulações sobre tais fatores, com ou<br>sem o uso de dispositivos e aplicativos<br>digitais.|Fluxo de Matéria e Energia no<br>Ecossistema|Construir e utilizar interpretações<br>sobre a dinâmica da Vida, da Terra e<br>do<br>Cosmos<br>para<br>elaborar<br>argumentos, realizar previsões sobre<br>o funcionamento e a evolução dos<br>seres<br>vivos<br>e <br>do<br>Universo,<br>e <br>fundamentar<br>decisões<br>éticas<br>e <br>responsáveis.|",
+      "tags": [
+        "ecossistemas",
+        "impactos",
+        "seres vivos",
+        "corpo humano",
+        "energia"
+      ]
+    },
+    {
+      "pagina": 11,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Matéria e Energia|(**EM13CNT 105**) Analisar os ciclos<br>biogeoquímicos<br>e <br>interpretar<br>os<br>efeitos de fenômenos naturais e da<br>interferência<br>humana<br>sobre<br>esses<br>ciclos,<br>para<br>promover<br>ações<br>individuais<br>e/<br>ou<br>coletivas<br>que<br>minimizem consequências nocivas à<br>vida.|Ciclos Biogeoquímicos|Analisar<br>fenômenos<br>naturais<br>e <br>processos tecnológicos, com base<br>nas relações entre matéria e energia,<br>para propor ações individuais e<br>coletivas que aperfeiçoem processos<br>produtivos,<br>minimizem<br>impactos<br>socioambientais<br>e <br>melhorem<br>as<br>condições de vida em âmbito local,<br>regional e/ou global.|",
+      "tags": [
+        "ciclos biogeoquímicos",
+        "fenômenos naturais",
+        "interferência humana",
+        "vida"
+      ]
+    }
+  ],
+  "meta_arquivo": "2°ANO_BIOLOGIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:13:47"
+}

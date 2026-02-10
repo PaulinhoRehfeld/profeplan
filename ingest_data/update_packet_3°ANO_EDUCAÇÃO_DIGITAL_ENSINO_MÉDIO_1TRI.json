@@ -1,0 +1,57 @@
+{
+  "titulo": null,
+  "disciplina": "Educação Digital",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Produção e circulação de conteúdo<br>na área digital|(**EM13CO23**) Analisar criticamente as<br>experiências em comunidades virtuais<br>e as relações advindas da interação e<br>comunicação com outras pessoas,<br>bem<br>como<br>seus<br>impactos<br>na<br>sociedade.|- Conteúdo Digital;<br>- Inﬂuenciadores Digitais;<br>- Propriedade intelectual e tipos de<br>licenciamento;<br>- Tecnologia blockchain;<br>- Marketing de inﬂuência e de<br>ﬁliação;<br>- Impactos sociais e culturais da<br>Computação;<br>- Ética, responsabilidade e tomada<br>de decisão no uso das tecnologias.|Agir pessoal e coletivamente com<br>respeito,<br>autonomia,<br>responsabilidade,<br>ﬂexibilidade,<br>resiliência<br>e <br>determinação,<br>identiﬁcando e reconhecendo seus<br>direitos e deveres, recorrendo aos<br>conhecimentos da Computação e<br>suas tecnologias frente às questões<br>de diferentes naturezas.",
+      "tags": [
+        "conteúdo digital",
+        "influenciadores digitais",
+        "propriedade intelectual",
+        "blockchain",
+        "marketing",
+        "ética",
+        "responsabilidade",
+        "tomada de decisão",
+        "comunidades virtuais"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Produção Digital Avançada e<br>Comunicação Estratégica|(**EM13CO21**) <br>Comunicar<br>ideias<br>complexas de forma clara por meio de<br>objetos<br>digitais<br>como<br>mapas<br>conceituais, infográﬁcos, hipertextos e<br>outros.|- Comunicação digital estratégica;<br>- Avaliação crítica de mídias digitais;<br>- Planejamento e intencionalidade<br>comunicativa.|Expressar e partilhar informações,<br>ideias,<br>sentimentos<br>e <br>soluções<br>computacionais<br>utilizando<br>diferentes plataformas, ferramentas,<br>linguagens<br>e <br>tecnologias<br>da<br>Computação<br>de<br>forma<br>ﬂuente,<br>criativa, crítica, signiﬁcativa, reﬂexiva<br>e ética.",
+      "tags": [
+        "comunicação digital",
+        "mídias digitais",
+        "planejamento",
+        "intencionalidade comunicativa",
+        "mapas conceituais",
+        "infográficos",
+        "hipertextos"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Pensamento Computacional e<br>Resolução de Problemas Complexos|(**EM13CO05**) Identiﬁcar os limites da<br>Computação para diferenciar o que<br>pode<br>ou<br>não<br>ser<br>automatizado<br>buscando uma compreensão<br>mais ampla dos limites dos processos<br>mentais envolvidos na resolução de<br>problemas.|- <br>Pensamento<br>computacional<br>avançado;<br>- Automação e seus limites;<br>- <br>Resolução<br>de<br>problemas<br>complexos.|Analisar problemas complexos e<br>propor<br>soluções<br>computacionais<br>adequadas, reconhecendo limites,<br>potencialidades<br>e <br>impactos<br>da<br>automação em diferentes contextos.",
+      "tags": [
+        "pensamento computacional",
+        "automação",
+        "resolução de problemas",
+        "limites da computação",
+        "processos mentais"
+      ]
+    },
+    {
+      "pagina": 9,
+      "capitulo": "SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "texto_limpo": "",
+      "tags": []
+    }
+  ],
+  "meta_arquivo": "3°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:17:10"
+}

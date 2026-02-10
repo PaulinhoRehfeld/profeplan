@@ -1,337 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
-    BookOpen, BrainCircuit, AlertCircle, Sparkles, Globe, FileText, ClipboardList
+    BookOpen, BrainCircuit, AlertCircle, ClipboardList, FileText,
+    ChevronDown, CheckCircle, Sparkles
 } from 'lucide-react';
-import { supabase } from '../../services/supabaseClient';
-import { getClassesBySchool as getClasses, getStudentsByClass as getClassDetails } from '../../services/classService';
-import { getPdiLogs } from '../../services/PdiService';
-import { getGeneratedContents } from '../../services/databaseService';
 
-import { generateStudentAdaptation, generatePdiReport } from '../../services/geminiService';
-import { generatePdiReportDoc, exportToDocx } from '../../services/exportService';
-import { saveGeneratedContent } from '../../services/databaseService';
-import { Class, Student, StudentAdaptation } from '../../types';
-import {
-    getLocalClasses,
-    getLocalClassDetails,
-    savePdiLogToLocal,
-} from '../../services/localStorageService';
-
-// New Architecture
-import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
-import { savePdiLog } from './PDIService';
+import { usePDIManager } from './usePDIManager';
 import PDISidebar from './components/PDISidebar';
-import StudentAdaptationCard from './components/StudentAdaptationCard';
 
 // PDI Module Components
 import { StudentPDIProfile } from '../../components/School/PDI/StudentPDIProfile';
 import { PDIConsolidator } from '../../components/School/PDI/PDIConsolidator';
+import { UserProfile } from '../../types';
+
+import { AdaptationFeedbackModal } from './components/AdaptationFeedbackModal';
+
+import { AdaptationDetailsModal } from './components/AdaptationDetailsModal';
 
 interface WorkbenchProps {
     userId: string;
+    userProfile: UserProfile; // Enforce typing based on types.ts
     setSidebarContent?: (content: React.ReactNode) => void;
 }
 
-const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => {
-    const [lessons, setLessons] = useState<any[]>([]);
-    const [classes, setClasses] = useState<Class[]>([]);
-    const [selectedLesson, setSelectedLesson] = useState<any | null>(null);
-    const [selectedClass, setSelectedClass] = useState<Class | null>(null);
-    const [studentsWithNeeds, setStudentsWithNeeds] = useState<Student[]>([]);
-
-    // Adaptations State: Map studentId -> Adaptation Data
-    const [adaptations, setAdaptations] = useState<Record<string, StudentAdaptation>>({});
-    const [loading, setLoading] = useState(false);
-    const [generatingId, setGeneratingId] = useState<string | null>(null);
-    const [error, setError] = useState('');
-
-    // PDI Modal States
-    const [pdiProfileStudent, setPdiProfileStudent] = useState<Student | null>(null);
-    const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);
-
-    // Global Context (Coordinator Agent)
-    const { currentPlan } = useGlobalPlanning();
-    const [contextBadge, setContextBadge] = useState<boolean>(false);
-
-    useEffect(() => {
-        // Auto-fill from Coordinator Agent
-        if (currentPlan) {
-            console.log("Receiving Context from Coordinator:", currentPlan);
-            setContextBadge(true);
-        }
-    }, [currentPlan]);
-
-    useEffect(() => {
-        loadInitialData();
-    }, [userId]);
-
-    const loadInitialData = async () => {
-        setLoading(true);
-        // Fetch Lessons
-        try {
-            const genContents = await getGeneratedContents(userId);
-            const mappedLessons = genContents ? genContents.map((item: any) => ({
-                id: item.id,
-                topic: item.title,
-                content: item.content,
-                type: item.type
-            })) : [];
-            setLessons(mappedLessons);
-        } catch (e) {
-            console.error("Error loading lessons", e);
-        }
-
-        // Fetch Classes (Mixed Source)
-        try {
-            const sbClasses = await getClasses(userId);
-            const localClassesRaw = getLocalClasses(userId);
-            const localClassesMapped: Class[] = localClassesRaw.map(c => ({
-                id: c.id,
-                name: c.name,
-                subject: c.subject,
-                created_at: c.createdAt,
-                students: c.students.map((s: any) => ({
-                    id: s.id,
-                    name: s.name,
-                    class_id: c.id,
-                    needs_adaptation: s.needs_adaptation || false,
-                    deficiencies: s.deficiencies || [],
-                    pedagogical_observations: s.pedagogical_observations || ''
-                }))
-            }));
-
-            const localIds = new Set(localClassesMapped.map(c => c.id));
-            const uniqueSbClasses = (sbClasses || []).filter(c => !localIds.has(c.id));
-            const mergedClasses = [...uniqueSbClasses, ...localClassesMapped];
-            setClasses(mergedClasses);
-        } catch (e) {
-            console.error("Error loading classes", e);
-        }
-        setLoading(false);
-    };
-
-    const handleClassSelect = async (classId: string) => {
-        // Local first
-        const localData = getLocalClassDetails(classId);
-        if (localData) {
-            const mappedClass: Class = {
-                id: localData.id,
-                name: localData.name,
-                subject: localData.subject,
-                created_at: localData.createdAt,
-                students: localData.students.map((s: any) => ({
-                    id: s.id,
-                    name: s.name,
-                    class_id: localData.id,
-                    needs_adaptation: s.needs_adaptation || false,
-                    deficiencies: s.deficiencies || [],
-                    pedagogical_observations: s.pedagogical_observations || ''
-                }))
-            };
-            setSelectedClass(mappedClass);
-            const needs = mappedClass.students?.filter((s: Student) => s.needs_adaptation || (s.deficiencies && s.deficiencies.length > 0)) || [];
-            setStudentsWithNeeds(needs);
-            setAdaptations({});
-        } else {
-            // Supabase fallback
-            const cls = classes.find(c => c.id === classId);
-            if (cls) {
-                const students = await getClassDetails(classId);
-                if (students) {
-                    const fullClass = { ...cls, students };
-                    setSelectedClass(fullClass);
-                    const needs = students?.filter((s: any) => s.needs_adaptation || (s.deficiencies && s.deficiencies.length > 0)) || [];
-                    setStudentsWithNeeds(needs);
-                    setAdaptations({});
-                }
-            }
-        }
-    };
-
-    const handleGenerateAdaptation = async (student: Student) => {
-        if (!selectedLesson) {
-            setError('Selecione uma aula de referência primeiro.');
-            return;
-        }
-        setGeneratingId(student.id);
-        setError('');
-        try {
-            const result = await generateStudentAdaptation(
-                selectedLesson.content,
-                student.name,
-                student.deficiencies,
-                student.pedagogical_observations,
-                selectedClass?.name || 'Série não informada',
-                {
-                    stateBase: currentPlan?.stateBase,
-                    educationSphere: currentPlan?.educationSphere,
-                    userId
-                }
-            );
-            setAdaptations(prev => ({
-                ...prev,
-                [student.id]: {
-                    studentId: student.id,
-                    studentName: student.name,
-                    originalContent: selectedLesson.content,
-                    adaptedContent: result,
-                    status: 'completed'
-                }
-            }));
-        } catch (e) {
-            console.error(e);
-            setError(`Erro ao gerar para ${student.name}`);
-        } finally {
-            setGeneratingId(null);
-        }
-    };
-
-    const handleValidate = async (studentId: string, content: string) => {
-        if (!selectedClass || !selectedLesson) return;
-
-        const student = studentsWithNeeds.find(s => s.id === studentId);
-        const studentName = student ? student.name : 'Aluno Desconhecido';
-        const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-
-        const sanitizedContent = content
-            .replace(/<html[\s\S]*?>[\s\S]*?<\/head>/gi, "")
-            .replace(/<[^>]+>/g, "")
-            .trim();
-
-        const finalContent = sanitizedContent.length > 0 ? sanitizedContent : content.substring(0, 5000);
-
-        const logPayload = {
-            student_id: studentId,
-            student_name: studentName,
-            class_id: selectedClass.id,
-            lesson_id: selectedLesson.id,
-            teacher_id: userId,
-            content: finalContent,
-            original_content: selectedLesson.content
-        };
-
-        await savePdiLog(logPayload);
-
-        try {
-            const fileName = `${studentName}_${dateStr}.md`;
-            await saveGeneratedContent(
-                userId,
-                'documento',
-                'adaptacao_curricular',
-                fileName,
-                `# Adaptação: ${studentName}\nData: ${dateStr}\nAula: ${selectedLesson.topic}\n\n${finalContent}`
-            );
-            console.log(`Auto-saved adaptation file: ${fileName}`);
-        } catch (e) {
-            console.error("Auto-save failed", e);
-        }
-
-        setAdaptations(prev => ({
-            ...prev,
-            [studentId]: {
-                ...prev[studentId],
-                status: 'validated'
-            }
-        }));
-    };
-
-    const handleDownloadStudentDoc = async (student: Student, content: string) => {
-        if (!selectedLesson) return;
-
-        try {
-            const markdownContent = `# Aula Base: ${selectedLesson.topic}\n\n${selectedLesson.content}\n\n---\n\n# Adaptação para ${student.name}\n\n${content}`;
-
-            await exportToDocx(
-                markdownContent,
-                `ADAPTACAO_${student.name.replace(/[^a-z0-9]/gi, '_')}`,
-                {
-                    userName: 'Professor(a)',
-                    schoolName: selectedClass?.name || 'Escola'
-                }
-            );
-        } catch (e: any) {
-            console.error(e);
-            setError(`Erro ao exportar doc do aluno: ${e.message}`);
-        }
-    };
-
-    const handleExportDoc = async () => {
-        if (!selectedLesson) return;
-        const validAdaptations = (Object.values(adaptations) as StudentAdaptation[]).filter(a => a.status === 'completed' || a.status === 'validated');
-
-        if (validAdaptations.length === 0) {
-            setError('Nenhuma adaptação gerada para exportar.');
-            return;
-        }
-
-        let markdownContent = `# Aula Base: ${selectedLesson.topic}\n\n`;
-        markdownContent += `${selectedLesson.content}\n\n`;
-        markdownContent += `---\n\n`;
-        markdownContent += `# Adaptações Curriculares\n\n`;
-
-        validAdaptations.forEach(adapt => {
-            markdownContent += `## Aluno: ${adapt.studentName}\n\n`;
-            markdownContent += `${adapt.adaptedContent}\n\n`;
-            markdownContent += `---\n\n`;
-        });
-
-        try {
-            await exportToDocx(
-                markdownContent,
-                `KIT_INCLUSAO_${selectedLesson.topic.substring(0, 20).replace(/[^a-z0-9]/gi, '_')}`,
-                {
-                    userName: 'Professor(a)',
-                    schoolName: 'Instituição de Ensino'
-                }
-            );
-        } catch (e: any) {
-            console.error(e);
-            setError(`Erro ao exportar: ${e.message}`);
-        }
-    };
-
-    const handleGenerateReport = async () => {
-        if (studentsWithNeeds.length === 0) return;
-        const student = studentsWithNeeds[0];
-        try {
-            const { data: logs, error: logsError } = await getPdiLogs(student.id);
-
-            if (logsError) throw logsError;
-
-            if (!logs || logs.length === 0) {
-                setError(`Sem histórico para o aluno ${student.name}. Valide pelo menos uma adaptação.`);
-                return;
-            }
-
-            setLoading(true);
-            const report = await generatePdiReport(logs, student.name, 'Bimestre Atual');
-
-            try {
-                const reportHtml = `
-                    <html><body>
-                    <h1>Relatório de Desenvolvimento Individual</h1>
-                    <p><strong>Estudante:</strong> ${student.name}</p>
-                    <div>${report.replace(/\n/g, '<br/>')}</div>
-                    </body></html>
-                `;
-                await saveGeneratedContent(
-                    userId,
-                    'documento',
-                    'PDI',
-                    `RELATORIO PDI - ${student.name}`,
-                    reportHtml
-                );
-            } catch (e) {
-                console.warn("Falha no autosave", e);
-            }
-            generatePdiReportDoc(student.name, 'Bimestre Atual', report);
-        } catch (e: any) {
-            console.error(e);
-            setError(`Erro: ${e.message || 'Falha ao gerar relatório'}`);
-        } finally {
-            setLoading(false);
-        }
-    };
+const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarContent }) => {
+    // Logic extracted to Custom Hook
+    const {
+        loading,
+        classes,
+        lessons,
+        selectedClass,
+        selectedLesson,
+        studentsWithNeeds,
+        adaptations,
+        error,
+        generatingId,
+        pdiProfileStudent,
+        consolidatorStudent,
+        // Setters
+        setSelectedLesson,
+        setPdiProfileStudent,
+        setConsolidatorStudent,
+        // Handlers
+        handleClassSelect,
+        handleGenerateAdaptation,
+        handleValidate,
+        handleExportDoc,
+        handleGenerateReport,
+        // Feedback
+        feedbackModalOpen,
+        lastAdaptationDetails,
+        handleSaveFeedback,
+        setFeedbackModalOpen,
+        viewingAdaptation,
+        setViewingAdaptation,
+        handleViewAdaptation,
+        handleEvaluate
+    } = usePDIManager(userId, userProfile);
 
     // Update Sidebar Content
     useEffect(() => {
@@ -346,7 +70,16 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                 error={error}
             />
         );
-    }, [adaptations, studentsWithNeeds, error, selectedLesson, selectedClass]);
+    }, [adaptations, studentsWithNeeds, error, selectedLesson, selectedClass, setSidebarContent, handleExportDoc, handleGenerateReport]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <span className="ml-3 text-slate-600 font-bold">Carregando PDI Manager...</span>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col h-full bg-slate-50 relative animate-in fade-in duration-500">
@@ -374,6 +107,23 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                 </div>
             )}
 
+            {/* FEEDBACK MODAL */}
+            <AdaptationFeedbackModal
+                isOpen={feedbackModalOpen}
+                onClose={() => setFeedbackModalOpen(false)}
+                onSave={handleSaveFeedback}
+                studentName={lastAdaptationDetails?.studentName || ''}
+                lessonTopic={lastAdaptationDetails?.lessonTopic || ''}
+            />
+
+            {/* DETAILS MODAL */}
+            <AdaptationDetailsModal
+                isOpen={!!viewingAdaptation}
+                onClose={() => setViewingAdaptation(null)}
+                studentName={viewingAdaptation?.studentName || ''}
+                content={viewingAdaptation?.content || ''}
+            />
+
             {/* HEADER / TOOLBAR */}
             <div className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
                 <div>
@@ -381,10 +131,39 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                         <BrainCircuit className="text-indigo-600" />
                         Gestão de Inclusão & PDI
                     </h1>
-                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-                        {selectedClass ? `Turma: ${selectedClass.name}` : 'Selecione uma turma para gerenciar'}
-                    </p>
+                    <div className="flex items-center gap-4 mt-2">
+                        <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+                            {selectedClass ? `Turma: ${selectedClass.name}` : 'Selecione uma turma'}
+                        </p>
+
+                        {selectedClass && (
+                            <div className="relative">
+                                <select
+                                    className="appearance-none bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold py-2 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer hover:bg-indigo-100 transition-colors"
+                                    value={selectedLesson?.id || ''}
+                                    onChange={(e) => {
+                                        const lesson = lessons.find(l => l.id === e.target.value);
+                                        setSelectedLesson(lesson || null);
+                                    }}
+                                >
+                                    <option value="">Selecione uma Aula para Adaptar...</option>
+                                    {lessons.map(l => (
+                                        <option key={l.id} value={l.id}>
+                                            {l.topic.substring(0, 40)}{l.topic.length > 40 ? '...' : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                                <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-indigo-500 pointer-events-none" />
+                            </div>
+                        )}
+                    </div>
                 </div>
+                {error && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg border border-red-100 animate-pulse">
+                        <AlertCircle size={16} />
+                        <span className="text-xs font-bold">{error}</span>
+                    </div>
+                )}
             </div>
 
             <div className="flex-1 flex overflow-hidden">
@@ -394,16 +173,20 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                         <h3 className="text-xs font-black uppercase text-slate-400">Minhas Turmas</h3>
                     </div>
                     <div className="p-2 space-y-1">
-                        {classes.map(cls => (
-                            <button
-                                key={cls.id}
-                                onClick={() => handleClassSelect(cls.id)}
-                                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all ${selectedClass?.id === cls.id ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-slate-600 hover:bg-slate-50'}`}
-                            >
-                                {cls.name}
-                                <span className="block text-[10px] font-normal opacity-60 mt-0.5">{cls.subject}</span>
-                            </button>
-                        ))}
+                        {classes.length === 0 ? (
+                            <div className="p-4 text-center text-slate-400 text-sm">Nenhuma turma encontrada.</div>
+                        ) : (
+                            classes.map(cls => (
+                                <button
+                                    key={cls.id}
+                                    onClick={() => handleClassSelect(cls.id)}
+                                    className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all ${selectedClass?.id === cls.id ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    {cls.name}
+                                    <span className="block text-[10px] font-normal opacity-60 mt-0.5">{cls.subject}</span>
+                                </button>
+                            ))
+                        )}
                     </div>
                 </div>
 
@@ -452,8 +235,74 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                                                 </p>
                                             </div>
 
+                                            {/* Adaptations Status / Result */}
+                                            {adaptations[student.id] && (
+                                                <div className="mx-6 mb-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl relative overflow-hidden">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 flex items-center gap-1">
+                                                            <CheckCircle size={12} /> Adaptação Gerada
+                                                        </span>
+                                                        <button
+                                                            onClick={() => handleViewAdaptation(student)}
+                                                            className="text-[10px] font-bold text-emerald-700 underline"
+                                                        >
+                                                            Ver Detalhes
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-xs text-emerald-800 italic line-clamp-2">
+                                                        "{adaptations[student.id].adaptedContent.substring(0, 100)}..."
+                                                    </p>
+                                                </div>
+                                            )}
+
                                             {/* Actions Bar */}
-                                            <div className="flex flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 justify-center">
+                                            <div className="flex flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-4 justify-center min-w-[180px]">
+                                                {selectedLesson && (
+                                                    <button
+                                                        onClick={() => {
+                                                            if (adaptations[student.id]?.status === 'completed') {
+                                                                handleValidate(student.id, adaptations[student.id].adaptedContent);
+                                                            } else if (adaptations[student.id]?.status === 'validated') {
+                                                                handleEvaluate(student);
+                                                            } else {
+                                                                handleGenerateAdaptation(student);
+                                                            }
+                                                        }}
+                                                        disabled={generatingId === student.id}
+                                                        className={`flex items-center gap-2 px-4 py-3 rounded-lg text-xs font-black uppercase tracking-wide transition-all shadow-md text-left
+                                                            ${adaptations[student.id]?.status === 'validated'
+                                                                ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-200'
+                                                                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200 active:scale-95'
+                                                            }
+                                                            ${adaptations[student.id]?.status === 'completed'
+                                                                ? '!bg-emerald-600 !text-white !hover:bg-emerald-700 !shadow-emerald-200'
+                                                                : ''
+                                                            }
+                                                        `}
+                                                    >
+                                                        {generatingId === student.id ? (
+                                                            <>
+                                                                <span className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" />
+                                                                Gerando...
+                                                            </>
+                                                        ) : adaptations[student.id]?.status === 'validated' ? (
+                                                            <>
+                                                                <CheckCircle size={16} />
+                                                                Avaliar Adaptação
+                                                            </>
+                                                        ) : adaptations[student.id]?.status === 'completed' ? (
+                                                            <>
+                                                                <CheckCircle size={16} />
+                                                                Validar & Avaliar
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Sparkles size={16} />
+                                                                Gerar Adaptação
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                )}
                                                 <button
                                                     onClick={() => setPdiProfileStudent(student)}
                                                     className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:border-indigo-300 hover:text-indigo-600 rounded-lg text-xs font-bold uppercase text-slate-500 transition-all text-left"
@@ -476,7 +325,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, setSidebarContent }) => 
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

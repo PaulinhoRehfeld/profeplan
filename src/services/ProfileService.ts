@@ -1,7 +1,4 @@
 import { supabase } from './supabaseClient';
-import { School } from '../components/SchoolSelector';
-
-import { supabase } from './supabaseClient';
 import { UserProfile } from '../types';
 
 export const ProfileService = {

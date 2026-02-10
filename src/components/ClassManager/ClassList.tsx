@@ -48,7 +48,31 @@ const ClassList: React.FC<ClassListProps> = ({
                     <h3 className="font-black text-slate-900 text-xl mb-1 uppercase italic line-clamp-1 tracking-tighter">
                         {cls.name}
                     </h3>
-                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{cls.subject || 'Sem Disciplina'}</p>
+                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-4">{cls.subject || 'Sem Disciplina'}</p>
+
+                    {/* Informações Adicionais */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                        {cls.grade && (
+                            <span className="px-3 py-1 bg-purple-50 text-purple-700 text-[9px] font-black uppercase tracking-wider rounded-full">
+                                📚 {cls.grade}
+                            </span>
+                        )}
+                        {cls.shift && (
+                            <span className="px-3 py-1 bg-orange-50 text-orange-700 text-[9px] font-black uppercase tracking-wider rounded-full">
+                                🕐 {cls.shift}
+                            </span>
+                        )}
+                        {cls.year && (
+                            <span className="px-3 py-1 bg-green-50 text-green-700 text-[9px] font-black uppercase tracking-wider rounded-full">
+                                📅 {cls.year}
+                            </span>
+                        )}
+                        {cls.room && (
+                            <span className="px-3 py-1 bg-indigo-50 text-indigo-700 text-[9px] font-black uppercase tracking-wider rounded-full">
+                                🚪 Sala {cls.room}
+                            </span>
+                        )}
+                    </div>
 
                     <div className="flex items-center justify-between pt-6 border-t border-slate-50 relative z-10">
                         <div className="flex flex-col">

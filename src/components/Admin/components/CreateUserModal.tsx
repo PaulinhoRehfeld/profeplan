@@ -84,7 +84,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
                     credits: credits,
                     is_unlimited: tier === 'GOLD',
                     is_admin: role === 'ADMIN',
-                    school_id: role === 'SCHOOL_MANAGER' ? schoolId : null,
+                    school_id: (role === 'SCHOOL_MANAGER' || role === 'TEACHER') ? schoolId : null,
                     allowed_features: ['all']
                 }, {
                     onConflict: 'id'
@@ -155,14 +155,17 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
                             </select>
                         </div>
                     </div>
-                    {role === 'SCHOOL_MANAGER' && (
+                    {(role === 'SCHOOL_MANAGER' || role === 'TEACHER') && (
                         <>
                             {/* Option 1: Filter by City */}
                             <div>
                                 <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
                                     Opção 1: Filtrar por Cidade
                                 </label>
-                                <select
+                                <input
+                                    list="cities-list"
+                                    type="text"
+                                    placeholder="Digite ou selecione a cidade..."
                                     value={selectedCity}
                                     onChange={(e) => {
                                         const city = e.target.value;
@@ -171,7 +174,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
                                         setSchoolSearchText(''); // Reset text search
                                         if (city) {
                                             const filtered = allSchools
-                                                .filter(s => s.city?.trim() === city.trim())
+                                                .filter(s => s.city?.trim().toLowerCase() === city.trim().toLowerCase())
                                                 .map(s => ({ id: s.id, name: s.name }));
                                             setFilteredSchools(filtered);
                                         } else {
@@ -179,12 +182,12 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
                                         }
                                     }}
                                     className="w-full px-4 py-2 border rounded-lg bg-amber-50 border-amber-200"
-                                >
-                                    <option value="">Escolha a cidade...</option>
+                                />
+                                <datalist id="cities-list">
                                     {cities.map(city => (
-                                        <option key={city} value={city}>{city}</option>
+                                        <option key={city} value={city} />
                                     ))}
-                                </select>
+                                </datalist>
                             </div>
 
                             {/* OR Divider */}

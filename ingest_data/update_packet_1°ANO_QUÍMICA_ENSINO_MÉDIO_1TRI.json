@@ -1,0 +1,91 @@
+{
+  "titulo": null,
+  "disciplina": "Química",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT204X**) Elaborar explicações,\nprevisões e realizar cálculos a respeito\ndos movimentos de objetos na Terra,\nno Sistema Solar e no Universo com\nbase\nna\nanálise\ndas\ninterações\ngravitacionais, com ou sem o uso de\ndispositivos e aplicativos digitais.|Astroquímica:\n- Modelos e teorias sobre a origem\ndos\nelementos\nquímicos;\n- \nAceleradores\nde\npartículas;\n- Relação de tempo-espaço.|\n\n\nConstruir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "Astroquímica",
+        "Gravitação",
+        "Universo",
+        "Sistema Solar"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT209X**) Analisar a evolução\nestelar associando-a aos modelos de\norigem e distribuição dos elementos\nquímicos\nno\nUniverso,\ncompreendendo suas relações com as\ncondições necessárias ao surgimento\nde sistemas solares e planetários, suas\nestruturas\ne \ncomposições\ne \nas\npossibilidades de existência de vida,\nutilizando\nrepresentações\ne \nsimulações, com ou sem o uso de\ndispositivos e aplicativos digitais.|\nAstroquímica:\n- Modelos e teorias sobre a origem\ndos\nelementos\nquímicos;\n- \nAceleradores\nde\npartículas;\n- Relação de tempo-espaço.|\n\n\n\nConstruir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "Evolução Estelar",
+        "Astroquímica",
+        "Elementos Químicos",
+        "Universo"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologia e Linguagem|(**EM13CNT311MG**) Investigar e analisar\ncomportamentos\nespecíﬁcos\ndos\ndiversos tipos de ondas, para avaliar\nsuas\ndiferentes\naplicações\ntecnológicas\n(comunicação,\nsaúde,\nmúsica, entre outros), identiﬁcar e/ou\navaliar\nas\nimpactos\nindividuais,\ncoletivos e socioambientais de tais\ntecnologias, a ﬁm de promover seu\nuso seguro e sustentável.|\nModelos atômicos:\n- Evolução dos modelos atômicos;\n- Modelo atômico atual;\n- Dualidade onda-matéria;\n- Princípios quânticos.|\nAnalisar\nsituações-problema\ne \navaliar aplicações do conhecimento\ncientíﬁco\ne \ntecnológico\ne \nsuas\nimplicações no mundo, utilizando\nprocedimentos\ne \nlinguagens\npróprios das Ciências da Natureza,\npara\npropor\nsoluções\nque\nconsiderem\ndemandas\nlocais,\nregionais e/ou globais, e comunicar\nsuas descobertas e conclusões a\npúblicos\nvariados,\nem\ndiversos\ncontextos e por meio de diferentes\nmídias e tecnologias digitais de\ninformação e comunicação (TDIC).|",
+      "tags": [
+        "Ondas",
+        "Modelos Atômicos",
+        "Tecnologia",
+        "Comunicação",
+        "Saúde"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT201**) \nAnalisar\ne \ndiscutir\nmodelos, teorias e leis propostas em\ndiferentes épocas e culturas para\ncomparar distintas explicações sobre o\nsurgimento e a evolução da Vida, da\nTerra e do Universo com as teorias\ncientíﬁcas aceitas atualmente.|\nModelos atômicos:\n- Evolução dos modelos atômicos;\n- Modelo atômico atual;\n- Dualidade onda-matéria;\n- Princípios quânticos.|\nConstruir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "Modelos Atômicos",
+        "Vida",
+        "Terra",
+        "Universo",
+        "Evolução"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologia e Linguagem|(**EM13CNT301**) \nConstruir\nquestões,\nelaborar\nhipóteses,\nprevisões\ne \nestimativas, empregar instrumentos\nde\nmedição\ne \nrepresentar\ne \ninterpretar\nmodelos\nexplicativos,\ndados e/ou resultados experimentais\npara\nconstruir,\navaliar\ne \njustiﬁcar\nconclusões\nno\nenfrentamento\nde\nsituações-problema\nsob\numa\nperspectiva cientíﬁca.|\nMatéria:\n- Constituição, propriedades gerais e\npropriedades especíﬁcas da matéria;\n- Estrutura do átomo e íons.|\n\n\nAnalisar situações-problema e avaliar\naplicações do conhecimento cientíﬁco\ne tecnológico e suas implicações no\nmundo, utilizando procedimentos e\nlinguagens próprios das Ciências da\nNatureza, para propor soluções que\nconsiderem\ndemandas\nlocais,\nregionais e/ou globais, e comunicar\nsuas descobertas e conclusões a\npúblicos\nvariados,\nem\ndiversos\ncontextos e por meio de diferentes\nmídias\ne \ntecnologias\ndigitais\nde\ninformação e comunicação (TDIC).|",
+      "tags": [
+        "Matéria",
+        "Átomo",
+        "Íons",
+        "Situações-problema",
+        "Tecnologia"
+      ]
+    },
+    {
+      "pagina": 12,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT209X**) Analisar a evolução\nestelar associando-a aos modelos de\norigem e distribuição dos elementos\nquímicos\nno\nUniverso,\ncompreendendo suas relações com as\ncondições necessárias ao surgimento\nde sistemas solares e planetários, suas\nestruturas\ne \ncomposições\ne \nas\npossibilidades de existência de vida,\nutilizando\nrepresentações\ne \nsimulações, com ou sem o uso de\ndispositivos e aplicativos digitais.|\nTabela periódica:\n- Simbologia do átomo;\n- \nPropiedades\nperiódicas\ne \naperiódicas;\n- Representação dos elementos e\nsuas aplicações tecnológicas;\n- Elementos radioativos e tabela\nperiódica;\n- Mulheres na ciência; aspectos de\nnatureza\nda\nciência;\n história\ne \nﬁlosoﬁa da ciência.|\nConstruir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "Evolução Estelar",
+        "Tabela Periódica",
+        "Elementos Químicos",
+        "Universo",
+        "Radioatividade"
+      ]
+    },
+    {
+      "pagina": 13,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologia e Linguagem|(**EM13CNT305X**) Investigar e discutir o\nuso indevido de conhecimentos das\nCiências da Natureza na justiﬁcativa\nde\nprocessos\nde\ndiscriminação,\nsegregação e privação de direitos\nindividuais e coletivos, em diferentes\ncontextos sociais e históricos, para\npromover a equidade o respeito à\ndiversidade levando em consideração\nos\nimpactos\nque\nperpassam\nno\nâmbito\nsocial,\nfamiliar,\ncultural,\neconômico e político, ampliando a\ndiscussão e o desenvolvimento crítico\ne argumentativo dos estudantes.|\nTabela periódica:\n- Simbologia do átomo;\n- \nPropiedades\nperiódicas\ne \naperiódicas;\n- Representação dos elementos e\nsuas aplicações tecnológicas;\n- Elementos radioativos e tabela\nperiódica;\n- Mulheres na ciência; aspectos de\nnatureza\nda\nciência;\n história\ne \nﬁlosoﬁa da ciência.|\nAnalisar\nsituações-problema\ne \navaliar aplicações do conhecimento\ncientíﬁco\ne \ntecnológico\ne \nsuas\nimplicações no mundo, utilizando\nprocedimentos\ne \nlinguagens\npróprios das Ciências da Natureza,\npara\npropor\nsoluções\nque\nconsiderem\ndemandas\nlocais,\nregionais e/ou globais, e comunicar\nsuas descobertas e conclusões a\npúblicos\nvariados,\nem\ndiversos\ncontextos e por meio de diferentes\nmídias e tecnologias digitais de\ninformação e comunicação (TDIC).|",
+      "tags": [
+        "Tabela Periódica",
+        "Discriminação",
+        "Ciências da Natureza",
+        "Equidade",
+        "Diversidade"
+      ]
+    }
+  ],
+  "meta_arquivo": "1°ANO_QUÍMICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:12:53"
+}

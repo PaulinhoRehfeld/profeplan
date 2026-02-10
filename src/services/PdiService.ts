@@ -73,6 +73,28 @@ export const PdiService = {
         }
 
         return data || [];
+    },
+
+    async logEventForClass(classId: string, type: PdiRecordType, title: string, content: any, pdiBlock?: string) {
+        // Fetch all students in the class
+        const { data: students } = await supabase
+            .from('students')
+            .select('id')
+            .eq('class_id', classId);
+
+        if (!students) return;
+
+        // Log for each student (parallel is faster but might hit limits, using Promise.all)
+        return Promise.all(students.map(s => this.logEvent(s.id, type, title, content, pdiBlock)));
+    },
+
+    async updateRecordContent(recordId: string, newContent: any) {
+        const { error } = await supabase
+            .from('pdi_records')
+            .update({ content: newContent })
+            .eq('id', recordId);
+
+        if (error) throw error;
     }
 };
 

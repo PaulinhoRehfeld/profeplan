@@ -1,0 +1,113 @@
+{
+  "titulo": null,
+  "disciplina": "História",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|História: Tempo, Espaço e Formas de<br>Registros|(**EM13CHS101**) Identiﬁcar, analisar e<br>comparar<br>diferentes<br>fontes<br>e <br>narrativas<br>expressas<br>em<br>diversas<br>linguagens,<br>com<br>vistas<br>à <br>compreensão de ideias ﬁlosóﬁcas e de<br>processos<br>e <br>eventos<br>históricos,<br>geográﬁcos,<br>políticos,<br>econômicos,<br>sociais, ambientais e culturais.|Sincronias<br>e <br>diacronias:<br>reﬂexões<br>sobre o sentido das cronologias.|Analisar<br>processos<br>políticos,<br>econômicos, sociais, ambientais e<br>culturais nos âmbitos local, regional,<br>nacional e mundial em diferentes<br>tempos, a partir da pluralidade de<br>procedimentos<br>epistemológicos,<br>cientíﬁcos e tecnológicos, de modo a<br>compreender<br>e <br>posicionar-se<br>criticamente em relação a eles,<br>considerando diferentes pontos de<br>vista e tomando decisões baseadas<br>em<br>argumentos<br>e <br>fontes<br>de<br>natureza cientíﬁca.",
+      "tags": [
+        "história",
+        "tempo",
+        "espaço",
+        "registros",
+        "fontes",
+        "narrativas",
+        "cronologias"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|O Mundo Moderno e a Conexão<br>entre<br>Sociedades<br>Africanas,<br>Americanas e europeias.|(**EM13CHS104**) <br>Analisar<br>objetos<br>e <br>vestígios<br>da<br>cultura<br>material<br>e <br>imaterial<br>de<br>modo<br>a <br>identiﬁcar<br>conhecimentos, valores, crenças e<br>práticas<br>que<br>caracterizam<br>a <br>identidade e a diversidade cultural de<br>diferentes sociedades inseridas no<br>tempo e no espaço.|A <br>construção<br>da<br>ideia<br>de<br>modernidade e seus impactos na<br>concepção de História. Características<br>do Estado Moderno. Mercantilismo e<br>sua<br>relação<br>com<br>o <br>processo<br>de<br>transição para a sociedade capitalista.<br>Absolutismo.<br>Conexões<br>entre<br>as<br>sociedades da Europa e os povos da<br>América, África e Ásia à época das<br>Grandes Navegações e as dinâmicas<br>das trocas econômicas, políticas e<br>culturais estabelecidas si.|Analisar<br>processos<br>políticos,<br>econômicos, sociais, ambientais e<br>culturais nos âmbitos local, regional,<br>nacional e mundial em diferentes<br>tempos, a partir da pluralidade de<br>procedimentos<br>epistemológicos,<br>cientíﬁcos e tecnológicos, de modo a<br>compreender<br>e <br>posicionar-se<br>criticamente em relação a eles,<br>considerando diferentes pontos de<br>vista e tomando decisões baseadas<br>em<br>argumentos<br>e <br>fontes<br>de<br>natureza cientíﬁca.",
+      "tags": [
+        "mundo moderno",
+        "sociedades africanas",
+        "americanas",
+        "europeias",
+        "cultura material",
+        "imaterial",
+        "modernidade",
+        "estado moderno",
+        "mercantilismo",
+        "capitalismo",
+        "absolutismo",
+        "grandes navegações"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|O Mundo Contemporâneo: o Antigo<br>Regime em Crise|(**EM13CHS102**) Identiﬁcar, analisar e<br>discutir as circunstâncias históricas,<br>geográﬁcas,<br>políticas,<br>econômicas,<br>sociais, ambientais e culturais de<br>matrizes conceituais (etnocentrismo,<br>racismo,<br>evolução,<br>modernidade,<br>cooperativismo/desenvolvimento etc.),<br>avaliando criticamente seu signiﬁcado<br>histórico<br>e <br>comparando-as<br>a <br>narrativas que contemplem outros<br>agentes e discursos.|A <br>questão<br>do<br>iluminismo<br>e <br>da<br>ilustração.|Analisar<br>processos<br>políticos,<br>econômicos, sociais, ambientais e<br>culturais nos âmbitos local, regional,<br>nacional e mundial em diferentes<br>tempos, a partir da pluralidade de<br>procedimentos<br>epistemológicos,<br>cientíﬁcos e tecnológicos, de modo a<br>compreender<br>e <br>posicionar-se<br>criticamente em relação a eles,<br>considerando diferentes pontos de<br>vista e tomando decisões baseadas<br>em<br>argumentos<br>e <br>fontes<br>de<br>natureza cientíﬁca.",
+      "tags": [
+        "mundo contemporâneo",
+        "antigo regime",
+        "crise",
+        "etnocentrismo",
+        "racismo",
+        "evolução",
+        "modernidade",
+        "iluminismo",
+        "ilustração"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Os Processos de Independência nas<br>Américas|(**EM13CHS105**) <br>Identiﬁcar,<br>contextualizar e criticar tipologias<br>evolutivas (populações nômades e<br>sedentárias, entre outras) e oposições<br>dicotômicas<br>(cidade/campo/cultura/natureza/civiliz<br>ados/bárbaros/razão/emoção/material<br>/virtual<br>e <br>etc),<br>explicitando<br>suas<br>ambiguidades.|Os caminhos até a independência do<br>Brasil. Os caminhos da independência<br>do Brasil. Fatores que desencadearam<br>a <br>Independência<br>do<br>Brasil.<br>Movimentos abolicionistas no século<br>XIX no Brasil. Os imigrantes no Brasil.|Analisar<br>processos<br>políticos,<br>econômicos, sociais, ambientais e<br>culturais nos âmbitos local, regional,<br>nacional e mundial em diferentes<br>tempos, a partir da pluralidade de<br>procedimentos<br>epistemológicos,<br>cientíﬁcos e tecnológicos, de modo a<br>compreender<br>e <br>posicionar-se<br>criticamente em relação a eles,<br>considerando diferentes pontos de<br>vista e tomando decisões baseadas<br>em<br>argumentos<br>e <br>fontes<br>de<br>natureza cientíﬁca.",
+      "tags": [
+        "independência",
+        "américa",
+        "populações nômades",
+        "sedentárias",
+        "abolicionismo",
+        "imigrantes",
+        "brasil"
+      ]
+    },
+    {
+      "pagina": 12,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Totalitarismos e Conﬂitos Mundiais|(**EM13CHS101**) Identiﬁcar, analisar e<br>comparar<br>diferentes<br>fontes<br>e <br>narrativas<br>expressas<br>em<br>diversas<br>linguagens,<br>com<br>vistas<br>à <br>compreensão de ideias ﬁlosóﬁcas e de<br>processos<br>e <br>eventos<br>históricos,<br>geográﬁcos,<br>políticos,<br>econômicos,<br>sociais, ambientais e culturais.|A crise capitalista de 1929. A crise<br>capitalista de 1929 no contexto da<br>prosperidade e euforia especulativa<br>dos<br>anos<br>1924-1929<br>nos<br>Estados<br>Unidos.|Analisar a formação de territórios e<br>fronteiras em diferentes tempos e<br>espaços, mediante a compreensão<br>das<br>relações<br>de<br>poder<br>que<br>determinam as territorialidades e o<br>papel<br>geopolítico<br>dos<br>Estados-nações.",
+      "tags": [
+        "totalitarismos",
+        "conflitos mundiais",
+        "crise capitalista",
+        "1929",
+        "estados unidos"
+      ]
+    },
+    {
+      "pagina": 14,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Totalitarismos e Conﬂitos Mundiais|(**EM13CHS603**) Analisar a formação de<br>diferentes países, povos e nações e de<br>suas<br>experiências<br>políticas<br>e <br>de<br>exercício<br>da<br>cidadania,<br>aplicando<br>conceitos políticos básicos (Estado,<br>poder, formas, sistemas e regimes de<br>governo, soberania etc.).|A emergência do fascismo e do<br>nazismo. A Segunda Guerra Mundial.<br>Socialismo.<br>Fascismo.<br>Anarquismo.<br>Comunismo.|Participar do debate público de<br>forma crítica, respeitando diferentes<br>posições<br>e <br>fazendo<br>escolhas<br>alinhadas ao exercício da cidadania<br>e ao seu projeto de vida, com<br>liberdade, autonomia, consciência<br>crítica e responsabilidade.",
+      "tags": [
+        "totalitarismos",
+        "conflitos mundiais",
+        "fascismo",
+        "nazismo",
+        "segunda guerra mundial",
+        "socialismo",
+        "anarquismo",
+        "comunismo"
+      ]
+    },
+    {
+      "pagina": 16,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Modernização, Ditadura Civil-Militar e<br>Redemocratização: o Brasil após 1964|(**EM13CHS201**) Analisar e caracterizar<br>as dinâmicas das populações, das<br>mercadorias e do capital nos diversos<br>continentes, com destaque para a<br>mobilidade e a ﬁxação de pessoas,<br>grupos humanos e povos, em função<br>de<br>eventos<br>naturais,<br>políticos,<br>econômicos,<br>sociais,<br>religiosos<br>e <br>culturais, de modo a compreender e<br>posicionar-se criticamente em relação<br>a esses processos e às possíveis<br>relações entre eles.|Os governos no Brasil entre 1945 a<br>1964. O golpe civil – militar de 1964.<br>Instalação da ditadura (1964-1985).<br>Importância da Comissão Nacional da<br>Verdade<br>nas<br>investigações<br>às<br>violações<br>de<br>direitos<br>humanos<br>cometidos entre 1946 a 1988 por<br>agentes<br>públicos.<br>As<br>formas<br>de<br>resistência usadas pelos opositores do<br>regime ditatorial. As manifestações<br>culturais do período.|Analisar as relações de produção,<br>capital<br>e <br>trabalho<br>em<br>diferentes<br>territórios,<br>contextos<br>e <br>culturas,<br>discutindo o papel dessas relações na<br>construção,<br>consolidação<br>e <br>transformação das sociedades.",
+      "tags": [
+        "modernização",
+        "ditadura civil-militar",
+        "redemocratização",
+        "brasil",
+        "1964",
+        "comissão nacional da verdade",
+        "direitos humanos"
+      ]
+    }
+  ],
+  "meta_arquivo": "1°ANO_HISTÓRIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:11:24"
+}

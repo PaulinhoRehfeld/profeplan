@@ -1,0 +1,102 @@
+{
+  "titulo": null,
+  "disciplina": "Biologia",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologias e suas Linguagens|(**EM13CNT301**) <br>Construir<br>questões,<br>elaborar<br>hipóteses,<br>previsões<br>e <br>estimativas, empregar instrumentos<br>de<br>medição<br>e <br>representar<br>e <br>interpretar<br>modelos<br>explicativos,<br>dados e/ou resultados experimentais<br>para<br>construir,<br>avaliar<br>e <br>justiﬁcar<br>conclusões<br>no<br>enfrentamento<br>de<br>situações-problema<br>sob<br>uma<br>perspectiva cientíﬁca.|Introdução a Biologia e Método<br>Cientíﬁco|Analisar<br>situações-problema<br>e <br>avaliar aplicações do conhecimento<br>cientíﬁco<br>e <br>tecnológico<br>e <br>suas<br>implicações no mundo, utilizando<br>procedimentos<br>e <br>linguagens<br>próprios das Ciências da Natureza,<br>para<br>propor<br>soluções<br>que<br>considerem<br>demandas<br>locais,<br>regionais e/ou globais, e comunicar<br>suas descobertas e conclusões a<br>públicos<br>variados,<br>em<br>diversos<br>contextos e por meio de diferentes<br>mídias e tecnologias digitais de<br>informação e comunicação (TDIC).|",
+      "tags": [
+        "biologia",
+        "método científico",
+        "tecnologias",
+        "linguagens"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Matéria e Energia|(**EM13CNT102**) <br>Realizar<br>previsões,<br>avaliar intervenções e/ ou construir<br>protótipos de sistemas térmicos que<br>visem<br>à <br>sustentabilidade,<br>considerando sua composição e os<br>efeitos das variáveis termodinâmicas<br>sobre<br>seu<br>funcionamento,<br>considerando<br>também<br>o <br>uso<br>de<br>tecnologias digitais que auxiliem no<br>cálculo de estimativas e no apoio à<br>construção dos protótipos.|Efeito estufa (manutenção da vida e<br>consequências<br>da<br>intensiﬁcação)<br>Mudanças climáticas (aquecimento<br>global).|Analisar<br>fenômenos<br>naturais<br>e <br>processos tecnológicos, com base<br>nas interações e relações entre<br>matéria e energia, para propor ações<br>individuais<br>e <br>coletivas<br>que<br>aperfeiçoem processos produtivos,<br>minimizem<br>impactos<br>socioambientais<br>e <br>melhorem<br>as<br>condições de vida em âmbito local,<br>regional e global.|",
+      "tags": [
+        "matéria",
+        "energia",
+        "efeito estufa",
+        "mudanças climáticas",
+        "aquecimento global"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologias e suas Linguagens|(**EM13CNT302**) <br>Comunicar,<br>para<br>públicos<br>variados,<br>em<br>diversos<br>contextos,<br>resultados<br>de<br>análises,<br>pesquisas<br>e/ou<br>experimentos,<br>elaborando e/ou interpretando textos,<br>gráﬁcos, tabelas, símbolos, códigos,<br>sistemas de classiﬁcação e equações,<br>por meio de diferentes linguagens,<br>mídias,<br>tecnologias<br>digitais<br>de<br>informação e comunicação (TDIC), de<br>modo a participar e/ou promover<br>debates em torno de temas cientíﬁcos<br>e/ou<br>tecnológicos<br>de<br>relevância<br>sociocultural e ambiental.|Introdução a Biologia e Método<br>Cientíﬁco|Analisar<br>situações-problema<br>e <br>avaliar aplicações do conhecimento<br>cientíﬁco<br>e <br>tecnológico<br>e <br>suas<br>implicações no mundo, utilizando<br>procedimentos<br>e <br>linguagens<br>próprios das Ciências da Natureza,<br>para<br>propor<br>soluções<br>que<br>considerem<br>demandas<br>locais,<br>regionais e/ou globais, e comunicar<br>suas descobertas e conclusões a<br>públicos<br>variados,<br>em<br>diversos<br>contextos e por meio de diferentes<br>mídias e tecnologias digitais de<br>informação e comunicação (TDIC).|",
+      "tags": [
+        "biologia",
+        "método científico",
+        "tecnologias",
+        "linguagens",
+        "comunicação científica"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologias e suas Linguagens|(**EM13CNT303**) Interpretar textos de<br>divulgação cientíﬁca que tratem de<br>temáticas das Ciências da Natureza,<br>disponíveis<br>em<br>diferentes<br>mídias,<br>considerando<br>a <br>apresentação<br>dos<br>dados, tanto na forma de textos como<br>em equações, gráﬁcos e/ou tabelas, a<br>consistência dos argumentos e a<br>coerência das conclusões, visando<br>construir estratégias de seleção de<br>fontes conﬁáveis de informações.|Introdução a Biologia e Método<br>Cientíﬁco|Analisar<br>situações-problema<br>e <br>avaliar aplicações do conhecimento<br>cientíﬁco<br>e <br>tecnológico<br>e <br>suas<br>implicações no mundo, utilizando<br>procedimentos<br>e <br>linguagens<br>próprios das Ciências da Natureza,<br>para<br>propor<br>soluções<br>que<br>considerem<br>demandas<br>locais,<br>regionais e/ou globais, e comunicar<br>suas descobertas e conclusões a<br>públicos<br>variados,<br>em<br>diversos<br>contextos e por meio de diferentes<br>mídias e tecnologias digitais de<br>informação e comunicação (TDIC).|",
+      "tags": [
+        "biologia",
+        "método científico",
+        "tecnologias",
+        "linguagens",
+        "divulgação científica"
+      ]
+    },
+    {
+      "pagina": 9,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT201**) <br>Analisar<br>e <br>discutir<br>modelos, teorias e leis propostas em<br>diferentes épocas e culturas para<br>comparar distintas explicações sobre o<br>surgimento e a evolução da Vida, da<br>Terra e do Universo com as teorias<br>aceitas atualmente.|Origem da Vida e Evolução|Construir e utilizar interpretações<br>sobre a dinâmica da Vida, da Terra e<br>do<br>Cosmos<br>para<br>elaborar<br>argumentos, realizar previsões sobre<br>o funcionamento e a evolução dos<br>seres<br>vivos<br>e <br>do<br>Universo,<br>e <br>fundamentar<br>decisões<br>éticas<br>e <br>responsáveis.|",
+      "tags": [
+        "vida",
+        "terra",
+        "cosmos",
+        "origem da vida",
+        "evolução"
+      ]
+    },
+    {
+      "pagina": 11,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT208**) Aplicar os princípios da<br>evolução biológica para analisar a<br>história humana, considerando sua<br>origem, diversiﬁcação, dispersão pelo<br>planeta<br>e <br>diferentes<br>formas<br>de<br>interação com a natureza, valorizando<br>e respeitando a diversidade étnica e<br>cultural humana.|Processos de Especiação|Construir e utilizar interpretações<br>sobre a dinâmica da Vida, da Terra e<br>do<br>Cosmos<br>para<br>elaborar<br>argumentos, realizar previsões sobre<br>o funcionamento e a evolução dos<br>seres<br>vivos<br>e <br>do<br>Universo,<br>e <br>fundamentar<br>decisões<br>éticas<br>e <br>responsáveis.|",
+      "tags": [
+        "vida",
+        "terra",
+        "cosmos",
+        "evolução biológica",
+        "história humana",
+        "especiação"
+      ]
+    },
+    {
+      "pagina": 12,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e Cosmos|(**EM13CNT202X**) Analisar as diversas<br>formas de manifestação da vida em<br>seus diferentes níveis de organização,<br>bem como as condições ambientais<br>favoráveis e os fatores limitantes a elas,<br>tanto na Terra quanto em outros<br>planetas, com ou sem o uso de<br>dispositivos e aplicativos digitais.|Características dos Seres Vivos|Construir e utilizar interpretações<br>sobre a dinâmica da Vida, da Terra e<br>do<br>Cosmos<br>para<br>elaborar<br>argumentos, realizar previsões sobre<br>o funcionamento e a evolução dos<br>seres<br>vivos<br>e <br>do<br>Universo,<br>e <br>fundamentar<br>decisões<br>éticas<br>e <br>responsáveis.|",
+      "tags": [
+        "vida",
+        "terra",
+        "cosmos",
+        "seres vivos",
+        "organização biológica"
+      ]
+    },
+    {
+      "pagina": 14,
+      "capitulo": "SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "texto_limpo": "## SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "tags": [
+        "educação",
+        "minas gerais"
+      ]
+    }
+  ],
+  "meta_arquivo": "1°ANO_BIOLOGIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:09:26"
+}

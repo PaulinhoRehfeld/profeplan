@@ -61,7 +61,7 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
     // React to Active School Change
     useEffect(() => {
         if (activeSchoolId) {
-            loadDashboardData(activeSchoolId);
+            loadDashboardData(activeSchoolId.trim());
         }
     }, [activeSchoolId]);
 
@@ -127,42 +127,109 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
     const loadDashboardData = async (schoolId: string) => {
         setLoading(true);
         try {
-            // Get School Name if missing
-            if (!stats.schoolName || stats.schoolName === 'Escola') {
-                const { data: schoolData } = await supabase.from('schools').select('name').eq('id', schoolId).single();
-                if (schoolData) setStats(prev => ({ ...prev, schoolName: schoolData.name }));
+            // IMPORTANTE: Resolver schoolId para UUID
+            // O schoolId pode vir como INEP (ex: "23299") ou UUID
+            let resolvedSchoolId = schoolId.trim();
+            let schoolName = stats.schoolName;
+
+            // Tentar buscar escola - primeiro por ID (UUID), depois por INEP
+            let schoolData = null;
+
+            // Se parece um UUID (36 caracteres com hífens)
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(resolvedSchoolId);
+
+            if (isUuid) {
+                const { data } = await supabase.from('schools').select('id, name, inep_code').eq('id', resolvedSchoolId).single();
+                schoolData = data;
+            } else {
+                // É INEP - buscar pelo inep_code
+                console.log('[SchoolDashboard] 🔄 schoolId parece ser INEP, buscando UUID...');
+                const { data } = await supabase.from('schools').select('id, name, inep_code').eq('inep_code', resolvedSchoolId).single();
+                schoolData = data;
+                if (schoolData) {
+                    resolvedSchoolId = schoolData.id; // Usar o UUID real
+                    console.log('[SchoolDashboard] ✅ Resolved INEP', schoolId, 'to UUID:', resolvedSchoolId);
+                }
             }
 
-            // Load teachers (Active + Pending)
-            const { data: teachersData } = await supabase
-                .from('profiles')
-                .select('id, email, masp, full_name, created_at')
-                .eq('school_id', schoolId)
-                .eq('role', 'teacher');
+            if (schoolData) {
+                schoolName = schoolData.name;
+                setStats(prev => ({ ...prev, schoolName }));
+            }
 
+            // Load teachers via teacher_schools (usando UUID resolvido)
+            console.log('[SchoolDashboard] 🔍 Loading teachers from teacher_schools for school:', resolvedSchoolId);
+            const { data: teacherLinks, error: teacherLinksError } = await supabase
+                .from('teacher_schools')
+                .select(`
+                    id,
+                    teacher_id,
+                    role,
+                    started_at,
+                    profiles (
+                        id,
+                        email,
+                        masp,
+                        full_name,
+                        created_at
+                    )
+                `)
+                .eq('school_id', resolvedSchoolId)
+                .is('ended_at', null) // Apenas vínculos ativos
+                .order('started_at', { ascending: false });
+
+            if (teacherLinksError) {
+                console.error('[SchoolDashboard] ❌ Error loading teacher links:', teacherLinksError);
+            }
+
+            // Flatten teacher data
+            const teachersData = (teacherLinks || [])
+                .filter(link => link.profiles) // Garantir que o professor existe
+                .map(link => {
+                    const profile = link.profiles as any;
+                    return {
+                        id: profile.id,
+                        email: profile.email,
+                        masp: profile.masp,
+                        full_name: profile.full_name,
+                        created_at: profile.created_at,
+                        role: link.role, // Role no vínculo (teacher, coordinator, principal)
+                        link_started_at: link.started_at
+                    };
+                });
+
+            console.log('[SchoolDashboard] ✅ Found', teachersData.length, 'active teachers via teacher_schools');
+
+            // Load pending teachers (usando UUID resolvido)
             const { data: pendingTeachersData } = await supabase
                 .from('pending_teachers')
                 .select('id')
-                .eq('school_id', schoolId)
+                .eq('school_id', resolvedSchoolId)
                 .eq('status', 'pending');
 
-            // Load students (from correct table 'students')
+            // Load students (usando UUID resolvido)
             const { data: studentsData } = await supabase
                 .from('students')
                 .select('*')
-                .eq('current_school_id', schoolId)
+                .eq('current_school_id', resolvedSchoolId)
                 .order('name');
 
-            // Load classes
+            // Load classes (usando UUID resolvido)
             const { data: classesData } = await supabase
                 .from('classes')
                 .select('*')
-                .eq('school_id', schoolId)
+                .eq('school_id', resolvedSchoolId)
                 .order('name');
 
             setTeachers(teachersData || []);
             setStudents(studentsData || []);
-            setClasses(classesData || []);
+
+            // Calculate student counts locally
+            const classesWithCounts = (classesData || []).map((cls: any) => {
+                const count = (studentsData || []).filter((s: any) => s.class_id === cls.id).length;
+                return { ...cls, student_count: count };
+            });
+            setClasses(classesWithCounts);
             setStats(prev => ({
                 ...prev,
                 totalTeachers: (teachersData?.length || 0) + (pendingTeachersData?.length || 0),

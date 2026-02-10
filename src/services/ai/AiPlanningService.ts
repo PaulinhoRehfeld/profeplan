@@ -18,6 +18,7 @@ export const generateTermPlan = async (
         userId?: string;
         level?: string;
         feedback?: string;
+        pnld_book_id?: string;
     }
 ) => {
     const genAI = getGenAIClient();
@@ -30,7 +31,7 @@ export const generateTermPlan = async (
         }
     }
 
-    // --- RAG: Busca Curricular ---
+    // --- RAG: Busca Curricular + Normalização Escalável ---
     let curriculumContext = "";
     try {
         // 1. Normalização do Ano/Nível (Crucial para o BUG do usuário)
@@ -40,23 +41,12 @@ export const generateTermPlan = async (
             normalizedGrade = `${num}º Ano EM`;
         }
 
-        // 2. Normalização da Disciplina (Básico para bater com ingestão)
-        let normalizedSubject = context.subject;
-        const s = context.subject.toLowerCase();
-        if (s.includes('historia') || s.includes('história')) normalizedSubject = 'História';
-        if (s.includes('matematica') || s.includes('matemática')) normalizedSubject = 'Matemática';
-        if (s.includes('portugues') || s.includes('português')) normalizedSubject = 'Língua Portuguesa';
-        if (s.includes('ingles') || s.includes('inglês')) normalizedSubject = 'Língua Inglesa';
-        if (s.includes('geografia')) normalizedSubject = 'Geografia';
-        if (s.includes('biologia')) normalizedSubject = 'Biologia';
-        if (s.includes('fisica') || s.includes('física')) normalizedSubject = 'Física';
-        if (s.includes('quimica') || s.includes('química')) normalizedSubject = 'Química';
-        if (s.includes('filosofia')) normalizedSubject = 'Filosofia';
-        if (s.includes('sociologia')) normalizedSubject = 'Sociologia';
-        if (s.includes('artes')) normalizedSubject = 'Artes';
+        // 2. Normalização da Disciplina via Tabela subject_aliases
+        // ✅ NOVA ABORDAGEM: Usa serviço escalável ao invés de hardcode
+        const { normalizeSubject } = await import('../SubjectNormalizationService');
+        const normalizedSubject = await normalizeSubject(context.subject);
 
-
-        const periodString = `${context.period}º ${context.regime}`; // Ex: "1º Bimestre"
+        const periodString = `${context.period}º Trimestre`;
 
         console.log(`🔍 Buscando currículo para: ${normalizedSubject}, ${normalizedGrade}, ${periodString}`);
 
@@ -73,7 +63,11 @@ export const generateTermPlan = async (
         );
 
         if (results && results.length > 0) {
-            curriculumContext = results.map((r: any) => r.content).join('\n\n---\n\n');
+            curriculumContext = results.map((r: any) => {
+                const year = r.metadata?.ano_base || 2025;
+                const sourceTag = year === 2025 ? " (Base curricular 2025)" : "";
+                return `${r.content}${sourceTag}`;
+            }).join('\n\n---\n\n');
             console.log(`✅ Encontrados ${results.length} trechos de currículo.`);
         } else {
             console.warn("⚠️ Nenhum currículo encontrado no banco para estes filtros.");
@@ -81,6 +75,35 @@ export const generateTermPlan = async (
 
     } catch (err) {
         console.error("Erro na busca RAG:", err);
+    }
+
+    // --- REGRAS DE NEGÓCIO DO LIVRO PNLD (EDUCAÇÃO DIGITAL - FTD) ---
+    // Regra: 18 capítulos / 3 anos = 6 caps por ano / 3 tri = 2 caps por trimestre
+    let pnldInstruction = "";
+    if (context.pnld_book_id && typeof context.pnld_book_id === 'string' &&
+        (context.pnld_book_id.toLowerCase().includes('educação digital') || context.pnld_book_id.toLowerCase().includes('educacao digital'))) {
+
+        const chapters = calculateDigitalEducationChapters(context.grade, context.period);
+        if (chapters) {
+            pnldInstruction = `
+    [REGRA MANDATÓRIA DO LIVRO DIDÁTICO]:
+    O professor escolheu o livro: "${context.pnld_book_id}" (Volume Único para o Ensino Médio).
+    Seguindo a grade curricular estrita para este período (${context.grade} - ${context.period}º Trimestre), você DEVE utilizar EXCLUSIVAMENTE os seguintes capítulos:
+    👉 ${chapters}
+    
+    INSTRUÇÃO:
+    - Baseie o plano de aula APENAS nesses capítulos e nos temas abarcados por eles.
+    - Ignore conteúdos de outros bimestres/anos deste mesmo livro.
+    `;
+            console.log(`📚 Regra PNLD Aplicada: ${chapters}`);
+        }
+    } else if (context.pnld_book_id) {
+        // Regra Genérica para outros livros
+        pnldInstruction = `
+    [LIVRO DIDÁTICO SELECIONADO]:
+    O professor utilizará o livro: "${context.pnld_book_id}".
+    Sempre que possível, sugira atividades e leituras conectadas a este material.
+        `;
     }
 
     const prompt = `
@@ -94,12 +117,16 @@ export const generateTermPlan = async (
     - Componente: ${context.subject}
     - Nível de Ensino: ${context.level || 'Não especificado'}
     - Ano/Série: ${context.grade}
-    - Período: ${context.period}º ${context.regime}
+    - Período: ${context.period}º Trimestre
+    - Regra de Pontuação: ${context.period === 3 ? '40 pontos totais no trimestre' : '30 pontos totais no trimestre'}
+    - Avaliações: Prova 1 e Prova 2
     - Total de Aulas: ${context.totalClasses}
 
     [DADOS DO CURRÍCULO OFICIAL]:
     ${curriculumContext ? curriculumContext : "Use a BNCC geral."}
     
+    ${pnldInstruction}
+
     ${context.feedback ? `
     [ATENÇÃO: FEEDBACK DO PROFESSOR (PRIORIDADE CRÍTICA)]
     O professor solicitou o seguinte ajuste no plano anterior:
@@ -159,7 +186,7 @@ export const generateTermPlan = async (
 
         // Increment Usage only on success
         if (context.userId) {
-            await incrementUserUsage(context.userId);
+            await incrementUserUsage(context.userId, 'term_plan');
         }
 
         return text; // Return raw Markdown
@@ -209,7 +236,36 @@ export const generateGeminiContent = async (
     const result = await chat.sendMessage(prompt);
     const response = result.response.text();
 
-    if (userId) await incrementUserUsage(userId);
+    if (userId) await incrementUserUsage(userId, 'chat');
 
     return response;
 };
+
+/**
+ * Calcula os capítulos do livro "Educação Digital" (FTD) volume único.
+ * Regra: 18 Capítulos totais.
+ * 1º Ano: Caps 1-6
+ * 2º Ano: Caps 7-12
+ * 3º Ano: Caps 13-18
+ * Divididos igualmente por 3 trimestres (2 caps por tri).
+ */
+function calculateDigitalEducationChapters(gradeStr: string, period: number): string | null {
+    // Extrai o número do ano (1º, 2º, 3º)
+    const gradeNum = parseInt(gradeStr.replace(/\D/g, '')) || 0;
+
+    // Validação básica (apenas EM 1-3)
+    if (gradeNum < 1 || gradeNum > 3) return null;
+
+    // Lógica Matemática
+    // Offset de Ano: (Ano - 1) * 6
+    // Offset de Período: (Período - 1) * 2
+    // Start Chapter = OffsetAno + OffsetPeriodo + 1
+
+    const yearOffset = (gradeNum - 1) * 6;
+    const periodOffset = (period - 1) * 2;
+
+    const startCap = yearOffset + periodOffset + 1;
+    const endCap = startCap + 1;
+
+    return `CAPÍTULOS ${startCap} e ${endCap}`;
+}

@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Save, CheckCircle2, AlertCircle, ArrowRight, BrainCircuit, User, Activity } from 'lucide-react';
+import { Save, AlertCircle, BrainCircuit, User, Activity } from 'lucide-react';
 import { supabase } from '../../../services/supabaseClient';
 import { PDI_SCHEMA, PDIProfileData } from '../../../types/pdi-schema';
 import { PDICheckboxGroup } from './PDICheckboxGroup';
-import { toast } from 'sonner'; // Assuming generic toast or simple console for now if not installed
 
 interface StudentPDIProfileProps {
     studentId: string;
-    onClose?: () => void;
+    onClose: () => void;
 }
 
 export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId, onClose }) => {
     const [activeTab, setActiveTab] = useState<'info' | 'clinical' | 'pedagogical'>('info');
     const [loading, setLoading] = useState(false);
     const [studentName, setStudentName] = useState('');
+    const [schoolStudentId, setSchoolStudentId] = useState<string | null>(null);
 
-    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<PDIProfileData>({
+    const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<PDIProfileData & { deficiencies: string[] }>({
         resolver: zodResolver(PDI_SCHEMA),
         defaultValues: {
             psychomotor: {},
-            cognitive: {}
+            cognitive: {},
+            deficiencies: []
         }
     });
 
@@ -29,47 +30,177 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
         const loadStudentData = async () => {
             setLoading(true);
             try {
-                // Fetch Student Name and existing PDI Data
-                const { data, error } = await supabase
-                    .from('school_students')
-                    .select('name, pdi_data')
+                // 1. Fetch ALL Student Data to ensure we have DOB etc.
+                const { data: student, error: studentError } = await supabase
+                    .from('students')
+                    // Select * to get hidden columns like birth_date/dob
+                    .select('*')
                     .eq('id', studentId)
-                    .single();
+                    .maybeSingle();
 
-                if (error) throw error;
+                if (studentError) throw studentError;
 
-                if (data) {
-                    setStudentName(data.name);
-                    if (data.pdi_data) {
-                        // Merge existing PDI data into form
-                        // We assume pdi_data has the structure { psychomotor: ..., cognitive: ... }
-                        // and potentially other fields like "history", "medication" which are not in Zod yet but handled via standard inputs in Tab 1
-                        reset(data.pdi_data);
+                if (student) {
+                    setStudentName(student.name);
+                    setValue('student_data.name', student.name);
+
+                    let finalSSId = student.school_student_id;
+
+                    // Self-healing: If missing school_student_id but we have school context
+                    if (!finalSSId && student.current_school_id) {
+                        console.log("Attempting to auto-heal missing school_student_id...");
+                        const { data: existingSS } = await supabase
+                            .from('school_students')
+                            .select('id')
+                            .eq('school_id', student.current_school_id)
+                            .eq('name', student.name)
+                            .maybeSingle();
+
+                        if (existingSS) {
+                            finalSSId = existingSS.id;
+                        } else {
+                            const { data: { user } } = await supabase.auth.getUser();
+                            if (user) {
+                                const { data: newSS, error: createError } = await supabase
+                                    .from('school_students')
+                                    .insert([{
+                                        school_id: student.current_school_id,
+                                        name: student.name,
+                                        created_by: user.id,
+                                        pdi_data: {}
+                                    }])
+                                    .select('id')
+                                    .single();
+
+                                if (!createError && newSS) finalSSId = newSS.id;
+                            }
+                        }
+
+                        if (finalSSId) {
+                            await supabase.from('students').update({ school_student_id: finalSSId }).eq('id', studentId);
+                        }
                     }
+
+                    if (finalSSId) {
+                        setSchoolStudentId(finalSSId);
+                        const { data: ssData, error: ssError } = await supabase
+                            .from('school_students')
+                            .select('pdi_data')
+                            .eq('id', finalSSId)
+                            .maybeSingle();
+
+                        if (!ssError && ssData && ssData.pdi_data) {
+                            reset(ssData.pdi_data);
+                            setValue('student_data.name', student.name);
+                            if (ssData.pdi_data.deficiencies) {
+                                setValue('deficiencies', ssData.pdi_data.deficiencies);
+                            }
+                        }
+                    } else {
+                        console.warn("Could not resolve school_student_id even after self-healing.");
+                    }
+
+                    // 2. Hydrate Relations (Class/School)
+                    let className = '';
+                    let schoolYear = '';
+                    let schoolName = '';
+                    let shift = '';
+
+                    if (student.class_id) {
+                        const { data: classData } = await supabase
+                            .from('classes')
+                            .select('name, year, shift')
+                            .eq('id', student.class_id)
+                            .maybeSingle();
+                        if (classData) {
+                            className = classData.name;
+                            schoolYear = classData.year?.toString() || '';
+                            shift = classData.shift || '';
+                        }
+                    }
+
+                    if (student.current_school_id) {
+                        const { data: schoolData } = await supabase
+                            .from('schools')
+                            .select('name')
+                            .eq('id', student.current_school_id)
+                            .maybeSingle();
+                        if (schoolData) schoolName = schoolData.name;
+                    }
+
+                    setValue('student_data.class_name', className);
+                    setValue('student_data.school_year', schoolYear);
+                    setValue('student_data.shift', shift);
+                    setValue('institutional.school_name', schoolName);
+
+                    // 3. Hydrate Age/DOB from Student Record if explicit
+                    // Try common column names: dob, birth_date, data_nascimento
+                    const dob = student.dob || student.birth_date || student.data_nascimento;
+                    if (dob) {
+                        setValue('student_data.dob', dob);
+                        // Calculate Age
+                        const birthDate = new Date(dob);
+                        const today = new Date();
+                        let age = today.getFullYear() - birthDate.getFullYear();
+                        const m = today.getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        if (!isNaN(age)) setValue('student_data.age', age);
+                    }
+
+                } else {
+                    alert("Aluno não encontrado na base de dados (students).");
+                    if (onClose) onClose();
                 }
-            } catch (err) {
+
+            } catch (err: any) {
                 console.error("Error loading PDI data:", err);
-                alert("Erro ao carregar dados do aluno.");
+                alert(`Erro ao carregar dados: ${err.message || JSON.stringify(err)}`);
             } finally {
                 setLoading(false);
             }
         };
 
         if (studentId) loadStudentData();
-    }, [studentId, reset]);
+    }, [studentId, reset, setValue]);
 
-    const onSubmit = async (formData: PDIProfileData) => {
+    const onError = (errors: any) => {
+        console.error("Validation Errors:", errors);
+        const formatErrors = (errObj: any, prefix = ''): string[] => {
+            return Object.keys(errObj).reduce((acc: string[], key) => {
+                const err = errObj[key];
+                if (err.message) return [...acc, `${prefix}${key}: ${err.message}`];
+                if (typeof err === 'object') return [...acc, ...formatErrors(err, `${prefix}${key}.`)];
+                return acc;
+            }, []);
+        };
+        const missingFields = formatErrors(errors).join("\n");
+        alert(`Não foi possível salvar.\nVerifique:\n${missingFields}`);
+    };
+
+    const onSubmit = async (formData: PDIProfileData & { deficiencies: string[] }) => {
         setLoading(true);
         console.log("Saving PDI Data:", formData);
 
+        if (!schoolStudentId) {
+            alert("Erro: ID de vínculo escolar (school_student_id) não encontrado. Não é possível salvar o PDI.");
+            setLoading(false);
+            return;
+        }
+
         try {
-            // Update the JSONB column
+            // Update 'school_students' table where PDI data lives
+            // We use 'pdi_data' JSON column. we prefer NOT to touch 'deficiencies' array column directly if it doesn't exist or is read-only.
             const { error } = await supabase
                 .from('school_students')
                 .update({
-                    pdi_data: formData
+                    pdi_data: {
+                        ...formData,
+                        deficiencies: formData.deficiencies
+                    }
                 })
-                .eq('id', studentId);
+                .eq('id', schoolStudentId);
 
             if (error) throw error;
 
@@ -87,9 +218,9 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
     if (loading && !studentName) return <div className="p-10 text-center">Carregando perfil...</div>;
 
     return (
-        <div className="bg-white min-h-[500px] flex flex-col h-full">
+        <div className="flex flex-col h-full bg-slate-50">
             {/* HEADER */}
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <div className="bg-white border-b border-indigo-100 p-6 flex justify-between items-center shadow-sm z-10">
                 <div>
                     <h2 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
                         <BrainCircuit className="text-indigo-600" />
@@ -100,7 +231,7 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
                 <div className="flex gap-2">
                     <button onClick={onClose} className="px-4 py-2 text-sm text-slate-400 font-bold hover:text-slate-600">Fechar</button>
                     <button
-                        onClick={handleSubmit(onSubmit)}
+                        onClick={handleSubmit(onSubmit as any, onError)}
                         className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-lg shadow-indigo-200 flex items-center gap-2 transition-all active:scale-95"
                     >
                         <Save size={18} />
@@ -140,77 +271,173 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
                         <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-3 text-blue-700">
                             <AlertCircle className="shrink-0" />
                             <div>
-                                <p className="font-bold text-sm">Dados Cadastrais (Em Desenvolvimento)</p>
-                                <p className="text-xs mt-1">Nesta etapa, futuramente, exibiremos os dados importados do SIMADE/DED.</p>
+                                <p className="font-bold text-sm">Dados Cadastrais</p>
+                                <p className="text-xs mt-1">Estes dados são identificados automaticamente do cadastro do aluno.</p>
                             </div>
                         </div>
 
-                        {/* Generic Fields to store in JSONB freely for now */}
+                        {/* Identification Fields */}
                         <div className="space-y-4">
                             <label className="block">
-                                <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Histórico de Escolarização</span>
-                                <textarea
-                                    className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 outline-none min-h-[100px]"
-                                    placeholder="Descreva a trajetória escolar do aluno..."
-                                    {...register('history' as any)}
+                                <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Nome do Aluno</span>
+                                <input
+                                    className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm bg-slate-100 text-slate-600 font-bold"
+                                    {...register('student_data.name')}
+                                    readOnly
+                                />
+                            </label>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <label className="block">
+                                    <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Escola</span>
+                                    <input
+                                        className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm bg-slate-100 text-slate-600"
+                                        {...register('institutional.school_name')}
+                                        placeholder="Nome da Escola"
+                                    />
+                                </label>
+                                <label className="block">
+                                    <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Ano Escolar</span>
+                                    <input
+                                        className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm bg-slate-100 text-slate-600"
+                                        {...register('student_data.school_year')}
+                                        placeholder="Ex: 5º Ano"
+                                    />
+                                </label>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <label className="block">
+                                    <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Turma</span>
+                                    <input
+                                        className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm bg-slate-100 text-slate-600"
+                                        {...register('student_data.class_name')}
+                                        placeholder="Turma"
+                                    />
+                                </label>
+                                <label className="block">
+                                    <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Idade</span>
+                                    <input
+                                        type="number"
+                                        className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm"
+                                        {...register('student_data.age', { setValueAs: (v) => v === "" ? undefined : Number(v) })}
+                                        placeholder="Idade"
+                                    />
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-4 border-t border-slate-100">
+                            <PDICheckboxGroup
+                                label="Principais Diagnósticos (Tags)"
+                                options={[
+                                    "TDAH",
+                                    "Autismo",
+                                    "Dislexia",
+                                    "TOD",
+                                    "Defi. Intelectual",
+                                    "Altas Habilidades",
+                                    "Outro"
+                                ]}
+                                selected={watch('deficiencies') || []}
+                                onChange={(newVal) => setValue('deficiencies', newVal)}
+                            />
+                            <p className="text-[10px] text-slate-400">Selecione as tags para identificação rápida na lista.</p>
+                        </div>
+
+                        <div className="space-y-4 pt-8 border-t border-slate-200">
+                            <h3 className="font-black text-slate-700 uppercase tracking-widest text-sm">Histórico de Escolarização</h3>
+                            <textarea
+                                className="w-full p-4 rounded-xl border border-slate-200 text-sm min-h-[120px]"
+                                placeholder="Descreva brevemente o histórico escolar do aluno..."
+                                {...register('clinical_health.medical_updates')}
+                            ></textarea>
+                        </div>
+                    </div>
+                )}
+
+                {/* TAB 2: CLINICAL */}
+                {activeTab === 'clinical' && (
+                    <div className="max-w-3xl mx-auto animate-in slide-in-from-right-4 fade-in duration-300 space-y-8">
+                        <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl flex gap-3 text-purple-700">
+                            <Activity className="shrink-0" />
+                            <div>
+                                <p className="font-bold text-sm">Aspectos Clínicos</p>
+                                <p className="text-xs mt-1">Informações de saúde e terapias.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <label className="block">
+                                <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Diagnóstico (CID)</span>
+                                <input
+                                    className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm"
+                                    {...register('clinical_health.diagnosis_cid')}
+                                    placeholder="Ex: F84.0"
                                 />
                             </label>
 
                             <label className="block">
-                                <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Laudo Médico (CID)</span>
-                                <input
-                                    type="text"
-                                    className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                                    placeholder="Ex: F84.0 - Autismo Infantil"
-                                    {...register('cid' as any)}
+                                <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Medicação em Uso</span>
+                                <textarea
+                                    className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm"
+                                    {...register('clinical_health.medication')}
+                                    placeholder="Descreva..."
+                                />
+                            </label>
+
+                            <label className="block">
+                                <span className="text-xs font-bold uppercase text-slate-400 tracking-wider">Terapias / Acompanhamentos</span>
+                                <textarea
+                                    className="w-full mt-2 p-3 rounded-xl border border-slate-200 text-sm"
+                                    {...register('clinical_health.therapies')}
+                                    placeholder="Fonoaudiologia, Psicologia..."
                                 />
                             </label>
                         </div>
                     </div>
                 )}
 
-                {/* TAB 2: CLINICAL / PSYCHOMOTOR */}
-                {activeTab === 'clinical' && (
-                    <div className="max-w-4xl mx-auto animate-in slide-in-from-right-4 fade-in duration-300">
-                        <div className="mb-8">
-                            <h3 className="text-lg font-black text-slate-800 mb-2">Seção VI: Aspectos Psicomotores</h3>
-                            <p className="text-slate-500 text-sm">Avalie o desenvolvimento motor conforme observação clínica ou laudo.</p>
-                        </div>
-
-                        <PDICheckboxGroup sectionKey="psychomotor" register={register} data={watch()} />
-
-                        <div className="flex justify-end mt-8">
-                            <button
-                                type="button"
-                                onClick={() => setActiveTab('pedagogical')}
-                                className="flex items-center gap-2 text-indigo-600 font-bold text-sm hover:underline"
-                            >
-                                Próximo: Pedagógico <ArrowRight size={16} />
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* TAB 3: PEDAGOGICAL / COGNITIVE */}
+                {/* TAB 3: PEDAGOGICAL (Checklists) */}
                 {activeTab === 'pedagogical' && (
-                    <div className="max-w-4xl mx-auto animate-in slide-in-from-right-4 fade-in duration-300">
-                        <div className="mb-8">
-                            <h3 className="text-lg font-black text-slate-800 mb-2">Seção VII: Aspectos Cognitivos</h3>
-                            <p className="text-slate-500 text-sm">Avalie as funções cognitivas e estilo de aprendizagem.</p>
-                        </div>
+                    <div className="max-w-4xl mx-auto animate-in slide-in-from-right-8 fade-in duration-300 space-y-12 pb-20">
+                        {/* Psychomotor Section */}
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">1</div>
+                                <h3 className="text-lg font-black text-slate-800 tracking-tight">Aspectos Psicomotores</h3>
+                            </div>
 
-                        <PDICheckboxGroup sectionKey="cognitive" register={register} data={watch()} />
-
-                        <div className="mt-10 p-6 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
-                            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-3" />
-                            <h4 className="font-black text-emerald-800 text-sm uppercase tracking-wide">Preenchimento Concluído</h4>
-                            <p className="text-emerald-600 text-xs mt-1 mb-4">Clique em Salvar para registrar as alterações no prontuário do aluno.</p>
-                            <button
-                                onClick={handleSubmit(onSubmit)}
-                                className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-lg shadow-emerald-200 transition-all active:scale-95 w-full md:w-auto"
-                            >
-                                Salvar PDI Agora
-                            </button>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                                <div className="space-y-4 col-span-2">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {[
+                                            { key: 'body_schema', label: 'Esquema Corporal' },
+                                            { key: 'gross_motor_coordination', label: 'Coordenação Ampla' },
+                                            { key: 'fine_motor_coordination', label: 'Coordenação Fina' },
+                                            { key: 'dynamic_balance', label: 'Equilíbrio Dinâmico' },
+                                            { key: 'attention_sustained', label: 'Atenção Sustentada', section: 'cognitive' },
+                                            { key: 'memory_short_term', label: 'Memória Curto Prazo', section: 'cognitive' },
+                                            { key: 'orders_simple', label: 'Compreensão Ordens Simples', section: 'cognitive' },
+                                            { key: 'interaction_intent', label: 'Intenção Comunicativa', section: 'communication' }
+                                        ].map((item) => (
+                                            <label key={item.key} className="block bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                                <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider block mb-2">{item.label}</span>
+                                                <select
+                                                    className="w-full text-xs font-bold text-slate-700 bg-white p-2 rounded-lg border border-slate-200"
+                                                    {...register(`${item.section || 'psychomotor'}.${item.key}` as any)}
+                                                >
+                                                    <option value="">Não Avaliado</option>
+                                                    <option value="APRESENTA">Apresenta</option>
+                                                    <option value="COM_AJUDA">Com Ajuda</option>
+                                                    <option value="NAO_APRESENTA">Não Apresenta</option>
+                                                    <option value="NAO_OBSERVADO">Não Observado</option>
+                                                </select>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

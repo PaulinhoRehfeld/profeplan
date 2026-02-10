@@ -3,7 +3,7 @@
  * Handles automatic generation of Block 9 adaptations when teachers save lesson plans
  */
 
-import { PdiDocumentService } from './PdiDocumentService';
+import { PdiDocumentService } from './pdi/PdiDocumentService';
 import { generateBlock9Adaptation } from './geminiService';
 import { Block9AdaptationEntry } from '../types/pdi';
 import { supabase } from './supabaseClient';
@@ -25,7 +25,7 @@ export const PdiBlock9Service = {
         classId: string,
         schoolId: string,
         userId: string,
-        period: string // Ex: "1º Bimestre 2026"
+        year: number
     ): Promise<{ success: boolean; adaptationsCreated: number; errors: string[] }> {
 
         console.log(`🔄 PDI Block 9: Checking for students with active PDIs in class ${classId}...`);
@@ -40,15 +40,15 @@ export const PdiBlock9Service = {
                 .select(`
                     id,
                     student_id,
-                    period,
-                    block_1_8,
+                    year,
+                    content_data,
                     school_students (
                         id,
                         name
                     )
                 `)
                 .eq('school_id', schoolId)
-                .eq('period', period)
+                .eq('year', year)
                 .eq('status', 'em_andamento');
 
             if (studentsError) {
@@ -69,17 +69,17 @@ export const PdiBlock9Service = {
                 try {
                     const studentName = (pdiDoc.school_students as any)?.name || 'Estudante';
 
-                    // Extract student context from Block 1-8
-                    const block1_8 = pdiDoc.block_1_8 as any;
+                    // Extract student context from content_data
+                    const content = (pdiDoc.content_data || {}) as any;
                     const studentContext = {
-                        nome_completo: block1_8?.bloco_1_identificacao?.nome_completo || studentName,
-                        diagnostico_clinico: block1_8?.bloco_1_identificacao?.diagnostico_clinico,
-                        necessidades_especificas: block1_8?.bloco_2_diagnostico?.necessidades_especificas,
-                        potencialidades: block1_8?.bloco_2_diagnostico?.potencialidades,
-                        desafios: block1_8?.bloco_2_diagnostico?.desafios,
-                        objetivo_geral: block1_8?.bloco_3_objetivos?.objetivo_geral,
-                        recursos_tecnologicos: block1_8?.bloco_4_recursos?.recursos_tecnologicos,
-                        materiais_adaptados: block1_8?.bloco_4_recursos?.materiais_adaptados,
+                        nome_completo: (pdiDoc.school_students as any)?.name || studentName,
+                        diagnostico_clinico: content.clinical_health?.diagnosis_cid,
+                        necessidades_especificas: content.pedagogical?.specific_needs,
+                        potencialidades: content.cognitive?.potentials,
+                        desafios: content.cognitive?.challenges,
+                        objetivo_geral: content.pedagogical?.general_objective,
+                        recursos_tecnologicos: content.pedagogical?.technological_resources,
+                        materiais_adaptados: content.pedagogical?.adapted_materials,
                     };
 
                     // Check if Block 1 is filled (required for adaptation)
@@ -116,10 +116,10 @@ export const PdiBlock9Service = {
                     };
 
                     // 5. Save to PDI
-                    const saved = await PdiDocumentService.addBlock9Adaptation({
-                        pdi_id: pdiDoc.id,
-                        adaptation: newAdaptation,
-                    });
+                    const saved = await PdiDocumentService.addBlock9Adaptation(
+                        pdiDoc.id,
+                        newAdaptation,
+                    );
 
                     if (saved) {
                         adaptationsCreated++;
@@ -158,11 +158,11 @@ export const PdiBlock9Service = {
      */
     async getStudentAdaptations(pdiId: string): Promise<Block9AdaptationEntry[]> {
         try {
-            const pdi = await PdiDocumentService.getPdiDocument(pdiId);
+            const { data: pdi } = await PdiDocumentService.getPdiDocument(pdiId);
             if (!pdi) {
                 return [];
             }
-            return pdi.block_9_content || [];
+            return (pdi.block_9_content || []) as Block9AdaptationEntry[];
         } catch (error) {
             console.error('Error fetching Block 9 adaptations:', error);
             return [];
@@ -189,7 +189,7 @@ export const PdiBlock9Service = {
         return {
             total: adaptations.length,
             last_generated: lastGenerated,
-            subjects,
+            subjects: subjects as string[],
         };
     },
 };

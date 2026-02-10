@@ -1,0 +1,128 @@
+{
+  "titulo": null,
+  "disciplina": "Sociologia",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Território e Fronteira|(**EM13CHS201**) Analisar e caracterizar\nas dinâmicas das populações, das\nmercadorias e do capital nos diversos\ncontinentes, com destaque para a\nmobilidade e a ﬁxação de pessoas,\ngrupos humanos e povos, em função\nde\neventos\nnaturais,\npolíticos,\neconômicos,\nsociais,\nreligiosos\ne \nculturais, de modo a compreender e\nposicionar-se criticamente em relação\na esses processos e às possíveis\nrelações entre eles.|Marcadores\nsociais\nem\nsuas\ndimensões\nde\nclasse,\nraça/etnia,\ngênero,\nsexualidade,\nreligião,\nregionalidade,\nnacionalidade,\nentre\noutros,\ne \nsua\nrelação\ncom\na \nestratiﬁcação social.|Analisar a formação de territórios e\nfronteiras em diferentes tempos e\nespaços, mediante a compreensão\ndas\nrelações\nde\npoder\nque\ndeterminam as territorialidades e o\npapel\ngeopolítico\ndos\nEstados-nações.|",
+      "tags": [
+        "território",
+        "fronteira",
+        "populações",
+        "mobilidade",
+        "classe",
+        "raça",
+        "gênero",
+        "estratificação social",
+        "relações de poder",
+        "geopolítica"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Território e Fronteira|(**EM13CHS204**) Comparar e avaliar os\nprocessos de ocupação do espaço e a\nformação\nde\nterritórios,\nterritorialidades\ne \nfronteiras,\nidentiﬁcando o papel de diferentes\nagentes\n(como\ngrupos\nsociais\ne \nculturais, impérios, Estados Nacionais\ne \norganismos\ninternacionais)\ne \nconsiderando\nos\nconﬂitos\npopulacionais (internos e externos), a\ndiversidade\nétnico-cultural\ne \nas\ncaracterísticas\nsocioeconômicas,\npolíticas e tecnológicas.|Marcadores\nsociais\nem\nsuas\ndimensões\nde\nclasse,\nraça/etnia,\ngênero,\nsexualidade,\nreligião,\nregionalidade,\nnacionalidade,\nentre\noutros,\ne \nsua\nrelação\ncom\na \nestratiﬁcação social.|Analisar a formação de territórios e\nfronteiras em diferentes tempos e\nespaços, mediante a compreensão\ndas\nrelações\nde\npoder\nque\ndeterminam as territorialidades e o\npapel\ngeopolítico\ndos\nEstados-nações.|",
+      "tags": [
+        "território",
+        "fronteira",
+        "ocupação do espaço",
+        "agentes sociais",
+        "conflitos populacionais",
+        "diversidade étnico-cultural",
+        "classe",
+        "raça",
+        "gênero",
+        "estratificação social",
+        "relações de poder",
+        "geopolítica"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": null,
+      "texto_limpo": "6",
+      "tags": []
+    },
+    {
+      "pagina": 7,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Indivíduo, Natureza, Sociedade,\nCultura e Ética|(**EM13CHS501**) \nAnalisar\nos\nfundamentos da ética em diferentes\nculturas,\ntempos\ne \nespaços,\nidentiﬁcando\nprocessos\nque\ncontribuem\npara\na \nformação\nde\nsujeitos\néticos\nque\nvalorizem\na \nliberdade, a cooperação, a autonomia,\no empreendedorismo, a convivência\ndemocrática e a solidariedade.|Estudo e compreensão dos conceitos\nde sexo, gênero e sexualidade, suas\ninterrelações e interseccionalidades.|Identiﬁcar e combater as diversas\nformas de injustiça, preconceito e\nviolência, adotando princípios éticos,\ndemocráticos, inclusivos e solidários,\ne respeitando os Direitos Humanos.|",
+      "tags": [
+        "ética",
+        "culturas",
+        "liberdade",
+        "cooperação",
+        "autonomia",
+        "convivência democrática",
+        "sexo",
+        "gênero",
+        "sexualidade",
+        "injustiça",
+        "preconceito",
+        "violência",
+        "direitos humanos"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Indivíduo, Natureza, Sociedade,\nCultura e Ética|(**EM13CHS502**) Analisar situações da\nvida cotidiana, estilos de vida, valores,\ncondutas\netc.,\ndesnaturalizando\ne \nproblematizando\nformas\nde\ndesigualdade,\npreconceito,\nintolerância\ne \ndiscriminação,\ne \nidentiﬁcar ações que promovam os\nDireitos Humanos, a solidariedade e o\nrespeito às diferenças e às liberdades\nindividuais.|Estudo e compreensão dos conceitos\nde sexo, gênero e sexualidade, suas\ninterrelações e interseccionalidades.|Identiﬁcar e combater as diversas\nformas de injustiça, preconceito e\nviolência, adotando princípios éticos,\ndemocráticos, inclusivos e solidários,\ne respeitando os Direitos Humanos.|",
+      "tags": [
+        "vida cotidiana",
+        "estilos de vida",
+        "desigualdade",
+        "preconceito",
+        "intolerância",
+        "discriminação",
+        "direitos humanos",
+        "sexo",
+        "gênero",
+        "sexualidade",
+        "injustiça",
+        "violência"
+      ]
+    },
+    {
+      "pagina": 9,
+      "capitulo": null,
+      "texto_limpo": "9",
+      "tags": []
+    },
+    {
+      "pagina": 10,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Indivíduo, Natureza, Sociedade,\nCultura e Ética|(**EM13CHS501**) Analisar os fundamentos da\nética em diferentes culturas, tempos e\nespaços,\nidentiﬁcando\nprocessos\nque\ncontribuem para a formação de sujeitos\néticos\nque\nvalorizem\na \nliberdade,\na \ncooperação,\na \nautonomia,\no \nempreendedorismo,\na \nconvivência\ndemocrática e a solidariedade.\n(**EM13CHS502**) Analisar situações da vida\ncotidiana, estilos de vida, valores, condutas\netc., desnaturalizando e problematizando\nformas\nde\ndesigualdade,\npreconceito,\nintolerância e discriminação, e identiﬁcar\nações que promovam os Direitos Humanos,\na solidariedade e o respeito às diferenças e\nàs liberdades individuais.|O \npapel\ndas\ninstituições\ne \ndos\nmecanismos simbólicos e discursivos\nna atribuição de comportamentos à\nclasse, à raça, ao gênero, ao sexo, à\nsexualidade e à questão geracional.|Identiﬁcar e combater as diversas\nformas de injustiça, preconceito e\nviolência, adotando princípios éticos,\ndemocráticos, inclusivos e solidários,\ne respeitando os Direitos Humanos.|",
+      "tags": [
+        "ética",
+        "culturas",
+        "liberdade",
+        "cooperação",
+        "autonomia",
+        "convivência democrática",
+        "vida cotidiana",
+        "estilos de vida",
+        "desigualdade",
+        "preconceito",
+        "intolerância",
+        "discriminação",
+        "direitos humanos",
+        "instituições",
+        "classe",
+        "raça",
+        "gênero",
+        "sexo",
+        "sexualidade"
+      ]
+    },
+    {
+      "pagina": 11,
+      "capitulo": null,
+      "texto_limpo": "11\n\n\n## SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "tags": []
+    }
+  ],
+  "meta_arquivo": "3°ANO_SOCIOLOGIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:20:44"
+}

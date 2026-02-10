@@ -12,7 +12,7 @@ import ClassDetail from './ClassManager/ClassDetail';
 import CreateClassModal from './ClassManager/CreateClassModal';
 import ImportProcess from './ClassManager/ImportProcess';
 
-const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
+const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId, userProfile }) => {
     const [classes, setClasses] = useState<Class[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -30,14 +30,19 @@ const ClassManager: React.FC<{ userId: string }> = ({ userId }) => {
 
     useEffect(() => {
         fetchClasses();
-    }, [userId]);
+    }, [userId, userProfile?.active_school_id]);
 
     const fetchClasses = async () => {
         setLoading(true);
         try {
             // 1. Try fetching from Supabase
             const { getClasses } = await import('../services/supabaseService');
-            const { data, error } = await getClasses(userId);
+
+            // Para professores com múltiplas escolas, filtrar por escola ativa
+            const schoolId = userProfile?.active_school_id;
+            console.log('[ClassManager] Fetching classes for school:', schoolId);
+
+            const { data, error } = await getClasses(userId, schoolId);
 
             if (error) throw error;
 

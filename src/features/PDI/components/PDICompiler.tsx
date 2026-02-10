@@ -3,7 +3,7 @@ import {
     FileText, Download, Eye, Printer, CheckCircle,
     User, TrendingUp, Award, Calendar, Loader
 } from 'lucide-react';
-import { PdiDocumentService } from '../../../services/PdiDocumentService';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { PdiDocument } from '../../../types/pdi';
 import PDIViewBlocks1to8 from './PDIViewBlocks1to8';
 import PDIBlock9Viewer from './PDIBlock9Viewer';
@@ -34,7 +34,8 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
     const loadPdi = async () => {
         setLoading(true);
         try {
-            const data = await PdiDocumentService.getPdiDocument(pdiId);
+            const { data, error } = await PdiDocumentService.getPdiDocument(pdiId);
+            if (error) throw error;
             setPdi(data);
         } catch (error) {
             console.error('Error loading PDI:', error);
@@ -82,7 +83,7 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
         );
     }
 
-    const studentName = pdi.block_1_8?.bloco_1_identificacao?.nome_completo || 'Estudante';
+    const studentName = pdi.student_name || 'Estudante';
     const completeness = PdiDocumentService.calculateCompleteness(pdi);
 
     return (
@@ -97,7 +98,7 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
                                 PDI Completo - {studentName}
                             </h1>
                             <p className="text-sm text-slate-600">
-                                Período: {pdi.period} | Status: <strong>{pdi.status}</strong>
+                                Ano: {pdi.year} | Status: <strong>{pdi.status}</strong>
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
@@ -154,10 +155,10 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
                                 <div
                                     key={block.block_name}
                                     className={`text-xs text-center py-1 rounded ${block.is_complete
-                                            ? 'bg-green-100 text-green-700'
-                                            : block.completion_percentage > 0
-                                                ? 'bg-yellow-100 text-yellow-700'
-                                                : 'bg-slate-100 text-slate-400'
+                                        ? 'bg-green-100 text-green-700'
+                                        : block.completion_percentage > 0
+                                            ? 'bg-yellow-100 text-yellow-700'
+                                            : 'bg-slate-100 text-slate-400'
                                         }`}
                                     title={`${block.block_name}: ${block.completion_percentage}%`}
                                 >
@@ -185,7 +186,7 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
                             {studentName}
                         </h2>
                         <p className="text-xl text-slate-600">
-                            Período: {pdi.period}
+                            Ano: {pdi.year}
                         </p>
                         <p className="text-lg text-slate-500">
                             {new Date().toLocaleDateString('pt-BR', {

@@ -1,0 +1,121 @@
+{
+  "titulo": null,
+  "disciplina": "Química",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 1,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tecnologia e Linguagens|(**EM13CNT310X**) Investigar e analisar os\nefeitos de programas de infraestrutura\ne \ndemais\nserviços\nbásicos\n(saneamento,\nenergia\nelétrica,\ntransporte,\ntelecomunicações,\ncobertura\nvacinal,\natendimento\nprimário à saúde e produção de\nalimentos, entre outros) e identiﬁcar\nnecessidades locais e/ou regionais em\nrelação a esses serviços, a ﬁm de\navaliar e/ou promover ações que\ncontribuam\npara\na \nmelhoria\nna\nqualidade de vida no âmbito social,\nfamiliar, cultural e econômico.|Soluções:\n- Misturas homogêneas e misturas\nheterogêneas;\n- Solução, solvente e soluto;\n- \nProcessos\nde\nseparação\ne \npuriﬁcação de misturas;\n- Tratamento de água e esgoto;\n- Relações de concentração.|Analisar\nsituações-problema\ne \navaliar aplicações do conhecimento\ncientíﬁco\ne \ntecnológico\ne \nsuas\nimplicações no mundo, utilizando\nprocedimentos\ne \nlinguagens\npróprios das Ciências da Natureza,\npara\npropor\nsoluções\nque\nconsiderem\ndemandas\nlocais,\nregionais e/ou globais, e comunicar\nsuas descobertas e conclusões a\npúblicos\nvariados,\nem\ndiversos\ncontextos e por meio de diferentes\nmídias e tecnologias digitais de\ninformação e comunicação (TDIC).|",
+      "tags": [
+        "infraestrutura",
+        "saneamento",
+        "energia elétrica",
+        "transporte",
+        "telecomunicações",
+        "soluções",
+        "misturas",
+        "concentração",
+        "tecnologia",
+        "linguagens"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e cosmos|(**EM13CNT203X**) \nAvaliar\ne \nprever\nefeitos\nde\nintervenções\nnos\necossistemas, e seus impactos nos\nseres vivos e no corpo humano, com\nbase nos mecanismos de manutenção\nda vida, nos ciclos da matéria e nas\ntransformações e transferências de\nenergia, utilizando representações e\nsimulações sobre tais fatores, com ou\nsem o uso de dispositivos e aplicativos\ndigitais.|Soluções:\n- Misturas homogêneas e misturas\nheterogêneas;\n- Solução, solvente e soluto;\n- \nProcessos\nde\nseparação\ne \npuriﬁcação\nde\nmisturas;\n- Tratamento de água e esgoto;\n- Relações de concentração.|\n\n\nConstruir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "ecossistemas",
+        "seres vivos",
+        "corpo humano",
+        "ciclos da matéria",
+        "energia",
+        "misturas",
+        "soluções",
+        "vida",
+        "terra",
+        "cosmos"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Vida, Terra e cosmos|(**EM13CNT211MG**) Analisar e discutir os\nprocessos\nque\nalteram\nas\npropriedades coligativas em especial\nas que interferem no transporte por\nmembrana celular, na temperatura e\npressão de líquidos e gases.|Propriedades coligativas:\n- Aplicações\nda\ntonoscopia,\nebulioscopia, crioscopia e osmose\nem situações cotidianas.|Construir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "propriedades coligativas",
+        "membrana celular",
+        "temperatura",
+        "pressão",
+        "líquidos",
+        "gases",
+        "tonoscopia",
+        "ebulioscopia",
+        "crioscopia",
+        "osmose",
+        "vida",
+        "terra",
+        "cosmos"
+      ]
+    },
+    {
+      "pagina": 9,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA|\n|---|---|---|---|\n|Vida, Terra e cosmos|(**EM13CNT202X**) Analisar as diversas\nformas de manifestação da vida em\nseus diferentes níveis de organização,\nbem como as condições ambientais\nfavoráveis e os fatores limitantes a elas,\ntanto na Terra quanto em outros\nplanetas, com ou sem o uso de\ndispositivos e aplicativos digitais.|Equilíbrio químico:\n- Escala de pH e pOH;\n- Composição, dinâmica e evolução\nda atmosfera terrestre;|Construir e utilizar interpretações\nsobre a dinâmica da Vida, da Terra e\ndo\nCosmos\npara\nelaborar\nargumentos, realizar previsões sobre\no funcionamento e a evolução dos\nseres\nvivos\ne \ndo\nUniverso,\ne \nfundamentar\ndecisões\néticas\ne \nresponsáveis.|",
+      "tags": [
+        "vida",
+        "organização",
+        "condições ambientais",
+        "fatores limitantes",
+        "planetas",
+        "equilíbrio químico",
+        "pH",
+        "pOH",
+        "atmosfera terrestre",
+        "vida",
+        "terra",
+        "cosmos"
+      ]
+    },
+    {
+      "pagina": 11,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Matéria e Energia|(**EM13CNT102XA**) \nIdentiﬁcar\ne interpretar sistemas térmicos que\nvisem\nà sustentabilidade,\nconsiderando sua composição e os\nefeitos das variáveis termodinâmicas\nsobre seu funcionamento.|Termoquímica:\n- Entalpia das reações químicas,\ncomposição,\nvariáveis\nque\ninﬂuenciam,\ncálculo\ne balanço\nenergético,\nvariação\nde\nenergia;\nentalpia de combustão (eﬁciência\nenergética);\n- Sistemas\nabertos\ne fechados,\nentalpia;\ncombustíveis:\ntipos\nconsumo,\nrecursos\ne meios\nalternativos.|Analisar\nfenômenos\nnaturais\ne processos tecnológicos, com base\nnas relações entre matéria e energia,\npara propor ações individuais e\ncoletivas que aperfeiçoem processos\nprodutivos,\nminimizem\nimpactos\nsocioambientais\ne melhorem\nas\ncondições de vida em âmbito local,\nregional e/ou global.|",
+      "tags": [
+        "sistemas térmicos",
+        "sustentabilidade",
+        "termodinâmica",
+        "termoquímica",
+        "entalpia",
+        "reações químicas",
+        "combustíveis",
+        "matéria",
+        "energia"
+      ]
+    },
+    {
+      "pagina": 12,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Matéria e Energia|(**EM13CNT102XB**) Realizar previsões,\navaliar intervenções e/ou construir\nprotótipos de sistemas térmicos que\nvisem\nà sustentabilidade,\nconsiderando sua composição e os\nefeitos das variáveis termodinâmicas\nsobre\nseu\nfuncionamento,\nconsiderando\ntambém\no uso\nde\ntecnologias digitais que auxiliem no\ncálculo de estimativas e no apoio à\nconstrução dos protótipos.|Termoquímica:\n- Entalpia das reações químicas,\ncomposição,\nvariáveis\nque\ninﬂuenciam,\ncálculo\ne balanço\nenergético,\nvariação\nde\nenergia;\nentalpia de combustão (eﬁciência\nenergética);\n- Sistemas\nabertos\ne fechados,\nentalpia;\ncombustíveis:\ntipos\nconsumo,\nrecursos\ne meios\nalternativos.|Analisar\nfenômenos\nnaturais\ne processos tecnológicos, com base\nnas relações entre matéria e energia,\npara propor ações individuais e\ncoletivas que aperfeiçoem processos\nprodutivos,\nminimizem\nimpactos\nsocioambientais\ne melhorem\nas\ncondições de vida em âmbito local,\nregional e/ou global.|",
+      "tags": [
+        "sistemas térmicos",
+        "sustentabilidade",
+        "termodinâmica",
+        "tecnologias digitais",
+        "termoquímica",
+        "entalpia",
+        "reações químicas",
+        "combustíveis",
+        "matéria",
+        "energia"
+      ]
+    },
+    {
+      "pagina": 14,
+      "capitulo": "SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "texto_limpo": "",
+      "tags": []
+    }
+  ],
+  "meta_arquivo": "2°ANO_QUÍMICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:16:26"
+}

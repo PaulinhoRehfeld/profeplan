@@ -23,14 +23,31 @@ export interface UserProfile {
   role?: 'teacher' | 'manager' | 'admin'; // Database role
   school_id?: string;
   school_name?: string; // Fetched via join
+  school?: {            // Joined school object
+    id: string;
+    name: string;
+    city?: string;
+    sre?: string;
+  };
+  city?: string;        // Specific city field
   tier: 'SILVER' | 'GOLD';
   credits: number;
   is_unlimited: boolean;
   is_admin: boolean; // Legacy flag, now used primarily for System Admin
   allowed_features: string[];
   phone?: string;
-  full_name?: string; // Added for User Identity
+  full_name?: string;
+  masp?: string;
   created_at?: string;
+  // Configuracoes Pedagogicas
+  favorite_methodology?: string;
+  teaching_style?: string;
+  assessment_focus?: string;
+  tone_of_voice?: string;
+  // Personalizacao de Documentos
+  header_text?: string;
+  footer_text?: string;
+  logo_base64?: string;
 }
 
 export interface UserSession {
@@ -137,17 +154,27 @@ export interface DriveFile {
 export interface Student {
   id: string;
   name: string;
+  student_code?: string;
   class_id?: string;
   needs_adaptation: boolean;
   deficiencies: string[];
+  pdi_needs?: string[];
   pedagogical_observations: string;
+  observations?: string;
 }
 
 export interface Class {
   id: string;
   name: string;
   subject: string;
+  grade?: string;
+  shift?: string;
+  year?: number;
+  room?: string;
+  school_id?: string;
+  user_id?: string;
   created_at: string;
+  updated_at?: string;
   students?: Student[];
 }
 
@@ -207,14 +234,14 @@ export interface Lesson {
 export interface TermPlan {
   id: string; // Made mandatory for list keying
   period: number;
-  regime: 'Bimestre' | 'Trimestre';
+  regime: 'Trimestre';
   subject: string;
   grade: string;
   level: 'Ensino Fundamental' | 'Ensino Médio';
   workloadWeekly: number;
   reserves: {
     monthlyExam: boolean;
-    bimonthlyExam: boolean;
+    termExam: boolean; // Alterado de bimonthly
     recovery: boolean;
   };
   totalClasses: number;
@@ -222,7 +249,7 @@ export interface TermPlan {
     vistos: number;
     trabalhos: number;
     monthlyExam: number;
-    bimonthlyExam: number;
+    termExam: number; // Alterado de bimonthly
     others: number;
   };
   stateBase?: string;
@@ -230,6 +257,17 @@ export interface TermPlan {
   generatedText: string; // Made mandatory
   lessons?: Lesson[]; // Structured data
   created_at: string;
+  pnld_book_id?: string;
+}
+
+export interface PnldBook {
+  id: string;
+  title: string;
+  author?: string;
+  discipline?: string;
+  grade?: string;
+  cover_url?: string;
+  created_at?: string;
 }
 
 // PDI Types - Export all PDI-related types

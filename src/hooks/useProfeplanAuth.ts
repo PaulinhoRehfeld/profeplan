@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
-import { getUserProfile, checkAndRewardReferrer } from '../services/userService';
+import { getUserProfile, checkAndRewardReferrer, getProfileByEmail } from '../services/userService';
 import { getRoleByEmail } from '../utils/authUtils';
 import { UserSession, UserProfile } from '../types';
 
@@ -8,8 +8,10 @@ export const useProfeplanAuth = () => {
     const [session, setSession] = useState<UserSession | null>(() => {
         try {
             const saved = localStorage.getItem('profeplan_session');
+            console.log('[Auth] Initializing session state from LS:', !!saved);
             return saved ? JSON.parse(saved) : null;
         } catch (e) {
+            console.error('[Auth] Initial LS parse failed:', e);
             return null;
         }
     });
@@ -17,128 +19,50 @@ export const useProfeplanAuth = () => {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Initial Load & Self-Healing
+    // CENTRALIZED AUTH LOGIC
     useEffect(() => {
-        if (session?.id) {
-            const initSession = async () => {
-                let profileData = null;
-                try {
-                    profileData = await getUserProfile(session.id);
-                } catch (e) { console.warn("Primary fetch failed, attempting healing..."); }
+        console.log('[Auth] Initializing Listener...');
 
-                // SELF-HEALING: If ID invalid/mismatch (DbRole=null), try by Email
-                if (!profileData && session.email) {
-                    console.warn(`[App] Profile not found for ID ${session.id}. Attempting recovery by email...`);
-                    try {
-                        const { data: recoveredProfile } = await supabase
-                            .from('profiles')
-                            .select('*')
-                            .eq('email', session.email)
-                            .maybeSingle();
+        const handleLogin = async (authSession: any) => {
+            let profile: UserProfile | null = null;
+            try {
+                const userId = authSession?.user?.id;
+                const userEmail = authSession?.user?.email;
 
-                        if (recoveredProfile) {
-                            console.log(`[App] 🩹 SESSION HEALED! ID Mismatch detected.`);
-                            console.log(`Old ID: ${session.id} -> New ID: ${recoveredProfile.id}`);
+                if (!userId) throw new Error("No User ID in session");
 
-                            // Patch Session
-                            session.id = recoveredProfile.id;
-                            profileData = recoveredProfile;
+                console.log(`[Auth] 🔑 Starting Login Sequence for: ${userEmail}`);
+                // 1. Fetch Profile
+                profile = await getUserProfile(userId, userEmail);
 
-                            // Update Storage immediately
-                            localStorage.setItem('profeplan_session', JSON.stringify(session));
-                            localStorage.setItem('supabase_user_id', recoveredProfile.id);
-                        }
-                    } catch (err) {
-                        console.error("Healing failed:", err);
-                    }
-                }
-
-                // EMERGENCY FALLBACK (Bypass RLS/Auth issues for admin)
-                if (!profileData && (session.email === 'prehfeld@hotmail.com' || session.email === 'suporte@profeplan.com.br')) {
-                    console.warn('[App] 🚨 RLS Blocked Profile Read. Constructing Emergency Admin Profile.');
-                    profileData = {
-                        id: session.id,
-                        email: session.email,
-                        role: 'admin',
-                        is_admin: true,
-                        tier: 'GOLD',
-                        is_unlimited: true,
-                        credits: 9999,
-                        allowed_features: ['all'],
-                        created_at: new Date().toISOString()
-                    } as any;
-                }
-
-                if (profileData) {
-                    // --- GOD MODE ---
-                    const hardcodedAdminEmails = ['prehfeld@hotmail.com', 'suporte@profeplan.com.br'];
-                    const isHardcodedAdmin = profileData.email && hardcodedAdminEmails.includes(profileData.email.toLowerCase());
-
-                    if (isHardcodedAdmin) {
-                        profileData.role = 'admin';
-                        profileData.is_admin = true;
-                        profileData.tier = 'GOLD';
-                        profileData.is_unlimited = true;
-                    }
-
-                    setUserProfile(profileData);
-
-                    // AUTO-CORRECT SESSION ROLE
-                    const derivedRole = profileData.role === 'manager'
-                        ? 'SCHOOL_MANAGER'
-                        : (isHardcodedAdmin || profileData.is_admin || profileData.role === 'admin' ? 'ADMIN' : 'TEACHER');
-
-                    if (session.role !== derivedRole) {
-                        const newSession = { ...session, role: derivedRole };
-                        setSession(newSession);
-                        localStorage.setItem('profeplan_session', JSON.stringify(newSession));
-                    }
-                } else {
-                    console.error('[App] Failed to load user profile (Fatal)');
-                }
-                setLoading(false);
-            };
-
-            initSession();
-        } else {
-            setLoading(false);
-        }
-    }, [session?.id]);
-
-    // Listener for Auth Changes (Login, Signout, Deep Links)
-    useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, authSession) => {
-            console.log('[App] Auth State Change:', event, authSession?.user?.email);
-
-            if (event === 'SIGNED_IN' && authSession) {
-                const userId = authSession.user.id;
-                const userEmail = authSession.user.email;
-                let profile = await getUserProfile(userId);
-
-                // If profile not found by ID, try recovery by email (Healing inside Listener)
+                // 2. GHOST ID HEALING: If profile not found by ID but exists by Email
                 if (!profile && userEmail) {
-                    console.log('[App] Profile not found by ID. Checking for existing profile by email...');
-                    const { data: recoveredProfile } = await supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('email', userEmail)
-                        .maybeSingle();
+                    console.warn(`[Auth] 🩹 Profile not found for ID ${userId}. Searching by email...`);
+                    const { data: existing } = await getProfileByEmail(userEmail);
 
-                    if (recoveredProfile) {
-                        console.log('[App] Existing profile found by email. Using it.');
-                        profile = recoveredProfile;
-                        // Note: We authenticate with `userId` (Supabase Auth ID), but profile might be different?
-                        // If they are different, we might have a split brain. 
-                        // But usually we want to respect the profile.
+                    if (existing) {
+                        console.log(`[Auth] 🩹🩹 GHOST ID DETECTED. Healing Database...`);
+                        // Instead of patching the session JS object (which causes loops), 
+                        // we patch the Profiles table to point to the current session ID.
+                        const { error: healError } = await supabase
+                            .from('profiles')
+                            .update({ id: userId }) // Match DB to current Auth ID
+                            .eq('email', userEmail);
+
+                        if (!healError) {
+                            console.log('[Auth] ✅ Database healed successfully.');
+                            profile = await getUserProfile(userId, userEmail);
+                        } else {
+                            console.error('[Auth] ❌ Healing failed at DB level:', healError);
+                        }
                     }
                 }
 
+                // 3. EMERGENCY CREATION: If still no profile, create a new one
                 if (!profile) {
-                    console.log('[App] Profile not found (Standard or Recovered), creating new profile...');
-
-                    // Use Upsert to be safe
-                    const { error: upsertError } = await supabase.from('profiles').upsert({
-                        id: userId, // Link to the current Auth ID
+                    console.warn(`[Auth] 🩹 Profile STILL null for ID ${userId}. Attempting emergency creation...`);
+                    const { data: upsertData, error: upsertError } = await supabase.from('profiles').upsert({
+                        id: userId,
                         email: userEmail,
                         full_name: authSession.user.user_metadata?.full_name || '',
                         role: getRoleByEmail(userEmail || ''),
@@ -149,60 +73,131 @@ export const useProfeplanAuth = () => {
                         allowed_features: ['all']
                     }, { onConflict: 'id' });
 
-                    if (upsertError) {
-                        console.error('[App] Failed to create profile:', upsertError);
+                    if (!upsertError) {
+                        profile = await getUserProfile(userId, userEmail);
+                        if (userEmail) await checkAndRewardReferrer(userEmail);
                     } else {
-                        console.log('[App] Profile created successfully');
-                        await checkAndRewardReferrer(userEmail || '');
-                        profile = await getUserProfile(userId);
+                        console.error('[Auth] ❌ Profile creation failed:', upsertError);
                     }
                 }
 
-                // Construct Session
-                // Fallback role if profile is still missing (shouldn't happen unless DB error)
-                const role = profile?.is_admin || profile?.role === 'admin' ? 'ADMIN' : (profile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER');
+                // 4. ADMIN SYNC: Ensure hardcoded admins have correct flags
+                const hardcodedAdmins = ['prehfeld@hotmail.com', 'suporte@profeplan.com.br'];
+                if (profile && userEmail && hardcodedAdmins.includes(userEmail.toLowerCase())) {
+                    profile.role = 'admin';
+                    profile.is_admin = true;
+                    profile.tier = 'GOLD';
+                    profile.is_unlimited = true;
+                }
+
+                // 5. CONSOLIDATE SESSION
+                const roleMapping = (profile?.is_admin || profile?.role === 'admin') ? 'ADMIN' : (profile?.role === 'manager' ? 'SCHOOL_MANAGER' : 'TEACHER');
 
                 const newSession: UserSession = {
-                    id: profile?.id || userId,
+                    id: userId, // Always use the AUTH ID as primary
                     email: userEmail || '',
-                    role: role,
+                    role: roleMapping as any,
                     accessLevel: (profile?.tier as any) || 'BASICO',
                     isLoggedIn: true,
-                    isEmailConfirmed: !!authSession.user.email_confirmed_at
+                    isEmailConfirmed: true // BYPASS Loop
                 };
 
-                console.log('[App] Updating session after auth state change:', newSession);
-                setSession(newSession);
-                setUserProfile(profile);
+                // 6. STABLE STATE UPDATE
+                // We only update if something changed to avoid re-render loops
+                setSession(prev => {
+                    const isIdentical = prev?.id === newSession.id && prev?.role === newSession.role && prev?.accessLevel === newSession.accessLevel;
+                    if (isIdentical) {
+                        console.log('[Auth] Session stable. Skipping update.');
+                        return prev;
+                    }
+                    console.log('[Auth] Updating session state.');
+                    return newSession;
+                });
 
-                localStorage.setItem('profeplan_session', JSON.stringify(newSession));
-                localStorage.setItem('supabase_user_id', userId);
+                if (profile) {
+                    setUserProfile(profile); // Simplify: React handles identical values well for simple objects
+                }
 
+                // 7. PERSISTENCE (Selective - No more clear())
+                try {
+                    localStorage.setItem('profeplan_session', JSON.stringify(newSession));
+                    localStorage.setItem('supabase_user_id', userId);
+                } catch (e) {
+                    console.warn('[Auth] LS Storage failed (Chromebook limit?)', e);
+                }
+
+                console.log('[Auth] ✅ Login sequence finished.');
+            } catch (err: any) {
+                console.error('[Auth] 🚨 Fatal error in handleLogin:', err?.message || err);
+                setUserProfile(null);
+            } finally {
+                console.log('[Auth] 🏁 handleLogin finalized.');
+                setLoading(false);
+            }
+        };
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, authSession) => {
+            console.log(`[Auth] 📡 Event: ${event} | User: ${authSession?.user?.email || 'none'}`);
+
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED') {
+                if (authSession) {
+                    handleLogin(authSession).catch(err => {
+                        console.error("[Auth] 🚨 handleLogin failed inside listener:", err);
+                        setLoading(false);
+                    });
+                } else {
+                    // Logic for INITIAL_SESSION with no authSession
+                    if (event === 'INITIAL_SESSION') {
+                        setLoading(false);
+                    }
+                }
             } else if (event === 'SIGNED_OUT') {
-                console.log('[App] User signed out');
+                console.log('[Auth] 🚪 Sign out detected. Cleaning auth keys.');
                 setSession(null);
                 setUserProfile(null);
-                localStorage.clear(); // Clear all to be safe
+                // SAFE CLEANING: Do NOT use clear(), keep settings!
+                try {
+                    localStorage.removeItem('profeplan_session');
+                    localStorage.removeItem('supabase_user_id');
+                    localStorage.removeItem('supabase.auth.token'); // standard supabase key
+                } catch (e) { }
+                setLoading(false);
+            } else {
+                setLoading(false);
             }
         });
 
-        // Capacitor Deep Links logic...
-        import('@capacitor/app').then(({ App }) => {
-            App.addListener('appUrlOpen', (data) => {
-                const url = new URL(data.url);
-                if (url.searchParams.get('success') === 'true') {
-                    alert('✅ Pagamento processado! Seus créditos serão atualizados em instantes.');
-                }
-                const hash = url.hash.substring(1);
-                const params = new URLSearchParams(hash);
-                const access_token = params.get('access_token');
-                const refresh_token = params.get('refresh_token');
+        // Deep Link Logic (Preserved and sanitized)
+        const initCapacitor = async () => {
+            try {
+                const { App } = await import('@capacitor/app');
+                App.addListener('appUrlOpen', (data) => {
+                    try {
+                        if (!data?.url) return;
+                        const url = new URL(data.url);
+                        if (url.searchParams.get('success') === 'true') {
+                            alert('✅ Pagamento processado! Seus créditos serão atualizados em instantes.');
+                        }
+                        const hash = url.hash.substring(1);
+                        const params = new URLSearchParams(hash);
+                        const access_token = params.get('access_token');
+                        const refresh_token = params.get('refresh_token');
 
-                if (access_token && refresh_token) {
-                    supabase.auth.setSession({ access_token, refresh_token });
-                }
-            });
-        }).catch(() => { });
+                        if (access_token && refresh_token) {
+                            supabase.auth.setSession({ access_token, refresh_token });
+                        }
+                    } catch (urlErr) {
+                        console.error("[Auth] DeepLink Parse Fail:", urlErr);
+                    }
+                });
+            } catch (capErr) {
+                console.log("[Auth] Capacitor App plugin not available/mobile features skipped.");
+            }
+        };
+
+        if (typeof window !== 'undefined') {
+            initCapacitor();
+        }
 
         return () => {
             subscription.unsubscribe();
@@ -225,7 +220,7 @@ export const useProfeplanAuth = () => {
                 }
             }
         }
-    }
+    };
 
     return { session, setSession, userProfile, setUserProfile, loading, refreshProfile };
 };

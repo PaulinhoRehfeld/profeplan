@@ -24,7 +24,7 @@ export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
 
         const { Document, Paragraph, HeadingLevel, AlignmentType, Packer } = docx;
 
-        const studentName = pdi.block_1_8?.bloco_1_identificacao?.nome_completo || 'Estudante';
+        const studentName = pdi.student_name || 'Estudante';
 
         // Create document
         const doc = new Document({
@@ -46,7 +46,7 @@ export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
                             spacing: { after: 200 },
                         }),
                         new Paragraph({
-                            text: `Período: ${pdi.period}`,
+                            text: `Ano: ${pdi.year}`,
                             alignment: AlignmentType.CENTER,
                             spacing: { after: 200 },
                         }),
@@ -98,7 +98,7 @@ export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
 
         // Generate and download
         const blob = await Packer.toBlob(doc);
-        saveAs(blob, `PDI_${studentName.replace(/ /g, '_')}_${pdi.period.replace(/ /g, '_')}.docx`);
+        saveAs(blob, `PDI_${studentName.replace(/ /g, '_')}_${pdi.year}.docx`);
 
     } catch (error) {
         console.error('Error exporting PDI to DOCX:', error);
@@ -387,7 +387,7 @@ function createBlock10Summary(pdi: PdiDocument, docx: any): any[] {
 
 function createBlock11Section(pdi: PdiDocument, docx: any): any[] {
     const { Paragraph, HeadingLevel } = docx;
-    const reportText = pdi.block_11_supervisor_edit || pdi.block_11_ai_generated || '';
+    const reportText = pdi.final_report || '';
 
     return [
         new Paragraph({

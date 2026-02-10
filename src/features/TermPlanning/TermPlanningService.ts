@@ -1,81 +1,86 @@
 import { supabase } from '../../services/supabaseClient';
 import { TermPlan } from '../../types';
 
-const LOCAL_STORAGE_KEY = 'profeplan_term_plans_history';
+const LOCAL_STORAGE_KEY = 'profeplan_term_plans';
 
 /**
- * Salva o planejamento trimestral/bimestral (Local-First)
+ * Salva um plano trimestral (Local + Supabase)
  */
-export const saveTermPlan = async (userId: string, plan: TermPlan) => {
-    // 1. Save Local
+export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<TermPlan> => {
+    // 1. Save to localStorage (offline-first)
+    const existingPlans = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    const planIndex = existingPlans.findIndex((p: TermPlan) => p.id === plan.id);
+
+    if (planIndex >= 0) {
+        existingPlans[planIndex] = plan;
+    } else {
+        existingPlans.push(plan);
+    }
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(existingPlans));
+
+    // 2. Sync to Supabase (term_plans table)
+    if (supabase) {
+        try {
+            const payload = {
+                id: plan.id,
+                user_id: userId,
+                title: plan.title || `Planejamento ${plan.period}º ${plan.regime} - ${plan.subject}`,
+                content: plan.generatedText || '',
+                subject: plan.subject,
+                grade: plan.grade,
+                period: plan.period,
+                regime: plan.regime,
+                level: plan.level || 'Ensino Médio',
+                workload_weekly: plan.workloadWeekly,
+                reserves: plan.reserves,
+                total_classes: plan.totalClasses,
+                grading_grid: plan.gradingGrid,
+                state_base: plan.stateBase,
+                education_sphere: plan.educationSphere,
+                lessons: plan.lessons || [],
+                updated_at: new Date().toISOString()
+            };
+
+            const { data, error } = await supabase
+                .from('term_plans')
+                .upsert(payload)
+                .select()
+                .single();
+
+            if (error) {
+                console.error('Supabase save error:', error);
+            } else {
+                console.log('✅ Saved to Supabase:', data);
+            }
+        } catch (err) {
+            console.error('Failed to sync to Supabase', err);
+        }
+    }
+
     const planWithMeta: TermPlan = {
         ...plan,
-        id: plan.id || `term_${Date.now()}`,
-        created_at: plan.created_at || new Date().toISOString()
+        userId,
     };
-
-    try {
-        const history: TermPlan[] = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-        history.push(planWithMeta);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(history));
-    } catch (e) {
-        console.error('Local save failed', e);
-    }
-
-    // 2. Sync to Supabase
-    try {
-        const payload = {
-            id: planWithMeta.id,
-            user_id: userId,
-            period: plan.period,
-            regime: plan.regime,
-            subject: plan.subject,
-            grade: plan.grade,
-            level: plan.level, // New column
-            workload_weekly: plan.workloadWeekly,
-            reserves: plan.reserves,
-            total_classes: plan.totalClasses,
-            grading_grid: plan.gradingGrid,
-            state_base: plan.stateBase,
-            education_sphere: plan.educationSphere,
-            generated_text: plan.generatedText,
-            lessons: plan.lessons, // New column
-            updated_at: new Date().toISOString()
-        };
-
-        const { error } = await supabase.from('term_plans').upsert(payload);
-
-        if (error) {
-            // FALLBACK: Try without 'level' column if it fails (Migration safety)
-            console.warn("Upsert failed, trying fallback without 'level'...", error.message);
-            const { level, ...fallbackPayload } = payload;
-            const { error: fallbackError } = await supabase.from('term_plans').upsert(fallbackPayload);
-            if (fallbackError) throw fallbackError;
-        }
-
-        console.log('☁️ Term plan synced to Supabase');
-    } catch (e) {
-        console.warn('⚠️ Sync failed (offline or schema mismatch):', e);
-    }
 
     return planWithMeta;
 };
 
 /**
- * Busca os planejamentos (Supabase term_plans + generated_contents + Fallback Local)
+ * Busca os planejamentos (✅ FONTE ÚNICA: term_plans)
  */
 export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
-    let plans: TermPlan[] = [];
-    console.log(`[DEBUG] fetchTermPlans called for userId: ${userId}`);
-
     try {
         if (!supabase) {
             console.error("[CRITICAL] Supabase client not initialized in TermPlanningService");
             return [];
         }
 
+        let plans: TermPlan[] = [];
+        console.log(`[DEBUG] fetchTermPlans called for userId: ${userId}`);
+
         try {
-            // 1. Fetch Structured Plans (term_plans)
+            // ✅ FONTE ÚNICA: term_plans (dados estruturados e migrados)
             const { data: structuredData, error: structuredError } = await supabase
                 .from('term_plans')
                 .select('*')
@@ -108,53 +113,11 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
                 } as TermPlan));
             }
 
-            // 2. Fetch Generic Plans marked as 'trimestral' (generated_contents)
-            // Isso cobre planos salvos via Chat/Meus Arquivos
-            const { data: genericData, error: genericError } = await supabase
-                .from('generated_contents')
-                .select('*')
-                .eq('user_id', userId)
-                .eq('type', 'trimestral')
-                .order('created_at', { ascending: false });
-
-            if (genericError) {
-                console.error('[DEBUG] Generic Fetch Error:', genericError);
-            } else {
-                console.log(`[DEBUG] Generic Plans Found: ${genericData?.length || 0}`);
-            }
-
-            if (!genericError && genericData) {
-                const genericPlans: TermPlan[] = genericData.map((d: any) => {
-                    const meta = parseTitleMetadata(d.title || '', d.content || '');
-                    return {
-                        id: d.id,
-                        subject: meta.subject,
-                        grade: meta.grade,
-                        period: meta.period,
-                        regime: meta.regime as 'Bimestre' | 'Trimestre',
-                        level: 'Ensino Médio', // Default fallback
-                        workloadWeekly: 2,
-                        reserves: { monthlyExam: false, bimonthlyExam: false, recovery: false },
-                        totalClasses: 0,
-                        gradingGrid: { vistos: 0, trabalhos: 0, monthlyExam: 0, bimonthlyExam: 0, others: 0 },
-                        stateBase: 'Geral',
-                        educationSphere: 'Geral',
-                        generatedText: d.content || '',
-                        created_at: d.created_at
-                    } as TermPlan;
-                });
-
-                // Merge avoiding duplicates (prefer structured if exists)
-                // Mas IDs serão diferentes (uuid vs local_...), então apenas concatena
-                // Filtrar duplicatas pode ser complexo se ID mudar, vamos permitir por enquanto
-                plans = [...plans, ...genericPlans];
-            }
-
         } catch (e) {
             console.warn('Supabase fetch failed, trying local', e);
         }
 
-        // 3. Mescla com LocalStorage (prioridade para local se mais recente ou offline)
+        // Fallback: Mescla com LocalStorage se Supabase falhar
         try {
             const localData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
             console.log(`[DEBUG] LocalStorage Plans Found: ${localData.length}`);
@@ -209,4 +172,30 @@ const parseTitleMetadata = (title: string, content: string) => {
     }
 
     return { subject, period, regime, grade };
+};
+
+/**
+ * Deleta um plano trimestral (Local + Supabase)
+ */
+export const deleteTermPlan = async (planId: string): Promise<void> => {
+    // 1. Delete from localStorage
+    const existingPlans = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    const filteredPlans = existingPlans.filter((p: TermPlan) => p.id !== planId);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredPlans));
+
+    // 2. Delete from Supabase
+    if (supabase) {
+        try {
+            const { error } = await supabase
+                .from('term_plans')
+                .delete()
+                .eq('id', planId);
+
+            if (error) {
+                console.error('Supabase delete error:', error);
+            }
+        } catch (err) {
+            console.error('Failed to delete from Supabase', err);
+        }
+    }
 };

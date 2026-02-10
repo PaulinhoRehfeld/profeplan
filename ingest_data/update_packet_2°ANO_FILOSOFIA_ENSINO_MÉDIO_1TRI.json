@@ -1,0 +1,46 @@
+{
+  "titulo": null,
+  "disciplina": "Filosofia",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Indivíduo,\nNatureza,\nSociedade,\nCultura e Ética|(**EM13CHS501**) Compreender e analisar\nos\nfundamentos\nda\nética\nem\ndiferentes\nculturas,\nidentiﬁcando\nprocessos que contribuem para a\nformação\nde\nsujeitos\néticos\nque\nvalorizem a liberdade, a autonomia e o\npoder de decisão (vontade).|Conceitos fundamentais de Filosoﬁa\nMoral e Princípios Básicos de Ética; o\nraciocínio\nmoral\ne \no \npensar\nmoralmente\ninformado;\nLiberdade,\nConsciência Moral, Valores Morais, Lei,\nResponsabilidade, Conceito de Moral e\nÉtica, Comunidade Moral, Relativismo\nÉtico, Subjetivismo Ético, Emotivismo\nÉtico, Egoísmo Ético.|Reconhecer e combater as diversas\nformas de desigualdade e violência,\nadotando\nprincípios\néticos,\ndemocráticos, inclusivos e solidários, e\nrespeitando os Direitos Humanos.",
+      "tags": [
+        "ética",
+        "liberdade",
+        "autonomia",
+        "valores morais",
+        "direitos humanos"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Indivíduo,\nNatureza,\nSociedade,\nCultura e Ética|(**EM13CHS503**) \nIdentiﬁcar\ndiversas\nformas de violência (física, simbólica,\npsicológica\netc.),\nsuas\ncausas,\nsigniﬁcados e usos políticos, sociais e\nculturais,\navaliando\ne \npropondo\nmecanismos para combatê-las, com\nbase em argumentos éticos.|Principais períodos da Filosoﬁa Moral;\nPlatão e a justiça na alma; Aristóteles:\nÉtica\nda\nvirtude\n(Mediania\ne \nEudaimonia);\n \nFilosoﬁa\nMoral\nHelenistas: Filosoﬁa como sinônimo\nde bem viver; Filosoﬁa Ética Medieval:\nLivre arbítrio e o problema do mal em\nAgostinho\ne \nBeatitude\ncomo\nﬁnalidade ética em Tomás de Aquino;\na deontologia de Immanuel Kant:\nÉtica do dever; o Utilitarismo Ético:\nJeremy Bentham e John Stuart Mill;\nFriedrich Nietzsche e a crítica à ética\ntradicional (greco-cristã).|Reconhecer e combater as diversas\nformas de desigualdade e violência,\nadotando\nprincípios\néticos,\ndemocráticos, inclusivos e solidários,\ne respeitando os Direitos Humanos.",
+      "tags": [
+        "violência",
+        "ética",
+        "filosofia moral",
+        "justiça",
+        "direitos humanos"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Indivíduo,\nNatureza,\nSociedade,\nCultura e Ética|(**EM13CHS502**) Analisar situações da\nvida cotidiana (estilos de vida, valores,\ncondutas etc.), desnaturalizando e\nproblematizando\nformas\nde\ndesigualdade e preconceito, e propor\nações que promovam os Direitos\nHumanos, a solidariedade e o respeito\nàs diferenças e às escolhas individuais.|A Ética Aplicada ou Prática; o status\nepistemológico das éticas aplicadas;\nos desaﬁos das éticas aplicadas frente\nao pluralismo moral; o raciocínio\nprático presente às éticas aplicadas;\nÉtica feminista, Ética Ubuntu, Ética\nIndígena, Ética nas Filosoﬁas Orientais\ne Filosoﬁa do cuidado.|Reconhecer e combater as diversas\nformas de desigualdade e violência,\nadotando\nprincípios\néticos,\ndemocráticos, inclusivos e solidários,\ne respeitando os Direitos Humanos.",
+      "tags": [
+        "ética aplicada",
+        "desigualdade",
+        "preconceito",
+        "direitos humanos",
+        "solidariedade",
+        "respeito"
+      ]
+    }
+  ],
+  "meta_arquivo": "2°ANO_FILOSOFIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:14:32"
+}

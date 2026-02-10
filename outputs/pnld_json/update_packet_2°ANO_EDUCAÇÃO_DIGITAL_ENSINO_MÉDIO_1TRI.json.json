@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "livro_titulo": "2°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI",
+    "disciplina": "Educação Digital",
+    "editora": "N/A",
+    "colecao": "N/A",
+    "arquivo_origem": "update_packet_2°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI.json",
+    "total_fragmentos": 4
+  },
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "Redes Sociais, Algoritmos, Liberdade\nde Expressão e Desinformação na\nEra Digital",
+      "texto_limpo": "",
+      "embedding_id": "b7a7e4f1-5ffe-4efc-9c06-9fb85e254206"
+    },
+    {
+      "pagina": 6,
+      "capitulo": "Ética digital e responsabilidade\nsocial",
+      "texto_limpo": "",
+      "embedding_id": "44040b6b-36e0-4cff-9127-aa98e894d767"
+    },
+    {
+      "pagina": 8,
+      "capitulo": "Ética digital e responsabilidade\nsocial",
+      "texto_limpo": "",
+      "embedding_id": "7b7d94d3-5018-4206-a180-2fffb9874e5c"
+    },
+    {
+      "pagina": 10,
+      "capitulo": "Pensamento Computacional:\nAmpliação e Aplicação Inicial",
+      "texto_limpo": "",
+      "embedding_id": "fe68935d-6eaf-46e3-b667-55a37c0930e5"
+    }
+  ]
+}

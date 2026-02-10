@@ -36,6 +36,7 @@ export const UserList: React.FC<UserListProps> = ({
                 <thead className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-bold">
                     <tr>
                         <th className="px-3 md:px-6 py-4">Usuário</th>
+                        <th className="px-3 md:px-6 py-4">Escola</th>
                         <th className="px-3 md:px-6 py-4">Nível (Tier)</th>
                         <th className="px-3 md:px-6 py-4">Saldo de Créditos</th>
                         <th className="px-3 md:px-6 py-4 text-center">Ações</th>
@@ -54,6 +55,11 @@ export const UserList: React.FC<UserListProps> = ({
                                     {user.is_admin && <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] rounded-full uppercase font-bold">Admin</span>}
                                     {user.role === 'manager' && <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full uppercase font-bold">Gestor</span>}
                                     {user.role === 'teacher' && <span className="ml-2 px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded-full uppercase font-bold">Professor</span>}
+                                </td>
+                                <td className="px-3 md:px-6 py-4">
+                                    <span className="text-xs text-slate-600 font-medium">
+                                        {user.school_name || user.school?.name || (user.role === 'admin' ? 'N/A' : '-')}
+                                    </span>
                                 </td>
                                 <td className="px-3 md:px-6 py-4">
                                     {editingUser?.id === user.id ? (

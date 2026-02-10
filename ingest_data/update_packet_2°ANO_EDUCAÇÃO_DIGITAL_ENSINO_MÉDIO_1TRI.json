@@ -1,0 +1,64 @@
+{
+  "titulo": null,
+  "disciplina": "Educação Digital",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "Redes Sociais, Algoritmos, Liberdade\nde Expressão e Desinformação na\nEra Digital",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Redes Sociais, Algoritmos, Liberdade<br>de Expressão e Desinformação na<br>Era Digital|(**EM13CO08**) <br>Entender<br>como<br>mudanças na tecnologia afetam a<br>segurança, incluindo novas maneiras<br>de preservar sua privacidade e dados<br>pessoais on-line, reportando suspeitas<br>e buscando ajuda em situações de<br>risco.|- Redes Sociais;<br>- Algoritmos;<br>- Liberdade de expressão;<br>- Pós-verdade;<br>- Discurso de ódio;<br>- Convergência de Linguagens;<br>- Fake News;<br>- Deepfakes;<br>- Bots Sociais;<br>- Manipulação midiática.|Analisar<br>criticamente<br>artefatos<br>computacionais, sendo capaz de<br>identiﬁcar as vulnerabilidades dos<br>ambientes<br>e <br>das<br>soluções<br>computacionais buscando garantir a<br>integridade, privacidade, sigilo e<br>segurança das informações.|",
+      "tags": [
+        "redes sociais",
+        "algoritmos",
+        "liberdade de expressão",
+        "desinformação",
+        "segurança online",
+        "privacidade",
+        "dados pessoais",
+        "fake news",
+        "deepfakes"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": "Ética digital e responsabilidade\nsocial",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Ética digital e responsabilidade<br>social|(**EM13CO14**) Avaliar a conﬁabilidade<br>das<br>informações<br>encontradas<br>em<br>meio digital, investigando seus modos<br>de construção e considerando autoria,<br>estrutura e ﬁnalidade.|- Cultura digital contemporânea;<br>- Ética digital e responsabilidade<br>social;<br>- Práticas de segurança digital;<br>- Ameaças Digitais;<br>- Ferramentas de Proteção de dados.|Construir<br>conhecimento<br>usando<br>técnicas<br>e <br>tecnologias<br>computacionais,<br>produzindo<br>conteúdos e artefatos de forma<br>criativa, com respeito às questões<br>éticas e legais, que proporcionem<br>experiências para si e os demais.|",
+      "tags": [
+        "ética digital",
+        "responsabilidade social",
+        "confiabilidade da informação",
+        "segurança digital",
+        "ameaças digitais",
+        "proteção de dados"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "Ética digital e responsabilidade\nsocial",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Ética digital e responsabilidade<br>social|(**EM13CO18**) <br>Planejar<br>e <br>gerenciar<br>projetos<br>integrados<br>às<br>áreas<br>de<br>conhecimento de forma colaborativa,<br>solucionando<br>problemas,<br>usando<br>diversos artefatos computacionais.|- Redes Sociais;<br>- Aplicativos de edição de fotograﬁas;<br>- Carrossel de imagens;<br>- Realidade aumentada;<br>- Superexposição online;<br>- Stalking;<br>- Vídeos de animação em quadro<br>branco.|Desenvolver projetos para investigar<br>desaﬁos do mundo contemporâneo,<br>construir soluções e tomar decisões<br>éticas, democráticas e socialmente<br>responsáveis, articulando conceitos,<br>procedimentos<br>e <br>linguagens<br>próprias<br>da<br>Computação<br>preferencialmente<br>de<br>maneira<br>colaborativa.|",
+      "tags": [
+        "ética digital",
+        "responsabilidade social",
+        "planejamento de projetos",
+        "gerenciamento de projetos",
+        "redes sociais",
+        "edição de fotografias",
+        "realidade aumentada",
+        "stalking"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "Pensamento Computacional:\nAmpliação e Aplicação Inicial",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Pensamento Computacional:<br>Ampliação e Aplicação Inicial|(**EM13CO01**) Explorar e construir a<br>solução de problemas por meio de<br>reﬁnamentos,<br>utilizando<br>diferentes<br>níveis de abstração.|- <br>Modelagem<br>e <br>pensamento<br>computacional;<br>- <br>Estratégias<br>de<br>resolução<br>de<br>problemas;<br>- Avanços tecnológicos e sua relação<br>com as bets;<br>- Proposta de intervenção.|Desenvolver projetos para investigar<br>desaﬁos do mundo contemporâneo,<br>construir soluções e tomar decisões<br>éticas, democráticas e socialmente<br>responsáveis, articulando conceitos,<br>procedimentos<br>e <br>linguagens<br>próprias<br>da<br>Computação<br>preferencialmente<br>de<br>maneira<br>colaborativa.|",
+      "tags": [
+        "pensamento computacional",
+        "modelagem",
+        "resolução de problemas",
+        "avanços tecnológicos"
+      ]
+    }
+  ],
+  "meta_arquivo": "2°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:13:56"
+}

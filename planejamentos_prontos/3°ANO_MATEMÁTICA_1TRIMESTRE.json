@@ -1,0 +1,31 @@
+{
+  "id": "3°ANO_MATEMÁTICA_1TRIMESTRE",
+  "disciplina": "MATEMÁTICA",
+  "ano": "3° ANO",
+  "trimestre": "1º TRIMESTRE",
+  "nivel": "Ensino Médio",
+  "arquivo_fonte": "ingest_data\\update_packet_3°ANO_MATEMÁTICA_ENSINO_MÉDIO_1TRI.json",
+  "processado_em": "2026-02-09T07:47:17.726989",
+  "unidades": [
+    {
+      "pagina": 1,
+      "capitulo": "",
+      "unidade_tematica": "NÚMEROS E ÁLGEBRA(EF08MA10) Identificar a regularidade de uma sequência numérica ou figural não recursiva e construir um algoritmo por meio de um fluxograma que permita indicar os números ou as figuras seguintes.Progressões aritméticas (PA); Funções afins de domínio discreto; Relação entre razão da PA e coeficiente angular da função afim; Sequências numéricas.Identificar progressões aritméticas e associá-las corretamente a funções afins de domínio discreto; Deduzir e utilizar fórmulas da progressão aritmética; Resolver problemas contextualizados envolvendo progressões aritméticas e funções afins. O estudante deve ser capaz de:",
+      "habilidades": [],
+      "objeto_conhecimento": "NÚMEROS E ÁLGEBRAProgressões Geométricas Funções exponenciais de domínio discreto Relação entre razão da PG e a base da função exponencialIdentificar progressões geométricas e associá-las corretamente a funções exponenciais de domínio discreto; Deduzir e utilizar fórmulas da progressão geométrica;",
+      "competencia_especifica": "GEOMETRIA E MEDIDAS(EF08MA18) Reconhecer e construir figuras obtidas por composições de transformações geométricas (translação, reflexão e rotação), com o uso de instrumentos de desenho ou de softwares de geometria dinâmica.Isométricas no plano cartesiano (translação, reflexão, rotação); Homotetia, razão de semelhança e escala; Simetria axial e rotacional; Fractais e padrões geométricosIdentificar corretamente transformações geométricas em imagens reais; Construir figuras transformadas preservando propriedades; Explicar os efeitos das transformações nas dimensões e posições.",
+      "tags": [
+        "identificar",
+        "e",
+        "números",
+        "álgebra(ef08ma10)",
+        "|"
+      ]
+    }
+  ],
+  "campos_professor": {
+    "quantidade_aulas": null,
+    "distribuicao_por_unidade": null,
+    "observacoes": null
+  }
+}

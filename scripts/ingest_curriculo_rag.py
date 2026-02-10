@@ -2,7 +2,8 @@ import os
 import glob
 import argparse
 from langchain_text_splitters import MarkdownHeaderTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+import google.generativeai as genai
+from langchain_core.embeddings import Embeddings
 from supabase import create_client
 from langchain_community.vectorstores import SupabaseVectorStore
 from dotenv import load_dotenv
@@ -22,7 +23,7 @@ GOOGLE_API_KEY = os.getenv("VITE_GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
 def setup_client():
     if not SUPABASE_URL or not SUPABASE_KEY or not GOOGLE_API_KEY:
-        print("❌ ERRO CRÍTICO: Variáveis de ambiente faltando.")
+        print("[ERROR] ERRO CRÍTICO: Variáveis de ambiente faltando.")
         print(f"   SUPABASE_URL: {'OK' if SUPABASE_URL else 'FALTANDO'}")
         print(f"   SUPABASE_KEY: {'OK' if SUPABASE_KEY else 'FALTANDO (Recomendado: SUPABASE_SERVICE_ROLE_KEY)'}")
         print(f"   GOOGLE_API_KEY: {'OK' if GOOGLE_API_KEY else 'FALTANDO'}")
@@ -31,29 +32,67 @@ def setup_client():
     
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 
+class CustomGeminiEmbeddings(Embeddings):
+    def __init__(self, api_key, model_name="models/gemini-embedding-001"):
+        genai.configure(api_key=api_key)
+        self.model_name = model_name
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        # Batch support handled by genai or naive loop
+        # GenAI has batch_embed_contents but restricted in some regions/models?
+        # Let's do loop for safety or batch if possible.
+        # "models/gemini-embedding-001" supports batch? Listing said yes: 'asyncBatchEmbedContent'
+        # But 'embed_content' is easier for 768 enforcement.
+        results = []
+        for text in texts:
+            res = genai.embed_content(
+                model=self.model_name,
+                content=text,
+                task_type="retrieval_document",
+                output_dimensionality=768
+            )
+            # Handle return format
+            if isinstance(res, dict) and 'embedding' in res:
+                results.append(res['embedding'])
+            else:
+                results.append(res)
+        return results
+
+    def embed_query(self, text: str) -> list[float]:
+        res = genai.embed_content(
+            model=self.model_name,
+            content=text,
+            task_type="retrieval_query",
+            output_dimensionality=768
+        )
+        if isinstance(res, dict) and 'embedding' in res:
+            return res['embedding']
+        else:
+            return res
+
 def processar_arquivos(should_truncate=False):
     supabase = setup_client()
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=GOOGLE_API_KEY)
+    embeddings = CustomGeminiEmbeddings(api_key=GOOGLE_API_KEY, model_name="models/gemini-embedding-001")
 
     if not os.path.exists(MD_PATH):
-        print(f"❌ Diretório não encontrado: {MD_PATH}")
+        print(f"[ERROR] Diretório não encontrado: {MD_PATH}")
         print("   Verifique se a pasta existe ou edite a variável MD_PATH no script.")
         return
 
     if should_truncate:
-        print("🧹 Tentando limpar registros antigos (Flag --truncate)...")
+        print("[INFO] Tentando limpar registros antigos (Flag --truncate)...")
         try:
              # Tenta deletar registros onde 'estado' é 'MG'. 
              # Nota: Se RLS estiver ativo e usar Anon Key, isso pode falhar.
              supabase.table("curriculos_mg").delete().eq("metadata->>estado", "MG").execute()
-             print("✅ Limpeza concluída (registros filtrados por estado='MG').")
+             print("[OK] Limpeza concluída (registros filtrados por estado='MG').")
         except Exception as e:
-            print(f"⚠️  Não foi possível limpar automaticamente: {e}")
+            print(f"[WARN] Não foi possível limpar automaticamente: {e}")
             print("   Recomendação: Execute 'TRUNCATE TABLE curriculos_mg;' no SQL Editor do Supabase.")
 
     arquivos_md = glob.glob(os.path.join(MD_PATH, "*.md"))
-    print(f"\n📂 Diretório: {MD_PATH}")
-    print(f"📄 Arquivos encontrados: {len(arquivos_md)}")
+    print(f"\n[INFO] Diretório: {MD_PATH}")
+    print(f"[INFO] Arquivos encontrados: {len(arquivos_md)}")
 
     # Headers para split inteligente
     # Headers para split inteligente: Apenas até o Trimestre para manter o contexto UNIFICADO.
@@ -83,7 +122,7 @@ def processar_arquivos(should_truncate=False):
             chunks = splitter.split_text(conteudo)
             
             if not chunks:
-                print(f"   ⚠️  Nenhum chunk gerado para {nome_arquivo}. Verifique formatação (#).")
+                print(f"   [WARN] Nenhum chunk gerado para {nome_arquivo}. Verifique formatação (#).")
                 continue
 
             # 2. Enriquecimento
@@ -135,8 +174,8 @@ def processar_arquivos(should_truncate=False):
                 doc.metadata['disciplina'] = disciplina
                 
                 # Periodo vem do Header mesmo (### 1º Bimestre)
-                # Normalizar Periodo: Remover quebras de linha ou espaços extras
-                per = per_header.replace('\n', ' ').strip()
+                # Normalizar Periodo: Remover quebras de linha ou espaços extras, Title Case, e Ordinal
+                per = per_header.replace('\n', ' ').strip().title().replace('°', 'º')
                 doc.metadata['periodo'] = per
                 
                 # Limpeza básica do conteúdo (mantendo quebras de linha para legibilidade do LLM)
@@ -165,13 +204,13 @@ def processar_arquivos(should_truncate=False):
                 count = len(chunks)
                 total_chunks += count
                 total_files += 1
-                print(f"   ✅ {count} vetores inseridos com sucesso.")
+                print(f"   [OK] {count} vetores inseridos com sucesso.")
 
         except Exception as e:
-            print(f"   ❌ Erro em {nome_arquivo}: {e}")
+            print(f"   [ERROR] Erro em {nome_arquivo}: {e}")
 
-    print(f"\n🚀 PROCESSO CONCLUÍDO!")
-    print(f"📊 Resumo: {total_files} arquivos processados, {total_chunks} vetores criados na base.")
+    print(f"\n[INFO] PROCESSO CONCLUÍDO!")
+    print(f"[INFO] Resumo: {total_files} arquivos processados, {total_chunks} vetores criados na base.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ingestão de Currículos MG para Supabase RAG")

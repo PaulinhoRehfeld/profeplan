@@ -1,0 +1,328 @@
+{
+  "titulo": "PLANO DE CURSO 2026 – Currículo Referência de Minas Gerais – Ensino Médio – Caminho de habilidades por trimestre",
+  "disciplina": "Matemática",
+  "nivel": "1° ano",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EM13MAT101)\nInterpretar\ncriticamente\nsituações\neconômicas, sociais e\nfatos relativos às\nCiências da Natureza\nque envolvam a\nvariação de\ngrandezas, pela\nanálise dos gráficos\ndas funções\nrepresentadas e das\ntaxas de variação,\ncom ou sem apoio de\ntecnologias digitais.",
+      "tags": [
+        "funções",
+        "gráficos",
+        "taxas de variação",
+        "tecnologias digitais"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EF09MA06):\nCompreender as\nfunções como\nrelações de\ndependência unívoca\nentre duas variáveis e\nsuas representações\nnumérica, algébrica e\ngráfica e utilizar esse\nconceito para analisar\nsituações que\nenvolvam relações\nfuncionais entre duas\nvariáveis.\n \n(EF09MA08): Resolver e\nelaborar problemas\nque envolvam\nrelações de",
+      "tags": [
+        "funções",
+        "variáveis",
+        "representações",
+        "relações funcionais"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EF05MA12): Resolver\nproblemas que\nenvolvam variação de\nproporcionalidade\ndireta entre duas\ngrandezas, para\nassociar a quantidade\nde um produto ao valor\na pagar, alterar as\nquantidades de\ningredientes de\nreceitas, ampliar ou\nreduzir escala em\nmapas, entre outros.\n \n(EF07MA13):\nCompreender a ideia\nde variável,\nrepresentada por letra",
+      "tags": [
+        "proporcionalidade",
+        "grandezas",
+        "variável",
+        "problemas"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Função afim e\nfunção\nquadrática;\nTaxa de\nvariação média;\nAnálise de\ngráficos no\nplano\ncartesiano;\nInterpretação\nde grandezas\nvariáveis em\ncontextos reais.\"\nNoções de\nFunções\nGrandezas",
+      "tags": [
+        "função afim",
+        "função quadrática",
+        "taxa de variação",
+        "gráficos",
+        "grandezas variáveis"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Analisar gráficos\nrelacionados a\nfenômenos\neconômicos,\nambientais e sociais,\ncomo inflação,\ncrescimento\npopulacional ou\nconsumo de energia\nelétrica;\nUtilizar planilhas\ndigitais para\ncomparar gráficos\ncom diferentes\nescalas;\nInterpretar como a\ninclinação das retas\nindica variação das",
+      "tags": [
+        "gráficos",
+        "fenômenos econômicos",
+        "planilhas digitais",
+        "variação"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Identificar\ncorretamente\ncrescimento,\ndecrescimento e\nconstância;\nInterpretar taxas de\nvariação em\ncontextos\neconômicos ou\nnaturais;\nJustificar conclusões\na partir da análise\ngráfica.\nO aluno deve ser\ncapaz de:\n \nReconhecer uma\nfunção a partir da\nrepresentação de",
+      "tags": [
+        "crescimento",
+        "decrescimento",
+        "taxas de variação",
+        "análise gráfica",
+        "função"
+      ]
+    },
+    {
+      "pagina": 6,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Caderno 1:\nCapítulo 7 -\nAmarrando Ideias -\nPágina 78 -\nAtividades 10, 11 e\n12;\nCapítulo 7 - Sua vez! -\nPágina 79 -\nAtividades 4, 5 e 6;\nOBS: Para\npotencializar a\naprendizagem,\nsugerimos discussão e\nsocialização das\ndiferentes estratégias\nutilizadas pelos\nestudantes para a\nresolução das\natividades, e\natividades que levam\no estudante a\ncompreender as\nprincipais noções\npara o\nreconhecimento de\numa função.\"",
+      "tags": [
+        "atividades",
+        "estratégias",
+        "aprendizagem",
+        "função"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EM13MAT302A)\nConstruir modelos\nempregando as\nfunções polinomiais\nde 1º grau, para\nresolver problemas\nem contextos\ndiversos, com ou sem\napoio de tecnologias\ndigitais.",
+      "tags": [
+        "modelos",
+        "funções polinomiais",
+        "problemas",
+        "tecnologias digitais"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Função afim e\nfunção\nquadrática;\nModelagem\nmatemática de\nsituações reais;\nAnálise gráfica e\nalgébrica de\nfunções.",
+      "tags": [
+        "função afim",
+        "função quadrática",
+        "modelagem matemática",
+        "análise gráfica",
+        "funções"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Modelar situações\nenvolvendo custo,\nlucro, prejuízo ou\nmovimento,\nrepresentando-as por\nfunções polinomiais;\nUtilizar gráficos e\nsoftwares para\nsimular os modelos e\nanalisar o",
+      "tags": [
+        "modelagem",
+        "custo",
+        "lucro",
+        "funções polinomiais",
+        "gráficos",
+        "softwares"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Construir funções a\npartir de situações\nreais;\nResolver problemas\nutilizando modelos\nmatemáticos\ncriados;\nInterpretar\ncorretamente as\nsoluções no",
+      "tags": [
+        "funções",
+        "problemas",
+        "modelos matemáticos",
+        "interpretação"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "comportamento das\nvariáveis envolvidas.",
+      "tags": [
+        "variáveis"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "contexto\napresentado.",
+      "tags": [
+        "contexto"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "(EM13MAT307A):\nEmpregar diferentes\nmétodos para a\nobtenção da medida\nda área de uma\nsuperfície\n(reconfigurações,\naproximação por\ncortes etc.).",
+      "tags": [
+        "área",
+        "superfície",
+        "métodos"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "(EF07MA32) Resolver e\nelaborar problemas de\ncálculo de medida de\nárea de figuras planas\nque podem ser\ndecompostas por\nquadrados, retângulos\ne/ou triângulos,\nutilizando a\nequivalência entre\náreas.",
+      "tags": [
+        "área",
+        "figuras planas",
+        "quadrados",
+        "retângulos",
+        "triângulos"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "(EF04MA21): Medir,\ncomparar e estimar\nárea de figuras planas\ndesenhadas em malha\nquadriculada, pela\ncontagem dos\nquadradinhos ou de\nmetades de\nquadradinho,\nreconhecendo que\nduas figuras com\nformatos diferentes\npodem ter a mesma\nmedida de área.\n(EF05MA19): Resolver e\nelaborar problemas\nenvolvendo medidas\ndas grandezas\ncomprimento, área,\nmassa, tempo,\ntemperatura e\ncapacidade,\nrecorrendo a\ntransformações entre as\nunidades mais usuais\nem contextos\nsocioculturais.\n(EF06MA24): Resolver e\nelaborar problemas\nque envolvam as\ngrandezas\ncomprimento, massa,\ntempo, temperatura,\nárea (triângulos e\nretângulos),\ncapacidade e volume",
+      "tags": [
+        "área",
+        "figuras planas",
+        "malha quadriculada",
+        "grandezas",
+        "comprimento",
+        "massa",
+        "tempo",
+        "temperatura",
+        "capacidade",
+        "volume"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "Área de\nsuperfícies\nplanas;\nDecomposição\ne recomposição\nde figuras;\nDedução de\nfórmulas de\nárea;\nÁreas de Figuras\nGeométricas.",
+      "tags": [
+        "área",
+        "superfícies planas",
+        "decomposição",
+        "recomposição",
+        "fórmulas",
+        "figuras geométricas"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "Calcular áreas por\nmeio de recortes,\nrecomposição de\nfiguras e uso de\nmalhas\nquadriculadas;\nResolver problemas\nde divisão de\nterrenos ou\norganização de\nplantações, com\napoio de softwares\ngeométricos quando\npossível.\n \nOs estudantes\nprecisam desenvolver\nhabilidades que\npossibilitem\nreconhecer funções\na partir da relação\nentre conjuntos, lei\nde formação e/ou\nrepresentação\ngráfica. Para o\ndesenvolvimento\ndessas habilidades,\nrecomendamos as\nseguintes atividades\ndo material\n\"\"Aprender Já\"\":\n \nCaderno 1:\nCapítulo 6 -\nAmarrando Ideias -",
+      "tags": [
+        "área",
+        "recortes",
+        "recomposição",
+        "malhas quadriculadas",
+        "problemas",
+        "softwares geométricos",
+        "funções",
+        "atividades"
+      ]
+    },
+    {
+      "pagina": 8,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "Deduzir expressões\npara cálculo de\náreas;\nAplicar métodos\ndiferentes para uma\nmesma situação;\nResolver problemas\npráticos com\nprecisão.\nO aluno deve ser\ncapaz de:\n \nDeterminar a\nmedida da\nsuperfície de\ndiversas figuras\nplanas\n(separadamente):\nquadrado,\nretângulo, triângulo,\ncírculo;\nDeterminar a\nmedida da\nsuperfície de figuras\nplanas que possam\nser decompostas\nem quadrados,\nretângulos,\ntriângulos e/ou\npartes de círculos.",
+      "tags": [
+        "área",
+        "métodos",
+        "problemas",
+        "superfície",
+        "figuras planas",
+        "quadrado",
+        "retângulo",
+        "triângulo",
+        "círculo",
+        "decomposição"
+      ]
+    },
+    {
+      "pagina": 9,
+      "capitulo": "GEOMETRIA E MEDIDAS",
+      "texto_limpo": "diferentes estratégias\nutilizadas pelos\nestudantes para a\nresolução das\natividades e,\natividades que levem\no estudante a\ncompreender os\ncálculos das medidas\nde superfícies de\nfiguras planas,\nindividualmente, bem\ncomo das figuras\nformadas pela\ncomposição de duas\nou mais figuras\nplanas.",
+      "tags": [
+        "estratégias",
+        "atividades",
+        "superfícies",
+        "figuras planas",
+        "composição"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EM13MAT501).\nInvestigar relações\nentre números\nexpressos em tabelas\npara representá-los\nno plano cartesiano,\nidentificando padrões\ne criando conjecturas\npara generalizar e\nexpressar\nalgebricamente essa\ngeneralização,\nreconhecendo\nquando essa\nrepresentação é de\nfunção polinomial de\n1º grau.",
+      "tags": [
+        "relações",
+        "números",
+        "tabelas",
+        "plano cartesiano",
+        "padrões",
+        "generalização",
+        "função polinomial"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EF08MA07): Associar\numa equação linear\nde 1º grau com duas\nincógnitas a uma reta\nno plano cartesiano.",
+      "tags": [
+        "equação linear",
+        "incógnitas",
+        "reta",
+        "plano cartesiano"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "(EF06MA16): Associar\npares ordenados de\nnúmeros a pontos do\nplano cartesiano do 1º\nquadrante, em\nsituações como a\nlocalização dos vértices\nde um polígono.\n(EF07MA13):\nCompreender a ideia\nde variável,\nrepresentada por letra\nou símbolo, para\nexpressar relação entre\nduas grandezas,\ndiferenciando-a da\nideia de incógnita.\n(EF07MA18): Resolver e\nelaborar problemas\nque possam ser\nrepresentados por",
+      "tags": [
+        "pares ordenados",
+        "plano cartesiano",
+        "vértices",
+        "polígono",
+        "variável",
+        "grandezas",
+        "incógnita",
+        "problemas"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Relações entre\ngrandezas;\nPlano\ncartesiano;\nFunção afim e\ngeneralização\nalgébrica.\"\nEquações\nPolinomiais de 1º\ngrau",
+      "tags": [
+        "relações",
+        "grandezas",
+        "plano cartesiano",
+        "função afim",
+        "generalização algébrica",
+        "equações polinomiais"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Construir gráficos a\npartir de tabelas\nnuméricas;\nIdentificar padrões\nde crescimento\nlinear;\nFormular expressões\nalgébricas que\ngeneralizam essas\nrelações.\nOs estudantes\nprecisam desenvolver\nhabilidades que\npossibilitem associar\numa equação\npolinomial de 1º grau\nà sua representação\ngráfica.\n \nPara o\ndesenvolvimento",
+      "tags": [
+        "gráficos",
+        "tabelas",
+        "padrões",
+        "crescimento linear",
+        "expressões algébricas",
+        "equação polinomial"
+      ]
+    },
+    {
+      "pagina": 10,
+      "capitulo": "NÚMEROS E ÁLGEBRA",
+      "texto_limpo": "Reconhecer\nfunções de 1º grau;\n- Generalizar\npadrões\nobservados;\n- Relacionar tabelas,\ngráficos e fórmulas\nalgébricas.\"\n\"O aluno deve ser\ncapaz de:\n \nReconhecer\nequações\npolinomiais de 1º\ngrau;\nCompreender que a\nrepresentação\ngráfica de uma\nequação polinomial\ndo 1º grau é uma\nreta;",
+      "tags": [
+        "funções",
+        "padrões",
+        "tabelas",
+        "gráficos",
+        "fórmulas algébricas",
+        "equações polinomiais",
+        "representação gráfica",
+        "reta"
+      ]
+    }
+  ],
+  "meta_arquivo": "1°ANO_MATEMÁTICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:12:35"
+}

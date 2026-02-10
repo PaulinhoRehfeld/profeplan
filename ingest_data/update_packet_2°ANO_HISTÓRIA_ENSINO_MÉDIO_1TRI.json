@@ -1,0 +1,80 @@
+{
+  "titulo": null,
+  "disciplina": "História",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 1,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Território e Fronteira|(**EM13CHS201**) Analisar e caracterizar\nas dinâmicas das populações, das\nmercadorias e do capital nos diversos\ncontinentes, com destaque para a\nmobilidade e a ﬁxação de pessoas,\ngrupos humanos e povos, em função\nde\neventos\nnaturais,\npolíticos,\neconômicos,\nsociais,\nreligiosos\ne \nculturais, de modo a compreender e\nposicionar-se criticamente em relação\na esses processos e às possíveis\nrelações entre eles.|O campo e a cidade: as análises sociais\nsobre\nos\nfenômenos\nsociais\nque\nocorrem no campo e no espaço\nurbano.|Analisar a formação de territórios e\nfronteiras em diferentes tempos e\nespaços, mediante a compreensão\ndas\nrelações\nde\npoder\nque\ndeterminam as territorialidades e o\npapel\ngeopolítico\ndos\nEstados-nações.",
+      "tags": [
+        "território",
+        "fronteira",
+        "populações",
+        "capital",
+        "campo",
+        "cidade",
+        "relações de poder",
+        "geopolítica"
+      ]
+    },
+    {
+      "pagina": 2,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Território e Fronteira|(**EM13CHS201**) Analisar e caracterizar\nas dinâmicas das populações, das\nmercadorias e do capital nos diversos\ncontinentes, com destaque para a\nmobilidade e a ﬁxação de pessoas,\ngrupos humanos e povos, em função\nde\neventos\nnaturais,\npolíticos,\neconômicos,\nsociais,\nreligiosos\ne \nculturais, de modo a compreender e\nposicionar-se criticamente em relação\na esses processos e às possíveis\nrelações entre eles.|Os interesses e agentes envolvidos na\ndinâmica social na cidade e no campo.|Analisar a formação de territórios e\nfronteiras em diferentes tempos e\nespaços, mediante a compreensão\ndas\nrelações\nde\npoder\nque\ndeterminam as territorialidades e o\npapel\ngeopolítico\ndos\nEstados-nações.",
+      "tags": [
+        "território",
+        "fronteira",
+        "populações",
+        "capital",
+        "cidade",
+        "campo",
+        "dinâmica social",
+        "relações de poder",
+        "geopolítica"
+      ]
+    },
+    {
+      "pagina": 3,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Território e Fronteira|(**EM13CHS206**) Analisar a ocupação\nhumana e a produção do espaço em\ndiferentes\ntempos,\naplicando\nos\nprincípios de localização, distribuição,\nordem, extensão, conexão, arranjos,\ncasualidade,\nentre\noutros\nque\ncontribuem\npara\no \nraciocínio\ngeográﬁco.|As disputas acerca do uso e ocupação\nde territórios.|Analisar a formação de territórios e\nfronteiras em diferentes tempos e\nespaços, mediante a compreensão\ndas\nrelações\nde\npoder\nque\ndeterminam as territorialidades e o\npapel\ngeopolítico\ndos\nEstados-nações.",
+      "tags": [
+        "território",
+        "fronteira",
+        "ocupação humana",
+        "produção do espaço",
+        "disputas territoriais",
+        "relações de poder",
+        "geopolítica"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Território e Fronteira|(**EM13CHS206**) Analisar a ocupação\nhumana e a produção do espaço em\ndiferentes\ntempos,\naplicando\nos\nprincípios de localização, distribuição,\nordem, extensão, conexão, arranjos,\ncasualidade,\nentre\noutros\nque\ncontribuem\npara\no \nraciocínio\ngeográﬁco.|A inﬂuência da política de Estado na\nocupação de espaços urbanos e rurais.|Analisar a formação de territórios e\nfronteiras em diferentes tempos e\nespaços, mediante a compreensão\ndas\nrelações\nde\npoder\nque\ndeterminam as territorialidades e o\npapel\ngeopolítico\ndos\nEstados-nações.",
+      "tags": [
+        "território",
+        "fronteira",
+        "ocupação humana",
+        "produção do espaço",
+        "política de Estado",
+        "espaços urbanos",
+        "espaços rurais",
+        "relações de poder",
+        "geopolítica"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "texto_limpo": null,
+      "tags": [
+        "educação",
+        "minas gerais",
+        "estado"
+      ]
+    }
+  ],
+  "meta_arquivo": "2°ANO_HISTÓRIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:15:31"
+}

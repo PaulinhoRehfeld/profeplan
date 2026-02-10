@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "livro_titulo": "1°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI",
+    "disciplina": "Educação Digital",
+    "editora": "N/A",
+    "colecao": "N/A",
+    "arquivo_origem": "update_packet_1°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI.json",
+    "total_fragmentos": 3
+  },
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "Cultura Digital e Uso Consciente das Tecnologias",
+      "texto_limpo": "",
+      "embedding_id": "7547157c-4c1c-4ca3-b33a-0c3afbe9c990"
+    },
+    {
+      "pagina": 4,
+      "capitulo": "Comunicação Digital e Expressão de Ideias",
+      "texto_limpo": "",
+      "embedding_id": "9f0b12a9-e893-4a67-9e91-a99bcbdf243c"
+    },
+    {
+      "pagina": 4,
+      "capitulo": "Introdução ao Pensamento Computacional",
+      "texto_limpo": "",
+      "embedding_id": "928e2605-c9e9-4839-b854-6f3fbac2751a"
+    }
+  ]
+}

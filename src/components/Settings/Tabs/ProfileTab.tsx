@@ -1,108 +1,175 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, BookOpen, ImageIcon, Trash2, FileText, Loader2 } from 'lucide-react';
+import { User, BookOpen, ImageIcon, Trash2, FileText, Loader2, Plus, X, Shield, Mail } from 'lucide-react';
 import { UserSettings } from '../../../types';
 import { supabase } from '../../../services/supabaseClient';
+import { SchoolAutocomplete } from '../../SchoolAutocomplete';
+import { getTeacherSchoolManager } from '../../../services/teacherSchoolService';
 
 interface ProfileTabProps {
     userProfile: any;
     initialSettings: UserSettings;
+    setSettings: (settings: UserSettings) => void;
     onSaveSuccess: () => Promise<void>; // Function to reload profile/close modal
     onClose: () => void;
 }
 
-export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSettings, onSaveSuccess, onClose }) => {
+export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSettings, setSettings, onSaveSuccess, onClose }) => {
+    console.log("[ProfileTab] Incoming Profile Data:", userProfile?.full_name, userProfile?.school_name);
 
     // Local State handling Form Data
-    const [settings, setSettings] = useState<UserSettings>(initialSettings);
+    const [localSettings, setLocalSettings] = useState<UserSettings>(initialSettings);
     const [saveLoading, setSaveLoading] = useState(false);
-
-    // School Search State
-    const [schoolResults, setSchoolResults] = useState<any[]>([]);
-    const [isSearchingSchool, setIsSearchingSchool] = useState(false);
-    const [showSchoolResults, setShowSchoolResults] = useState(false);
     const logoInputRef = useRef<HTMLInputElement>(null);
 
-    // Update local state when props change (if needed)
+    // Segunda Escola (Cargo Adicional)
+    const [showSecondSchool, setShowSecondSchool] = useState(false);
+    const [secondSchool, setSecondSchool] = useState({
+        city: '',
+        inep: '',
+        name: ''
+    });
+
+    // Informações do Gestor da Escola Ativa
+    const [managerInfo, setManagerInfo] = useState<{
+        managerName: string;
+        managerEmail: string;
+        schoolName: string;
+    } | null>(null);
+    const [loadingManager, setLoadingManager] = useState(false);
+
+    // Update local state when props change
     useEffect(() => {
-        setSettings(initialSettings);
+        setLocalSettings(initialSettings);
     }, [initialSettings]);
 
-    const handleChange = (field: keyof UserSettings, value: string) => {
-        setSettings(prev => ({ ...prev, [field]: value }));
-    };
+    // CARREGAR Escolas (Vínculos) do banco de dados
+    useEffect(() => {
+        const loadTeacherSchools = async () => {
+            if (!userProfile?.id) return;
 
-    // --- Logic extracted from SettingsModal ---
+            try {
+                console.log('[ProfileTab] 🔍 Loading teacher schools for user:', userProfile.id);
 
-    const searchSchools = async (term: string, cityContext?: string) => {
-        if (term.length < 3) {
-            setSchoolResults([]);
-            return;
-        }
+                // Buscar TODOS os vínculos do professor
+                const { data: links, error } = await supabase
+                    .from('teacher_schools')
+                    .select(`
+                        id,
+                        school_id,
+                        schools (
+                            name,
+                            inep_code,
+                            city
+                        )
+                    `)
+                    .eq('teacher_id', userProfile.id)
+                    .is('ended_at', null) // IMPORTANTE: Carregar apenas vínculos ativos
+                    .order('created_at', { ascending: true }); // Manter ordem de criação
 
-        setIsSearchingSchool(true);
-        try {
-            let schoolsSource = (window as any).schoolsCache || [];
+                if (error) {
+                    console.error('[ProfileTab] Error loading teacher schools:', error);
+                    return;
+                }
 
-            // 1. Carregar JSON se cache estiver vazio
-            if (schoolsSource.length === 0) {
-                console.log("🔄 Carregando base de escolas estática...");
-                const response = await fetch('/schools_data.json');
-                if (!response.ok) throw new Error("Falha ao carregar escolas");
-                const data = await response.json();
+                console.log('[ProfileTab] 📚 Found teacher schools:', links);
 
-                schoolsSource = data;
-                (window as any).schoolsCache = data;
+                if (links && links.length > 0) {
+                    // 1ª Escola: Sempre sincroniza com o primeiro vínculo encontrado
+                    const firstLink = links[0];
+                    const firstSchool = firstLink.schools as any;
+
+                    if (firstSchool) {
+                        console.log('[ProfileTab] ✅ Sychronizing 1st school:', firstSchool.name);
+                        setLocalSettings(prev => ({
+                            ...prev,
+                            institution: firstSchool.name || prev.institution,
+                            schoolCode: firstSchool.inep_code || prev.schoolCode,
+                            city: firstSchool.city || prev.city
+                        }));
+                    }
+
+                    // 2ª Escola: Se tiver 2 ou mais vínculos
+                    if (links.length >= 2) {
+                        const secondLink = links[1];
+                        const school2 = secondLink.schools as any;
+
+                        if (school2) {
+                            console.log('[ProfileTab] ✅ Loading 2nd school:', school2.name);
+                            setSecondSchool({
+                                name: school2.name || '',
+                                inep: school2.inep_code || '',
+                                city: school2.city || ''
+                            });
+                            setShowSecondSchool(true);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('[ProfileTab] Exception loading teacher schools:', err);
             }
+        };
 
-            // 2. Filtragem Client-Side
-            const termNorm = term.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const cityNorm = (cityContext || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        loadTeacherSchools();
+    }, [userProfile?.id]);
 
-            const filtered = schoolsSource.filter((school: any) => {
-                const nameEscola = school.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                const cityEscola = school.city.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    // CARREGAR Informações do Gestor da Escola Ativa
+    useEffect(() => {
+        const loadManager = async () => {
+            if (!userProfile?.id) return;
 
-                const matchesName = nameEscola.includes(termNorm);
-                const matchesCity = cityNorm ? cityEscola.includes(cityNorm) : true;
+            setLoadingManager(true);
+            try {
+                console.log('[ProfileTab] 🔍 Loading school manager info...');
+                const result = await getTeacherSchoolManager(userProfile.id);
 
-                return matchesName && matchesCity;
-            }).slice(0, 50);
+                if (result.success && result.manager) {
+                    setManagerInfo({
+                        managerName: result.manager.full_name,
+                        managerEmail: result.manager.email,
+                        schoolName: result.schoolName || 'Escola não identificada'
+                    });
+                    console.log('[ProfileTab] ✅ Manager found:', result.manager.full_name);
+                } else {
+                    console.log('[ProfileTab] ℹ️ No manager found:', result.error);
+                    setManagerInfo(null);
+                }
+            } catch (err) {
+                console.error('[ProfileTab] Exception loading manager:', err);
+                setManagerInfo(null);
+            } finally {
+                setLoadingManager(false);
+            }
+        };
 
-            setSchoolResults(filtered);
-            setShowSchoolResults(true);
+        loadManager();
+    }, [userProfile?.id]);
 
-        } catch (error) {
-            console.error('Erro ao buscar escolas (JSON):', error);
-            setSchoolResults([]);
-        } finally {
-            setIsSearchingSchool(false);
+    // AUTO-COMPLETE School by INEP
+    useEffect(() => {
+        const inep = localSettings.schoolCode?.trim();
+        if (inep && inep.length === 8 && /^\d+$/.test(inep)) {
+            const fetchSchoolName = async () => {
+                try {
+                    const { data, error } = await supabase
+                        .from('schools')
+                        .select('name')
+                        .eq('inep_code', inep)
+                        .maybeSingle();
+
+                    if (data?.name && !localSettings.institution) {
+                        console.log("[ProfileTab] 🏫 School auto-resolved:", data.name);
+                        setLocalSettings(prev => ({ ...prev, institution: data.name }));
+                    }
+                } catch (err) {
+                    console.warn("[ProfileTab] School lookup failed:", err);
+                }
+            };
+            fetchSchoolName();
         }
-    };
+    }, [localSettings.schoolCode]);
 
-    const handleSchoolInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        handleChange('institution', value);
-
-        const timeoutId = setTimeout(() => searchSchools(value, settings.city), 500);
-        return () => clearTimeout(timeoutId);
-    };
-
-    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        handleChange('city', value);
-
-        if (settings.institution && settings.institution.length >= 3) {
-            const timeoutId = setTimeout(() => searchSchools(settings.institution, value), 500);
-            return () => clearTimeout(timeoutId);
-        }
-    };
-
-    const selectSchool = (school: any) => {
-        handleChange('institution', school.name);
-        handleChange('city', school.city);
-        handleChange('schoolCode', school.id);
-        setSchoolResults([]);
-        setShowSchoolResults(false);
+    const handleChange = (field: keyof UserSettings, value: string) => {
+        setLocalSettings(prev => ({ ...prev, [field]: value }));
     };
 
     const handleMaspChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,36 +179,12 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
         handleChange('masp', value);
     };
 
-    const handleSchoolCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const code = e.target.value;
-        handleChange('schoolCode', code);
-
-        if (code.length >= 6) {
-            setTimeout(async () => {
-                try {
-                    const { data } = await supabase
-                        .from('schools')
-                        .select('id, name, city, sre')
-                        .eq('id', code)
-                        .single();
-
-                    if (data) {
-                        handleChange('institution', data.name);
-                        handleChange('city', data.city);
-                    }
-                } catch (error) {
-                    console.error('Erro ao buscar escola por código:', error);
-                }
-            }, 500);
-        }
-    };
-
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setSettings(prev => ({ ...prev, logoBase64: reader.result as string }));
+                setLocalSettings(prev => ({ ...prev, logoBase64: reader.result as string }));
             };
             reader.readAsDataURL(file);
         }
@@ -149,44 +192,114 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
 
     const handleSaveProfile = async () => {
         setSaveLoading(true);
-        try {
-            if (userProfile?.id) {
-                const updates: any = {
-                    full_name: settings.userName,
-                    email: settings.institutionalEmail,
-                    masp: settings.masp,
-                    city: settings.city,
-                    updated_at: new Date()
-                };
 
-                if (settings.schoolCode) {
-                    updates.school_id = settings.schoolCode;
+        try {
+            // Try to get userId from userProfile first, fallback to session from localStorage
+            let userId = userProfile?.id;
+
+            if (!userId) {
+                console.warn('[ProfileTab] userProfile.id not available, attempting fallback to session...');
+                try {
+                    const sessionData = localStorage.getItem('profeplan_session');
+                    const session = sessionData ? JSON.parse(sessionData) : null;
+                    userId = session?.id;
+                } catch (e) {
+                    console.error('[ProfileTab] Failed to parse session from localStorage:', e);
+                }
+            }
+
+            if (!userId) {
+                alert('⚠️ Não foi possível identificar seu usuário. Por favor, saia e entre novamente.\n\nSe o problema persistir, limpe o cache do navegador.');
+                setSaveLoading(false);
+                return;
+            }
+
+
+            console.log('[ProfileTab] 💾 Saving profile for user:', userId);
+            console.log('[ProfileTab] 📦 Second school state:', {
+                showSecondSchool,
+                secondSchool,
+                hasInep: !!secondSchool.inep,
+                hasName: !!secondSchool.name
+            });
+
+            const { updateUserProfile } = await import('../../../services/userService');
+
+            const result = await updateUserProfile(userId, {
+                ...localSettings,
+                inep_code: localSettings.schoolCode // Mapping schoolCode UI field to inep_code logic
+            });
+
+            if (result.error) throw new Error(result.error);
+
+            // NOVO: Sincronização de Vínculos (Limpa e Re-cria)
+            console.log('[ProfileTab] 🔄 Syncing teacher schools...');
+            const { reconcileTeacherByInep, clearTeacherSchoolLinks } = await import('../../../services/teacherSchoolService');
+
+            // 1. Limpa vínculos antigos para garantir que escolas removidas ou trocadas sumam
+            await clearTeacherSchoolLinks(userId);
+
+            let firstSchoolResult = null;
+            let secondSchoolResult = null;
+
+            // 2. Re-cria vínculo da 1ª Escola
+            if (localSettings.schoolCode?.trim()) {
+                console.log('[ProfileTab] 🏫 Re-linking 1st school...');
+                firstSchoolResult = await reconcileTeacherByInep(userId, localSettings.schoolCode.trim());
+            }
+
+            // 3. Re-cria vínculo da 2ª Escola (se ativa)
+            if (showSecondSchool && secondSchool.inep?.trim()) {
+                console.log('[ProfileTab] 🏫 Re-linking 2nd school...');
+                secondSchoolResult = await reconcileTeacherByInep(userId, secondSchool.inep.trim());
+            }
+
+            // Feedback consolidado
+            if (firstSchoolResult || secondSchoolResult) {
+                let message = '✅ Perfil salvo!\n\n';
+                const newSettings = { ...localSettings };
+
+                if (firstSchoolResult?.success) {
+                    message += `✅ 1ª Escola: ${firstSchoolResult.schoolName}\n`;
+                    // Sincroniza o nome da instituição no perfil com o nome real da escola encontrada
+                    newSettings.institution = firstSchoolResult.schoolName;
+                    newSettings.city = firstSchoolResult.city || newSettings.city;
+                } else if (firstSchoolResult) {
+                    message += `⚠️ 1ª Escola: ${firstSchoolResult.error}\n`;
                 }
 
-                const { error } = await supabase
-                    .from('profiles')
-                    .update(updates)
-                    .eq('id', userProfile.id);
+                if (secondSchoolResult?.success) {
+                    message += `✅ 2ª Escola: ${secondSchoolResult.schoolName}\n`;
+                } else if (secondSchoolResult) {
+                    message += `⚠️ 2ª Escola: ${secondSchoolResult.error}\n`;
+                }
 
-                if (error) throw error;
+                // Atualiza o estado local e global com o nome correto antes de fechar
+                setLocalSettings(newSettings);
+                setSettings(newSettings);
+                localStorage.setItem('profeplan_settings', JSON.stringify(newSettings));
 
-                // Persist Preferences to LocalStorage (conceptually)
-                // In this app, preferences like 'favoriteMethodology' are often kept in LS or implicitly handled 
-                // by the parent passing them back down. 
-                // Since 'settings' prop in Parent is state, we must ensure Parent state is updated 
-                // OR we just rely on the fact we might need to save these to DB if they were DB columns.
-                // Assuming they are just local preferences for now or saved elsewhere?
-                // The original code commented: "JSON.stringify handled by App.tsx useEffect..."
-                // So we need to propagate these changes to the Parent so App.tsx can save them?
-                // Yes. But we are replacing the parent logic. 
-                // We should probably save them to LS here if they are not in DB.
-                localStorage.setItem('userSettings', JSON.stringify(settings));
-
-                await onSaveSuccess();
+                alert(message);
+            } else {
+                // Success feedback padrão (sem INEP)
+                if (result.message) {
+                    alert('✅ ' + result.message);
+                } else {
+                    alert('✅ Perfil atualizado com sucesso!');
+                }
             }
+
+            // Sync Global State
+            setSettings(localSettings);
+
+            // Persist to LS
+            localStorage.setItem('profeplan_settings', JSON.stringify(localSettings));
+
+            await onSaveSuccess();
             onClose();
         } catch (error: any) {
-            alert('Erro ao salvar perfil: ' + error.message);
+            console.error("[ProfileTab] Save error:", error);
+            alert('❌ Erro ao salvar perfil:\n' + (error.message || 'Erro desconhecido'));
         } finally {
             setSaveLoading(false);
         }
@@ -194,6 +307,53 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Informações do Gestor da Escola Ativa */}
+            {managerInfo && (
+                <section className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="flex items-center gap-2 text-indigo-600 font-bold text-[10px] uppercase tracking-[0.15em]">
+                        <Shield className="w-4 h-4" /> Minha Escola Ativa
+                    </div>
+                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl p-5 shadow-sm">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0">
+                                <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center">
+                                    <Shield className="w-6 h-6 text-white" />
+                                </div>
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">
+                                    Gestor Responsável
+                                </p>
+                                <h4 className="text-lg font-black text-slate-800 mb-1">
+                                    {managerInfo.managerName}
+                                </h4>
+                                <p className="text-sm text-slate-600 mb-2">
+                                    📍 {managerInfo.schoolName}
+                                </p>
+                                <a
+                                    href={`mailto:${managerInfo.managerEmail}`}
+                                    className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+                                >
+                                    <Mail className="w-3 h-3" />
+                                    {managerInfo.managerEmail}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {loadingManager && (
+                <section className="space-y-3">
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 animate-pulse">
+                        <div className="flex items-center gap-3">
+                            <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+                            <span className="text-sm text-slate-500">Carregando informações do gestor...</span>
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Perfil Profissional */}
             <section className="space-y-4">
                 <div className="flex items-center gap-2 text-blue-600 font-bold text-[10px] uppercase tracking-[0.15em]">
@@ -203,7 +363,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo</label>
                         <input
-                            type="text" value={settings.userName}
+                            type="text" value={localSettings.userName}
                             onChange={(e) => handleChange('userName', e.target.value)}
                             className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                             placeholder="Ex: Ricardo Silva Santos"
@@ -213,95 +373,159 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Institucional</label>
                         <input
-                            type="email" value={settings.institutionalEmail || ''}
+                            type="email" value={localSettings.institutionalEmail || ''}
                             onChange={(e) => handleChange('institutionalEmail', e.target.value)}
                             className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
                             placeholder="seu.nome@educacao.mg.gov.br"
                         />
-                        <p className="text-xs text-slate-500 ml-1">Email para vinculação automática à escola</p>
+                        <p className="text-xs text-slate-500 ml-1">Email para fins de registro oficial</p>
                     </div>
 
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">MASP</label>
-                        <input
-                            type="text"
-                            value={settings.masp || ''}
-                            onChange={handleMaspChange}
-                            maxLength={8}
-                            className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                            placeholder="1234567-8"
-                        />
-                        <p className="text-xs text-slate-500 ml-1">Matrícula SIAFI do Professor (7 dígitos + verificador)</p>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cidade onde Atua</label>
-                        <input
-                            type="text"
-                            value={settings.city || ''}
-                            onChange={handleCityChange}
-                            className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                            placeholder="Ex: Belo Horizonte"
-                        />
-                        <p className="text-xs text-slate-500 ml-1">Ajuda a filtrar as escolas disponíveis</p>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Código INEP da Escola</label>
-                        <input
-                            type="text"
-                            value={settings.schoolCode || ''}
-                            onChange={handleSchoolCodeChange}
-                            className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                            placeholder="Digite o código INEP (ex: 31001234)"
-                        />
-                        <p className="text-xs text-slate-500 ml-1">Digite o código ou selecione a escola abaixo</p>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome Completo da Escola</label>
-                        <div className="relative">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">MASP (Professor)</label>
                             <input
-                                type="text" value={settings.institution}
-                                onChange={handleSchoolInputChange}
-                                onFocus={() => settings.institution && settings.institution.length >= 3 && searchSchools(settings.institution, settings.city)}
-                                onBlur={() => setTimeout(() => setShowSchoolResults(false), 200)}
+                                type="text"
+                                value={localSettings.masp || ''}
+                                onChange={handleMaspChange}
+                                maxLength={9}
                                 className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
-                                placeholder="Digite pelo menos 3 letras (Ex: E.E. ou Escola Estadual...)"
+                                placeholder="1234567-8"
                             />
-                            {isSearchingSchool && (
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                    <Loader2 className="animate-spin text-blue-500 w-4 h-4" />
-                                </div>
-                            )}
-
-                            {showSchoolResults && schoolResults.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 max-h-64 overflow-y-auto">
-                                    {schoolResults.map((school) => (
-                                        <button
-                                            key={school.id}
-                                            onClick={() => selectSchool(school)}
-                                            className="w-full text-left px-4 py-3 hover:bg-blue-50 border-b border-slate-50 last:border-0 transition-colors flex flex-col gap-1"
-                                        >
-                                            <span className="text-xs font-bold text-slate-700">{school.name}</span>
-                                            <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                                <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">INEP: {school.id}</span>
-                                                <span>{school.city}</span>
-                                                <span>{school.sre}</span>
-                                            </div>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
+                            <p className="text-[10px] text-slate-500 ml-1">Matrícula SIAFI (7 dígitos + verificador)</p>
                         </div>
-                        <p className="text-xs text-slate-500 ml-1">
-                            {settings.schoolCode
-                                ? `✅ Escola validada (INEP: ${settings.schoolCode})`
-                                : 'Selecione da lista para validar'
-                            }
-                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+                        <div className="md:col-span-1 space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cidade</label>
+                            <input
+                                type="text"
+                                value={localSettings.city || ''}
+                                onChange={(e) => handleChange('city', e.target.value)}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                                placeholder="Cidade"
+                            />
+                        </div>
+
+                        <div className="md:col-span-1 space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Código INEP</label>
+                            <input
+                                type="text"
+                                value={localSettings.schoolCode || ''}
+                                onChange={(e) => handleChange('schoolCode', e.target.value)}
+                                maxLength={8}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                                placeholder="8 dígitos"
+                            />
+                        </div>
+
+                        <div className="md:col-span-2 space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome da Escola</label>
+                            <SchoolAutocomplete
+                                value={localSettings.institution || ''}
+                                onChange={(value, school) => {
+                                    if (school) {
+                                        setLocalSettings(prev => ({
+                                            ...prev,
+                                            institution: school.name,
+                                            schoolCode: school.inep_code || '',
+                                            city: school.city || prev.city
+                                        }));
+                                    } else {
+                                        handleChange('institution', value);
+                                    }
+                                }}
+                                placeholder="Buscar escola no banco INEP..."
+                            />
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            {/* Segundo Cargo (Opcional) */}
+            <section className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-indigo-600 font-bold text-[10px] uppercase tracking-[0.15em]">
+                        <BookOpen className="w-4 h-4" /> Segundo Cargo (Opcional)
+                    </div>
+                    {!showSecondSchool ? (
+                        <button
+                            type="button"
+                            onClick={() => setShowSecondSchool(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-all shadow-sm"
+                        >
+                            <Plus className="w-3 h-3" />
+                            Adicionar 2ª Escola
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setShowSecondSchool(false);
+                                setSecondSchool({ city: '', inep: '', name: '' });
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-bold hover:bg-red-100 transition-all shadow-sm"
+                        >
+                            <X className="w-3 h-3" />
+                            Remover 2ª Escola
+                        </button>
+                    )}
+                </div>
+
+                {showSecondSchool && (
+                    <div className="bg-white border border-indigo-100 rounded-3xl p-6 space-y-5 animate-in slide-in-from-top-4 duration-300 shadow-sm shadow-indigo-100">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+                            <div className="md:col-span-1 space-y-1.5">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                    Cidade
+                                </label>
+                                <input
+                                    type="text"
+                                    value={secondSchool.city}
+                                    onChange={(e) => setSecondSchool(prev => ({ ...prev, city: e.target.value }))}
+                                    className="w-full px-5 py-3 bg-slate-50 border border-indigo-100 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none text-sm font-bold transition-all"
+                                    placeholder="Cidade"
+                                />
+                            </div>
+
+                            <div className="md:col-span-1 space-y-1.5">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                    Código INEP
+                                </label>
+                                <input
+                                    type="text"
+                                    value={secondSchool.inep}
+                                    onChange={(e) => setSecondSchool(prev => ({ ...prev, inep: e.target.value }))}
+                                    maxLength={8}
+                                    className="w-full px-5 py-3 bg-slate-50 border border-indigo-100 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none text-sm font-bold transition-all"
+                                    placeholder="8 dígitos"
+                                />
+                            </div>
+
+                            <div className="md:col-span-2 space-y-1.5">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                                    Nome da Escola
+                                </label>
+                                <SchoolAutocomplete
+                                    value={secondSchool.name}
+                                    onChange={(value, school) => {
+                                        if (school) {
+                                            setSecondSchool({
+                                                name: school.name,
+                                                inep: school.inep_code || '',
+                                                city: school.city || ''
+                                            });
+                                        } else {
+                                            setSecondSchool(prev => ({ ...prev, name: value }));
+                                        }
+                                    }}
+                                    placeholder="Buscar escola no banco INEP..."
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
             </section>
 
             {/* Documentos */}
@@ -317,9 +541,9 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                                 onClick={() => logoInputRef.current?.click()}
                                 className="w-32 h-32 bg-white border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all relative group overflow-hidden"
                             >
-                                {settings.logoBase64 ? (
+                                {localSettings.logoBase64 ? (
                                     <>
-                                        <img src={settings.logoBase64} alt="Logo" className="w-full h-full object-contain p-2" />
+                                        <img src={localSettings.logoBase64} alt="Logo" className="w-full h-full object-contain p-2" />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                             <ImageIcon className="text-white w-6 h-6" />
                                         </div>
@@ -332,9 +556,9 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                                 )}
                             </div>
                             <input type="file" ref={logoInputRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
-                            {settings.logoBase64 && (
+                            {localSettings.logoBase64 && (
                                 <button
-                                    onClick={() => setSettings(prev => ({ ...prev, logoBase64: undefined }))}
+                                    onClick={() => setLocalSettings(prev => ({ ...prev, logoBase64: undefined }))}
                                     className="text-[9px] font-bold text-red-500 flex items-center gap-1 mt-1 hover:underline"
                                 >
                                     <Trash2 className="w-3 h-3" /> Remover Logo
@@ -346,7 +570,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                             <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cabeçalho Personalizado</label>
                                 <textarea
-                                    value={settings.headerText || ''}
+                                    value={localSettings.headerText || ''}
                                     onChange={(e) => handleChange('headerText', e.target.value)}
                                     placeholder="Ex: Secretaria de Estado de Educação de MG&#10;Escola Estadual Machado de Assis"
                                     className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-xs font-bold transition-all min-h-[80px]"
@@ -356,7 +580,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Rodapé Personalizado</label>
                                 <input
                                     type="text"
-                                    value={settings.footerText || ''}
+                                    value={localSettings.footerText || ''}
                                     onChange={(e) => handleChange('footerText', e.target.value)}
                                     placeholder="Ex: Av. Brasil, 1000 - Centro | (31) 3333-4444"
                                     className="w-full px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-xs font-bold transition-all"
@@ -376,7 +600,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Metodologia Padrão</label>
                         <select
-                            value={settings.favoriteMethodology}
+                            value={localSettings.favoriteMethodology}
                             onChange={(e) => handleChange('favoriteMethodology', e.target.value)}
                             className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                         >
@@ -388,7 +612,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Estilo Pedagógico</label>
                         <select
-                            value={settings.teachingStyle}
+                            value={localSettings.teachingStyle}
                             onChange={(e) => handleChange('teachingStyle', e.target.value as any)}
                             className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                         >
@@ -401,7 +625,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Foco Avaliativo</label>
                         <select
-                            value={settings.assessmentFocus}
+                            value={localSettings.assessmentFocus}
                             onChange={(e) => handleChange('assessmentFocus', e.target.value as any)}
                             className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                         >
@@ -414,7 +638,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tom de Escrita</label>
                         <select
-                            value={settings.toneOfVoice}
+                            value={localSettings.toneOfVoice}
                             onChange={(e) => handleChange('toneOfVoice', e.target.value as any)}
                             className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 outline-none text-sm font-bold appearance-none cursor-pointer"
                         >

@@ -1,0 +1,38 @@
+{
+  "titulo": null,
+  "disciplina": "Filosofia",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 5,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tempo e Espaço|(**EM13CHS101**) Analisar e comparar<br>diferentes<br>fontes<br>e <br>narrativas<br>expressas em diversas linguagens,<br>com vistas à compreensão e à crítica<br>de ideias ﬁlosóﬁcas e processos e<br>eventos<br>históricos,<br>geográﬁcos,<br>políticos,<br>econômicos,<br>sociais,<br>ambientais e culturais.<br>|- Epistemologia e<br>ontologia antiga<br>e <br>medieval:<br>Antiguidade:<br>as<br>condições<br>econômicas e políticas para o nascimento<br>da Filosoﬁa na Grécia;<br>- O problema do ser e do devir - Heráclito e<br>Parmênides;<br>- Entre o sensível e o inteligível - Platão;<br>- Hilemorﬁsmo, Teoria das quatro causas,<br>Ato e Potência, Primeiro motor - Aristóteles;<br>- <br>Ceticismo:<br>Pirro,<br>Sexto<br>Empírico,<br>Montaigne; - A ruptura com o pensamento<br>Antigo e o estabelecimento de uma nova<br>ordem a partir do Cristianismo; - Teoria da<br>iluminação divina - Agostinho de Hipona; -<br>As cinco vias que provam a existência de<br>Deus - Tomás de Aquino;<br>- A navalha de Ockham - Guilherme de<br>Okham.<br>|Analisar<br>processos<br>políticos,<br>econômicos, sociais, ambientais e<br>culturais nos âmbitos local, regional,<br>nacional e mundial em diferentes<br>tempos, a partir de procedimentos<br>epistemológicos e cientíﬁcos, de<br>modo a compreender e posicionar-<br>se criticamente com relação a esses<br>processos e às possíveis relações<br>entre eles.|",
+      "tags": [
+        "epistemologia",
+        "ontologia",
+        "filosofia antiga",
+        "filosofia medieval",
+        "ética",
+        "política"
+      ]
+    },
+    {
+      "pagina": 7,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Tempo e Espaço|(**EM13CHS102**) Identiﬁcar, analisar e<br>discutir as circunstâncias históricas,<br>geográﬁcas,<br>políticas,<br>econômicas,<br>sociais, ambientais e culturais da<br>emergência de matrizes conceituais<br>hegemônicas<br>(etnocentrismo,<br>evolução,<br>modernidade<br>etc.),<br>comparando-as<br>a <br>narrativas<br>que<br>contemplem<br>outros<br>agentes<br>e <br>discursos.<br>|- Epistemologia moderna:<br>Modernidade,<br>Humanismo,<br>Renascimento, Revolução Cientíﬁca e<br>o Iluminismo como pilares do mundo<br>ocidental e das novas visões de<br>mundo;<br>- empirismo de Francis Bacon, John<br>Locke e David Hume;<br>- Racionalismo de Espinosa e René<br>Descartes;<br>- criticismo de Immanuel Kant;<br>- idealismo alemão de Fichte, Scheling<br>e Hegel;<br>- A crise da razão e o advento da<br>ﬁlosoﬁa contemporânea  a partir de<br>Schopenhauer, Nietzsche e Freud.<br>|Analisar<br>processos<br>políticos,<br>econômicos, sociais, ambientais e<br>culturais nos âmbitos local, regional,<br>nacional e mundial em diferentes<br>tempos, a partir de procedimentos<br>epistemológicos e cientíﬁcos, de<br>modo a compreender e posicionar-<br>se criticamente com relação a esses<br>processos e às possíveis relações<br>entre eles.|",
+      "tags": [
+        "epistemologia",
+        "modernidade",
+        "humanismo",
+        "iluminismo",
+        "empirismo",
+        "racionalismo",
+        "criticismo",
+        "idealismo alemão",
+        "filosofia contemporânea"
+      ]
+    }
+  ],
+  "meta_arquivo": "3°ANO_FILOSOFIA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:17:55"
+}

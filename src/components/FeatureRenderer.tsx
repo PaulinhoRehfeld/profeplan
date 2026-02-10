@@ -87,7 +87,7 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
                 </div>
             ) : activeMode === ToolMode.CLASSES ? (
                 <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">
-                    <ClassManager userId={session.id} />
+                    <ClassManager userId={session.id} userProfile={userProfile} />
                 </div>
             ) : activeMode === ToolMode.PRESENTATIONS ? (
                 <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">
@@ -95,7 +95,7 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
                 </div>
             ) : activeMode === ToolMode.INCLUSION ? (
                 <div className="flex-1 overflow-hidden h-full">
-                    <PDIManager userId={session.id} setSidebarContent={setCustomSidebar} />
+                    <PDIManager userId={session.id} userProfile={userProfile} setSidebarContent={setCustomSidebar} />
                 </div>
             ) : activeMode === ToolMode.ASSESSMENT ? (
                 <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">

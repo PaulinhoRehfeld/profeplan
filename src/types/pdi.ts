@@ -118,18 +118,22 @@ export type GrauAutonomia = 'total' | 'parcial' | 'dependente';
 
 export interface Block10Entry {
     avaliacao_id: string;
+    id?: string; // DB compatibility
     data: string;
     atividade_titulo: string;
     disciplina: string;
+    subject?: string; // DB compatibility
 
     // Preenchido pelo Professor
     professor_valor: number; // Valor total da atividade
     professor_nota_alcancada: number; // Nota que o aluno alcançou
     professor_grau_autonomia: GrauAutonomia;
+    autonomy_level?: string; // DB compatibility
 
     // Gerado pela IA
     ia_metodologia: string; // Como foi realizada a avaliação
     ia_diagnostico: string; // Potenciais e desafios identificados
+    observations?: string; // DB compatibility
 
     // Metadata
     professor_id: string;
@@ -151,39 +155,47 @@ export interface Block11Report {
     approved_at?: string;
 }
 
+import { PDIProfileData } from './pdi-schema';
+
 // ============================================================================
-// PDI Document (Complete)
+// PDI Document (Complete - Matches Database Schema)
 // ============================================================================
 
-export type PdiStatus = 'em_andamento' | 'finalizado' | 'arquivado';
+export type PdiStatus = 'em_andamento' | 'finalizado' | 'arquivado' | 'draft' | 'active';
 
 export interface PdiDocument {
     id: string;
     student_id: string;
-    school_id: string;
-
-    // Blocks
-    block_1_8: Block1to8Data;
-    block_1_8_filled_by?: string;
-    block_1_8_filled_at?: string;
-
-    block_9_content: Block9Content;
-    block_9_last_generated?: string;
-
-    block_10_entries: Block10Entries;
-
-    block_11_ai_generated?: string;
-    block_11_supervisor_edit?: string;
-    block_11_approved: boolean;
-    block_11_approved_by?: string;
-    block_11_approved_at?: string;
-
-    // Metadata
-    period: string;
+    school_id?: string;
+    year: number;
     status: PdiStatus;
+    content_data: Partial<PDIProfileData>;
+    final_report?: string;
     created_at: string;
     updated_at: string;
+
+    // Join data (optional)
+    school_students?: {
+        name: string;
+        school_id?: string;
+    };
+
+    // Compatibility fields (to be deprecated in favor of content_data)
+    block_1_8?: Block1to8Data;
+    block_9_content?: Block9Content;
+    block_10_entries?: Block10Entries;
+
+    // Legacy support for older components
+    blocks_completed?: {
+        block_1_8: boolean;
+        block_9: boolean;
+        block_10: boolean;
+        block_11: boolean;
+    };
+    student_name?: string; // Virtual property
+    last_updated?: string; // Alias for updated_at
 }
+
 
 // ============================================================================
 // Helper Types for Forms and API
@@ -224,7 +236,7 @@ export interface PdiDocumentSummary {
     id: string;
     student_id: string;
     student_name: string;
-    period: string;
+    period: string; // Map to year in summarize
     status: PdiStatus;
     blocks_completed: {
         block_1_8: boolean;
@@ -240,4 +252,24 @@ export interface PdiCompletenessIndicator {
     completed_blocks: number;
     percentage: number;
     missing_blocks: string[];
+}
+
+export interface PdiCompleteness {
+    overall_percentage: number;
+    missing_sections: string[];
+    blocks_status: Array<{
+        block_name: string;
+        is_complete: boolean;
+        completion_percentage: number;
+    }>;
+}
+
+export interface TeacherEntry {
+    id?: string;
+    pdi_document_id: string;
+    teacher_id: string;
+    bimester: number;
+    subject: string;
+    autonomy_level: string;
+    observations?: string;
 }

@@ -5,8 +5,8 @@ import {
     Filter, Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../../services/supabaseClient';
-import { PdiDocumentService } from '../../../services/PdiDocumentService';
+import { supabase } from '../../services/supabaseClient';
+import { PdiDocumentService } from '../../services/pdi/PdiDocumentService';
 
 interface PDIAnalytics {
     total_pdis: number;
@@ -130,7 +130,7 @@ const PDIDashboard: React.FC<PDIDashboardProps> = ({ schoolId, userId }) => {
                         </p>
                     </div>
                     <button
-                        onClick={() => navigate('/pdi/novo')}
+                        onClick={() => navigate('/pdi/official/new')} // We'll add this route too or modal
                         className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-all"
                     >
                         <FileText size={20} />
@@ -346,8 +346,8 @@ const PDIDashboard: React.FC<PDIDashboardProps> = ({ schoolId, userId }) => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${pdi.status === 'em_andamento' ? 'bg-yellow-100 text-yellow-700' :
-                                                        pdi.status === 'finalizado' ? 'bg-green-100 text-green-700' :
-                                                            'bg-slate-100 text-slate-700'
+                                                    pdi.status === 'finalizado' ? 'bg-green-100 text-green-700' :
+                                                        'bg-slate-100 text-slate-700'
                                                     }`}>
                                                     {pdi.status === 'em_andamento' ? 'Em Andamento' :
                                                         pdi.status === 'finalizado' ? 'Finalizado' :
@@ -372,7 +372,7 @@ const PDIDashboard: React.FC<PDIDashboardProps> = ({ schoolId, userId }) => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right">
                                                 <button
-                                                    onClick={() => navigate(`/pdi/${pdi.id}`)}
+                                                    onClick={() => navigate(`/pdi/official/${pdi.student_id}`)}
                                                     className="text-blue-600 hover:text-blue-700 font-semibold text-sm"
                                                 >
                                                     Ver Detalhes →

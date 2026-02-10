@@ -4,7 +4,7 @@ import {
     FileText, Plus, Search, Filter, CheckCircle,
     AlertCircle, Clock, User, School
 } from 'lucide-react';
-import { PdiDocumentService } from '../../services/PdiDocumentService';
+import { PdiDocumentService } from '../../services/pdi/PdiDocumentService';
 import { ProfileService } from '../../services/ProfileService';
 import { PdiDocumentSummary } from '../../types/pdi';
 
@@ -34,7 +34,9 @@ const PdiListPage: React.FC<PdiListPageProps> = ({ userId }) => {
 
             if (profile.school_id) {
                 const data = await PdiDocumentService.getSchoolPdis(profile.school_id);
-                setPdis(data);
+                // The service currently returns raw data, we need to map it
+                const mappedPdis = (data as any[]).map(p => PdiDocumentService.mapToCompatibility(p));
+                setPdis(mappedPdis as unknown as PdiDocumentSummary[]);
             }
         } catch (error) {
             console.error('Error loading PDIs:', error);

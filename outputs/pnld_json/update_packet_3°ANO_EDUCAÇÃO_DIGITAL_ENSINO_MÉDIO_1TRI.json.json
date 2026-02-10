@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "livro_titulo": "3°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI",
+    "disciplina": "Educação Digital",
+    "editora": "N/A",
+    "colecao": "N/A",
+    "arquivo_origem": "update_packet_3°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI.json",
+    "total_fragmentos": 4
+  },
+  "conteudo_vetorial": [
+    {
+      "pagina": 9,
+      "capitulo": "SECRETARIA DE ESTADO DE EDUCAÇÃO DE MINAS GERAIS",
+      "texto_limpo": "",
+      "embedding_id": "baee43ff-82e2-4380-9c77-53debc915a2e"
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "",
+      "embedding_id": "3cf4e8e3-012e-48bc-9f07-2adc496ed2c0"
+    },
+    {
+      "pagina": 6,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "",
+      "embedding_id": "4b1b203d-c757-42b2-a88b-eb85e7f6a63c"
+    },
+    {
+      "pagina": 8,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "",
+      "embedding_id": "a1ce5820-f345-4072-85f9-64a3be917d33"
+    }
+  ]
+}

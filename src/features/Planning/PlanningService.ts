@@ -89,7 +89,7 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
 
     // A.2 - INCREMENT USAGE (Debit Credit)
     // Only debit if insertion was successful
-    await incrementUserUsage(userId);
+    await incrementUserUsage(userId, 'document');
     console.log('💰 Crédito debitado por salvamento de documento.');
 
     // B. Memory (Lessons) - Apenas se for relevante (Plano de Aula ou Atividade)

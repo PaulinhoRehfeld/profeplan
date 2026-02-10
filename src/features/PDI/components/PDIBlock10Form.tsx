@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, AlertCircle, CheckCircle, Loader, TrendingUp } from 'lucide-react';
-import { PdiDocumentService } from '../../../services/PdiDocumentService';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { generateBlock10Diagnosis } from '../../../services/geminiService';
 import { GrauAutonomia } from '../../../types/pdi';
 
@@ -40,14 +40,15 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
 
         try {
             // Get full PDI context
-            const pdi = await PdiDocumentService.getPdiDocument(pdiId);
+            const { data: pdi } = await PdiDocumentService.getPdiDocument(pdiId);
             if (!pdi) {
                 throw new Error('PDI não encontrado');
             }
 
             const fullContext = {
                 student_name: studentName,
-                block_1_8: pdi.block_1_8,
+                content_data: pdi.content_data,
+                block_1_8: pdi.block_1_8, // Compatibility
                 block_9_history: pdi.block_9_content || [],
                 block_10_history: pdi.block_10_entries || [],
             };
@@ -61,7 +62,7 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
                     professor_nota_alcancada: professorNota,
                     professor_grau_autonomia: professorAutonomia,
                 },
-                fullContext,
+                fullContext as any,
                 userId
             );
 
@@ -92,28 +93,25 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
 
         try {
             // Add evaluation entry
-            const evaluationId = await PdiDocumentService.addBlock10Evaluation({
-                pdi_id: pdiId,
-                evaluation: {
-                    data: new Date().toISOString().split('T')[0],
-                    atividade_titulo: atividadeTitulo,
-                    disciplina: disciplina,
-                    professor_valor: professorValor,
-                    professor_nota_alcancada: professorNota,
-                    professor_grau_autonomia: professorAutonomia,
-                    professor_id: userId,
-                },
+            const { data: evaluation, error: saveError } = await PdiDocumentService.addBlock10Evaluation(pdiId, {
+                data: new Date().toISOString().split('T')[0],
+                atividade_titulo: atividadeTitulo,
+                disciplina: disciplina,
+                professor_valor: professorValor,
+                professor_nota_alcancada: professorNota,
+                professor_grau_autonomia: professorAutonomia,
+                professor_id: userId,
+                ia_diagnostico: iaDiagnostico // Pass diagnosis for storage
             });
 
-            if (!evaluationId) {
-                throw new Error('Erro ao salvar avaliação');
+            if (saveError || !evaluation) {
+                throw new Error(saveError?.message || 'Erro ao salvar avaliação');
             }
 
-            // Update with AI-generated content
+            // Update with AI-generated content (metodologia)
             await PdiDocumentService.updateBlock10WithAI(
                 pdiId,
-                evaluationId,
-                iaMetodologia,
+                evaluation.id,
                 iaDiagnostico
             );
 
@@ -217,8 +215,8 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-bold text-slate-700">Percentual de Acerto</span>
                         <span className={`text-2xl font-black ${parseFloat(percentual) >= 70 ? 'text-green-600' :
-                                parseFloat(percentual) >= 50 ? 'text-yellow-600' :
-                                    'text-red-600'
+                            parseFloat(percentual) >= 50 ? 'text-yellow-600' :
+                                'text-red-600'
                             }`}>
                             {percentual}%
                         </span>
@@ -226,8 +224,8 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
                     <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
                         <div
                             className={`h-full transition-all duration-500 ${parseFloat(percentual) >= 70 ? 'bg-green-500' :
-                                    parseFloat(percentual) >= 50 ? 'bg-yellow-500' :
-                                        'bg-red-500'
+                                parseFloat(percentual) >= 50 ? 'bg-yellow-500' :
+                                    'bg-red-500'
                                 }`}
                             style={{ width: `${Math.min(parseFloat(percentual), 100)}%` }}
                         ></div>
@@ -248,8 +246,8 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
                                 key={option.value}
                                 onClick={() => setProfessorAutonomia(option.value as GrauAutonomia)}
                                 className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${professorAutonomia === option.value
-                                        ? `bg-${option.color}-600 text-white shadow-lg`
-                                        : `bg-${option.color}-100 text-${option.color}-700 hover:bg-${option.color}-200`
+                                    ? `bg-${option.color}-600 text-white shadow-lg`
+                                    : `bg-${option.color}-100 text-${option.color}-700 hover:bg-${option.color}-200`
                                     }`}
                             >
                                 {option.label}

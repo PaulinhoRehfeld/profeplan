@@ -1,0 +1,15 @@
+{
+  "id": "2°ANO_LÍNGUA_INGLESA_1TRIMESTRE",
+  "disciplina": "LÍNGUA INGLESA",
+  "ano": "2° ANO",
+  "trimestre": "1º TRIMESTRE",
+  "nivel": "Ensino Médio",
+  "arquivo_fonte": "ingest_data\\update_packet_2°ANO_LÍNGUA_INGLESA_ENSINO_MÉDIO_1TRI.json",
+  "processado_em": "2026-02-09T07:47:17.705989",
+  "unidades": [],
+  "campos_professor": {
+    "quantidade_aulas": null,
+    "distribuicao_por_unidade": null,
+    "observacoes": null
+  }
+}

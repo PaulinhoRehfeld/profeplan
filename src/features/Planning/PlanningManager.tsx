@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/geminiService';
-import { searchCurriculum, getDeterministicCurriculum } from '../../services/searchService';
+import { searchCurriculum, getDeterministicCurriculum, searchPnldBookContent } from '../../services/searchService';
 import { searchQuestions } from '../../services/questionService';
 import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan, GeneratedPlan } from './PlanningService';
@@ -71,6 +71,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isThinking, setIsThinking] = useState(false);
+    const [selectedPnldBookId, setSelectedPnldBookId] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // --- Derived Props ---
@@ -365,6 +366,25 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 }
             }
 
+            // --- RAG: PROJETO CODEX (PNLD BOOKS) ---
+            if (selectedPnldBookId) {
+                try {
+                    const bookResults = await searchPnldBookContent(activeInput, {
+                        livro_titulo: selectedPnldBookId // We use ID as title for now or match properly
+                    });
+
+                    if (bookResults && bookResults.length > 0) {
+                        const bookContext = bookResults.map((r: any) =>
+                            `[Livro PNLD: ${r.metadata?.livro_titulo}] [Pág: ${r.metadata?.pagina}] [Cap: ${r.metadata?.capitulo}]: ${r.content}`
+                        ).join('\n\n');
+
+                        context += `\n\n--- CONTEÚDO DO LIVRO PNLD (PROJETO CODEX) ---\n${bookContext}\n\n[INSTRUÇÃO PNLD]: O professor está usando o livro oficial. Use os fragmentos acima para basear suas explicações, exercícios e referências de página. SEJA PRECISO.`;
+                    }
+                } catch (codexError) {
+                    console.error('[Codex] Falha ao buscar conteúdo do livro:', codexError);
+                }
+            }
+
             // --- Dynamic Temperature Control ---
             // User Request: "PRÁTICAS DE LINGUAGEM HABILIDADE... temperatura precisa ser zero"
             // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
@@ -507,7 +527,8 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
             return true;
         } catch (e: any) {
             console.error(e);
-            alert(`Erro ao salvar: ${e.message}`);
+            if (e.message) alert(`Erro ao salvar: ${e.message}`);
+            else alert("Erro ao salvar: Ocorreu um problema desconhecido.");
             return false;
         }
     };
@@ -573,6 +594,8 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 setInput={setInput}
                 handleSendMessage={handleSendMessage}
                 messagesEndRef={messagesEndRef}
+                selectedPnldBookId={selectedPnldBookId}
+                setSelectedPnldBookId={setSelectedPnldBookId}
             />
         );
     }

@@ -4,6 +4,7 @@ import { UserSettings } from '../types';
 
 // Subcomponents
 import { ProfileTab } from './Settings/Tabs/ProfileTab';
+import { ManagerProfileTab } from './Settings/Tabs/ManagerProfileTab';
 import { SecurityTab } from './Settings/Tabs/SecurityTab';
 import { SubscriptionTab } from './Settings/Tabs/SubscriptionTab';
 
@@ -56,8 +57,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <button
               onClick={() => setActiveTab('profile')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'profile'
-                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                 }`}
             >
               <User className="w-4 h-4" />
@@ -67,8 +68,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <button
               onClick={() => setActiveTab('subscription')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'subscription'
-                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                 }`}
             >
               <CreditCard className="w-4 h-4" />
@@ -78,8 +79,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <button
               onClick={() => setActiveTab('security')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'security'
-                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
+                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                 }`}
             >
               <Shield className="w-4 h-4" />
@@ -111,18 +112,30 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="max-w-2xl mx-auto">
               {activeTab === 'profile' && (
                 <div className="animate-in slide-in-from-right-4 duration-300">
-                  <h3 className="text-2xl font-bold text-slate-800 mb-6">Perfil Profissional</h3>
-                  <ProfileTab
-                    userProfile={userProfile}
-                    initialSettings={settings}
-                    onSaveSuccess={async () => {
-                      if (onRefreshProfile) await onRefreshProfile();
-                      // Optional: Don't close immediately? 
-                      // The logic inside ProfileTab calls onClose().
-                      // We passed onClose as prop to ProfileTab.
-                    }}
-                    onClose={onClose}
-                  />
+                  <h3 className="text-2xl font-bold text-slate-800 mb-6">
+                    {userProfile?.role === 'manager' ? '🏫 Gestão Escolar' : 'Perfil Profissional'}
+                  </h3>
+
+                  {/* ROTEAMENTO: Manager vs Teacher */}
+                  {userProfile?.role === 'manager' ? (
+                    <ManagerProfileTab
+                      userProfile={userProfile}
+                      onSaveSuccess={async () => {
+                        if (onRefreshProfile) await onRefreshProfile();
+                      }}
+                      onClose={onClose}
+                    />
+                  ) : (
+                    <ProfileTab
+                      userProfile={userProfile}
+                      initialSettings={settings}
+                      setSettings={setSettings}
+                      onSaveSuccess={async () => {
+                        if (onRefreshProfile) await onRefreshProfile();
+                      }}
+                      onClose={onClose}
+                    />
+                  )}
                 </div>
               )}
 

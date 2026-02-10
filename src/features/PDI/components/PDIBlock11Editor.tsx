@@ -3,7 +3,7 @@ import {
     FileText, Sparkles, Save, CheckCircle, AlertCircle,
     Loader, Edit3, Eye, Lock
 } from 'lucide-react';
-import { PdiDocumentService } from '../../../services/PdiDocumentService';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { generateBlock11Report } from '../../../services/geminiService';
 
 interface PDIBlock11EditorProps {
@@ -39,10 +39,10 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
     const loadBlock11 = async () => {
         setLoading(true);
         try {
-            const pdi = await PdiDocumentService.getPdiDocument(pdiId);
+            const { data: pdi } = await PdiDocumentService.getPdiDocument(pdiId);
             if (pdi) {
-                setAiGeneratedReport(pdi.block_11_ai_generated || '');
-                setSupervisorEdit(pdi.block_11_supervisor_edit || '');
+                setAiGeneratedReport(pdi.final_report || '');
+                setSupervisorEdit(pdi.final_report || '');
                 setIsApproved(pdi.status === 'finalizado');
             }
         } catch (err) {
@@ -58,7 +58,7 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
 
         try {
             // Get full PDI document
-            const pdi = await PdiDocumentService.getPdiDocument(pdiId);
+            const { data: pdi } = await PdiDocumentService.getPdiDocument(pdiId);
             if (!pdi) {
                 throw new Error('PDI não encontrado');
             }
@@ -67,9 +67,10 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
             const report = await generateBlock11Report(
                 {
                     student_name: studentName,
-                    period: pdi.period,
-                    school_name: '',  // Could fetch from school table
-                    block_1_8: pdi.block_1_8,
+                    period: pdi.year.toString(),
+                    school_name: '',
+                    content_data: pdi.content_data,
+                    block_1_8: pdi.block_1_8, // Compatibility
                     block_9_content: pdi.block_9_content || [],
                     block_10_entries: pdi.block_10_entries || [],
                 },
@@ -77,7 +78,7 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
             );
 
             setAiGeneratedReport(report);
-            setSupervisorEdit(report); // Initialize edit field with AI version
+            setSupervisorEdit(report);
             setEditMode(true);
             setSuccess('Relatório gerado com sucesso! Revise e edite se necessário.');
 
@@ -99,16 +100,10 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
         setError('');
 
         try {
-            await PdiDocumentService.updateBlock11ByProgument(
-                pdiId,
-                aiGeneratedReport,
-                supervisorEdit
-            );
-
+            await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
             setSuccess('Relatório salvo com sucesso!');
             setEditMode(false);
             await loadBlock11();
-
         } catch (err: any) {
             console.error('Error saving Block 11:', err);
             setError(err.message || 'Erro ao salvar relatório');
@@ -118,21 +113,16 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
     };
 
     const handleApprove = async () => {
-        if (!supervisorEdit.trim() && !aiGeneratedReport.trim()) {
-            setError('Gere e salve o relatório antes de aprovar');
-            return;
-        }
-
         setSaving(true);
         setError('');
 
         try {
-            const finalizado = await PdiDocumentService.approveBlock11(pdiId);
-            if (finalizado) {
-                setIsApproved(true);
-                setSuccess('PDI aprovado e finalizado com sucesso!');
-                await loadBlock11();
-            }
+            const { data, error: approveError } = await PdiDocumentService.approveBlock11(pdiId, userId);
+            if (approveError) throw approveError;
+
+            setIsApproved(true);
+            setSuccess('PDI aprovado e finalizado com sucesso!');
+            await loadBlock11();
         } catch (err: any) {
             console.error('Error approving Block 11:', err);
             setError(err.message || 'Erro ao aprovar PDI');

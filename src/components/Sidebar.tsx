@@ -34,14 +34,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const menuItems = [
     { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'chat' },
-    { id: ToolMode.CLASSES, icon: LibraryBig, label: 'Minhas Turmas', feature: 'management' },
     { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning' },
     { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planos de Aula', feature: 'planning' },
     { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptações PDI/DUA', feature: 'pdi' },
     { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb', feature: 'enem' },
     { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content' },
     { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content' },
-    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management' }
+    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management' },
+    { id: ToolMode.CLASSES, icon: BookOpen, label: 'Minhas Turmas', feature: 'management' }
   ];
 
   // Add School Management for admins and managers

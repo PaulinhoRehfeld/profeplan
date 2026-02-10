@@ -22,14 +22,16 @@ const getEnv = (key: string): string | undefined => {
 
 // Priority: VITE_ > NEXT_PUBLIC_ > SUPABASE_ > Hardcoded Fallback
 const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
+  (import.meta.env && import.meta.env.VITE_SUPABASE_URL) ||
+  getEnv('VITE_SUPABASE_URL') ||
   getEnv('NEXT_PUBLIC_SUPABASE_URL') ||
   getEnv('SUPABASE_URL') ||
   '';
 
 // Priority: VITE_ > NEXT_PUBLIC_ > SUPABASE_ > Hardcoded Fallback
 const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  (import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY) ||
+  getEnv('VITE_SUPABASE_ANON_KEY') ||
   getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') ||
   getEnv('SUPABASE_ANON_KEY') ||
   '';

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../services/supabaseClient';
 import { BrainCircuit, BookOpen, GraduationCap, FileText, CheckCircle2, Save, Printer } from 'lucide-react';
 import { generateFinalPDIReport } from '../../../services/geminiService';
-import { AutonomyLevel, ComprehensionLevel } from '../../../types/pdi-schema';
+// import { AutonomyLevel, ComprehensionLevel } from '../../../types/pdi-schema';
 
 interface PDIConsolidatorProps {
     studentId: string;
@@ -28,13 +28,27 @@ export const PDIConsolidator: React.FC<PDIConsolidatorProps> = ({ studentId, stu
     const loadConsolidatedData = async () => {
         setLoading(true);
         try {
-            // 1. Fetch Profile (JSONB)
-            const { data: student } = await supabase
-                .from('school_students')
-                .select('pdi_data')
+            // 0. Resolve IDs (App ID vs PDI ID)
+            const { data: studentMap, error: mapError } = await supabase
+                .from('students')
+                .select('school_student_id')
                 .eq('id', studentId)
                 .single();
-            setProfileData(student?.pdi_data || {});
+
+            if (mapError) console.warn("Could not resolve PDI ID:", mapError);
+            const pdiId = studentMap?.school_student_id;
+
+            // 1. Fetch Profile (JSONB)
+            let pdiData = {};
+            if (pdiId) {
+                const { data: student } = await supabase
+                    .from('school_students')
+                    .select('pdi_data')
+                    .eq('id', pdiId) // Use PDI ID
+                    .maybeSingle(); // Use maybeSingle to avoid crash
+                pdiData = student?.pdi_data || {};
+            }
+            setProfileData(pdiData);
 
             // 2. Fetch Cycle (Current Year)
             const currentYear = new Date().getFullYear();

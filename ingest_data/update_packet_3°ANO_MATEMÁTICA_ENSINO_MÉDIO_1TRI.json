@@ -1,0 +1,21 @@
+{
+  "titulo": "Plano de Curso 2026 - Matemática - Ensino Médio",
+  "disciplina": "Matemática",
+  "nivel": "3 ano",
+  "conteudo_vetorial": [
+    {
+      "pagina": 1,
+      "capitulo": "",
+      "texto_limpo": "| NÚMEROS E ÁLGEBRA(EF08MA10) Identificar a regularidade de uma sequência numérica ou figural não recursiva e construir um algoritmo por meio de um fluxograma que permita indicar os números ou as figuras seguintes.Progressões aritméticas (PA); Funções afins de domínio discreto; Relação entre razão da PA e coeficiente angular da função afim; Sequências numéricas.Identificar progressões aritméticas e associá-las corretamente a funções afins de domínio discreto; Deduzir e utilizar fórmulas da progressão aritmética; Resolver problemas contextualizados envolvendo progressões aritméticas e funções afins. O estudante deve ser capaz de:| Col4Col6Identificar a regularidade de uma sequência numérica ou figural; Construir uma expressão que permita indicar os números ou as figuras seguintes.| | NÚMEROS E ÁLGEBRAProgressões Geométricas Funções exponenciais de domínio discreto Relação entre razão da PG e a base da função exponencialIdentificar progressões geométricas e associá-las corretamente a funções exponenciais de domínio discreto; Deduzir e utilizar fórmulas da progressão geométrica;| GEOMETRIA E MEDIDAS(EF08MA18) Reconhecer e construir figuras obtidas por composições de transformações geométricas (translação, reflexão e rotação), com o uso de instrumentos de desenho ou de softwares de geometria dinâmica.Isométricas no plano cartesiano (translação, reflexão, rotação); Homotetia, razão de semelhança e escala; Simetria axial e rotacional; Fractais e padrões geométricosIdentificar corretamente transformações geométricas em imagens reais; Construir figuras transformadas preservando propriedades; Explicar os efeitos das transformações nas dimensões e posições.| Col4Transformações geométricasO aluno deve ser capaz de: Reconhecer figuras obtidas por translação; Reconhecer figuras obtidas por reflexão; Reconhecer figuras obtidas por rotação; Reconhecer figuras obtidas por composição de duas ou mais transformações geométricas (translação, reflexão e/ou rotação); Construir figuras a partir de transformações geométricas, utilizando instrumentos de desenho ou softwares de geometria dinâmica.| | GEOMETRIA E MEDIDASÁrea de superfícies planas; Decomposição e recomposição de figuras;Aplicar diferentes métodos de cálculo de área; Deduzir e utilizar expressões matemáticas corretamente;| Col4Dedução de fórmulas geométricas.Resolver situações reais com precisão.| | GEOMETRIA E MEDIDAS(EF08MA19) Resolver e elaborar problemas que envolvam medidas de área de figuras geométricas, utilizando expressões de cálculo de área (quadriláteros, triângulos e círculos), em situações como determinar medida de terrenos. (EF09MA19) Resolver e elaborar problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas.Área total e volume de sólidos geométricos; Prismas, pirâmides e corpos redondos; Sólidos compostos. Área de figuras geométricas Volume de prismas e cilindros.Aplicar corretamente o princípio de Cavalieri; Deduzir fórmulas de volume; Resolver problemas contextualizados envolvendo sólidos. O estudante deve ser capaz de: Calcular a medida da área de figuras geométricas; Utilizar expressões de cálculo de área de quadriláteros, triângulos e círculos nas| Col4Col6situações do cotidiano; Elaborar problemas que envolvam o cálculo da medida do volume, em situações do cotidiano.| | GEOMETRIA E MEDIDASVolume de sólidos geométricos; Princípio de Cavalieri; Relação entre áreas da base e volume.| GEOMETRIA E MEDIDASPolígonos regulares; Variação do perímetro e da área; Funções associadas às grandezas geométricas.Representar corretamente variações gráficas; Analisar o comportamento das funções; Classificar funções a partir dos gráficos.| EXTRAIA O JSON SEGUINDO O SCHEMA.",
+      "tags": [
+        "identificar",
+        "e",
+        "números",
+        "álgebra(ef08ma10)",
+        "|"
+      ]
+    }
+  ],
+  "meta_arquivo": "3°ANO_MATEMÁTICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:27:52"
+}

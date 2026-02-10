@@ -1,150 +1,170 @@
 import { z } from 'zod';
 
-// --- ENUMS ---
-export enum PDIAnswer {
-    APRESENTA = "APRESENTA",
-    COM_AJUDA = "COM_AJUDA",
-    NAO_APRESENTA = "NAO_APRESENTA",
-    NAO_OBSERVADO = "NAO_OBSERVADO"
-}
+// Enumeração padrão para os checklists de habilidades
+export const SkillStatus = z.enum(["APRESENTA", "COM_AJUDA", "NAO_APRESENTA", "NAO_OBSERVADO"]);
 
-// Zod Enum for Validation
-const AnswerEnum = z.nativeEnum(PDIAnswer);
+export const PdiSchema = z.object({
+    // Seções I a V: Dados Cadastrais e Clínicos
+    institutional: z.object({
+        school_name: z.string().optional(),
+        school_inep: z.string().optional(),
+        sre: z.string().optional(),
+        city: z.string().optional()
+    }).optional(),
 
-// --- SCHEMAS ---
+    student_data: z.object({
+        name: z.string().min(1, "Nome é obrigatório"),
+        dob: z.string().optional(), // 'YYYY-MM-DD'
+        age: z.number().optional(),
+        school_year: z.string().optional(),
+        class_name: z.string().optional(),
+        shift: z.string().optional(),
+        teacher_name: z.string().optional()
+    }),
 
-// SEÇÃO VI - ASPECTOS PSICOMOTORES
-const PsychomotorSchema = z.object({
-    esquema_corporal: AnswerEnum,
-    consciencia_corporal: AnswerEnum,
-    expressao_corporal: AnswerEnum,
-    imagem_corporal: AnswerEnum,
-    tonus_hipertonico: AnswerEnum,
-    tonus_hipotonico: AnswerEnum,
-    coordenacao_motora_ampla: AnswerEnum,
-    coordenacao_motora_fina: AnswerEnum,
-    equilibrio_dinamico: AnswerEnum,
-    equilibrio_estatico: AnswerEnum,
-    lateralidade: AnswerEnum,
-    percepcao_gustativa: AnswerEnum,
-    percepcao_olfativa: AnswerEnum,
-    percepcao_tatil: AnswerEnum,
-    percepcao_visual: AnswerEnum,
-    postura: AnswerEnum
+    clinical_health: z.object({
+        diagnosis_cid: z.string().optional(),
+        medical_updates: z.string().optional(),
+        medication: z.string().optional(),
+        therapies: z.string().optional(), // Fono, Psico, etc.
+        functional_limitations: z.string().optional()
+    }).optional(),
+
+    // Seção VI - Aspectos Psicomotores
+    psychomotor: z.object({
+        body_schema: SkillStatus.optional(),             // Esquema corporal
+        body_awareness: SkillStatus.optional(),          // Consciência corporal
+        body_expression: SkillStatus.optional(),         // Expressão corporal
+        body_image: SkillStatus.optional(),              // Imagem corporal
+        hypertonic_tone: SkillStatus.optional(),         // Tônus Hipertônico
+        hypotonic_tone: SkillStatus.optional(),          // Tônus Hipotônico
+        gross_motor_coordination: SkillStatus.optional(),// Coordenação motora ampla
+        fine_motor_coordination: SkillStatus.optional(), // Coordenação motora fina
+        dynamic_balance: SkillStatus.optional(),         // Equilíbrio dinâmico
+        static_balance: SkillStatus.optional(),          // Equilíbrio estático
+        laterality: SkillStatus.optional(),              // Lateralidade
+        gustatory_perception: SkillStatus.optional(),    // Percepção gustativa
+        olfactory_perception: SkillStatus.optional(),    // Percepção olfativa
+        tactile_perception: SkillStatus.optional(),      // Percepção tátil
+        visual_perception: SkillStatus.optional(),       // Percepção visual
+        posture: SkillStatus.optional()                  // Postura
+    }).optional(),
+
+    // Seção VII - Aspectos Pedagógicos/Cognitivos
+    cognitive: z.object({
+        // Memória
+        memory_short_term: SkillStatus.optional(),       // Curto Prazo
+        memory_long_term: SkillStatus.optional(),        // Longo Prazo
+        memory_auditory: SkillStatus.optional(),         // Auditiva
+        memory_visual: SkillStatus.optional(),           // Visual
+
+        // Percepção
+        perception_auditory: SkillStatus.optional(),     // Auditiva
+        perception_body: SkillStatus.optional(),         // Corporal
+        perception_spatial: SkillStatus.optional(),      // Espacial
+        perception_tactile: SkillStatus.optional(),      // Tátil
+        perception_temporal: SkillStatus.optional(),     // Temporal
+        perception_visual_cognitive: SkillStatus.optional(), // Visual (Cognitiva)
+
+        // Atenção
+        attention_alert: SkillStatus.optional(),         // Alerta
+        attention_alternating: SkillStatus.optional(),   // Alternada
+        attention_selective: SkillStatus.optional(),     // Seletiva
+        attention_sustained: SkillStatus.optional(),     // Sustentada
+
+        // Raciocínio Lógico
+        logic_abductive: SkillStatus.optional(),         // Abdutivo
+        logic_deductive: SkillStatus.optional(),         // Dedutivo
+        logic_intuitive: SkillStatus.optional(),         // Intuitivo
+
+        // Pensamento
+        thought_analytical: SkillStatus.optional(),      // Analítico
+        thought_creative: SkillStatus.optional(),        // Criativo
+        thought_critical: SkillStatus.optional(),        // Crítico
+        thought_synthesis: SkillStatus.optional(),       // Síntese
+        thought_questioning: SkillStatus.optional(),     // Questionador
+        thought_systemic: SkillStatus.optional(),        // Sistêmico
+
+        // Compreensão de Ordens
+        orders_simple: SkillStatus.optional(),           // Simples
+        orders_complex: SkillStatus.optional()           // Complexas
+    }).optional(),
+
+    // Seção VIII - Comunicação
+    communication: z.object({
+        verbal_expression: SkillStatus.optional(),
+        non_verbal_expression: SkillStatus.optional(),
+        understanding_verbal: SkillStatus.optional(),
+        interaction_intent: SkillStatus.optional()
+    }).optional(),
+
+    // Seção X - Avaliação do Professor
+    teacher_evaluations: z.array(z.object({
+        bimester: z.enum(["1", "2", "3", "4"]),
+        subject: z.string(), // Língua Portuguesa, Matemática, etc.
+        autonomy_level: z.enum([
+            "MUITO_SUPORTE",
+            "POUCO_SUPORTE",
+            "ALTA_COMPREENSAO",
+            "POUCA_COMPREENSAO"
+        ]),
+        diagnosis: z.string() // Parecer descritivo
+    })).optional() // Optional at start
 });
 
-// SEÇÃO VII - ASPECTOS PEDAGÓGICOS/COGNITIVOS
-const CognitiveSchema = z.object({
-    memoria_curto_prazo: AnswerEnum,
-    memoria_longo_prazo: AnswerEnum,
-    memoria_auditiva: AnswerEnum,
-    memoria_visual: AnswerEnum,
-    percepcao_auditiva: AnswerEnum,
-    percepcao_corporal: AnswerEnum,
-    percepcao_espacial: AnswerEnum,
-    percepcao_tatil_cognitiva: AnswerEnum, // Renamed to avoid collision if flattened, though safe in object
-    percepcao_temporal: AnswerEnum,
-    percepcao_visual_cognitiva: AnswerEnum,
-    atencao_alerta: AnswerEnum,
-    atencao_alternada: AnswerEnum,
-    atencao_seletiva: AnswerEnum,
-    atencao_sustentada: AnswerEnum,
-    raciocinio_logico_abdutivo: AnswerEnum,
-    raciocinio_logico_dedutivo: AnswerEnum,
-    raciocinio_logico_intuitivo: AnswerEnum,
-    pensamento_analitico: AnswerEnum,
-    pensamento_criativo: AnswerEnum,
-    pensamento_critico: AnswerEnum,
-    pensamento_sintese: AnswerEnum,
-    pensamento_questionador: AnswerEnum,
-    pensamento_sistemico: AnswerEnum,
-    compreende_ordens_simples: AnswerEnum,
-    compreende_ordens_complexas: AnswerEnum,
-    relata_situacoes: AnswerEnum
-});
+export const PDI_SCHEMA = PdiSchema; // Alias for backward compatibility
 
-// SECTION X - TEACHER EVALUATION (AVALIAÇÃO BIMESTRAL/TRIMESTRAL)
-export enum AutonomyLevel {
-    MUITO_SUPORTE = "MUITO_SUPORTE", // "Necessita de muito suporte"
-    POUCO_SUPORTE = "POUCO_SUPORTE", // "Necessita de pouco suporte"
-    AUTONOMO = "AUTONOMO",           // "Autônomo"
-    NAO_OBSERVADO = "NAO_OBSERVADO"
-}
+export type PDIProfileData = z.infer<typeof PdiSchema>;
+// Export as Value (for PDIAnswer.APRESENTA usage)
+export const PDIAnswer = SkillStatus.enum;
 
-export enum ComprehensionLevel {
-    ALTA = "ALTA",
-    MEDIA = "MEDIA",
-    BAIXA = "BAIXA",
-    NENHUMA = "NENHUMA"
-}
+// Export as Type (for variable typing)
+export type PDIAnswer = z.infer<typeof SkillStatus>;
 
-export const TeacherEvaluationSchema = z.object({
-    subject: z.string().min(1, "Matéria obrigatória"),
-    period: z.number().min(1).max(3), // 1, 2, 3 (Trimesters)
-    autonomy_level: z.nativeEnum(AutonomyLevel),
-    comprehension_level: z.nativeEnum(ComprehensionLevel),
-    pedagogical_diagnosis: z.string().min(10, "Descreva o diagnóstico com pelo menos 10 caracteres")
-});
-
-export type pdiTeacherEvaluationForm = z.infer<typeof TeacherEvaluationSchema>;
-
-
-// ROOT SCHEMA
-export const PDI_SCHEMA = z.object({
-    psychomotor: PsychomotorSchema.optional(),
-    cognitive: CognitiveSchema.optional()
-    // Other sections to be added later
-});
-
-export type PDIProfileData = z.infer<typeof PDI_SCHEMA>;
-
-
-// --- DICTIONARY (Label Definitions) ---
 export const PDI_QUESTIONS = {
     psychomotor: {
-        esquema_corporal: "Esquema corporal - Conhece as partes e funções do corpo? Nomeia as partes do corpo?",
-        consciencia_corporal: "Consciência corporal - Sabe do uso específico de cada membro do corpo para a realização de atividades...",
-        expressao_corporal: "Expressão corporal - Realizar gestos expressivos (susto, grito, tristeza, raiva)?",
-        imagem_corporal: "Imagem corporal - Relação do próprio corpo com o espaço e as pessoas.",
-        tonus_hipertonico: "Tônus Hipertônico - Apresenta rigidez muscular elevada?",
-        tonus_hipotonico: "Tônus Hipotônico - Apresenta flacidez muscular elevada?",
-        coordenacao_motora_ampla: "Coordenação motora ampla - Controla os movimentos amplos do corpo?",
-        coordenacao_motora_fina: "Coordenação motora fina - Controla os pequenos músculos para exercícios refinados?",
-        equilibrio_dinamico: "Equilíbrio dinâmico - Ex.: andar na ponta dos pés, correr com copo cheio...",
-        equilibrio_estatico: "Equilíbrio estático - Sustenta-se em diferentes situações?",
-        lateralidade: "Lateralidade - Tem capacidade motora de percepção integrada dos dois lados...",
-        percepcao_gustativa: "Percepção gustativa - Tem a capacidade de distinguir sabores?",
-        percepcao_olfativa: "Percepção olfativa - Tem a capacidade de distinguir odores?",
-        percepcao_tatil: "Percepção tátil - Sente as variações de pressão, temperatura...",
-        percepcao_visual: "Percepção visual - Identifica formas geométricas, junta objetos iguais...",
-        postura: "Postura - Posição ou atitude do corpo ligada ao movimento."
+        body_schema: "Esquema Corporal",
+        body_awareness: "Consciência Corporal",
+        body_expression: "Expressão Corporal",
+        body_image: "Imagem Corporal",
+        hypertonic_tone: "Tônus Hipertônico",
+        hypotonic_tone: "Tônus Hipotônico",
+        gross_motor_coordination: "Coordenação Motora Ampla",
+        fine_motor_coordination: "Coordenação Motora Fina",
+        dynamic_balance: "Equilíbrio Dinâmico",
+        static_balance: "Equilíbrio Estático",
+        laterality: "Lateralidade",
+        gustatory_perception: "Percepção Gustativa",
+        olfactory_perception: "Percepção Olfativa",
+        tactile_perception: "Percepção Tátil",
+        visual_perception: "Percepção Visual",
+        posture: "Postura"
     },
     cognitive: {
-        memoria_curto_prazo: "Memória de Curto Prazo - lembra-se de acontecimentos cotidianos...",
-        memoria_longo_prazo: "Memória de Longo Prazo - lembra-se de fatos ocorridos ao longo da vida...",
-        memoria_auditiva: "Memória Auditiva - memoriza o que escuta?",
-        memoria_visual: "Memória Visual - memoriza o que vê?",
-        percepcao_auditiva: "Percepção Auditiva - escuta e interpreta os estímulos sonoros?",
-        percepcao_corporal: "Percepção Corporal - tem consciência do próprio corpo?",
-        percepcao_espacial: "Percepção Espacial - compreende as dimensões do entorno e dos objetos?",
-        percepcao_tatil_cognitiva: "Percepção Tátil - reconhece formas, texturas, tamanhos pelo tato?",
-        percepcao_temporal: "Percepção Temporal - Tem a capacidade de situar-se em função da sucessão...",
-        percepcao_visual_cognitiva: "Percepção Visual - enxerga e interpreta os estímulos visuais...",
-        atencao_alerta: "Atenção Alerta - responde imediatamente a um estímulo apresentado?",
-        atencao_alternada: "Atenção Alternada - realiza atividade proposta e conversa ao mesmo tempo?",
-        atencao_seletiva: "Atenção Seletiva - concentra-se em uma atividade ignorando os demais...",
-        atencao_sustentada: "Atenção Sustentada - concentra-se por um longo período de tempo...",
-        raciocinio_logico_abdutivo: "Raciocínio Lógico Abdutivo - busca novas ideias e conhecimentos...",
-        raciocinio_logico_dedutivo: "Raciocínio Lógico Dedutivo - parte de um fato geral para um particular...",
-        raciocinio_logico_intuitivo: "Raciocínio Lógico Intuitivo - parte de um fato específico para o geral...",
-        pensamento_analitico: "Pensamento Analítico - separa o todo em partes com as mesmas características?",
-        pensamento_criativo: "Pensamento Criativo - baseado em seus conhecimentos cria ou modifica algo...",
-        pensamento_critico: "Pensamento Crítico - examina, analisa ou avalia?",
-        pensamento_sintese: "Pensamento de Síntese - sintetiza, resume histórias ou fatos...",
-        pensamento_questionador: "Pensamento Questionador - propõe perguntas e busca respondê-las?",
-        pensamento_sistemico: "Pensamento Sistêmico - considera vários elementos e os relaciona?",
-        compreende_ordens_simples: "Compreende Ordens Simples? Ex.: Sentar, levantar, sair, entrar.",
-        compreende_ordens_complexas: "Compreende Ordens Complexas? Ex.: Transmitir um recado à alguém.",
-        relata_situacoes: "Relata situações vividas por ele?"
+        memory_short_term: "Memória de Curto Prazo",
+        memory_long_term: "Memória de Longo Prazo",
+        memory_auditory: "Memória Auditiva",
+        memory_visual: "Memória Visual",
+        perception_auditory: "Percepção Auditiva",
+        perception_body: "Percepção Corporal",
+        perception_spatial: "Percepção Espacial",
+        perception_tactile: "Percepção Tátil",
+        perception_temporal: "Percepção Temporal",
+        perception_visual_cognitive: "Percepção Visual (Cognitiva)",
+        attention_alert: "Atenção (Estado de Alerta)",
+        attention_alternating: "Atenção Alternada",
+        attention_selective: "Atenção Seletiva",
+        attention_sustained: "Atenção Sustentada",
+        logic_abductive: "Raciocínio Abdutivo",
+        logic_deductive: "Raciocínio Dedutivo",
+        logic_intuitive: "Raciocínio Intuitivo",
+        thought_analytical: "Pensamento Analítico",
+        thought_creative: "Pensamento Criativo",
+        thought_critical: "Pensamento Crítico",
+        thought_synthesis: "Capacidade de Síntese",
+        thought_questioning: "Postura Questionadora",
+        thought_systemic: "Pensamento Sistêmico",
+        orders_simple: "Compreensão de Ordens Simples",
+        orders_complex: "Compreensão de Ordens Complexas"
     }
 };

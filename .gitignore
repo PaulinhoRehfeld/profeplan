@@ -30,3 +30,8 @@ dist-ssr
 # PDF documentation
 public/knowledge_base/**/*.pdf
 android/app/src/main/assets/public/knowledge_base/**/*.pdf
+# Archive and legacy files (not versioned)
+scripts/archive/
+scripts/js_legacy/*.bkp
+scripts/js_legacy/*.old
+

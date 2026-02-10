@@ -1,0 +1,27 @@
+{
+  "titulo": "Título Principal",
+  "disciplina": "Matemática",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "Título Principal",
+      "texto_limpo": "Este é o início do conteúdo real.",
+      "tags": [
+        "início",
+        "conteúdo"
+      ]
+    },
+    {
+      "pagina": 5,
+      "capitulo": "CONCLUSÃO",
+      "texto_limpo": "Conteúdo final.",
+      "tags": [
+        "conclusão",
+        "final"
+      ]
+    }
+  ],
+  "meta_arquivo": "test_12025_MATEMATICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:29:30"
+}

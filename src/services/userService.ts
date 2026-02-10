@@ -6,75 +6,95 @@ const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for
 
 // Helper to recover from Session ID mismatch (Ghost ID)
 export const getProfileByEmail = async (email: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('email', email);
+        .eq('email', email)
+        .order('created_at', { ascending: false });
 
-    // Handle duplicates gracefully by taking the first match
-    // Filters out potential nulls if any (though select * shouldn't return nulls in array)
+    if (error) {
+        console.error('[userService] Error fetching profile by email:', error);
+        return { data: null };
+    }
+
+    // Handle duplicates gracefully by taking the most recent match
     const profile = data && data.length > 0 ? data[0] : null;
 
     return { data: profile };
 };
 
 export const getUserProfile = async (userId: string, email?: string): Promise<UserProfile | null> => {
-    // 1. Try fetching by ID first
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
+    try {
+        // 1. Try fetching by ID first
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .maybeSingle();
 
-    // 2. Fallback: If ID not found/mismatched but we have email, try email
-    if ((error || !data) && email) {
-        console.warn(`[userService] Profile not found for ID ${userId}. Attempting fallback by email: ${email}`);
-        const { data: recovered } = await getProfileByEmail(email);
-        if (recovered) {
-            console.log('[userService] Profile recovered by email!');
-            // We return the recovered profile, even if IDs mismatch.
-            // This effectively "heals" the session data access.
-            return recovered as UserProfile;
+        // 2. Fallback: If ID not found/mismatched but we have email, try email
+        if ((error || !data) && email) {
+            console.warn(`[userService] Profile not found for ID ${userId}. Attempting fallback by email: ${email}`);
+            const { data: recoveredProfile } = await getProfileByEmail(email);
+            if (recoveredProfile) {
+                console.log('[userService] Profile recovered by email!');
+                return recoveredProfile as UserProfile;
+            }
         }
-    }
 
-    if (error) {
-        console.error("Error fetching user profile:", error);
+        if (error || !data) {
+            console.error("[userService] ❌ Error fetching profile:", error);
+            if (error?.code === '42501' || (error as any)?.status === 403) {
+                console.error("[userService] ⛔ RLS PERMISSION DENIED. Check Supabase Policies for 'profiles' table.");
+            }
+            return null;
+        }
+
+        let schoolName = undefined;
+        let inepCode = undefined;
+        if (data?.school_id) {
+            try {
+                const { data: schoolData } = await supabase
+                    .from('schools')
+                    .select('name, inep_code')
+                    .eq('id', (data.school_id as string).trim())
+                    .maybeSingle();
+                if (schoolData) {
+                    schoolName = schoolData.name;
+                    inepCode = schoolData.inep_code;
+                }
+            } catch (schoolErr) {
+                console.warn("[userService] Optional school fetch failed:", schoolErr);
+            }
+        }
+
+        // Transform and normalize
+        const profileData: UserProfile = {
+            ...data,
+            full_name: data.full_name || data.userName || '', // Ensure name mapping
+            school_name: schoolName || data.school_name,
+            inep_code: inepCode
+        };
+
+        console.log("[userService] Profile Loaded:", profileData.full_name);
+        // schools join removed
+        // delete profileData.schools;
+
+        // BETA OVERRIDE: Grant Gold + Unlimited to everyone during testing
+        if (IS_BETA_TESTING && data) {
+            return {
+                ...profileData,
+                tier: 'GOLD',
+                is_unlimited: true,
+                credits: 9999 // Visual sugar
+            };
+        }
+
+        return profileData as UserProfile;
+    } catch (err) {
+        console.error("[userService] Fatal Exception in getUserProfile:", err);
         return null;
     }
-
-    // Attempt to fetch school name separately if school_id exists
-    let schoolName = undefined;
-    if (data.school_id) {
-        const { data: schoolData } = await supabase
-            .from('schools')
-            .select('name')
-            .eq('id', data.school_id)
-            .single();
-        if (schoolData) {
-            schoolName = schoolData.name;
-        }
-    }
-
-    // Transform result
-    const profileData = {
-        ...data,
-        school_name: schoolName || data.school_name // Use fetched name or existing field
-    };
-    // schools join removed
-    // delete profileData.schools;
-
-    // BETA OVERRIDE: Grant Gold + Unlimited to everyone during testing
-    if (IS_BETA_TESTING && data) {
-        return {
-            ...profileData,
-            tier: 'GOLD',
-            is_unlimited: true,
-            credits: 9999 // Visual sugar
-        };
-    }
-
-    return profileData as UserProfile;
 };
 
 export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolean; message?: string }> => {
@@ -105,16 +125,23 @@ export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolea
 /**
  * Deducts 1 credit from the user (if not unlimited).
  */
-export const incrementUserUsage = async (userId: string): Promise<void> => {
-    // We actually DECREMENT credits now, as per the new "Credits Remaining" logic
-    // Using RPC 'deduct_credit' logic (assuming it exists or using update)
-    // If RPC doesn't exist, we can use simple update for now, but safer to use RPC.
-    // Given previous `increment_usage` existed, we should probably update that RPC or simple update.
+export const incrementUserUsage = async (userId: string, taskType: string = 'unknown'): Promise<void> => {
+    // Only deduct credits if it's an AI or Content Generation task
+    const paidTasks = ['generate', 'document', 'chat', 'term_plan', 'aula', 'simulation'];
+    if (!paidTasks.includes(taskType)) {
+        console.log(`[userService] Skipping credit deduction for task type: ${taskType}`);
+        return;
+    }
 
-    // Check if unlimited first to avoid unnecessary DB write? 
-    // Ideally the RPC handles it, but client-side check saves a call.
     const profile = await getUserProfile(userId);
+    // Safety check: skip if unlimited or no profile
     if (!profile || profile.is_unlimited) return;
+
+    // Critical: Do NOT deduct if profile says 0 or negative
+    if (profile.credits <= 0) {
+        console.warn(`[userService] Attempted to deduct from empty balance for user ${userId}. Task: ${taskType}`);
+        return;
+    }
 
     const { error } = await supabase
         .from('profiles')
@@ -144,6 +171,81 @@ export const getAllUsers = async () => {
         .order('email');
 };
 
+
+/**
+ * Updates a user profile and deterministically links to a school via INEP code.
+ * Follows the government unique ID logic (MASP for Teachers, INEP for Schools).
+ */
+export const updateUserProfile = async (
+    userId: string,
+    profileData: {
+        userName?: string;
+        institutionalEmail?: string;
+        masp?: string;
+        city?: string;
+        inep_code?: string;
+        [key: string]: any;
+    }
+): Promise<{ success: boolean; message?: string; error?: string }> => {
+    try {
+        // 1. Prepare updates for the profile table
+        const updates: any = {
+            full_name: profileData.userName?.trim(),
+            email: profileData.institutionalEmail?.trim().toLowerCase(),
+            masp: profileData.masp?.trim(),
+            city: profileData.city?.trim(),
+            // Pedagogical settings
+            favorite_methodology: profileData.favoriteMethodology,
+            teaching_style: profileData.teachingStyle,
+            assessment_focus: profileData.assessmentFocus,
+            tone_of_voice: profileData.toneOfVoice,
+            // Document personalization
+            header_text: profileData.headerText,
+            footer_text: profileData.footerText,
+            logo_base64: profileData.logoBase64
+        };
+
+        let message = undefined;
+
+        // 2. School Linking is now handled via teacher_schools table
+        // DO NOT update profiles.school_id here - this is legacy behavior
+        // The ProfileTab calls reconcileTeacherByInep which creates proper links
+        if (profileData.inep_code) {
+            const cleanInep = profileData.inep_code.trim();
+            console.log('[userService] ℹ️ INEP code provided:', cleanInep);
+            console.log('[userService] ℹ️ School linking is handled by teacherSchoolService, not here.');
+            // NOTE: We don't update school_id anymore to prevent overwriting
+            // The teacher_schools table is the source of truth for multi-school support
+        }
+
+        // 3. Update the profiles table
+        console.log("[userService] Sending update to Supabase for user:", userId, updates);
+
+        const { data: updateData, error: updateError, count } = await supabase
+            .from('profiles')
+            .update(updates)
+            .eq('id', userId);
+
+        if (updateError) {
+            console.error("[userService] Supabase Update Error:", updateError);
+            // If it's a column missing error, it's a critical hint
+            if (updateError.message.includes('column') && updateError.message.includes('does not exist')) {
+                return {
+                    success: false,
+                    error: `Erro de Estrutura: Algumas colunas de configuração ainda não existem no seu banco de dados. Por favor, execute o script SQL de migração. (${updateError.message})`
+                };
+            }
+            return { success: false, error: updateError.message };
+        }
+
+        console.log("[userService] Update successful. Rows affected:", count);
+        return { success: true, message };
+    } catch (err: any) {
+        console.error("[userService] Fatal error in updateUserProfile:", err);
+        return { success: false, error: err.message || "Erro fatal ao conectar com o banco de dados" };
+    }
+};
+
 export const updateUserProfileAdmin = async (targetUserId: string, updates: Partial<UserProfile>) => {
     const { data, error } = await supabase
         .from('profiles')
@@ -168,7 +270,7 @@ export const hasFeaturePattern = (userFeatures: string[] | null | undefined, req
 
 export const registerPhone = async (userId: string, phone: string) => {
     // 1. Check if user already has phone (to avoid double reward abuse)
-    const { data: profile } = await supabase.from('profiles').select('phone, credits').eq('id', userId).single();
+    const { data: profile } = await supabase.from('profiles').select('phone, credits').eq('id', userId).maybeSingle();
     if (profile?.phone) return { success: false, message: 'Telefone já cadastrado anteriormente.' };
 
     // 2. Update phone and Add 10 credits
@@ -191,7 +293,7 @@ export const addReferral = async (referrerId: string, refereeEmail: string) => {
         .select('*')
         .eq('referrer_id', referrerId)
         .eq('referee_email', refereeEmail)
-        .single();
+        .maybeSingle();
 
     if (existing) return { success: false, message: 'Você já indicou esta pessoa.' };
 
@@ -214,7 +316,7 @@ export const checkAndRewardReferrer = async (newUserEmail: string) => {
         .select('*')
         .eq('referee_email', newUserEmail)
         .eq('status', 'pending')
-        .single();
+        .maybeSingle();
 
     if (!referral) return; // No referral found
 
@@ -227,7 +329,7 @@ export const checkAndRewardReferrer = async (newUserEmail: string) => {
         .from('profiles')
         .select('credits')
         .eq('id', referral.referrer_id)
-        .single();
+        .maybeSingle();
 
     if (referrerProfile) {
         await supabase
@@ -238,7 +340,7 @@ export const checkAndRewardReferrer = async (newUserEmail: string) => {
 };
 
 export const addUserCredits = async (userId: string, amount: number) => {
-    const { data: profile } = await supabase.from('profiles').select('credits').eq('id', userId).single();
+    const { data: profile } = await supabase.from('profiles').select('credits').eq('id', userId).maybeSingle();
     if (!profile) return { error: { message: 'Usuário não encontrado' } };
 
     const newCredits = (profile.credits || 0) + amount;

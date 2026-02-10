@@ -14,7 +14,7 @@ const AssessmentSetup: React.FC<AssessmentSetupProps> = ({ userId, onAssessmentG
     // Basic Form State
     const [classes, setClasses] = useState<any[]>([]);
     const [selectedClassId, setSelectedClassId] = useState('');
-    const [academicPeriod, setAcademicPeriod] = useState('1º Bimestre');
+    const [academicPeriod, setAcademicPeriod] = useState('1º Trimestre');
     const [additionalTopics, setAdditionalTopics] = useState('');
     const [difficulty, setDifficulty] = useState<'Fácil' | 'Médio' | 'Difícil'>('Médio');
     const [objectiveCount, setObjectiveCount] = useState(5);
@@ -255,13 +255,12 @@ const AssessmentSetup: React.FC<AssessmentSetupProps> = ({ userId, onAssessmentG
                             onChange={(e) => setAcademicPeriod(e.target.value)}
                             className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold outline-none focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all appearance-none"
                         >
-                            <option value="1º Bimestre">1º Bimestre</option>
-                            <option value="2º Bimestre">2º Bimestre</option>
-                            <option value="3º Bimestre">3º Bimestre</option>
-                            <option value="4º Bimestre">4º Bimestre</option>
-                            <option value="1º Trimestre">1º Trimestre</option>
-                            <option value="2º Trimestre">2º Trimestre</option>
-                            <option value="3º Trimestre">3º Trimestre</option>
+                            <option value="1º Trimestre (P1)">1º Trimestre (Prova 1)</option>
+                            <option value="1º Trimestre (P2)">1º Trimestre (Prova 2)</option>
+                            <option value="2º Trimestre (P1)">2º Trimestre (Prova 1)</option>
+                            <option value="2º Trimestre (P2)">2º Trimestre (Prova 2)</option>
+                            <option value="3º Trimestre (P1)">3º Trimestre (Prova 1)</option>
+                            <option value="3º Trimestre (P2)">3º Trimestre (Prova 2)</option>
                         </select>
                     </div>
                 </div>

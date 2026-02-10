@@ -237,6 +237,31 @@ const LandingPage: React.FC = () => {
                         <p className="text-xl md:text-2xl text-slate-600 font-semibold">
                             Somos o seu Assistente Pedagógico Pessoal.
                         </p>
+
+                        {/* RLM Explainer Block */}
+                        <div className="mt-10 p-6 md:p-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl max-w-4xl mx-auto text-left shadow-sm">
+                            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                                <div className="hidden md:flex shrink-0 bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                                    <Brain size={32} className="text-blue-600" />
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold uppercase rounded-full">
+                                        <Sparkles size={12} />
+                                        Tecnologia Exclusiva
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900">
+                                        Por que somos diferentes? Utilizamos <span className="text-blue-600">RLM</span> (Recursive Language Models)
+                                    </h3>
+                                    <p className="text-slate-600 leading-relaxed text-base md:text-lg">
+                                        Enquanto IAs comuns (LLMs) apenas "completam frases" — e muitas vezes inventam fatos —, o ProfePlan <strong>planeja, audita e corrige</strong> seu próprio trabalho antes de entregar a você.
+                                        <br className="hidden md:block" />
+                                        <span className="block mt-2 font-medium text-slate-800">
+                                            É a diferença entre um <em>estagiário criativo</em> e um <strong>Coordenador Pedagógico rigoroso</strong>.
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Cards (3 colunas) */}
@@ -491,7 +516,7 @@ const LandingPage: React.FC = () => {
                     {/* Copyright */}
                     <div className="text-center pt-8 border-t border-slate-700">
                         <p className="text-slate-500 text-sm">
-                            © 2025 ProfePlan - Engenharia Pedagógica. Todos os direitos reservados. v3.8
+                            © 2025 ProfePlan - Engenharia Pedagógica. Todos os direitos reservados. v3.9.0
                         </p>
                     </div>
                 </div>

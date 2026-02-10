@@ -17,13 +17,13 @@ export const hybridSearchProfeplan = async ({
     limit = 10,
     matchThreshold = 0.5
 }: HybridSearchParams) => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
     if (!apiKey) {
         throw new Error("API Key missing");
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
 
     try {
         // 1. Transformar a busca do professor em vetor
@@ -83,16 +83,18 @@ export const searchCurriculum = async (
     limit: number = 5,
     matchThreshold: number = 0.5
 ) => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
     if (!apiKey) throw new Error("API Key missing");
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
 
     try {
         // 1. Embedding (Fast)
         const result = await model.embedContent(queryText);
-        const embedding = result.embedding;
+        // Force 768 dimensions (Matryoshka slicing) to match DB
+        const fullEmbedding = result.embedding.values;
+        const embedding = { values: fullEmbedding.slice(0, 768) };
 
         // 2. RPC Call with Timeout (Prevents "2 minute hang")
         const rpcPromise = supabase.rpc('search_curriculum_rag', {
@@ -137,5 +139,39 @@ export const getDeterministicCurriculum = async (
     } catch (error) {
         console.error("Erro ao buscar currículo completo:", error);
         return null;
+    }
+};
+
+export const searchPnldBookContent = async (
+    queryText: string,
+    filters?: { livro_titulo?: string; disciplina?: string },
+    limit: number = 5,
+    matchThreshold: number = 0.5
+) => {
+    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
+    if (!apiKey) throw new Error("API Key missing");
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
+
+    try {
+        const result = await model.embedContent(queryText);
+        // Force 768 dimensions (Matryoshka slicing) to match DB
+        const fullEmbedding = result.embedding.values;
+        const embedding = fullEmbedding.slice(0, 768);
+
+        const { data, error } = await supabase.rpc('search_pnld_content', {
+            query_embedding: embedding.values,
+            match_threshold: matchThreshold,
+            match_count: limit,
+            filter_livro_titulo: filters?.livro_titulo || null,
+            filter_disciplina: filters?.disciplina || null
+        });
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error("Erro na busca de conteúdo PNLD (Projeto Codex):", error);
+        return [];
     }
 };

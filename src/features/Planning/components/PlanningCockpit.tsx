@@ -1,10 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock, Menu, X } from 'lucide-react';
+import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock, Menu, X, Accessibility } from 'lucide-react';
+import { PdiAdaptationWidget } from './PdiAdaptationWidget';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
 import { LowCreditModal } from '../../../components/LowCreditModal';
-import { getUserProfile, UserProfile } from '../../../services/userService';
+import { getUserProfile } from '../../../services/userService';
+import { UserProfile, PnldBook } from '../../../types';
+import { PnldService } from '../../../services/PnldService';
 
 interface PlanningCockpitProps {
     termPlans: TermPlan[];
@@ -23,7 +27,7 @@ interface PlanningCockpitProps {
     setInput: (val: string | ((prev: string) => string)) => void;
     handleSendMessage: (e: React.FormEvent, overrideInput?: string) => void;
     messagesEndRef: React.RefObject<HTMLDivElement>;
-    userId: string; // NEW Prop
+    userId: string;
 }
 
 export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
@@ -35,13 +39,13 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     const [observations, setObservations] = useState('');
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [showLowCreditModal, setShowLowCreditModal] = useState(false);
-    const hasShownWarning = useRef<number | null>(null); // Track last level shown to avoid spam
+    const hasShownWarning = useRef<number | null>(null);
 
     useEffect(() => {
         refreshProfile();
     }, [userId]);
 
-    // Fix: Auto-collapse mobile menu when AI starts thinking (Generating content)
+    // Fix: Auto-collapse mobile menu when AI starts thinking
     useEffect(() => {
         if (isThinking) {
             setIsMobileMenuOpen(false);
@@ -58,13 +62,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     };
 
     const checkCreditWarning = (credits: number) => {
-        // Trigger on 4, 3, 2, 1
         if (credits <= 4 && credits > 0) {
-            // Only show if we haven't shown for this level or lower in this session
-            // actually just show once per session or per credit drop?
-            // Requirement says "repeat with 3, 2 and 1".
-            // So if current is 3, and last shown was 4 (or null), show.
-            // If last shown was 3, don't show.
             if (hasShownWarning.current !== credits) {
                 setShowLowCreditModal(true);
                 hasShownWarning.current = credits;
@@ -91,6 +89,18 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     // Mobile Menu State
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
 
+    // PDI Integration State
+    const [pdiStudents, setPdiStudents] = useState<any[]>([]);
+    const [showPdi, setShowPdi] = useState(false);
+
+    useEffect(() => {
+        if (userId) loadPdiStudents();
+    }, [userId]);
+
+    const loadPdiStudents = async () => {
+        // Fetch students with PDIs
+    };
+
     const handleActionClick = (action: 'plan' | 'material' | 'enem') => {
         if (!selectedLesson) return alert('Selecione uma aula primeiro!');
 
@@ -106,33 +116,39 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
             return;
         }
 
-        // Auto-close menu on mobile
         setIsMobileMenuOpen(false);
-
-        // Reset Options if switching to plan
         setShowMaterialOptions(false);
         setShowAssessmentOptions(false);
         setMaterialType(null);
 
+        const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
+        const bookTitle = selectedPlan?.pnld_book_id;
+
         let prompt = '';
         if (action === 'plan') prompt = `[AÇÃO: PLANO DE AULA DETALHADO]\nCrie um plano de aula completo para a Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição Original: ${selectedLesson.description}`;
 
-        if (observations.trim()) {
-            prompt += `\n\n[OBSERVAÇÕES DO PROFESSOR]:\n${observations}`;
+        if (bookTitle) {
+            prompt += `\n\n[LIVRO PNLD SELECIONADO]: ${bookTitle}`;
         }
 
         if (observations.trim()) {
             prompt += `\n\n[OBSERVAÇÕES DO PROFESSOR]:\n${observations}`;
         }
 
-        // Pass prompt directly, bypassing state delay
         triggerSend(prompt);
     };
 
     const handleAssessmentGenerate = () => {
         if (!selectedLesson) return;
 
+        const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
+        const bookTitle = selectedPlan?.pnld_book_id;
+
         let prompt = `[AÇÃO: LISTA DE EXERCÍCIOS]\n[TYPE: EXERCISES]\nCrie uma lista de exercícios sobre o tema: ${selectedLesson.title}.`;
+
+        if (bookTitle) {
+            prompt += `\n\n[LIVRO PNLD SELECIONADO]: ${bookTitle}`;
+        }
 
         prompt += `\n\n[CONFIGURAÇÃO DA PROVA]:
 - Questões Estilo ENEM (Banco de Dados): ${enemCount}
@@ -144,21 +160,18 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
             prompt += `\n\n[OBSERVAÇÕES ADICIONAIS]:\n${observations}`;
         }
 
-        if (observations.trim()) {
-            prompt += `\n\n[OBSERVAÇÕES ADICIONAIS]:\n${observations}`;
-        }
-
         triggerSend(prompt);
-
-        // Reset UI
         setShowAssessmentOptions(false);
         setObservations('');
-        setIsMobileMenuOpen(false); // Fix: Collapse menu to show generation
+        setIsMobileMenuOpen(false);
     };
 
     const handleMaterialGenerate = () => {
         if (!selectedLesson) return;
         if (!materialType) return alert('Selecione o tipo de material!');
+
+        const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
+        const bookTitle = selectedPlan?.pnld_book_id;
 
         let typeLabel = '';
         if (materialType === 'resumo') typeLabel = 'RESUMO EM TÓPICOS';
@@ -167,8 +180,8 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
 
         let prompt = `[AÇÃO: MATERIAL DIDÁTICO - ${typeLabel}]\n[TYPE: MATERIAL]\nCrie um material didático para a Aula ${selectedLesson.number}: ${selectedLesson.title}.`;
 
-        if (materialInstructions.trim()) {
-            prompt += `\n\n[DETALHES DA OPÇÃO SELECIONADA]:\n${materialInstructions}`;
+        if (bookTitle) {
+            prompt += `\n\n[LIVRO PNLD SELECIONADO]: ${bookTitle}`;
         }
 
         if (materialInstructions.trim()) {
@@ -176,12 +189,10 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
         }
 
         triggerSend(prompt);
-
-        // Reset UI
         setShowMaterialOptions(false);
         setMaterialType(null);
         setMaterialInstructions('');
-        setIsMobileMenuOpen(false); // Fix: Collapse menu to show generation
+        setIsMobileMenuOpen(false);
     };
 
     const triggerSend = (prompt?: string) => {
@@ -204,7 +215,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     return (
         <div className="flex flex-col lg:flex-row bg-slate-50 h-full relative overflow-hidden">
 
-            {/* 1. LEFT SIDEBAR: WIZARD CONTROLS (Mobile: Overlay / Desktop: Left 35%) */}
+            {/* 1. LEFT SIDEBAR: WIZARD CONTROLS */}
             <div className={`
                 fixed inset-0 z-50 bg-white flex flex-col transition-transform duration-300 shadow-2xl
                 lg:relative lg:translate-x-0 lg:w-96 lg:shadow-xl lg:z-20
@@ -213,7 +224,6 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
 
                 {/* A. Plan Selector (Dropdown) */}
                 <div className="p-4 lg:p-6 border-b border-slate-100 space-y-3 bg-slate-50/50 relative">
-                    {/* Mobile Close Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 lg:hidden"
@@ -295,6 +305,29 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
 
                 {/* C. Action Buttons or Material Wizard */}
                 <div className="p-4 border-t border-slate-200 bg-white space-y-3">
+                    <button
+                        onClick={() => setShowPdi(!showPdi)}
+                        className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 p-2 rounded-lg transition-colors"
+                    >
+                        <span className="flex items-center gap-2">
+                            <Accessibility size={14} /> Integração PDI / Inclusão
+                        </span>
+                        <span>{showPdi ? '▲' : '▼'}</span>
+                    </button>
+
+                    {showPdi && selectedLesson && (
+                        <div className="animate-in slide-in-from-bottom-2">
+                            <PdiAdaptationWidget
+                                userId={userId}
+                                studentId="sample-student-uuid"
+                                pdiId="sample-pdi-uuid"
+                                studentName="João Silva"
+                                lessonTopic={selectedLesson.title}
+                                lessonObjective={selectedLesson.description || "Objetivo Geral"}
+                            />
+                        </div>
+                    )}
+
                     {showMaterialOptions ? (
                         <div className="animate-in slide-in-from-right-4 duration-300">
                             <div className="flex items-center justify-between mb-2">
@@ -450,7 +483,6 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     )}
                 </div>
 
-                {/* D. Observation Input (Hidden if Wizard visible to save space) */}
                 {!showMaterialOptions && !showAssessmentOptions && (
                     <div className="p-4 border-t border-slate-200 bg-slate-50 hidden lg:block">
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
@@ -466,13 +498,10 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                 )}
             </div>
 
-            {/* 2. RIGHT CONTENT: OUTPUT & CHAT (Mobile: Full Screen / Desktop: Flex 1) */}
+            {/* 2. RIGHT CONTENT Area */}
             <div className="flex-1 flex flex-col h-full bg-slate-50 border-l border-slate-200 relative w-full">
-
-                {/* Header for Chat Area */}
                 <div className="h-14 bg-white border-b border-slate-200 flex items-center px-4 lg:px-6 justify-between shrink-0">
                     <div className="flex items-center gap-2 text-indigo-600">
-                        {/* Mobile Menu Toggle */}
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
                             className="lg:hidden p-1 mr-1 text-slate-500 hover:text-indigo-600 transition-colors"
@@ -484,7 +513,6 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     </div>
                 </div>
 
-                {/* Chat Output (Scrollable) */}
                 <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar space-y-6">
                     {messages.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full opacity-40 select-none">
@@ -493,12 +521,12 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                             </div>
                             <h3 className="text-sm font-black uppercase tracking-widest text-slate-500 mb-2">Área de Trabalho</h3>
                             <p className="text-xs text-slate-400 text-center max-w-xs leading-relaxed">
-                                Selecione um planejamento e uma aula à esquerda para começar a gerar seus documentos pedagógicos.
+                                Selecione um planejamento e uma aula à esquerda para começar.
                             </p>
                         </div>
                     ) : (
                         messages.map((msg) => (
-                            <div key={msg.id} className={`flex gap-4 ${msg.role === MessageRole.USER ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-4 duration-500`}>
+                            <div key={msg.id} className={`flex gap-4 ${msg.role === MessageRole.USER ? 'flex-row-reverse' : ''}`}>
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white' : 'bg-white text-emerald-600 border border-emerald-100'}`}>
                                     {msg.role === MessageRole.USER ? <User size={16} /> : <Bot size={16} />}
                                 </div>
@@ -506,45 +534,18 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                                     <div className={`p-5 rounded-2xl shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
                                         {msg.content}
                                     </div>
-
-                                    {/* ACTIONS BAR (BELOW CONTENT) */}
-                                    {msg.role === MessageRole.ASSISTANT && !msg.content.startsWith('❌') && !msg.content.startsWith('✅') && (
-                                        <div className="flex items-center gap-2 mt-3 w-full animate-in fade-in duration-300">
-
-                                            {/* 1. SAVE BUTTON */}
+                                    {msg.role === MessageRole.ASSISTANT && (
+                                        <div className="flex items-center gap-2 mt-3 w-full">
                                             <button
                                                 onClick={() => onSaveMessage(msg.id, msg.content)}
                                                 disabled={savedMessages[msg.id] || isSaving[msg.id]}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-sm ${savedMessages[msg.id]
-                                                    ? 'bg-green-100 text-green-700 border border-green-200 cursor-default'
-                                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-200'
-                                                    }`}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest ${savedMessages[msg.id] ? 'bg-green-100 text-green-700' : 'bg-indigo-600 text-white'}`}
                                             >
                                                 {isSaving[msg.id] ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                                                 {savedMessages[msg.id] ? 'Salvo' : 'Salvar'}
                                             </button>
-
-                                            {/* 2. EXPORT DOCX (LOCKED UNTIL SAVED) */}
-                                            <button
-                                                onClick={() => handleExportDocx(msg.content)}
-                                                disabled={!savedMessages[msg.id]}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border ${savedMessages[msg.id]
-                                                    ? 'bg-white border-blue-200 text-blue-700 hover:bg-blue-50 cursor-pointer'
-                                                    : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-70'
-                                                    }`}
-                                                title={!savedMessages[msg.id] ? "Salve o documento primeiro para exportar" : "Exportar para Word"}
-                                            >
-                                                {!savedMessages[msg.id] ? <Lock size={12} /> : <Download size={14} />}
-                                                Salvar em Word
-                                            </button>
-
-                                            <div className="h-4 w-px bg-slate-200 mx-2"></div>
-
-                                            <button
-                                                onClick={() => navigator.clipboard.writeText(msg.content)}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 text-slate-400 hover:text-slate-600 text-[10px] font-bold uppercase tracking-wide transition-all"
-                                            >
-                                                <Copy size={12} /> Copiar
+                                            <button onClick={() => handleExportDocx(msg.content)} disabled={!savedMessages[msg.id]} className="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest border">
+                                                Word
                                             </button>
                                         </div>
                                     )}
@@ -557,9 +558,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                             <div className="w-10 h-10 rounded-xl bg-white border border-emerald-100 flex items-center justify-center shrink-0">
                                 <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
                             </div>
-                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest py-3">
-                                Gerando conteúdo...
-                            </div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest py-3">Gerando...</div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
@@ -572,9 +571,7 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
                     currentCredits={userProfile.credits}
                     userId={userId}
                     userPhone={userProfile.phone}
-                    onSuccess={() => {
-                        refreshProfile();
-                    }}
+                    onSuccess={() => refreshProfile()}
                 />
             )}
         </div>

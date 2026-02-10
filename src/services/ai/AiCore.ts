@@ -15,7 +15,7 @@ export const GENERATION_MODELS = [
 ];
 
 export function getGenAIClient(): GoogleGenerativeAI {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
 
     if (!apiKey) {
         throw new Error("A chave de API (VITE_GEMINI_API_KEY) não foi encontrada no arquivo .env.");

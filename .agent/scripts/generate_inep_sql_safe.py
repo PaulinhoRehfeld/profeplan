@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""
+Gerar SQL com proteção contra duplicatas
+"""
+
+import re
+import sys
+from pathlib import Path
+
+try:
+    import openpyxl
+except ImportError:
+    print("❌ pip install openpyxl")
+    sys.exit(1)
+
+def normalize_name(name):
+    if not name:
+        return ""
+    normalized = str(name).upper().strip()
+    normalized = re.sub(r'\s+', ' ', normalized)
+    return normalized.replace("'", "''")
+
+excel_file = r"C:\Users\Admin\PROFEPLAN\ESCOLASMG\escolas_origem.xlsx"
+output_file = Path(__file__).parent / "bulk_inep_updates_safe.sql"
+
+print(f"📖 Lendo: {excel_file}")
+wb = openpyxl.load_workbook(excel_file, read_only=True, data_only=True)
+sheet = wb.active
+
+updates = []
+errors = []
+processed = 0
+seen_ineps = {}  # Track duplicates
+
+print("🔍 Processando linhas...")
+
+for row_idx, row in enumerate(sheet.iter_rows(min_row=10, values_only=True), start=10):
+    processed += 1
+    
+    if processed % 100 == 0:
+        print(f"  Processadas: {processed}")
+    
+    city = row[3] if len(row) > 3 else None
+    inep = row[4] if len(row) > 4 else None
+    name = row[5] if len(row) > 5 else None
+    dep_admin = row[6] if len(row) > 6 else None
+    
+    if not name or not inep or not city:
+        continue
+    
+    if dep_admin and 'ESTADUAL' not in str(dep_admin).upper():
+        continue
+    
+    inep_clean = re.sub(r'\D', '', str(inep))
+    
+    if len(inep_clean) != 6:
+        errors.append(f"Linha {row_idx}: INEP inválido '{inep}'")
+        continue
+    
+    # CHECK DUPLICATA
+    if inep_clean in seen_ineps:
+        errors.append(f"Linha {row_idx}: INEP {inep_clean} duplicado (primeira vez: linha {seen_ineps[inep_clean]['row']} - {seen_ineps[inep_clean]['name']})")
+        continue
+    
+    seen_ineps[inep_clean] = {'row': row_idx, 'name': name}
+    
+    name_norm = normalize_name(name)
+    city_norm = str(city).upper().strip().replace("'", "''")
+    
+    # SQL SEGURO: Só atualiza se INEP não existir em NENHUM lugar
+    sql = f"""-- {name} ({city}) - INEP: {inep_clean}
+DO $$
+BEGIN
+    -- Só atualiza se INEP não existe em nenhuma escola
+    IF NOT EXISTS (SELECT 1 FROM schools WHERE inep_code = '{inep_clean}') THEN
+        UPDATE schools 
+        SET inep_code = '{inep_clean}' 
+        WHERE UPPER(TRIM(name)) = '{name_norm}' 
+          AND UPPER(TRIM(city)) = '{city_norm}' 
+          AND inep_code IS NULL;
+    END IF;
+END $$;
+"""
+    
+    updates.append((name, inep_clean, city, sql))
+
+wb.close()
+
+#Escrever SQL
+print(f"\n📝 Gerando SQL...")
+with open(output_file, 'w', encoding='utf-8') as out:
+    out.write("-- =====================================================\n")
+    out.write("-- ATUALIZAÇÃO AUTOMÁTICA DE INEPs (COM PROTEÇÃO)\n")
+    out.write(f"-- Total de escolas: {len(updates)}\n")
+    out.write(f"-- Duplicatas ignoradas: {len([e for e in errors if 'duplicado' in e])}\n")
+    out.write("-- =====================================================\n\n")
+    
+    for name, inep, city, sql in updates:
+        out.write(sql + "\n")
+    
+    out.write("\n-- VERIFICAÇÃO\n")
+    out.write("SELECT COUNT(*) as total_com_inep FROM schools WHERE inep_code IS NOT NULL;\n")
+    out.write("SELECT COUNT(*) as total_sem_inep FROM schools WHERE inep_code IS NULL;\n")
+
+print(f"\n✅ SUCESSO!")
+print(f"📄 Arquivo: {output_file}")
+print(f"📊 Total de escolas: {len(updates)}")
+print(f"⚠️ Duplicatas na planilha: {len([e for e in errors if 'duplicado' in e])}")
+print(f"⚠️ Outros erros: {len([e for e in errors if 'duplicado' not in e])}")
+
+if len([e for e in errors if 'duplicado' in e]) > 0:
+    print("\n⚠️ Primeiras 10 duplicatas:")
+    for err in [e for e in errors if 'duplicado' in e][:10]:
+        print(f"  - {err}")

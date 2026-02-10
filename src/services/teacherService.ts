@@ -41,10 +41,13 @@ export interface CreatePendingTeacherDTO {
  * Get all teachers for a school
  */
 export const getTeachersBySchool = async (schoolId: string): Promise<Teacher[]> => {
+    // Defensive trim
+    const cleanId = schoolId?.trim();
+
     const { data, error } = await supabase
         .from('profiles')
         .select('id, email, full_name, masp, school_id, role, created_at')
-        .eq('school_id', schoolId)
+        .eq('school_id', cleanId)
         .eq('role', 'teacher')
         .order('full_name');
 
@@ -222,3 +225,15 @@ export const approveTeacher = async (pendingId: string): Promise<{ success: bool
     return { success: true, message: data.message };
 };
 
+/**
+ * Updates teacher profile (DEPRECATED: Use userService.updateUserProfile instead)
+ */
+export const updateProfileAndLinkSchool = async (profileId: string, updates: any) => {
+    console.warn('[teacherService] updateProfileAndLinkSchool is deprecated. Use userService.updateUserProfile.');
+    const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', profileId);
+    if (error) throw error;
+    return { success: true };
+};

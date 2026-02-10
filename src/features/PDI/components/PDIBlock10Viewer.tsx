@@ -3,7 +3,7 @@ import {
     TrendingUp, Calendar, Award, User, BarChart3,
     CheckCircle, AlertCircle, Minus, ChevronDown, ChevronUp
 } from 'lucide-react';
-import { PdiDocumentService } from '../../../services/PdiDocumentService';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { Block10Entry } from '../../../types/pdi';
 
 interface PDIBlock10ViewerProps {
@@ -22,10 +22,23 @@ const PDIBlock10Viewer: React.FC<PDIBlock10ViewerProps> = ({ pdiId }) => {
     const loadEntries = async () => {
         setLoading(true);
         try {
-            const pdi = await PdiDocumentService.getPdiDocument(pdiId);
+            const { data: pdi } = await PdiDocumentService.getPdiDocument(pdiId);
             if (pdi && pdi.block_10_entries) {
+                // Map database entries to UI-expected Block10Entry structure if different
+                const mappedEntries: any[] = pdi.block_10_entries.map(e => ({
+                    avaliacao_id: e.id,
+                    data: e.created_at || new Date().toISOString(),
+                    atividade_titulo: e.subject || 'Avaliação',
+                    disciplina: e.subject,
+                    professor_valor: 10, // Assuming default or fetch from metadata
+                    professor_nota_alcancada: 0, // Fallback
+                    professor_grau_autonomia: e.autonomy_level || 'parcial',
+                    ia_diagnostico: e.observations,
+                    ia_metodologia: (e as any).methodology // If exists
+                }));
+
                 // Sort by date desc
-                const sorted = [...pdi.block_10_entries].sort((a, b) =>
+                const sorted = [...mappedEntries].sort((a, b) =>
                     new Date(b.data).getTime() - new Date(a.data).getTime()
                 );
                 setEntries(sorted);
@@ -135,7 +148,7 @@ const PDIBlock10Viewer: React.FC<PDIBlock10ViewerProps> = ({ pdiId }) => {
                         <div className="text-sm text-indigo-100">Avaliações Registradas</div>
                     </div>
                     <div className="bg-white/10 rounded-xl p-4">
-                        <div className={`text-3xl font-black mb-1 ${getPerformanceColor(parseFloat(mediaGeral))}`}>
+                        <div className={`text-3xl font-black mb-1 ${getPerformanceColor(Number(mediaGeral))}`}>
                             {mediaGeral}%
                         </div>
                         <div className="text-sm text-indigo-100">Média Geral</div>

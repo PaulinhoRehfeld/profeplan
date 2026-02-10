@@ -1,0 +1,54 @@
+{
+  "titulo": null,
+  "disciplina": "Educação Digital",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "Cultura Digital e Uso Consciente das Tecnologias",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Cultura Digital e Uso Consciente das<br>Tecnologias|(**EM13CO14**) Avaliar a conﬁabilidade<br>das<br>informações<br>encontradas<br>em<br>meio digital, investigando seus modos<br>de<br>construção<br>e <br>considerando<br>a <br>autoria, a estrutura e o propósito da<br>mensagem.|- Cultura digital;<br>- Informação no meio digital;<br>- Uso consciente e responsável das<br>tecnologias.|Construir<br>conhecimento<br>usando<br>técnicas<br>e <br>tecnologias<br>computacionais,<br>produzindo<br>conteúdos e artefatos de forma<br>criativa, com respeito às questões<br>éticas e legais, que proporcionem<br>experiências para si e os demais.",
+      "tags": [
+        "cultura digital",
+        "informação digital",
+        "uso consciente",
+        "tecnologias",
+        "confiabilidade",
+        "autoria",
+        "ética",
+        "legal"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "Comunicação Digital e Expressão de Ideias",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Comunicação Digital e Expressão de<br>Ideias|(**EM13CO19**) <br>Expor,<br>argumentar<br>e <br>negociar<br>propostas,<br>produtos<br>e <br>serviços, utilizando diferentes mídias e<br>ferramentas digitais.|- Linguagens digitais;<br>- Comunicação em ambientes virtuais;<br>- Introdução à autoria digital.|Expressar e partilhar informações,<br>ideias,<br>sentimentos<br>e <br>soluções<br>computacionais<br>utilizando<br>diferentes plataformas, ferramentas,<br>linguagens<br>e <br>tecnologias<br>da<br>Computação<br>de<br>forma<br>ﬂuente,<br>criativa, crítica, signiﬁcativa, reﬂexiva<br>e ética.",
+      "tags": [
+        "linguagens digitais",
+        "comunicação virtual",
+        "autoria digital",
+        "expressão",
+        "argumentação",
+        "negociação",
+        "mídias digitais",
+        "ética"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "Introdução ao Pensamento Computacional",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Introdução ao Pensamento<br>Computacional|(**EM13CO01**) Explorar e construir a<br>solução de problemas por meio da<br>reutilização de partes de soluções<br>existentes.|- Linguagens digitais;<br>- Comunicação em ambientes virtuais;<br>- Introdução à autoria digital.|Compreender as possibilidades e os<br>limites da Computação para resolver<br>problemas, tanto em termos de<br>viabilidade quanto de eﬁciência,<br>propondo e analisando soluções<br>computacionais<br>para<br>diversos<br>domínios<br>do<br>conhecimento,<br>considerando diferentes aspectos.",
+      "tags": [
+        "pensamento computacional",
+        "solução de problemas",
+        "reutilização",
+        "linguagens digitais",
+        "comunicação virtual",
+        "autoria digital",
+        "viabilidade",
+        "eficiência"
+      ]
+    }
+  ],
+  "meta_arquivo": "1°ANO_EDUCAÇÃO_DIGITAL_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:09:33"
+}

@@ -158,7 +158,7 @@ export const generateProfePlanStream = async (
 
         // Increment Usage only after stream starts successfully
         if (userId) {
-            await incrementUserUsage(userId);
+            await incrementUserUsage(userId, 'chat');
         }
 
         // Adaptador para garantir compatibilidade com o App.tsx que espera chunk.text

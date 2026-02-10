@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Users, Trash2, Edit2, Search, Filter, AlertTriangle, Save, X, ArrowRightLeft } from 'lucide-react';
+import { Plus, Users, Trash2, Edit2, Search, Filter, AlertTriangle, Save, X, ArrowRightLeft, ClipboardList } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
+import { StudentPDIProfile } from './PDI/StudentPDIProfile';
 
 // Constants
 const PDI_OPTIONS = [
@@ -42,7 +43,6 @@ interface StudentManagementProps {
 
 export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, students, onRefresh }) => {
     // Mode State
-    const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
     const [searchTerm, setSearchTerm] = useState('');
 
     // Modal States
@@ -50,6 +50,9 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [editingStudent, setEditingStudent] = useState<Student | null>(null);
     const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
+
+    // PDI Modal State
+    const [pdiStudentId, setPdiStudentId] = useState<string | null>(null);
 
     // Form States
     const [formData, setFormData] = useState({
@@ -207,13 +210,6 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
         return availableClasses.find(c => c.id === id)?.name || 'Turma desconhecida';
     };
 
-    // Helper for Transfer logic (Filtering classes of same year)
-    const currentClass = availableClasses.find(c => c.id === formData.class_id);
-    const transferOptions = currentClass
-        ? availableClasses.filter(c => c.year === currentClass.year && c.id !== currentClass.id)
-        : availableClasses;
-
-
     return (
         <div className="space-y-6">
             {/* Header / Controls */}
@@ -280,6 +276,14 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
                                         {getClassName(student.class_id)}
                                     </td>
                                     <td className="px-6 py-4 text-right space-x-2">
+                                        <button
+                                            onClick={() => setPdiStudentId(student.id)}
+                                            className="inline-flex items-center justify-center p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                                            title="Prontuário PDI"
+                                        >
+                                            <span className="font-bold text-xs mr-1">PDI</span>
+                                            <ClipboardList size={16} />
+                                        </button>
                                         <button
                                             onClick={() => handleOpenModal(student)}
                                             className="inline-flex items-center justify-center p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
@@ -487,6 +491,18 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
                                 {loading ? 'Excluindo...' : 'Confirmar Exclusão'}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* PDI Integration Modal */}
+            {pdiStudentId && (
+                <div className="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+                        <StudentPDIProfile
+                            studentId={pdiStudentId}
+                            onClose={() => setPdiStudentId(null)}
+                        />
                     </div>
                 </div>
             )}

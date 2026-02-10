@@ -3,7 +3,7 @@ import {
     User, FileText, Target, Package, Users as UsersIcon,
     Calendar, Home, MessageSquare, Eye, Lock
 } from 'lucide-react';
-import { PdiDocumentService } from '../../../services/PdiDocumentService';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { Block1to8Data } from '../../../types/pdi';
 
 interface PDIViewBlocks1to8Props {
@@ -21,9 +21,26 @@ const PDIViewBlocks1to8: React.FC<PDIViewBlocks1to8Props> = ({ pdiId }) => {
     const loadData = async () => {
         setLoading(true);
         try {
-            const pdi = await PdiDocumentService.getPdiDocument(pdiId);
-            if (pdi && pdi.block_1_8) {
-                setData(pdi.block_1_8);
+            const { data: pdi } = await PdiDocumentService.getPdiDocument(pdiId);
+            if (pdi && pdi.content_data) {
+                const content = pdi.content_data;
+                // Map new schema back to legacy state for UI compatibility
+                const legacyData: any = {
+                    bloco_1_identificacao: content.student_data ? {
+                        nome_completo: content.student_data.name || '',
+                        data_nascimento: content.student_data.dob || '',
+                        serie: content.student_data.school_year || '',
+                        turma: content.student_data.class_name || '',
+                        turno: content.student_data.shift || ''
+                    } : {},
+                    bloco_2_diagnostico: content.clinical_health ? {
+                        laudo_medico: content.clinical_health.diagnosis_cid || '',
+                        restricoes_atividades: content.clinical_health.medical_updates || '',
+                        medicamentos_uso: content.clinical_health.medication || ''
+                    } : {},
+                    // Add other blocks as needed
+                };
+                setData(legacyData);
             }
         } catch (error) {
             console.error('Error loading PDI blocks 1-8:', error);

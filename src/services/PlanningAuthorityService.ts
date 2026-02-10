@@ -8,7 +8,7 @@ export interface PlanningIntent {
     grade: string;
     level: 'Ensino Fundamental' | 'Ensino Médio';
     period: number;
-    regime: 'Bimestre' | 'Trimestre';
+    regime: 'Trimestre';
     teacherName: string;
     stateBase: string;
     educationSphere: string;
@@ -16,6 +16,7 @@ export interface PlanningIntent {
     reserves: any;
     userId: string;
     feedback?: string; // New field for feedback loop
+    pnld_book_id?: string;
 }
 
 export interface GuardrailCheckResult {
@@ -121,7 +122,8 @@ export const PlanningAuthority = {
             ...safeIntent,
             // Passa o nível explicitamente para o GeminiService (que já consertamos)
             level: safeIntent.level,
-            feedback: safeIntent.feedback // Pass feedback to generator
+            feedback: safeIntent.feedback, // Pass feedback to generator
+            pnld_book_id: safeIntent.pnld_book_id
         });
     },
 
@@ -130,7 +132,7 @@ export const PlanningAuthority = {
      * O Auditor que conversa com o usuário.
      */
     askSpecialist: async (message: string, context?: any) => {
-        const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
+        const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
         if (!apiKey) throw new Error("API Key missing");
 
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -185,10 +187,12 @@ export const PlanningAuthority = {
 
             data?.forEach((row: any) => {
                 const m = row.metadata;
+                if (!m || !m.ano_escolar || !m.disciplina) return; // Skip invalid entries
+
                 const key = `${m.ano_escolar}-${m.disciplina}`;
                 if (!map.has(key)) {
                     map.set(key, {
-                        source: m.source,
+                        source: m.source || 'Desconhecido',
                         disciplina: m.disciplina,
                         ano: m.ano_escolar,
                         chunks: 0

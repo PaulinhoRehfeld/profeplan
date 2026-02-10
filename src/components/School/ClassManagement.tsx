@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Upload, BookOpen, Users, ChevronRight, Edit2, Trash2, ArrowRightLeft, X, Save, AlertTriangle } from 'lucide-react';
+import { StudentPDIProfile } from './PDI/StudentPDIProfile';
 
 interface Class {
     id: string;
@@ -182,6 +183,7 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({ schoolId, user
     const [isAddingStudent, setIsAddingStudent] = useState(false);
     const [newStudentName, setNewStudentName] = useState('');
     const [newStudentCode, setNewStudentCode] = useState('');
+    const [editingStudent, setEditingStudent] = useState<any | null>(null);
 
     const handleAddStudent = async () => {
         if (!newStudentName.trim()) return alert('Nome é obrigatório');
@@ -242,23 +244,32 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({ schoolId, user
                             <tr>
                                 <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Cód.</th>
                                 <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">Nome</th>
-                                <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase">PDI</th>
+                                <th className="px-6 py-3 text-xs font-bold text-slate-500 uppercase text-right">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                             {selectedClass.students?.map((student: any) => (
                                 <tr key={student.id} className="hover:bg-slate-50">
                                     <td className="px-6 py-4 text-xs font-mono text-slate-400">{student.student_code || '-'}</td>
-                                    <td className="px-6 py-4 font-bold text-slate-700">{student.name}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-wrap gap-2">
-                                            {['TDAH', 'Autismo', 'Dislexia', 'Tod'].map(tag => (
-                                                <button key={tag} onClick={() => handleTogglePdi(student.id, student.deficiencies, tag)}
-                                                    className={`px-2 py-1 text-[10px] font-bold uppercase rounded border ${student.deficiencies?.includes(tag) ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-slate-400 border-slate-200'}`}>
-                                                    {tag}
-                                                </button>
-                                            ))}
-                                        </div>
+                                    <td className="px-6 py-4 font-bold text-slate-700">
+                                        {student.name}
+                                        {/* Look in pdi_data.deficiencies as fallback */}
+                                        {(student.deficiencies?.length > 0 || student.pdi_data?.deficiencies?.length > 0) && (
+                                            <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded">
+                                                PDI
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <button
+                                            onClick={() => {
+                                                // Open student profile editor
+                                                setEditingStudent(student);
+                                            }}
+                                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition flex items-center gap-1 ml-auto"
+                                        >
+                                            <Edit2 size={12} /> Editar
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -278,6 +289,25 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({ schoolId, user
                                 <button onClick={() => setIsAddingStudent(false)} className="flex-1 py-2 border rounded">Cancelar</button>
                                 <button onClick={handleAddStudent} className="flex-1 py-2 bg-blue-600 text-white rounded">Salvar</button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Edit Student PDI Profile Modal */}
+                {editingStudent && (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
+                        <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[90vh] overflow-hidden flex flex-col relative">
+                            {/* Close button handled inside component or via overlay click if implemented, 
+                                but component has its own header. wrapping in relative div.
+                            */}
+                            <StudentPDIProfile
+                                studentId={editingStudent.id}
+                                onClose={() => {
+                                    setEditingStudent(null);
+                                    // Refresh the list to show any name changes or updates
+                                    loadClassDetails(selectedClass.id);
+                                }}
+                            />
                         </div>
                     </div>
                 )}

@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "livro_titulo": "test_12025_MATEMATICA_ENSINO_MÉDIO_1TRI",
+    "disciplina": "Matemática",
+    "editora": "N/A",
+    "colecao": "N/A",
+    "arquivo_origem": "update_packet_test_12025_MATEMATICA_ENSINO_MÉDIO_1TRI.json",
+    "total_fragmentos": 2
+  },
+  "conteudo_vetorial": [
+    {
+      "pagina": 4,
+      "capitulo": "Título Principal",
+      "texto_limpo": "",
+      "embedding_id": "f480e62b-9067-40d4-9cd3-f81cdb08e1ad"
+    },
+    {
+      "pagina": 5,
+      "capitulo": "CONCLUSÃO",
+      "texto_limpo": "",
+      "embedding_id": "d123aa74-3c18-4c67-b0df-bb6c6979cdb0"
+    }
+  ]
+}

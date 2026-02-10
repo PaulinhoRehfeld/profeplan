@@ -109,19 +109,12 @@ export const saveClassStructure = async (userId: string, classData: { className:
  */
 export const addStudentToClass = async (classId: string, name: string, studentCode?: string, schoolId?: string) => {
     const { data, error } = await supabase
-        .from('students') // or 'school_students' if that's the main table?
-        // Wait, 'school_students' is usually a View or the main table? 
-        // In `SchoolDashboard.tsx` I saw `from('school_students')`.
-        // In `saveClassStructure` (line 98) it uses `from('students')`.
-        // I should stick to `students` table for insertion if that's what `saveClassStructure` uses.
-        // But `school_students` view probably aggregates it.
-        // Let's assume 'students' is the physical table.
-        // Check `saveClassStructure` again: line 98 `from('students')`.
-        // OK.
+        .from('students')
         .insert([{
             class_id: classId,
             name: name,
-            student_code: studentCode
+            student_code: studentCode,
+            current_school_id: schoolId // CRITICAL: Must be set for dashboard filtering
         }])
         .select()
         .single();
@@ -131,16 +124,24 @@ export const addStudentToClass = async (classId: string, name: string, studentCo
 
 /**
  * Busca todas as turmas cadastradas do usuário.
+ * @param userId - ID do usuário
+ * @param schoolId - (Opcional) ID da escola para filtrar turmas
  */
-export const getClasses = async (userId: string) => {
-    const { data, error } = await supabase
+export const getClasses = async (userId: string, schoolId?: string) => {
+    let query = supabase
         .from('classes')
         .select(`
         *,
         students:students(count)
       `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .eq('user_id', userId);
+
+    // Se school_id for fornecido, filtrar por escola
+    if (schoolId) {
+        query = query.eq('school_id', schoolId);
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false });
 
     return { data, error };
 };

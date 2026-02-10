@@ -62,7 +62,7 @@ export const generateStudentAdaptation = async (
 
         // Increment Usage only on success
         if (context?.userId) {
-            await incrementUserUsage(context.userId); // Fire and forget or await? Safe to wait.
+            await incrementUserUsage(context.userId, 'generate'); // Fire and forget or await? Safe to wait.
         }
 
         return response.text();
@@ -267,7 +267,7 @@ REGRAS TÉCNICAS:
         const text = result.response.text();
 
         if (userId) {
-            await incrementUserUsage(userId);
+            await incrementUserUsage(userId, 'generate');
         }
 
         const parsed = JSON.parse(text);
@@ -299,6 +299,7 @@ export const generateBlock10Diagnosis = async (
     },
     fullPdiContext: {
         student_name: string;
+        content_data?: any;
         block_1_8: any;
         block_9_history: any[];
         block_10_history: any[];
@@ -404,7 +405,7 @@ FORMATO DE SAÍDA (JSON PURO):
         const text = result.response.text();
 
         if (userId) {
-            await incrementUserUsage(userId);
+            await incrementUserUsage(userId, 'generate');
         }
 
         const parsed = JSON.parse(text);
@@ -433,6 +434,7 @@ export const generateBlock11Report = async (
         student_name: string;
         period: string;
         school_name?: string;
+        content_data?: any;
         block_1_8: any;
         block_9_content: any[];
         block_10_entries: any[];
@@ -517,7 +519,7 @@ Use linguagem TÉCNICA mas ACESSÍVEL. Mantenha formato NARRATIVO.
         const text = result.response.text();
 
         if (userId) {
-            await incrementUserUsage(userId);
+            await incrementUserUsage(userId, 'generate');
         }
 
         return text;

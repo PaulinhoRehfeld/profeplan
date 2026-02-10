@@ -3,6 +3,7 @@ import { Menu, Crown } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import SettingsModal from '../components/SettingsModal';
 import SubscriptionModal from '../components/SubscriptionModal';
+import { SchoolSwitcher } from '../components/SchoolSwitcher';
 import { UserSession, UserProfile, ToolMode, UserSettings } from '../types';
 
 interface MainLayoutProps {
@@ -70,7 +71,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             <Menu size={24} />
                         </button>
                         <div className="flex flex-col">
-                            <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V3.7</h2>
+                            <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V3.9.1</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{String(activeMode).toUpperCase()}</span>
@@ -78,6 +79,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
+                        {/* School Switcher (apenas para professores com múltiplas escolas) */}
+                        <SchoolSwitcher
+                            userProfile={userProfile}
+                            onSchoolChange={onRefreshProfile}
+                        />
+
                         <div className="h-8 w-px bg-slate-100 mx-2"></div>
                         <div className="flex items-center gap-3">
                             <div className="text-right hidden sm:block">
@@ -105,7 +112,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     </div>
                 ) : (
                     <div>
-                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V3.7</h3>
+                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V3.9.1</h3>
                         <p className="text-xs text-slate-500 font-medium">Selecione uma ferramenta no menu ou comece uma conversa para planejar sua aula.</p>
                     </div>
                 )}

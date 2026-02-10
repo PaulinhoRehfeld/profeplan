@@ -1,0 +1,116 @@
+{
+  "titulo": null,
+  "disciplina": "Educação Física",
+  "nivel": "Ensino Médio",
+  "conteudo_vetorial": [
+    {
+      "pagina": 1,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|- Condições de produção, circulação e\nrecepção de discursos;  - Elementos das linguagens.|(**EM13LGG101**) Compreender e analisar\nprocessos de produção e circulação de\ndiscursos, nas diferentes linguagens,\npara fazer escolhas fundamentadas\nem função de interesses pessoais e\ncoletivos.\n(**EM13LGG103**) \nAnalisar\no funcionamento das linguagens, para\ninterpretar e produzir criticamente\ndiscursos em textos de diversas\nsemioses (visuais, verbais, sonoras e\ngestuais).|- Análise do contexto cultural, da\nevolução histórica e da inﬂuência dos\nmarcadores sociais (classe, gênero,\nidade, origem cultural etc.) na\nconstrução das diversas práticas corporais;  - Conhecimento, reﬂexão e análise dos\nfatores condicionantes da saúde,\ncomo aspectos físicos, sociais,\nculturais e ambientais que interferem\nna manutenção da saúde.|Compreender o funcionamento das\ndiferentes linguagens e práticas\n(artísticas, corporais e verbais) e\nmobilizar esses conhecimentos na\nrecepção e produção de discursos nos\ndiferentes campos de atuação social e\nnas diversas mídias, para ampliar as\nformas de participação social, o\nentendimento e as possibilidades de\nexplicação e interpretação crítica da\nrealidade e para continuar aprendendo.",
+      "tags": []
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|- Condições de produção, circulação e\nrecepção de discursos;  - Elementos das linguagens.|(**EM13LGG101**) Compreender e analisar\nprocessos de produção e circulação de\ndiscursos, nas diferentes linguagens,\npara fazer escolhas fundamentadas\nem função de interesses pessoais e\ncoletivos.\n(**EM13LGG103**) \nAnalisar\no funcionamento das linguagens, para\ninterpretar e produzir criticamente\ndiscursos em textos de diversas\nsemioses (visuais, verbais, sonoras e\ngestuais).|- Realização de avaliação física, com\nanálise dos dados, promovendo ações\nde conscientização sobre as práticas\ncorporais e promoção à saúde;  - Aprendizagem sobre anatomia e\nﬁsiologia humana, compreendendo o\norganismo como uma estrutura\nintegrada;  - Reﬂexão e análise da importância\ndas práticas corporais, da atividade\nfísica, esportivas e de lazer na\nmanutenção da saúde.|Compreender o funcionamento das\ndiferentes linguagens e práticas\n(artísticas, corporais e verbais) e\nmobilizar esses conhecimentos na\nrecepção e produção de,discursos nos\ndiferentes campos de atuação social e\nnas diversas mídias, para ampliar as\nformas de participação social, o\nentendimento e as possibilidades de\nexplicação e interpretação crítica da\nrealidade e para continuar aprendendo.",
+      "tags": [
+        "avaliação física",
+        "anatomia",
+        "fisiologia humana",
+        "práticas corporais",
+        "atividade física",
+        "esportes",
+        "lazer",
+        "saúde"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Bem-estar e qualidade de vida|(**EM13LGG505MG**) Reﬂetir, analisar e\nvivenciar as diferentes práticas\nesportivas escolares, as práticas\nesportivas de rendimento e de lazer,\nrelacionando-as ao campo da saúde e\nda qualidade de vida.|- Análise do contexto cultural, da\nevolução histórica e da inﬂuência dos\nmarcadores sociais (classe, gênero,\nidade, origem cultural etc.) na\nconstrução das diversas práticas\ncorporais;  - Conhecimento, reﬂexão e análise dos\nfatores condicionantes da saúde,\ncomo aspectos físicos, sociais,\nculturais e ambientais que interferem\nna manutenção da saúde.|Compreender os processos de\nprodução e negociação de sentidos\nnas práticas corporais,\nreconhecendo-as e vivenciando-as\ncomo formas de expressão de valores\ne identidades, em uma perspectiva\ndemocrática e de respeito à diversidade.",
+      "tags": [
+        "bem-estar",
+        "qualidade de vida",
+        "práticas esportivas",
+        "saúde",
+        "contexto cultural",
+        "marcadores sociais",
+        "diversidade"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Bem-estar e qualidade de vida|(**EM13LGG505MG**) Reﬂetir, analisar e\nvivenciar as diferentes práticas\nesportivas escolares, as práticas\nesportivas de rendimento e de lazer,\nrelacionando-as ao campo da saúde e\nda qualidade de vida.|- Realização de avaliação física, com\nanálise dos dados, promovendo ações\nde conscientização sobre as práticas\ncorporais e promoção à saúde;  - Aprendizagem sobre anatomia e\nﬁsiologia humana, compreendendo o\norganismo como uma estrutura\nintegrada;  - Reﬂexão e análise da importância\natividade física, esportivas e de lazer\nna manutenção da saúde.|Compreender os processos de\nprodução e negociação de sentidos\nnas práticas corporais,\nreconhecendo-as e vivenciando-as\ncomo formas de expressão de valores\ne identidades, em uma perspectiva\ndemocrática e de respeito à diversidade.",
+      "tags": [
+        "bem-estar",
+        "qualidade de vida",
+        "práticas esportivas",
+        "avaliação física",
+        "anatomia",
+        "fisiologia humana",
+        "atividade física",
+        "esportes",
+        "lazer",
+        "saúde",
+        "diversidade"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|Condições de produção, circulação e\nrecepção de discursos|(**EM13LGG201**) \nUtilizar as diversas linguagens\n(artísticas, corporais e verbais) em\ndiferentes contextos, valorizando-as como fenômeno social,\ncultural, histórico, variável,\nheterogêneo e sensível aos contextos\nde uso.|- Vivência das práticas corporais de\ndiferentes grupos culturais, com\nproblematização de identidades e\nvalores, bem como pela escolha\nconsciente de gestos e expressões\ncondizentes com o respeito à diversidade,\naos objetivos e ao contexto de interação;  - Conhecimento e valorização das\nculturas e artes locais envolvida na\nreprodução de diferentes práticas\ncorporais (danças, jogos, brincadeiras)\nde grupos locais, regionais e nacionais.|Compreender os processos\nidentitários, conﬂitos e relações de\npoder que permeiam as práticas\nsociais de linguagem, respeitar as\ndiversidades, a pluralidade de ideias e\nposições e atuar socialmente com\nbase em princípios e valores\nassentados na democracia, na\nigualdade e nos Direitos Humanos,\nexercitando a empatia, o diálogo, a\nresolução de conﬂitos e a cooperação,\ne combatendo preconceitos de\nqualquer natureza.",
+      "tags": [
+        "linguagens",
+        "práticas corporais",
+        "cultura",
+        "identidade",
+        "diversidade",
+        "democracia",
+        "direitos humanos",
+        "preconceito"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|- Condições de produção, circulação e\nrecepção de discursos;  - Elementos de linguagem.|(**EM13LGG102**) \nAnalisar visões de\nmundo, conﬂitos de interesse,\npreconceitos e ideologias presentes\nnos discursos veiculados nas\ndiferentes mídias, ampliando suas\npossibilidades de explicação,\ninterpretação e intervenção crítica\nda/na realidade.|- Análise das práticas corporais, com\nidentiﬁcação de preconceitos e estereótipos\nassociados a grupos minoritários, interesses\neconômicos, ideológicos e políticos.\nConsequências que o uso abusivo de\naparelhos eletrônicos têm provocado na\nsaúde física e mental;  - Conscientização sobre as formas\nadequadas (posturais, visuais e sonoras)\npara a utilização de tecnologias e aparelhos\neletrônicos no cotidiano;  - Promoção de hábitos saudáveis nas\ncondicionantes da saúde e qualidade de\nvida.|Compreender o funcionamento das\ndiferentes linguagens e práticas\n(artísticas, corporais e verbais) e\nmobilizar esses conhecimentos na\nrecepção e produção de discursos nos\ndiferentes campos de atuação social e\nnas diversas mídias, para ampliar as\nformas de participação social, o\nentendimento e as possibilidades de\nexplicação e interpretação crítica da\nrealidade e para continuar aprendendo.",
+      "tags": [
+        "discursos",
+        "mídias",
+        "preconceitos",
+        "ideologias",
+        "práticas corporais",
+        "estereótipos",
+        "saúde física",
+        "saúde mental",
+        "tecnologias",
+        "hábitos saudáveis",
+        "qualidade de vida"
+      ]
+    },
+    {
+      "pagina": 4,
+      "capitulo": "1° TRIMESTRE",
+      "texto_limpo": "|UNIDADE TEMÁTICA|HABILIDADE|OBJETO DO CONHECIMENTO|COMPETÊNCIA ESPECÍFICA|\n|---|---|---|---|\n|- Condições de produção, circulação e\nrecepção de discursos;  - Elementos de linguagem.|(**EM13LGG501**) Selecionar e utilizar\nmovimentos corporais de forma\nconsciente e intencional para interagir\nsocialmente em práticas corporais, de\nmodo a estabelecer relações\nconstrutivas, empáticas, éticas e de\nrespeito às diferenças.|- Vivência de gestos de diferentes práticas\ncorporais (jogos e brincadeiras, esportes,\ndanças, ginásticas e práticas corporais de\naventura), promovendo variações deles em\nfunção do tempo, do espaço, das\nintencionalidades e interações com\ndiferentes pessoas e contextos;  - Vivência de gestos de diferentes práticas\ncorporais de forma reﬂexiva, autoral,\ninvestigativa e criativa;  - Conhecimentos ﬁsiológicos, anatômicos,\nbiomecânicos, artísticos e culturais que\nenvolvem a produção de gestos;  - Análise das funções sociais das práticas\ncorporais nas relações empáticas, éticas e\nde respeito às diferenças.|Compreender os processos de\nprodução e negociação de sentidos\nnas práticas corporais,\nreconhecendo-as e vivenciando-as\ncomo formas de expressão de valores\ne identidades, em uma perspectiva\ndemocrática e de respeito à diversidade.",
+      "tags": [
+        "movimentos corporais",
+        "práticas corporais",
+        "jogos",
+        "brincadeiras",
+        "esportes",
+        "danças",
+        "ginásticas",
+        "aventura",
+        "fisiologia",
+        "anatomia",
+        "biomecânica",
+        "cultura",
+        "ética",
+        "diversidade"
+      ]
+    }
+  ],
+  "meta_arquivo": "1°ANO_EDUCAÇÃO_FÍSICA_ENSINO_MÉDIO_1TRI.md",
+  "meta_processado_em": "2026-02-03 19:09:53"
+}

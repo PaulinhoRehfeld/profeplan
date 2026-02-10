@@ -16,15 +16,15 @@ export const useProfeplanSettings = () => {
     const [settings, setSettings] = useState<UserSettings>(() => {
         try {
             const saved = localStorage.getItem('profeplan_settings');
-            return saved ? JSON.parse(saved) : defaultSettings;
+            const parsed = saved ? JSON.parse(saved) : null;
+            return parsed ? { ...defaultSettings, ...parsed } : defaultSettings;
         } catch (e) {
             return defaultSettings;
         }
     });
 
-    useEffect(() => {
-        localStorage.setItem('profeplan_settings', JSON.stringify(settings));
-    }, [settings]);
+    // NOTE: Auto-save removed to prevent default values from overwriting real DB data during hydration.
+    // Saving is now handled explicitly by Save buttons or via App.tsx sync after hydration.
 
     return { settings, setSettings };
 };
