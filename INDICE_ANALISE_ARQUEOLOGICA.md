@@ -4,6 +4,12 @@
 
 Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 
+### Links Rápidos
+- [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md)
+- [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md)
+- [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md)
+- [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md)
+
 ---
 
 ## 1. 🏛️ RELATORIO_ARQUEOLOGIA_CODIGO.md
@@ -169,9 +175,9 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 
 ### Cenário 1: Sou gerente/stakeholder
 **Ler em ordem**:
-1. SUMARIO_EXECUTIVO_REFATORACAO.md (5 min)
-2. DIAGRAMA_VISUAL_ARQUITETURA.md (10 min)
-3. RELATORIO_ARQUEOLOGIA_CODIGO.md - Seções 1,2,3 (15 min)
+1. [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) (5 min)
+2. [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) (10 min)
+3. [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) - Seções 1,2,3 (15 min)
 
 **Tempo total**: ~30 minutos  
 **Resultado**: Entendimento completo + decisão de refatoração
@@ -180,10 +186,10 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 
 ### Cenário 2: Sou desenvolvedor implementando
 **Ler em ordem**:
-1. ANALISE_TECNICA_REDUNDANCIAS.md - Seções 1-3 (20 min)
-2. DIAGRAMA_VISUAL_ARQUITETURA.md - Diagramas relevantes (15 min)
-3. ANALISE_TECNICA_REDUNDANCIAS.md - Recomendações específicas (20 min)
-4. SUMARIO_EXECUTIVO_REFATORACAO.md - Plano de ação (10 min)
+1. [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) - Seções 1-3 (20 min)
+2. [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) - Diagramas relevantes (15 min)
+3. [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) - Recomendações específicas (20 min)
+4. [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) - Plano de ação (10 min)
 
 **Tempo total**: ~1 hora  
 **Resultado**: Pronto para começar refatoração
@@ -192,10 +198,10 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 
 ### Cenário 3: Sou arquiteto/tech lead revisando
 **Ler em ordem**:
-1. RELATORIO_ARQUEOLOGIA_CODIGO.md (completo, 45 min)
-2. ANALISE_TECNICA_REDUNDANCIAS.md (completo, 40 min)
-3. SUMARIO_EXECUTIVO_REFATORACAO.md (completo, 20 min)
-4. DIAGRAMA_VISUAL_ARQUITETURA.md (completo, 25 min)
+1. [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) (completo, 45 min)
+2. [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) (completo, 40 min)
+3. [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) (completo, 20 min)
+4. [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) (completo, 25 min)
 
 **Tempo total**: ~2 horas  
 **Resultado**: Auditoria completa + validação técnica
@@ -204,9 +210,9 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 
 ### Cenário 4: Apresentação ao time
 **Usar**:
-- DIAGRAMA_VISUAL_ARQUITETURA.md (slides visuais)
-- SUMARIO_EXECUTIVO_REFATORACAO.md (narrativa + números)
-- RELATORIO_ARQUEOLOGIA_CODIGO.md (detalhes sob demanda)
+- [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) (slides visuais)
+- [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) (narrativa + números)
+- [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) (detalhes sob demanda)
 
 **Duração**: 30-45 minutos
 
@@ -218,21 +224,21 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 
 | Tópico | Documento | Seção |
 |--------|-----------|-------|
-| Score geral de saúde | SUMARIO | "Score de Saúde" |
-| Problema #1: StudentService | TECNICA | "StudentService Duplicação" |
-| Problema #2: PDI fragmentado | RELATORIO | "Redundâncias #2" |
-| Problema #3: School Selectors | DIAGRAMA | "5. Multiplicidade" |
-| Grafo de dependências | DIAGRAMA | "1. Grafo de Serviços" |
-| Circularidades verificadas | TECNICA | "Verificação de Circularidades" |
-| Padrão AI Services | RELATORIO | "Redundâncias #6" |
-| Anti-patterns | RELATORIO | "Anti-patterns e Violações" |
-| Plano de ação | SUMARIO | "Plano de Ação (Priorizado)" |
-| Implementação detalhada | TECNICA | "Ordem de Implementação" |
-| Refatoração StudentService | TECNICA + RELATORIO | "Consolidação" |
-| Refatoração PDI | TECNICA + RELATORIO | "Consolidação" |
-| Data Adapter Pattern | TECNICA | "Refactoring de Nomenclatura" |
-| Type Safety | DIAGRAMA | "7. Type Checking" |
-| God Components | DIAGRAMA | "9. God Components" |
+| Score geral de saúde | [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) | "Score de Saúde" |
+| Problema #1: StudentService | [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) | "StudentService Duplicação" |
+| Problema #2: PDI fragmentado | [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) | "Redundâncias #2" |
+| Problema #3: School Selectors | [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) | "5. Multiplicidade" |
+| Grafo de dependências | [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) | "1. Grafo de Serviços" |
+| Circularidades verificadas | [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) | "Verificação de Circularidades" |
+| Padrão AI Services | [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) | "Redundâncias #6" |
+| Anti-patterns | [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) | "Anti-patterns e Violações" |
+| Plano de ação | [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) | "Plano de Ação (Priorizado)" |
+| Implementação detalhada | [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) | "Ordem de Implementação" |
+| Refatoração StudentService | [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) + [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) | "Consolidação" |
+| Refatoração PDI | [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) + [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md) | "Consolidação" |
+| Data Adapter Pattern | [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) | "Refatoração de Nomenclatura" |
+| Type Safety | [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) | "7. Type Checking" |
+| God Components | [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) | "9. God Components" |
 
 ---
 
@@ -262,29 +268,29 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 │ (Decisão: Refatorar? Sim!)   │
 └──────────┬──────────────────┘
            │
-           ├─→ SUMARIO_EXECUTIVO (5 min)
-           ├─→ DIAGRAMA_VISUAL (10 min)
-           └─→ RELATORIO seções 1-3 (15 min)
+           ├─→ SUMARIO_EXECUTIVO_REFATORACAO (5 min)
+           ├─→ DIAGRAMA_VISUAL_ARQUITETURA (10 min)
+           └─→ RELATORIO_ARQUEOLOGIA_CODIGO seções 1-3 (15 min)
 
 ┌─────────────────────────────┐
 │ DESENVOLVEDOR                │
 │ (Ação: Começar refatoração)  │
 └──────────┬──────────────────┘
            │
-           ├─→ ANALISE_TECNICA seções 1-3 (20 min)
-           ├─→ DIAGRAMA_VISUAL relevante (10 min)
-           ├─→ ANALISE_TECNICA recomendações (20 min)
-           └─→ SUMARIO plano de ação (10 min)
+           ├─→ ANALISE_TECNICA_REDUNDANCIAS seções 1-3 (20 min)
+           ├─→ DIAGRAMA_VISUAL_ARQUITETURA relevante (10 min)
+           ├─→ ANALISE_TECNICA_REDUNDANCIAS recomendações (20 min)
+           └─→ SUMARIO_EXECUTIVO_REFATORACAO plano de ação (10 min)
 
 ┌─────────────────────────────┐
 │ TECH LEAD / ARQUITETO        │
 │ (Validação: Completa)        │
 └──────────┬──────────────────┘
            │
-           ├─→ RELATORIO (completo, 45 min)
-           ├─→ ANALISE_TECNICA (completo, 40 min)
-           ├─→ SUMARIO (completo, 20 min)
-           └─→ DIAGRAMA_VISUAL (completo, 25 min)
+           ├─→ RELATORIO_ARQUEOLOGIA_CODIGO (completo, 45 min)
+           ├─→ ANALISE_TECNICA_REDUNDANCIAS (completo, 40 min)
+           ├─→ SUMARIO_EXECUTIVO_REFATORACAO (completo, 20 min)
+           └─→ DIAGRAMA_VISUAL_ARQUITETURA (completo, 25 min)
 ```
 
 ---
@@ -292,21 +298,21 @@ Esta análise arqueológica completa consiste em **4 documentos estruturados**:
 ## ✅ CHECKLIST DE LEITURA
 
 ### Antes de começar qualquer trabalho:
-- [ ] Ler SUMARIO_EXECUTIVO.md (Score + Top 5)
-- [ ] Ver DIAGRAMA_VISUAL.md (1-3: entender redundâncias)
-- [ ] Ler ANALISE_TECNICA.md seção 1-2 (código específico)
-- [ ] Consultar plano de ação em SUMARIO
+- [ ] Ler [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md) (Score + Top 5)
+- [ ] Ver [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) (1-3: entender redundâncias)
+- [ ] Ler [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) seção 1-2 (código específico)
+- [ ] Consultar plano de ação em [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md)
 
 ### Antes de cada refatoração:
-- [ ] Ler ANALISE_TECNICA relevante (padrão específico)
-- [ ] Ver DIAGRAMA correspondente (visual)
-- [ ] Estudar código-exemplo em ANALISE_TECNICA
+- [ ] Ler [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md) relevante (padrão específico)
+- [ ] Ver [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md) correspondente (visual)
+- [ ] Estudar código-exemplo em [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md)
 - [ ] Verificar checklist de implementação
 
 ### Após refatoração:
-- [ ] Comparar com métricas esperadas (SUMARIO)
-- [ ] Verificar score (RELATORIO)
-- [ ] Validação (ANALISE_TECNICA checklist)
+- [ ] Comparar com métricas esperadas ([SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md))
+- [ ] Verificar score ([RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md))
+- [ ] Validação (checklist em [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md))
 
 ---
 
@@ -333,11 +339,11 @@ Esta análise arqueológica fornece:
 **Última Atualização**: 10/02/2026 00:00  
 
 **Arquivos Criados**:
-1. RELATORIO_ARQUEOLOGIA_CODIGO.md
-2. ANALISE_TECNICA_REDUNDANCIAS.md
-3. SUMARIO_EXECUTIVO_REFATORACAO.md
-4. DIAGRAMA_VISUAL_ARQUITETURA.md
-5. INDICE_ANALISE_ARQUEOLOGICA.md (este arquivo)
+1. [RELATORIO_ARQUEOLOGIA_CODIGO.md](RELATORIO_ARQUEOLOGIA_CODIGO.md)
+2. [ANALISE_TECNICA_REDUNDANCIAS.md](ANALISE_TECNICA_REDUNDANCIAS.md)
+3. [SUMARIO_EXECUTIVO_REFATORACAO.md](SUMARIO_EXECUTIVO_REFATORACAO.md)
+4. [DIAGRAMA_VISUAL_ARQUITETURA.md](DIAGRAMA_VISUAL_ARQUITETURA.md)
+5. [INDICE_ANALISE_ARQUEOLOGICA.md](INDICE_ANALISE_ARQUEOLOGICA.md) (este arquivo)
 
 ---
 

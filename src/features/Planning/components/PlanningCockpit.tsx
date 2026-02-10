@@ -6,7 +6,7 @@ import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
 import { LowCreditModal } from '../../../components/LowCreditModal';
-import { getUserProfile } from '../../../services/userService';
+import { getUserProfile } from '../../../services/ProfileService';
 import { UserProfile, PnldBook } from '../../../types';
 import { PnldService } from '../../../services/PnldService';
 

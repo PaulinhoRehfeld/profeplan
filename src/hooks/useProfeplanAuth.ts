@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
-import { getUserProfile, checkAndRewardReferrer, getProfileByEmail } from '../services/userService';
+import { getUserProfile, checkAndRewardReferrer, getProfileByEmail } from '../services/ProfileService';
 import { getRoleByEmail } from '../utils/authUtils';
 import { UserSession, UserProfile } from '../types';
 

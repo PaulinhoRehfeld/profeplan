@@ -2,7 +2,7 @@ import { SYSTEM_PROMPT, SYSTEM_PROMPT_CHAT } from "../../constants";
 import { AccessLevel } from "../../types";
 import { fetchEnemQuestions } from "../databaseService";
 import { getTeacherContext } from "../supabaseService";
-import { checkUsageQuota, incrementUserUsage } from "../userService";
+import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
 import { hybridSearchProfeplan } from "../searchService";
 import { getGenAIClient, safetySettings } from "./AiCore";
 import { extractHighSchoolContext } from "./AiUtilityService";

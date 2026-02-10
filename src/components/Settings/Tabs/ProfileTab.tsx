@@ -4,7 +4,7 @@ import { UserSettings } from '../../../types';
 import { supabase } from '../../../services/supabaseClient';
 import { SchoolAutocomplete } from '../../SchoolAutocomplete';
 import { getTeacherSchoolManager, reconcileTeacherByInep, clearTeacherSchoolLinks } from '../../../services/teacherSchoolService';
-import { updateUserProfile } from '../../../services/userService';
+import { updateUserProfile } from '../../../services/ProfileService';
 
 interface ProfileTabProps {
     userProfile: any;

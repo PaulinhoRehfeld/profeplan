@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Camera, Loader2, CheckCircle2, AlertCircle, X, Upload } from 'lucide-react';
-import { gradeWrittenAnswer } from '../services/geminiService';
+import { gradeWrittenAnswer } from '../services/ai/AiAssessmentService';
 import type { GradingResult } from '../types';
 
 interface DissertativeGraderProps {

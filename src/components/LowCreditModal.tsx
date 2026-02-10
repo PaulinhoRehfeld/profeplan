@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Gift, Phone, Check, X, Smartphone, Loader2 } from 'lucide-react';
-import { registerPhone } from '../services/userService';
+import { registerPhone } from '../services/ProfileService';
 
 interface LowCreditModalProps {
     isOpen: boolean;

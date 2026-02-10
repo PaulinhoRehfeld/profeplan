@@ -1,5 +1,5 @@
 import { supabase } from '../../services/supabaseClient';
-import { checkUsageQuota, incrementUserUsage } from '../../services/userService';
+import { checkUsageQuota, incrementUserUsage } from '../../services/ProfileService';
 import { PdiDocumentService } from '../../services/pdi/PdiDocumentService'; // Updated from PdiService
 
 // --- FOLDER STRUCTURE ENUM ---

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { extractTextFromPdf } from '../../services/pdfService';
-import { parseClassListFromText } from '../../services/geminiService';
+import { parseClassListFromText } from '../../services/ai/AiUtilityService';
 
 interface ImportProcessProps {
     file: File;
@@ -34,6 +33,7 @@ const ImportProcess: React.FC<ImportProcessProps> = ({ file, onCancel, onComplet
         setError('');
 
         try {
+            const { extractTextFromPdf } = await import('../../services/pdfService');
             const text = await extractTextFromPdf(f);
 
             setStep('parsing');

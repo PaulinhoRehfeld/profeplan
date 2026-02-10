@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Plus, Search } from 'lucide-react';
-import { getAllUsers, updateUserProfileAdmin } from '../../services/userService';
+import { getAllUsers, updateUserProfileAdmin } from '../../services/ProfileService';
 import { UserProfile } from '../../types';
 import { supabase } from '../../services/supabaseClient';
 import { FeedbackReport } from '../../features/Admin/FeedbackReport';

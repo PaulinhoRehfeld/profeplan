@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, AlertCircle, CheckCircle, Loader, TrendingUp } from 'lucide-react';
 import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
-import { generateBlock10Diagnosis } from '../../../services/geminiService';
+import { generateBlock10Diagnosis } from '../../../services/pdi/PdiDocumentService';
 import { GrauAutonomia } from '../../../types/pdi';
 
 interface PDIBlock10FormProps {

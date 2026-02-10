@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { executeWithFallback, getGenAIClient } from "./AiCore";
-import { checkUsageQuota, incrementUserUsage } from "../userService";
+import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
 import { searchCurriculum } from "../searchService"; // Import from searchService
 import { SYSTEM_PROMPT } from "../../constants";
 

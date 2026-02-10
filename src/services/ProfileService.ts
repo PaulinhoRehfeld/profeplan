@@ -75,3 +75,20 @@ export const ProfileService = {
         return true;
     }
 };
+
+export {
+    getProfileByEmail,
+    getUserProfile,
+    checkUsageQuota,
+    incrementUserUsage,
+    getAllUsers,
+    updateUserProfile,
+    updateUserProfileAdmin,
+    isAdmin,
+    hasFeaturePattern,
+    registerPhone,
+    addReferral,
+    checkAndRewardReferrer,
+    addUserCredits,
+    updateUserRole
+} from './userService';

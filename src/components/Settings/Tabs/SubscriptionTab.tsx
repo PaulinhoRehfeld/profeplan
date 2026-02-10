@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Users, Shield, User, Crown, Loader2, Zap } from 'lucide-react';
-import { updateUserRole } from '../../../services/userService';
+import { updateUserRole } from '../../../services/ProfileService';
 
 interface SubscriptionTabProps {
     userProfile: any;

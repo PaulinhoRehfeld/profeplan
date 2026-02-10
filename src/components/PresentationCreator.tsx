@@ -4,7 +4,7 @@ import {
     Type, Palette, SlidersHorizontal, Image as ImageIcon,
     Download, LayoutTemplate, Save, ChevronLeft, ChevronRight, X, Clock
 } from 'lucide-react';
-import { generatePresentationJSON } from '../services/geminiService';
+import { generatePresentationJSON } from '../services/ai/AiPresentationService';
 import { getTeacherContext, saveLessonToMemory } from '../services/supabaseService';
 import { saveGeneratedContent } from '../services/databaseService';
 import CanvaExportModal from './CanvaExportModal';

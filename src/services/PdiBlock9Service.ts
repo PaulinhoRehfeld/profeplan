@@ -3,8 +3,7 @@
  * Handles automatic generation of Block 9 adaptations when teachers save lesson plans
  */
 
-import { PdiDocumentService } from './pdi/PdiDocumentService';
-import { generateBlock9Adaptation } from './geminiService';
+import { PdiDocumentService, generateBlock9Adaptation } from './pdi/PdiDocumentService';
 import { Block9AdaptationEntry } from '../types/pdi';
 import { supabase } from './supabaseClient';
 

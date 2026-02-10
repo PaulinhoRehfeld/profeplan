@@ -1,29 +1,59 @@
-import google.generativeai as genai
-from supabase import create_client
+import argparse
 import json
-import re
+import os
 import time
+from pathlib import Path
 
-# --- CONFIGURAÇÕES ---
-API_KEY_GOOGLE = "SUA_CHAVE_GOOGLE_AQUI"
-SUPABASE_URL = "SUA_URL_DO_SUPABASE_AQUI"
-SUPABASE_KEY = "SUA_SERVICE_ROLE_KEY_AQUI"
+import google.generativeai as genai
+from dotenv import load_dotenv
+from supabase import create_client
 
-genai.configure(api_key=API_KEY_GOOGLE)
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+from curriculum_utils import extrair_codigo
 
-def extrair_codigo(texto):
-    # Procura códigos como (EM13CHS101)
-    match = re.search(r'\((E[MF]\d+[\w\d]+)\)', texto)
-    return match.group(1) if match else "SEM_CODIGO"
+DEFAULT_EMBEDDING_MODEL = "models/text-embedding-004"
+FALLBACK_EMBEDDING_MODEL = "models/embedding-001"
 
-def subir_curriculo():
+
+def load_env() -> None:
+    env_path = Path(__file__).resolve().parents[2] / '.env'
+    load_dotenv(dotenv_path=env_path)
+
+
+def get_settings() -> dict:
+    return {
+        "api_key": os.getenv("GEMINI_API_KEY") or os.getenv("VITE_GEMINI_API_KEY") or "",
+        "supabase_url": os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL") or "",
+        "supabase_key": os.getenv("SUPABASE_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY") or "",
+        "embedding_model": os.getenv("EMBEDDING_MODEL") or DEFAULT_EMBEDDING_MODEL,
+    }
+
+
+def init_clients(settings: dict):
+    if not settings["supabase_url"]:
+        raise ValueError("Missing SUPABASE_URL (check .env at project root)")
+
+    if not settings["supabase_key"]:
+        raise ValueError("Missing SUPABASE_KEY (check .env at project root)")
+
+    genai.configure(api_key=settings["api_key"])
+    supabase = create_client(settings["supabase_url"], settings["supabase_key"])
+    return supabase
+
+
+def embed_text(text: str, model_name: str) -> dict:
+    return genai.embed_content(
+        model=model_name,
+        content=text,
+        task_type="retrieval_document"
+    )
+
+def subir_curriculo(file_path: str, embedding_model: str):
     print("📖 Lendo JSON estruturado do Plano de MG...")
     try:
-        with open('plano_curso_mg_estruturado.json', 'r', encoding='utf-8') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             plano = json.load(f)
     except FileNotFoundError:
-        print("❌ Erro: O arquivo 'plano_curso_mg_estruturado.json' não foi encontrado.")
+        print(f"❌ Erro: O arquivo '{file_path}' não foi encontrado.")
         return
 
     print(f"🚀 Processando {len(plano)} itens curriculares...")
@@ -36,11 +66,14 @@ def subir_curriculo():
 
         try:
             # Gerar vetor (Embedding)
-            res = genai.embed_content(
-                model="models/text-embedding-004",
-                content=texto_para_vetor,
-                task_type="retrieval_document"
-            )
+            try:
+                res = embed_text(texto_para_vetor, embedding_model)
+            except Exception as embed_error:
+                error_text = str(embed_error)
+                if embedding_model == DEFAULT_EMBEDDING_MODEL and "not found" in error_text:
+                    res = embed_text(texto_para_vetor, FALLBACK_EMBEDDING_MODEL)
+                else:
+                    raise embed_error
 
             payload = {
                 "disciplina": item['disciplina'],
@@ -63,5 +96,24 @@ def subir_curriculo():
 
     print("\n🏆 Sucesso! O currículo de MG está pronto para ser casado com as questões.")
 
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Integrador de curriculo MG")
+    parser.add_argument(
+        "--file",
+        type=str,
+        default="plano_curso_mg_estruturado.json",
+        help="Arquivo JSON com o curriculo estruturado"
+    )
+    args = parser.parse_args()
+
+    load_env()
+    settings = get_settings()
+    global supabase
+    supabase = init_clients(settings)
+
+    subir_curriculo(args.file, settings["embedding_model"])
+
+
 if __name__ == "__main__":
-    subir_curriculo()
+    main()

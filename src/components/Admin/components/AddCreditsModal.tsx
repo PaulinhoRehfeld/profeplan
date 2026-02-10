@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Coins } from 'lucide-react';
 import { UserProfile } from '../../../types';
-import { addUserCredits } from '../../../services/userService';
+import { addUserCredits } from '../../../services/ProfileService';
 
 interface AddCreditsModalProps {
     isOpen: boolean;

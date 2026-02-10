@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
-import { generateGeminiContent } from '../../services/geminiService';
+import { generateGeminiContent } from '../../services/ai/AiPlanningService';
 import { searchCurriculum, getDeterministicCurriculum, searchPnldBookContent } from '../../services/searchService';
 import { searchQuestions } from '../../services/questionService';
 import { Message, MessageRole, ToolMode } from '../../types';

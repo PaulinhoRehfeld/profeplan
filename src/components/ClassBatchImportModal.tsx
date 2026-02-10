@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { X, Upload, Loader2, Save, CheckSquare, Square, FileText, GraduationCap } from 'lucide-react';
-import { extractTextFromPdf } from '../services/pdfService';
-import { parseClassListFromText } from '../services/geminiService';
+import { parseClassListFromText } from '../services/ai/AiUtilityService';
 
 interface ClassBatchImportModalProps {
     isOpen: boolean;
@@ -35,6 +34,7 @@ const ClassBatchImportModal: React.FC<ClassBatchImportModalProps> = ({ isOpen, o
         try {
             let text = '';
             if (file.type === 'application/pdf') {
+                const { extractTextFromPdf } = await import('../services/pdfService');
                 text = await extractTextFromPdf(file);
             } else {
                 text = await file.text();

@@ -1,4 +1,4 @@
-import { checkUsageQuota, incrementUserUsage } from "../userService";
+import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
 import { executeWithFallback, getGenAIClient } from "./AiCore";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 

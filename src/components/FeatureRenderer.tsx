@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Loader2, Lock } from 'lucide-react';
 import { ToolMode, UserSession, UserProfile, UserSettings } from '../types';
-import { isAdmin } from '../services/userService';
+import { isAdmin } from '../services/ProfileService';
 
 // Lazy Load Features
 const DriveExplorer = React.lazy(() => import('../components/DriveExplorer'));

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Target, CheckCircle2, AlertCircle, X, Loader2, GraduationCap } from 'lucide-react';
 import { getLocalClasses } from '../../../services/localStorageService';
 import { searchQuestions } from '../../../services/questionService';
-import { generateAssessmentWithContext } from '../../../services/geminiService';
+import { generateAssessmentWithContext } from '../../../services/ai/AiAssessmentService';
 import { Assessment } from '../../../types';
 
 interface AssessmentSetupProps {

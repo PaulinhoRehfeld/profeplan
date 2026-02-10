@@ -1,4 +1,4 @@
-import { generateGeminiContent } from "../geminiService";
+import { generateGeminiContent } from "./AiPlanningService";
 
 interface StudentProfile {
     name: string;

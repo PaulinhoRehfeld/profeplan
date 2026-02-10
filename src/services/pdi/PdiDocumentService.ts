@@ -4,7 +4,7 @@ import { PdiDocument, TeacherEntry, PdiCompleteness, UserProfile } from '../../t
 import { Block9AdaptationEntry } from '../../types/pdi';
 import { z } from 'zod';
 import { ProfileService } from '../ProfileService';
-import { checkUsageQuota } from '../userService';
+import { checkUsageQuota } from '../ProfileService';
 import { getGenAIClient } from '../ai/AiCore';
 
 const getErrorMessage = (error: unknown): string =>

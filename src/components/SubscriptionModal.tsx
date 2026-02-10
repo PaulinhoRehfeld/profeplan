@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { X, Check, CreditCard, Zap, Crown, ShieldCheck } from 'lucide-react';
 import { createCheckoutSession } from '../services/stripeService';
-import { UserProfile } from '../services/userService';
+import type { UserProfile } from '../types';
 
 // Replace these with your actual Stripe Price IDs (starting with price_...)
 // You can find these inside the Products: 

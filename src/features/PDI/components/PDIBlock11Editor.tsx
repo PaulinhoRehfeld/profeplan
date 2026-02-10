@@ -4,7 +4,7 @@ import {
     Loader, Edit3, Eye, Lock
 } from 'lucide-react';
 import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
-import { generateBlock11Report } from '../../../services/geminiService';
+import { generateBlock11Report } from '../../../services/pdi/PdiDocumentService';
 
 interface PDIBlock11EditorProps {
     pdiId: string;

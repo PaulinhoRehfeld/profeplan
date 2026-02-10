@@ -2,7 +2,7 @@
 import React from 'react';
 import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector, Clock, Users, ClipboardCheck } from 'lucide-react';
 import { ToolMode, UserRole, UserProfile } from '../types';
-import { isAdmin } from '../services/userService';
+import { isAdmin } from '../services/ProfileService';
 
 interface SidebarProps {
   activeMode: ToolMode;

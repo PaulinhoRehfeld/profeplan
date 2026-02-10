@@ -1,6 +1,6 @@
 
 import { supabase } from './supabaseClient';
-import { generateTermPlan } from './geminiService';
+import { generateTermPlan } from './ai/AiPlanningService';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export interface PlanningIntent {
@@ -141,7 +141,7 @@ export const PlanningAuthority = {
         // C. Execução Segura
         return await generateTermPlan({
             ...safeIntent,
-            // Passa o nível explicitamente para o GeminiService (que já consertamos)
+            // Passa o nível explicitamente para o AiPlanningService
             level: safeIntent.level,
             feedback: safeIntent.feedback, // Pass feedback to generator
             pnld_book_id: safeIntent.pnld_book_id
