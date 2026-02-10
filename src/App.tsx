@@ -7,6 +7,7 @@ import { useProfeplanAuth } from './hooks/useProfeplanAuth';
 import { useProfeplanSettings } from './hooks/useProfeplanSettings';
 import { useActiveSchool } from './hooks/useActiveSchool';
 import { runDiagnostics } from './services/diagnosticService';
+import { supabase } from './services/supabaseClient';
 import { ToolMode, UserSettings, UserProfile } from './types';
 
 // Components & Layouts
@@ -305,7 +306,6 @@ const App: React.FC = () => {
                       localStorage.removeItem('profeplan_session');
                       localStorage.removeItem('supabase_user_id');
                       setSession(null);
-                      const { supabase } = await import('./services/supabaseClient');
                       await supabase.auth.signOut();
                       window.location.href = '/';
                     }}

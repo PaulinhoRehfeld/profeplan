@@ -3,7 +3,8 @@ import { User, BookOpen, ImageIcon, Trash2, FileText, Loader2, Plus, X, Shield, 
 import { UserSettings } from '../../../types';
 import { supabase } from '../../../services/supabaseClient';
 import { SchoolAutocomplete } from '../../SchoolAutocomplete';
-import { getTeacherSchoolManager } from '../../../services/teacherSchoolService';
+import { getTeacherSchoolManager, reconcileTeacherByInep, clearTeacherSchoolLinks } from '../../../services/teacherSchoolService';
+import { updateUserProfile } from '../../../services/userService';
 
 interface ProfileTabProps {
     userProfile: any;
@@ -223,8 +224,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                 hasName: !!secondSchool.name
             });
 
-            const { updateUserProfile } = await import('../../../services/userService');
-
             const result = await updateUserProfile(userId, {
                 ...localSettings,
                 inep_code: localSettings.schoolCode // Mapping schoolCode UI field to inep_code logic
@@ -234,8 +233,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
 
             // NOVO: Sincronização de Vínculos (Limpa e Re-cria)
             console.log('[ProfileTab] 🔄 Syncing teacher schools...');
-            const { reconcileTeacherByInep, clearTeacherSchoolLinks } = await import('../../../services/teacherSchoolService');
-
             // 1. Limpa vínculos antigos para garantir que escolas removidas ou trocadas sumam
             await clearTeacherSchoolLinks(userId);
 
