@@ -4,7 +4,12 @@ import os
 import time
 from pathlib import Path
 
-import google.generativeai as genai
+try:
+    from google import genai as genai
+    GENAI_SDK = "google.genai"
+except ImportError:  # Fallback for environments without google-genai installed
+    import google.generativeai as genai
+    GENAI_SDK = "google.generativeai"
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -35,19 +40,45 @@ def init_clients(settings: dict):
     if not settings["supabase_key"]:
         raise ValueError("Missing SUPABASE_KEY (check .env at project root)")
 
-    genai.configure(api_key=settings["api_key"])
+    if GENAI_SDK == "google.genai":
+        client = genai.Client(api_key=settings["api_key"])
+    else:
+        genai.configure(api_key=settings["api_key"])
+        client = None
+
     supabase = create_client(settings["supabase_url"], settings["supabase_key"])
-    return supabase
+    return supabase, client
 
 
-def embed_text(text: str, model_name: str) -> dict:
-    return genai.embed_content(
+def embed_text(text: str, model_name: str, client) -> dict:
+    if GENAI_SDK == "google.genai":
+        response = client.models.embed_content(
+            model=model_name,
+            contents=text,
+            config={"task_type": "retrieval_document"}
+        )
+
+        embedding = None
+        if hasattr(response, "embeddings") and response.embeddings:
+            first = response.embeddings[0]
+            if hasattr(first, "values"):
+                embedding = first.values
+            elif hasattr(first, "embedding"):
+                embedding = first.embedding
+
+        if embedding is None:
+            raise ValueError("Embedding response missing values")
+
+        return {"embedding": embedding}
+
+    response = genai.embed_content(
         model=model_name,
         content=text,
         task_type="retrieval_document"
     )
+    return response
 
-def subir_curriculo(file_path: str, embedding_model: str):
+def subir_curriculo(file_path: str, embedding_model: str, client):
     print("📖 Lendo JSON estruturado do Plano de MG...")
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -67,11 +98,11 @@ def subir_curriculo(file_path: str, embedding_model: str):
         try:
             # Gerar vetor (Embedding)
             try:
-                res = embed_text(texto_para_vetor, embedding_model)
+                res = embed_text(texto_para_vetor, embedding_model, client)
             except Exception as embed_error:
                 error_text = str(embed_error)
                 if embedding_model == DEFAULT_EMBEDDING_MODEL and "not found" in error_text:
-                    res = embed_text(texto_para_vetor, FALLBACK_EMBEDDING_MODEL)
+                    res = embed_text(texto_para_vetor, FALLBACK_EMBEDDING_MODEL, client)
                 else:
                     raise embed_error
 
@@ -110,9 +141,9 @@ def main() -> None:
     load_env()
     settings = get_settings()
     global supabase
-    supabase = init_clients(settings)
+    supabase, client = init_clients(settings)
 
-    subir_curriculo(args.file, settings["embedding_model"])
+    subir_curriculo(args.file, settings["embedding_model"], client)
 
 
 if __name__ == "__main__":
