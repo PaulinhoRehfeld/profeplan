@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { School } from '../types';
 import { supabase } from '../services/supabaseClient';
-
-interface School {
-    id: string;
-    name: string;
-    inep_code: string;
-    city?: string;
-}
 
 interface SchoolAutocompleteProps {
     value: string;

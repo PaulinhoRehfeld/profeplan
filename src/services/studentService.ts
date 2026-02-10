@@ -3,6 +3,7 @@
  * It replaces the legacy StudentService.ts (PascalCase).
  */
 import { supabase } from './supabaseClient';
+import { Student } from '../types';
 
 /**
  * CONSOLIDATED StudentService Module
@@ -14,24 +15,7 @@ import { supabase } from './supabaseClient';
  * Single source of truth for all student operations
  */
 
-// Types
-export interface Student {
-    id: string;
-    name: string;
-    student_code?: string;
-    current_school_id: string;
-    school_id?: string; // Alias for compatibility
-    class_id?: string;
-    current_class_id?: string; // Alias for compatibility
-    state_unique_id?: string; // For state-level tracking
-    serie?: string; // Legacy support
-    pdi_needs?: string[];
-    observations?: string;
-    deficiencies?: string[]; // Extended field support
-    pedagogical_observations?: string; // Extended field support
-    created_at: string;
-}
-
+// DTOs
 export interface CreateStudentDTO {
     name: string;
     student_code?: string;
@@ -46,7 +30,11 @@ export interface CreateStudentDTO {
 
 /**
  * Get all students for a school
- * Supports both 'school_id' and 'current_school_id' field names
+ * @param schoolId - The unique identifier of the school
+ * @returns Promise<Student[]> - Array of students in the school, or empty array on error
+ * @throws Catches and logs Supabase errors, returns empty array
+ * @example
+ * const students = await getStudentsBySchool('school-abc-123');
  */
 export const getStudentsBySchool = async (schoolId: string): Promise<Student[]> => {
     try {
@@ -70,7 +58,11 @@ export const getStudentsBySchool = async (schoolId: string): Promise<Student[]> 
 
 /**
  * Get a single student by ID
- * Supports both field naming conventions
+ * @param studentId - The unique identifier of the student
+ * @returns Promise<Student | null> - Student object or null if not found
+ * @throws Catches and logs Supabase errors, returns null
+ * @example
+ * const student = await getStudentById('student-xyz-789');
  */
 export const getStudentById = async (studentId: string): Promise<Student | null> => {
     try {

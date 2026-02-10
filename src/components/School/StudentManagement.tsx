@@ -3,6 +3,7 @@ import { Plus, Users, Trash2, Edit2, Search, Filter, AlertTriangle, Save, X, Arr
 import { supabase } from '../../services/supabaseClient';
 import { createStudent, updateStudent, archiveStudent } from '../../services/studentService';
 import { StudentPDIProfile } from './PDI/StudentPDIProfile';
+import { Student, ClassItem } from '../../types';
 
 // Constants
 const PDI_OPTIONS = [
@@ -18,30 +19,7 @@ const DELETION_REASONS = [
     'Outro'
 ];
 
-// Garantir que o tipo Student definido localmente seja utilizado corretamente
-interface Student {
-    id: string; // TEXT
-    name: string;
-    student_code?: string;
-    class_id?: string;
-    pdi_needs?: string[];
-    deficiencies?: string[];
-    observations?: string;
-    pedagogical_observations?: string;
-}
-
-interface ClassItem {
-    id: string;
-    name: string;
-    year: number;
-}
-
-interface StudentManagementProps {
-    schoolId: string;
-    students: Student[];
-    onRefresh: () => void;
-}
-
+// Ajustar referências existentes para usar o tipo importado
 export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, students, onRefresh }) => {
     // Mode State
     const [searchTerm, setSearchTerm] = useState('');
@@ -506,3 +484,9 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({ schoolId, 
 };
 
 export default StudentManagement;
+
+interface StudentManagementProps {
+    schoolId: string;
+    students: Student[];
+    onRefresh: () => void;
+}

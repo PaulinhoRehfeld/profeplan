@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Building2, ChevronDown, Check } from 'lucide-react';
+import { School } from '../types';
 import { supabase } from '../services/supabaseClient';
-
-interface School {
-    id: string;
-    name: string;
-    inep_code: string;
-}
 
 interface SchoolSwitcherProps {
     userProfile: any;

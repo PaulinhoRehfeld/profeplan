@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { School, Users, GraduationCap, BookOpen, Loader2, UserPlus, Upload, Shield, MapPin, Building2, Search } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
-import { UserProfile } from '../types';
+import { UserProfile, SchoolStats } from '../types';
 import ClassManagement from '../components/School/ClassManagement';
 import TeacherManagement from '../components/School/TeacherManagement';
 import StudentManagement from '../components/School/StudentManagement';
@@ -10,13 +10,6 @@ import { getStudentsBySchool } from '../services/studentService';
 interface SchoolDashboardProps {
     userProfile: UserProfile;
     onOpenSettings: () => void;
-}
-
-interface SchoolStats {
-    totalTeachers: number;
-    totalStudents: number;
-    totalClasses: number;
-    schoolName: string;
 }
 
 export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, onOpenSettings }) => {

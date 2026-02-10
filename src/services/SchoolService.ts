@@ -1,13 +1,14 @@
 import { supabase } from './supabaseClient';
-
-export interface SchoolStats {
-    totalStudents: number;
-    totalTeachers: number;
-    totalClasses: number;
-    pdiCount: number;
-}
+import { SchoolStats } from '../types';
 
 export const SchoolService = {
+    /**
+     * Get aggregated statistics for a school
+     * @param schoolId - The unique identifier of the school
+     * @returns Promise<SchoolStats> - Object containing total counts of students, teachers, classes, and PDI records
+     * @example
+     * const stats = await SchoolService.getSchoolStats('school-abc-123');
+     */
     async getSchoolStats(schoolId: string): Promise<SchoolStats> {
         const { count: students } = await supabase.from('school_students').select('*', { count: 'exact', head: true }).eq('school_id', schoolId);
         const { count: teachers } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('school_id', schoolId).eq('role', 'teacher');
@@ -23,6 +24,16 @@ export const SchoolService = {
         };
     },
 
+    /**
+     * Get paginated list of students in a school with optional search
+     * @param schoolId - The unique identifier of the school
+     * @param page - Page number (1-indexed)
+     * @param limit - Results per page (default: 50)
+     * @param search - Optional search term to filter by student name
+     * @returns Promise - Supabase query response with students array or error
+     * @example
+     * const result = await SchoolService.getStudents('school-abc-123', 1, 20, 'João');
+     */
     async getStudents(schoolId: string, page = 1, limit = 50, search = '') {
         let query = supabase
             .from('school_students')

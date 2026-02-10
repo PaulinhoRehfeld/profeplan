@@ -36,12 +36,8 @@
 ```
 ANTES:
   src/services/studentService.ts
-  src/services/pdi/StudentService.ts
   ↓
-  ❌ Mesma tabela (students)
-  ❌ Mesmas funções (createStudent, getStudentsBySchool)
-  ❌ Diferentes interfaces
-  ❌ Diferentes assinaturas de retorno
+  ✅ Consolidado no studentService.ts
 
 DEPOIS:
   src/services/studentService.ts (único)

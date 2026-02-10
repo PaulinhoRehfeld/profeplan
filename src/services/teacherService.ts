@@ -1,22 +1,5 @@
 import { supabase } from './supabaseClient';
-
-// Types
-export interface Teacher {
-    id: string;
-    email: string;
-    full_name: string;
-    masp?: string;
-    school_id: string;
-    role: string;
-    created_at: string;
-}
-
-export interface InviteTeacherDTO {
-    email: string;
-    full_name: string;
-    masp?: string;
-    school_id: string;
-}
+import { Teacher, InviteTeacherDTO } from '../types';
 
 export interface PendingTeacher {
     id: string;
@@ -38,7 +21,12 @@ export interface CreatePendingTeacherDTO {
 }
 
 /**
- * Get all teachers for a school
+ * Fetch all active teachers for a given school
+ * @param schoolId - The unique identifier of the school
+ * @returns Promise<Teacher[]> - Array of teachers in the school, or empty array on error
+ * @throws Catches and logs Supabase errors, returns empty array
+ * @example
+ * const teachers = await getTeachersBySchool('school-abc-123');
  */
 export const getTeachersBySchool = async (schoolId: string): Promise<Teacher[]> => {
     // Defensive trim
@@ -61,7 +49,12 @@ export const getTeachersBySchool = async (schoolId: string): Promise<Teacher[]> 
 
 /**
  * Invite a teacher to join the school
- * Creates a profile entry that will be linked when the teacher signs up
+ * Creates a pending teacher record that will be linked when the teacher signs up
+ * @param teacherData - Teacher invitation data (email, full_name, masp, school_id)
+ * @returns Promise - Object with success flag and optional error message
+ * @throws Catches and logs errors, returns success: false
+ * @example
+ * const result = await inviteTeacher({ email: 'prof@example.com', full_name: 'João Silva', school_id: 'school-123' });
  */
 export const inviteTeacher = async (teacherData: InviteTeacherDTO): Promise<{ success: boolean; error?: string }> => {
     try {

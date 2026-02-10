@@ -6,7 +6,9 @@
 
 ## 📊 MAPA DE REDUNDÂNCIAS COM LINHAS DE CÓDIGO
 
-### 1. StudentService Duplicação - Código Lado a Lado
+### 1. StudentService Duplicação - Resolvido
+
+O `studentService.ts` consolidado agora é a única fonte de verdade para operações relacionadas a estudantes. O antigo `pdi/StudentService.ts` foi removido.
 
 #### Arquivo A: `src/services/studentService.ts`
 ```typescript
@@ -54,58 +56,6 @@ export const updateStudent = async (studentId: string, updates: Partial<Student>
     // ...
 };
 ```
-
-#### Arquivo B: `src/services/pdi/StudentService.ts`
-```typescript
-// LINHAS 1-50
-
-export interface Student {
-    id: string;
-    school_id: string;
-    state_unique_id?: string;
-    name: string;
-    current_class_id?: string;
-    created_at?: string;
-}
-
-export const StudentService = {
-    async createStudent(student: Omit<Student, 'id' | 'created_at'>) {
-        const { data, error } = await supabase
-            .from('students')
-            .insert(student)
-            .select()
-            .single();
-        return { data, error };
-    },
-
-    async getStudentsBySchool(schoolId: string) {
-        const { data, error } = await supabase
-            .from('students')
-            .select('*')
-            .eq('school_id', schoolId)
-            .order('name');
-        return { data, error };
-    },
-
-    async getStudentById(id: string) {
-        const { data, error } = await supabase
-            .from('students')
-            .select('*')
-            .eq('id', id)
-            .single();
-        return { data, error };
-    }
-};
-```
-
-**Análise**:
-- ❌ Mesma tabela (`students`)
-- ❌ Mesmas funções (`createStudent`, `getStudentsBySchool`)
-- ❌ Diferentes assinaturas de retorno (promises vs { data, error })
-- ❌ Diferentes estruturas de Student interface
-- 🔴 **REDUNDÂNCIA CRÍTICA**
-
----
 
 ### 2. PdiDocumentService Fragmentação
 

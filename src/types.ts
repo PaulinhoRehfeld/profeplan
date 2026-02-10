@@ -1,4 +1,3 @@
-
 export enum MessageRole {
   USER = 'user',
   ASSISTANT = 'assistant',
@@ -155,12 +154,18 @@ export interface Student {
   id: string;
   name: string;
   student_code?: string;
+  current_school_id?: string;
+  school_id?: string; // Alias for compatibility
   class_id?: string;
-  needs_adaptation: boolean;
-  deficiencies: string[];
+  current_class_id?: string; // Alias for compatibility
+  state_unique_id?: string; // For state-level tracking
+  serie?: string; // Legacy support
   pdi_needs?: string[];
-  pedagogical_observations: string;
   observations?: string;
+  deficiencies?: string[]; // Extended field support
+  pedagogical_observations?: string; // Extended field support
+  needs_adaptation?: boolean;
+  created_at?: string;
 }
 
 export interface Class {
@@ -176,6 +181,16 @@ export interface Class {
   created_at: string;
   updated_at?: string;
   students?: Student[];
+}
+
+export interface ClassItem {
+    id: string;
+    name: string;
+    year: number;
+    grade?: string;
+    shift?: string;
+    room?: string;
+    student_count?: number;
 }
 
 export interface PdiLog {
@@ -268,6 +283,54 @@ export interface PnldBook {
   grade?: string;
   cover_url?: string;
   created_at?: string;
+}
+
+// ====== SCHOOL TYPES ======
+export interface School {
+  id: string;
+  name: string;
+  inep_code?: string;
+  city?: string;
+  state?: string;
+  created_at?: string;
+}
+
+export interface SchoolStats {
+  totalStudents: number;
+  totalTeachers: number;
+  totalClasses: number;
+  pdiCount?: number;
+}
+
+// ====== TEACHER TYPES ======
+export interface Teacher {
+  id: string;
+  email: string;
+  full_name: string;
+  masp?: string;
+  school_id?: string;
+  role?: string;
+  created_at?: string;
+}
+
+export interface TeacherSchoolLink {
+  id: string;
+  teacher_id: string;
+  school_id: string;
+  school_name?: string;
+  school_inep?: string;
+  role: 'teacher' | 'coordinator' | 'principal';
+  disciplines?: string[];
+  started_at: string;
+  ended_at?: string;
+}
+
+// ====== DTO TYPES ======
+export interface InviteTeacherDTO {
+  email: string;
+  full_name: string;
+  masp?: string;
+  school_id: string;
 }
 
 // PDI Types - Export all PDI-related types

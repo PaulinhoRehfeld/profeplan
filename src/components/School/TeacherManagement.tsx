@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, GraduationCap, Mail, Users, Trash2, Clock, CheckCircle, Check } from 'lucide-react';
+import { Teacher } from '../../types';
 
-interface Teacher {
-    id: string;
-    email: string;
-    full_name: string;
-    masp?: string;
+// Local extension for TeacherManagement-specific needs
+interface LocalTeacher extends Teacher {
     created_at: string;
 }
 

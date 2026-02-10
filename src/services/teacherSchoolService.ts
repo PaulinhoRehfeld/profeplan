@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { TeacherSchoolLink } from '../types';
 import { normalizeInepCode } from '../utils/inepUtils';
 
 /**
@@ -6,18 +7,6 @@ import { normalizeInepCode } from '../utils/inepUtils';
  * Suporta professores em múltiplas escolas
  * NOTA: teacher_id = UUID (string), school_id = TEXT (string)
  */
-
-export interface TeacherSchoolLink {
-    id: string; // UUID como string
-    teacher_id: string; // UUID como string
-    school_id: string; // TEXT
-    school_name?: string;
-    school_inep?: string;
-    role: 'teacher' | 'coordinator' | 'principal';
-    disciplines: string[];
-    started_at: string;
-    ended_at?: string;
-}
 
 /**
  * Obtém todas as escolas vinculadas a um professor (vínculos ativos)

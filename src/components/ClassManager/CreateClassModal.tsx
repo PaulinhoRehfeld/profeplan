@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Loader2, Plus, X, Link as LinkIcon, Save } from 'lucide-react';
 import SchoolStudentSelector from '../SchoolStudentSelector';
+import { getStudentsBySchool } from '../../services/studentService';
 
 interface CreateClassModalProps {
     onClose: () => void;
     onSave: (data: { name: string, subject: string, students: string[] }) => Promise<void>;
+    activeSchoolId: string; // Adicionado activeSchoolId como prop
 }
 
-const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onSave }) => {
+const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onSave, activeSchoolId }) => {
     const [manualName, setManualName] = useState('');
     const [manualSubject, setManualSubject] = useState('');
     const [manualStudents, setManualStudents] = useState('');
@@ -49,6 +51,24 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onSave }) 
         }
     };
 
+    const handleSchoolImport = async () => {
+        setIsSchoolImportOpen(true);
+        setError('');
+        try {
+            const students = await getStudentsBySchool(activeSchoolId);
+            if (students.length === 0) {
+                setError('Nenhum aluno encontrado para esta escola.');
+                return;
+            }
+            setManualStudents(students.map(student => student.name).join(', ')); // Atualiza manualStudents diretamente
+        } catch (err) {
+            console.error('Erro ao importar alunos:', err);
+            setError('Erro ao importar alunos da escola.');
+        } finally {
+            setIsSchoolImportOpen(false);
+        }
+    };
+
     return (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
             <div className="bg-white rounded-[2rem] w-full max-w-lg p-8 shadow-2xl relative" onClick={e => e.stopPropagation()}>
@@ -62,7 +82,7 @@ const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onSave }) 
                     {/* SCHOOL IMPORT BUTTON */}
                     <div className="mb-4">
                         <button
-                            onClick={() => setIsSchoolImportOpen(true)}
+                            onClick={handleSchoolImport}
                             className="w-full py-3 bg-indigo-50 border-2 border-dashed border-indigo-200 text-indigo-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center justify-center gap-2"
                         >
                             <LinkIcon size={16} /> Importar da Escola

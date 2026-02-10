@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
 import { Search, Loader2, X, Check } from 'lucide-react';
-
-export interface School {
-    id: string;
-    name: string;
-    city: string;
-    sre: string;
-}
+import { School } from '../types';
+import { supabase } from '../services/supabaseClient';
 
 interface SchoolSelectorProps {
     onSelect: (school: School) => void;

@@ -1,18 +1,7 @@
 import { supabase } from './supabaseClient';
+import { Class } from '../types';
 
 // Types
-export interface Class {
-    id: string;
-    school_id: string;
-    name: string;
-    grade?: string;
-    year: number;
-    shift?: string;
-    room?: string;
-    created_at: string;
-    updated_at: string;
-}
-
 export interface CreateClassDTO {
     school_id: string;
     name: string;
@@ -23,7 +12,12 @@ export interface CreateClassDTO {
 }
 
 /**
- * Get all classes for a school
+ * Fetch all classes for a given school
+ * @param schoolId - The unique identifier of the school
+ * @returns Promise<Class[]> - Array of classes, or empty array if none found or on error
+ * @throws Catches and logs Supabase errors, returns empty array
+ * @example
+ * const classes = await getClassesBySchool('school-abc-123');
  */
 export const getClassesBySchool = async (schoolId: string): Promise<Class[]> => {
     const { data, error } = await supabase
@@ -41,7 +35,12 @@ export const getClassesBySchool = async (schoolId: string): Promise<Class[]> => 
 };
 
 /**
- * Create a new class
+ * Create a new class in the school
+ * @param classData - Class creation data (name, grade, year, shift, room, school_id)
+ * @returns Promise - Object with success flag, created Class object, and optional error message
+ * @throws Returns error object on Supabase failure
+ * @example
+ * const result = await createClass({ name: '3A', school_id: 'school-123', year: 2025 });
  */
 export const createClass = async (classData: CreateClassDTO): Promise<{ success: boolean; data?: Class; error?: string }> => {
     const { data, error } = await supabase

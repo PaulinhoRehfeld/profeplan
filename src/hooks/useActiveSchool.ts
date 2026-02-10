@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { TeacherSchoolLink } from '../types';
 import { supabase } from '../services/supabaseClient';
 
 export interface ActiveSchool {
@@ -7,17 +8,6 @@ export interface ActiveSchool {
     inep_code: string;
     city?: string;
 }
-
-export interface TeacherSchoolLink {
-    id: string;
-    school_id: string;
-    started_at: string;
-    ended_at: string | null;
-    schools: {
-        id: string;
-        name: string;
-        inep_code: string;
-        city?: string;
     };
 }
 

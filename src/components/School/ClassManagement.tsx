@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Upload, BookOpen, Users, ChevronRight, Edit2, Trash2, ArrowRightLeft, X, Save, AlertTriangle } from 'lucide-react';
+import { Class } from '../../types';
 import { StudentPDIProfile } from './PDI/StudentPDIProfile';
 
-interface Class {
-    id: string;
-    name: string;
-    grade?: string;
-    year: number;
-    shift?: string;
-    room?: string;
+// Local extension for ClassManagement-specific needs
+interface LocalClass extends Class {
     student_count?: number;
     students?: any[];
 }
@@ -16,7 +12,7 @@ interface Class {
 interface ClassManagementProps {
     schoolId: string;
     userId: string;
-    classes: Class[];
+    classes: LocalClass[];
     onRefresh: () => void;
 }
 

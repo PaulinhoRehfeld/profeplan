@@ -30,7 +30,14 @@ export interface PdiRecord {
 
 export const PdiDocumentService = {
     /**
-     * Create or Get existing PDI for a student/year
+     * Create or retrieve an existing PDI document for a student
+     * If no PDI exists for the given year, creates a new one with optional contextual data
+     * @param studentId - The unique identifier of the student
+     * @param year - Academic year (defaults to current year)
+     * @param contextualData - Optional data to pre-fill the PDI (profile, student name)
+     * @returns Promise - Object with PDI document or error
+     * @example
+     * const result = await PdiDocumentService.getOrCreatePdi('student-123', 2025, { studentName: 'João' });
      */
     async getOrCreatePdi(studentId: string, year: number = new Date().getFullYear(), contextualData?: { profile?: UserProfile | null, studentName?: string }): Promise<{ data: PdiDocument | null, error: any }> {
         const { data: existing, error: fetchError } = await supabase
@@ -76,7 +83,17 @@ export const PdiDocumentService = {
 
     /**
      * Log an event to the student's PDI timeline
-     * Consolidated from PdiService.logEvent()
+     * Records an occurrence, lesson plan, evaluation, observation, or adaptation
+     * Consolidated from legacy PdiService.logEvent()
+     * @param studentId - The student's unique identifier
+     * @param type - Type of record (EVALUATION | OCCURRENCE | LESSON_PLAN | OBSERVATION | ADAPTATION)
+     * @param title - Brief title of the event
+     * @param content - Detailed content of the event
+     * @param pdiBlock - Optional PDI block reference (Block 1-11)
+     * @returns Promise<PdiRecord | null> - Created record or null if failed
+     * @throws Catches errors and logs them, returns null on failure
+     * @example
+     * const record = await PdiDocumentService.logEvent(studentId, 'EVALUATION', 'Math Test', { score: 8 });
      */
     async logEvent(
         studentId: string,
