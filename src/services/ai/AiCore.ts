@@ -14,6 +14,9 @@ export const GENERATION_MODELS = [
     "gemini-2.0-flash-exp",
 ];
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 export function getGenAIClient(): GoogleGenerativeAI {
     const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
 
@@ -28,19 +31,19 @@ export async function executeWithFallback<T>(
     actionName: string,
     operation: (modelName: string) => Promise<T>
 ): Promise<T> {
-    let lastError: any;
+    let lastError: unknown;
 
     for (const modelName of GENERATION_MODELS) {
         try {
             console.log(`[Gemini] Tentando modelo: ${modelName} para ${actionName}...`);
             return await operation(modelName);
-        } catch (error: any) {
-            console.warn(`[Gemini] Falha no modelo ${modelName}:`, error.message);
+        } catch (error: unknown) {
+            console.warn(`[Gemini] Falha no modelo ${modelName}:`, getErrorMessage(error));
             lastError = error;
         }
     }
 
-    throw new Error(`Todas as tentativas de modelo falharam para ${actionName}. Último erro: ${lastError?.message}`);
+    throw new Error(`Todas as tentativas de modelo falharam para ${actionName}. Último erro: ${getErrorMessage(lastError)}`);
 }
 
 // Utilitários de áudio internos (PCM decoding)

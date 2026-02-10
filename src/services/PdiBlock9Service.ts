@@ -8,6 +8,33 @@ import { generateBlock9Adaptation } from './geminiService';
 import { Block9AdaptationEntry } from '../types/pdi';
 import { supabase } from './supabaseClient';
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Erro desconhecido';
+
+type PdiContentData = {
+    clinical_health?: {
+        diagnosis_cid?: string;
+    };
+    pedagogical?: {
+        specific_needs?: string;
+        general_objective?: string;
+        technological_resources?: string;
+        adapted_materials?: string;
+    };
+    cognitive?: {
+        potentials?: string;
+        challenges?: string;
+    };
+};
+
+type PdiDocRow = {
+    id: string;
+    content_data?: PdiContentData;
+    school_students?: {
+        name?: string;
+    };
+};
+
 export const PdiBlock9Service = {
     /**
      * Automatically generate Block 9 adaptations for all students with active PDIs
@@ -65,14 +92,14 @@ export const PdiBlock9Service = {
             console.log(`📋 Found ${studentsWithPdi.length} student(s) with active PDI. Generating adaptations...`);
 
             // 2. For each student, generate Block 9 adaptation
-            for (const pdiDoc of studentsWithPdi) {
+            for (const pdiDoc of (studentsWithPdi as PdiDocRow[])) {
                 try {
-                    const studentName = (pdiDoc.school_students as any)?.name || 'Estudante';
+                    const studentName = pdiDoc.school_students?.name || 'Estudante';
 
                     // Extract student context from content_data
-                    const content = (pdiDoc.content_data || {}) as any;
+                    const content = pdiDoc.content_data || {};
                     const studentContext = {
-                        nome_completo: (pdiDoc.school_students as any)?.name || studentName,
+                        nome_completo: pdiDoc.school_students?.name || studentName,
                         diagnostico_clinico: content.clinical_health?.diagnosis_cid,
                         necessidades_especificas: content.pedagogical?.specific_needs,
                         potencialidades: content.cognitive?.potentials,
@@ -128,10 +155,10 @@ export const PdiBlock9Service = {
                         errors.push(`${studentContext.nome_completo}: Erro ao salvar adaptação`);
                     }
 
-                } catch (studentError: any) {
+                } catch (studentError: unknown) {
                     console.error(`Error generating adaptation for student:`, studentError);
-                    const studentName = (pdiDoc.school_students as any)?.name || 'Estudante';
-                    errors.push(`${studentName}: ${studentError.message || 'Erro desconhecido'}`);
+                    const studentName = pdiDoc.school_students?.name || 'Estudante';
+                    errors.push(`${studentName}: ${getErrorMessage(studentError)}`);
                 }
             }
 
@@ -143,12 +170,12 @@ export const PdiBlock9Service = {
                 errors,
             };
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Fatal error in Block 9 generation:', error);
             return {
                 success: false,
                 adaptationsCreated,
-                errors: [error.message || 'Erro fatal ao gerar adaptações'],
+                errors: [getErrorMessage(error) || 'Erro fatal ao gerar adaptações'],
             };
         }
     },

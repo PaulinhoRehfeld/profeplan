@@ -2,9 +2,9 @@ import { generateGeminiContent } from "../geminiService";
 
 interface StudentProfile {
     name: string;
-    psychomotor?: any;
-    cognitive?: any;
-    communication?: any;
+    psychomotor?: Record<string, unknown>;
+    cognitive?: Record<string, unknown>;
+    communication?: Record<string, unknown>;
 }
 
 export const AiAdaptationService = {

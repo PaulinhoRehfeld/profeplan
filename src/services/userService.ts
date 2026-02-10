@@ -4,6 +4,9 @@ import { UserProfile } from '../types';
 // --- CONFIGURATION ---
 const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for Testers)
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 // Helper to recover from Session ID mismatch (Ghost ID)
 export const getProfileByEmail = async (email: string) => {
     const { data, error } = await supabase
@@ -44,7 +47,11 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
 
         if (error || !data) {
             console.error("[userService] ❌ Error fetching profile:", error);
-            if (error?.code === '42501' || (error as any)?.status === 403) {
+                const status =
+                    error && typeof error === 'object' && 'status' in error
+                        ? (error as { status?: number }).status
+                        : undefined;
+                if (error?.code === '42501' || status === 403) {
                 console.error("[userService] ⛔ RLS PERMISSION DENIED. Check Supabase Policies for 'profiles' table.");
             }
             return null;
@@ -184,12 +191,12 @@ export const updateUserProfile = async (
         masp?: string;
         city?: string;
         inep_code?: string;
-        [key: string]: any;
+        [key: string]: unknown;
     }
 ): Promise<{ success: boolean; message?: string; error?: string }> => {
     try {
         // 1. Prepare updates for the profile table
-        const updates: any = {
+        const updates: Record<string, unknown> = {
             full_name: profileData.userName?.trim(),
             email: profileData.institutionalEmail?.trim().toLowerCase(),
             masp: profileData.masp?.trim(),
@@ -221,7 +228,7 @@ export const updateUserProfile = async (
         // 3. Update the profiles table
         console.log("[userService] Sending update to Supabase for user:", userId, updates);
 
-        const { data: updateData, error: updateError, count } = await supabase
+        const { error: updateError, count } = await supabase
             .from('profiles')
             .update(updates)
             .eq('id', userId);
@@ -240,9 +247,9 @@ export const updateUserProfile = async (
 
         console.log("[userService] Update successful. Rows affected:", count);
         return { success: true, message };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error("[userService] Fatal error in updateUserProfile:", err);
-        return { success: false, error: err.message || "Erro fatal ao conectar com o banco de dados" };
+        return { success: false, error: getErrorMessage(err) || "Erro fatal ao conectar com o banco de dados" };
     }
 };
 

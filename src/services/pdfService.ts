@@ -13,11 +13,13 @@ export const extractTextFromPdf = async (file: File): Promise<string> => {
 
     let fullText = '';
 
+    type PdfTextItem = { str?: string };
+
     for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         const pageText = textContent.items
-            .map((item: any) => item.str)
+            .map((item) => (item as PdfTextItem).str || '')
             .join(' ');
 
         fullText += pageText + '\n';

@@ -160,7 +160,7 @@ export const ingestFiles = async (
         onProgress(totalChunks, totalChunks, 'Concluído com sucesso!');
         return true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Ingestion failed:', error);
         throw error;
     }

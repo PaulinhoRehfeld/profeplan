@@ -1,5 +1,10 @@
 import { getGenAIClient } from "./AiCore";
 
+type LessonContext = {
+    topic?: string;
+    content?: string;
+};
+
 /**
  * [ASSESSMENT_WITH_CONTEXT_MODE]
  * Gera avaliações baseadas no histórico de aulas dadas (Ciclo de Feedback Fechado)
@@ -7,7 +12,7 @@ import { getGenAIClient } from "./AiCore";
 export const generateAssessmentWithContext = async (
     className: string,
     subject: string,
-    lessonsContext: any[],
+    lessonsContext: LessonContext[],
     additionalTopic: string = '',
     academicPeriod: string = '',
     objectiveCount: number = 10,

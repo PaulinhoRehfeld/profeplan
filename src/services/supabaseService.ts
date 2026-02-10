@@ -10,7 +10,13 @@ export { supabase }; // Re-export for backward compatibility
 /**
  * Salva uma nova aula na "Memória"
  */
-export const saveLessonToMemory = async (userId: string, topic: string, content: string, canvaData: any, classId?: string) => {
+export const saveLessonToMemory = async (
+    userId: string,
+    topic: string,
+    content: string,
+    canvaData: unknown,
+    classId?: string
+) => {
     const { data, error } = await supabase
         .from('lessons')
         .insert([{
@@ -176,7 +182,7 @@ export const deleteClass = async (classId: string) => {
 /**
  * Atualiza o perfil do professor
  */
-export const updateTeacherProfile = async (userId: string, updates: any) => {
+export const updateTeacherProfile = async (userId: string, updates: Record<string, unknown>) => {
     const { data, error } = await supabase
         .from('profiles')
         .upsert({

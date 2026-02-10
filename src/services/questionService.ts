@@ -14,6 +14,14 @@ const AREA_MAP: Record<string, string[]> = {
     'Matemática': ['Matemática']
 };
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
+type EnemQuestionRow = {
+    id: number;
+    metadata: EnemQuestion['metadata'];
+};
+
 export const searchQuestions = async (query: string, areas?: string[]): Promise<EnemQuestion[]> => {
     try {
         if (!query.trim()) return [];
@@ -49,7 +57,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         }
 
         const vectorQuestions = (vectorResponse.data as EnemQuestion[]) || [];
-        const textQuestions = (textResponse.data as any[] || []).map(row => ({
+        const textQuestions = ((textResponse.data as EnemQuestionRow[] | null) || []).map(row => ({
             id: row.id,
             //  Questões via Select direto já tem o metadata conforme o banco, mas precisamos garantir compatibilidade
             metadata: row.metadata,
@@ -92,7 +100,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
 
                 if (details) {
                     finalQuestions = finalQuestions.map(q => {
-                        const detail = details.find((d: any) => d.id === q.id);
+                        const detail = details.find((d: EnemQuestionRow) => d.id === q.id);
                         return detail ? { ...q, metadata: detail.metadata } : q;
                     });
                 }
@@ -128,8 +136,8 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         console.log(`✅ ${finalQuestions.length} questões retornadas após merge e filtros.`);
         return finalQuestions.slice(0, 15); // Retorna top 15 combinadas
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('❌ Erro no serviço searchQuestions:', error);
-        throw error;
+        throw new Error(getErrorMessage(error));
     }
 };

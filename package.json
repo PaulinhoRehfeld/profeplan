@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "npx vite build",
     "preview": "vite preview",
-    "lint": "npx tsc --noEmit"
+    "lint": "npx tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -48,6 +50,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.18"
+    "@tailwindcss/postcss": "^4.1.18",
+    "vitest": "^3.1.2"
   }
 }

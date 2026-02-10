@@ -143,14 +143,14 @@ export interface LocalLesson {
     user_id: string;
     topic: string;
     content: string;
-    canva_json: any;
+    canva_json: unknown;
     created_at: string;
 }
 
 /**
  * Salva uma aula no localStorage
  */
-export const saveLessonToLocal = (userId: string, topic: string, content: string, canvaData: any): LocalLesson => {
+export const saveLessonToLocal = (userId: string, topic: string, content: string, canvaData: unknown): LocalLesson => {
     const stored = localStorage.getItem(LESSONS_KEY);
     const allLessons: LocalLesson[] = stored ? JSON.parse(stored) : [];
 

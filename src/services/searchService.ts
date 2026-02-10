@@ -10,6 +10,18 @@ interface HybridSearchParams {
     matchThreshold?: number;
 }
 
+type SearchResultRow = {
+    id: number;
+    metadata?: {
+        alternatives?: unknown[];
+    };
+};
+
+type SearchDetailRow = {
+    id: number;
+    metadata: unknown;
+};
+
 export const hybridSearchProfeplan = async ({
     textoBusca,
     disciplina = null,
@@ -44,13 +56,13 @@ export const hybridSearchProfeplan = async ({
             throw error;
         }
 
-        let finalResults = data || [];
+        let finalResults = (data as SearchResultRow[] | null) || [];
 
         // SE o RPC não retornar 'metadata' completo, buscamos manualmente
-        const needsHydration = finalResults.some((q: any) => !q.metadata || !q.metadata.alternatives || q.metadata.alternatives.length === 0);
+        const needsHydration = finalResults.some((q) => !q.metadata || !(q.metadata.alternatives as unknown[] | undefined)?.length);
 
         if (finalResults.length > 0 && needsHydration) {
-            const ids = finalResults.map((q: any) => q.id);
+            const ids = finalResults.map((q) => q.id);
 
             // Fetch metadata directly from enem_questions
             let { data: details, error: tableError } = await supabase
@@ -59,8 +71,8 @@ export const hybridSearchProfeplan = async ({
                 .in('id', ids);
 
             if (details) {
-                finalResults = finalResults.map((q: any) => {
-                    const detail = details.find((d: any) => d.id === q.id);
+                finalResults = finalResults.map((q) => {
+                    const detail = (details as SearchDetailRow[]).find((d) => d.id === q.id);
                     return {
                         ...q,
                         metadata: detail ? detail.metadata : q.metadata
@@ -106,11 +118,11 @@ export const searchCurriculum = async (
             filter_periodo: filters?.periodo || null
         });
 
-        const timeoutPromise = new Promise<{ data: any, error: any }>((_, reject) =>
+        const timeoutPromise = new Promise<unknown>((_, reject) =>
             setTimeout(() => reject(new Error("RAG Timeout")), 15000) // 15s Timeout
         );
 
-        const { data, error } = await Promise.race([rpcPromise, timeoutPromise]) as any;
+        const { data, error } = await Promise.race([rpcPromise, timeoutPromise]) as { data: unknown; error: unknown };
 
         if (error) throw error;
         return data || [];

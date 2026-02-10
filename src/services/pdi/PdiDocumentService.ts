@@ -1,10 +1,40 @@
 import { supabase } from '../supabaseClient';
 import { PdiSchema, PDIProfileData } from '../../types/pdi-schema';
 import { PdiDocument, TeacherEntry, PdiCompleteness, UserProfile } from '../../types';
+import { Block9AdaptationEntry } from '../../types/pdi';
 import { z } from 'zod';
 import { ProfileService } from '../ProfileService';
 import { checkUsageQuota } from '../userService';
 import { getGenAIClient } from '../ai/AiCore';
+
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
+type PdiRecordContent = Record<string, unknown>;
+
+type LegacyBlockData = {
+    bloco_1_identificacao?: {
+        nome_completo?: string;
+        data_nascimento?: string;
+        serie?: string;
+        turma?: string;
+        turno?: string;
+    };
+    bloco_2_diagnostico?: {
+        laudo_medico?: string;
+        restricoes_atividades?: string;
+        medication?: string;
+    };
+};
+
+type Block10EvaluationInput = {
+    professor_id: string;
+    disciplina: string;
+    professor_grau_autonomia?: string;
+    ia_diagnostico?: string;
+};
+
+type Block9AdaptationInput = Omit<Block9AdaptationEntry, 'generated_at' | 'generated_by_ai'>;
 
 /**
  * PDI Record Type for logging events
@@ -22,7 +52,7 @@ export interface PdiRecord {
     type: PdiRecordType;
     pdi_block?: string;
     title: string;
-    content: any;
+    content: PdiRecordContent;
     date: string;
     created_at: string;
 }
@@ -39,7 +69,7 @@ export const PdiDocumentService = {
      * @example
      * const result = await PdiDocumentService.getOrCreatePdi('student-123', 2025, { studentName: 'João' });
      */
-    async getOrCreatePdi(studentId: string, year: number = new Date().getFullYear(), contextualData?: { profile?: UserProfile | null, studentName?: string }): Promise<{ data: PdiDocument | null, error: any }> {
+    async getOrCreatePdi(studentId: string, year: number = new Date().getFullYear(), contextualData?: { profile?: UserProfile | null, studentName?: string }): Promise<{ data: PdiDocument | null, error: unknown }> {
         const { data: existing, error: fetchError } = await supabase
             .from('pdi_documents')
             .select('*')
@@ -99,7 +129,7 @@ export const PdiDocumentService = {
         studentId: string,
         type: PdiRecordType,
         title: string,
-        content: any,
+        content: PdiRecordContent,
         pdiBlock?: string
     ): Promise<PdiRecord | null> {
         try {
@@ -167,7 +197,7 @@ export const PdiDocumentService = {
         classId: string,
         type: PdiRecordType,
         title: string,
-        content: any,
+        content: PdiRecordContent,
         pdiBlock?: string
     ): Promise<(PdiRecord | null)[]> {
         try {
@@ -195,7 +225,7 @@ export const PdiDocumentService = {
     /**
      * Update PDI record content
      */
-    async updateRecordContent(recordId: string, newContent: any): Promise<{ success: boolean; error?: string }> {
+    async updateRecordContent(recordId: string, newContent: PdiRecordContent): Promise<{ success: boolean; error?: string }> {
         try {
             const { error } = await supabase
                 .from('pdi_records')
@@ -207,16 +237,16 @@ export const PdiDocumentService = {
             }
 
             return { success: true };
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Exception in updateRecordContent:', error);
-            return { success: false, error: error.message };
+            return { success: false, error: getErrorMessage(error) };
         }
     },
 
     /**
      * Legacy/Compat: Fetch PDI logs with {data, error} signature
      */
-    async getPdiLogs(studentId: string): Promise<{ data: PdiRecord[] | null; error: any }> {
+    async getPdiLogs(studentId: string): Promise<{ data: PdiRecord[] | null; error: unknown }> {
         try {
             const { data, error } = await supabase
                 .from('pdi_records')
@@ -233,7 +263,7 @@ export const PdiDocumentService = {
     /**
      * Get logs for a specific student
      */
-    async getLogs(studentId: string): Promise<{ data: any[] | null; error: any }> {
+    async getLogs(studentId: string): Promise<{ data: unknown[] | null; error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_logs')
             .select('*')
@@ -243,7 +273,7 @@ export const PdiDocumentService = {
         return { data, error };
     },
 
-    async updatePdiSection(pdiId: string, sectionKey: keyof PDIProfileData, sectionData: any): Promise<{ data: PdiDocument | null, error: any }> {
+    async updatePdiSection(pdiId: string, sectionKey: keyof PDIProfileData, sectionData: unknown): Promise<{ data: PdiDocument | null, error: unknown }> {
         try {
             const SectionSchema = PdiSchema.shape[sectionKey];
             const validatedData = SectionSchema.parse(sectionData);
@@ -274,7 +304,7 @@ export const PdiDocumentService = {
 
             return { data: updatedPdi, error: updateError };
 
-        } catch (validationOrDbError: any) {
+        } catch (validationOrDbError: unknown) {
             console.error("PDI Update Error:", validationOrDbError);
             return { data: null, error: validationOrDbError };
         }
@@ -283,7 +313,7 @@ export const PdiDocumentService = {
     /**
      * Upsert a Teacher Evaluation Entry (Seção X)
      */
-    async saveTeacherEntry(entry: TeacherEntry): Promise<{ data: any, error: any }> {
+    async saveTeacherEntry(entry: TeacherEntry): Promise<{ data: TeacherEntry | null; error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_teacher_entries')
             .upsert(entry, { onConflict: 'pdi_document_id, teacher_id, subject, bimester' })
@@ -296,7 +326,7 @@ export const PdiDocumentService = {
     /**
      * Get all teacher entries for a PDI
      */
-    async getTeacherEntries(pdiId: string): Promise<{ data: any[] | null, error: any }> {
+    async getTeacherEntries(pdiId: string): Promise<{ data: TeacherEntry[] | null, error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_teacher_entries')
             .select('*')
@@ -332,19 +362,21 @@ export const PdiDocumentService = {
     /**
      * Map database PdiDocument to Frontend Compatibility PdiDocument
      */
-    mapToCompatibility(pdi: any): PdiDocument {
-        const content = pdi.content_data || {};
-        return {
+    mapToCompatibility(pdi: Record<string, unknown> & { content_data?: Record<string, unknown>; school_students?: { name?: string }; student_name?: string; updated_at?: string }): PdiDocument {
+        const content = (pdi.content_data as Partial<PDIProfileData>) || {};
+        const mapped = {
             ...pdi,
             student_name: pdi.school_students?.name || pdi.student_name,
             last_updated: pdi.updated_at,
             blocks_completed: {
                 block_1_8: !!content.student_data?.name,
-                block_9: Array.isArray(pdi.block_9_content) ? pdi.block_9_content.length > 0 : false,
-                block_10: Array.isArray(pdi.block_10_entries) ? pdi.block_10_entries.length > 0 : false,
+                block_9: Array.isArray(pdi.block_9_content) ? (pdi.block_9_content as unknown[]).length > 0 : false,
+                block_10: Array.isArray(pdi.block_10_entries) ? (pdi.block_10_entries as unknown[]).length > 0 : false,
                 block_11: !!pdi.final_report
             }
-        };
+        } as PdiDocument;
+
+        return mapped;
     },
 
     /**
@@ -353,7 +385,7 @@ export const PdiDocumentService = {
     calculateCompleteness(pdi: PdiDocument): PdiCompleteness {
         const completed: string[] = [];
         const missing: string[] = [];
-        const content = pdi.content_data || {};
+        const content = (pdi.content_data as Partial<PDIProfileData>) || {};
 
         if (content.institutional?.school_name) completed.push('Dados Institucionais');
         else missing.push('Dados Institucionais');
@@ -386,7 +418,7 @@ export const PdiDocumentService = {
     /**
      * Fetch PDI by ID
      */
-    async getPdiDocument(pdiId: string): Promise<{ data: PdiDocument | null, error: any }> {
+    async getPdiDocument(pdiId: string): Promise<{ data: PdiDocument | null, error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_documents')
             .select(`
@@ -405,7 +437,7 @@ export const PdiDocumentService = {
     /**
      * Legacy method - update blocks 1-8
      */
-    async updateBlock1to8(pdiId: string, blockData: any): Promise<{ data: PdiDocument | null, error: any }> {
+    async updateBlock1to8(pdiId: string, blockData: LegacyBlockData): Promise<{ data: PdiDocument | null, error: unknown }> {
         const updates: Partial<PDIProfileData> = {};
 
         if (blockData.bloco_1_identificacao) {
@@ -444,14 +476,14 @@ export const PdiDocumentService = {
     /**
      * Create PDI alias
      */
-    async createPdiDocument(studentId: string, schoolId: string, year: number): Promise<{ data: PdiDocument | null, error: any }> {
+    async createPdiDocument(studentId: string, schoolId: string, year: number): Promise<{ data: PdiDocument | null, error: unknown }> {
         return this.getOrCreatePdi(studentId, year);
     },
 
     /**
      * Save block 10 evaluation
      */
-    async addBlock10Evaluation(pdiId: string, evaluation: any): Promise<{ data: any, error: any }> {
+    async addBlock10Evaluation(pdiId: string, evaluation: Block10EvaluationInput): Promise<{ data: TeacherEntry | null, error: unknown }> {
         return this.saveTeacherEntry({
             pdi_document_id: pdiId,
             teacher_id: evaluation.professor_id,
@@ -465,7 +497,7 @@ export const PdiDocumentService = {
     /**
      * Update block 10 entry
      */
-    async updateBlock10WithAI(pdiId: string, evaluationId: string, aiDiagnosis: string): Promise<{ data: any, error: any }> {
+    async updateBlock10WithAI(pdiId: string, evaluationId: string, aiDiagnosis: string): Promise<{ data: unknown; error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_teacher_entries')
             .update({ observations: aiDiagnosis })
@@ -476,14 +508,14 @@ export const PdiDocumentService = {
     /**
      * Add block 9 adaptation
      */
-    async addBlock9Adaptation(pdiId: string, adaptation: any): Promise<{ data: any, error: any }> {
+    async addBlock9Adaptation(pdiId: string, adaptation: Block9AdaptationInput): Promise<{ data: Block9AdaptationInput; error: null }> {
         return { data: adaptation, error: null };
     },
 
     /**
      * Update block 11 report
      */
-    async updateBlock11ByProgument(pdiId: string, reportText: string): Promise<{ data: any, error: any }> {
+    async updateBlock11ByProgument(pdiId: string, reportText: string): Promise<{ data: unknown; error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_documents')
             .update({ final_report: reportText, updated_at: new Date().toISOString() })
@@ -496,7 +528,7 @@ export const PdiDocumentService = {
     /**
      * Approve block 11 report
      */
-    async approveBlock11(pdiId: string, approvedBy: string): Promise<{ data: any, error: any }> {
+    async approveBlock11(pdiId: string, approvedBy: string): Promise<{ data: unknown; error: unknown }> {
         const { data, error } = await supabase
             .from('pdi_documents')
             .update({
@@ -519,7 +551,7 @@ export const PdiDocumentService = {
      */
     async exportPdiToDocx(pdi: PdiDocument): Promise<{ success: boolean; error?: string }> {
         try {
-            const docx = await import('docx');
+            const docx = (await import('docx')) as unknown as DocxModule;
             const fileSaver = await import('file-saver');
             const saveAs = fileSaver.saveAs;
 
@@ -581,7 +613,7 @@ export const PdiDocumentService = {
             saveAs(blob, fileName);
 
             return { success: true };
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error exporting PDI to DOCX:', error);
             return { 
                 success: false, 
@@ -596,7 +628,16 @@ export const PdiDocumentService = {
  * Consolidated from PdiExportService
  */
 
-function createBlock1Section(pdi: PdiDocument, docx: any): any[] {
+type DocxModule = {
+    Document: new (...args: unknown[]) => unknown;
+    Packer: { toBlob: (doc: unknown) => Promise<Blob> };
+    Paragraph: new (options: Record<string, unknown>) => unknown;
+    TextRun: new (options: Record<string, unknown>) => unknown;
+    HeadingLevel: Record<string, unknown>;
+    AlignmentType: Record<string, unknown>;
+};
+
+function createBlock1Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_1_identificacao;
     if (!data) return [];
@@ -610,42 +651,42 @@ function createBlock1Section(pdi: PdiDocument, docx: any): any[] {
         new Paragraph({
             children: [
                 new TextRun({ text: 'Nome Completo: ', bold: true }),
-                new TextRun(data.nome_completo || ''),
+                new TextRun({ text: data.nome_completo || '' }),
             ],
             spacing: { after: 100 },
         }),
         new Paragraph({
             children: [
                 new TextRun({ text: 'Data de Nascimento: ', bold: true }),
-                new TextRun(data.data_nascimento || ''),
+                new TextRun({ text: data.data_nascimento || '' }),
             ],
             spacing: { after: 100 },
         }),
         new Paragraph({
             children: [
                 new TextRun({ text: 'Código INEP: ', bold: true }),
-                new TextRun(data.codigo_inep || 'Não informado'),
+                new TextRun({ text: data.codigo_inep || 'Não informado' }),
             ],
             spacing: { after: 100 },
         }),
         new Paragraph({
             children: [
                 new TextRun({ text: 'Série: ', bold: true }),
-                new TextRun(data.serie || ''),
+                new TextRun({ text: data.serie || '' }),
             ],
             spacing: { after: 100 },
         }),
         new Paragraph({
             children: [
                 new TextRun({ text: 'Turma: ', bold: true }),
-                new TextRun(data.turma || ''),
+                new TextRun({ text: data.turma || '' }),
             ],
             spacing: { after: 100 },
         }),
         new Paragraph({
             children: [
                 new TextRun({ text: 'Diagnóstico Clínico: ', bold: true }),
-                new TextRun(data.diagnostico_clinico || ''),
+                new TextRun({ text: data.diagnostico_clinico || '' }),
             ],
             spacing: { after: 100 },
         }),
@@ -653,7 +694,7 @@ function createBlock1Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock2Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock2Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_2_diagnostico;
     if (!data) return [];
@@ -684,7 +725,7 @@ function createBlock2Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock3Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock3Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_3_objetivos;
     if (!data) return [];
@@ -698,7 +739,7 @@ function createBlock3Section(pdi: PdiDocument, docx: any): any[] {
         new Paragraph({
             children: [
                 new TextRun({ text: 'Objetivo Geral: ', bold: true }),
-                new TextRun(data.objetivo_geral || ''),
+                new TextRun({ text: data.objetivo_geral || '' }),
             ],
             spacing: { after: 200 },
         }),
@@ -706,7 +747,7 @@ function createBlock3Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock4Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock4Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_4_recursos;
     if (!data) return [];
@@ -729,7 +770,7 @@ function createBlock4Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock5Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock5Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_5_equipe;
     if (!data) return [];
@@ -752,7 +793,7 @@ function createBlock5Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock6Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock6Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_6_atendimento;
     if (!data) return [];
@@ -766,7 +807,7 @@ function createBlock6Section(pdi: PdiDocument, docx: any): any[] {
         new Paragraph({
             children: [
                 new TextRun({ text: 'Frequência: ', bold: true }),
-                new TextRun(data.frequencia_atendimento || ''),
+                new TextRun({ text: data.frequencia_atendimento || '' }),
             ],
             spacing: { after: 100 },
         }),
@@ -774,7 +815,7 @@ function createBlock6Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock7Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock7Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, TextRun, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_7_familia;
     if (!data) return [];
@@ -788,7 +829,7 @@ function createBlock7Section(pdi: PdiDocument, docx: any): any[] {
         new Paragraph({
             children: [
                 new TextRun({ text: 'Responsável: ', bold: true }),
-                new TextRun(data.responsavel_principal || ''),
+                new TextRun({ text: data.responsavel_principal || '' }),
             ],
             spacing: { after: 100 },
         }),
@@ -796,7 +837,7 @@ function createBlock7Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock8Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock8Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const data = pdi.block_1_8?.bloco_8_observacoes;
     if (!data) return [];
@@ -815,7 +856,7 @@ function createBlock8Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock9Summary(pdi: PdiDocument, docx: any): any[] {
+function createBlock9Summary(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const total = pdi.block_9_content?.length || 0;
 
@@ -838,13 +879,14 @@ function createBlock9Summary(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock10Summary(pdi: PdiDocument, docx: any): any[] {
+function createBlock10Summary(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const avaliacoes = pdi.block_10_entries || [];
     const mediaGeral = avaliacoes.length > 0
-        ? (avaliacoes.reduce((sum: number, av: any) =>
-            sum + ((av.professor_nota_alcancada / av.professor_valor) * 100), 0
-        ) / avaliacoes.length).toFixed(1)
+        ? (avaliacoes.reduce((sum: number, av) => {
+            const entry = av as { professor_nota_alcancada?: number; professor_valor?: number };
+            return sum + ((entry.professor_nota_alcancada as number) / (entry.professor_valor as number)) * 100;
+        }, 0) / avaliacoes.length).toFixed(1)
         : 'N/A';
 
     return [
@@ -871,7 +913,7 @@ function createBlock10Summary(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createBlock11Section(pdi: PdiDocument, docx: any): any[] {
+function createBlock11Section(pdi: PdiDocument, docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel } = docx;
     const reportText = pdi.final_report || '';
 
@@ -888,7 +930,7 @@ function createBlock11Section(pdi: PdiDocument, docx: any): any[] {
     ];
 }
 
-function createSignatureSection(docx: any): any[] {
+function createSignatureSection(docx: DocxModule): unknown[] {
     const { Paragraph, HeadingLevel, AlignmentType } = docx;
     return [
         new Paragraph({ text: '', spacing: { before: 800, after: 200 } }),
@@ -994,7 +1036,7 @@ export const generateBlock9Adaptation = async (
     };
 };
 
-export const exportPdiToDocx = async (pdi: any): Promise<void> => {
+export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
     // Implementation for exporting PDI to DOCX
     console.log('Exporting PDI to DOCX:', pdi);
 };

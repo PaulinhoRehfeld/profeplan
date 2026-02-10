@@ -13,7 +13,7 @@ export interface PlanningIntent {
     stateBase: string;
     educationSphere: string;
     totalClasses: number;
-    reserves: any;
+    reserves: Record<string, unknown>;
     userId: string;
     feedback?: string; // New field for feedback loop
     pnld_book_id?: string;
@@ -24,6 +24,27 @@ export interface GuardrailCheckResult {
     reason?: string;
     normalizedIntent?: PlanningIntent;
     warnings?: string[];
+}
+
+type SpecialistContext = {
+    history?: unknown[];
+};
+
+type CurriculumMetadata = {
+    ano_escolar?: string;
+    disciplina?: string;
+    source?: string;
+};
+
+type CurriculumRow = {
+    metadata?: CurriculumMetadata;
+};
+
+interface ManifestEntry {
+    source: string;
+    disciplina: string;
+    ano: string;
+    chunks: number;
 }
 
 /**
@@ -131,7 +152,7 @@ export const PlanningAuthority = {
      * 4. PEDAGOGICAL SPECIALIST
      * O Auditor que conversa com o usuário.
      */
-    askSpecialist: async (message: string, context?: any) => {
+    askSpecialist: async (message: string, context?: SpecialistContext) => {
         const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
         if (!apiKey) throw new Error("API Key missing");
 
@@ -183,9 +204,9 @@ export const PlanningAuthority = {
             if (error) throw error;
 
             // Client-side aggregation
-            const map = new Map<string, any>();
+            const map = new Map<string, ManifestEntry>();
 
-            data?.forEach((row: any) => {
+            (data as CurriculumRow[] | null)?.forEach((row) => {
                 const m = row.metadata;
                 if (!m || !m.ano_escolar || !m.disciplina) return; // Skip invalid entries
 
@@ -198,7 +219,10 @@ export const PlanningAuthority = {
                         chunks: 0
                     });
                 }
-                map.get(key).chunks++;
+                const entry = map.get(key);
+                if (entry) {
+                    entry.chunks += 1;
+                }
             });
 
             return Array.from(map.values()).sort((a, b) => a.ano.localeCompare(b.ano));

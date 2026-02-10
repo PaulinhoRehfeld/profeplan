@@ -1,4 +1,5 @@
 // import { saveAs } from 'file-saver'; // Removed unused import for performance
+import type { Assessment, EnemQuestion } from '../types';
 // Note: In a real environment with npm access, we would import { Document, Packer, Paragraph, TextRun } from "docx";
 // Since we cannot run npm install here, we will use a robust HTML-to-Word export strategy
 // which is native and works without heavy dependencies for this specific task.
@@ -143,7 +144,13 @@ const markdownToHtml = (text: string) => {
   return html;
 };
 
-export const exportToDocx = async (content: string, title: string, settings: any) => {
+type ExportSettings = {
+  teacherName?: string;
+  userName?: string;
+  schoolName?: string;
+};
+
+export const exportToDocx = async (content: string, title: string, settings: ExportSettings) => {
   // Convert Markdown to HTML for Word
   const encodedContent = markdownToHtml(content);
 
@@ -184,13 +191,13 @@ export const exportToDocx = async (content: string, title: string, settings: any
   document.body.removeChild(link);
 };
 
-export const exportToPptx = async (data: any) => {
+export const exportToPptx = async (data: unknown) => {
   console.warn("PPTX export requires a specialized library (pptxgenjs). Placeholder for now.");
   alert("Exportação PPTX não implementada nesta versão sem dependências externas.");
 };
 
 // --- Assessment Export (Restored) ---
-export const exportAssessmentToDocx = async (assessment: any, settings: any) => {
+export const exportAssessmentToDocx = async (assessment: Assessment, settings: ExportSettings) => {
   let contentHtml = `
         <div style="font-family: Arial, sans-serif;">
             <div style="text-align: center; margin-bottom: 20px;">
@@ -202,7 +209,7 @@ export const exportAssessmentToDocx = async (assessment: any, settings: any) => 
             <hr/>
     `;
 
-  assessment.questions.forEach((q: any, index: number) => {
+  assessment.questions.forEach((q, index: number) => {
     contentHtml += `<div style="margin-bottom: 20px;">`;
     contentHtml += `<p><strong>${index + 1}.</strong> ${q.question}</p>`;
 
@@ -242,7 +249,12 @@ const htmlWrapper = (title: string, body: string) => `
     </html>
 `;
 
-export const exportSimuladoToDocx = async (questions: any[], headerText: string, versionTitle: string, settings: any) => {
+export const exportSimuladoToDocx = async (
+  questions: EnemQuestion[],
+  headerText: string,
+  versionTitle: string,
+  settings: ExportSettings
+) => {
   // 1. Build Header
   let contentHtml = `
         <div style="font-family: Arial, sans-serif;">
@@ -261,19 +273,20 @@ export const exportSimuladoToDocx = async (questions: any[], headerText: string,
 
   questions.forEach((q, index) => {
     // Construct Enunciado (Context + Command)
-    const context = q.metadata?.context || '';
-    const command = q.metadata?.alternativesIntroduction || ''; // Some questions might call it 'text' or 'question', adjusting based on types.ts
+    const metadata = q.metadata as EnemQuestion['metadata'] & { ano?: number; gabarito?: string };
+    const context = metadata?.context || '';
+    const command = metadata?.alternativesIntroduction || ''; // Some questions might call it 'text' or 'question', adjusting based on types.ts
     // Fallback if metadata is missing (legacy questions)
     const questionText = (context || command) ?
       `${context ? `<div class="context">${context.replace(/\n/g, '<br/>')}</div>` : ''} 
          ${command ? `<div class="command" style="margin-top: 10px; font-weight: bold;">${command.replace(/\n/g, '<br/>')}</div>` : ''}`
-      : q.content?.replace(/\n/g, '<br/>') || 'Texto da questão indisponível.';
+      : ((q as { content?: string }).content || '').replace(/\n/g, '<br/>') || 'Texto da questão indisponível.';
 
     // Construct Alternatives
     let alternativesHtml = '';
     if (q.metadata?.alternatives && Array.isArray(q.metadata.alternatives)) {
       alternativesHtml = '<ul style="list-style-type: none; padding-left: 0; margin-top: 10px;">';
-      q.metadata.alternatives.forEach((alt: any) => {
+      q.metadata.alternatives.forEach((alt) => {
         const letter = alt.letter || '?';
         const text = alt.text || '';
         alternativesHtml += `<li style="margin-bottom: 5px;"><strong>${letter})</strong> ${text}</li>`;
@@ -283,7 +296,7 @@ export const exportSimuladoToDocx = async (questions: any[], headerText: string,
 
     contentHtml += `
             <div style="break-inside: avoid; margin-bottom: 25px; font-size: 11px;">
-                <p style="margin-bottom: 5px;"><strong>QUESTÃO ${index + 1}</strong> <span style="font-size: 9px; color: #666;">(${q.metadata?.year || q.metadata?.ano || 'BANCO'} | ${q.metadata?.discipline || q.metadata?.disciplina || 'GERAL'})</span></p>
+                <p style="margin-bottom: 5px;"><strong>QUESTÃO ${index + 1}</strong> <span style="font-size: 9px; color: #666;">(${metadata?.year || metadata?.ano || 'BANCO'} | ${metadata?.discipline || metadata?.disciplina || 'GERAL'})</span></p>
                 <div style="margin-bottom: 10px;">${questionText}</div>
                 ${alternativesHtml}
             </div>
@@ -308,10 +321,11 @@ export const exportSimuladoToDocx = async (questions: any[], headerText: string,
     `;
 
   questions.forEach((q, index) => {
+    const metadata = q.metadata as EnemQuestion['metadata'] & { gabarito?: string };
     contentHtml += `
             <tr>
                 <td style="text-align: center;">${index + 1}</td>
-                <td style="text-align: center; font-weight: bold;">${q.metadata?.gabarito || '-'}</td>
+                <td style="text-align: center; font-weight: bold;">${metadata?.gabarito || '-'}</td>
             </tr>
         `;
   });

@@ -7,6 +7,18 @@ import { hybridSearchProfeplan } from "../searchService";
 import { getGenAIClient, safetySettings } from "./AiCore";
 import { extractHighSchoolContext } from "./AiUtilityService";
 
+type LessonContext = {
+    topic?: string;
+    content?: string;
+};
+
+type ChatPart =
+    | { text: string }
+    | { inlineData: { data: string; mimeType: string } };
+
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 export const generateProfePlanStream = async (
     message: string,
     history: { role: string; parts: { text: string }[] }[],
@@ -34,7 +46,7 @@ export const generateProfePlanStream = async (
             if (preferences || (recentLessons && recentLessons.length > 0)) {
                 const preferred_tone = preferences?.preferred_tone || 'não definido';
                 const recentLessons_list = recentLessons && recentLessons.length > 0
-                    ? recentLessons.map((l: any, i: number) => `Aula ${i + 1}: ${l.topic}\nConteúdo: ${l.content.substring(0, 500)}...`).join('\n\n')
+                    ? (recentLessons as LessonContext[]).map((l, i: number) => `Aula ${i + 1}: ${l.topic}\nConteúdo: ${(l.content || '').substring(0, 500)}...`).join('\n\n')
                     : 'Nenhuma aula anterior disponível.';
 
                 specificInstruction += `\n\nVocê deve seguir o estilo das aulas anteriores do professor (se houver) e respeitar o tom preferido: ${preferred_tone}. Aqui estão exemplos de aulas passadas para referência: ${recentLessons_list}`;
@@ -140,7 +152,7 @@ export const generateProfePlanStream = async (
     });
 
     // Montando a mensagem atual
-    const currentParts: any[] = [];
+    const currentParts: ChatPart[] = [];
     if (message) currentParts.push({ text: message });
     if (imagePart) currentParts.push(imagePart);
     // audioPart ignorado nesta versão simples para garantir estabilidade, ou adaptar se suportado
@@ -170,8 +182,8 @@ export const generateProfePlanStream = async (
         }
 
         return streamAdapter();
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Erro na Chamada do Gemini API:", error);
-        throw error;
+        throw new Error(getErrorMessage(error));
     }
 };

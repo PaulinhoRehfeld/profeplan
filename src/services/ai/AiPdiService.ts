@@ -2,6 +2,49 @@ import { checkUsageQuota, incrementUserUsage } from "../userService";
 import { executeWithFallback, getGenAIClient } from "./AiCore";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+type PdiLogEntry = {
+    created_at?: string;
+    content?: string;
+};
+
+type PdiEvaluationEntry = {
+    subject?: string;
+    period?: number;
+    autonomy_level?: string;
+    comprehension_level?: string;
+    pedagogical_diagnosis?: string;
+};
+
+type PdiBlock9Entry = {
+    lesson_title?: string;
+    adaptacao_metodologica?: string;
+};
+
+type PdiBlock10Entry = {
+    atividade_titulo?: string;
+    professor_valor?: number;
+    professor_nota_alcancada?: number;
+    professor_grau_autonomia?: string;
+};
+
+type FullPdiContext = {
+    student_name: string;
+    content_data?: Record<string, unknown>;
+    block_1_8?: Record<string, unknown>;
+    block_9_history?: PdiBlock9Entry[];
+    block_10_history?: PdiBlock10Entry[];
+};
+
+type PdiBlock11Document = {
+    student_name: string;
+    period: string;
+    school_name?: string;
+    content_data?: Record<string, unknown>;
+    block_1_8?: Record<string, unknown>;
+    block_9_content?: Array<PdiBlock9Entry & { subject?: string }>;
+    block_10_entries?: PdiBlock10Entry[];
+};
+
 /**
  * [PDI_MODE]
  * Gera uma adaptação PDI/DUA para um aluno específico baseada em uma aula original.
@@ -74,11 +117,14 @@ export const generateStudentAdaptation = async (
  * [PDI_REPORT_MODE]
  * Gera um Relatório Bimestral de PDI baseado nos logs de adaptação.
  */
-export const generatePdiReport = async (logs: any[], studentName: string, period: string) => {
+export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string, period: string) => {
     const genAI = getGenAIClient();
 
     // Sintetiza os logs para não estourar o contexto
-    const logsSummary = logs.map(l => `- Em ${new Date(l.created_at).toLocaleDateString()}: Adaptação focada em ${l.content?.substring(0, 100) || 'Conteúdo adaptado'}...`).join('\n');
+    const logsSummary = logs.map(l => {
+        const dateLabel = l.created_at ? new Date(l.created_at).toLocaleDateString() : 'Data desconhecida';
+        return `- Em ${dateLabel}: Adaptação focada em ${l.content?.substring(0, 100) || 'Conteúdo adaptado'}...`;
+    }).join('\n');
 
     const prompt = `
     ATUE COMO UM ESPECIALISTA EM EDUCAÇÃO ESPECIAL E INCLUSIVA COM 20 ANOS DE EXPERIÊNCIA EM ESCRITA DE LAUDOS E RELATÓRIOS DE PDI.
@@ -120,8 +166,8 @@ export const generatePdiReport = async (logs: any[], studentName: string, period
  */
 export const generateFinalPDIReport = async (data: {
     studentName: string;
-    profileData: any;
-    evaluations: any[];
+    profileData: Record<string, unknown>;
+    evaluations: PdiEvaluationEntry[];
     adaptationCount: number;
 }) => {
     const genAI = getGenAIClient();
@@ -297,13 +343,7 @@ export const generateBlock10Diagnosis = async (
         professor_nota_alcancada: number;
         professor_grau_autonomia: 'total' | 'parcial' | 'dependente';
     },
-    fullPdiContext: {
-        student_name: string;
-        content_data?: any;
-        block_1_8: any;
-        block_9_history: any[];
-        block_10_history: any[];
-    },
+    fullPdiContext: FullPdiContext,
     userId?: string
 ): Promise<{
     ia_metodologia: string;
@@ -324,15 +364,15 @@ export const generateBlock10Diagnosis = async (
     const desafios = fullPdiContext.block_1_8?.bloco_2_diagnostico?.desafios || [];
     const objetivo_geral = fullPdiContext.block_1_8?.bloco_3_objetivos?.objetivo_geral || '';
 
-    const adaptacoesRecentes = fullPdiContext.block_9_history
+    const adaptacoesRecentes = (fullPdiContext.block_9_history || [])
         .slice(-3)
-        .map((a: any) => `- ${a.lesson_title}: ${a.adaptacao_metodologica?.substring(0, 150)}...`)
+        .map((a) => `- ${a.lesson_title}: ${a.adaptacao_metodologica?.substring(0, 150)}...`)
         .join('\n');
 
-    const avaliacoesAnteriores = fullPdiContext.block_10_history
+    const avaliacoesAnteriores = (fullPdiContext.block_10_history || [])
         .slice(-3)
-        .map((av: any) => {
-            const percentual = ((av.professor_nota_alcancada / av.professor_valor) * 100).toFixed(0);
+        .map((av) => {
+            const percentual = ((av.professor_nota_alcancada as number) / (av.professor_valor as number) * 100).toFixed(0);
             return `- ${av.atividade_titulo}: ${percentual}% (Autonomia: ${av.professor_grau_autonomia})`;
         })
         .join('\n');
@@ -430,15 +470,7 @@ FORMATO DE SAÍDA (JSON PURO):
  * Usado ao fim do período letivo para documentação oficial.
  */
 export const generateBlock11Report = async (
-    pdiDocument: {
-        student_name: string;
-        period: string;
-        school_name?: string;
-        content_data?: any;
-        block_1_8: any;
-        block_9_content: any[];
-        block_10_entries: any[];
-    },
+    pdiDocument: PdiBlock11Document,
     userId?: string
 ): Promise<string> => {
     const genAI = getGenAIClient();
@@ -455,20 +487,20 @@ export const generateBlock11Report = async (
     const objetivos = pdiDocument.block_1_8?.bloco_3_objetivos || {};
 
     const totalAdaptacoes = pdiDocument.block_9_content?.length || 0;
-    const disciplinasAdaptadas = [...new Set(pdiDocument.block_9_content?.map((a: any) => a.subject) || [])];
+    const disciplinasAdaptadas = [...new Set(pdiDocument.block_9_content?.map((a) => a.subject) || [])];
 
     const avaliacoes = pdiDocument.block_10_entries || [];
     const mediaGeral = avaliacoes.length > 0
-        ? (avaliacoes.reduce((sum: number, av: any) =>
-            sum + ((av.professor_nota_alcancada / av.professor_valor) * 100), 0
+        ? (avaliacoes.reduce((sum: number, av) =>
+            sum + ((av.professor_nota_alcancada as number) / (av.professor_valor as number)) * 100, 0
         ) / avaliacoes.length).toFixed(1)
         : 'N/A';
 
-    const autonomiaTotal = avaliacoes.filter((av: any) => av.professor_grau_autonomia === 'total').length;
-    const autonomiaParcial = avaliacoes.filter((av: any) => av.professor_grau_autonomia === 'parcial').length;
-    const autonomiaDependente = avaliacoes.filter((av: any) => av.professor_grau_autonomia === 'dependente').length;
+    const autonomiaTotal = avaliacoes.filter((av) => av.professor_grau_autonomia === 'total').length;
+    const autonomiaParcial = avaliacoes.filter((av) => av.professor_grau_autonomia === 'parcial').length;
+    const autonomiaDependente = avaliacoes.filter((av) => av.professor_grau_autonomia === 'dependente').length;
 
-    const ultimasAvaliacoes = avaliacoes.slice(-3).map((av: any) => ({
+    const ultimasAvaliacoes = avaliacoes.slice(-3).map((av) => ({
         atividade: av.atividade_titulo,
         percentual: ((av.professor_nota_alcancada / av.professor_valor) * 100).toFixed(0),
         autonomia: av.professor_grau_autonomia,

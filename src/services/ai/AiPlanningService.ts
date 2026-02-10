@@ -14,7 +14,7 @@ export const generateTermPlan = async (
         educationSphere: string;
         teacherName: string;
         totalClasses: number;
-        reserves: any;
+        reserves: Record<string, unknown>;
         userId?: string;
         level?: string;
         feedback?: string;
@@ -63,10 +63,11 @@ export const generateTermPlan = async (
         );
 
         if (results && results.length > 0) {
-            curriculumContext = results.map((r: any) => {
-                const year = r.metadata?.ano_base || 2025;
+            curriculumContext = results.map((r) => {
+                const row = r as { metadata?: { ano_base?: number }; content?: string };
+                const year = row.metadata?.ano_base || 2025;
                 const sourceTag = year === 2025 ? " (Base curricular 2025)" : "";
-                return `${r.content}${sourceTag}`;
+                return `${row.content || ''}${sourceTag}`;
             }).join('\n\n---\n\n');
             console.log(`✅ Encontrados ${results.length} trechos de currículo.`);
         } else {
@@ -200,7 +201,7 @@ export const generateTermPlan = async (
  */
 export const generateGeminiContent = async (
     prompt: string,
-    history: any[] = [],
+    history: unknown[] = [],
     context: string = '',
     userId?: string,
     temperature: number = 0.7 // Default to creative
@@ -208,10 +209,13 @@ export const generateGeminiContent = async (
     const genAI = getGenAIClient();
 
     // Constrói o histórico no formato Gemini
-    const chatHistory = history.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
-    }));
+    const chatHistory = history.map((msg) => {
+        const entry = msg as { role?: string; content?: string };
+        return {
+            role: entry.role === 'user' ? 'user' : 'model',
+            parts: [{ text: entry.content || '' }]
+        };
+    });
 
     const systemInstruction = `${SYSTEM_PROMPT} \n\n[CONTEXTO ATUAL]: ${context} `;
 

@@ -1,6 +1,10 @@
 import { supabase } from './supabaseClient';
 import { PnldBook } from '../types';
 
+type PnldTitleRow = {
+    livro_titulo?: string;
+};
+
 export const PnldService = {
     /**
      * Fetches all available PNLD books from the metadata table.
@@ -26,7 +30,10 @@ export const PnldService = {
 
             if (contentError) throw contentError;
 
-            const uniqueTitles = Array.from(new Set(content.map(c => (c as any).livro_titulo))).filter(Boolean);
+            const titles = ((content as PnldTitleRow[] | null) || [])
+                .map((c) => c.livro_titulo)
+                .filter(Boolean) as string[];
+            const uniqueTitles = Array.from(new Set(titles));
 
             return uniqueTitles.map(title => ({
                 id: title as string,

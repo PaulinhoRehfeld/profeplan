@@ -11,12 +11,16 @@ if (!STRIPE_PUBLISHABLE_KEY) {
 
 export const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 export const createCheckoutSession = async (priceId: string, userId: string, mode: 'payment' | 'subscription' = 'payment', planType: string) => {
     try {
         const { data: { session } } = await supabase.auth.getSession();
 
         // Determine Return URL (Mobile vs Web)
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (window as any).Capacitor?.isNative;
+        const windowCapacitor = window as unknown as { Capacitor?: { isNative?: boolean } };
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || windowCapacitor.Capacitor?.isNative;
         const returnUrl = isMobile
             ? 'com.profeplan.app://stripe-callback'
             : window.location.origin;
@@ -41,7 +45,7 @@ export const createCheckoutSession = async (priceId: string, userId: string, mod
         const stripe = await stripePromise;
         if (!stripe) throw new Error('Stripe failed to initialize');
 
-        const result = await (stripe as any).redirectToCheckout({
+        const result = await stripe.redirectToCheckout({
             sessionId: data.sessionId,
         });
 
@@ -49,8 +53,8 @@ export const createCheckoutSession = async (priceId: string, userId: string, mod
             throw new Error(result.error.message);
         }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error creating checkout session:', error);
-        throw error;
+        throw new Error(getErrorMessage(error));
     }
 };

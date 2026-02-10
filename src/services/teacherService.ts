@@ -1,6 +1,9 @@
 import { supabase } from './supabaseClient';
 import { Teacher, InviteTeacherDTO } from '../types';
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 export interface PendingTeacher {
     id: string;
     school_id: string;
@@ -93,8 +96,8 @@ export const inviteTeacher = async (teacherData: InviteTeacherDTO): Promise<{ su
             error: 'Professor deve se cadastrar primeiro na plataforma. Envie o link de cadastro para o email fornecido.'
         };
 
-    } catch (error: any) {
-        return { success: false, error: error.message };
+    } catch (error: unknown) {
+        return { success: false, error: getErrorMessage(error) };
     }
 };
 
@@ -221,7 +224,7 @@ export const approveTeacher = async (pendingId: string): Promise<{ success: bool
 /**
  * Updates teacher profile (DEPRECATED: Use userService.updateUserProfile instead)
  */
-export const updateProfileAndLinkSchool = async (profileId: string, updates: any) => {
+export const updateProfileAndLinkSchool = async (profileId: string, updates: Record<string, unknown>) => {
     console.warn('[teacherService] updateProfileAndLinkSchool is deprecated. Use userService.updateUserProfile.');
     const { error } = await supabase
         .from('profiles')

@@ -9,6 +9,9 @@ interface DiagnosticResult {
     latency?: number;
 }
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 export const runDiagnostics = async (): Promise<DiagnosticResult[]> => {
     const results: DiagnosticResult[] = [];
 
@@ -41,8 +44,8 @@ export const runDiagnostics = async (): Promise<DiagnosticResult[]> => {
             } else {
                 results.push({ service: 'Supabase', status: 'ok', message: 'Conexão estabelecida com sucesso.', latency: endSupabase - startSupabase });
             }
-        } catch (e: any) {
-            results.push({ service: 'Supabase', status: 'error', message: `Exceção ao conectar: ${e.message}` });
+        } catch (e: unknown) {
+            results.push({ service: 'Supabase', status: 'error', message: `Exceção ao conectar: ${getErrorMessage(e)}` });
         }
     }
 
@@ -61,8 +64,8 @@ export const runDiagnostics = async (): Promise<DiagnosticResult[]> => {
             } else {
                 results.push({ service: 'Gemini', status: 'warning', message: 'Sem resposta de texto.', latency: endGemini - startGemini });
             }
-        } catch (e: any) {
-            results.push({ service: 'Gemini', status: 'error', message: `Erro de conexão: ${e.message}` });
+        } catch (e: unknown) {
+            results.push({ service: 'Gemini', status: 'error', message: `Erro de conexão: ${getErrorMessage(e)}` });
         }
     }
 

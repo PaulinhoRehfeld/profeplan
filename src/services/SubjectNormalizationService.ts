@@ -9,6 +9,9 @@ import { supabase } from './supabaseClient';
 const subjectCache = new Map<string, string>();
 let cacheInitialized = false;
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 /**
  * Inicializa o cache carregando todas as disciplinas normalizadas
  */
@@ -115,8 +118,8 @@ export const addSubjectVariant = async (
         subjectCache.set(inputVariant.toLowerCase(), normalizedName);
 
         return { success: true };
-    } catch (err: any) {
-        return { success: false, error: err.message };
+    } catch (err: unknown) {
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 

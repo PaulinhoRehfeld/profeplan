@@ -5,6 +5,9 @@
 import { supabase } from './supabaseClient';
 import { Student } from '../types';
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
 /**
  * CONSOLIDATED StudentService Module
  * 
@@ -97,11 +100,11 @@ export const createStudent = async (studentData: CreateStudentDTO): Promise<{ su
             student_code: studentData.student_code || `STD${Date.now()}${Math.floor(Math.random() * 1000)}`
         };
 
-        delete (normalizedData as any).school_id; // Remove alias field
+        const { school_id: _schoolId, ...payload } = normalizedData; // Remove alias field
 
         const { data, error } = await supabase
             .from('students')
-            .insert([normalizedData])
+            .insert([payload])
             .select()
             .single();
 
@@ -111,9 +114,9 @@ export const createStudent = async (studentData: CreateStudentDTO): Promise<{ su
         }
 
         return { success: true, data };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Exception in createStudent:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: getErrorMessage(error) };
     }
 };
 
@@ -137,9 +140,9 @@ export const updateStudent = async (
         }
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Exception in updateStudent:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: getErrorMessage(error) };
     }
 };
 
@@ -170,8 +173,8 @@ export const archiveStudent = async (
         }
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Exception in archiveStudent:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: getErrorMessage(error) };
     }
 };

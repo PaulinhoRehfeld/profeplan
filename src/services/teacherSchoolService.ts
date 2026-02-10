@@ -2,6 +2,47 @@ import { supabase } from './supabaseClient';
 import { TeacherSchoolLink } from '../types';
 import { normalizeInepCode } from '../utils/inepUtils';
 
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
+type TeacherSchoolRow = {
+    id: string;
+    teacher_id: string;
+    school_id: string;
+    role: string;
+    disciplines?: string[];
+    started_at: string;
+    ended_at?: string | null;
+    schools?: {
+        name?: string;
+        inep_code?: string;
+    };
+};
+
+type SchoolTeacherRow = {
+    id: string;
+    role: string;
+    disciplines?: string[];
+    started_at: string;
+    profiles?: {
+        id?: string;
+        full_name?: string;
+        email?: string;
+        masp?: string;
+    };
+};
+
+interface SchoolTeacher {
+    link_id: string;
+    teacher_id?: string;
+    name?: string;
+    email?: string;
+    masp?: string;
+    role: string;
+    disciplines?: string[];
+    started_at: string;
+}
+
 /**
  * Service para gerenciar vínculos entre professores e escolas
  * Suporta professores em múltiplas escolas
@@ -35,7 +76,7 @@ export const getTeacherSchools = async (teacherId: string): Promise<TeacherSchoo
         if (error) throw error;
 
         // Flatten schools object
-        return (data || []).map((link: any) => ({
+        return (data as TeacherSchoolRow[] | null || []).map((link) => ({
             id: link.id,
             teacher_id: link.teacher_id,
             school_id: link.school_id,
@@ -94,9 +135,9 @@ export const createTeacherSchoolLink = async (
 
         console.log('[teacherSchoolService] ✅ Link created:', teacherId, '<->', schoolId);
         return { success: true, linkId: data.id };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error creating link:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
@@ -119,9 +160,9 @@ export const updateTeacherSchoolLink = async (
         if (error) throw error;
 
         return { success: true };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error updating link:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
@@ -139,9 +180,9 @@ export const endTeacherSchoolLink = async (linkId: string): Promise<{ success: b
         if (error) throw error;
 
         return { success: true };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error ending link:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
@@ -160,9 +201,9 @@ export const clearTeacherSchoolLinks = async (teacherId: string): Promise<{ succ
         if (error) throw error;
 
         return { success: true };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error clearing links:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
@@ -258,16 +299,16 @@ export const reconcileTeacherByInep = async (
             schoolId: school.id,
             schoolName: school.name
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error in reconciliation:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
 /**
  * GESTÃO ESCOLAR: Busca professores vinculados a uma escola
  */
-export const getSchoolTeachers = async (schoolId: string): Promise<any[]> => {
+export const getSchoolTeachers = async (schoolId: string): Promise<SchoolTeacher[]> => {
     try {
         const { data, error } = await supabase
             .from('teacher_schools')
@@ -289,7 +330,7 @@ export const getSchoolTeachers = async (schoolId: string): Promise<any[]> => {
 
         if (error) throw error;
 
-        return (data || []).map((link: any) => ({
+        return (data as SchoolTeacherRow[] | null || []).map((link) => ({
             link_id: link.id,
             teacher_id: link.profiles?.id,
             name: link.profiles?.full_name,
@@ -341,9 +382,9 @@ export const inviteTeacherByMasp = async (
             success: true,
             teacherName: teacher.full_name
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error inviting teacher:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
@@ -374,9 +415,9 @@ export const getSchoolManagers = async (schoolId: string): Promise<{
             success: true,
             managers: data || []
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error fetching school managers:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
 
@@ -450,8 +491,8 @@ export const getTeacherSchoolManager = async (
             },
             schoolName: schoolData?.name
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('[teacherSchoolService] Error fetching teacher school manager:', err);
-        return { success: false, error: err.message };
+        return { success: false, error: getErrorMessage(err) };
     }
 };
