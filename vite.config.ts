@@ -49,7 +49,7 @@ export default defineConfig(({ mode }) => {
             react: ['react', 'react-dom', 'react-router-dom'],
             supabase: ['@supabase/supabase-js'],
             pdf: ['jspdf', 'pdf-parse', 'pdfjs-dist'],
-            ai: ['@google/generative-ai', '@pinecone-database/pinecone'],
+            ai: ['@google/generative-ai'],
             ui: ['lucide-react', 'react-hook-form']
           }
         }
