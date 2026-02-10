@@ -40,6 +40,20 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, './src'),
       }
+    },
+    build: {
+      chunkSizeWarningLimit: 750,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            supabase: ['@supabase/supabase-js'],
+            pdf: ['jspdf', 'pdf-parse', 'pdfjs-dist'],
+            ai: ['@google/generative-ai', '@pinecone-database/pinecone'],
+            ui: ['lucide-react', 'react-hook-form']
+          }
+        }
+      }
     }
   };
 });
