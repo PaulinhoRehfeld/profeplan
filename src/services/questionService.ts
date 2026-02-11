@@ -37,7 +37,8 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         console.log(`🔍 [Text Search] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
         // TEMPORARY FIX: Using text-only search (embeddings API unavailable)
-        // Search in actual database columns: intro_text, question_text, alternatives
+        // Search in actual database columns: intro_text, question_text, component, specific_topic
+        // Note: alternatives is JSONB - can't use :: cast in PostgREST URL syntax
         
         // Build search query for multiple fields
         const searchPattern = `%${query}%`;
@@ -45,7 +46,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         const textResponse = await supabase
             .from('enem_questions')
             .select('*')
-            .or(`intro_text.ilike.${searchPattern},question_text.ilike.${searchPattern},alternatives::text.ilike.${searchPattern},component.ilike.${searchPattern},specific_topic.ilike.${searchPattern}`)
+            .or(`intro_text.ilike.${searchPattern},question_text.ilike.${searchPattern},component.ilike.${searchPattern},specific_topic.ilike.${searchPattern}`)
             .limit(50); // Increased limit for text-only search
         
         // Dummy vector response for compatibility
