@@ -26,26 +26,20 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
     try {
         if (!query.trim()) return [];
 
-        console.log(`🔍 [Hybrid] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
+        console.log(`🔍 [Text Search] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
-        // 1. Gera o embedding da query (Busca Semântica)
-        const model = googleAI.getGenerativeModel({ model: "embedding-001" });
-        const result = await model.embedContent(query);
-        const embedding = result.embedding.values;
-
-        // 2. Executa buscas em paralelo: Vetorial (RPC) + Palavra-Chave (Text)
-        const [vectorResponse, textResponse] = await Promise.all([
-            supabase.rpc('match_questions', {
-                query_embedding: embedding,
-                match_threshold: 0.35,
-                match_count: 100 // Aumentado para 100 para melhorar recall antes do filtro
-            }),
-            supabase
-                .from('enem_questions')
-                .select('id, metadata')
-                .or(`metadata->>context.ilike.%${query}%, metadata->>alternativesIntroduction.ilike.%${query}%`)
-                .limit(20) // Limite de segurança para busca textual
-        ]);
+        // TEMPORARY FIX: Using text-only search (embeddings API unavailable)
+        // TODO: Update to correct embedding model when Google AI API is fixed
+        
+        // 2. Busca Textual (Keyword-based)
+        const textResponse = await supabase
+            .from('enem_questions')
+            .select('id, metadata')
+            .or(`metadata->>context.ilike.%${query}%, metadata->>alternativesIntroduction.ilike.%${query}%`)
+            .limit(50); // Increased limit for text-only search
+        
+        // Dummy vector response for compatibility
+        const vectorResponse = { data: [], error: null };
 
         if (vectorResponse.error) {
             console.error('❌ Erro na RPC Supabase:', vectorResponse.error);
