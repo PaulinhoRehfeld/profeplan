@@ -32,8 +32,8 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
 
         // TEMPORARY FIX: Using text-only search (embeddings API unavailable)
         // Database schema: enem_questions has 'metadata' JSONB column, not individual fields
-        // Search in metadata fields: context, alternativesIntroduction, discipline
-        // Also search in 'content' text field if available
+        // Primary search: 'content' field contains full question text (most effective)
+        // Secondary: metadata->>context and metadata->>alternativesIntroduction
         
         // Build search query for multiple fields
         const searchPattern = `%${query}%`;
@@ -41,7 +41,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         const textResponse = await supabase
             .from('enem_questions')
             .select('*')
-            .or(`content.ilike.${searchPattern},metadata->>context.ilike.${searchPattern},metadata->>discipline.ilike.${searchPattern}`)
+            .ilike('content', searchPattern)
             .limit(50); // Increased limit for text-only search
         
         // Dummy vector response for compatibility
