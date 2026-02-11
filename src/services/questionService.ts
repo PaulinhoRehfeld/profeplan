@@ -19,7 +19,15 @@ const getErrorMessage = (error: unknown): string =>
 
 type EnemQuestionRow = {
     id: number;
-    metadata: EnemQuestion['metadata'];
+    intro_text: string | null;
+    question_text: string;
+    alternatives: any; // JSONB
+    component: string;
+    specific_topic: string | null;
+    area: string;
+    exam_year: number;
+    correct_answer: string;
+    created_at?: string;
 };
 
 export const searchQuestions = async (query: string, areas?: string[]): Promise<EnemQuestion[]> => {
@@ -29,13 +37,15 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         console.log(`🔍 [Text Search] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
         // TEMPORARY FIX: Using text-only search (embeddings API unavailable)
-        // TODO: Update to correct embedding model when Google AI API is fixed
+        // Search in actual database columns: intro_text, question_text, alternatives
         
-        // 2. Busca Textual (Keyword-based)
+        // Build search query for multiple fields
+        const searchPattern = `%${query}%`;
+        
         const textResponse = await supabase
             .from('enem_questions')
-            .select('id, metadata')
-            .or(`metadata->>context.ilike.%${query}%, metadata->>alternativesIntroduction.ilike.%${query}%`)
+            .select('*')
+            .or(`intro_text.ilike.${searchPattern},question_text.ilike.${searchPattern},alternatives::text.ilike.${searchPattern},component.ilike.${searchPattern},specific_topic.ilike.${searchPattern}`)
             .limit(50); // Increased limit for text-only search
         
         // Dummy vector response for compatibility
@@ -53,9 +63,18 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         const vectorQuestions = (vectorResponse.data as EnemQuestion[]) || [];
         const textQuestions = ((textResponse.data as EnemQuestionRow[] | null) || []).map(row => ({
             id: row.id,
-            //  Questões via Select direto já tem o metadata conforme o banco, mas precisamos garantir compatibilidade
-            metadata: row.metadata,
-            // Adiciona flag para debug se necessário
+            metadata: {
+                context: row.intro_text || '',
+                alternativesIntroduction: row.intro_text || '',
+                questionText: row.question_text,
+                alternatives: row.alternatives,
+                component: row.component,
+                specificTopic: row.specific_topic || '',
+                area: row.area,
+                discipline: row.component, // component serve como disciplina
+                examYear: row.exam_year,
+                correctAnswer: row.correct_answer
+            },
             _source: 'text'
         })) as EnemQuestion[];
 
@@ -76,11 +95,10 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         let finalQuestions = Array.from(combinedMap.values());
 
         // 4. Hidratação de Metadata 
-        // Nota: Se a busca vetorial retornar partial objects (dependendo da RPC), hidratamos.
-        // Se a busca textual selecionou 'metadata', já temos.
-        // A RPC 'match_questions' geralmente retorna colunas completas se configurado assim.
-        // Se houver necessidade, mantemos a hidratação apenas para quem falta.
-        const needsHydration = finalQuestions.some(q => !q.metadata || !q.metadata.alternatives);
+        // Nota: Com busca textual retornando todos os campos e transformando para metadata,
+        // a hidratação não é mais necessária
+        const needsHydration = false; // Disabled - all data already transformed
+
 
         if (needsHydration && finalQuestions.length > 0) {
             console.log('⚠️ Hydrating metadata...');
