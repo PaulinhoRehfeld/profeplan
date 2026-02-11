@@ -20,12 +20,7 @@ BEGIN;
 -- PHASE 1: PROFILES TABLE FIX (Error 400 - Recursion)
 -- ==============================================================================
 
-\echo '========================================================================'
-\echo 'PHASE 1: PROFILES TABLE RLS FIX'
-\echo '========================================================================'
-
 -- 1.1: Create SECURITY DEFINER functions (owned by postgres)
-\echo 'Creating SECURITY DEFINER functions...'
 
 CREATE OR REPLACE FUNCTION public.is_admin_safe()
 RETURNS boolean
@@ -55,10 +50,7 @@ $$;
 
 ALTER FUNCTION public.get_my_school_id_safe() OWNER TO postgres;
 
-\echo 'SECURITY DEFINER functions created successfully.'
-
 -- 1.2: Drop old policies
-\echo 'Dropping old profiles policies...'
 
 DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
 DROP POLICY IF EXISTS "profiles_update_policy" ON public.profiles;
@@ -73,7 +65,6 @@ DROP POLICY IF EXISTS "School managers can view their school" ON public.profiles
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- 1.4: Create new policies using SECURITY DEFINER functions
-\echo 'Creating new profiles policies...'
 
 -- SELECT: Admins see all, others see their school + self
 CREATE POLICY "profiles_select_policy" ON public.profiles
@@ -105,15 +96,9 @@ WITH CHECK (
     public.is_admin_safe() = true
 );
 
-\echo 'PHASE 1 COMPLETE: Profiles table fixed.'
-
 -- ==============================================================================
 -- PHASE 2: PDI_RECORDS TABLE (Error 403)
 -- ==============================================================================
-
-\echo '========================================================================'
-\echo 'PHASE 2: PDI_RECORDS TABLE RLS'
-\echo '========================================================================'
 
 -- Enable RLS if not already enabled
 ALTER TABLE public.pdi_records ENABLE ROW LEVEL SECURITY;
@@ -178,15 +163,9 @@ USING (
     teacher_id = auth.uid()
 );
 
-\echo 'PHASE 2 COMPLETE: PDI records policies created.'
-
 -- ==============================================================================
 -- PHASE 3: SCHOOL_STUDENTS TABLE (Error 406)
 -- ==============================================================================
-
-\echo '========================================================================'
-\echo 'PHASE 3: SCHOOL_STUDENTS TABLE RLS'
-\echo '========================================================================'
 
 -- Enable RLS if not already enabled
 ALTER TABLE public.school_students ENABLE ROW LEVEL SECURITY;
@@ -262,15 +241,9 @@ USING (
     )
 );
 
-\echo 'PHASE 3 COMPLETE: School students policies created.'
-
 -- ==============================================================================
 -- PHASE 4: ENEM_QUESTIONS TABLE (Enable Read Access for 17,000 questions)
 -- ==============================================================================
-
-\echo '========================================================================'
-\echo 'PHASE 4: ENEM_QUESTIONS TABLE RLS'
-\echo '========================================================================'
 
 -- Enable RLS if not already enabled
 ALTER TABLE public.enem_questions ENABLE ROW LEVEL SECURITY;
@@ -288,15 +261,9 @@ CREATE POLICY "enem_questions_select_all" ON public.enem_questions
 FOR SELECT TO authenticated
 USING (true);
 
-\echo 'PHASE 4 COMPLETE: ENEM questions read access enabled.'
-
 -- ==============================================================================
 -- VERIFICATION QUERIES
 -- ==============================================================================
-
-\echo '========================================================================'
-\echo 'VERIFICATION: Checking created policies'
-\echo '========================================================================'
 
 -- Verify SECURITY DEFINER functions
 SELECT 
@@ -354,15 +321,15 @@ WHERE tablename IN ('profiles', 'pdi_records', 'school_students', 'enem_question
 GROUP BY tablename
 ORDER BY tablename;
 
-\echo '========================================================================'
-\echo 'DEPLOYMENT COMPLETE'
-\echo 'Expected Policy Count:'
-\echo '  - profiles: 3 (SELECT, UPDATE, INSERT)'
-\echo '  - pdi_records: 4 (SELECT, INSERT, UPDATE, DELETE)'
-\echo '  - school_students: 4 (SELECT, INSERT, UPDATE, DELETE)'
-\echo '  - enem_questions: 1 (SELECT)'
-\echo 'TOTAL: 12 policies'
-\echo '========================================================================'
+-- ==============================================================================
+-- DEPLOYMENT COMPLETE
+-- Expected Policy Count:
+--   - profiles: 3 (SELECT, UPDATE, INSERT)
+--   - pdi_records: 4 (SELECT, INSERT, UPDATE, DELETE)
+--   - school_students: 4 (SELECT, INSERT, UPDATE, DELETE)
+--   - enem_questions: 1 (SELECT)
+-- TOTAL: 12 policies
+-- ==============================================================================
 
 -- Commit all changes
 COMMIT;
