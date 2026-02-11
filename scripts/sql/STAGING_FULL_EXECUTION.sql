@@ -20,9 +20,7 @@ SELECT
 UNION ALL
 SELECT 'schools', COUNT(*) FROM schools
 UNION ALL
-SELECT 'pending_teacher_approvals', COUNT(*) FROM pending_teacher_approvals
-UNION ALL
-SELECT 'manager_school_assignments', COUNT(*) FROM manager_school_assignments
+SELECT 'pending_teachers', COUNT(*) FROM pending_teachers
 ORDER BY table_name;
 
 -- 1.3 List Current RLS Policies
@@ -36,7 +34,7 @@ SELECT
   cmd 
 FROM pg_policies 
 WHERE schemaname = 'public' 
-  AND tablename IN ('profiles', 'pending_teacher_approvals', 'manager_school_assignments')
+  AND tablename IN ('profiles', 'pending_teachers')
 ORDER BY tablename, policyname;
 
 -- 1.4 Count Current Policies on Profiles
@@ -189,9 +187,7 @@ SELECT
 UNION ALL
 SELECT 'schools', COUNT(*) FROM schools
 UNION ALL
-SELECT 'pending_teacher_approvals', COUNT(*) FROM pending_teacher_approvals
-UNION ALL
-SELECT 'manager_school_assignments', COUNT(*) FROM manager_school_assignments
+SELECT 'pending_teachers', COUNT(*) FROM pending_teachers
 ORDER BY table_name;
 
 
@@ -232,15 +228,21 @@ GROUP BY p.school_id
 ORDER BY profile_count DESC
 LIMIT 5;
 
--- 4.5 Test Pending Approvals Access
--- --- Test 5: Pending teacher approvals ---
+-- 4.5 Test Pending Teachers Access
+-- --- Test 5: Pending teachers ---
 SELECT COUNT(*) as pending_count
-FROM pending_teacher_approvals;
+FROM pending_teachers;
 
--- 4.6 Test Manager Assignments
--- --- Test 6: Manager school assignments ---
-SELECT COUNT(*) as assignment_count
-FROM manager_school_assignments;
+-- 4.6 Test Manager Profiles
+-- --- Test 6: Manager profiles by school ---
+SELECT 
+  school_id,
+  COUNT(*) as manager_count
+FROM profiles
+WHERE role = 'manager'
+GROUP BY school_id
+ORDER BY manager_count DESC
+LIMIT 5;
 
 
 -- ==============================================================================
