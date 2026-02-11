@@ -35,6 +35,24 @@ export const getClassesBySchool = async (schoolId: string): Promise<Class[]> => 
 };
 
 /**
+ * Get a class by ID (name/year/shift)
+ */
+export const getClassById = async (classId: string): Promise<Pick<Class, 'id' | 'name' | 'year' | 'shift'> | null> => {
+    const { data, error } = await supabase
+        .from('classes')
+        .select('id, name, year, shift')
+        .eq('id', classId)
+        .maybeSingle();
+
+    if (error) {
+        console.error('Error fetching class by id:', error);
+        return null;
+    }
+
+    return data || null;
+};
+
+/**
  * Create a new class in the school
  * @param classData - Class creation data (name, grade, year, shift, room, school_id)
  * @returns Promise - Object with success flag, created Class object, and optional error message

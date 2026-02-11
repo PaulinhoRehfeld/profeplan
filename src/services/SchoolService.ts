@@ -2,6 +2,82 @@ import { supabase } from './supabaseClient';
 import { SchoolStats } from '../types';
 
 export const SchoolService = {
+    async getCities(): Promise<string[]> {
+        try {
+            const { data, error } = await supabase.rpc('get_cities');
+
+            if (!error && data) {
+                return data.map((item: { city?: string }) => item.city).filter(Boolean) as string[];
+            }
+
+            if (error) {
+                console.warn('RPC get_cities failed, falling back to limited select:', error);
+            }
+
+            const { data: fallbackData } = await supabase
+                .from('schools')
+                .select('city')
+                .order('city');
+
+            if (!fallbackData) return [];
+
+            return Array.from(new Set(fallbackData.map((item) => item.city).filter(Boolean))) as string[];
+        } catch (err) {
+            console.error('Error loading cities:', err);
+            return [];
+        }
+    },
+
+    async getSchoolsByCity(city: string): Promise<Array<{ id: string; name: string; city: string }>> {
+        const { data, error } = await supabase
+            .from('schools')
+            .select('id, name, city')
+            .eq('city', city)
+            .order('name');
+
+        if (error) {
+            console.error('Error loading schools by city:', error);
+            return [];
+        }
+
+        return data || [];
+    },
+
+    async resolveSchoolByIdOrInep(schoolIdOrInep: string): Promise<{ id: string; name: string; inep_code?: string } | null> {
+        const trimmed = schoolIdOrInep.trim();
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(trimmed);
+
+        const query = supabase
+            .from('schools')
+            .select('id, name, inep_code')
+            .eq(isUuid ? 'id' : 'inep_code', trimmed)
+            .single();
+
+        const { data, error } = await query;
+
+        if (error) {
+            console.error('Error resolving school:', error);
+            return null;
+        }
+
+        return data || null;
+    },
+
+    async getSchoolById(schoolId: string): Promise<{ id: string; name: string } | null> {
+        const { data, error } = await supabase
+            .from('schools')
+            .select('id, name')
+            .eq('id', schoolId)
+            .maybeSingle();
+
+        if (error) {
+            console.error('Error fetching school by id:', error);
+            return null;
+        }
+
+        return data || null;
+    },
+
     /**
      * Get aggregated statistics for a school
      * @param schoolId - The unique identifier of the school

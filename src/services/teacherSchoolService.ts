@@ -29,18 +29,22 @@ type SchoolTeacherRow = {
         full_name?: string;
         email?: string;
         masp?: string;
+        created_at?: string;
     };
 };
 
 interface SchoolTeacher {
     link_id: string;
+    id?: string;
     teacher_id?: string;
-    name?: string;
+    full_name?: string;
     email?: string;
     masp?: string;
+    created_at?: string;
     role: string;
     disciplines?: string[];
     started_at: string;
+    link_started_at?: string;
 }
 
 /**
@@ -89,6 +93,53 @@ export const getTeacherSchools = async (teacherId: string): Promise<TeacherSchoo
         }));
     } catch (err) {
         console.error('[teacherSchoolService] Error fetching teacher schools:', err);
+        return [];
+    }
+};
+
+/**
+ * Obtém professores ativos vinculados a uma escola
+ */
+export const getActiveTeachersBySchool = async (schoolId: string): Promise<SchoolTeacher[]> => {
+    try {
+        const { data, error } = await supabase
+            .from('teacher_schools')
+            .select(`
+                id,
+                role,
+                disciplines,
+                started_at,
+                profiles (
+                    id,
+                    full_name,
+                    email,
+                    masp,
+                    created_at
+                )
+            `)
+            .eq('school_id', schoolId)
+            .is('ended_at', null)
+            .order('started_at', { ascending: false });
+
+        if (error) throw error;
+
+        return (data as SchoolTeacherRow[] | null || [])
+            .filter((link) => link.profiles)
+            .map((link) => ({
+                link_id: link.id,
+                id: link.profiles?.id,
+                teacher_id: link.profiles?.id,
+                full_name: link.profiles?.full_name,
+                email: link.profiles?.email,
+                masp: link.profiles?.masp,
+                created_at: link.profiles?.created_at,
+                role: link.role,
+                disciplines: link.disciplines || [],
+                started_at: link.started_at,
+                link_started_at: link.started_at
+            }));
+    } catch (err) {
+        console.error('[teacherSchoolService] Error fetching teachers by school:', err);
         return [];
     }
 };

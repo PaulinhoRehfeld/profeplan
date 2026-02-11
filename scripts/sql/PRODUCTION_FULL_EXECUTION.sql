@@ -17,15 +17,85 @@
 BEGIN;
 
 -- ==============================================================================
+-- PRE-FLIGHT CHECKS (informational)
+-- ==============================================================================
+
+-- Function return types
+SELECT
+    p.proname AS function_name,
+    pg_get_function_result(p.oid) AS return_type,
+    n.nspname AS schema_name
+FROM pg_proc p
+JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+AND p.proname IN ('is_admin_safe', 'get_my_school_id_safe')
+ORDER BY p.proname;
+
+-- Column types for school_id/teacher_id
+SELECT
+    table_name,
+    column_name,
+    data_type
+FROM information_schema.columns
+WHERE table_schema = 'public'
+AND table_name IN ('profiles', 'pdi_records', 'school_students')
+AND column_name IN ('school_id', 'teacher_id')
+ORDER BY table_name, column_name;
+
+-- RLS status for all tables in this script
+SELECT
+    c.relname AS table_name,
+    c.relrowsecurity AS rls_enabled
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public'
+AND c.relname IN (
+    'schools', 'classes', 'students', 'pending_teachers', 'pdi_documents',
+    'profiles', 'pdi_records', 'school_students', 'enem_questions'
+)
+ORDER BY c.relname;
+
+-- Current policy counts
+SELECT
+    tablename,
+    COUNT(*) AS policy_count
+FROM pg_policies
+WHERE tablename IN (
+    'schools', 'classes', 'students', 'pending_teachers', 'pdi_documents',
+    'profiles', 'pdi_records', 'school_students', 'enem_questions'
+)
+GROUP BY tablename
+ORDER BY tablename;
+
+-- ==============================================================================
 -- PHASE 1: PROFILES TABLE FIX (Error 400 - Recursion)
 -- ==============================================================================
 
--- 1.1: Drop existing functions CASCADE (removes dependent policies)
+-- 1.1: Drop ALL policies for canonical tables (reset to standard set)
 
-DROP FUNCTION IF EXISTS public.is_admin_safe() CASCADE;
-DROP FUNCTION IF EXISTS public.get_my_school_id_safe() CASCADE;
+DO $$
+DECLARE
+    p RECORD;
+BEGIN
+    FOR p IN
+        SELECT schemaname, tablename, policyname
+        FROM pg_policies
+        WHERE schemaname = 'public'
+        AND tablename IN (
+            'schools', 'classes', 'students', 'pending_teachers', 'pdi_documents',
+            'profiles', 'pdi_records', 'school_students', 'enem_questions'
+        )
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', p.policyname, p.schemaname, p.tablename);
+    END LOOP;
+END $$;
 
--- 1.2: Create SECURITY DEFINER functions (owned by postgres)
+-- 1.2: Drop existing functions (after dependent policies are removed)
+
+DROP FUNCTION IF EXISTS public.is_admin_safe();
+DROP FUNCTION IF EXISTS public.get_my_school_id_safe();
+
+-- 1.3: Create SECURITY DEFINER functions (owned by postgres)
 
 CREATE OR REPLACE FUNCTION public.is_admin_safe()
 RETURNS boolean
@@ -43,7 +113,7 @@ $$;
 ALTER FUNCTION public.is_admin_safe() OWNER TO postgres;
 
 CREATE OR REPLACE FUNCTION public.get_my_school_id_safe()
-RETURNS integer
+RETURNS text
 LANGUAGE sql
 SECURITY DEFINER
 SET search_path = public
@@ -55,21 +125,44 @@ $$;
 
 ALTER FUNCTION public.get_my_school_id_safe() OWNER TO postgres;
 
--- 1.3: Drop old policies
+-- 1.4: Recreate admin policies for core tables
 
-DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_update_policy" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_insert_policy" ON public.profiles;
-DROP POLICY IF EXISTS "Enable read for authenticated users" ON public.profiles;
-DROP POLICY IF EXISTS "Enable update for users based on id" ON public.profiles;
-DROP POLICY IF EXISTS "Admin full access" ON public.profiles;
-DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
-DROP POLICY IF EXISTS "School managers can view their school" ON public.profiles;
+-- SCHOOLS TABLE
+ALTER TABLE public.schools ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "schools_all_admin_policy" ON public.schools
+FOR ALL TO authenticated
+USING (public.is_admin_safe() = true);
 
--- 1.4: Enable RLS
+-- CLASSES TABLE
+ALTER TABLE public.classes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "classes_admin_policy" ON public.classes
+FOR ALL TO authenticated
+USING (public.is_admin_safe() = true);
+
+-- STUDENTS TABLE
+ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "students_admin_policy" ON public.students
+FOR ALL TO authenticated
+USING (public.is_admin_safe() = true);
+
+-- PENDING_TEACHERS TABLE
+ALTER TABLE public.pending_teachers ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "pending_teachers_admin_policy" ON public.pending_teachers
+FOR ALL TO authenticated
+USING (public.is_admin_safe() = true);
+
+-- PDI_DOCUMENTS TABLE
+ALTER TABLE public.pdi_documents ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "pdi_admin_policy" ON public.pdi_documents
+FOR ALL TO authenticated
+USING (public.is_admin_safe() = true);
+
+-- 1.5: Policies already cleared in step 1.1
+
+-- 1.6: Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- 1.5: Create new policies using SECURITY DEFINER functions
+-- 1.7: Create new profiles policies using SECURITY DEFINER functions
 
 -- SELECT: Admins see all, others see their school + self
 CREATE POLICY "profiles_select_policy" ON public.profiles
@@ -108,15 +201,7 @@ WITH CHECK (
 -- Enable RLS if not already enabled
 ALTER TABLE public.pdi_records ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies to avoid conflicts
-DROP POLICY IF EXISTS "School Members View PDI" ON public.pdi_records;
-DROP POLICY IF EXISTS "Teachers Insert PDI" ON public.pdi_records;
-DROP POLICY IF EXISTS "pdi_records_select_school" ON public.pdi_records;
-DROP POLICY IF EXISTS "School Admin can view all pdi records" ON public.pdi_records;
-DROP POLICY IF EXISTS "pdi_records_select_all" ON public.pdi_records;
-DROP POLICY IF EXISTS "pdi_records_insert" ON public.pdi_records;
-DROP POLICY IF EXISTS "pdi_records_update" ON public.pdi_records;
-DROP POLICY IF EXISTS "pdi_records_delete" ON public.pdi_records;
+-- Policies already cleared in step 1.1
 
 -- SELECT: Admins see all, others see only their school
 CREATE POLICY "pdi_records_select_all" ON public.pdi_records
@@ -175,13 +260,7 @@ USING (
 -- Enable RLS if not already enabled
 ALTER TABLE public.school_students ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies to avoid conflicts
-DROP POLICY IF EXISTS "School Manager can manage students" ON public.school_students;
-DROP POLICY IF EXISTS "Users can view students from their school" ON public.school_students;
-DROP POLICY IF EXISTS "school_students_select" ON public.school_students;
-DROP POLICY IF EXISTS "school_students_insert" ON public.school_students;
-DROP POLICY IF EXISTS "school_students_update" ON public.school_students;
-DROP POLICY IF EXISTS "school_students_delete" ON public.school_students;
+-- Policies already cleared in step 1.1
 
 -- SELECT: All school members can view students from their school
 CREATE POLICY "school_students_select" ON public.school_students
@@ -253,13 +332,7 @@ USING (
 -- Enable RLS if not already enabled
 ALTER TABLE public.enem_questions ENABLE ROW LEVEL SECURITY;
 
--- Drop any existing restrictive policies
-DROP POLICY IF EXISTS "enem_questions_select" ON public.enem_questions;
-DROP POLICY IF EXISTS "Enable read access for authenticated users" ON public.enem_questions;
-DROP POLICY IF EXISTS "Allow public read" ON public.enem_questions;
-DROP POLICY IF EXISTS "Permitir leitura pública" ON public.enem_questions;
-DROP POLICY IF EXISTS "enem_questions_select_authenticated" ON public.enem_questions;
-DROP POLICY IF EXISTS "enem_questions_select_all" ON public.enem_questions;
+-- Policies already cleared in step 1.1
 
 -- Allow ALL authenticated users to read enem_questions
 CREATE POLICY "enem_questions_select_all" ON public.enem_questions
@@ -280,6 +353,51 @@ FROM information_schema.routines
 WHERE routine_schema = 'public'
 AND routine_name IN ('is_admin_safe', 'get_my_school_id_safe')
 ORDER BY routine_name;
+
+-- Verify schools policy (should be 1)
+SELECT 
+    'schools' as table_name,
+    policyname, 
+    cmd
+FROM pg_policies 
+WHERE tablename = 'schools'
+ORDER BY policyname;
+
+-- Verify classes policy (should be 1)
+SELECT 
+    'classes' as table_name,
+    policyname, 
+    cmd
+FROM pg_policies 
+WHERE tablename = 'classes'
+ORDER BY policyname;
+
+-- Verify students policy (should be 1)
+SELECT 
+    'students' as table_name,
+    policyname, 
+    cmd
+FROM pg_policies 
+WHERE tablename = 'students'
+ORDER BY policyname;
+
+-- Verify pending_teachers policy (should be 1)
+SELECT 
+    'pending_teachers' as table_name,
+    policyname, 
+    cmd
+FROM pg_policies 
+WHERE tablename = 'pending_teachers'
+ORDER BY policyname;
+
+-- Verify pdi_documents policy (should be 1)
+SELECT 
+    'pdi_documents' as table_name,
+    policyname, 
+    cmd
+FROM pg_policies 
+WHERE tablename = 'pdi_documents'
+ORDER BY policyname;
 
 -- Verify profiles policies (should be 3)
 SELECT 
@@ -322,18 +440,26 @@ SELECT
     tablename,
     COUNT(*) as policy_count
 FROM pg_policies 
-WHERE tablename IN ('profiles', 'pdi_records', 'school_students', 'enem_questions')
+WHERE tablename IN (
+    'schools', 'classes', 'students', 'pending_teachers', 'pdi_documents',
+    'profiles', 'pdi_records', 'school_students', 'enem_questions'
+)
 GROUP BY tablename
 ORDER BY tablename;
 
 -- ==============================================================================
 -- DEPLOYMENT COMPLETE
 -- Expected Policy Count:
+--   - schools: 1 (ALL for admins)
+--   - classes: 1 (ALL for admins)
+--   - students: 1 (ALL for admins)
+--   - pending_teachers: 1 (ALL for admins)
+--   - pdi_documents: 1 (ALL for admins)
 --   - profiles: 3 (SELECT, UPDATE, INSERT)
 --   - pdi_records: 4 (SELECT, INSERT, UPDATE, DELETE)
 --   - school_students: 4 (SELECT, INSERT, UPDATE, DELETE)
 --   - enem_questions: 1 (SELECT)
--- TOTAL: 12 policies
+-- TOTAL: 17 policies (5 from CASCADE recreated + 12 new)
 -- ==============================================================================
 
 -- Commit all changes

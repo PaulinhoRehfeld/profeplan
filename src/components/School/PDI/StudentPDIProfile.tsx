@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, AlertCircle, BrainCircuit, User, Activity } from 'lucide-react';
-import { supabase } from '../../../services/supabaseClient';
 import { PDI_SCHEMA, PDIProfileData } from '../../../types/pdi-schema';
 import { PDICheckboxGroup } from './PDICheckboxGroup';
+import { getStudentById, updateStudent } from '../../../services/studentService';
+import { getSchoolStudentById, findSchoolStudentBySchoolAndName, createSchoolStudent, updateSchoolStudentPdiData } from '../../../services/schoolStudentService';
+import { getClassById } from '../../../services/classService';
+import { SchoolService } from '../../../services/SchoolService';
 
 interface StudentPDIProfileProps {
     studentId: string;
@@ -31,127 +34,91 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
             setLoading(true);
             try {
                 // 1. Fetch ALL Student Data to ensure we have DOB etc.
-                const { data: student, error: studentError } = await supabase
-                    .from('students')
-                    // Select * to get hidden columns like birth_date/dob
-                    .select('*')
-                    .eq('id', studentId)
-                    .maybeSingle();
+                const student = await getStudentById(studentId);
 
-                if (studentError) throw studentError;
+                if (!student) {
+                    alert('Aluno não encontrado na base de dados (students).');
+                    if (onClose) onClose();
+                    return;
+                }
 
-                if (student) {
-                    setStudentName(student.name);
-                    setValue('student_data.name', student.name);
+                setStudentName(student.name);
+                setValue('student_data.name', student.name);
 
-                    let finalSSId = student.school_student_id;
+                let finalSSId = student.school_student_id || null;
 
-                    // Self-healing: If missing school_student_id but we have school context
-                    if (!finalSSId && student.current_school_id) {
-                        console.log("Attempting to auto-heal missing school_student_id...");
-                        const { data: existingSS } = await supabase
-                            .from('school_students')
-                            .select('id')
-                            .eq('school_id', student.current_school_id)
-                            .eq('name', student.name)
-                            .maybeSingle();
+                // Self-healing: If missing school_student_id but we have school context
+                if (!finalSSId && student.current_school_id) {
+                    console.log('Attempting to auto-heal missing school_student_id...');
+                    const existingSS = await findSchoolStudentBySchoolAndName(student.current_school_id, student.name);
 
-                        if (existingSS) {
-                            finalSSId = existingSS.id;
-                        } else {
-                            const { data: { user } } = await supabase.auth.getUser();
-                            if (user) {
-                                const { data: newSS, error: createError } = await supabase
-                                    .from('school_students')
-                                    .insert([{
-                                        school_id: student.current_school_id,
-                                        name: student.name,
-                                        created_by: user.id,
-                                        pdi_data: {}
-                                    }])
-                                    .select('id')
-                                    .single();
-
-                                if (!createError && newSS) finalSSId = newSS.id;
-                            }
-                        }
-
-                        if (finalSSId) {
-                            await supabase.from('students').update({ school_student_id: finalSSId }).eq('id', studentId);
-                        }
+                    if (existingSS) {
+                        finalSSId = existingSS.id;
+                    } else {
+                        const newSS = await createSchoolStudent(student.current_school_id, student.name);
+                        if (newSS) finalSSId = newSS.id;
                     }
 
                     if (finalSSId) {
-                        setSchoolStudentId(finalSSId);
-                        const { data: ssData, error: ssError } = await supabase
-                            .from('school_students')
-                            .select('pdi_data')
-                            .eq('id', finalSSId)
-                            .maybeSingle();
-
-                        if (!ssError && ssData && ssData.pdi_data) {
-                            reset(ssData.pdi_data);
-                            setValue('student_data.name', student.name);
-                            if (ssData.pdi_data.deficiencies) {
-                                setValue('deficiencies', ssData.pdi_data.deficiencies);
-                            }
-                        }
-                    } else {
-                        console.warn("Could not resolve school_student_id even after self-healing.");
+                        await updateStudent(studentId, { school_student_id: finalSSId });
                     }
+                }
 
-                    // 2. Hydrate Relations (Class/School)
-                    let className = '';
-                    let schoolYear = '';
-                    let schoolName = '';
-                    let shift = '';
+                if (finalSSId) {
+                    setSchoolStudentId(finalSSId);
+                    const ssData = await getSchoolStudentById(finalSSId);
 
-                    if (student.class_id) {
-                        const { data: classData } = await supabase
-                            .from('classes')
-                            .select('name, year, shift')
-                            .eq('id', student.class_id)
-                            .maybeSingle();
-                        if (classData) {
-                            className = classData.name;
-                            schoolYear = classData.year?.toString() || '';
-                            shift = classData.shift || '';
+                    if (ssData?.pdi_data) {
+                        reset(ssData.pdi_data as PDIProfileData);
+                        setValue('student_data.name', student.name);
+                        const deficiencies = (ssData.pdi_data as PDIProfileData & { deficiencies?: string[] })?.deficiencies;
+                        if (deficiencies) {
+                            setValue('deficiencies', deficiencies);
                         }
                     }
-
-                    if (student.current_school_id) {
-                        const { data: schoolData } = await supabase
-                            .from('schools')
-                            .select('name')
-                            .eq('id', student.current_school_id)
-                            .maybeSingle();
-                        if (schoolData) schoolName = schoolData.name;
-                    }
-
-                    setValue('student_data.class_name', className);
-                    setValue('student_data.school_year', schoolYear);
-                    setValue('student_data.shift', shift);
-                    setValue('institutional.school_name', schoolName);
-
-                    // 3. Hydrate Age/DOB from Student Record if explicit
-                    // Try common column names: dob, birth_date, data_nascimento
-                    const dob = student.dob || student.birth_date || student.data_nascimento;
-                    if (dob) {
-                        setValue('student_data.dob', dob);
-                        // Calculate Age
-                        const birthDate = new Date(dob);
-                        const today = new Date();
-                        let age = today.getFullYear() - birthDate.getFullYear();
-                        const m = today.getMonth() - birthDate.getMonth();
-                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                            age--;
-                        }
-                        if (!isNaN(age)) setValue('student_data.age', age);
-                    }
-
                 } else {
-                    alert("Aluno não encontrado na base de dados (students).");
-                    if (onClose) onClose();
+                    console.warn('Could not resolve school_student_id even after self-healing.');
+                }
+
+                // 2. Hydrate Relations (Class/School)
+                let className = '';
+                let schoolYear = '';
+                let schoolName = '';
+                let shift = '';
+
+                if (student.class_id) {
+                    const classData = await getClassById(student.class_id);
+                    if (classData) {
+                        className = classData.name;
+                        schoolYear = classData.year?.toString() || '';
+                        shift = classData.shift || '';
+                    }
+                }
+
+                if (student.current_school_id) {
+                    const schoolData = await SchoolService.getSchoolById(student.current_school_id);
+                    if (schoolData) schoolName = schoolData.name;
+                }
+
+                setValue('student_data.class_name', className);
+                setValue('student_data.school_year', schoolYear);
+                setValue('student_data.shift', shift);
+                setValue('institutional.school_name', schoolName);
+
+                // 3. Hydrate Age/DOB from Student Record if explicit
+                // Try common column names: dob, birth_date, data_nascimento
+                const dob = (student as any).dob || (student as any).birth_date || (student as any).data_nascimento;
+                if (dob) {
+                    setValue('student_data.dob', dob);
+                    // Calculate Age
+                    const birthDate = new Date(dob);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        age--;
+                    }
+                    if (!isNaN(age)) setValue('student_data.age', age);
                 }
 
             } catch (err: any) {
@@ -192,17 +159,12 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
         try {
             // Update 'school_students' table where PDI data lives
             // We use 'pdi_data' JSON column. we prefer NOT to touch 'deficiencies' array column directly if it doesn't exist or is read-only.
-            const { error } = await supabase
-                .from('school_students')
-                .update({
-                    pdi_data: {
-                        ...formData,
-                        deficiencies: formData.deficiencies
-                    }
-                })
-                .eq('id', schoolStudentId);
+            const result = await updateSchoolStudentPdiData(schoolStudentId, {
+                ...formData,
+                deficiencies: formData.deficiencies
+            });
 
-            if (error) throw error;
+            if (!result.success) throw new Error(result.error || 'Erro ao salvar PDI');
 
             alert("✅ PDI salvo com sucesso!");
             if (onClose) onClose();

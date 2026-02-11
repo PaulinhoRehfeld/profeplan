@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { School, Users, GraduationCap, BookOpen, Loader2, UserPlus, Upload, Shield, MapPin, Building2, Search } from 'lucide-react';
-import { supabase } from '../services/supabaseClient';
 import { UserProfile, SchoolStats } from '../types';
 import ClassManagement from '../components/School/ClassManagement';
 import TeacherManagement from '../components/School/TeacherManagement';
 import StudentManagement from '../components/School/StudentManagement';
 import { getStudentsBySchool } from '../services/studentService';
+import { getClassesBySchool } from '../services/classService';
+import { getPendingTeachersBySchool } from '../services/teacherService';
+import { getActiveTeachersBySchool } from '../services/teacherSchoolService';
+import { SchoolService } from '../services/SchoolService';
 
 interface SchoolDashboardProps {
     userProfile: UserProfile;
@@ -63,26 +66,8 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
     // Admin: Load Cities
     const loadCities = async () => {
         try {
-            // Try to use the efficient RPC function first (Gets ALL cities, not just 1000)
-            const { data, error } = await supabase.rpc('get_cities');
-
-            if (!error && data) {
-                // RPC returns objects like { city: "Name" }
-                const citiesList = data.map((item: any) => item.city);
-                setCities(citiesList);
-            } else {
-                console.warn("RPC get_cities failed, falling back to limited select:", error);
-                // Fallback: This will still be limited to 1000 rows but better than nothing
-                const { data: fallbackData } = await supabase
-                    .from('schools')
-                    .select('city')
-                    .order('city');
-
-                if (fallbackData) {
-                    const unique = Array.from(new Set(fallbackData.map(i => i.city).filter(Boolean)));
-                    setCities(unique);
-                }
-            }
+            const citiesList = await SchoolService.getCities();
+            setCities(citiesList);
         } catch (err) {
             console.error("Error loading cities:", err);
         }
@@ -93,12 +78,8 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
         if (selectedCity) {
             const loadSchools = async () => {
                 setIsSearchingSchools(true);
-                const { data } = await supabase
-                    .from('schools')
-                    .select('id, name, city')
-                    .eq('city', selectedCity)
-                    .order('name');
-                setCitySchools(data || []);
+                const schools = await SchoolService.getSchoolsByCity(selectedCity);
+                setCitySchools(schools || []);
                 setIsSearchingSchools(false);
             };
             loadSchools();
@@ -127,23 +108,10 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
             let schoolName = stats.schoolName;
 
             // Tentar buscar escola - primeiro por ID (UUID), depois por INEP
-            let schoolData = null;
+            const schoolData = await SchoolService.resolveSchoolByIdOrInep(resolvedSchoolId);
 
-            // Se parece um UUID (36 caracteres com hífens)
-            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(resolvedSchoolId);
-
-            if (isUuid) {
-                const { data } = await supabase.from('schools').select('id, name, inep_code').eq('id', resolvedSchoolId).single();
-                schoolData = data;
-            } else {
-                // É INEP - buscar pelo inep_code
-                console.log('[SchoolDashboard] 🔄 schoolId parece ser INEP, buscando UUID...');
-                const { data } = await supabase.from('schools').select('id, name, inep_code').eq('inep_code', resolvedSchoolId).single();
-                schoolData = data;
-                if (schoolData) {
-                    resolvedSchoolId = schoolData.id; // Usar o UUID real
-                    console.log('[SchoolDashboard] ✅ Resolved INEP', schoolId, 'to UUID:', resolvedSchoolId);
-                }
+            if (schoolData) {
+                resolvedSchoolId = schoolData.id;
             }
 
             if (schoolData) {
@@ -153,63 +121,18 @@ export const SchoolDashboard: React.FC<SchoolDashboardProps> = ({ userProfile, o
 
             // Load teachers via teacher_schools (usando UUID resolvido)
             console.log('[SchoolDashboard] 🔍 Loading teachers from teacher_schools for school:', resolvedSchoolId);
-            const { data: teacherLinks, error: teacherLinksError } = await supabase
-                .from('teacher_schools')
-                .select(`
-                    id,
-                    teacher_id,
-                    role,
-                    started_at,
-                    profiles (
-                        id,
-                        email,
-                        masp,
-                        full_name,
-                        created_at
-                    )
-                `)
-                .eq('school_id', resolvedSchoolId)
-                .is('ended_at', null) // Apenas vínculos ativos
-                .order('started_at', { ascending: false });
-
-            if (teacherLinksError) {
-                console.error('[SchoolDashboard] ❌ Error loading teacher links:', teacherLinksError);
-            }
-
-            // Flatten teacher data
-            const teachersData = (teacherLinks || [])
-                .filter(link => link.profiles) // Garantir que o professor existe
-                .map(link => {
-                    const profile = link.profiles as any;
-                    return {
-                        id: profile.id,
-                        email: profile.email,
-                        masp: profile.masp,
-                        full_name: profile.full_name,
-                        created_at: profile.created_at,
-                        role: link.role, // Role no vínculo (teacher, coordinator, principal)
-                        link_started_at: link.started_at
-                    };
-                });
+            const teachersData = await getActiveTeachersBySchool(resolvedSchoolId);
 
             console.log('[SchoolDashboard] ✅ Found', teachersData.length, 'active teachers via teacher_schools');
 
             // Load pending teachers (usando UUID resolvido)
-            const { data: pendingTeachersData } = await supabase
-                .from('pending_teachers')
-                .select('id')
-                .eq('school_id', resolvedSchoolId)
-                .eq('status', 'pending');
+            const pendingTeachersData = await getPendingTeachersBySchool(resolvedSchoolId);
 
             // Load students using StudentService
             const studentsData = await getStudentsBySchool(resolvedSchoolId);
 
             // Load classes (usando UUID resolvido)
-            const { data: classesData } = await supabase
-                .from('classes')
-                .select('*')
-                .eq('school_id', resolvedSchoolId)
-                .order('name');
+            const classesData = await getClassesBySchool(resolvedSchoolId);
 
             setTeachers(teachersData || []);
             setStudents(studentsData || []);
