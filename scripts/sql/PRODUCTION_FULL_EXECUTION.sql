@@ -20,10 +20,10 @@ BEGIN;
 -- PHASE 1: PROFILES TABLE FIX (Error 400 - Recursion)
 -- ==============================================================================
 
--- 1.1: Drop existing functions (may have different signatures)
+-- 1.1: Drop existing functions CASCADE (removes dependent policies)
 
-DROP FUNCTION IF EXISTS public.is_admin_safe();
-DROP FUNCTION IF EXISTS public.get_my_school_id_safe();
+DROP FUNCTION IF EXISTS public.is_admin_safe() CASCADE;
+DROP FUNCTION IF EXISTS public.get_my_school_id_safe() CASCADE;
 
 -- 1.2: Create SECURITY DEFINER functions (owned by postgres)
 
