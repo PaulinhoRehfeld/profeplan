@@ -29,7 +29,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         console.log(`🔍 [Hybrid] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
         // 1. Gera o embedding da query (Busca Semântica)
-        const model = googleAI.getGenerativeModel({ model: "text-embedding-004" });
+        const model = googleAI.getGenerativeModel({ model: "embedding-001" });
         const result = await model.embedContent(query);
         const embedding = result.embedding.values;
 
