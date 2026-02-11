@@ -20,7 +20,12 @@ BEGIN;
 -- PHASE 1: PROFILES TABLE FIX (Error 400 - Recursion)
 -- ==============================================================================
 
--- 1.1: Create SECURITY DEFINER functions (owned by postgres)
+-- 1.1: Drop existing functions (may have different signatures)
+
+DROP FUNCTION IF EXISTS public.is_admin_safe();
+DROP FUNCTION IF EXISTS public.get_my_school_id_safe();
+
+-- 1.2: Create SECURITY DEFINER functions (owned by postgres)
 
 CREATE OR REPLACE FUNCTION public.is_admin_safe()
 RETURNS boolean
@@ -50,7 +55,7 @@ $$;
 
 ALTER FUNCTION public.get_my_school_id_safe() OWNER TO postgres;
 
--- 1.2: Drop old policies
+-- 1.3: Drop old policies
 
 DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
 DROP POLICY IF EXISTS "profiles_update_policy" ON public.profiles;
@@ -61,10 +66,10 @@ DROP POLICY IF EXISTS "Admin full access" ON public.profiles;
 DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 DROP POLICY IF EXISTS "School managers can view their school" ON public.profiles;
 
--- 1.3: Enable RLS
+-- 1.4: Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- 1.4: Create new policies using SECURITY DEFINER functions
+-- 1.5: Create new policies using SECURITY DEFINER functions
 
 -- SELECT: Admins see all, others see their school + self
 CREATE POLICY "profiles_select_policy" ON public.profiles
