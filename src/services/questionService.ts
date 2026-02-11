@@ -19,15 +19,9 @@ const getErrorMessage = (error: unknown): string =>
 
 type EnemQuestionRow = {
     id: number;
-    intro_text: string | null;
-    question_text: string;
-    alternatives: any; // JSONB
-    component: string;
-    specific_topic: string | null;
-    area: string;
-    exam_year: number;
-    correct_answer: string;
-    created_at?: string;
+    metadata: EnemQuestion['metadata'];
+    content?: string;
+    embedding?: any;
 };
 
 export const searchQuestions = async (query: string, areas?: string[]): Promise<EnemQuestion[]> => {
@@ -37,8 +31,9 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         console.log(`🔍 [Text Search] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
 
         // TEMPORARY FIX: Using text-only search (embeddings API unavailable)
-        // Search in actual database columns: intro_text, question_text, component, specific_topic
-        // Note: alternatives is JSONB - can't use :: cast in PostgREST URL syntax
+        // Database schema: enem_questions has 'metadata' JSONB column, not individual fields
+        // Search in metadata fields: context, alternativesIntroduction, discipline
+        // Also search in 'content' text field if available
         
         // Build search query for multiple fields
         const searchPattern = `%${query}%`;
@@ -46,7 +41,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         const textResponse = await supabase
             .from('enem_questions')
             .select('*')
-            .or(`intro_text.ilike.${searchPattern},question_text.ilike.${searchPattern},component.ilike.${searchPattern},specific_topic.ilike.${searchPattern}`)
+            .or(`content.ilike.${searchPattern},metadata->>context.ilike.${searchPattern},metadata->>discipline.ilike.${searchPattern}`)
             .limit(50); // Increased limit for text-only search
         
         // Dummy vector response for compatibility
@@ -64,18 +59,7 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         const vectorQuestions = (vectorResponse.data as EnemQuestion[]) || [];
         const textQuestions = ((textResponse.data as EnemQuestionRow[] | null) || []).map(row => ({
             id: row.id,
-            metadata: {
-                context: row.intro_text || '',
-                alternativesIntroduction: row.intro_text || '',
-                questionText: row.question_text,
-                alternatives: row.alternatives,
-                component: row.component,
-                specificTopic: row.specific_topic || '',
-                area: row.area,
-                discipline: row.component, // component serve como disciplina
-                examYear: row.exam_year,
-                correctAnswer: row.correct_answer
-            },
+            metadata: row.metadata,
             _source: 'text'
         })) as EnemQuestion[];
 
@@ -96,9 +80,9 @@ export const searchQuestions = async (query: string, areas?: string[]): Promise<
         let finalQuestions = Array.from(combinedMap.values());
 
         // 4. Hidratação de Metadata 
-        // Nota: Com busca textual retornando todos os campos e transformando para metadata,
-        // a hidratação não é mais necessária
-        const needsHydration = false; // Disabled - all data already transformed
+        // Nota: Se a busca vetorial retornar partial objects (dependendo da RPC), hidratamos.
+        // Se a busca textual selecionou 'metadata', já temos.
+        const needsHydration = finalQuestions.some(q => !q.metadata || !q.metadata.alternatives);
 
 
         if (needsHydration && finalQuestions.length > 0) {
