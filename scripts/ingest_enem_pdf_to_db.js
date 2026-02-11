@@ -25,7 +25,7 @@ const MAX_RETRIES = 3;
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 // Use gemini-2.0-flash for OCR as requested/used previously
 const modelOCR = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-const modelEmbedding = genAI.getGenerativeModel({ model: "text-embedding-004" });
+const modelEmbedding = genAI.getGenerativeModel({ model: "embedding-001" });
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // --- HELPER FUNCTIONS ---

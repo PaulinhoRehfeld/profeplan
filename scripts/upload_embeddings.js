@@ -22,7 +22,7 @@ const INPUT_FILE = './ingested_questions.json';
 // --- CLIENTS ---
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const genAI = new GoogleGenerativeAI(GEMINI_KEY);
-const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+const model = genAI.getGenerativeModel({ model: "embedding-001" });
 
 // --- MAIN ---
 async function main() {

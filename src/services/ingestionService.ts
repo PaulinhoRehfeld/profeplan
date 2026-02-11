@@ -99,7 +99,7 @@ export const ingestFiles = async (
     if (!apiKey) throw new Error("API Key missing");
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    const model = genAI.getGenerativeModel({ model: "embedding-001" });
 
     let totalChunks = 0;
     let processedChunks = 0;
