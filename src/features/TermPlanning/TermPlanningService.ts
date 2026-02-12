@@ -118,19 +118,32 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
         }
 
         // Fallback: Planos salvos como documentos em generated_contents
-        if (plans.length === 0) {
-            try {
-                const { data: genericData, error: genericError } = await supabase
-                    .from('generated_contents')
-                    .select('*')
-                    .eq('user_id', userId)
-                    .eq('type', 'trimestral')
-                    .order('created_at', { ascending: false });
+        try {
+            const { data: genericData, error: genericError } = await supabase
+                .from('generated_contents')
+                .select('*')
+                .eq('user_id', userId)
+                .eq('type', 'trimestral')
+                .order('created_at', { ascending: false });
 
-                if (genericError) {
-                    console.error('[DEBUG] Generic Fetch Error:', genericError);
-                } else if (genericData && genericData.length > 0) {
-                    const fallbackPlans = genericData.map((item: any) => {
+            if (genericError) {
+                console.error('[DEBUG] Generic Fetch Error:', genericError);
+            } else if (genericData && genericData.length > 0) {
+                const toKey = (p: { subject: string; grade: string; period: number; regime: string }) =>
+                    `${p.subject}`.toLowerCase().trim() +
+                    `|${p.grade}`.toLowerCase().trim() +
+                    `|${p.period}` +
+                    `|${p.regime}`.toLowerCase().trim();
+
+                const existingKeys = new Set(plans.map(p => toKey({
+                    subject: p.subject,
+                    grade: p.grade,
+                    period: p.period,
+                    regime: p.regime
+                })));
+
+                const fallbackPlans = genericData
+                    .map((item: any) => {
                         const meta = parseTitleMetadata(item.title || '', item.content || '');
                         return {
                             id: item.id,
@@ -148,13 +161,18 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
                             generatedText: item.content || '',
                             created_at: item.created_at
                         } as TermPlan;
-                    });
+                    })
+                    .filter(plan => !existingKeys.has(toKey({
+                        subject: plan.subject,
+                        grade: plan.grade,
+                        period: plan.period,
+                        regime: plan.regime
+                    })));
 
-                    plans = [...plans, ...fallbackPlans];
-                }
-            } catch (e) {
-                console.warn('Generic fetch failed', e);
+                plans = [...plans, ...fallbackPlans];
             }
+        } catch (e) {
+            console.warn('Generic fetch failed', e);
         }
 
         // Fallback: Mescla com LocalStorage se Supabase falhar
