@@ -19,7 +19,7 @@ interface TermPlanningManagerProps {
 }
 
 const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, settings, setSidebarContent }) => {
-    const { updateCurrentPlan } = useGlobalPlanning();
+    const { updateCurrentPlan, refreshTermPlans } = useGlobalPlanning();
     const [isSaving, setIsSaving] = useState(false);
 
     // AI Generation
@@ -167,7 +167,8 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
         };
         try {
             updateCurrentPlan(plan);
-            await saveTermPlan(userId, plan);
+            await saveTermPlan(plan, userId);
+            await refreshTermPlans(userId);
             if (generatedText) {
                 const title = `Planejamento ${period}º Trimestre - ${subject} (${grade})`;
                 await saveGeneratedContent(userId, 'trimestral', 'TermPlans', title, generatedText);

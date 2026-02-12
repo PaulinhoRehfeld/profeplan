@@ -26,7 +26,7 @@ export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<Term
                 id: plan.id,
                 user_id: userId,
                 title: plan.title || `Planejamento ${plan.period}º ${plan.regime} - ${plan.subject}`,
-                content: plan.generatedText || '',
+                generated_text: plan.generatedText || '',
                 subject: plan.subject,
                 grade: plan.grade,
                 period: plan.period,
@@ -107,7 +107,7 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
                     gradingGrid: d.grading_grid,
                     stateBase: d.state_base,
                     educationSphere: d.education_sphere,
-                    generatedText: d.generated_text,
+                    generatedText: d.generated_text || d.content || '',
                     lessons: d.lessons || [],
                     created_at: d.created_at || d.updated_at
                 } as TermPlan));
@@ -115,6 +115,46 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
 
         } catch (e) {
             console.warn('Supabase fetch failed, trying local', e);
+        }
+
+        // Fallback: Planos salvos como documentos em generated_contents
+        if (plans.length === 0) {
+            try {
+                const { data: genericData, error: genericError } = await supabase
+                    .from('generated_contents')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .eq('type', 'trimestral')
+                    .order('created_at', { ascending: false });
+
+                if (genericError) {
+                    console.error('[DEBUG] Generic Fetch Error:', genericError);
+                } else if (genericData && genericData.length > 0) {
+                    const fallbackPlans = genericData.map((item: any) => {
+                        const meta = parseTitleMetadata(item.title || '', item.content || '');
+                        return {
+                            id: item.id,
+                            subject: meta.subject,
+                            grade: meta.grade,
+                            period: meta.period,
+                            regime: meta.regime as TermPlan['regime'],
+                            level: 'Ensino Médio',
+                            workloadWeekly: 2,
+                            reserves: { monthlyExam: false, termExam: false, recovery: false },
+                            totalClasses: 0,
+                            gradingGrid: { vistos: 0, trabalhos: 0, monthlyExam: 0, termExam: 0, others: 0 },
+                            stateBase: 'Geral',
+                            educationSphere: 'Geral',
+                            generatedText: item.content || '',
+                            created_at: item.created_at
+                        } as TermPlan;
+                    });
+
+                    plans = [...plans, ...fallbackPlans];
+                }
+            } catch (e) {
+                console.warn('Generic fetch failed', e);
+            }
         }
 
         // Fallback: Mescla com LocalStorage se Supabase falhar
