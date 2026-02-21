@@ -32,8 +32,20 @@ export const useProfeplanAuth = () => {
                 if (!userId) throw new Error("No User ID in session");
 
                 console.log(`[Auth] 🔑 Starting Login Sequence for: ${userEmail}`);
+
                 // 1. Fetch Profile
+                console.log('[Auth] 📡 Fetching profile...');
                 profile = await getUserProfile(userId, userEmail);
+
+                if (!profile) {
+                    console.warn(`[Auth] ⚠️ Profile not found for ID ${userId}. Status: Mismatch/Missing.`);
+                } else {
+                    console.log('[Auth] ✅ Profile found:', {
+                        role: profile.role,
+                        isAdmin: profile.is_admin,
+                        tier: profile.tier
+                    });
+                }
 
                 // 2. GHOST ID HEALING: If profile not found by ID but exists by Email
                 if (!profile && userEmail) {
@@ -148,6 +160,7 @@ export const useProfeplanAuth = () => {
                 } else {
                     // Logic for INITIAL_SESSION with no authSession
                     if (event === 'INITIAL_SESSION') {
+                        console.log('[Auth] ℹ️ Initial session checked - No active persistent session found.');
                         setLoading(false);
                     }
                 }

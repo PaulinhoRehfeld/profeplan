@@ -5,6 +5,7 @@ import SettingsModal from '../components/SettingsModal';
 import SubscriptionModal from '../components/SubscriptionModal';
 import { SchoolSwitcher } from '../components/SchoolSwitcher';
 import { UserSession, UserProfile, ToolMode, UserSettings } from '../types';
+import DonationWidget from '../components/DonationWidget';
 
 interface MainLayoutProps {
     children: ReactNode;
@@ -113,7 +114,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 ) : (
                     <div>
                         <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V3.9.1</h3>
-                        <p className="text-xs text-slate-500 font-medium">Selecione uma ferramenta no menu ou comece uma conversa para planejar sua aula.</p>
+                        <p className="text-xs text-slate-500 font-medium mb-6">Selecione uma ferramenta no menu ou comece uma conversa para planejar sua aula.</p>
+
+                        {/* Banner de Doação na Home */}
+                        {activeMode === ToolMode.CHAT && (
+                            <DonationWidget />
+                        )}
                     </div>
                 )}
 

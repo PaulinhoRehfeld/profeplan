@@ -144,9 +144,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </button>
               </div>
             )}
-
-            {/* Widgets extras (Doação) */}
-            <DonationWidget isExpanded={isDesktopExpanded} />
           </nav>
 
           <div className="mt-auto pt-6 border-t border-slate-800">
