@@ -1,0 +1,25 @@
+{
+    "2025": {
+        "Filosofia": {
+            "planos": [
+                "knowledge_base/Planos MG/EM_1ANO_CH_PLANO_DE_CURSO_2025.pdf",
+                "knowledge_base/Planos MG/EM_2ANO_CH_PLANO_DE_CURSO_2025.pdf",
+                "knowledge_base/Planos MG/EM_3ANO_CH_PLANO_DE_CURSO_2025.pdf"
+            ],
+            "mapas": [
+                "knowledge_base/MAPA MG/PRIMEIRO ANO/EM_1ANO_1B_FILOSOFIA_ESTUDANTE.pdf"
+            ]
+        },
+        "Física": {
+            "planos": [
+                "knowledge_base/Planos MG/EM_1ANO_CN_PLANO_DE_CURSO_2025.pdf",
+                "knowledge_base/Planos MG/EM_2ANO_CN_PLANO_DE_CURSO_2025.pdf",
+                "knowledge_base/Planos MG/EM_3ANO_CN_PLANO_DE_CURSO_2025.pdf"
+            ],
+            "mapas": [
+                "knowledge_base/MAPA MG/PRIMEIRO ANO/EM_1ANO_1B_FÍSICA_ESTUDANTE.pdf",
+                "knowledge_base/MAPA MG/PRIMEIRO ANO/EM_1ANO_1B_FÍSICA_PROFESSOR.pdf"
+            ]
+        }
+    }
+}
