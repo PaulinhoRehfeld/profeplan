@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SchoolSelector, { School } from '../components/SchoolSelector';
+import SchoolSelector from '../components/SchoolSelector';
 import { ProfileService } from '../services/ProfileService';
 import { getUserProfile } from '../services/ProfileService'; // Use the robust service with Bypass
-import { UserProfile } from '../types';
+import { UserProfile, School } from '../types';
 import { Loader2, Trash2, Building2 } from 'lucide-react';
 import { supabase } from '../services/supabaseClient';
 

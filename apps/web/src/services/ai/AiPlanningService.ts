@@ -1,7 +1,6 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { executeWithFallback, getGenAIClient } from "./AiCore";
 import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
-import { searchCurriculum } from "../searchService"; // Import from searchService
+import { searchCurriculum, getDeterministicCurriculum } from "../searchService"; // Import from searchService
 import { SYSTEM_PROMPT } from "../../constants";
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt, AIGuardrailsConfig } from "./AiGuardrailsService";
 import { UserSettings } from "../../types";
@@ -31,7 +30,7 @@ export const generateTermPlan = async (
         userSettings?: UserSettings; // ✨ NOVO: Preferências do professor
     }
 ) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     // Check Quota
     if (context.userId) {
@@ -60,29 +59,40 @@ export const generateTermPlan = async (
 
         console.log(`🔍 Buscando currículo para: ${normalizedSubject}, ${normalizedGrade}, ${periodString}`);
 
-        // 3. Busca com Filtros
-        // Using searchCurriculum imported from searchService
-        const results = await searchCurriculum(
-            `Planejamento e Habilidades de ${normalizedSubject} para ${normalizedGrade} no ${periodString}`,
-            {
-                disciplina: normalizedSubject,
-                ano: normalizedGrade,
-                periodo: periodString
-            },
-            5 // Top 5 chunks (usually enough for a term)
-        );
-
-        if (results && results.length > 0) {
-            curriculumContext = results.map((r) => {
-                const row = r as { metadata?: { ano_base?: number }; content?: string };
-                const year = row.metadata?.ano_base || 2025;
-                const sourceTag = year === 2025 ? " (Base curricular 2025)" : "";
-                return `${row.content || ''}${sourceTag}`;
-            }).join('\n\n---\n\n');
-            console.log(`✅ Encontrados ${results.length} trechos de currículo.`);
-        } else {
-            console.warn("⚠️ Nenhum currículo encontrado no banco para estes filtros.");
+        // --- DETERMINISTIC CURRICULUM RETRIEVAL (SEE/MG PRIORITIZATION) ---
+        // If state is Minas Gerais and it's Chemistry, Biology or Physics, we try to get the full SEE curriculum first.
+        if (context.stateBase?.includes('Minas Gerais') || context.stateBase === 'MG') {
+            const seeCurriculum = await getDeterministicCurriculum(normalizedSubject, periodString, normalizedGrade);
+            if (seeCurriculum) {
+                console.log("📍 SEE MG OFFICIAL: Determinstic curriculum loaded.");
+                curriculumContext = `[CURRÍCULO OFICIAL SEE/MG]:\n${seeCurriculum}`;
+            }
         }
+
+        if (!curriculumContext) {
+            // Fallback to RAG if deterministic fails or is not MG
+            const results = await searchCurriculum(
+                `Planejamento e Habilidades de ${normalizedSubject} para ${normalizedGrade} no ${periodString}`,
+                {
+                    disciplina: normalizedSubject,
+                    ano: normalizedGrade,
+                    periodo: periodString
+                },
+                5
+            ) as any[];
+
+            if (results && results.length > 0) {
+                curriculumContext = results.map((r) => {
+                    const row = r as { metadata?: { ano_base?: number }; content?: string };
+                    const year = row.metadata?.ano_base || 2025;
+                    const sourceTag = year === 2025 ? " (Base curricular 2025)" : "";
+                    return `${row.content || ''}${sourceTag}`;
+                }).join('\n\n---\n\n');
+                console.log(`✅ Encontrados ${results.length} trechos de currículo via RAG.`);
+            }
+        }
+
+        // --- CÁLCULO DAS POSIÇÕES DAS PROVAS ---
 
     } catch (err) {
         console.error("Erro na busca RAG:", err);
@@ -130,28 +140,37 @@ export const generateTermPlan = async (
     }
 
     // --- CÁLCULO DAS POSIÇÕES DAS PROVAS ---
+    // Regra do Usuário: "Prova 1 deve ser aplicada na metade das aulas programadas (se 12 aulas, prova na aula 7)"
+    // Matematicamente: Math.floor(total / 2) + 1. Para 12: 6 + 1 = 7. Para 10: 5 + 1 = 6.
     const reserves: Record<string, unknown> = context.reserves || {};
     const monthlyExamEnabled = reserves.monthlyExam === true;
     const termExamEnabled = reserves.termExam === true;
     const recoveryEnabled = reserves.recovery === true;
 
-    const midpoint = Math.ceil(context.totalClasses / 2); // Meio do trimestre
-    const penultimateClass = context.totalClasses - 1; // Penúltima aula
-    const lastClass = context.totalClasses; // Última aula
+    const midpoint = Math.floor(context.totalClasses / 2) + 1;
+    const penultimateClass = context.totalClasses - 1;
+    const lastClass = context.totalClasses;
 
     // --- GRADE DE PONTOS ---
-    // USE gradingGrid from context, not reserves!
     const grading = context.gradingGrid || {};
     const prova01Points = grading.monthlyExam || 15;
     const prova02Points = grading.termExam || 15;
+    const vistosPoints = grading.vistos || 0;
+    const trabalhosPoints = grading.trabalhos || 0;
     const othersPoints = grading.others || 0;
-    const totalPoints = prova01Points + prova02Points;
+
+    const totalPoints = prova01Points + prova02Points + vistosPoints + trabalhosPoints + othersPoints;
 
     const prompt = `
-    Atue como um Coordenador Pedagógico especialista em BNCC e currículos locais.
-    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo.
+    Atue como um Coordenador Pedagógico especialista em BNCC e currículos da Secretaria de Educação (SEE/MG).
+    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo e rigoroso.
 
     ${guardrailsPrompt}
+
+    [DIRETRIZES CRÍTICAS DE GOVERNANÇA (RLM)]:
+    1. PRIORIDADE FONTE DA VERDADE: Use o currículo oficial fornecido abaixo. Se for de Química, Física ou Biologia, siga os pacotes da SEE.
+    2. RIGOR NA AVALIAÇÃO: A Prova 01 DEVE ser agendada para a Aula ${midpoint}. Não aceite variações.
+    3. GRADE DE PONTOS: Os valores de pontos informados abaixo são MANDATÓRIOS. O total deve somar ${totalPoints}.
 
     DADOS DO CONTEXTO:
     - Estado (Base Curricular): ${context.stateBase}
@@ -164,13 +183,15 @@ export const generateTermPlan = async (
     - Total de Aulas: ${context.totalClasses}
 
     [DADOS DO CURRÍCULO OFICIAL]:
-    ${curriculumContext ? curriculumContext : "Use a BNCC geral."}
+    ${curriculumContext ? curriculumContext : "Use a BNCC geral atualizada."}
     
     ${pnldInstruction}
 
-    [GRADE DE AVALIAÇÃO CONFIGURADA PELO PROFESSOR]:
-    - PROVA 01: ${prova01Points} pontos
-    - PROVA 02: ${prova02Points} pontos
+    [GRADE DE AVALIAÇÃO OBRIGATÓRIA]:
+    - PROVA 01: ${prova01Points} pontos (Agendada: Aula ${midpoint})
+    - PROVA 02: ${prova02Points} pontos (Agendada: Aula ${penultimateClass})
+    - VISTOS DE CADERNO: ${vistosPoints} pontos
+    - TRABALHOS: ${trabalhosPoints} pontos
     - OUTROS: ${othersPoints} pontos
     - TOTAL DO TRIMESTRE: ${totalPoints} pontos
 
@@ -257,13 +278,24 @@ export const generateTermPlan = async (
   `;
 
     return executeWithFallback('TermPlan', async (modelName) => {
-        const model = genAI.getGenerativeModel({
+        const messages = [
+            {
+                role: "system" as const,
+                content: SYSTEM_PROMPT,
+            },
+            {
+                role: "user" as const,
+                content: prompt,
+            },
+        ];
+
+        const completion = await client.chat.completions.create({
             model: modelName,
-            // REMOVED JSON MODE: We want rich Markdown text
+            messages,
+            temperature: 0.7,
         });
 
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
+        const text = completion.choices[0]?.message?.content ?? "";
 
         // Increment Usage only on success
         if (context.userId) {
@@ -286,30 +318,30 @@ export const generateGeminiContent = async (
     userId?: string,
     temperature: number = 0.7 // Default to creative
 ) => {
-    const genAI = getGenAIClient();
-
-    // Constrói o histórico no formato Gemini
-    const chatHistory = history.map((msg) => {
-        const entry = msg as { role?: string; content?: string };
-        return {
-            role: entry.role === 'user' ? 'user' : 'model',
-            parts: [{ text: entry.content || '' }]
-        };
-    });
+    const client = getGenAIClient();
 
     const systemInstruction = `${SYSTEM_PROMPT} \n\n[CONTEXTO ATUAL]: ${context} `;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: systemInstruction
+    const historyMessages = history.map((msg) => {
+        const entry = msg as { role?: string; content?: string };
+        const role = entry.role === "user" ? "user" : "assistant";
+        return {
+            role,
+            content: entry.content || "",
+        } as const;
     });
 
-    const chat = model.startChat({
-        history: chatHistory,
-        generationConfig: {
-            temperature: temperature
-        }
-    });
+    const messages = [
+        {
+            role: "system" as const,
+            content: systemInstruction,
+        },
+        ...historyMessages,
+        {
+            role: "user" as const,
+            content: prompt,
+        },
+    ];
 
     // Check Quota
     if (userId) {
@@ -317,8 +349,16 @@ export const generateGeminiContent = async (
         if (!quota.allowed) throw new Error(quota.message);
     }
 
-    const result = await chat.sendMessage(prompt);
-    const response = result.response.text();
+    const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini", // será roteado pelo deployment Azure configurado
+        messages,
+        temperature,
+    } as any);
+
+    const response =
+        typeof completion.choices[0]?.message?.content === "string"
+            ? completion.choices[0]?.message?.content
+            : (completion.choices[0]?.message?.content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
 
     if (userId) await incrementUserUsage(userId, 'chat');
 

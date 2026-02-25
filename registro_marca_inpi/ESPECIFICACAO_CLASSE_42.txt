@@ -1,0 +1,29 @@
+CLASSE 42 - SERVIÇOS
+
+Marca: PROFEPLAN
+
+Especificação de Serviços:
+
+1. Serviços de software como serviço (SaaS) relacionados a planejamento educacional
+
+2. Desenvolvimento de software educacional personalizado
+
+3. Consultoria em tecnologia da informação voltada para instituições de ensino
+
+4. Hospedagem de plataformas educacionais online
+
+5. Serviços de computação em nuvem para armazenamento de dados pedagógicos
+
+6. Manutenção e atualização de software educacional
+
+7. Serviços de análise de dados educacionais via inteligência artificial
+
+8. Design e desenvolvimento de aplicativos móveis educacionais
+
+9. Serviços de banco de dados educacionais como serviço (DBaaS)
+
+10. Consultoria em automação de processos pedagógicos via software
+
+11. Desenvolvimento de sistemas de alinhamento curricular à BNCC
+
+12. Serviços de integração de tecnologia educacional

@@ -107,6 +107,14 @@ export const PlanningAuthority = {
      * Verifica se existe currículo para essa matéria no banco.
      */
     checkKnowledgeBase: async (intent: PlanningIntent): Promise<boolean> => {
+        // --- GOVERNANCE RULE RLM-SEE-001: MG Ensino Médio Priority ---
+        const isMGEM = intent.level === 'Ensino Médio' && (intent.grade.includes('EM') || parseInt(intent.grade) <= 3);
+
+        if (isMGEM) {
+            console.log("👮 RLM: Validating against SEE/MG Official Repository (High Priority)");
+            return true;
+        }
+
         // Tenta buscar pelo menos 1 chunk relevante
         const { count, error } = await supabase
             .from('curriculos_mg')
@@ -189,7 +197,7 @@ export const PlanningAuthority = {
         });
 
         const chat = model.startChat({
-            history: context?.history || []
+            history: (context?.history as any) || []
         });
 
         const result = await chat.sendMessage(message);

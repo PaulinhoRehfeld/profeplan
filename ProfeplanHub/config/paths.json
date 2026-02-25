@@ -1,0 +1,27 @@
+{
+    "base_dir": "C:/Users/Admin/PROFEPLAN/PROFEPLAN/ProfeplanHub",
+    "data": {
+        "raw_pdfs": "data/raw_pdfs",
+        "indexed_books": "data/indexed_books",
+        "schools": "data/schools"
+    },
+    "agents": {
+        "codex": "agents/codex",
+        "coletor": "agents/coletor",
+        "pedagogo": "agents/pedagogo",
+        "designer": "agents/designer"
+    },
+    "legacy": {
+        "codex_old": "../../CODEX",
+        "coletor_old": "../../COLETOR",
+        "escolasmg_old": "../../ESCOLASMG",
+        "smartclass_old": "../../SMARTCLASS"
+    },
+    "supabase": {
+        "tables": {
+            "pnld_livros": "pnld_livros_conteudo",
+            "curriculos": "curriculos_mg",
+            "schools": "schools"
+        }
+    }
+}

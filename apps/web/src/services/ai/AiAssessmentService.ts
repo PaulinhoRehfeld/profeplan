@@ -1,4 +1,4 @@
-import { getGenAIClient } from "./AiCore";
+import { GENERATION_MODELS, getGenAIClient } from "./AiCore";
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from "./AiGuardrailsService";
 import { UserSettings } from "../../types";
 
@@ -24,7 +24,7 @@ export const generateAssessmentWithContext = async (
     userSettings?: UserSettings, // 🛡️ GUARDRAILS
     userId?: string
 ) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     const lessonsToReference = lessonsContext.map((lesson, i) =>
         `Aula ${i + 1}: ${lesson.topic}\nConteúdo: ${lesson.content?.substring(0, 500)}...`
@@ -91,14 +91,28 @@ export const generateAssessmentWithContext = async (
     ]
   }`;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: instruction
-    });
+    const messages = [
+        {
+            role: "system" as const,
+            content: instruction,
+        },
+        {
+            role: "user" as const,
+            content: `Crie uma avaliação de ${subject} para a turma ${className}, referente ao ${academicPeriod}.`,
+        },
+    ];
 
-    const prompt = `Crie uma avaliação de ${subject} para a turma ${className}, referente ao ${academicPeriod}.`;
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    const completion = await client.chat.completions.create({
+        model: GENERATION_MODELS[0],
+        messages,
+        temperature: 0.4,
+    } as any);
+
+    const content = completion.choices[0]?.message?.content as any;
+    const responseText =
+        typeof content === "string"
+            ? content
+            : (content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
 
     try {
         const jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -113,7 +127,7 @@ export const generateAssessmentWithContext = async (
 };
 
 /**
- * [GRADING_MODE - Gemini Vision]
+ * [GRADING_MODE - Vision]
  * Corrige questões dissertativas via OCR + Análise Pedagógica
  */
 export const gradeWrittenAnswer = async (
@@ -121,7 +135,7 @@ export const gradeWrittenAnswer = async (
     rubric: string,
     imageBase64: string // Foto da resposta escrita
 ) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     const instruction = `Age como um Professor Corretor Pedagógico.
   
@@ -141,24 +155,40 @@ export const gradeWrittenAnswer = async (
     "feedback": "Você demonstrou compreensão de X, mas faltou mencionar Y..."
   }`;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: instruction
-    });
+    const imageData = imageBase64.split(',')[1] || imageBase64;
+    const dataUrl = `data:image/jpeg;base64,${imageData}`;
 
-    const prompt = `QUESTÃO: ${questionText}\n\nRUBRICA DE CORREÇÃO:\n${rubric}\n\nAgora analise a resposta escrita do aluno na imagem.`;
-
-    const result = await model.generateContent([
-        { text: prompt },
+    const messages: any[] = [
         {
-            inlineData: {
-                data: imageBase64.split(',')[1] || imageBase64,
-                mimeType: 'image/jpeg'
-            }
-        }
-    ]);
+            role: "system",
+            content: instruction,
+        },
+        {
+            role: "user",
+            content: [
+                {
+                    type: "text",
+                    text: `QUESTÃO: ${questionText}\n\nRUBRICA DE CORREÇÃO:\n${rubric}\n\nAgora analise a resposta escrita do aluno na imagem.`,
+                },
+                {
+                    type: "input_image",
+                    image_url: { url: dataUrl },
+                },
+            ],
+        },
+    ];
 
-    const responseText = result.response.text();
+    const completion = await client.chat.completions.create({
+        model: GENERATION_MODELS[0],
+        messages,
+        temperature: 0.2,
+    } as any);
+
+    const content = completion.choices[0]?.message?.content as any;
+    const responseText =
+        typeof content === "string"
+            ? content
+            : (content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
 
     try {
         const jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -171,3 +201,4 @@ export const gradeWrittenAnswer = async (
         throw new Error("Não foi possível processar a correção. Tente novamente.");
     }
 };
+

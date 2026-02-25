@@ -72,7 +72,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             <Menu size={24} />
                         </button>
                         <div className="flex flex-col">
-                            <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V3.9.1</h2>
+                            <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V4.0.0</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{String(activeMode).toUpperCase()}</span>
@@ -113,13 +113,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     </div>
                 ) : (
                     <div>
-                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V3.9.1</h3>
+                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 italic mb-8">PROFEPLAN V4.0.0</h3>
                         <p className="text-xs text-slate-500 font-medium mb-6">Selecione uma ferramenta no menu ou comece uma conversa para planejar sua aula.</p>
 
-                        {/* Banner de Doação na Home */}
-                        {activeMode === ToolMode.CHAT && (
-                            <DonationWidget />
-                        )}
+                        {/* Banner de Doação - Visível em quase todos os modos exceto planejamento trimestral que já esconde a barra */}
+                        <DonationWidget />
                     </div>
                 )}
 

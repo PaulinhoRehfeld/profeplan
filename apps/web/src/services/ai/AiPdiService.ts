@@ -1,6 +1,5 @@
 import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
 import { executeWithFallback, getGenAIClient } from "./AiCore";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from "./AiGuardrailsService";
 import { UserSettings } from "../../types";
 
@@ -47,6 +46,17 @@ type PdiBlock11Document = {
     block_10_entries?: PdiBlock10Entry[];
 };
 
+const extractMessageText = (content: unknown): string => {
+    if (typeof content === "string") return content;
+    if (Array.isArray(content)) {
+        return content.map((c: any) => (typeof c === "string" ? c : c.text || "")).join("");
+    }
+    if (content && typeof content === "object" && "text" in content) {
+        return (content as any).text ?? "";
+    }
+    return "";
+};
+
 /**
  * [PDI_MODE]
  * Gera uma adaptação PDI/DUA para um aluno específico baseada em uma aula original.
@@ -67,7 +77,7 @@ export const generateStudentAdaptation = async (
         }
     }
 
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     // 🛡️ GUARDRAILS: Apply user preferences to PDI adaptations
     let guardrailsPrompt = "";
@@ -111,26 +121,40 @@ export const generateStudentAdaptation = async (
     `;
 
     return executeWithFallback('StudentAdaptation', async (modelName) => {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
+        const messages = [
+            {
+                role: "system" as const,
+                content: "Você é um especialista em inclusão e DUA escrevendo adaptações de aula.",
+            },
+            {
+                role: "user" as const,
+                content: prompt,
+            },
+        ];
+
+        const completion = await client.chat.completions.create({
+            model: modelName,
+            messages,
+            temperature: 0.7,
+        } as any);
+
+        const text = extractMessageText(completion.choices[0]?.message?.content);
 
         // Increment Usage only on success
         if (context?.userId) {
-            await incrementUserUsage(context.userId, 'generate'); // Fire and forget or await? Safe to wait.
+            await incrementUserUsage(context.userId, 'generate');
         }
 
-        return response.text();
+        return text;
     });
 };
-
 
 /**
  * [PDI_REPORT_MODE]
  * Gera um Relatório Bimestral de PDI baseado nos logs de adaptação.
  */
 export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string, period: string) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     // Sintetiza os logs para não estourar o contexto
     const logsSummary = logs.map(l => {
@@ -161,15 +185,24 @@ export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string
     - Sem cabeçalhos Markdown (##), use apenas negrito para dar ênfase se necessário.
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const messages = [
+        {
+            role: "system" as const,
+            content: "Você é um especialista em educação especial redigindo relatórios oficiais de PDI.",
+        },
+        {
+            role: "user" as const,
+            content: prompt,
+        },
+    ];
 
-    try {
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        return response.text();
-    } catch (error) {
-        throw error;
-    }
+    const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.6,
+    } as any);
+
+    return extractMessageText(completion.choices[0]?.message?.content);
 };
 
 /**
@@ -182,7 +215,7 @@ export const generateFinalPDIReport = async (data: {
     evaluations: PdiEvaluationEntry[];
     adaptationCount: number;
 }) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     // Formata Avaliações Docentes
     const evaluationsText = data.evaluations.map(e =>
@@ -217,9 +250,24 @@ export const generateFinalPDIReport = async (data: {
       FORMATO: Texto corrido (sem markdown, sem tópicos), pronto para impressão oficial.
     `;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    const messages = [
+        {
+            role: "system" as const,
+            content: "Você é um gestor educacional especialista em inclusão.",
+        },
+        {
+            role: "user" as const,
+            content: prompt,
+        },
+    ];
+
+    const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.7,
+    } as any);
+
+    return extractMessageText(completion.choices[0]?.message?.content);
 };
 
 /**
@@ -252,7 +300,7 @@ export const generateBlock9Adaptation = async (
     estrategias_ensino: string[];
     tempo_estimado?: string;
 }> => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     if (userId) {
         const quotaStatus = await checkUsageQuota(userId);
@@ -261,8 +309,17 @@ export const generateBlock9Adaptation = async (
         }
     }
 
+    let guardrailsPrompt = "";
+    if (userSettings) {
+        const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
+        guardrailsConfig.context = `PDI Bloco 9 - ${gradeLevel}`;
+        guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
+    }
+
     const prompt = `
 ATUE COMO UM ESPECIALISTA EM INCLUSÃO ESCOLAR E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
+
+${guardrailsPrompt}
 
 CONTEXTO:
 Um professor acabou de salvar um planejamento de aula. O sistema deve AUTOMATICAMENTE gerar uma adaptação curricular para um aluno com PDI ativo.
@@ -313,33 +370,36 @@ REGRAS TÉCNICAS:
 - As estrategias_ensino devem ser ações concretas do professor
   `;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.7
-        }
-    });
+    const messages = [
+        {
+            role: "system" as const,
+            content: "Você é especialista em inclusão escolar e DUA gerando adaptações curriculares (JSON).",
+        },
+        {
+            role: "user" as const,
+            content: prompt,
+        },
+    ];
 
-    try {
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
+    const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.7,
+    } as any);
 
-        if (userId) {
-            await incrementUserUsage(userId, 'generate');
-        }
+    const text = extractMessageText(completion.choices[0]?.message?.content);
 
-        const parsed = JSON.parse(text);
-
-        if (!parsed.adaptacao_metodologica || !parsed.recursos_adaptados || !parsed.objetivos_adaptados || !parsed.estrategias_ensino) {
-            throw new Error("Resposta da IA incompleta");
-        }
-
-        return parsed;
-    } catch (error) {
-        console.error("Erro ao gerar adaptação Bloco 9:", error);
-        throw new Error("Não foi possível gerar a adaptação curricular. Tente novamente.");
+    if (userId) {
+        await incrementUserUsage(userId, 'generate');
     }
+
+    const parsed = JSON.parse(text);
+
+    if (!parsed.adaptacao_metodologica || !parsed.recursos_adaptados || !parsed.objetivos_adaptados || !parsed.estrategias_ensino) {
+        throw new Error("Resposta da IA incompleta");
+    }
+
+    return parsed;
 };
 
 /**
@@ -362,7 +422,7 @@ export const generateBlock10Diagnosis = async (
     ia_metodologia: string;
     ia_diagnostico: string;
 }> => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     if (userId) {
         const quotaStatus = await checkUsageQuota(userId);
@@ -445,36 +505,38 @@ FORMATO DE SAÍDA (JSON PURO):
 }
   `;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.6
-        }
-    });
+    const messages = [
+        {
+            role: "system" as const,
+            content: "Você é especialista em avaliação pedagógica e educação inclusiva.",
+        },
+        {
+            role: "user" as const,
+            content: prompt,
+        },
+    ];
 
-    try {
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
+    const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.6,
+    } as any);
 
-        if (userId) {
-            await incrementUserUsage(userId, 'generate');
-        }
-
-        const parsed = JSON.parse(text);
-
-        if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
-            throw new Error("Resposta da IA incompleta");
-        }
-
-        return {
-            ia_metodologia: parsed.ia_metodologia,
-            ia_diagnostico: parsed.ia_diagnostico,
-        };
-    } catch (error) {
-        console.error("Erro ao gerar diagnóstico Bloco 10:", error);
-        throw new Error("Não foi possível gerar o diagnóstico pedagógico. Tente novamente.");
+    if (userId) {
+        await incrementUserUsage(userId, 'generate');
     }
+
+    const text = extractMessageText(completion.choices[0]?.message?.content);
+    const parsed = JSON.parse(text);
+
+    if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
+        throw new Error("Resposta da IA incompleta");
+    }
+
+    return {
+        ia_metodologia: parsed.ia_metodologia,
+        ia_diagnostico: parsed.ia_diagnostico,
+    };
 };
 
 /**
@@ -486,7 +548,7 @@ export const generateBlock11Report = async (
     pdiDocument: PdiBlock11Document,
     userId?: string
 ): Promise<string> => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     if (userId) {
         const quotaStatus = await checkUsageQuota(userId);
@@ -541,6 +603,9 @@ BLOCO 10 (DESEMPENHO):
 Média Geral: ${mediaGeral}%
 Distribuição Autonomia: Total(${autonomiaTotal}), Parcial(${autonomiaParcial}), Dependente(${autonomiaDependente})
 
+ÚLTIMAS AVALIAÇÕES:
+${ultimasAvaliacoes.map(a => `- ${a.atividade}: ${a.percentual}% (${a.autonomia})`).join('\n') || 'Sem avaliações recentes'}
+
 TAREFA: GERAR RELATÓRIO FINAL (BLOCO 11)
 Crie um RELATÓRIO TÉCNICO-PEDAGÓGICO NARRATIVO e OFICIAL (900-1300 palavras).
 1. INTRODUÇÃO
@@ -552,24 +617,29 @@ Crie um RELATÓRIO TÉCNICO-PEDAGÓGICO NARRATIVO e OFICIAL (900-1300 palavras).
 Use linguagem TÉCNICA mas ACESSÍVEL. Mantenha formato NARRATIVO.
   `;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig: {
-            temperature: 0.7
-        }
-    });
+    const messages = [
+        {
+            role: "system" as const,
+            content: "Você é um coordenador pedagógico sênior especialista em educação inclusiva.",
+        },
+        {
+            role: "user" as const,
+            content: prompt,
+        },
+    ];
 
-    try {
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
+    const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.7,
+    } as any);
 
-        if (userId) {
-            await incrementUserUsage(userId, 'generate');
-        }
+    const text = extractMessageText(completion.choices[0]?.message?.content);
 
-        return text;
-    } catch (error) {
-        console.error("Erro ao gerar relatório Bloco 11:", error);
-        throw new Error("Não foi possível gerar o relatório final. Tente novamente.");
+    if (userId) {
+        await incrementUserUsage(userId, 'generate');
     }
+
+    return text;
 };
+

@@ -1,0 +1,25 @@
+CLASSE 09 - PRODUTOS
+
+Marca: PROFEPLAN
+
+Especificação de Produtos:
+
+1. Programas de computador para uso educacional, gravados ou baixáveis
+
+2. Aplicativos móveis para planejamento pedagógico, baixáveis
+
+3. Software para geração automatizada de conteúdo educacional, gravado
+
+4. Bases de dados educacionais eletrônicas, gravadas ou baixáveis
+
+5. Software de gerenciamento de currículos e planejamentos escolares
+
+6. Aplicações de software educacional que utilizam inteligência artificial
+
+7. Plataformas de software para alinhamento curricular à BNCC
+
+8. Programas de computador para gestão de dados pedagógicos
+
+9. Software como serviço (SaaS) educacional, gravado ou baixável
+
+10. Aplicativos para dispositivos móveis educacionais (Android/iOS)

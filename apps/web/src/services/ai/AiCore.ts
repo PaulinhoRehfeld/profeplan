@@ -1,30 +1,41 @@
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+import { AzureOpenAI } from "openai";
 
-export const safetySettings = [
-    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
-];
+// Mantém a exportação para compatibilidade, embora não seja mais usada diretamente com Azure.
+export const safetySettings: unknown[] = [];
+
+const getEnvVar = (browserKey: string, nodeKey: string): string | undefined => {
+    const browserValue = typeof import.meta !== "undefined" && (import.meta as any).env && (import.meta as any).env[browserKey];
+    const nodeValue = typeof process !== "undefined" ? (process.env as Record<string, string | undefined>)[nodeKey] : undefined;
+    return (browserValue ?? nodeValue)?.toString().trim() || undefined;
+};
+
+const endpoint = getEnvVar("VITE_AZURE_OPENAI_ENDPOINT", "VITE_AZURE_OPENAI_ENDPOINT");
+const apiKey = getEnvVar("VITE_AZURE_OPENAI_API_KEY", "VITE_AZURE_OPENAI_API_KEY");
+const deployment = getEnvVar("VITE_AZURE_OPENAI_DEPLOYMENT", "VITE_AZURE_OPENAI_DEPLOYMENT");
+
+if (!endpoint || !apiKey || !deployment) {
+    throw new Error("Configuração Azure OpenAI ausente. Verifique VITE_AZURE_OPENAI_ENDPOINT, VITE_AZURE_OPENAI_API_KEY e VITE_AZURE_OPENAI_DEPLOYMENT no .env.");
+}
 
 export const GENERATION_MODELS = [
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite-preview-02-05",
-    "gemini-flash-latest",
-    "gemini-2.0-flash-exp",
+    deployment,
 ];
 
+const client = new AzureOpenAI({
+    endpoint,
+    apiKey,
+    deployment,
+    apiVersion: "2024-02-15-preview",
+    // Permitido temporariamente no PWA
+    dangerouslyAllowBrowser: true,
+});
+
 const getErrorMessage = (error: unknown): string =>
-    error instanceof Error ? error.message : 'Unknown error';
+    error instanceof Error ? error.message : "Unknown error";
 
-export function getGenAIClient(): GoogleGenerativeAI {
-    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-
-    if (!apiKey) {
-        throw new Error("A chave de API (VITE_GEMINI_API_KEY) não foi encontrada no arquivo .env.");
-    }
-
-    return new GoogleGenerativeAI(apiKey);
+// Mantém o nome público para não quebrar os serviços existentes.
+export function getGenAIClient(): AzureOpenAI {
+    return client;
 }
 
 export async function executeWithFallback<T>(
@@ -35,15 +46,15 @@ export async function executeWithFallback<T>(
 
     for (const modelName of GENERATION_MODELS) {
         try {
-            console.log(`[Gemini] Tentando modelo: ${modelName} para ${actionName}...`);
+            console.log(`[AzureOpenAI] Tentando deployment/model: ${modelName} para ${actionName}...`);
             return await operation(modelName);
         } catch (error: unknown) {
-            console.warn(`[Gemini] Falha no modelo ${modelName}:`, getErrorMessage(error));
+            console.warn(`[AzureOpenAI] Falha no deployment/model ${modelName}:`, getErrorMessage(error));
             lastError = error;
         }
     }
 
-    throw new Error(`Todas as tentativas de modelo falharam para ${actionName}. Último erro: ${getErrorMessage(lastError)}`);
+    throw new Error(`Todas as tentativas de deployment/model falharam para ${actionName}. Último erro: ${getErrorMessage(lastError)}`);
 }
 
 // Utilitários de áudio internos (PCM decoding)

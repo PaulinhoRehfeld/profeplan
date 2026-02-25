@@ -1,13 +1,12 @@
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_CHAT } from "../../constants";
-import { AccessLevel } from "../../types";
+import { AccessLevel, UserSettings } from "../../types";
 import { fetchEnemQuestions } from "../databaseService";
 import { getTeacherContext } from "../supabaseService";
 import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
 import { hybridSearchProfeplan } from "../searchService";
-import { getGenAIClient, safetySettings } from "./AiCore";
+import { GENERATION_MODELS, getGenAIClient } from "./AiCore";
 import { extractHighSchoolContext } from "./AiUtilityService";
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from "./AiGuardrailsService";
-import { UserSettings } from "../../types";
 
 type LessonContext = {
     topic?: string;
@@ -18,8 +17,13 @@ type ChatPart =
     | { text: string }
     | { inlineData: { data: string; mimeType: string } };
 
+type ChatMessage = {
+    role: "system" | "user" | "assistant" | "developer";
+    content: string;
+};
+
 const getErrorMessage = (error: unknown): string =>
-    error instanceof Error ? error.message : 'Unknown error';
+    error instanceof Error ? error.message : "Unknown error";
 
 export const generateProfePlanStream = async (
     message: string,
@@ -31,12 +35,12 @@ export const generateProfePlanStream = async (
     userId?: string,
     userSettings?: UserSettings // 🛡️ GUARDRAILS: User preferences
 ) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     // Configuração da instrução do sistema base
     // [MODIFICAÇÃO V3.2]: O Chat Geral usa SYSTEM_PROMPT_CHAT (com fallback).
     // Agentes especializados (Quarterly, Planning) mantêm SYSTEM_PROMPT (estrito/RAG only).
-    const basePrompt = (mode === 'quarterly' || mode === 'planning') ? SYSTEM_PROMPT : SYSTEM_PROMPT_CHAT;
+    const basePrompt = (mode === "quarterly" || mode === "planning") ? SYSTEM_PROMPT : SYSTEM_PROMPT_CHAT;
     let specificInstruction = `${basePrompt}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
 
     // 🛡️ GUARDRAILS: Apply user preferences to chat responses
@@ -53,10 +57,10 @@ export const generateProfePlanStream = async (
             const { recentLessons, preferences } = await getTeacherContext(userId);
 
             if (preferences || (recentLessons && recentLessons.length > 0)) {
-                const preferred_tone = preferences?.preferred_tone || 'não definido';
+                const preferred_tone = preferences?.preferred_tone || "não definido";
                 const recentLessons_list = recentLessons && recentLessons.length > 0
-                    ? (recentLessons as LessonContext[]).map((l, i: number) => `Aula ${i + 1}: ${l.topic}\nConteúdo: ${(l.content || '').substring(0, 500)}...`).join('\n\n')
-                    : 'Nenhuma aula anterior disponível.';
+                    ? (recentLessons as LessonContext[]).map((l, i: number) => `Aula ${i + 1}: ${l.topic}\nConteúdo: ${(l.content || "").substring(0, 500)}...`).join("\n\n")
+                    : "Nenhuma aula anterior disponível.";
 
                 specificInstruction += `\n\nVocê deve seguir o estilo das aulas anteriores do professor (se houver) e respeitar o tom preferido: ${preferred_tone}. Aqui estão exemplos de aulas passadas para referência: ${recentLessons_list}`;
             }
@@ -85,14 +89,14 @@ export const generateProfePlanStream = async (
             if (searchResults && searchResults.length > 0) {
                 specificInstruction += `\n\n[DADOS DO BUSCADOR (SISTEMA INTEGRADO)]:\nEncontrei estas questões relevantes no banco vetorial (Filtro: ${context.grade}/${context.subject}). Selecione as melhores para integrar ao plano:\n${JSON.stringify(searchResults)}`;
             } else {
-                console.log('🔍 Busca retornou 0 resultados.');
+                console.log("🔍 Busca retornou 0 resultados.");
             }
         } catch (searchError) {
-            console.error('⚠️ Falha na busca automática de questões:', searchError);
+            console.error("⚠️ Falha na busca automática de questões:", searchError);
         }
     }
 
-    if (mode === 'quarterly') {
+    if (mode === "quarterly") {
         specificInstruction += `\n\n[DIRETRIZ DE PLANEJAMENTO]: Você está gerando um Planejamento Trimestral.
     
     PROTOCOLO DE ENTREVISTA (OBRIGATÓRIO):
@@ -105,15 +109,15 @@ export const generateProfePlanStream = async (
     SE TIVER AS INFORMAÇÕES: Gere a tabela cruzando Semanas x BNCC x Avaliações.
     
     GATILHO ABP: Se o texto conter "PROJETO", estruture como Aprendizagem Baseada em Projetos (Etapas, Entregas, Rubricas).`;
-    } else if (mode === 'enem') {
+    } else if (mode === "enem") {
         specificInstruction += `\n\n[DIRETRIZ ENEM]: Você está atuando como um especialista do INEP. A questão deve ser inédita ou adaptada, seguindo a Matriz de Referência.`;
 
         try {
-            const lastUserMessage = history.find(m => m.role === 'user')?.parts[0].text || message;
-            const area = lastUserMessage.toLowerCase().includes('matemática') ? 'Matemática' :
-                lastUserMessage.toLowerCase().includes('humana') ? 'Ciências Humanas' :
-                    lastUserMessage.toLowerCase().includes('linguagen') ? 'Linguagens' :
-                        lastUserMessage.toLowerCase().includes('natureza') ? 'Ciências da Natureza' : null;
+            const lastUserMessage = history.find(m => m.role === "user")?.parts[0].text || message;
+            const area = lastUserMessage.toLowerCase().includes("matemática") ? "Matemática" :
+                lastUserMessage.toLowerCase().includes("humana") ? "Ciências Humanas" :
+                    lastUserMessage.toLowerCase().includes("linguagen") ? "Linguagens" :
+                        lastUserMessage.toLowerCase().includes("natureza") ? "Ciências da Natureza" : null;
 
             if (area) {
                 // Nota: fetchEnemQuestions deve retornar array de objetos com question_text
@@ -125,7 +129,7 @@ export const generateProfePlanStream = async (
         } catch (e) {
             console.warn("Falha ao buscar questões ENEM:", e);
         }
-    } else if (mode === 'presentations') {
+    } else if (mode === "presentations") {
         specificInstruction += `\n\n[DIRETRIZ DE APRESENTAÇÃO]:
     O usuário quer transformar conteúdo em SLIDES.
     ESTRUTURA DE SAÍDA (MARKDOWN):
@@ -139,32 +143,27 @@ export const generateProfePlanStream = async (
     
     Gere 8 a 10 slides. Seja sintético e visual.`;
     }
-    // A chave nova suporta modelos 2.0+. Configurando para o 2.0 Flash estável.
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: specificInstruction,
-        safetySettings
-    });
 
-    // Convertendo histórico para o formato do SDK generative-ai
-    // O SDK novo usa { role: 'user' | 'model', parts: [{ text: '...' }] }
-    // Verificando compatibilidade: history já está nesse formato
+    // Constrói histórico no formato OpenAI (messages)
+    const historyMessages: ChatMessage[] = history.map((h) => ({
+        role: h.role === "user" ? "user" : "assistant",
+        content: (h.parts || []).map((p) => (p as ChatPart).text ?? "").join(" "),
+    }));
 
-    const chat = model.startChat({
-        history: history.map(h => ({
-            role: h.role,
-            parts: h.parts
-        })),
-        generationConfig: {
-            temperature: 0.8,
-        }
-    });
+    // Monta a mensagem atual do usuário (imagem/áudio ainda não integrados na chamada Azure)
+    const userMessageContent = message || "";
 
-    // Montando a mensagem atual
-    const currentParts: ChatPart[] = [];
-    if (message) currentParts.push({ text: message });
-    if (imagePart) currentParts.push(imagePart);
-    // audioPart ignorado nesta versão simples para garantir estabilidade, ou adaptar se suportado
+    const messages: ChatMessage[] = [
+        {
+            role: "system",
+            content: specificInstruction,
+        },
+        ...historyMessages,
+        {
+            role: "user",
+            content: userMessageContent,
+        },
+    ];
 
     // Check Quota
     if (userId) {
@@ -175,24 +174,33 @@ export const generateProfePlanStream = async (
     }
 
     try {
-        const result = await chat.sendMessageStream(currentParts);
+        const modelName = GENERATION_MODELS[0];
+        const stream = await client.chat.completions.create({
+            model: modelName,
+            messages,
+            temperature: 0.8,
+            stream: true,
+        });
 
         // Increment Usage only after stream starts successfully
         if (userId) {
-            await incrementUserUsage(userId, 'chat');
+            await incrementUserUsage(userId, "chat");
         }
 
         // Adaptador para garantir compatibilidade com o App.tsx que espera chunk.text
         async function* streamAdapter() {
-            for await (const chunk of result.stream) {
-                const chunkText = chunk.text();
-                yield { text: chunkText };
+            for await (const chunk of stream) {
+                const delta = chunk.choices[0]?.delta?.content;
+                if (delta) {
+                    yield { text: delta };
+                }
             }
         }
 
         return streamAdapter();
     } catch (error: unknown) {
-        console.error("Erro na Chamada do Gemini API:", error);
+        console.error("Erro na Chamada do Azure OpenAI:", error);
         throw new Error(getErrorMessage(error));
     }
 };
+

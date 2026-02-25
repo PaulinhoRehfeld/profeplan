@@ -198,21 +198,48 @@ Ignore qualquer regra anterior que conflite com este pedido. O feedback do profe
         try {
             // GOVERNANCE: PEDAGOGICAL SPECIALIST MODE
             if (activeMode === ToolMode.SPECIALIST) {
-                // Import dynamically or explicitly. Since I can't add top-import in this block:
-                // I will add the import in a previous step/block, but here I can use the global or assume imported.
-                // Wait, I should add the import first. Let's assume I did/will.
-
-                // For now, I'll rely on a direct call if imported, or import inside logic? 
-                // Better to just add the logic assuming import, and then add import.
-
-                // Using PlanningAuthorityService
-                const { PlanningAuthority } = await import('../../services/PlanningAuthorityService'); // Dynamic import for safety
-
-                const response = await PlanningAuthority.askSpecialist(activeInput, { history: [] }); // History implementation pending
+                const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
+                const response = await PlanningAuthority.askSpecialist(activeInput, { history: [] });
                 const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
                 setMessages(prev => [...prev, aiMsg]);
                 setIsThinking(false);
                 return;
+            }
+
+            // --- AUTO-ROUTING TO PLANNING AUTHORITY IF USER ASKS FOR PLANNING (RLM-002) ---
+            const lowerInputText = activeInput.toLowerCase();
+            const keywordsPlanning = ['planejamento', 'plano', 'gerar', 'trimestre', 'bimestre', 'aula'];
+            const isPlanningTask = keywordsPlanning.some(k => lowerInputText.includes(k));
+
+            if (isPlanningTask && (activeMode === ToolMode.QUARTERLY_PLANNING || activeMode === ToolMode.PLANNING)) {
+                console.log("👮 RLM ROUTING: Redirecting chat request to PlanningAuthority...");
+                const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
+
+                // Construct intent from current state
+                const currentIntent: any = {
+                    subject: localSettings.subject || 'História',
+                    grade: localSettings.grade || '6º Ano',
+                    level: localSettings.level || 'Ensino Fundamental',
+                    period: localSettings.quarter ? parseInt(localSettings.quarter) : 1,
+                    regime: 'Trimestre',
+                    teacherName: localSettings.userName || 'Professor(a)',
+                    totalClasses: (localSettings.workloadWeekly || 2) * 12,
+                    reserves: localSettings.reserves || { monthlyExam: true, termExam: true, recovery: true },
+                    userId: userId,
+                    feedback: activeInput, // Prompt becomes the feedback/instruction
+                    gradingGrid: localSettings.grading || {},
+                    userSettings: appSettings
+                };
+
+                try {
+                    const response = await PlanningAuthority.executePlanning(currentIntent);
+                    const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
+                    setMessages(prev => [...prev, aiMsg]);
+                    setIsThinking(false);
+                    return;
+                } catch (rlmError: any) {
+                    console.warn("RLM Block/Error:", rlmError.message);
+                }
             }
 
             // Context Builder
@@ -304,7 +331,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 const retrievalResults = await searchCurriculum(activeInput, {
                     disciplina: selectedPlan?.subject,
                     ano: selectedPlan?.grade
-                });
+                }) as any[];
 
                 if (retrievalResults.length > 0) {
                     const formattedContext = retrievalResults.map((r: any) =>

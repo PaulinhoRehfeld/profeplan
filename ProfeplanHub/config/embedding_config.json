@@ -1,0 +1,10 @@
+{
+    "provider": "google_gemini",
+    "model": "embedding-001",
+    "dimensions": 768,
+    "distance_metric": "cosine",
+    "vector_type": "vector(768)",
+    "index_type": "ivfflat",
+    "index_ops": "vector_cosine_ops",
+    "notes": "Compatível com pgvector no Supabase. Todos os embeddings devem usar este modelo para garantir compatibilidade dimensional."
+}

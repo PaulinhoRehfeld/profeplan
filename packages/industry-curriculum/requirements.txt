@@ -1,0 +1,26 @@
+# Industry Curriculum - Requirements
+# Fonte da Verdade: Processamento de BNCC e SEEMG
+
+# Core AI/ML
+google-generativeai>=0.8.3
+openai>=1.57.4
+
+# Guardrails AI - Validation Engine
+guardrails-ai>=0.5.15
+
+# Vector Database
+supabase>=2.11.2
+
+# PDF Processing
+PyPDF2>=3.0.1
+pdfplumber>=0.11.4
+
+# Data Processing
+pandas>=2.2.3
+numpy>=2.2.2
+
+# Environment
+python-dotenv>=1.0.1
+
+# Type Checking
+python-lsp-server>=1.12.0

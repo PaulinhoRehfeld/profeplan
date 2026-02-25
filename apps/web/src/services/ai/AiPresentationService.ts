@@ -1,4 +1,4 @@
-import { getGenAIClient } from "./AiCore";
+import { GENERATION_MODELS, getGenAIClient } from "./AiCore";
 
 /**
  * [PRESENTATION_MODE - Structured JSON]
@@ -11,7 +11,7 @@ export const generatePresentationJSON = async (
     style: string,
     includeInteractions: boolean
 ) => {
-    const genAI = getGenAIClient();
+    const client = getGenAIClient();
 
     const instruction = `Age como um Designer Instrucional e Especialista em Apresentações Visuais.
 
@@ -48,20 +48,34 @@ export const generatePresentationJSON = async (
   4. As 'imageSuggestion' devem ser prompts artísticos e descritivos.
   `;
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: instruction,
-        generationConfig: { responseMimeType: "application/json" }
-    });
+    const messages = [
+        {
+            role: "system" as const,
+            content: instruction,
+        },
+        {
+            role: "user" as const,
+            content: `Gere o roteiro da apresentação sobre: ${topic}`,
+        },
+    ];
 
-    const prompt = `Gere o roteiro da apresentação sobre: ${topic}`;
+    const completion = await client.chat.completions.create({
+        model: GENERATION_MODELS[0],
+        messages,
+        temperature: 0.3,
+    } as any);
+
+    const content = completion.choices[0]?.message?.content as any;
+    const text =
+        typeof content === "string"
+            ? content
+            : (content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
 
     try {
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
         return JSON.parse(text);
     } catch (e) {
-        console.error("Erro ao gerar slides:", e);
+        console.error("Erro ao gerar slides:", e, text);
         throw new Error("Falha ao gerar o roteiro da apresentação.");
     }
 };
+

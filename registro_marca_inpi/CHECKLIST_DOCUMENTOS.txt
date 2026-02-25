@@ -1,0 +1,97 @@
+CHECKLIST DE DOCUMENTOS - REGISTRO DE MARCA INPI
+
+Data: 16/02/2026
+
+MARCA: PROFEPLAN
+TITULAR: Paulo Roberto Rehfeld
+CPF: 758.442.730-87
+
+═══════════════════════════════════════════════════════════════
+
+DOCUMENTOS OBRIGATÓRIOS:
+
+[ ] 1. LOGOMARCA EM FORMATO VETORIAL
+    Formatos aceitos: CDR, AI, EPS, SVG
+    Dimensões: Mínimo 5cm x 5cm (300 DPI)
+    Cores: Conforme identidade visual
+    Arquivo: PROFEPLAN_LOGO_VETOR.<extensão>
+
+[ ] 2. LOGOMARCA EM PNG DE ALTA RESOLUÇÃO
+    Formato: PNG (fundo transparente recomendado)
+    Dimensões: Mínimo 1000x1000 pixels
+    Resolução: 300 DPI ou superior
+    Arquivo: PROFEPLAN_LOGO_ALTA.png
+
+[ ] 3. COMPROVANTE DE CPF DO TITULAR
+    Documento: CPF válido de Paulo Roberto Rehfeld
+    Formato: PDF digitalizado
+    Arquivo: CPF_TITULAR.pdf
+
+[ ] 4. PROCURAÇÃO (se aplicável)
+    Necessário apenas se usar advogado/agente
+    Formato: PDF com firma reconhecida
+    Arquivo: PROCURACAO.pdf
+
+[ ] 5. ESPECIFICAÇÃO CLASSE 09
+    Arquivo: ESPECIFICACAO_CLASSE_09.txt
+    Status: ✅ Gerado automaticamente
+
+[ ] 6. ESPECIFICAÇÃO CLASSE 42
+    Arquivo: ESPECIFICACAO_CLASSE_42.txt
+    Status: ✅ Gerado automaticamente
+
+═══════════════════════════════════════════════════════════════
+
+INFORMAÇÕES ADICIONAIS NECESSÁRIAS:
+
+Tipo de Marca: ( ) Nominativa  ( ) Figurativa  (X) Mista
+Natureza: (X) Produto  (X) Serviço
+Apresentação: ( ) Preto e Branco  (X) Cores
+
+Cores da Marca (se colorida):
+┌─────────────────────────────────────────┐
+│ Especificar cores exatas                │
+│ Ex: Pantone, RGB, CMYK                  │
+│                                         │
+│ ATENÇÃO: Preencher manualmente!        │
+└─────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════
+
+CUSTOS ESTIMADOS (valores de 2026):
+
+- Taxa de depósito (pessoa física): R$ 355,00 por classe
+- Total para 2 classes (09 e 42): R$ 710,00
+- Prazo de análise: 12-36 meses (média)
+
+═══════════════════════════════════════════════════════════════
+
+OBSERVAÇÕES IMPORTANTES:
+
+1. PESQUISA DE ANTERIORIDADE (OBRIGATÓRIA):
+   - Antes de depositar, pesquise se "PROFEPLAN" já foi registrado
+   - Acesse: https://busca.inpi.gov.br/pePI/
+   - Pesquise por: "PROFEPLAN" em Classes 09 e 42
+
+2. REIVINDICAÇÃO DE PRIORIDADE:
+   - Se houver pedido de software aprovado, mencionar no formulário
+   - Pode fortalecer pedido de marca
+
+3. VIGÊNCIA:
+   - Marca válida por 10 anos
+   - Prorrogável indefinidamente (a cada 10 anos)
+
+═══════════════════════════════════════════════════════════════
+
+PRÓXIMOS PASSOS:
+
+1. ✅ Verificar este checklist
+2. [ ] Preparar logo em formato vetorial
+3. [ ] Exportar logo em PNG alta resolução
+4. [ ] Fazer pesquisa de anterioridade
+5. [ ] Acessar portal INPI: https://www.gov.br/inpi/pt-br/servicos/marcas
+6. [ ] Fazer upload dos documentos
+7. [ ] Pagar GRU (R$ 710,00)
+8. [ ] Acompanhar processo (código fornecido após depósito)
+
+═══════════════════════════════════════════════════════════════

@@ -16,5 +16,6 @@
     "deno.unstable": true,
     "deno.importMap": "./supabase/functions/deno.json",
     "vercelVSCode.accessToken": "9QiSY2I9YK1CmB9386WBOMQh",
-    "python.analysis.typeCheckingMode": "basic"
+    "python.analysis.typeCheckingMode": "basic",
+    "git.ignoreLimitWarning": true
 }
