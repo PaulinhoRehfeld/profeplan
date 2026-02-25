@@ -1,7 +1,9 @@
 {
+    "version": 2,
     "framework": "vite",
-    "buildCommand": "npx vite build",
-    "outputDirectory": "dist",
+    "buildCommand": "npm run build --workspace=apps/web",
+    "outputDirectory": "apps/web/dist",
+    "installCommand": "npm install",
     "regions": [
         "gru1"
     ],
