@@ -15,11 +15,11 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       react(),
       VitePWA({
-        registerType: 'autoUpdate',
-        workbox: {
-          cleanupOutdatedCaches: true,
-        },
-        includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+        registerType: 'prompt',
+        strategies: 'injectManifest',
+        srcDir: 'public',
+        filename: 'service-worker.js',
+        injectRegister: false, // We'll use the prompt component, which handles registration
         manifest: {
           name: 'Profeplan',
           short_name: 'Profeplan',

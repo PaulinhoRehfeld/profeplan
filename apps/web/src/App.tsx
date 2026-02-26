@@ -82,6 +82,50 @@ const App: React.FC = () => {
   // 3. EFFECTS
   const [showEmergencyReset, setShowEmergencyReset] = useState(false);
 
+  // NUCLEAR RESET: Force clear everything once for v4.0.0 migration
+  useEffect(() => {
+    const breakLoop = async () => {
+      const resetKey = 'profeplan_v4_nuclear_reset_v2'; // Increment version to force re-run
+      const isReset = localStorage.getItem(resetKey);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const forceReset = urlParams.has('force_reset') || urlParams.has('reset');
+
+      if (!isReset || forceReset) {
+        console.warn("[App] ☢️ EMERGENCY NUCLEAR RESET V2 (Breaking v3.9.1 Loop)");
+
+        try {
+          // 1. Unregister ALL Service Workers
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const registration of registrations) {
+              await registration.unregister();
+            }
+          }
+
+          // 2. Clear ALL Caches
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(name => caches.delete(name)));
+          }
+
+          localStorage.setItem(resetKey, 'true');
+
+          // Clear any state that might be stuck
+          sessionStorage.clear();
+
+          // FORCED HARD RELOAD with cache-busting param
+          window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+        } catch (err) {
+          console.error("[App] Nuclear reset failed:", err);
+          window.location.reload();
+        }
+      }
+    };
+
+    breakLoop();
+  }, []);
+
   useEffect(() => {
     // Safety Timeout: Force stop loading after 10s and run diagnostics
     if (loading) {
@@ -186,7 +230,7 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    registerServiceWorker();
+    // registerServiceWorker process is now managed by ReloadPrompt/VitePWA
   }, []);
 
   if (loading && !showEmergencyReset) return <PageLoader />;
@@ -202,17 +246,35 @@ const App: React.FC = () => {
         </p>
         <div className="flex flex-col gap-3">
           <button
-            onClick={() => {
+            onClick={async () => {
+              console.log("[App] 🛠️ [MANUAL RESET] Cleaning everything...");
+
+              // 1. UI feedback
+              const btn = document.activeElement as HTMLButtonElement;
+              if (btn) btn.innerText = "Limpando...";
+
+              // 2. Storage
               localStorage.removeItem('profeplan_session');
               localStorage.removeItem('supabase_user_id');
+              localStorage.removeItem('profeplan_v4_nuclear_reset'); // Force re-run logic
+
+              // 3. Cache & SW
+              if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (const r of regs) await r.unregister();
+              }
+              const names = await caches.keys();
+              for (const n of names) await caches.delete(n);
+
+              // 4. Final Reload
               window.location.reload();
             }}
             className="bg-blue-600 hover:bg-blue-500 text-white font-black px-8 py-4 rounded-2xl shadow-xl transition-all active:scale-95 flex items-center gap-2 justify-center"
           >
-            Sair e Tentar de Novo
+            Realizar Limpeza Completa
           </button>
           <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-            Suas configurações serão preservadas.
+            Isso removerá qualquer cache corrompido e forçará o carregamento da nova versão.
           </p>
         </div>
       </div>
@@ -222,7 +284,7 @@ const App: React.FC = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <ReloadPrompt />
+        {/* <ReloadPrompt /> */}
         <OfflineIndicator />
         <Suspense fallback={<PageLoader />}>
           <Routes>
