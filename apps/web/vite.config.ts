@@ -15,11 +15,13 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       react(),
       VitePWA({
-        registerType: 'prompt',
-        strategies: 'injectManifest',
-        srcDir: 'public',
-        filename: 'service-worker.js',
-        injectRegister: false, // We'll use the prompt component, which handles registration
+        strategies: 'generateSW',
+        registerType: 'autoUpdate',
+        injectRegister: false,
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          swDest: 'sw-dummy.js'
+        },
         manifest: {
           name: 'Profeplan',
           short_name: 'Profeplan',

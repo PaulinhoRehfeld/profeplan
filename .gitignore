@@ -1,0 +1,38 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+*.env
+**/.env
+
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build
+build/
+*.log
+sw-dummy.js
+workbox-*.js
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+DEPOSITO_INPI_SOFTWARE.zip
+REGISTRO_SOFTWARE_INPI.txt
+ProfeplanHub/config/.env
+android/.idea/
+supabase/.temp/
