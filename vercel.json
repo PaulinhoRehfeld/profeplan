@@ -39,10 +39,6 @@
             "source": "/(.*)",
             "headers": [
                 {
-                    "key": "Clear-Site-Data",
-                    "value": "\"*\""
-                },
-                {
                     "key": "Cache-Control",
                     "value": "no-cache, no-store, must-revalidate"
                 }

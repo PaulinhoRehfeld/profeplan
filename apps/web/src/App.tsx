@@ -82,48 +82,39 @@ const App: React.FC = () => {
   // 3. EFFECTS
   const [showEmergencyReset, setShowEmergencyReset] = useState(false);
 
-  // NUCLEAR RESET: Force clear everything once for v4.0.0 migration
+  // NUCLEAR RESET (LEGADO): agora só roda quando o usuário passa ?force_reset na URL.
   useEffect(() => {
-    const breakLoop = async () => {
-      const resetKey = 'profeplan_v4_nuclear_reset_v2'; // Increment version to force re-run
-      const isReset = localStorage.getItem(resetKey);
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceReset = urlParams.has('force_reset') || urlParams.has('reset');
+    if (!forceReset) return;
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const forceReset = urlParams.has('force_reset') || urlParams.has('reset');
+    const runReset = async () => {
+      console.warn("[App] ☢️ EMERGENCY NUCLEAR RESET MANUAL (force_reset)");
 
-      if (!isReset || forceReset) {
-        console.warn("[App] ☢️ EMERGENCY NUCLEAR RESET V2 (Breaking v3.9.1 Loop)");
-
-        try {
-          // 1. Unregister ALL Service Workers
-          if ('serviceWorker' in navigator) {
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            for (const registration of registrations) {
-              await registration.unregister();
-            }
+      try {
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const registration of registrations) {
+            await registration.unregister();
           }
-
-          // 2. Clear ALL Caches
-          if ('caches' in window) {
-            const cacheNames = await caches.keys();
-            await Promise.all(cacheNames.map(name => caches.delete(name)));
-          }
-
-          localStorage.setItem(resetKey, 'true');
-
-          // Clear any state that might be stuck
-          sessionStorage.clear();
-
-          // FORCED HARD RELOAD with cache-busting param
-          window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
-        } catch (err) {
-          console.error("[App] Nuclear reset failed:", err);
-          window.location.reload();
         }
+
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map(name => caches.delete(name)));
+        }
+
+        localStorage.clear();
+        sessionStorage.clear();
+
+        window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+      } catch (err) {
+        console.error("[App] Nuclear reset failed:", err);
+        window.location.reload();
       }
     };
 
-    breakLoop();
+    runReset();
   }, []);
 
   useEffect(() => {
