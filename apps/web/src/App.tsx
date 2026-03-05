@@ -18,8 +18,6 @@ import { ReloadPrompt } from './components/ReloadPrompt';
 import LoginScreen from './components/LoginScreen';
 import SchoolSelectorScreen from './components/SchoolSelectorScreen';
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext';
-import { FreedayProvider } from './contexts/FreedayContext';
-import { GlobalFreedayUI } from './components/GlobalFreedayUI';
 import { PdiOfficialLayout } from './features/PDI/Official/PdiOfficialLayout';
 import { AdminPanel as SimulationAdminPanel, OfflineIndicator } from './features/SimulationFactory';
 import { registerServiceWorker } from './utils/serviceWorkerRegistration';
@@ -284,12 +282,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <FreedayProvider>
-      <ErrorBoundary>
-        <BrowserRouter>
-          <ReloadPrompt />
-          <OfflineIndicator />
-          <Suspense fallback={<PageLoader />}>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ReloadPrompt />
+        <OfflineIndicator />
+        <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* PUBLIC ROUTES */}
               <Route
@@ -415,10 +412,8 @@ const App: React.FC = () => {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
-          <GlobalFreedayUI />
         </BrowserRouter>
       </ErrorBoundary>
-    </FreedayProvider>
   );
 };
 
