@@ -38,6 +38,61 @@ export function getGenAIClient(): AzureOpenAI {
     return client;
 }
 
+/**
+ * Helper para completions simples (prompt → resposta).
+ * Usa os créditos Azure do deployment configurado.
+ */
+export async function createSimpleCompletion(
+    prompt: string,
+    systemInstruction?: string,
+    temperature: number = 0.7
+): Promise<string> {
+    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [];
+    if (systemInstruction) {
+        messages.push({ role: "system", content: systemInstruction });
+    }
+    messages.push({ role: "user", content: prompt });
+
+    const completion = await client.chat.completions.create({
+        model: deployment,
+        messages,
+        temperature,
+    } as any);
+
+    const content = completion.choices[0]?.message?.content;
+    return typeof content === "string" ? content : (content as { text?: string }[] | undefined)?.map((c) => c?.text ?? "").join("") ?? "";
+}
+
+/**
+ * Helper para chat com histórico (multi-turn).
+ * Usa os créditos Azure do deployment configurado.
+ */
+export async function createChatCompletion(
+    userMessage: string,
+    history: Array<{ role: string; content: string }> = [],
+    systemInstruction?: string,
+    temperature: number = 0.7
+): Promise<string> {
+    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [];
+    if (systemInstruction) {
+        messages.push({ role: "system", content: systemInstruction });
+    }
+    for (const h of history) {
+        const role = h.role === "user" ? "user" : h.role === "assistant" ? "assistant" : "user";
+        messages.push({ role, content: h.content || "" });
+    }
+    messages.push({ role: "user", content: userMessage });
+
+    const completion = await client.chat.completions.create({
+        model: deployment,
+        messages,
+        temperature,
+    } as any);
+
+    const content = completion.choices[0]?.message?.content;
+    return typeof content === "string" ? content : (content as { text?: string }[] | undefined)?.map((c) => c?.text ?? "").join("") ?? "";
+}
+
 export async function executeWithFallback<T>(
     actionName: string,
     operation: (modelName: string) => Promise<T>

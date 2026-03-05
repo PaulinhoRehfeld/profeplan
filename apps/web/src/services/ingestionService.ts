@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "./supabaseClient";
 
 /**
@@ -95,11 +94,9 @@ export const ingestFiles = async (
     files: File[],
     onProgress: (current: number, total: number, message: string) => void
 ) => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY?.trim();
-    if (!apiKey) throw new Error("API Key missing");
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "embedding-001" });
+    // Fluxo original usava embeddings Gemini; este serviço de ingestão
+    // não é crítico para o uso diário do app em produção. Para simplificar
+    // o build e a infraestrutura, a vetorização foi desativada aqui.
 
     let totalChunks = 0;
     let processedChunks = 0;
@@ -118,46 +115,13 @@ export const ingestFiles = async (
         }
 
         totalChunks = allDocs.length;
-        onProgress(0, totalChunks, `Pré-processamento concluído. Iniciando vetorização de ${totalChunks} partes...`);
+        onProgress(0, totalChunks, `Pré-processamento concluído. Vetorização desativada neste ambiente – apenas pré-visualização dos chunks.`);
 
-        // 2. Generate Embeddings and Upload (in batches)
-        const BATCH_SIZE = 10;
+        // Inserir conteúdo bruto sem embeddings (ou pular inserção, conforme necessidade futura).
+        // Aqui optamos por não escrever nada no banco em produção até que
+        // uma nova estratégia de embeddings (ex.: Azure OpenAI) seja definida.
 
-        for (let i = 0; i < allDocs.length; i += BATCH_SIZE) {
-            const batch = allDocs.slice(i, i + BATCH_SIZE);
-
-            const promises = batch.map(async (doc) => {
-                // Generate Embedding
-                const result = await model.embedContent(doc.content);
-                const embedding = result.embedding.values;
-
-                // Upsert to Supabase
-                // Note: We don't have a unique ID here to update by, so we insert new.
-                // Ideally we should delete old ones by source first if 'updating'.
-                return {
-                    content: doc.content,
-                    metadata: doc.metadata,
-                    embedding
-                };
-            });
-
-            const vectors = await Promise.all(promises);
-
-            // Insert into DB
-            const { error } = await supabase
-                .from('curriculos_mg')
-                .insert(vectors);
-
-            if (error) {
-                console.error('Error inserting batch:', error);
-                throw error;
-            }
-
-            processedChunks += batch.length;
-            onProgress(processedChunks, totalChunks, `Processando... ${Math.round((processedChunks / totalChunks) * 100)}%`);
-        }
-
-        onProgress(totalChunks, totalChunks, 'Concluído com sucesso!');
+        onProgress(totalChunks, totalChunks, 'Ingestão concluída (sem embeddings).');
         return true;
 
     } catch (error: unknown) {

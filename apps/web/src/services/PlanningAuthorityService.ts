@@ -1,7 +1,6 @@
-
 import { supabase } from './supabaseClient';
-import { generateTermPlan } from './ai/AiPlanningService';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { executeTermPlanning } from './orchestration/PlanningOrchestrator';
+import { createChatCompletion } from './ai/AiCore';
 import { UserSettings } from '../types';
 
 export interface PlanningIntent {
@@ -155,15 +154,14 @@ export const PlanningAuthority = {
             console.warn(`⚠️ GOVERNANCE ALERT: Sem currículo base para ${safeIntent.subject} - ${safeIntent.grade}`);
         }
 
-        // C. Execução Segura
-        return await generateTermPlan({
+        // C. Execução via PlanningOrchestrator (créditos + EventBus centralizados)
+        return await executeTermPlanning({
             ...safeIntent,
-            // Passa o nível explicitamente para o AiPlanningService
             level: safeIntent.level,
-            feedback: safeIntent.feedback, // Pass feedback to generator
+            feedback: safeIntent.feedback,
             pnld_book_id: safeIntent.pnld_book_id,
-            gradingGrid: safeIntent.gradingGrid,  // Pass grading grid
-            userSettings: safeIntent.userSettings // 🛡️ GUARDRAILS: Pass preferences
+            gradingGrid: safeIntent.gradingGrid,
+            userSettings: safeIntent.userSettings
         });
     },
 
@@ -172,36 +170,27 @@ export const PlanningAuthority = {
      * O Auditor que conversa com o usuário.
      */
     askSpecialist: async (message: string, context?: SpecialistContext) => {
-        const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-        if (!apiKey) throw new Error("API Key missing");
+        const systemInstruction = `VOCÊ É UM ESPECIALISTA PEDAGÓGICO SÊNIOR (AUDITOR).
+NÃO É UM ASSISTENTE PESSOAL. SEU TOM É TÉCNICO, ANALÍTICO E DIRETIVO.
 
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
-            systemInstruction: `
-            VOCÊ É UM ESPECIALISTA PEDAGÓGICO SÊNIOR (AUDITOR).
-            NÃO É UM ASSISTENTE PESSOAL. SEU TOM É TÉCNICO, ANALÍTICO E DIRETIVO.
+SUA MISSÃO: Garantir a excelência pedagógica e o alinhamento com a BNCC e Currículo de MG.
 
-            SUA MISSÃO: Garantir a excelência pedagógica e o alinhamento com a BNCC e Currículo de MG.
-            
-            ESCOPO DE ATUAÇÃO:
-            1. Analisar planos de aula e apontar inconsistências.
-            2. Sugerir metodologias ativas (PBL, Gamificação).
-            3. Reforçar DUA (Desenho Universal para Aprendizagem).
-            
-            DIRETRIZ DE GOVERNANÇA:
-            - Se o usuário pedir algo fora do Ensino Fundamental 2 ou Médio, REPUDIE e explique o escopo.
-            - Se o plano parecer "pobre", critique construtivamente.
-            
-            PERFIL: Você fala como um Coordenador Pedagógico experiente conversando com um Professor.`
-        });
+ESCOPO DE ATUAÇÃO:
+1. Analisar planos de aula e apontar inconsistências.
+2. Sugerir metodologias ativas (PBL, Gamificação).
+3. Reforçar DUA (Desenho Universal para Aprendizagem).
 
-        const chat = model.startChat({
-            history: (context?.history as any) || []
-        });
+DIRETRIZ DE GOVERNANÇA:
+- Se o usuário pedir algo fora do Ensino Fundamental 2 ou Médio, REPUDIE e explique o escopo.
+- Se o plano parecer "pobre", critique construtivamente.
 
-        const result = await chat.sendMessage(message);
-        return result.response.text();
+PERFIL: Você fala como um Coordenador Pedagógico experiente conversando com um Professor.`;
+
+        const history = ((context?.history as Array<{ role: string; content: string }>) || []).map((h) => ({
+            role: typeof h.role === "string" ? h.role : "user",
+            content: typeof (h as { content?: string }).content === "string" ? (h as { content: string }).content : String(h)
+        }));
+        return createChatCompletion(message, history, systemInstruction, 0.6);
     },
 
     /**

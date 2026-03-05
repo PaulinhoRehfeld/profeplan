@@ -1,7 +1,12 @@
 /**
- * STANDALONE KILL-SWITCH SERVICE WORKER (Vanilla JS)
- * No imports, no dependencies. This is the only way to ensure it loads
- * and breaks the cache cycle for users stuck on v3.9.1.
+ * LEGACY KILL-SWITCH SERVICE WORKER (Vanilla JS)
+ * ------------------------------------------------
+ * Este arquivo foi usado como solução emergencial para quebrar ciclos
+ * de cache em versões antigas (ex.: v3.9.1). O Service Worker oficial
+ * da aplicação agora é gerado e gerenciado pelo VitePWA (generateSW).
+ *
+ * NÃO registre este arquivo manualmente no código de produção.
+ * Use apenas em cenários de migração/emergência documentados.
  */
 
 self.addEventListener('install', (event) => {

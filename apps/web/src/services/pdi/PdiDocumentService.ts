@@ -5,7 +5,7 @@ import { Block9AdaptationEntry } from '../../types/pdi';
 import { z } from 'zod';
 import { ProfileService } from '../ProfileService';
 import { checkUsageQuota } from '../ProfileService';
-import { getGenAIClient } from '../ai/AiCore';
+import { createSimpleCompletion } from '../ai/AiCore';
 
 const getErrorMessage = (error: unknown): string =>
     error instanceof Error ? error.message : 'Unknown error';
@@ -35,6 +35,16 @@ type Block10EvaluationInput = {
 };
 
 type Block9AdaptationInput = Omit<Block9AdaptationEntry, 'generated_at' | 'generated_by_ai'>;
+
+type PdiDocRow = {
+    id: string;
+    content_data?: {
+        clinical_health?: { diagnosis_cid?: string };
+        pedagogical?: { specific_needs?: string; general_objective?: string; technological_resources?: string; adapted_materials?: string };
+        cognitive?: { potentials?: string; challenges?: string };
+    };
+    school_students?: { name?: string };
+};
 
 /**
  * PDI Record Type for logging events
@@ -510,6 +520,124 @@ export const PdiDocumentService = {
      */
     async addBlock9Adaptation(pdiId: string, adaptation: Block9AdaptationInput): Promise<{ data: Block9AdaptationInput; error: null }> {
         return { data: adaptation, error: null };
+    },
+
+    /**
+     * Get all Block 9 adaptations for a PDI (consolidado de PdiBlock9Service)
+     */
+    async getStudentAdaptations(pdiId: string): Promise<Block9AdaptationEntry[]> {
+        try {
+            const { data: pdi } = await this.getPdiDocument(pdiId);
+            if (!pdi) return [];
+            return (pdi.block_9_content || []) as Block9AdaptationEntry[];
+        } catch (error) {
+            console.error('Error fetching Block 9 adaptations:', error);
+            return [];
+        }
+    },
+
+    /**
+     * Get Block 9 adaptation statistics (consolidado de PdiBlock9Service)
+     */
+    async getAdaptationStats(pdiId: string): Promise<{ total: number; last_generated?: string; subjects: string[] }> {
+        const adaptations = await this.getStudentAdaptations(pdiId);
+        const subjects = [...new Set(adaptations.map((a) => a.subject))];
+        const lastGenerated =
+            adaptations.length > 0
+                ? adaptations.sort(
+                      (a, b) => new Date(b.generated_at).getTime() - new Date(a.generated_at).getTime()
+                  )[0].generated_at
+                : undefined;
+        return { total: adaptations.length, last_generated: lastGenerated, subjects };
+    },
+
+    /**
+     * Generate Block 9 adaptations for all students with active PDIs in a class (consolidado de PdiBlock9Service)
+     */
+    async generateAdaptationsForLesson(
+        lessonId: string,
+        lessonTitle: string,
+        lessonContent: string,
+        subject: string,
+        gradeLevel: string,
+        habilidadesBncc: string[],
+        classId: string,
+        schoolId: string,
+        userId: string,
+        year: number
+    ): Promise<{ success: boolean; adaptationsCreated: number; errors: string[] }> {
+        const errors: string[] = [];
+        let adaptationsCreated = 0;
+
+        try {
+            const { data: studentsWithPdi, error: studentsError } = await supabase
+                .from('pdi_documents')
+                .select(`id, student_id, year, content_data, school_students (id, name)`)
+                .eq('school_id', schoolId)
+                .eq('year', year)
+                .eq('status', 'em_andamento');
+
+            if (studentsError || !studentsWithPdi || studentsWithPdi.length === 0) {
+                if (studentsError) errors.push(`Erro ao buscar alunos com PDI: ${studentsError.message}`);
+                return { success: !studentsError, adaptationsCreated: 0, errors };
+            }
+
+            for (const pdiDoc of studentsWithPdi as PdiDocRow[]) {
+                try {
+                    const content = pdiDoc.content_data || {};
+                    const studentContext = {
+                        nome_completo: pdiDoc.school_students?.name || 'Estudante',
+                        diagnostico_clinico: content.clinical_health?.diagnosis_cid,
+                        necessidades_especificas: content.pedagogical?.specific_needs,
+                        potencialidades: content.cognitive?.potentials,
+                        desafios: content.cognitive?.challenges,
+                        objetivo_geral: content.pedagogical?.general_objective,
+                        recursos_tecnologicos: content.pedagogical?.technological_resources,
+                        materiais_adaptados: content.pedagogical?.adapted_materials
+                    };
+
+                    if (!studentContext.nome_completo) {
+                        errors.push(`${studentContext.nome_completo}: Formulário base incompleto`);
+                        continue;
+                    }
+
+                    const adaptationResult = await generateBlock9Adaptation(
+                        lessonContent,
+                        lessonTitle,
+                        subject,
+                        gradeLevel,
+                        habilidadesBncc,
+                        studentContext,
+                        userId
+                    );
+
+                    const newAdaptation: Omit<Block9AdaptationEntry, 'generated_at' | 'generated_by_ai'> = {
+                        lesson_id: lessonId,
+                        lesson_title: lessonTitle,
+                        subject,
+                        habilidades_bncc: habilidadesBncc,
+                        adaptacao_metodologica: adaptationResult.adaptacao_metodologica,
+                        recursos_adaptados: adaptationResult.recursos_adaptados,
+                        objetivos_adaptados: adaptationResult.objetivos_adaptados,
+                        estrategias_ensino: adaptationResult.estrategias_ensino,
+                        tempo_estimado: adaptationResult.tempo_estimado
+                    };
+
+                    const saved = await this.addBlock9Adaptation(pdiDoc.id, newAdaptation);
+                    if (saved.data) adaptationsCreated++;
+                    else errors.push(`${studentContext.nome_completo}: Erro ao salvar`);
+                } catch (err) {
+                    errors.push(`${pdiDoc.school_students?.name || 'Estudante'}: ${getErrorMessage(err)}`);
+                }
+            }
+            return { success: true, adaptationsCreated, errors };
+        } catch (error) {
+            return {
+                success: false,
+                adaptationsCreated,
+                errors: [getErrorMessage(error) || 'Erro fatal ao gerar adaptações']
+            };
+        }
     },
 
     /**
@@ -1011,8 +1139,6 @@ export const generateBlock9Adaptation = async (
     estrategias_ensino: string[];
     tempo_estimado?: string;
 }> => {
-    const genAI = getGenAIClient();
-
     if (userId) {
         const quotaStatus = await checkUsageQuota(userId);
         if (!quotaStatus.allowed) {
@@ -1020,15 +1146,26 @@ export const generateBlock9Adaptation = async (
         }
     }
 
-    const prompt = `
-    ATUE COMO UM ESPECIALISTA EM INCLUSÃO E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
-    ...
-    `;
+    const prompt = `ATUE COMO UM ESPECIALISTA EM INCLUSÃO E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const result = await model.generateContent(prompt);
+AULA: ${lessonTitle} (${subject} - ${gradeLevel})
+Conteúdo: ${lessonContent.substring(0, 2500)}
+Habilidades BNCC: ${habilidadesBncc.join(', ')}
+
+PERFIL DO ALUNO:
+Nome: ${studentPdiContext.nome_completo}
+Diagnóstico: ${studentPdiContext.diagnostico_clinico || 'Não especificado'}
+Necessidades: ${studentPdiContext.necessidades_especificas?.join(', ') || 'Não especificadas'}
+Objetivo geral: ${studentPdiContext.objetivo_geral || 'Não especificado'}
+
+Gere uma adaptação curricular desta aula para este aluno seguindo DUA. Retorne em Markdown com seções: Objetivos Adaptados, Estratégias de Acesso, Atividade Adaptada, Avaliação Diferenciada.`;
+
+    const adaptacao_metodologica = await createSimpleCompletion(
+        prompt,
+        "Você é um especialista em inclusão e DUA escrevendo adaptações de aula. Seja específico e aplicável na sala de aula."
+    );
     return {
-        adaptacao_metodologica: result.response.text(),
+        adaptacao_metodologica,
         recursos_adaptados: [],
         objetivos_adaptados: [],
         estrategias_ensino: [],

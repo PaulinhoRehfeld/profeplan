@@ -1,9 +1,8 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "./supabaseClient";
 
 interface DiagnosticResult {
-    service: 'Gemini' | 'Supabase' | 'EnvVars';
+    service: 'Supabase' | 'EnvVars';
     status: 'ok' | 'error' | 'warning';
     message: string;
     latency?: number;
@@ -46,26 +45,6 @@ export const runDiagnostics = async (): Promise<DiagnosticResult[]> => {
             }
         } catch (e: unknown) {
             results.push({ service: 'Supabase', status: 'error', message: `Exceção ao conectar: ${getErrorMessage(e)}` });
-        }
-    }
-
-    // 3. Connectivity Check: Gemini
-    if (geminiKey) {
-        const startGemini = performance.now();
-        try {
-            const genAI = new GoogleGenerativeAI(geminiKey);
-            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-            const result = await model.generateContent("Ping");
-            const response = result.response.text();
-            const endGemini = performance.now();
-
-            if (response) {
-                results.push({ service: 'Gemini', status: 'ok', message: 'Conexão estabelecida com sucesso.', latency: endGemini - startGemini });
-            } else {
-                results.push({ service: 'Gemini', status: 'warning', message: 'Sem resposta de texto.', latency: endGemini - startGemini });
-            }
-        } catch (e: unknown) {
-            results.push({ service: 'Gemini', status: 'error', message: `Erro de conexão: ${getErrorMessage(e)}` });
         }
     }
 

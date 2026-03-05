@@ -5,6 +5,11 @@ import { SYSTEM_PROMPT } from "../../constants";
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt, AIGuardrailsConfig } from "./AiGuardrailsService";
 import { UserSettings } from "../../types";
 
+export interface GenerateTermPlanOptions {
+    /** Quando true, pula check/deduction de créditos (usado pelo PlanningOrchestrator) */
+    skipCredits?: boolean;
+}
+
 export const generateTermPlan = async (
     context: {
         subject: string;
@@ -28,12 +33,14 @@ export const generateTermPlan = async (
             others?: number;
         };
         userSettings?: UserSettings; // ✨ NOVO: Preferências do professor
-    }
+    },
+    opts?: GenerateTermPlanOptions
 ) => {
     const client = getGenAIClient();
+    const skipCredits = opts?.skipCredits ?? false;
 
-    // Check Quota
-    if (context.userId) {
+    // Check Quota (skip quando chamado via PlanningOrchestrator)
+    if (!skipCredits && context.userId) {
         const quotaStatus = await checkUsageQuota(context.userId);
         if (!quotaStatus.allowed) {
             throw new Error(quotaStatus.message);
@@ -297,8 +304,8 @@ export const generateTermPlan = async (
 
         const text = completion.choices[0]?.message?.content ?? "";
 
-        // Increment Usage only on success
-        if (context.userId) {
+        // Increment Usage only on success (skip quando chamado via PlanningOrchestrator)
+        if (!skipCredits && context.userId) {
             await incrementUserUsage(context.userId, 'term_plan');
         }
 

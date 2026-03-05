@@ -9,8 +9,8 @@ Autenticação Principal: E-mail pessoal do professor (Supabase Auth).
 
 Integração Secundária (OAuth 2.0): Vinculação com contas @educacao.mg.gov.br (Google Classroom/Drive) feita após o login, garantindo que o app continue funcionando mesmo se a integração institucional falhar.
 
-3. Arquitetura de IA (Multi-Agentes OpenAI):
-Estamos migrando para a infraestrutura da OpenAI (Azure). O sistema não deve usar um único prompt monolítico. O código deve ser estruturado prevendo um Sistema Multi-Agentes:
+3. Arquitetura de IA (Multi-Agentes via Azure OpenAI):
+Utilizamos os créditos da assinatura Azure. O sistema está estruturado prevendo um Sistema Multi-Agentes:
 
 Agente Planejador: Focado no escopo macro e regras da BNCC.
 

@@ -170,9 +170,16 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
 
         const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
         const bookTitle = selectedPlan?.pnld_book_id;
+        const subject = selectedPlan?.subject || '';
+        const grade = selectedPlan?.grade || '';
 
         let prompt = '';
-        if (action === 'plan') prompt = `[AÇÃO: PLANO DE AULA DETALHADO]\nCrie um plano de aula completo para a Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição Original: ${selectedLesson.description}`;
+        if (action === 'plan') {
+            const discInstruction = subject
+                ? `\n\n[DISCIPLINA OBRIGATÓRIA: ${subject.toUpperCase()}]\nO plano DEVE ser de ${subject}. O cabeçalho deve ser "PLANEJAMENTO DE ENSINO - ${subject.toUpperCase()}". NÃO use História, Geografia ou outra disciplina.`
+                : '';
+            prompt = `[AÇÃO: PLANO DE AULA DETALHADO]\nCrie um plano de aula completo para a Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição Original: ${selectedLesson.description}${discInstruction}\n[Planejamento: ${grade} - ${subject || 'N/A'}]`;
+        }
 
         if (bookTitle) {
             prompt += `\n\n[LIVRO PNLD SELECIONADO]: ${bookTitle}`;

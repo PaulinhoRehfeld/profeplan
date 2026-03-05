@@ -281,8 +281,8 @@ Ignore qualquer regra anterior que conflite com este pedido. O feedback do profe
                     }
                 }
 
-                // Fallbacks (apenas se tudo falhar, mas ideal avisar erro)
-                targetSubject = targetSubject || 'História';
+                // Fallbacks (evitar default "História" que causava troca de disciplina)
+                targetSubject = targetSubject || selectedPlan?.subject || 'História';
                 // targetGrade = targetGrade || '6º Ano'; // REMOVIDO DEFAULT PERIGOSO
 
                 const targetPeriod = appSettings?.quarter || '1º Trimestre';
@@ -345,6 +345,12 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 
             if (selectedPlan) {
                 context += `\nContexto do Plano Trimestral: ${selectedPlan.grade} - ${selectedPlan.subject}.`;
+                // Regra crítica: garantir que a disciplina seja respeitada ao gerar plano/material/exercícios
+                const isContentFromPlan = activeInput.includes('[AÇÃO: PLANO DE AULA') || activeInput.includes('PLANO DE AULA')
+                    || activeInput.includes('[AÇÃO: MATERIAL DIDÁTICO') || activeInput.includes('[AÇÃO: LISTA DE EXERCÍCIOS');
+                if (isContentFromPlan && selectedPlan.subject) {
+                    context += `\n\n⚠️ REGRA CRÍTICA - DISCIPLINA: O conteúdo solicitado pertence ao planejamento de ${selectedPlan.subject}. O material DEVE ser gerado EXCLUSIVAMENTE para a disciplina ${selectedPlan.subject}. Para planos de aula, o cabeçalho obrigatório é "PLANEJAMENTO DE ENSINO - ${selectedPlan.subject.toUpperCase()}". NÃO use História, Geografia ou outra disciplina.`;
+                }
             }
             if (selectedLesson) {
                 context += `\nFoco Atual: Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição: ${selectedLesson.description}`;

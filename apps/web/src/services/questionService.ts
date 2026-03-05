@@ -11,12 +11,8 @@
  * ```
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { supabase } from './supabaseClient';
 import { EnemQuestion } from '../types';
-
-// Inicializa o cliente Google AI
-const googleAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
 // Mapeamento de Áreas para Disciplinas (Normalização)
 const AREA_MAP: Record<string, string[]> = {

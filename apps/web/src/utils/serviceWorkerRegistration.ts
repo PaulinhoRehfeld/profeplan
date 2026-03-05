@@ -1,66 +1,34 @@
 /**
- * SERVICE WORKER REGISTRATION
- * ============================
- * 
- * Registra o service worker para suporte offline
- * Deve ser importado no main.tsx ou App.tsx
+ * SERVICE WORKER REGISTRATION (LEGACY HELPERS)
+ * ============================================
+ *
+ * O ciclo de vida oficial do Service Worker é gerenciado pelo VitePWA
+ * via `useRegisterSW` (ver `ReloadPrompt`). Estas funções permanecem
+ * apenas como utilitários auxiliares para módulos que queiram inspecionar
+ * ou limpar SWs manualmente.
  */
-
-export const registerServiceWorker = async (): Promise<ServiceWorkerRegistration | null> => {
-    if ('serviceWorker' in navigator) {
-        try {
-            console.log('[SW Registration] Registering service worker...');
-
-            const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                scope: '/'
-            });
-
-            console.log('[SW Registration] ✅ Service Worker registered successfully');
-            console.log('[SW Registration] Scope:', registration.scope);
-
-            // Verificar status
-            if (registration.installing) {
-                console.log('[SW Registration] Service Worker installing...');
-            } else if (registration.waiting) {
-                console.log('[SW Registration] Service Worker installed, waiting to activate');
-            } else if (registration.active) {
-                console.log('[SW Registration] Service Worker active');
-            }
-
-            // Listener para atualizações
-            registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                console.log('[SW Registration] New service worker found, installing...');
-
-                newWorker?.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        console.log('[SW Registration] 🔄 New version available, reload to update');
-                        // Opcional: notificar usuário sobre atualização
-                        notifyUserAboutUpdate();
-                    }
-                });
-            });
-
-            return registration;
-        } catch (error) {
-            console.error('[SW Registration] ❌ Service Worker registration failed:', error);
-            return null;
-        }
-    } else {
-        console.warn('[SW Registration] ⚠️ Service Workers not supported in this browser');
-        return null;
-    }
-};
 
 /**
- * Desregistra o service worker
+ * @deprecated
+ * O registro global do Service Worker é feito pelo VitePWA.
+ * Esta função hoje é um no-op seguro para evitar duplo registro.
  */
+export const registerServiceWorker = async (): Promise<ServiceWorkerRegistration | null> => {
+    console.warn('[SW Registration] registerServiceWorker é legado – o SW é gerenciado pelo VitePWA/ReloadPrompt. Nenhuma ação realizada.');
+    return null;
+};
+
 export const unregisterServiceWorker = async (): Promise<boolean> => {
     if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.ready;
-        const success = await registration.unregister();
-        console.log(success ? '[SW] ✅ Unregistered' : '[SW] ❌ Failed to unregister');
-        return success;
+        try {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(registrations.map(r => r.unregister()));
+            console.log('[SW] ✅ All service workers unregistered via helper');
+            return true;
+        } catch (err) {
+            console.error('[SW] ❌ Failed to unregister all service workers:', err);
+            return false;
+        }
     }
     return false;
 };
@@ -89,19 +57,6 @@ export const setupOnlineStatusListeners = (
         onOffline?.();
     });
 };
-
-/**
- * Notifica usuário sobre atualização disponível
- */
-function notifyUserAboutUpdate(): void {
-    const shouldReload = confirm(
-        '🔄 Nova versão disponível!\n\nDeseja recarregar para atualizar?'
-    );
-
-    if (shouldReload) {
-        window.location.reload();
-    }
-}
 
 /**
  * Hook React para status online/offline

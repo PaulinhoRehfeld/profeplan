@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { PdiService, PdiRecord } from '../services/PdiService';
+import { PdiDocumentService, PdiRecord } from '../services/pdi/PdiDocumentService';
 import { FileText, Calendar, Clock, Activity, BookOpen, AlertCircle, Quote } from 'lucide-react';
 import { supabase } from '../services/supabaseClient'; // For fetching student details
 
@@ -24,7 +24,7 @@ const StudentPdiView: React.FC<StudentPdiViewProps> = ({ studentId }) => {
             if (student) setStudentName(student.name);
 
             // Fetch Timeline
-            const timeline = await PdiService.getStudentTimeline(studentId);
+            const timeline = await PdiDocumentService.getStudentTimeline(studentId);
             setRecords(timeline);
         } catch (error) {
             console.error(error);

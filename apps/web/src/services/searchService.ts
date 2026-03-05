@@ -1,5 +1,4 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from "./supabaseClient";
 
 interface HybridSearchParams {
@@ -29,22 +28,12 @@ export const hybridSearchProfeplan = async ({
     limit = 10,
     matchThreshold = 0.5
 }: HybridSearchParams) => {
-    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-    if (!apiKey) {
-        throw new Error("API Key missing");
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
-
+    // Semantic/hybrid search baseada em Gemini foi desativada.
+    // Mantemos apenas a chamada RPC usando texto simples, se disponível,
+    // caso contrário retornamos lista vazia para cair em outros fluxos.
     try {
-        // 1. Transformar a busca do professor em vetor
-        const result = await model.embedContent(textoBusca);
-        const embedding = result.embedding;
-
-        // 2. Chamar a função 'mágica' no Supabase
         const { data, error } = await supabase.rpc('buscar_questoes_profeplan', {
-            query_embedding: embedding.values,
+            query_text: textoBusca,
             match_threshold: matchThreshold,
             match_count: limit,
             filtro_disciplina: disciplina,
@@ -95,22 +84,11 @@ export const searchCurriculum = async (
     limit: number = 5,
     matchThreshold: number = 0.5
 ) => {
-    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-    if (!apiKey) throw new Error("API Key missing");
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
-
+    // Versão apenas-texto do searchCurriculum: não gera embeddings,
+    // delega a relevância ao RPC no Supabase (query_text based).
     try {
-        // 1. Embedding (Fast)
-        const result = await model.embedContent(queryText);
-        // Force 768 dimensions (Matryoshka slicing) to match DB
-        const fullEmbedding = result.embedding.values;
-        const embedding = { values: fullEmbedding.slice(0, 768) };
-
-        // 2. RPC Call with Timeout (Prevents "2 minute hang")
         const rpcPromise = supabase.rpc('search_curriculum_rag', {
-            query_embedding: embedding.values,
+            query_text: queryText,
             match_threshold: matchThreshold,
             match_count: limit,
             filter_disciplina: filters?.disciplina || null,

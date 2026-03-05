@@ -3,7 +3,7 @@ import {
     BookOpen, Calendar, Target, Wrench, Clock,
     Sparkles, ChevronDown, ChevronUp, RefreshCw
 } from 'lucide-react';
-import { PdiBlock9Service } from '../../../services/PdiBlock9Service';
+import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { Block9AdaptationEntry } from '../../../types/pdi';
 
 interface PDIBlock9ViewerProps {
@@ -24,8 +24,8 @@ const PDIBlock9Viewer: React.FC<PDIBlock9ViewerProps> = ({ pdiId }) => {
         setLoading(true);
         try {
             const [adaptationsData, statsData] = await Promise.all([
-                PdiBlock9Service.getStudentAdaptations(pdiId),
-                PdiBlock9Service.getAdaptationStats(pdiId),
+                PdiDocumentService.getStudentAdaptations(pdiId),
+                PdiDocumentService.getAdaptationStats(pdiId),
             ]);
             setAdaptations(adaptationsData);
             setStats(statsData);

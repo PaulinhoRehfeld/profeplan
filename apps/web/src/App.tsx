@@ -18,6 +18,8 @@ import { ReloadPrompt } from './components/ReloadPrompt';
 import LoginScreen from './components/LoginScreen';
 import SchoolSelectorScreen from './components/SchoolSelectorScreen';
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext';
+import { FreedayProvider } from './contexts/FreedayContext';
+import { GlobalFreedayUI } from './components/GlobalFreedayUI';
 import { PdiOfficialLayout } from './features/PDI/Official/PdiOfficialLayout';
 import { AdminPanel as SimulationAdminPanel, OfflineIndicator } from './features/SimulationFactory';
 import { registerServiceWorker } from './utils/serviceWorkerRegistration';
@@ -282,138 +284,141 @@ const App: React.FC = () => {
   }
 
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        {/* <ReloadPrompt /> */}
-        <OfflineIndicator />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* PUBLIC ROUTES */}
-            <Route
-              path="/"
-              element={
-                !session?.isLoggedIn ? (
-                  <LandingPage />
-                ) : needsSelection ? (
-                  <Navigate to="/select-school" replace />
-                ) : (
-                  <Navigate to="/app" replace />
-                )
-              }
-            />
-            <Route path="/landing" element={<LandingPage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route
-              path="/login"
-              element={
-                !session?.isLoggedIn ? (
-                  <LoginScreen onLogin={setSession} />
-                ) : needsSelection ? (
-                  <Navigate to="/select-school" replace />
-                ) : (
-                  <Navigate to="/app" replace />
-                )
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                !session?.isLoggedIn ? (
-                  <LoginScreen onLogin={setSession} initialMode="signup" />
-                ) : needsSelection ? (
-                  <Navigate to="/select-school" replace />
-                ) : (
-                  <Navigate to="/app" replace />
-                )
-              }
-            />
+    <FreedayProvider>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <ReloadPrompt />
+          <OfflineIndicator />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* PUBLIC ROUTES */}
+              <Route
+                path="/"
+                element={
+                  !session?.isLoggedIn ? (
+                    <LandingPage />
+                  ) : needsSelection ? (
+                    <Navigate to="/select-school" replace />
+                  ) : (
+                    <Navigate to="/app" replace />
+                  )
+                }
+              />
+              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route
+                path="/login"
+                element={
+                  !session?.isLoggedIn ? (
+                    <LoginScreen onLogin={setSession} />
+                  ) : needsSelection ? (
+                    <Navigate to="/select-school" replace />
+                  ) : (
+                    <Navigate to="/app" replace />
+                  )
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  !session?.isLoggedIn ? (
+                    <LoginScreen onLogin={setSession} initialMode="signup" />
+                  ) : needsSelection ? (
+                    <Navigate to="/select-school" replace />
+                  ) : (
+                    <Navigate to="/app" replace />
+                  )
+                }
+              />
 
-            {/* PROTECTED ROUTES */}
-            <Route path="/profile-setup" element={session?.isLoggedIn ? <UserProfileSetup /> : <Navigate to="/login" />} />
+              {/* PROTECTED ROUTES */}
+              <Route path="/profile-setup" element={session?.isLoggedIn ? <UserProfileSetup /> : <Navigate to="/login" />} />
 
-            {/* SCHOOL SELECTION ROUTE */}
-            <Route
-              path="/select-school"
-              element={
+              {/* SCHOOL SELECTION ROUTE */}
+              <Route
+                path="/select-school"
+                element={
+                  session?.isLoggedIn ? (
+                    <SchoolSelectorScreen
+                      availableSchools={availableSchools}
+                      onSelectSchool={setActiveSchool}
+                      loading={schoolsLoading}
+                    />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+
+              {/* NEW PDI ROUTES */}
+              <Route path="/pdi/official/:studentId" element={<PdiOfficialLayout />} />
+              <Route
+                path="/admin/simulations"
+                element={
+                  session?.isLoggedIn && session.userId && isAdmin ? (
+                    <SimulationAdminPanel userId={session.userId} isAdmin={isAdmin} />
+                  ) : (
+                    <Navigate to="/" replace />
+                  )
+                }
+              />
+
+              <Route path="/app" element={
                 session?.isLoggedIn ? (
-                  <SchoolSelectorScreen
-                    availableSchools={availableSchools}
-                    onSelectSchool={setActiveSchool}
-                    loading={schoolsLoading}
-                  />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-
-            {/* NEW PDI ROUTES */}
-            <Route path="/pdi/official/:studentId" element={<PdiOfficialLayout />} />
-            <Route
-              path="/admin/simulations"
-              element={
-                session?.isLoggedIn && session.userId && isAdmin ? (
-                  <SimulationAdminPanel userId={session.userId} isAdmin={isAdmin} />
-                ) : (
-                  <Navigate to="/" replace />
-                )
-              }
-            />
-
-            <Route path="/app" element={
-              session?.isLoggedIn ? (
-                <GlobalPlanningProvider>
-                  <MainLayout
-                    session={session}
-                    userProfile={userProfile}
-                    settings={settings}
-                    setSettings={setSettings}
-                    activeMode={activeMode}
-                    setActiveMode={setActiveMode}
-                    isMobileNavOpen={isMobileNavOpen}
-                    setIsMobileNavOpen={setIsMobileNavOpen}
-                    isLeftNavExpanded={isLeftNavExpanded}
-                    setIsLeftNavExpanded={setIsLeftNavExpanded}
-                    customSidebar={customSidebar}
-                    isSettingsOpen={isSettingsOpen}
-                    setIsSettingsOpen={setIsSettingsOpen}
-                    isSubscriptionOpen={isSubscriptionOpen}
-                    setIsSubscriptionOpen={setIsSubscriptionOpen}
-                    onRefreshProfile={refreshProfile}
-                    onLogout={async () => {
-                      console.log("[App] 🚪 Initiating targeted logout...");
-                      localStorage.removeItem('profeplan_session');
-                      localStorage.removeItem('supabase_user_id');
-                      setSession(null);
-                      await supabase.auth.signOut();
-                      window.location.href = '/';
-                    }}
-                  >
-                    <FeatureRenderer
-                      activeMode={activeMode}
-                      setActiveMode={setActiveMode}
+                  <GlobalPlanningProvider>
+                    <MainLayout
                       session={session}
                       userProfile={userProfile}
                       settings={settings}
-                      setCustomSidebar={setCustomSidebar}
+                      setSettings={setSettings}
+                      activeMode={activeMode}
+                      setActiveMode={setActiveMode}
+                      isMobileNavOpen={isMobileNavOpen}
+                      setIsMobileNavOpen={setIsMobileNavOpen}
+                      isLeftNavExpanded={isLeftNavExpanded}
+                      setIsLeftNavExpanded={setIsLeftNavExpanded}
+                      customSidebar={customSidebar}
+                      isSettingsOpen={isSettingsOpen}
                       setIsSettingsOpen={setIsSettingsOpen}
-                      availableClasses={availableClasses}
-                      selectedClassId={selectedClassId}
-                      quarter={quarter}
-                      enemArea={enemArea}
-                    />
-                  </MainLayout>
-                </GlobalPlanningProvider>
-              ) : <Navigate to="/login" replace />
-            } />
+                      isSubscriptionOpen={isSubscriptionOpen}
+                      setIsSubscriptionOpen={setIsSubscriptionOpen}
+                      onRefreshProfile={refreshProfile}
+                      onLogout={async () => {
+                        console.log("[App] 🚪 Initiating targeted logout...");
+                        localStorage.removeItem('profeplan_session');
+                        localStorage.removeItem('supabase_user_id');
+                        setSession(null);
+                        await supabase.auth.signOut();
+                        window.location.href = '/';
+                      }}
+                    >
+                      <FeatureRenderer
+                        activeMode={activeMode}
+                        setActiveMode={setActiveMode}
+                        session={session}
+                        userProfile={userProfile}
+                        settings={settings}
+                        setCustomSidebar={setCustomSidebar}
+                        setIsSettingsOpen={setIsSettingsOpen}
+                        availableClasses={availableClasses}
+                        selectedClassId={selectedClassId}
+                        quarter={quarter}
+                        enemArea={enemArea}
+                      />
+                    </MainLayout>
+                  </GlobalPlanningProvider>
+                ) : <Navigate to="/login" replace />
+              } />
 
-            {/* FALLBACK */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </ErrorBoundary>
+              {/* FALLBACK */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+          <GlobalFreedayUI />
+        </BrowserRouter>
+      </ErrorBoundary>
+    </FreedayProvider>
   );
 };
 
