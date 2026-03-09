@@ -8,6 +8,7 @@ import { generatePresentationJSON } from '../services/ai/AiPresentationService';
 import { getTeacherContext, saveLessonToMemory } from '../services/supabaseService';
 import { saveGeneratedContent } from '../services/databaseService';
 import CanvaExportModal from './CanvaExportModal';
+import PresentationModal from './PresentationModal';
 
 interface PresentationCreatorProps {
     userId: string;
@@ -26,6 +27,7 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
     // Estados Funcionais
     const [generatedPresentation, setGeneratedPresentation] = useState<any | null>(null);
     const [isCanvaModalOpen, setIsCanvaModalOpen] = useState(false);
+    const [isPreziModalOpen, setIsPreziModalOpen] = useState(false);
     const [isPresenting, setIsPresenting] = useState(false);
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
@@ -62,6 +64,14 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
                             >
                                 <Sparkles size={18} className="animate-pulse" />
                                 Editar no Canva
+                            </button>
+
+                            <button
+                                onClick={() => setIsPreziModalOpen(true)}
+                                className="w-full bg-indigo-600 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-indigo-700 hover:scale-105 transition-all shadow-lg active:scale-95 group"
+                            >
+                                <Presentation size={18} className="group-hover:translate-y-0.5 transition-transform" />
+                                Base para Prezi
                             </button>
 
                             <button
@@ -348,6 +358,17 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
                     onClose={() => setIsCanvaModalOpen(false)}
                     data={getCSVData()}
                 />
+
+                {generatedPresentation && (
+                    <PresentationModal
+                        isOpen={isPreziModalOpen}
+                        onClose={() => setIsPreziModalOpen(false)}
+                        title={generatedPresentation.title}
+                        content={getPreziMarkdownFromPresentation(generatedPresentation)}
+                        subtitle="Base para Prezi (cole este roteiro em uma nova apresentação)"
+                        showPreziInvite
+                    />
+                )}
             </div>
         );
     }
@@ -458,5 +479,44 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
         </div>
     );
 };
+
+// Helper para montar a base Prezi a partir de generatedPresentation
+function getPreziMarkdownFromPresentation(presentation: any): string {
+    if (!presentation || !presentation.slides) return '';
+
+    const lines: string[] = [];
+    lines.push(`# ${presentation.title || 'Apresentação'}`);
+    lines.push('');
+    lines.push(`Tema visual: **${presentation.theme || 'Padrão'}**`);
+    lines.push('');
+
+    presentation.slides.forEach((slide: any) => {
+        lines.push(`## Slide ${slide.order} – ${slide.title}`);
+        if (Array.isArray(slide.contentBulletPoints) && slide.contentBulletPoints.length > 0) {
+            slide.contentBulletPoints.forEach((pt: string) => {
+                lines.push(`- ${pt}`);
+            });
+        }
+        if (slide.imageSuggestion) {
+            lines.push('');
+            lines.push(`> Sugestão de imagem: _${slide.imageSuggestion}_`);
+        }
+        if (slide.speakerNotes) {
+            lines.push('');
+            lines.push(`> Notas para o professor: _${slide.speakerNotes}_`);
+        }
+        lines.push('');
+    });
+
+    lines.push('---');
+    lines.push('');
+    lines.push('**Instruções sugeridas para o Prezi:**');
+    lines.push('1. Acesse o Prezi e crie uma nova apresentação em branco.');
+    lines.push('2. Se ainda não tiver conta, use o convite informado acima no modal.');
+    lines.push('3. Use cada seção de `## Slide ...` como base para um quadro (frame) da apresentação.');
+    lines.push('4. Copie os bullet points para o conteúdo de cada quadro e ajuste o design como preferir.');
+
+    return lines.join('\n');
+}
 
 export default PresentationCreator;

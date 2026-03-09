@@ -206,21 +206,23 @@ Ignore qualquer regra anterior que conflite com este pedido. O feedback do profe
                 return;
             }
 
-            // --- AUTO-ROUTING TO PLANNING AUTHORITY IF USER ASKS FOR PLANNING (RLM-002) ---
+            // --- AUTO-ROUTING TO PLANNING AUTHORITY (APENAS PLANEJAMENTO TRIMESTRAL) ---
             const lowerInputText = activeInput.toLowerCase();
-            const keywordsPlanning = ['planejamento', 'plano', 'gerar', 'trimestre', 'bimestre', 'aula'];
-            const isPlanningTask = keywordsPlanning.some(k => lowerInputText.includes(k));
+            const isQuarterlyMode = activeMode === ToolMode.QUARTERLY_PLANNING;
+            const mentionsQuarter = lowerInputText.includes('trimestre') || lowerInputText.includes('trimestral');
+            const isQuarterlyPlanningTask = isQuarterlyMode && mentionsQuarter;
 
-            if (isPlanningTask && (activeMode === ToolMode.QUARTERLY_PLANNING || activeMode === ToolMode.PLANNING)) {
-                console.log("👮 RLM ROUTING: Redirecting chat request to PlanningAuthority...");
+            if (isQuarterlyPlanningTask) {
+                console.log("👮 RLM ROUTING: Redirecting quarterly planning request to PlanningAuthority...");
                 const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
 
                 // Construct intent from current state
+                const selectedPlanForIntent = termPlans.find(p => p.id === selectedTermPlanId);
                 const currentIntent: any = {
-                    subject: localSettings.subject || 'História',
-                    grade: localSettings.grade || '6º Ano',
+                    subject: selectedPlanForIntent?.subject || localSettings.subject || 'História',
+                    grade: selectedPlanForIntent?.grade || localSettings.grade || '6º Ano',
                     level: localSettings.level || 'Ensino Fundamental',
-                    period: localSettings.quarter ? parseInt(localSettings.quarter) : 1,
+                    period: selectedPlanForIntent?.period || (localSettings.quarter ? parseInt(localSettings.quarter) : 1),
                     regime: 'Trimestre',
                     teacherName: localSettings.userName || 'Professor(a)',
                     totalClasses: (localSettings.workloadWeekly || 2) * 12,
