@@ -27,7 +27,6 @@ export default defineConfig(({ mode }) => {
         injectRegister: false,
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-          swDest: 'sw-dummy.js'
         },
         manifest: {
           name: 'Profeplan',
