@@ -94,8 +94,8 @@ export const parseClassListFromText = async (rawText: string) => {
     "className": "Nome da Turma (ex: 1° EM REG 5)", 
     "subject": "Disciplina (ex: SOCIOLOGIA)", 
     "students": [
-        { "name": "NOME DO ALUNO 1", "id": "12345" },
-        { "name": "NOME DO ALUNO 2", "id": null }
+        "NOME DO ALUNO 1",
+        "NOME DO ALUNO 2"
     ]
   }`;
 
@@ -108,8 +108,7 @@ export const parseClassListFromText = async (rawText: string) => {
             role: "user" as const,
             content: `Extraia desta lista escolar: o nome da turma, a disciplina/matéria e a lista completa de alunos.
   
-  Para cada aluno, tente extrair o NOME e o ID (Matrícula/Código) se disponível.
-  O ID geralmente é um número grande ao lado do nome.
+  Para a array "students", retorne apenas uma lista de strings com o nome de cada aluno.
   
   CONTEÚDO DO PDF:
   ${rawText}`,

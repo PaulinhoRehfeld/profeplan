@@ -100,7 +100,7 @@ const ImportProcess: React.FC<ImportProcessProps> = ({ file, onCancel, onComplet
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {tempData?.students.map((student, i) => (
                                 <div key={i} className="text-[10px] font-bold uppercase tracking-tight text-blue-100 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div> {student}
+                                    <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div> {typeof student === 'object' ? (student as any).name || 'Aluno Sem Nome' : student}
                                 </div>
                             ))}
                         </div>

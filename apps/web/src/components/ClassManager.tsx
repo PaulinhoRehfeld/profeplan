@@ -52,7 +52,10 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                     name: c.name,
                     subject: c.subject,
                     created_at: c.created_at,
-                    students: c.students
+                    students: Array.isArray(c.students) ? c.students.map((s: any) => ({
+                        ...s,
+                        name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome'
+                    })) : []
                 })) as any);
             }
         } catch (err) {
@@ -64,7 +67,11 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                 name: c.name,
                 subject: c.subject,
                 created_at: c.createdAt,
-                students: c.students.map((s: any) => ({ ...s, needs_adaptation: s.needs_adaptation ?? false }))
+                students: Array.isArray(c.students) ? c.students.map((s: any) => ({ 
+                    ...s, 
+                    name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome',
+                    needs_adaptation: s.needs_adaptation ?? false 
+                })) : []
             })));
         } finally {
             setLoading(false);
@@ -125,7 +132,10 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                     name: data.name,
                     subject: data.subject,
                     created_at: data.created_at,
-                    students: data.students
+                    students: Array.isArray(data.students) ? data.students.map((s: any) => ({
+                        ...s,
+                        name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome'
+                    })) : []
                 });
                 return;
             }
@@ -140,7 +150,10 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                 name: data.name,
                 subject: data.subject,
                 created_at: data.createdAt,
-                students: data.students
+                students: Array.isArray(data.students) ? data.students.map((s: any) => ({
+                    ...s,
+                    name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome'
+                })) : []
             } as any);
         }
     };

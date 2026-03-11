@@ -45,7 +45,7 @@ const ClassBatchImportModal: React.FC<ClassBatchImportModalProps> = ({ isOpen, o
             if (parsed.className && !className) setClassName(parsed.className);
             if (parsed.subject && !subject) setSubject(parsed.subject);
 
-            setModalStudents(parsed.students.map(s => ({ name: s, needsPdi: false })));
+            setModalStudents(parsed.students.map((s: any) => ({ name: typeof s === 'object' ? s.name || 'Sem Nome' : s, needsPdi: false })));
             setStep('review');
         } catch (err: any) {
             console.error(err);
