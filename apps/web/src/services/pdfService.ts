@@ -1,7 +1,7 @@
 import * as pdfjs from 'pdfjs-dist';
 
-// Configuração do worker - usando a mesma versão do importmap (5.4.530)
-pdfjs.GlobalWorkerOptions.workerSrc = 'https://esm.sh/pdfjs-dist@5.4.530/build/pdf.worker.min.mjs';
+// Configuração do worker - usando a versão dinâmica do módulo importado
+pdfjs.GlobalWorkerOptions.workerSrc = `https://esm.sh/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 /**
  * Extrai todo o texto bruto de um arquivo PDF carregado.
