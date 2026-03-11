@@ -84,7 +84,8 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         await saveClassStructure(userId, {
             className: data.name,
             subject: data.subject,
-            students: data.students
+            students: data.students,
+            schoolId: userProfile?.active_school_id || userProfile?.school_id
         });
 
         // ALSO save local for backup and immediate UI availability in other components
@@ -103,7 +104,8 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         await saveClassStructure(userId, {
             className: parsedData.className,
             subject: parsedData.subject,
-            students: parsedData.students
+            students: parsedData.students,
+            schoolId: userProfile?.active_school_id || userProfile?.school_id
         });
 
         // Also save local for backup (optional, but good for offline)

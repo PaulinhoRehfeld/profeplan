@@ -71,11 +71,11 @@ const ClassBatchImportModal: React.FC<ClassBatchImportModalProps> = ({ isOpen, o
         setError('');
 
         try {
-            // 1. Create Class
             const { data: classData, error: classError } = await supabase
                 .from('classes')
                 .insert([{
                     user_id: userId,
+                    school_id: schoolId,
                     name: className,
                     subject: subject || 'Geral',
                     grade_level: 'Fundamental/Médio' // Default for now

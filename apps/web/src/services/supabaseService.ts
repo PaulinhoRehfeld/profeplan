@@ -80,12 +80,13 @@ export const getLessonsByClassSupabase = async (classId: string) => {
 /**
  * Salva a estrutura da turma e seus alunos no Supabase.
  */
-export const saveClassStructure = async (userId: string, classData: { className: string, subject: string, students: string[] }) => {
+export const saveClassStructure = async (userId: string, classData: { className: string, subject: string, students: string[], schoolId?: string }) => {
     // 1. Criar a Turma
     const { data: classObj, error: classError } = await supabase
         .from('classes')
         .insert([{
             user_id: userId,
+            school_id: classData.schoolId,
             name: classData.className,
             subject: classData.subject
         }])
