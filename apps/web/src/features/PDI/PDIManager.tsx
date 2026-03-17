@@ -15,6 +15,7 @@ import { UserProfile } from '../../types';
 import { AdaptationFeedbackModal } from './components/AdaptationFeedbackModal';
 
 import { AdaptationDetailsModal } from './components/AdaptationDetailsModal';
+import { useFreedayContext } from '../../contexts/FreedayContext';
 
 interface WorkbenchProps {
     userId: string;
@@ -56,14 +57,25 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
         handleViewAdaptation,
         handleEvaluate
     } = usePDIManager(userId, userProfile);
+    const { openWithPrompt } = useFreedayContext();
 
     // Update Sidebar Content
     useEffect(() => {
         if (!setSidebarContent) return;
+        const pendingCount = studentsWithNeeds.filter(s => !adaptations[s.id]).length;
+        const completedCount = studentsWithNeeds.filter(
+            s => adaptations[s.id]?.status === 'completed'
+        ).length;
+        const validatedCount = studentsWithNeeds.filter(
+            s => adaptations[s.id]?.status === 'validated'
+        ).length;
         setSidebarContent(
             <PDISidebar
                 studentsCount={studentsWithNeeds.length}
                 adaptationsCount={Object.keys(adaptations).length}
+                pendingCount={pendingCount}
+                completedCount={completedCount}
+                validatedCount={validatedCount}
                 onExportDoc={handleExportDoc}
                 onGenerateReport={handleGenerateReport}
                 hasAdaptations={Object.keys(adaptations).length > 0}
@@ -85,8 +97,13 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
         <div className="flex flex-col h-full bg-slate-50 relative animate-in fade-in duration-500">
             {/* PDI MODULE INTEGRATION: Modals */}
             {pdiProfileStudent && (
-                <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+                <div
+                    className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 motion-safe:animate-in motion-safe:fade-in duration-200"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Prontuário PDI do estudante"
+                >
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col motion-safe:animate-in motion-safe:zoom-in duration-200">
                         <StudentPDIProfile
                             studentId={pdiProfileStudent.id}
                             onClose={() => setPdiProfileStudent(null)}
@@ -96,8 +113,13 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
             )}
 
             {consolidatorStudent && (
-                <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+                <div
+                    className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 motion-safe:animate-in motion-safe:fade-in duration-200"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Relatório consolidado de PDI do estudante"
+                >
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col motion-safe:animate-in motion-safe:zoom-in duration-200">
                         <PDIConsolidator
                             studentId={consolidatorStudent.id}
                             studentName={consolidatorStudent.name}
@@ -158,12 +180,28 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                         )}
                     </div>
                 </div>
-                {error && (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg border border-red-100 animate-pulse">
-                        <AlertCircle size={16} />
-                        <span className="text-xs font-bold">{error}</span>
-                    </div>
-                )}
+                <div className="flex items-center gap-3">
+                    {error && (
+                        <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg border border-red-100 animate-pulse">
+                            <AlertCircle size={16} />
+                            <span className="text-xs font-bold">{error}</span>
+                        </div>
+                    )}
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const className = selectedClass?.name || 'sua turma';
+                            const prompt = selectedLesson
+                                ? `Estou na tela de Gestão de Inclusão & PDI, trabalhando a aula "${selectedLesson.topic}" da turma ${className}. Me ajude com ideias de adaptação e inclusão para este contexto.`
+                                : `Estou na tela de Gestão de Inclusão & PDI para a turma ${className}. Me ajude a organizar por onde começar as adaptações e PDIs.`;
+                            openWithPrompt(prompt);
+                        }}
+                        className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-colors"
+                    >
+                        <Sparkles size={12} />
+                        Perguntar à FREEDAY
+                    </button>
+                </div>
             </div>
 
             <div className="flex-1 flex overflow-hidden">
@@ -171,6 +209,9 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                 <div className="w-80 bg-white border-r border-slate-200 flex flex-col overflow-y-auto hidden md:flex">
                     <div className="p-4 bg-slate-50 border-b border-slate-100">
                         <h3 className="text-xs font-black uppercase text-slate-400">Minhas Turmas</h3>
+                        <p className="mt-1 text-[10px] text-slate-400">
+                            Com dúvida sobre PDI ou inclusão? Clique no botão da FREEDAY no canto da tela e peça ajuda.
+                        </p>
                     </div>
                     <div className="p-2 space-y-1">
                         {classes.length === 0 ? (
@@ -193,9 +234,12 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                 {/* MAIN CONTENT AREA */}
                 <div className="flex-1 overflow-y-auto p-6 md:p-10">
                     {!selectedClass ? (
-                        <div className="flex flex-col items-center justify-center h-full text-slate-400 opacity-60">
+                        <div className="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 text-center">
                             <BookOpen size={64} className="mb-4 text-slate-300" />
-                            <p className="font-bold text-lg">Selecione uma turma para iniciar</p>
+                            <p className="font-bold text-lg mb-1">Selecione uma turma para iniciar</p>
+                            <p className="text-xs text-slate-400 max-w-xs">
+                                Se tiver dúvidas sobre por onde começar, fale com a FREEDAY: peça ajuda para organizar os PDIs da sua turma.
+                            </p>
                         </div>
                     ) : (
                         <div className="max-w-5xl mx-auto">
@@ -219,7 +263,31 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                                                         {student.name.substring(0, 2).toUpperCase()}
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-lg font-black text-slate-800 leading-tight">{student.name}</h3>
+                                                        <div className="flex items-center gap-2">
+                                                            <h3 className="text-lg font-black text-slate-800 leading-tight">{student.name}</h3>
+                                                            {(() => {
+                                                                const status = adaptations[student.id]?.status || 'pending';
+                                                                if (status === 'validated') {
+                                                                    return (
+                                                                        <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-[9px] font-black uppercase tracking-widest">
+                                                                            Adaptação concluída
+                                                                        </span>
+                                                                    );
+                                                                }
+                                                                if (status === 'completed') {
+                                                                    return (
+                                                                        <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 text-[9px] font-black uppercase tracking-widest">
+                                                                            Aguardando validação
+                                                                        </span>
+                                                                    );
+                                                                }
+                                                                return (
+                                                                    <span className="px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 border border-slate-200 text-[9px] font-black uppercase tracking-widest">
+                                                                        Sem adaptação gerada
+                                                                    </span>
+                                                                );
+                                                            })()}
+                                                        </div>
                                                         <div className="flex gap-2 mt-1">
                                                             {student.deficiencies?.map((def, i) => (
                                                                 <span key={i} className="px-2 py-0.5 bg-rose-50 text-rose-600 text-[10px] font-bold uppercase rounded-md border border-rose-100">

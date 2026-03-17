@@ -36,6 +36,24 @@ export const GlobalFreedayUI: React.FC = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
+    useEffect(() => {
+        const handler = (event: Event) => {
+            const custom = event as CustomEvent<{ prompt?: string }>;
+            setExpanded(true);
+            if (custom.detail?.prompt) {
+                setInputText(custom.detail.prompt);
+            }
+        };
+        if (typeof window !== 'undefined') {
+            window.addEventListener('freeday:open', handler as EventListener);
+        }
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('freeday:open', handler as EventListener);
+            }
+        };
+    }, []);
+
     const handleMicClick = () => {
         if (isListening) {
             stopListening();
@@ -82,7 +100,7 @@ export const GlobalFreedayUI: React.FC = () => {
 
             {/* Expanded Panel */}
             {expanded && (
-                <div className="freeday-panel" role="dialog" aria-label="FREEDAY Assistant">
+                <div className="freeday-panel" role="dialog" aria-label="FREEDAY – Assistente para dúvidas do professor">
                     {/* Header */}
                     <div className="freeday-panel__header">
                         <div className="freeday-panel__title">
@@ -114,10 +132,10 @@ export const GlobalFreedayUI: React.FC = () => {
                         {messages.length === 0 && (
                             <div className="freeday-empty">
                                 <span>👋</span>
-                                <p>Olá, Gerson. Estou pronta.</p>
+                                <p>Olá, professor. Estou aqui para ajudar nas suas dúvidas e dificuldades.</p>
                                 <p className="freeday-hint">
                                     {isSupported
-                                        ? 'Clique no microfone ou digite sua pergunta.'
+                                        ? 'Clique no microfone ou digite sua dúvida.'
                                         : 'Voz não suportada. Use o campo de texto.'}
                                 </p>
                             </div>
@@ -126,10 +144,10 @@ export const GlobalFreedayUI: React.FC = () => {
                             <div
                                 key={i}
                                 className={`freeday-msg freeday-msg--${msg.role}`}
-                                aria-label={msg.role === 'user' ? 'Gerson' : 'FREEDAY'}
+                                aria-label={msg.role === 'user' ? 'Você' : 'FREEDAY'}
                             >
                                 <span className="freeday-msg__label">
-                                    {msg.role === 'user' ? 'Gerson' : 'FREEDAY'}
+                                    {msg.role === 'user' ? 'Você' : 'FREEDAY'}
                                 </span>
                                 <p className="freeday-msg__text">{msg.content}</p>
                             </div>
@@ -155,7 +173,7 @@ export const GlobalFreedayUI: React.FC = () => {
                                 id="freeday-text-input"
                                 className="freeday-input"
                                 type="text"
-                                placeholder="Digite um comando..."
+                                placeholder="Digite sua dúvida ou dificuldade..."
                                 value={inputText}
                                 onChange={(e) => setInputText(e.target.value)}
                                 disabled={isThinking}

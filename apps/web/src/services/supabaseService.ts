@@ -79,8 +79,19 @@ export const getLessonsByClassSupabase = async (classId: string) => {
 
 /**
  * Salva a estrutura da turma e seus alunos no Supabase.
+ * 
+ * Suporta alunos como string simples ou objetos enriquecidos vindos do parser SIMADE:
+ * { name, student_code?, call_number?, observations? }
  */
-export const saveClassStructure = async (userId: string, classData: { className: string, subject: string, students: string[], schoolId?: string }) => {
+export const saveClassStructure = async (
+    userId: string,
+    classData: {
+        className: string;
+        subject: string;
+        students: Array<string | { name: string; student_code?: string; call_number?: number; observations?: string }>;
+        schoolId?: string;
+    }
+) => {
     // 1. Criar a Turma
     const { data: classObj, error: classError } = await supabase
         .from('classes')
@@ -96,10 +107,28 @@ export const saveClassStructure = async (userId: string, classData: { className:
     if (classError) throw classError;
 
     // 2. Criar os Alunos
-    const studentRows = classData.students.map(name => ({
-        class_id: classObj.id,
-        name: name
-    }));
+    const studentRows = classData.students.map(studentItem => {
+        if (typeof studentItem === 'object') {
+            const enriched = studentItem as { name: string; student_code?: string; call_number?: number; observations?: string };
+            const hasObservations = !!enriched.observations && enriched.observations.trim().length > 0;
+            return {
+                class_id: classObj.id,
+                name: enriched.name || 'Sem Nome',
+                student_code: enriched.student_code,
+                call_number: enriched.call_number,
+                current_school_id: classData.schoolId,
+                pedagogical_observations: enriched.observations || '',
+                needs_adaptation: hasObservations
+            };
+        }
+
+        const studentName = studentItem || 'Sem Nome';
+        return {
+            class_id: classObj.id,
+            name: studentName,
+            current_school_id: classData.schoolId
+        };
+    });
 
     const { error: studentError } = await supabase
         .from('students')
@@ -107,7 +136,6 @@ export const saveClassStructure = async (userId: string, classData: { className:
 
     if (studentError) throw studentError;
 
-    return classObj;
     return classObj;
 };
 

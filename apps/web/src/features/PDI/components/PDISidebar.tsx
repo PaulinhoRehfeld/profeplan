@@ -4,6 +4,9 @@ import { FileDown, FileText } from 'lucide-react';
 interface PDISidebarProps {
     studentsCount: number;
     adaptationsCount: number;
+    pendingCount: number;
+    completedCount: number;
+    validatedCount: number;
     onExportDoc: () => void;
     onGenerateReport: () => void;
     hasAdaptations: boolean;
@@ -13,6 +16,9 @@ interface PDISidebarProps {
 const PDISidebar: React.FC<PDISidebarProps> = ({
     studentsCount,
     adaptationsCount,
+    pendingCount,
+    completedCount,
+    validatedCount,
     onExportDoc,
     onGenerateReport,
     hasAdaptations,
@@ -53,6 +59,19 @@ const PDISidebar: React.FC<PDISidebarProps> = ({
                     <div className="flex justify-between items-center text-xs">
                         <span className="text-slate-500 font-bold">Adaptações Geradas</span>
                         <span className="font-black text-teal-600">{adaptationsCount}</span>
+                    </div>
+                    <div className="h-px bg-slate-100" />
+                    <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-500 font-bold">Pendentes</span>
+                        <span className="font-black text-slate-500">{pendingCount}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-500 font-bold">Em andamento</span>
+                        <span className="font-black text-amber-600">{completedCount}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-slate-500 font-bold">Concluídas</span>
+                        <span className="font-black text-emerald-600">{validatedCount}</span>
                     </div>
                 </div>
             </div>

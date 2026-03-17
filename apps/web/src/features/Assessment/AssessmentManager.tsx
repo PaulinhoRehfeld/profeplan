@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Printer, FileText, Save, Loader2, Target
+    Printer, FileText, Save, Loader2, Target, HelpCircle
 } from 'lucide-react';
 import { exportAssessmentToDocx } from '../../services/exportService';
 import PrintableEvaluation from '../../components/PrintableEvaluation';
 import type { Assessment } from '../../types';
 import { saveAssessment } from './AssessmentService';
+import { useToast } from '../../contexts/ToastContext';
+import { useFreedayContext } from '../../contexts/FreedayContext';
 
 // Import SubComponents
 import AssessmentSetup from './components/AssessmentSetup';
@@ -22,6 +24,8 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
     const [generatedAssessment, setGeneratedAssessment] = useState<Assessment | null>(null);
     const [showPrintView, setShowPrintView] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const { showToast } = useToast();
+    const { openWithPrompt } = useFreedayContext();
 
     /* SIDEBAR EFFECT */
     useEffect(() => {
@@ -108,10 +112,10 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
         try {
             // Usa o novo Service Local-First
             await saveAssessment(userId, generatedAssessment);
-            alert('✅ Avaliação salva com sucesso!');
+            showToast('success', 'Avaliação salva com sucesso em “Meus Arquivos”.');
         } catch (error: any) {
             console.error('Erro ao salvar:', error);
-            alert('⚠️ ' + error.message);
+            showToast('error', error.message ? `Erro ao salvar: ${error.message}` : 'Erro ao salvar avaliação.');
         } finally {
             setIsSaving(false);
         }
@@ -123,7 +127,7 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
             await exportAssessmentToDocx(generatedAssessment, settings);
         } catch (error) {
             console.error('Erro ao exportar Word:', error);
-            alert('Erro ao exportar para Word.');
+            showToast('error', 'Erro ao exportar para Word.');
         }
     };
 
@@ -165,10 +169,33 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
 
     // 3. Setup (Form) View
     return (
-        <AssessmentSetup
-            userId={userId}
-            onAssessmentGenerated={setGeneratedAssessment}
-        />
+        <div className="flex flex-col h-full bg-slate-50">
+            <div className="flex items-center justify-between px-4 md:px-8 py-3 bg-white border-b border-slate-200">
+                <div className="flex items-center gap-2 text-slate-700">
+                    <Target size={18} className="text-purple-500" />
+                    <span className="text-xs font-black uppercase tracking-widest">
+                        Montagem de Avaliações Contextualizadas
+                    </span>
+                </div>
+                <button
+                    type="button"
+                    onClick={() => {
+                        const prompt = 'Estou na tela de Avaliações Contextualizadas do PROFEPLAN. Me ajude a planejar uma avaliação alinhada ao que venho trabalhando com minha turma (tipo de questões, número de itens e como equilibrar dificuldade).';
+                        openWithPrompt(prompt);
+                    }}
+                    className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-colors"
+                >
+                    <HelpCircle size={12} />
+                    Perguntar à FREEDAY
+                </button>
+            </div>
+            <div className="flex-1">
+                <AssessmentSetup
+                    userId={userId}
+                    onAssessmentGenerated={setGeneratedAssessment}
+                />
+            </div>
+        </div>
     );
 };
 

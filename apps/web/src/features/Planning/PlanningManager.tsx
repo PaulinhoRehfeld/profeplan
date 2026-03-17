@@ -22,6 +22,8 @@ import { parseMarkdownToLessons } from '../../utils/markdownParser';
 // --- Services ---
 import { exportToDocx } from '../../services/exportService';
 import { getGeneratedContents } from '../../services/databaseService';
+import { useToast } from '../../contexts/ToastContext';
+import { withRetry } from '../../services/retryService';
 
 // Updated Props Interface to match App.tsx
 interface PlanningManagerProps {
@@ -73,6 +75,8 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     const [isThinking, setIsThinking] = useState(false);
     const [selectedPnldBookId, setSelectedPnldBookId] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const { showToast } = useToast();
+    const [lastDraftSavedAt, setLastDraftSavedAt] = useState<Date | null>(null);
 
     // --- Derived Props ---
     const isSimulationMode = activeMode === ToolMode.SIMULATION || activeMode === ToolMode.ENEM_BANK;
@@ -253,10 +257,42 @@ Ignore qualquer regra anterior que conflite com este pedido. O feedback do profe
                 const memories = await getRelevantMemories(userId, activeInput);
                 if (memories.length > 0) {
                     const memoryText = memories.map(m => `- ${m.content}`).join('\n');
-                    context += `\n\n[MEMÓRIA DE PREFERÊNCIAS DO USUÁRIO]:\n${memoryText}\n(Use estas preferências para personalizar o tom e o estilo da resposta.)`;
+                    context += `\n\n[MEMÓRIA DE PREFERÊNCIAS DO USUÁRIO]:\n${memoryText}\n(Respeite essas preferências em TODAS as respostas.)`;
                 }
             } catch (err) {
                 console.warn("Failed to fetch memories", err);
+            }
+
+            // --- PREFERÊNCIAS PEDAGÓGICAS DO PROFESSOR (UserSettings) ---
+            if (appSettings) {
+                const {
+                    favoriteMethodology,
+                    toneOfVoice,
+                    detailLevel,
+                    teachingStyle,
+                    assessmentFocus,
+                } = appSettings as any;
+
+                const pedagogicalPrefs: string[] = [];
+                if (favoriteMethodology) {
+                    pedagogicalPrefs.push(`- Metodologia favorita do professor: ${favoriteMethodology}. Dê preferência a propostas alinhadas a isso.`);
+                }
+                if (teachingStyle) {
+                    pedagogicalPrefs.push(`- Estilo de ensino: ${teachingStyle}. Adapte o tipo de linguagem e exemplos a esse estilo.`);
+                }
+                if (assessmentFocus) {
+                    pedagogicalPrefs.push(`- Foco avaliativo: ${assessmentFocus}. Ao sugerir avaliações, priorize esse foco.`);
+                }
+                if (toneOfVoice) {
+                    pedagogicalPrefs.push(`- Tom de voz desejado: ${toneOfVoice}. Use este tom ao falar com o professor.`);
+                }
+                if (detailLevel) {
+                    pedagogicalPrefs.push(`- Nível de detalhe preferido: ${detailLevel}. Ajuste o volume de informação de acordo.`);
+                }
+
+                if (pedagogicalPrefs.length > 0) {
+                    context += `\n\n[PERFIL PEDAGÓGICO DO PROFESSOR - USE COMO REGRA DE ESTILO]\n${pedagogicalPrefs.join('\n')}`;
+                }
             }
 
             // --- DETERMINISTIC vs RAG ---
@@ -467,8 +503,14 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                     content: response,
                     createdAt: new Date().toISOString()
                 }, folder)
-                    .then(() => console.log('✅ Conteúdo salvo no Drive com sucesso!'))
-                    .catch(e => console.error('❌ Falha no salvamento automático:', e));
+                    .then(() => {
+                        console.log('✅ Conteúdo salvo no Drive com sucesso!');
+                        showToast('success', 'Conteúdo salvo em “Meus Arquivos”.');
+                    })
+                    .catch(e => {
+                        console.error('❌ Falha no salvamento automático:', e);
+                        showToast('error', 'Falha ao salvar automaticamente em “Meus Arquivos”.');
+                    });
 
                 // 3. Save to Memory (Async) - Context for AI
                 addMemory(userId, `Gerou ${title}: ${activeInput.substring(0, 100)}...`, [type, 'auto-generated'])
@@ -546,24 +588,28 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 type = 'material';
             }
 
-            await savePlan(userId, {
-                type: type,
-                title: title,
-                content: content,
-                createdAt: new Date().toISOString()
-            }, folder);
+            await withRetry(() =>
+                savePlan(userId, {
+                    type: type,
+                    title: title,
+                    content: content,
+                    createdAt: new Date().toISOString()
+                }, folder)
+            );
 
-            // alert('Salvo com sucesso em "Meus Arquivos"!'); // UI feedback handled by button state usually, but alert is ok for now or toast
+            showToast('success', 'Plano salvo em “Meus Arquivos”.');
             // Refresh tracking to update UI (strikethrough and count)
             if (selectedTermPlanId) {
                 await loadLessonTracking(selectedTermPlanId);
             }
 
+            setLastDraftSavedAt(new Date());
+
             return true;
         } catch (e: any) {
             console.error(e);
-            if (e.message) alert(`Erro ao salvar: ${e.message}`);
-            else alert("Erro ao salvar: Ocorreu um problema desconhecido.");
+            if (e.message) showToast('error', `Erro ao salvar: ${e.message}`);
+            else showToast('error', 'Erro ao salvar: Ocorreu um problema desconhecido.');
             return false;
         }
     };
@@ -610,6 +656,27 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
     // ToolMode.PLANNING falls to Cockpit.
 
     if (isPlanningCockpit) {
+        if (!termPlans || termPlans.length === 0) {
+            return (
+                <div className="flex-1 flex items-center justify-center bg-slate-50">
+                    <div className="text-center max-w-md px-6 py-10 bg-white rounded-[2.5rem] border border-dashed border-slate-200 shadow-sm">
+                        <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-3">
+                            Planejamento Trimestral
+                        </p>
+                        <h2 className="text-xl font-black text-slate-900 mb-2">
+                            Nenhum planejamento encontrado
+                        </h2>
+                        <p className="text-sm text-slate-500 mb-4">
+                            Comece criando seu primeiro planejamento trimestral ou fale com a FREEDAY para organizar o trimestre com você.
+                        </p>
+                        <p className="text-[11px] text-slate-400">
+                            Use o menu &ldquo;Planejamento Trimestral&rdquo; para iniciar, ou clique no botão da FREEDAY no canto da tela para pedir ajuda.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <PlanningCockpit
                 termPlans={termPlans}
@@ -631,6 +698,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 messagesEndRef={messagesEndRef}
                 selectedPnldBookId={selectedPnldBookId}
                 setSelectedPnldBookId={setSelectedPnldBookId}
+                lastDraftSavedAt={lastDraftSavedAt}
             />
         );
     }

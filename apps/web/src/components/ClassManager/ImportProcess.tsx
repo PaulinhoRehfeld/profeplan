@@ -2,15 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { parseClassListFromText } from '../../services/ai/AiUtilityService';
 
+interface ParsedStudent {
+    name: string;
+    student_code?: string;
+    call_number?: number;
+    observations?: string;
+}
+
+interface ParsedClassData {
+    className: string;
+    subject: string;
+    students: Array<string | ParsedStudent>;
+}
+
 interface ImportProcessProps {
     file: File;
     onCancel: () => void;
-    onComplete: (data: { className: string, subject: string, students: string[] }) => Promise<void>;
+    onComplete: (data: ParsedClassData) => Promise<void>;
 }
 
 const ImportProcess: React.FC<ImportProcessProps> = ({ file, onCancel, onComplete }) => {
     const [step, setStep] = useState<'uploading' | 'parsing' | 'confirming'>('uploading');
-    const [tempData, setTempData] = useState<{ className: string, subject: string, students: string[] } | null>(null);
+    const [tempData, setTempData] = useState<ParsedClassData | null>(null);
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -98,11 +111,16 @@ const ImportProcess: React.FC<ImportProcessProps> = ({ file, onCancel, onComplet
 
                     <div className="bg-white/10 rounded-2xl p-6 max-h-48 overflow-y-auto custom-scrollbar border border-white/10">
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            {tempData?.students.map((student, i) => (
+                            {tempData?.students.map((student, i) => {
+                                const label = typeof student === 'object'
+                                    ? (student as ParsedStudent).name || 'Aluno Sem Nome'
+                                    : student;
+                                return (
                                 <div key={i} className="text-[10px] font-bold uppercase tracking-tight text-blue-100 flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div> {typeof student === 'object' ? (student as any).name || 'Aluno Sem Nome' : student}
+                                    <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div> {label}
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

@@ -168,6 +168,7 @@ export interface PdiDocument {
     student_id: string;
     school_id?: string;
     year: number;
+    period?: string;
     status: PdiStatus;
     content_data: Partial<PDIProfileData>;
     final_report?: string;

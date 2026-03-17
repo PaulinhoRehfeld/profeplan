@@ -1,9 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, BookOpen, ImageIcon, Trash2, FileText, Loader2, Plus, X, Shield, Mail } from 'lucide-react';
+import { User, BookOpen, ImageIcon, Trash2, FileText, Loader2, Plus, X, Mail } from 'lucide-react';
 import { UserSettings } from '../../../types';
-import { supabase } from '../../../services/supabaseClient';
-import { SchoolAutocomplete } from '../../SchoolAutocomplete';
-import { getTeacherSchoolManager, reconcileTeacherByInep, clearTeacherSchoolLinks } from '../../../services/teacherSchoolService';
 import { updateUserProfile } from '../../../services/ProfileService';
 
 interface ProfileTabProps {
@@ -30,144 +27,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
         name: ''
     });
 
-    // Informações do Gestor da Escola Ativa
-    const [managerInfo, setManagerInfo] = useState<{
-        managerName: string;
-        managerEmail: string;
-        schoolName: string;
-    } | null>(null);
-    const [loadingManager, setLoadingManager] = useState(false);
-
     // Update local state when props change
     useEffect(() => {
         setLocalSettings(initialSettings);
     }, [initialSettings]);
-
-    // CARREGAR Escolas (Vínculos) do banco de dados
-    useEffect(() => {
-        const loadTeacherSchools = async () => {
-            if (!userProfile?.id) return;
-
-            try {
-                console.log('[ProfileTab] 🔍 Loading teacher schools for user:', userProfile.id);
-
-                // Buscar TODOS os vínculos do professor
-                const { data: links, error } = await supabase
-                    .from('teacher_schools')
-                    .select(`
-                        id,
-                        school_id,
-                        schools (
-                            name,
-                            inep_code,
-                            city
-                        )
-                    `)
-                    .eq('teacher_id', userProfile.id)
-                    .is('ended_at', null) // IMPORTANTE: Carregar apenas vínculos ativos
-                    .order('created_at', { ascending: true }); // Manter ordem de criação
-
-                if (error) {
-                    console.error('[ProfileTab] Error loading teacher schools:', error);
-                    return;
-                }
-
-                console.log('[ProfileTab] 📚 Found teacher schools:', links);
-
-                if (links && links.length > 0) {
-                    // 1ª Escola: Sempre sincroniza com o primeiro vínculo encontrado
-                    const firstLink = links[0];
-                    const firstSchool = firstLink.schools as any;
-
-                    if (firstSchool) {
-                        console.log('[ProfileTab] ✅ Sychronizing 1st school:', firstSchool.name);
-                        setLocalSettings(prev => ({
-                            ...prev,
-                            institution: firstSchool.name || prev.institution,
-                            schoolCode: firstSchool.inep_code || prev.schoolCode,
-                            city: firstSchool.city || prev.city
-                        }));
-                    }
-
-                    // 2ª Escola: Se tiver 2 ou mais vínculos
-                    if (links.length >= 2) {
-                        const secondLink = links[1];
-                        const school2 = secondLink.schools as any;
-
-                        if (school2) {
-                            console.log('[ProfileTab] ✅ Loading 2nd school:', school2.name);
-                            setSecondSchool({
-                                name: school2.name || '',
-                                inep: school2.inep_code || '',
-                                city: school2.city || ''
-                            });
-                            setShowSecondSchool(true);
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error('[ProfileTab] Exception loading teacher schools:', err);
-            }
-        };
-
-        loadTeacherSchools();
-    }, [userProfile?.id]);
-
-    // CARREGAR Informações do Gestor da Escola Ativa
-    useEffect(() => {
-        const loadManager = async () => {
-            if (!userProfile?.id) return;
-
-            setLoadingManager(true);
-            try {
-                console.log('[ProfileTab] 🔍 Loading school manager info...');
-                const result = await getTeacherSchoolManager(userProfile.id);
-
-                if (result.success && result.manager) {
-                    setManagerInfo({
-                        managerName: result.manager.full_name,
-                        managerEmail: result.manager.email,
-                        schoolName: result.schoolName || 'Escola não identificada'
-                    });
-                    console.log('[ProfileTab] ✅ Manager found:', result.manager.full_name);
-                } else {
-                    console.log('[ProfileTab] ℹ️ No manager found:', result.error);
-                    setManagerInfo(null);
-                }
-            } catch (err) {
-                console.error('[ProfileTab] Exception loading manager:', err);
-                setManagerInfo(null);
-            } finally {
-                setLoadingManager(false);
-            }
-        };
-
-        loadManager();
-    }, [userProfile?.id]);
-
-    // AUTO-COMPLETE School by INEP
-    useEffect(() => {
-        const inep = localSettings.schoolCode?.trim();
-        if (inep && inep.length === 8 && /^\d+$/.test(inep)) {
-            const fetchSchoolName = async () => {
-                try {
-                    const { data, error } = await supabase
-                        .from('schools')
-                        .select('name')
-                        .eq('inep_code', inep)
-                        .maybeSingle();
-
-                    if (data?.name && !localSettings.institution) {
-                        console.log("[ProfileTab] 🏫 School auto-resolved:", data.name);
-                        setLocalSettings(prev => ({ ...prev, institution: data.name }));
-                    }
-                } catch (err) {
-                    console.warn("[ProfileTab] School lookup failed:", err);
-                }
-            };
-            fetchSchoolName();
-        }
-    }, [localSettings.schoolCode]);
 
     const handleChange = (field: keyof UserSettings, value: string) => {
         setLocalSettings(prev => ({ ...prev, [field]: value }));
@@ -217,80 +80,23 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
 
 
             console.log('[ProfileTab] 💾 Saving profile for user:', userId);
-            console.log('[ProfileTab] 📦 Second school state:', {
-                showSecondSchool,
-                secondSchool,
-                hasInep: !!secondSchool.inep,
-                hasName: !!secondSchool.name
-            });
 
             const result = await updateUserProfile(userId, {
-                ...localSettings,
-                inep_code: localSettings.schoolCode // Mapping schoolCode UI field to inep_code logic
+                ...localSettings
             });
 
             if (result.error) throw new Error(result.error);
 
-            // NOVO: Sincronização de Vínculos (Limpa e Re-cria)
-            console.log('[ProfileTab] 🔄 Syncing teacher schools...');
-            // 1. Limpa vínculos antigos para garantir que escolas removidas ou trocadas sumam
-            await clearTeacherSchoolLinks(userId);
+            const newSettings = { ...localSettings };
+            setLocalSettings(newSettings);
+            setSettings(newSettings);
+            localStorage.setItem('profeplan_settings', JSON.stringify(newSettings));
 
-            let firstSchoolResult = null;
-            let secondSchoolResult = null;
-
-            // 2. Re-cria vínculo da 1ª Escola
-            if (localSettings.schoolCode?.trim()) {
-                console.log('[ProfileTab] 🏫 Re-linking 1st school...');
-                firstSchoolResult = await reconcileTeacherByInep(userId, localSettings.schoolCode.trim());
-            }
-
-            // 3. Re-cria vínculo da 2ª Escola (se ativa)
-            if (showSecondSchool && secondSchool.inep?.trim()) {
-                console.log('[ProfileTab] 🏫 Re-linking 2nd school...');
-                secondSchoolResult = await reconcileTeacherByInep(userId, secondSchool.inep.trim());
-            }
-
-            // Feedback consolidado
-            if (firstSchoolResult || secondSchoolResult) {
-                let message = '✅ Perfil salvo!\n\n';
-                const newSettings = { ...localSettings };
-
-                if (firstSchoolResult?.success) {
-                    message += `✅ 1ª Escola: ${firstSchoolResult.schoolName}\n`;
-                    // Sincroniza o nome da instituição no perfil com o nome real da escola encontrada
-                    newSettings.institution = firstSchoolResult.schoolName;
-                    newSettings.city = firstSchoolResult.city || newSettings.city;
-                } else if (firstSchoolResult) {
-                    message += `⚠️ 1ª Escola: ${firstSchoolResult.error}\n`;
-                }
-
-                if (secondSchoolResult?.success) {
-                    message += `✅ 2ª Escola: ${secondSchoolResult.schoolName}\n`;
-                } else if (secondSchoolResult) {
-                    message += `⚠️ 2ª Escola: ${secondSchoolResult.error}\n`;
-                }
-
-                // Atualiza o estado local e global com o nome correto antes de fechar
-                setLocalSettings(newSettings);
-                setSettings(newSettings);
-                localStorage.setItem('profeplan_settings', JSON.stringify(newSettings));
-
-                alert(message);
+            if (result.message) {
+                alert('✅ ' + result.message);
             } else {
-                // Success feedback padrão (sem INEP)
-                if (result.message) {
-                    alert('✅ ' + result.message);
-                } else {
-                    alert('✅ Perfil atualizado com sucesso!');
-                }
+                alert('✅ Perfil atualizado com sucesso!');
             }
-
-            // Sync Global State
-            setSettings(localSettings);
-
-            // Persist to LS
-            localStorage.setItem('profeplan_settings', JSON.stringify(localSettings));
 
             await onSaveSuccess();
             onClose();
@@ -303,53 +109,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Informações do Gestor da Escola Ativa */}
-            {managerInfo && (
-                <section className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="flex items-center gap-2 text-indigo-600 font-bold text-[10px] uppercase tracking-[0.15em]">
-                        <Shield className="w-4 h-4" /> Minha Escola Ativa
-                    </div>
-                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-2xl p-5 shadow-sm">
-                        <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0">
-                                <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center">
-                                    <Shield className="w-6 h-6 text-white" />
-                                </div>
-                            </div>
-                            <div className="flex-1">
-                                <p className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">
-                                    Gestor Responsável
-                                </p>
-                                <h4 className="text-lg font-black text-slate-800 mb-1">
-                                    {managerInfo.managerName}
-                                </h4>
-                                <p className="text-sm text-slate-600 mb-2">
-                                    📍 {managerInfo.schoolName}
-                                </p>
-                                <a
-                                    href={`mailto:${managerInfo.managerEmail}`}
-                                    className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
-                                >
-                                    <Mail className="w-3 h-3" />
-                                    {managerInfo.managerEmail}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {loadingManager && (
-                <section className="space-y-3">
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 animate-pulse">
-                        <div className="flex items-center gap-3">
-                            <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
-                            <span className="text-sm text-slate-500">Carregando informações do gestor...</span>
-                        </div>
-                    </div>
-                </section>
-            )}
+            <div className="space-y-8 animate-in fade-in duration-500">
 
             {/* Perfil Profissional */}
             <section className="space-y-4">
@@ -419,21 +179,12 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
 
                         <div className="md:col-span-2 space-y-1.5">
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nome da Escola</label>
-                            <SchoolAutocomplete
+                            <input
+                                type="text"
                                 value={localSettings.institution || ''}
-                                onChange={(value, school) => {
-                                    if (school) {
-                                        setLocalSettings(prev => ({
-                                            ...prev,
-                                            institution: school.name,
-                                            schoolCode: school.inep_code || '',
-                                            city: school.city || prev.city
-                                        }));
-                                    } else {
-                                        handleChange('institution', value);
-                                    }
-                                }}
-                                placeholder="Buscar escola no banco INEP..."
+                                onChange={(e) => handleChange('institution', e.target.value)}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                                placeholder="Escreva o nome da escola livremente"
                             />
                         </div>
                     </div>
@@ -504,20 +255,12 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                                     Nome da Escola
                                 </label>
-                                <SchoolAutocomplete
+                                <input
+                                    type="text"
                                     value={secondSchool.name}
-                                    onChange={(value, school) => {
-                                        if (school) {
-                                            setSecondSchool({
-                                                name: school.name,
-                                                inep: school.inep_code || '',
-                                                city: school.city || ''
-                                            });
-                                        } else {
-                                            setSecondSchool(prev => ({ ...prev, name: value }));
-                                        }
-                                    }}
-                                    placeholder="Buscar escola no banco INEP..."
+                                    onChange={(e) => setSecondSchool(prev => ({ ...prev, name: e.target.value }))}
+                                    className="w-full px-5 py-3 bg-slate-50 border border-indigo-100 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none text-sm font-bold transition-all"
+                                    placeholder="Escreva o nome da 2ª escola livremente"
                                 />
                             </div>
                         </div>

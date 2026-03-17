@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
-import { Loader2, Lock } from 'lucide-react';
+import { Loader2, Lock, AlertCircle } from 'lucide-react';
 import { ToolMode, UserSession, UserProfile, UserSettings } from '../types';
-import { isAdmin } from '../services/ProfileService';
+import { isAdmin, isProfileCompleteForMainFlows } from '../services/ProfileService';
 
 // Lazy Load Features
 const DriveExplorer = React.lazy(() => import('../components/DriveExplorer'));
@@ -49,6 +49,32 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
     setIsSettingsOpen,
     setActiveMode
 }) => {
+    const isProfileComplete = isProfileCompleteForMainFlows(userProfile, settings);
+
+    const renderProfileBlocker = () => (
+        <div className="flex-1 flex flex-col items-center justify-center bg-slate-50 px-4 text-center">
+            <div className="flex flex-col items-center gap-3 max-w-md">
+                <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                    <AlertCircle className="w-6 h-6 text-amber-600" />
+                </div>
+                <h2 className="text-sm font-black uppercase tracking-widest text-amber-700">
+                    Complete seu Perfil Profissional
+                </h2>
+                <p className="text-xs text-slate-600 font-medium">
+                    Para gerar planos, PDIs e avaliações, preencha primeiro seu Perfil Profissional em
+                    {' '}
+                    <span className="font-semibold">Configurações &gt; Perfil e Preferências</span>.
+                </p>
+                <button
+                    type="button"
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="mt-2 inline-flex items-center justify-center px-5 py-2 rounded-full bg-slate-900 text-white text-[11px] font-black uppercase tracking-widest shadow-md hover:bg-slate-800 transition-colors"
+                >
+                    Abrir Configurações
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <Suspense fallback={<PageLoader />}>
@@ -94,17 +120,29 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
                     <PresentationCreator userId={session.id} setSidebarContent={setCustomSidebar} />
                 </div>
             ) : activeMode === ToolMode.INCLUSION ? (
-                <div className="flex-1 overflow-hidden h-full">
-                    <PDIManager userId={session.id} userProfile={userProfile} setSidebarContent={setCustomSidebar} />
-                </div>
+                isProfileComplete ? (
+                    <div className="flex-1 overflow-hidden h-full">
+                        <PDIManager userId={session.id} userProfile={userProfile} setSidebarContent={setCustomSidebar} />
+                    </div>
+                ) : (
+                    renderProfileBlocker()
+                )
             ) : activeMode === ToolMode.ASSESSMENT ? (
-                <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">
-                    <AssessmentManager userId={session.id} settings={settings} setSidebarContent={setCustomSidebar} />
-                </div>
+                isProfileComplete ? (
+                    <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar">
+                        <AssessmentManager userId={session.id} settings={settings} setSidebarContent={setCustomSidebar} />
+                    </div>
+                ) : (
+                    renderProfileBlocker()
+                )
             ) : activeMode === ToolMode.QUARTERLY_PLANNING ? (
-                <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar bg-slate-50/50">
-                    <TermPlanningManager userId={session.id} settings={settings} setSidebarContent={setCustomSidebar} />
-                </div>
+                isProfileComplete ? (
+                    <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar bg-slate-50/50">
+                        <TermPlanningManager userId={session.id} settings={settings} setSidebarContent={setCustomSidebar} />
+                    </div>
+                ) : (
+                    renderProfileBlocker()
+                )
             ) : activeMode === ToolMode.SCHOOL_MANAGER ? (
                 <SchoolDashboard
                     userProfile={userProfile || { id: session.id, role: 'manager', email: session.email, school_name: 'Minha Escola', school_id: '' } as any}
@@ -112,16 +150,20 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
                 />
             ) : (
                 // DEFAULT / CHAT / PLANNING
-                <PlanningManager
-                    userId={session.id}
-                    activeMode={activeMode}
-                    availableClasses={availableClasses}
-                    settings={settings}
-                    selectedClassId={selectedClassId}
-                    quarter={quarter}
-                    enemArea={enemArea}
-                    setSidebarContent={setCustomSidebar}
-                />
+                (isProfileComplete || activeMode !== ToolMode.PLANNING) ? (
+                    <PlanningManager
+                        userId={session.id}
+                        activeMode={activeMode}
+                        availableClasses={availableClasses}
+                        settings={settings}
+                        selectedClassId={selectedClassId}
+                        quarter={quarter}
+                        enemArea={enemArea}
+                        setSidebarContent={setCustomSidebar}
+                    />
+                ) : (
+                    renderProfileBlocker()
+                )
             )}
         </Suspense>
     );

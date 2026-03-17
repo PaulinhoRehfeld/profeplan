@@ -13,6 +13,8 @@ import {
 } from '../../SimulationFactory';
 import { hybridSearchProfeplan } from '../../../services/searchService';
 import { savePlan, PlanFolder } from '../PlanningService';
+import { useToast } from '../../../contexts/ToastContext';
+import { withRetry } from '../../../services/retryService';
 
 
 interface SimulationWorkspaceProps {
@@ -33,6 +35,7 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
     const [simLoading, setSimLoading] = useState(false);
     const [simObservations, setSimObservations] = useState('');
     const [previewQuestion, setPreviewQuestion] = useState<SimulationQuestion | null>(null);
+    const { showToast } = useToast();
 
     // Areas Filter State
     const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
@@ -49,16 +52,17 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
         setSimLoading(true);
 
         try {
-            // 🏭 Usa QuestionBank isolado (protegido)
-            const result = await questionBank.search({
-                query: simSearchQuery,
-                areas: selectedAreas,
-                limit: 15
-            });
-            setSimSearchResults(result.questions || []);
+            const result = await withRetry(() =>
+                questionBank.search({
+                    query: simSearchQuery,
+                    areas: selectedAreas,
+                    limit: 15
+                })
+            );
+            setSimSearchResults((result as any).questions || []);
         } catch (e) {
             console.error(e);
-            alert('Erro na busca de questões');
+            showToast('error', 'Erro na busca de questões. Tente novamente.');
         } finally {
             setSimLoading(false);
         }
@@ -67,20 +71,22 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
     const handleMirrorSearch = async () => {
         const plan = termPlans.find(p => p.id === selectedTermPlanId);
         if (!plan) {
-            alert('Selecione um Planejamento Trimestral no topo primeiro!');
+            showToast('info', 'Selecione um Planejamento Trimestral no topo primeiro.');
             return;
         }
         setSimLoading(true);
         try {
             const query = `Questões de ${plan.subject} sobre ${plan.grade} ${plan.period}º ${plan.regime}. Tópicos: ${plan.generatedText?.slice(0, 200) || ''}`;
             setSimSearchQuery(query);
-            const results = await hybridSearchProfeplan({
-                textoBusca: query,
-                disciplina: plan.subject,
-                limit: 15,
-                matchThreshold: 0.5
-            });
-            setSimSearchResults(results || []);
+            const results = await withRetry(() =>
+                hybridSearchProfeplan({
+                    textoBusca: query,
+                    disciplina: plan.subject,
+                    limit: 15,
+                    matchThreshold: 0.5
+                })
+            );
+            setSimSearchResults((results as any) || []);
         } catch (e) {
             console.error(e);
         } finally {
@@ -99,31 +105,41 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
     };
 
     const handleSimAction = async (action: 'balance' | 'export_pdf' | 'export_word' | 'generate_ab') => {
-        if (simCart.length === 0) return alert('Selecione questões primeiro!');
+        if (simCart.length === 0) {
+            showToast('info', 'Selecione questões primeiro para montar o simulado.');
+            return;
+        }
 
         if (action === 'balance') {
-            alert('Para análise de equilíbrio, use o chat pedagógico principal. Esta função será migrada em breve.');
+            showToast('info', 'Para análise de equilíbrio, use o chat pedagógico principal. Esta função será migrada em breve.');
         } else if (action === 'export_word') {
             try {
                 // 🏭 Usa funções isoladas do SimulationFactory
                 const title = generateSimulationTitle('Simulado');
                 const contentSummary = generateContentSummary(simCart as SimulationQuestion[]);
 
-                await savePlan(userId, {
-                    type: 'simulado',
-                    title: title,
-                    content: contentSummary,
-                    createdAt: new Date().toISOString(),
-                }, PlanFolder.SIMULADOS);
-
-                await exportSimulationToDocx(
-                    simCart as SimulationQuestion[],
-                    simObservations,
-                    'Versão Única',
-                    settings
+                await withRetry(() =>
+                    savePlan(userId, {
+                        type: 'simulado',
+                        title: title,
+                        content: contentSummary,
+                        createdAt: new Date().toISOString(),
+                    }, PlanFolder.SIMULADOS)
                 );
+
+                await withRetry(() =>
+                    exportSimulationToDocx(
+                        simCart as SimulationQuestion[],
+                        simObservations,
+                        'Versão Única',
+                        settings
+                    ),
+                    { retries: 1 }
+                );
+                showToast('success', 'Simulado salvo no Drive e exportado para Word.');
             } catch (e: any) {
-                alert(`Erro: ${e.message}`);
+                console.error(e);
+                showToast('error', e.message || 'Erro ao gerar o simulado. Tente novamente.');
             }
         } else if (action === 'generate_ab') {
             try {
@@ -131,31 +147,42 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                 const title = generateSimulationTitle('Simulado_AB');
                 const contentSummary = `Geração A/B com ${simCart.length} questões.`;
 
-                await savePlan(userId, {
-                    type: 'simulado',
-                    title: title,
-                    content: contentSummary,
-                    createdAt: new Date().toISOString(),
-                }, PlanFolder.SIMULADOS);
+                await withRetry(() =>
+                    savePlan(userId, {
+                        type: 'simulado',
+                        title: title,
+                        content: contentSummary,
+                        createdAt: new Date().toISOString(),
+                    }, PlanFolder.SIMULADOS)
+                );
 
-                await exportSimulationToDocx(
-                    simCart as SimulationQuestion[],
-                    simObservations,
-                    'Versão A',
-                    settings
+                await withRetry(() =>
+                    exportSimulationToDocx(
+                        simCart as SimulationQuestion[],
+                        simObservations,
+                        'Versão A',
+                        settings
+                    ),
+                    { retries: 1 }
                 );
 
                 const shuffled = shuffleQuestions(simCart as SimulationQuestion[]);
                 setTimeout(async () => {
-                    await exportSimulationToDocx(
-                        shuffled,
-                        simObservations,
-                        'Versão B',
-                        settings
+                    await withRetry(
+                        () =>
+                            exportSimulationToDocx(
+                                shuffled,
+                                simObservations,
+                                'Versão B',
+                                settings
+                            ),
+                        { retries: 1 }
                     );
                 }, 1000);
+                showToast('success', 'Versões A e B do simulado foram geradas e salvas.');
             } catch (e: any) {
-                alert(`Erro: ${e.message}`);
+                console.error(e);
+                showToast('error', e.message || 'Erro ao gerar versões A/B do simulado.');
             }
         }
     };
@@ -238,6 +265,14 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
 
                     {/* Results Grid */}
                     <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50">
+                        <div className="flex items-center justify-between mb-3 text-[11px] text-slate-500">
+                            <span className="font-black uppercase tracking-[0.2em]">
+                                Resultados da busca
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-white border border-slate-200 font-black">
+                                {simSearchResults.length} questões encontradas
+                            </span>
+                        </div>
                         {simSearchResults.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center opacity-30">
                                 <Search size={48} className="mb-4 text-slate-300" />
@@ -259,7 +294,11 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                                                     <span className="text-[10px] font-black uppercase text-indigo-500 bg-indigo-50 px-2 py-1 rounded">{discipline}</span>
                                                     <span className="text-[10px] font-bold text-slate-400">{year} • {source}</span>
                                                 </div>
-                                                <button onClick={() => setPreviewQuestion(q as SimulationQuestion)} className="text-slate-300 hover:text-indigo-500 transition-colors">
+                                <button
+                                    onClick={() => setPreviewQuestion(q as SimulationQuestion)}
+                                    className="text-slate-300 hover:text-indigo-500 transition-colors"
+                                    aria-label="Pré-visualizar enunciado completo da questão"
+                                >
                                                     <BookOpen size={18} />
                                                 </button>
                                             </div>
@@ -308,7 +347,9 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                 <div className="w-80 border-l border-slate-200 bg-white h-full overflow-hidden flex flex-col shadow-xl z-20">
                     <div className="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                         <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Minha Seleção</h3>
-                        <span className="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-0.5 rounded-full">{simCart.length} itens</span>
+                        <span className="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            {simCart.length} {simCart.length === 1 ? 'questão' : 'questões'}
+                        </span>
                     </div>
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
                         {simCart.length === 0 ? (
@@ -337,16 +378,24 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
             {/* --- MODAL DE PRÉ-VISUALIZAÇÃO --- */}
             {
                 previewQuestion && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 motion-safe:animate-in motion-safe:fade-in duration-200"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="question-preview-title"
+                    >
                         <div className="absolute inset-0" onClick={() => setPreviewQuestion(null)}></div>
-                        <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative z-10 animate-in zoom-in-95 duration-200 overflow-hidden">
+                        <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative z-10 motion-safe:animate-in motion-safe:zoom-in-95 duration-200 overflow-hidden">
                             <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
                                         <BookOpen size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                        <h3
+                                            id="question-preview-title"
+                                            className="text-sm font-bold text-slate-900 flex items-center gap-2"
+                                        >
                                             Questão #{previewQuestion.id}
                                             <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-full font-normal">
                                                 {previewQuestion.metadata?.year}
@@ -355,7 +404,11 @@ export const SimulationWorkspace: React.FC<SimulationWorkspaceProps> = ({
                                         <p className="text-xs text-slate-500">{previewQuestion.metadata?.discipline}</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setPreviewQuestion(null)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all">
+                                <button
+                                    onClick={() => setPreviewQuestion(null)}
+                                    className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all"
+                                    aria-label="Fechar pré-visualização da questão"
+                                >
                                     <X size={20} />
                                 </button>
                             </div>

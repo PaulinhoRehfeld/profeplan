@@ -21,11 +21,51 @@ const ClassList: React.FC<ClassListProps> = ({
         c.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (loading) return null; // Parent handles loading spinner usually, or we can add here
+    if (!loading && filteredClasses.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-16 text-center text-slate-400">
+                <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mb-4">
+                    <Users size={28} className="text-slate-300" />
+                </div>
+                <p className="font-black text-xs uppercase tracking-[0.25em] mb-2">Nenhuma turma encontrada</p>
+                <p className="text-xs text-slate-500 max-w-xs">
+                    Crie sua primeira turma ou ajuste o filtro de busca para ver as turmas cadastradas.
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {filteredClasses.map((cls) => (
+            {loading && Array.from({ length: 3 }).map((_, idx) => (
+                <div
+                    key={`skeleton-${idx}`}
+                    className="bg-slate-100/80 border border-slate-100 rounded-[2.5rem] p-8 animate-pulse space-y-6"
+                >
+                    <div className="flex items-start justify-between">
+                        <div className="w-14 h-14 bg-slate-200 rounded-2xl" />
+                        <div className="w-9 h-9 bg-slate-200 rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                        <div className="h-4 bg-slate-200 rounded-md w-3/4" />
+                        <div className="h-3 bg-slate-200 rounded-md w-1/2" />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <div className="h-5 w-20 bg-slate-200 rounded-full" />
+                        <div className="h-5 w-20 bg-slate-200 rounded-full" />
+                        <div className="h-5 w-24 bg-slate-200 rounded-full" />
+                    </div>
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-200/60">
+                        <div className="space-y-1">
+                            <div className="h-3 w-16 bg-slate-200 rounded-full" />
+                            <div className="h-4 w-10 bg-slate-200 rounded-full" />
+                        </div>
+                        <div className="h-9 w-28 bg-slate-200 rounded-xl" />
+                    </div>
+                </div>
+            ))}
+
+            {!loading && filteredClasses.map((cls) => (
                 <div
                     key={cls.id}
                     className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:border-blue-100 transition-all duration-500 relative overflow-hidden cursor-pointer"
@@ -40,6 +80,7 @@ const ClassList: React.FC<ClassListProps> = ({
                         <button
                             onClick={(e) => { e.stopPropagation(); onDeleteClass(cls.id); }}
                             className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0"
+                            aria-label={`Excluir turma ${cls.name}`}
                         >
                             <Trash2 size={18} />
                         </button>

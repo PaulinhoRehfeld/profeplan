@@ -3,7 +3,7 @@ import {
     Plus, Loader2, AlertCircle, X, Search, GraduationCap, Download, Upload
 } from 'lucide-react';
 import { saveClassToLocal, getLocalClasses, getLocalClassDetails, deleteLocalClass, exportClassesToJSON, updateLocalClass } from '../services/localStorageService';
-import { updateStudent, getClassDetails } from '../services/supabaseService';
+import { updateStudent, getClassDetails, deleteClass } from '../services/supabaseService';
 import { Student, Class } from '../types';
 
 // Import SubComponents
@@ -160,11 +160,22 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         }
     };
 
-    const handleDeleteClass = (id: string) => {
-        if (confirm('Tem certeza que deseja excluir esta turma e todos os alunos cadastrados?')) {
+    const handleDeleteClass = async (id: string) => {
+        if (!confirm('Tem certeza que deseja excluir esta turma e todos os alunos cadastrados?')) return;
+
+        try {
+            const { error } = await deleteClass(id);
+            if (error) throw error;
+
+            // Mantém o cache local em sincronia
             deleteLocalClass(id);
-            fetchClasses();
+
             if (selectedClass?.id === id) setSelectedClass(null);
+
+            await fetchClasses();
+        } catch (err) {
+            console.error('[ClassManager] Error deleting class:', err);
+            setError('Erro ao excluir turma. Tente novamente.');
         }
     };
 

@@ -6,6 +6,7 @@ import SubscriptionModal from '../components/SubscriptionModal';
 import { SchoolSwitcher } from '../components/SchoolSwitcher';
 import { UserSession, UserProfile, ToolMode, UserSettings } from '../types';
 import DonationWidget from '../components/DonationWidget';
+import { FirstRunTour } from '../components/FirstRunTour';
 
 interface MainLayoutProps {
     children: ReactNode;
@@ -48,6 +49,35 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     onRefreshProfile,
     setSettings
 }) => {
+    const getModeLabel = (mode: ToolMode): string => {
+        switch (mode) {
+            case ToolMode.CHAT:
+                return 'Início · Assistente pedagógico';
+            case ToolMode.QUARTERLY_PLANNING:
+                return 'Planejamento · Trimestral';
+            case ToolMode.PLANNING:
+                return 'Planejamento · Planos de Aula';
+            case ToolMode.INCLUSION:
+                return 'Inclusão · Adaptações PDI/DUA';
+            case ToolMode.SIMULATION:
+                return 'Avaliação · Simulados ENEM/SAEB';
+            case ToolMode.PRESENTATIONS:
+                return 'Conteúdo · Apresentações & Slides';
+            case ToolMode.ASSESSMENT:
+                return 'Avaliação · Provas Contextualizadas';
+            case ToolMode.FILES:
+                return 'Gestão · Meus Arquivos';
+            case ToolMode.CLASSES:
+                return 'Gestão · Minhas Turmas';
+            case ToolMode.SCHOOL_MANAGER:
+                return 'Gestão Escolar';
+            case ToolMode.ADMIN:
+                return 'Administração do Sistema';
+            default:
+                return String(mode);
+        }
+    };
+
     return (
         <div className="app-container flex h-screen bg-slate-50 overflow-hidden font-sans">
             <Sidebar
@@ -75,7 +105,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V4.0.0</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{String(activeMode).toUpperCase()}</span>
+                                <div className="flex flex-col">
+                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                        {getModeLabel(activeMode)}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,6 +136,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 {/* CONTENT AREA */}
                 <div className="layout-wrapper flex-1 overflow-hidden relative flex flex-col bg-white">
                     {children}
+                    {/* Tour de primeiro uso (só aparece uma vez por usuário) */}
+                    <FirstRunTour activeModeLabel={getModeLabel(activeMode)} />
                 </div>
             </main>
 

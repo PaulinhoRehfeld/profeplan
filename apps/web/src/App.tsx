@@ -18,6 +18,9 @@ import { ReloadPrompt } from './components/ReloadPrompt';
 import LoginScreen from './components/LoginScreen';
 import SchoolSelectorScreen from './components/SchoolSelectorScreen';
 import { GlobalPlanningProvider } from './contexts/GlobalPlanningContext';
+import { FreedayProvider } from './contexts/FreedayContext';
+import { GlobalFreedayUI } from './components/GlobalFreedayUI';
+import { ToastProvider } from './contexts/ToastContext';
 import { PdiOfficialLayout } from './features/PDI/Official/PdiOfficialLayout';
 import { AdminPanel as SimulationAdminPanel, OfflineIndicator } from './features/SimulationFactory';
 import { registerServiceWorker } from './utils/serviceWorkerRegistration';
@@ -354,6 +357,8 @@ const App: React.FC = () => {
 
               <Route path="/app" element={
                 session?.isLoggedIn ? (
+                  <ToastProvider>
+                  <FreedayProvider>
                   <GlobalPlanningProvider>
                     <MainLayout
                       session={session}
@@ -395,7 +400,10 @@ const App: React.FC = () => {
                         enemArea={enemArea}
                       />
                     </MainLayout>
+                    <GlobalFreedayUI />
                   </GlobalPlanningProvider>
+                  </FreedayProvider>
+                  </ToastProvider>
                 ) : <Navigate to="/login" replace />
               } />
 

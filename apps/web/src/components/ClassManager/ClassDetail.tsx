@@ -71,6 +71,7 @@ const ClassDetail: React.FC<ClassDetailProps> = ({
                             <thead>
                                 <tr className="border-b border-slate-50 sticky top-0 bg-white z-10 shadow-sm">
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">#</th>
+                                    <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Código</th>
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome do Aluno</th>
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
                                 </tr>
@@ -80,6 +81,9 @@ const ClassDetail: React.FC<ClassDetailProps> = ({
                                     filteredStudents.map((student, index) => (
                                         <tr key={student.id || index} className={`hover:bg-slate-50 transition-colors group ${student.needs_adaptation ? 'bg-purple-50/30' : ''}`}>
                                             <td className="px-10 py-5 text-sm font-black text-slate-300 italic">{(index + 1).toString().padStart(2, '0')}</td>
+                                            <td className="px-10 py-5 text-xs font-bold text-slate-400">
+                                                {student.student_code || student.state_unique_id || '—'}
+                                            </td>
                                             <td className="px-10 py-5">
                                                 <div className="flex items-center gap-2">
                                                     <span className={`text-sm font-bold ${student.needs_adaptation ? 'text-purple-700' : 'text-slate-700'}`}>
@@ -123,7 +127,7 @@ const ClassDetail: React.FC<ClassDetailProps> = ({
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={3} className="px-10 py-10 text-center text-slate-400 text-sm">
+                                        <td colSpan={4} className="px-10 py-10 text-center text-slate-400 text-sm">
                                             Nenhum aluno encontrado para "{searchTerm}".
                                         </td>
                                     </tr>

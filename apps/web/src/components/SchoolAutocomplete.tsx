@@ -37,25 +37,22 @@ export const SchoolAutocomplete: React.FC<SchoolAutocompleteProps> = ({
 
         setLoading(true);
         try {
-            console.log('[SchoolAutocomplete] Executing Supabase query...');
+            console.log('[SchoolAutocomplete] Executing Supabase RPC search_schools_unaccent...');
             const { data, error } = await supabase
-                .from('schools')
-                .select('id, name, inep_code, city')
-                .ilike('name', `%${query}%`)
-                .limit(10);
+                .rpc('search_schools_unaccent', { q: query });
 
-            console.log('[SchoolAutocomplete] Query result:', {
+            console.log('[SchoolAutocomplete] RPC result:', {
                 found: data?.length || 0,
-                error: error?.message,
+                error: (error as any)?.message,
                 sample: data?.[0]
             });
 
             if (!error && data) {
-                setSuggestions(data);
+                setSuggestions(data as School[]);
                 setShowSuggestions(true);
                 console.log('[SchoolAutocomplete] ✅ Showing', data.length, 'suggestions');
             } else {
-                console.error('[SchoolAutocomplete] ❌ Query failed:', error);
+                console.error('[SchoolAutocomplete] ❌ RPC failed:', error);
             }
         } catch (err) {
             console.error('[SchoolAutocomplete] ❌ Search exception:', err);

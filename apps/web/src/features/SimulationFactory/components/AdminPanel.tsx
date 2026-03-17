@@ -22,6 +22,7 @@ import {
     SimulationQuestion,
     AnalyticsSummary
 } from '../../SimulationFactory';
+import { useToast } from '../../../contexts/ToastContext';
 
 interface AdminPanelProps {
     userId: string;
@@ -37,6 +38,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ userId, isAdmin }) => {
     const [cacheStats, setCacheStats] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const { showToast } = useToast();
 
     // Verificar permissão
     if (!isAdmin) {
@@ -96,15 +98,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ userId, isAdmin }) => {
 
     const handleClearCache = async () => {
         if (!confirm('Limpar todo o cache? Esta ação não pode ser desfeita.')) return;
-        await questionBank.clearCache();
-        alert('✅ Cache limpo com sucesso!');
-        loadTabData();
+        try {
+            await questionBank.clearCache();
+            showToast('success', 'Cache limpo com sucesso!');
+            loadTabData();
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+            showToast('error', 'Falha ao limpar o cache. Tente novamente.');
+        }
     };
 
     const handlePruneCache = async () => {
-        const deleted = await questionBank.pruneCache();
-        alert(`✅ ${deleted} entradas expiradas removidas!`);
-        loadTabData();
+        try {
+            const deleted = await questionBank.pruneCache();
+            showToast('success', `${deleted} entradas expiradas removidas do cache.`);
+            loadTabData();
+        } catch (error) {
+            console.error('Error pruning cache:', error);
+            showToast('error', 'Falha ao limpar entradas expiradas. Tente novamente.');
+        }
     };
 
     return (

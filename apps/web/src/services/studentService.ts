@@ -178,3 +178,20 @@ export const archiveStudent = async (
         return { success: false, error: getErrorMessage(error) };
     }
 };
+
+/**
+ * Returns a normalized snapshot of the student's inclusion profile,
+ * consolidating all relevant fields into a single object that can be
+ * safely consumed por serviços de IA (ex.: AiPdiService).
+ */
+export const getStudentInclusionSnapshot = (student: Student): {
+    needsAdaptation: boolean;
+    deficiencies: string[];
+    observations: string;
+} => {
+    return {
+        needsAdaptation: !!student.needs_adaptation,
+        deficiencies: student.deficiencies || student.pdi_needs || [],
+        observations: student.pedagogical_observations || student.observations || ''
+    };
+};

@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { UserProfile } from '../types';
+import { UserProfile, UserSettings } from '../types';
 
 export const ProfileService = {
     /**
@@ -92,3 +92,29 @@ export {
     addUserCredits,
     updateUserRole
 } from './userService';
+
+/**
+ * Verifica se o Perfil Profissional está completo o suficiente
+ * para liberar os fluxos principais (planos, PDI, avaliações).
+ */
+export const isProfileCompleteForMainFlows = (
+    profile: UserProfile | null,
+    settings: UserSettings
+): boolean => {
+    if (!profile) return false;
+
+    // Campos básicos
+    const name = settings.userName || profile.full_name;
+    const institutionalEmail = settings.institutionalEmail || profile.email;
+    const masp = settings.masp || profile.masp;
+
+    // Vínculo escolar por INEP
+    const schoolInep = settings.schoolCode || (profile as any).inep_code;
+    const schoolName = settings.institution || profile.school_name;
+
+    const hasBasics = !!name && !!institutionalEmail && !!masp;
+    const hasSchool = !!schoolInep && !!schoolName;
+
+    return hasBasics && hasSchool;
+};
+

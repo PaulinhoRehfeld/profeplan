@@ -8,6 +8,8 @@ import { UserSettings } from '../types';
 import { getGeneratedContents, updateGeneratedContent, deleteGeneratedContent } from '../services/databaseService';
 import { exportToDocx } from '../services/exportService';
 import MarkdownRenderer from './MarkdownRenderer';
+import { useToast } from '../contexts/ToastContext';
+import { withRetry } from '../services/retryService';
 
 interface DriveExplorerProps {
   userId: string;
@@ -32,11 +34,14 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   const [editContent, setEditContent] = useState('');
   const [saveLoading, setSaveLoading] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const { showToast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortDesc, setSortDesc] = useState(true);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const data = await getGeneratedContents(userId);
+      const data = await withRetry(() => getGeneratedContents(userId));
       setAllContents(data);
     } catch (err) {
       console.error("Erro ao carregar dados:", err);
@@ -61,8 +66,20 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   ];
 
   const getFilteredFiles = () => {
-    if (!activeFolder) return allContents.slice(0, 10); // Mostra recentes se nada selecionado
-    return allContents.filter(f => f.type === activeFolder);
+    let base = activeFolder ? allContents.filter(f => f.type === activeFolder) : allContents;
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      base = base.filter(f => f.title.toLowerCase().includes(term));
+    }
+    base = [...base].sort((a, b) => {
+      const da = new Date(a.created_at).getTime();
+      const db = new Date(b.created_at).getTime();
+      return sortDesc ? db - da : da - db;
+    });
+    if (!activeFolder && !searchTerm) {
+      return base.slice(0, 10);
+    }
+    return base;
   };
 
   const handleEdit = (file: ContentFile) => {
@@ -82,10 +99,12 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
         content: editContent
       });
       setFeedback({ type: 'success', message: 'Conteúdo atualizado no Supabase!' });
+      showToast('success', 'Conteúdo atualizado no Supabase!');
       await fetchData();
       setEditingFile(prev => prev ? { ...prev, title: editTitle, content: editContent } : null);
     } catch (err) {
       setFeedback({ type: 'error', message: 'Falha na sincronização cloud.' });
+      showToast('error', 'Falha na sincronização cloud.');
     } finally {
       setSaveLoading(false);
       setTimeout(() => setFeedback(null), 3000);
@@ -95,19 +114,23 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
   const handleDelete = async (id: string) => {
     if (!confirm("Excluir permanentemente este documento da sua nuvem?")) return;
     try {
-      await deleteGeneratedContent(id);
+      await withRetry(() => deleteGeneratedContent(id));
       await fetchData();
       if (editingFile?.id === id) setEditingFile(null);
     } catch (err) {
-      alert("Erro ao excluir arquivo.");
+      showToast('error', 'Erro ao excluir arquivo.');
     }
   };
 
   const handleExport = async (file: ContentFile) => {
     const contentToExport = editingFile?.id === file.id ? editContent : file.content;
     const titleToExport = editingFile?.id === file.id ? editTitle : file.title;
-    await exportToDocx(contentToExport, titleToExport, settings);
+    await withRetry(() => exportToDocx(contentToExport, titleToExport, settings), { retries: 1 });
   };
+
+  const recentFiles = [...allContents]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 5);
 
   if (editingFile) {
     return (
@@ -117,6 +140,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
             <button
               onClick={() => setEditingFile(null)}
               className="p-3 bg-slate-50 text-slate-500 hover:text-blue-600 rounded-2xl transition-all"
+              aria-label="Voltar para a lista de arquivos"
             >
               <ChevronLeft size={20} />
             </button>
@@ -228,26 +252,99 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
 
         {/* Right Content - Files List */}
         <div className="flex-1 bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
+          <div className="p-6 border-b border-slate-50 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 shrink-0">
+          <div className="flex items-center gap-3">
               <div className="p-2.5 bg-white rounded-xl border border-slate-100 shadow-sm">
                 <FileText size={18} className="text-blue-600" />
               </div>
-              <h2 className="font-black text-slate-900 uppercase tracking-[0.15em] text-xs">
-                {activeFolder ? folders.find(f => f.id === activeFolder)?.name : 'Todos os Arquivos'}
-              </h2>
+              <div>
+                <h2 className="font-black text-slate-900 uppercase tracking-[0.15em] text-xs">
+                  {activeFolder ? folders.find(f => f.id === activeFolder)?.name : 'Todos os Arquivos'}
+                </h2>
+                <p className="text-[10px] text-slate-400 font-bold mt-1">
+                  {getFilteredFiles().length} documentos
+                </p>
+              </div>
             </div>
-            <div className="bg-slate-200/50 px-3 py-1.5 rounded-full text-[10px] font-black text-slate-500">
-              {getFilteredFiles().length} DOCUMENTOS
+            <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 w-full md:w-auto">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Buscar por título..."
+                  className="pl-7 pr-3 py-2 rounded-full border border-slate-200 bg-white text-[11px] text-slate-600 focus:ring-2 focus:ring-blue-100 outline-none"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => setSortDesc(prev => !prev)}
+                className="px-3 py-2 rounded-full bg-white border border-slate-200 text-[10px] font-black uppercase tracking-[0.15em] text-slate-500 hover:bg-slate-100 transition-colors"
+              >
+                {sortDesc ? 'Mais recentes' : 'Mais antigos'}
+              </button>
             </div>
+
+            {/* Últimas produções do professor */}
+            {recentFiles.length > 0 && (
+              <div className="w-full md:w-auto">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
+                  Últimas produções
+                </p>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {recentFiles.map((file) => (
+                    <button
+                      key={file.id}
+                      type="button"
+                      onClick={() => handleEdit(file)}
+                      className="min-w-[140px] max-w-[180px] px-3 py-2 rounded-2xl bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-left transition-all"
+                    >
+                      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500 mb-1 line-clamp-1">
+                        {folders.find(f => f.id === file.type)?.name || 'OUTRO'}
+                      </p>
+                      <p className="text-[11px] font-bold text-slate-800 line-clamp-2">
+                        {file.title}
+                      </p>
+                      <p className="text-[9px] text-slate-400 mt-1">
+                        {new Date(file.created_at).toLocaleDateString('pt-BR')}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar p-0">
-            {loading ? (
-              <div className="h-full flex flex-col items-center justify-center gap-6 text-center opacity-50">
-                <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
-                <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em]">Carregando...</p>
-              </div>
+          {loading ? (
+              <table className="w-full text-left border-collapse">
+                <tbody className="divide-y divide-slate-50">
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <tr key={`skeleton-row-${idx}`} className="animate-pulse">
+                      <td className="px-4 md:px-8 py-6 w-full">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-slate-100 rounded-xl" />
+                            <div className="space-y-2">
+                              <div className="h-4 w-40 bg-slate-100 rounded-md" />
+                              <div className="flex items-center gap-2">
+                                <div className="h-3 w-16 bg-slate-100 rounded-full" />
+                                <div className="h-3 w-24 bg-slate-100 rounded-full" />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-9 h-9 bg-slate-100 rounded-xl" />
+                            <div className="w-9 h-9 bg-slate-100 rounded-xl" />
+                            <div className="w-9 h-9 bg-slate-100 rounded-xl" />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             ) : (
               <table className="w-full text-left border-collapse">
                 <tbody className="divide-y divide-slate-50">
@@ -279,6 +376,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                               onClick={() => handleEdit(file)}
                               className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-blue-600 hover:border-blue-600 hover:text-white rounded-xl transition-all shadow-sm"
                               title="Editar"
+                              aria-label="Editar documento"
                             >
                               <Edit3 size={16} />
                             </button>
@@ -286,6 +384,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                               onClick={() => handleExport(file)}
                               className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-emerald-500 hover:border-emerald-500 hover:text-white rounded-xl transition-all shadow-sm"
                               title="Baixar"
+                              aria-label="Baixar documento em Word"
                             >
                               <Download size={16} />
                             </button>
@@ -293,6 +392,7 @@ const DriveExplorer: React.FC<DriveExplorerProps> = ({ userId, userEmail, settin
                               onClick={() => handleDelete(file.id)}
                               className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:bg-red-500 hover:border-red-500 hover:text-white rounded-xl transition-all shadow-sm"
                               title="Excluir"
+                              aria-label="Excluir documento"
                             >
                               <Trash2 size={16} />
                             </button>

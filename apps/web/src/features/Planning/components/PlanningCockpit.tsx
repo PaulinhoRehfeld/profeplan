@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock, Menu, X, Accessibility } from 'lucide-react';
+import { LayoutList, Book, FileText, Search, CheckCircle2, User, Bot, Download, Copy, Loader2, Send, Database, MessageSquare, Save, Lock, Menu, X, Accessibility, HelpCircle, Plus } from 'lucide-react';
 import { PdiAdaptationWidget } from './PdiAdaptationWidget';
 import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { Message, MessageRole, ToolMode } from '../../../types';
@@ -11,6 +11,8 @@ import { UserProfile, PnldBook } from '../../../types';
 import { PnldService } from '../../../services/PnldService';
 import { IterativeFeedbackWidget } from '../../../components/Feedback/IterativeFeedbackWidget';
 import { saveFeedbackPreference } from '../../../services/userFeedbackPreferencesService';
+import { useFreedayContext } from '../../../contexts/FreedayContext';
+import { LessonPlanWizard } from './LessonPlanWizard';
 
 interface PlanningCockpitProps {
     termPlans: TermPlan[];
@@ -32,13 +34,14 @@ interface PlanningCockpitProps {
     userId: string;
     selectedPnldBookId: string; // Add missing prop
     setSelectedPnldBookId: (id: string) => void; // Add missing prop
+    lastDraftSavedAt?: Date | null;
 }
 
 export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     termPlans, selectedTermPlanId, setSelectedTermPlanId,
     parsedLessons, lessonTracking, selectedLesson, setSelectedLesson,
     handleQuickAction, messages, handleExportDocx, handleSavePlan, isThinking, input, setInput, handleSendMessage, messagesEndRef,
-    userId, selectedPnldBookId, setSelectedPnldBookId
+    userId, selectedPnldBookId, setSelectedPnldBookId, lastDraftSavedAt
 }) => {
     const [observations, setObservations] = useState('');
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -49,10 +52,22 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     const [showFeedbackWidget, setShowFeedbackWidget] = useState(false);
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [lastGeneratedContent, setLastGeneratedContent] = useState<string>('');
+    const [latestAssistantMessage, setLatestAssistantMessage] = useState<string>('');
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
+    const { openWithPrompt } = useFreedayContext();
 
     useEffect(() => {
         refreshProfile();
     }, [userId]);
+
+    // Sempre que chegar uma nova mensagem do assistente, atualiza o conteúdo de preview
+    useEffect(() => {
+        const lastAssistant = [...messages].filter(m => m.role === MessageRole.ASSISTANT).pop();
+        if (lastAssistant) {
+            setLatestAssistantMessage(lastAssistant.content);
+        }
+    }, [messages]);
 
     // Fix: Auto-collapse mobile menu when AI starts thinking
     useEffect(() => {
@@ -149,7 +164,10 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
     };
 
     const handleActionClick = (action: 'plan' | 'material' | 'enem') => {
-        if (!selectedLesson) return alert('Selecione uma aula primeiro!');
+        if (!selectedLesson) {
+            alert('Selecione uma aula primeiro!');
+            return;
+        }
 
         if (action === 'material') {
             setShowMaterialOptions(true);
@@ -555,15 +573,51 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
             {/* 2. RIGHT CONTENT Area */}
             <div className="flex-1 flex flex-col h-full bg-slate-50 border-l border-slate-200 relative w-full">
                 <div className="h-14 bg-white border-b border-slate-200 flex items-center px-4 lg:px-6 justify-between shrink-0">
-                    <div className="flex items-center gap-2 text-indigo-600">
+                    <div className="flex items-center gap-3 text-indigo-600">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
                             className="lg:hidden p-1 mr-1 text-slate-500 hover:text-indigo-600 transition-colors"
+                            aria-label="Abrir painel lateral de aulas"
                         >
                             <Menu size={20} />
                         </button>
                         <Bot size={18} />
-                        <span className="text-xs font-black uppercase tracking-widest">Assistente Pedagógico</span>
+                        <div className="flex flex-col">
+                            <span className="text-xs font-black uppercase tracking-widest">Assistente Pedagógico</span>
+                            {lastDraftSavedAt && (
+                                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-emerald-500">
+                                    Rascunho salvo às {lastDraftSavedAt.toLocaleTimeString('pt-BR')}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsWizardOpen(true)}
+                            className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-colors"
+                            aria-label="Abrir wizard de novo plano de aula"
+                        >
+                            <Plus size={12} />
+                            Novo Plano de Aula
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const currentPlan = termPlans.find(p => p.id === selectedTermPlanId);
+                                const subject = currentPlan?.subject || 'sua disciplina';
+                                const grade = currentPlan?.grade || '';
+                                const prompt = selectedLesson
+                                    ? `Estou no cockpit de Planejamento da Aula ${selectedLesson.number} (${selectedLesson.title}) de ${subject} ${grade}. Me ajude a revisar ou melhorar este planejamento.`
+                                    : `Estou no cockpit de Planejamento Trimestral de ${subject} ${grade}. O que você recomenda como próximos passos para planejar minhas aulas?`;
+                                openWithPrompt(prompt);
+                            }}
+                            className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-colors"
+                            aria-label="Perguntar à FREEDAY sobre este planejamento"
+                        >
+                            <HelpCircle size={12} />
+                            Perguntar à FREEDAY
+                        </button>
                     </div>
                 </div>
 
@@ -633,6 +687,67 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
                     <div ref={messagesEndRef} />
                 </div>
             </div>
+
+            {/* Wizard de Plano de Aula */}
+            <LessonPlanWizard
+                isOpen={isWizardOpen}
+                onClose={() => setIsWizardOpen(false)}
+                defaultSubject={termPlans.find(p => p.id === selectedTermPlanId)?.subject}
+                defaultGrade={termPlans.find(p => p.id === selectedTermPlanId)?.grade}
+                defaultLessonTitle={selectedLesson?.title}
+                onGenerate={async (prompt) => {
+                    const syntheticEvent = { preventDefault: () => { } } as React.FormEvent;
+                    await handleSendMessage(syntheticEvent, prompt);
+                }}
+            />
+
+            {/* Preview simples do último plano gerado */}
+            {latestAssistantMessage && (
+                <div className="fixed bottom-4 right-4 z-[1500] flex flex-col items-end gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setShowPreview(true)}
+                        className="px-3 py-1.5 rounded-full bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-slate-900/30"
+                        aria-label="Abrir preview do último plano gerado"
+                    >
+                        Ver plano completo
+                    </button>
+                </div>
+            )}
+
+            {showPreview && (
+                <div
+                    className="fixed inset-0 z-[2100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="lesson-plan-preview-title"
+                >
+                    <div className="w-full max-w-3xl bg-white rounded-[2rem] shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+                        <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+                            <span
+                                id="lesson-plan-preview-title"
+                                className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400"
+                            >
+                                Preview · Plano de Aula
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setShowPreview(false)}
+                                className="text-slate-400 hover:text-slate-700 text-xs font-bold uppercase tracking-wide"
+                                aria-label="Fechar preview do plano de aula"
+                            >
+                                Fechar
+                            </button>
+                        </div>
+                        <div className="px-6 py-4 overflow-y-auto custom-scrollbar text-sm text-slate-700">
+                            <pre className="whitespace-pre-wrap font-sans text-sm">
+                                {latestAssistantMessage}
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {userProfile && (
                 <LowCreditModal
                     isOpen={showLowCreditModal}

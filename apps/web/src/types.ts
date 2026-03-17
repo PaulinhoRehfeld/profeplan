@@ -154,6 +154,7 @@ export interface Student {
   id: string;
   name: string;
   student_code?: string;
+  call_number?: number;
   current_school_id?: string;
   school_id?: string; // Alias for compatibility
   class_id?: string;

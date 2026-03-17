@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { School, Users, Plus, X, Loader2, Save } from 'lucide-react';
-import { supabase } from '../../../services/supabaseClient';
-import { SchoolAutocomplete } from '../../SchoolAutocomplete';
 
 interface Supervisor {
     id?: string;
@@ -35,35 +33,6 @@ export const ManagerProfileTab: React.FC<ManagerProfileTabProps> = ({
 
     const [saveLoading, setSaveLoading] = useState(false);
 
-    // CARREGAR dados da escola do manager
-    useEffect(() => {
-        const loadSchoolData = async () => {
-            if (!userProfile?.school_id) return;
-
-            try {
-                const { data: school } = await supabase
-                    .from('schools')
-                    .select('id, name, inep_code, city')
-                    .eq('id', userProfile.school_id)
-                    .single();
-
-                if (school) {
-                    setSchoolData({
-                        city: school.city || '',
-                        inep: school.inep_code || '',
-                        name: school.name || ''
-                    });
-                }
-
-                // TODO: Carregar supervisores vinculados (de uma tabela school_supervisors)
-            } catch (err) {
-                console.error('[ManagerProfileTab] Error loading school:', err);
-            }
-        };
-
-        loadSchoolData();
-    }, [userProfile?.school_id]);
-
     const handleAddSupervisor = () => {
         if (supervisors.length < 3) {
             setSupervisors([...supervisors, { masp: '', name: '', shift: 'Integral' }]);
@@ -91,40 +60,13 @@ export const ManagerProfileTab: React.FC<ManagerProfileTabProps> = ({
                 return;
             }
 
-            // 1. Buscar/Criar escola pelo INEP
-            let schoolId = userProfile.school_id;
-
-            if (schoolData.inep.trim()) {
-                const { data: existingSchool } = await supabase
-                    .from('schools')
-                    .select('id')
-                    .eq('inep_code', schoolData.inep.trim())
-                    .maybeSingle();
-
-                if (existingSchool) {
-                    schoolId = existingSchool.id;
-                } else {
-                    // Criar nova escola
-                    const { data: newSchool, error: schoolError } = await supabase
-                        .from('schools')
-                        .insert({
-                            inep_code: schoolData.inep.trim(),
-                            name: schoolData.name.trim(),
-                            city: schoolData.city.trim()
-                        })
-                        .select('id')
-                        .single();
-
-                    if (schoolError) throw schoolError;
-                    schoolId = newSchool.id;
-                }
-            }
-
-            // 2. Atualizar perfil do manager com school_id
+            // Atualizar perfil do manager sem vínculo automático com schools
             const { error: profileError } = await supabase
                 .from('profiles')
                 .update({
-                    school_id: schoolId,
+                    school_name: schoolData.name.trim(),
+                    city: schoolData.city.trim(),
+                    inep_code: schoolData.inep.trim(),
                     full_name: userProfile.full_name // Manter nome
                 })
                 .eq('id', userProfile.id);
@@ -192,20 +134,12 @@ export const ManagerProfileTab: React.FC<ManagerProfileTabProps> = ({
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
                                 Nome da Escola
                             </label>
-                            <SchoolAutocomplete
+                            <input
+                                type="text"
                                 value={schoolData.name}
-                                onChange={(value, school) => {
-                                    if (school) {
-                                        setSchoolData({
-                                            name: school.name,
-                                            inep: school.inep_code || schoolData.inep,
-                                            city: school.city || schoolData.city
-                                        });
-                                    } else {
-                                        setSchoolData({ ...schoolData, name: value });
-                                    }
-                                }}
-                                placeholder="Buscar no banco INEP..."
+                                onChange={(e) => setSchoolData({ ...schoolData, name: e.target.value })}
+                                className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none text-sm font-bold transition-all"
+                                placeholder="Escreva o nome da escola livremente"
                             />
                         </div>
                     </div>

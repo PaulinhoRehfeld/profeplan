@@ -120,7 +120,8 @@ const ClassBatchImportModal: React.FC<ClassBatchImportModalProps> = ({ isOpen, o
                         class_id: classId,
                         name: student.name,
                         school_student_id: schoolStudentData.id,
-                        needs_adaptation: student.needsPdi // Legacy field support
+                        needs_adaptation: student.needsPdi, // Legacy field support
+                        current_school_id: schoolId
                     }]);
 
                 if (sError) throw sError;

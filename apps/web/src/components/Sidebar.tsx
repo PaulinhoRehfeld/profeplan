@@ -35,15 +35,15 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout
 }) => {
   const menuItems = [
-    { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'chat' },
-    { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning' },
-    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planos de Aula', feature: 'planning' },
-    { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptações PDI/DUA', feature: 'pdi' },
-    { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb', feature: 'enem' },
-    { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content' },
-    { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content' },
-    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management' },
-    { id: ToolMode.CLASSES, icon: BookOpen, label: 'Minhas Turmas', feature: 'management' }
+    { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'home', group: 'home' },
+    { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning', group: 'planning' },
+    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planos de Aula', feature: 'planning', group: 'planning' },
+    { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptações PDI/DUA', feature: 'pdi', group: 'content' },
+    { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb', feature: 'enem', group: 'content' },
+    { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content', group: 'content' },
+    { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content', group: 'content' },
+    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management', group: 'management' },
+    { id: ToolMode.CLASSES, icon: BookOpen, label: 'Minhas Turmas', feature: 'management', group: 'management' }
   ];
 
   // Add School Management for admins and managers
@@ -56,6 +56,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     : menuItems;
 
   const filteredItems = allMenuItems;
+  const groupedItems = {
+    home: filteredItems.filter(i => i.group === 'home'),
+    planning: filteredItems.filter(i => i.group === 'planning'),
+    content: filteredItems.filter(i => i.group === 'content'),
+    management: filteredItems.filter(i => i.group === 'management'),
+  };
 
   const handleModeSelection = (mode: ToolMode) => {
     setActiveMode(mode);
@@ -107,7 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <nav className="flex-1 overflow-y-auto pr-2 scrollbar-hide grid grid-cols-2 gap-2 lg:block lg:space-y-1 content-start">
-            {filteredItems.map((item) => (
+            {groupedItems.home.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
@@ -122,8 +128,65 @@ const Sidebar: React.FC<SidebarProps> = ({
               </button>
             ))}
 
+            {isDesktopExpanded && (
+              <p className="hidden lg:block mt-2 mb-1 px-1 text-[9px] font-bold uppercase tracking-[0.25em] text-slate-500">
+                Planejamento
+              </p>
+            )}
+            {groupedItems.planning.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleModeSelection(item.id)}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                  }`}
+                title={!isDesktopExpanded ? item.label : undefined}
+              >
+                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+              </button>
+            ))}
 
-            {/* GESTÃO ESCOLAR REMOVED */}
+            {isDesktopExpanded && (
+              <p className="hidden lg:block mt-3 mb-1 px-1 text-[9px] font-bold uppercase tracking-[0.25em] text-slate-500">
+                Conteúdo & Avaliação
+              </p>
+            )}
+            {groupedItems.content.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleModeSelection(item.id)}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                  }`}
+                title={!isDesktopExpanded ? item.label : undefined}
+              >
+                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+              </button>
+            ))}
+
+            {isDesktopExpanded && (
+              <p className="hidden lg:block mt-3 mb-1 px-1 text-[9px] font-bold uppercase tracking-[0.25em] text-slate-500">
+                Gestão
+              </p>
+            )}
+            {groupedItems.management.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleModeSelection(item.id)}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                  }`}
+                title={!isDesktopExpanded ? item.label : undefined}
+              >
+                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+              </button>
+            ))}
 
             {/* ADMINISTRAÇÃO DO SISTEMA (Apenas Admin) */}
             {(isAdmin(userProfile) || userRole === 'ADMIN') && (

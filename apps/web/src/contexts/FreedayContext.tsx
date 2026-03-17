@@ -23,6 +23,7 @@ interface FreedayContextValue {
     stopListening: () => void;
     sendTextMessage: (text: string) => Promise<void>;
     clearMessages: () => void;
+    openWithPrompt: (text: string) => void;
 }
 
 const FreedayContext = createContext<FreedayContextValue | null>(null);
@@ -35,81 +36,16 @@ export function useFreedayContext(): FreedayContextValue {
     return ctx;
 }
 
-const FREEDAY_SYSTEM_PROMPT = `Você é a FREEDAY, a assistente de Inteligência Artificial de Alta Performance exclusiva do Gerson (Executivo de Vendas B2B de Locação e Gestão de Frotas).
+const FREEDAY_SYSTEM_PROMPT = `Você é a FREEDAY, a assistente de Inteligência Artificial do PROFEPLAN, focada em apoiar o professor no dia a dia.
 
-Sua missão: Reduzir a carga mental do Gerson, analisar dados do CRM (FLUX_CRM) em tempo real e entregar insights acionáveis por áudio.
+Sua missão: Ajudar o professor com dúvidas e dificuldades pedagógicas, de planejamento, gestão de turmas e uso da plataforma.
 
-Suas Regras de Ouro:
-1. Seja Direta e Focada: Suas respostas serão lidas por um sintetizador de voz (TTS) enquanto o Gerson dirige. NUNCA use formatação markdown. Fale de forma fluida e conversacional.
-2. Vá Direto ao Ponto: Não diga "Olá Gerson, como posso ajudar?". Vá direto para a resposta.
-3. Não Leia Listas Longas: Resuma e ofereça detalhamento se necessário.
-4. Use as Ferramentas: Sempre que perguntarem sobre cliente, faturamento, ou limites, ative as funções disponíveis. Nunca invente dados.
-5. Tom: Profissional, analítica, proativa e levemente confiante.`;
-
-// MOCK tool execution (will be wired to real DB later)
-function executeTool(name: string, args: Record<string, string>): string {
-    if (name === 'consultarFichaCliente') {
-        return JSON.stringify({
-            empresa: args.nomeEmpresa || 'Exemplo Representações',
-            status: 'Ativo',
-            creditoDisponivel: 'R$ 48.000',
-            contratos: 3,
-            ultimoContato: '2025-12-10',
-            riscoChurn: 'Baixo',
-        });
-    }
-    if (name === 'verResumoDoDia') {
-        return JSON.stringify({
-            clientesParaContatar: 10,
-            prioridadeMaxima: 'Atenta Engenharia',
-            motivoPrioridade: 'Contrato vence em 7 dias e sem retorno há 14 dias',
-            reunioesHoje: 2,
-            faturamentoMes: 'R$ 312.000',
-        });
-    }
-    if (name === 'verificarRiscosDeChurn') {
-        return JSON.stringify({
-            clientesEmRisco: [
-                { empresa: 'Atenta Engenharia', risco: 'Alto', motivo: 'Sem contato há 14 dias, contrato vence em 7 dias' },
-                { empresa: 'Construtora Horizonte', risco: 'Médio', motivo: 'Solicitação de redução de frota pendente' },
-            ],
-        });
-    }
-    return JSON.stringify({ erro: 'Ferramenta desconhecida' });
-}
-
-const TOOLS_SPEC = [
-    {
-        type: 'function',
-        function: {
-            name: 'consultarFichaCliente',
-            description: 'Consulta os dados de um cliente pelo nome da empresa',
-            parameters: {
-                type: 'object',
-                properties: {
-                    nomeEmpresa: { type: 'string', description: 'Nome da empresa' },
-                },
-                required: ['nomeEmpresa'],
-            },
-        },
-    },
-    {
-        type: 'function',
-        function: {
-            name: 'verResumoDoDia',
-            description: 'Retorna o resumo da agenda e prioridades do dia',
-            parameters: { type: 'object', properties: {} },
-        },
-    },
-    {
-        type: 'function',
-        function: {
-            name: 'verificarRiscosDeChurn',
-            description: 'Lista os clientes com risco de churn',
-            parameters: { type: 'object', properties: {} },
-        },
-    },
-];
+Regras de ouro:
+1. Seja direta e acolhedora. Respostas curtas e claras (no máximo 3–4 frases quando for por voz), em português do Brasil.
+2. Não use Markdown, listas longas ou títulos; fale em texto corrido próprio para ser lido em voz alta quando aplicável.
+3. Foque em: planejamento de aulas, BNCC, avaliações, inclusão (PDI), dicas de organização e uso do PROFEPLAN.
+4. Se não souber algo específico da escola do professor, oriente de forma genérica e sugira onde ele pode conferir na plataforma.
+5. Tom: profissional, paciente e encorajador.`;
 
 export function FreedayProvider({ children }: { children: React.ReactNode }) {
     const [state, setState] = useState<FreedayState>('idle');
@@ -122,7 +58,7 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
     const synthRef = useRef<SpeechSynthesis>(window.speechSynthesis);
     const isListeningRef = useRef(false);
 
-    const speak = useCallback((text: string) => {
+    const speakBrowser = useCallback((text: string) => {
         if (!text) return;
         synthRef.current.cancel();
         setState('speaking');
@@ -132,7 +68,6 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
         utterance.rate = 1.05;
         utterance.pitch = 1.0;
 
-        // Try to find a pt-BR voice
         const voices = synthRef.current.getVoices();
         const ptBrVoice = voices.find(
             (v) => v.lang === 'pt-BR' || v.lang.startsWith('pt')
@@ -143,6 +78,31 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
         utterance.onerror = () => setState('idle');
 
         synthRef.current.speak(utterance);
+    }, []);
+
+    const playAudioFromBackend = useCallback(async (audioBase64?: string) => {
+        if (!audioBase64) return;
+        try {
+            const url = `data:audio/mpeg;base64,${audioBase64}`;
+            const audio = new Audio(url);
+            setState('speaking');
+            await new Promise<void>((resolve) => {
+                audio.onended = () => {
+                    setState('idle');
+                    resolve();
+                };
+                audio.onerror = () => {
+                    setState('idle');
+                    resolve();
+                };
+                audio.play().catch(() => {
+                    setState('idle');
+                    resolve();
+                });
+            });
+        } catch {
+            setState('idle');
+        }
     }, []);
 
     const sendTextMessage = useCallback(
@@ -163,7 +123,11 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
                     content: m.content,
                 }));
 
-                const response = await fetch('/api/freeday', {
+                const base = (import.meta as any).env?.VITE_FREEDAY_API_BASE || '';
+                const trimmedBase = typeof base === 'string' ? base.replace(/\/+$/, '') : '';
+                const url = trimmedBase ? `${trimmedBase}/api/freeday` : '/api/freeday';
+
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ messages: history, systemPrompt: FREEDAY_SYSTEM_PROMPT }),
@@ -174,30 +138,7 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
                 }
 
                 const data = await response.json();
-                let assistantText = data.text || data.content || '';
-                let toolCalls = data.toolCalls || [];
-
-                // Handle tool calls
-                if (toolCalls.length > 0) {
-                    const toolResults: Array<{ role: 'tool'; name: string; content: string }> = [];
-                    for (const call of toolCalls) {
-                        const result = executeTool(call.name, call.arguments || {});
-                        toolResults.push({ role: 'tool', name: call.name, content: result });
-                    }
-
-                    // Send tool results back for final answer
-                    const followupResponse = await fetch('/api/freeday', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            messages: history,
-                            systemPrompt: FREEDAY_SYSTEM_PROMPT,
-                            toolResults,
-                        }),
-                    });
-                    const followupData = await followupResponse.json();
-                    assistantText = followupData.text || followupData.content || '';
-                }
+                const assistantText = data.text || data.content || '';
 
                 const assistantMsg: FreedayMessage = {
                     role: 'assistant',
@@ -205,18 +146,25 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
                     timestamp: new Date(),
                 };
                 setMessages((prev) => [...prev, assistantMsg]);
-                speak(assistantText);
+
+                if (data.audioBase64) {
+                    await playAudioFromBackend(data.audioBase64);
+                } else {
+                    // Fallback para voz do navegador se backend não devolver áudio
+                    speakBrowser(assistantText);
+                }
             } catch (err) {
                 console.error('[FREEDAY] API error:', err);
-                const errorMsg = 'Gerson, tive um problema de conexão. Tente novamente em um momento.';
+                const errorMsg =
+                    'Tive um problema de conexão ou de voz. Tente novamente em um momento.';
                 setMessages((prev) => [
                     ...prev,
                     { role: 'assistant', content: errorMsg, timestamp: new Date() },
                 ]);
-                speak(errorMsg);
+                speakBrowser(errorMsg);
             }
         },
-        [messages, speak]
+        [messages, speakBrowser, playAudioFromBackend]
     );
 
     const startListening = useCallback(() => {
@@ -268,7 +216,13 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
         setMessages([]);
     }, []);
 
-    // Load voices when available
+    const openWithPrompt = useCallback((text: string) => {
+        if (typeof window === 'undefined') return;
+        const detail = { prompt: text || '' };
+        window.dispatchEvent(new CustomEvent('freeday:open', { detail }));
+    }, []);
+
+    // Load voices when available (para fallback com SpeechSynthesis)
     useEffect(() => {
         const loadVoices = () => synthRef.current.getVoices();
         loadVoices();
@@ -286,6 +240,7 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
                 stopListening,
                 sendTextMessage,
                 clearMessages,
+                openWithPrompt,
             }}
         >
             {children}

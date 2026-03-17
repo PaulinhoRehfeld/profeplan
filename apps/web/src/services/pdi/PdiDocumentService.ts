@@ -79,7 +79,11 @@ export const PdiDocumentService = {
      * @example
      * const result = await PdiDocumentService.getOrCreatePdi('student-123', 2025, { studentName: 'João' });
      */
-    async getOrCreatePdi(studentId: string, year: number = new Date().getFullYear(), contextualData?: { profile?: UserProfile | null, studentName?: string }): Promise<{ data: PdiDocument | null, error: unknown }> {
+    async getOrCreatePdi(
+        studentId: string,
+        year: number = new Date().getFullYear(),
+        contextualData?: { profile?: UserProfile | null; studentName?: string }
+    ): Promise<{ data: PdiDocument | null; error: unknown }> {
         const { data: existing, error: fetchError } = await supabase
             .from('pdi_documents')
             .select('*')
@@ -112,7 +116,9 @@ export const PdiDocumentService = {
             .insert({
                 student_id: studentId,
                 year,
-                status: 'draft',
+                // Mantém alinhamento com o CHECK CONSTRAINT do banco:
+                // status IN ('em_andamento', 'finalizado', 'arquivado')
+                status: 'em_andamento',
                 content_data: initialContent
             })
             .select()
@@ -353,12 +359,12 @@ export const PdiDocumentService = {
             .from('pdi_documents')
             .select(`
                 *,
-                school_students:school_students!inner (
+                school_students:students!inner (
                     name,
-                    school_id
+                    current_school_id
                 )
             `)
-            .eq('school_students.school_id', schoolId)
+            .eq('school_students.current_school_id', schoolId)
             .order('updated_at', { ascending: false });
 
         if (error) {
@@ -433,7 +439,7 @@ export const PdiDocumentService = {
             .from('pdi_documents')
             .select(`
                 *,
-                school_students:school_students (name)
+                school_students:students (name, current_school_id)
             `)
             .eq('id', pdiId)
             .maybeSingle();
