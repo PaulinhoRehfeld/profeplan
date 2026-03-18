@@ -35,13 +35,14 @@ interface PlanningCockpitProps {
     selectedPnldBookId: string; // Add missing prop
     setSelectedPnldBookId: (id: string) => void; // Add missing prop
     lastDraftSavedAt?: Date | null;
+    setActiveMode?: (mode: ToolMode) => void;
 }
 
 export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     termPlans, selectedTermPlanId, setSelectedTermPlanId,
     parsedLessons, lessonTracking, selectedLesson, setSelectedLesson,
     handleQuickAction, messages, handleExportDocx, handleSavePlan, isThinking, input, setInput, handleSendMessage, messagesEndRef,
-    userId, selectedPnldBookId, setSelectedPnldBookId, lastDraftSavedAt
+    userId, selectedPnldBookId, setSelectedPnldBookId, lastDraftSavedAt, setActiveMode
 }) => {
     const [observations, setObservations] = useState('');
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -344,32 +345,60 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
                         parsedLessons.map(lesson => {
                             const isPrepared = lessonTracking[lesson.number] === 'prepared';
                             return (
-                                <button
+                                <div
                                     key={lesson.number}
-                                    onClick={() => setSelectedLesson(lesson)}
-                                    className={`w-full text-left p-3 rounded-xl text-xs transition-all border group relative flex items-start gap-3 ${selectedLesson?.number === lesson.number
+                                    className={`w-full p-3 rounded-xl text-xs transition-all border group relative flex flex-col gap-2 ${selectedLesson?.number === lesson.number
                                         ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
                                         : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:shadow-sm'
                                         }`}
                                 >
-                                    <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 ${selectedLesson?.number === lesson.number ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
-                                        }`}>
-                                        {lesson.number}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className={`font-bold leading-snug truncate ${isPrepared && selectedLesson?.number !== lesson.number ? 'line-through text-slate-400 decoration-slate-300 decoration-2' : ''}`}>
-                                            {lesson.title}
-                                        </p>
-                                        {selectedLesson?.number === lesson.number && (
-                                            <p className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed font-medium">
-                                                {lesson.description}
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedLesson(lesson)}
+                                        className="flex items-start gap-3 w-full text-left"
+                                    >
+                                        <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 ${selectedLesson?.number === lesson.number ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
+                                            }`}>
+                                            {lesson.number}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className={`font-bold leading-snug truncate ${isPrepared && selectedLesson?.number !== lesson.number ? 'line-through text-slate-400 decoration-slate-300 decoration-2' : ''}`}>
+                                                {lesson.title}
                                             </p>
+                                            {selectedLesson?.number === lesson.number && (
+                                                <p className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed font-medium">
+                                                    {lesson.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                        {isPrepared && (
+                                            <CheckCircle2 size={14} className={selectedLesson?.number === lesson.number ? 'text-white' : 'text-emerald-500'} />
                                         )}
+                                    </button>
+                                    <div className="flex flex-wrap gap-2 pt-1">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedLesson(lesson);
+                                                if (setActiveMode) {
+                                                    const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
+                                                    const url = new URL(window.location.href);
+                                                    url.searchParams.set('source', 'planning');
+                                                    url.searchParams.set('lessonNumber', String(lesson.number));
+                                                    url.searchParams.set('lessonTitle', lesson.title);
+                                                    if (selectedPlan?.subject) url.searchParams.set('subject', selectedPlan.subject);
+                                                    if (selectedPlan?.grade) url.searchParams.set('grade', selectedPlan.grade);
+                                                    window.history.replaceState(null, '', url.toString());
+                                                    setActiveMode(ToolMode.INCLUSION);
+                                                }
+                                            }}
+                                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black uppercase tracking-[0.18em]"
+                                        >
+                                            Adaptar com PDI
+                                        </button>
                                     </div>
-                                    {isPrepared && (
-                                        <CheckCircle2 size={14} className={selectedLesson?.number === lesson.number ? 'text-white' : 'text-emerald-500'} />
-                                    )}
-                                </button>
+                                </div>
                             );
                         })
                     )}

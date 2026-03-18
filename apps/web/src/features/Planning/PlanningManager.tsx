@@ -37,6 +37,7 @@ interface PlanningManagerProps {
     quarter?: string;
     enemArea?: string;
     setSidebarContent?: (content: React.ReactNode) => void;
+    setActiveMode?: (mode: ToolMode) => void;
 }
 
 interface Lesson {
@@ -54,7 +55,8 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     settings: appSettings,
     setSidebarContent,
     availableClasses,
-    selectedClassId
+    selectedClassId,
+    setActiveMode,
 }) => {
     // --- Global State ---
     const { termPlans, refreshTermPlans } = useGlobalPlanning();
@@ -688,7 +690,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 setSelectedLesson={setSelectedLesson}
                 handleQuickAction={handleQuickAction}
                 messages={messages}
-                userId={userId} // Pass userId
+                userId={userId}
                 handleExportDocx={handleExportDocx}
                 handleSavePlan={handleSavePlan}
                 isThinking={isThinking}
@@ -699,6 +701,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 selectedPnldBookId={selectedPnldBookId}
                 setSelectedPnldBookId={setSelectedPnldBookId}
                 lastDraftSavedAt={lastDraftSavedAt}
+                setActiveMode={setActiveMode}
             />
         );
     }

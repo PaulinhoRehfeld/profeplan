@@ -138,7 +138,38 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
             ) : activeMode === ToolMode.QUARTERLY_PLANNING ? (
                 isProfileComplete ? (
                     <div className="flex-1 overflow-y-auto px-4 md:px-20 py-10 custom-scrollbar bg-slate-50/50">
-                        <TermPlanningManager userId={session.id} settings={settings} setSidebarContent={setCustomSidebar} />
+                        <div className="max-w-6xl mx-auto space-y-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-6 items-start">
+                                <React.Suspense fallback={<PageLoader />}>
+                                    {/*
+                                      Lista de planejamentos salvos.
+                                      Em mobile, aparece acima; em telas grandes, à esquerda.
+                                    */}
+                                    <React.Suspense fallback={null}>
+                                        {React.createElement(
+                                            React.lazy(() => import('../features/TermPlanning/TermPlanningList')),
+                                            {
+                                                userId: session.id,
+                                                onOpenPlan: () => {
+                                                    // Em mobile, rola suavemente até o editor
+                                                    const el = document.getElementById('term-planning-editor');
+                                                    if (el) {
+                                                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                    }
+                                                },
+                                            } as any,
+                                        )}
+                                    </React.Suspense>
+                                </React.Suspense>
+                                <div id="term-planning-editor">
+                                    <TermPlanningManager
+                                        userId={session.id}
+                                        settings={settings}
+                                        setSidebarContent={setCustomSidebar}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     renderProfileBlocker()
@@ -160,6 +191,7 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
                         quarter={quarter}
                         enemArea={enemArea}
                         setSidebarContent={setCustomSidebar}
+                        setActiveMode={setActiveMode}
                     />
                 ) : (
                     renderProfileBlocker()

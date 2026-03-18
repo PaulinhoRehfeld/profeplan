@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabaseClient';
-import { getClassesBySchool as getClasses, getStudentsByClass as getClassDetails } from '../../services/classService';
+import { getClasses as getUserClasses, getClassDetails as getSupabaseClassDetails } from '../../services/supabaseService';
 import { getGeneratedContents, saveGeneratedContent } from '../../services/databaseService';
 import { PdiDocumentService } from '../../services/pdi/PdiDocumentService';
 import { generateBlock9Adaptation } from '../../services/ai/AiPdiService';
@@ -32,9 +32,37 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
     const { currentPlan } = useGlobalPlanning();
 
-    // Initial Load
+    // Initial Load + possível auto-seleção vinda do Planejamento
     useEffect(() => {
-        loadInitialData();
+        const bootstrap = async () => {
+            await loadInitialData();
+            try {
+                const url = new URL(window.location.href);
+                const source = url.searchParams.get('source');
+                const lessonTitle = url.searchParams.get('lessonTitle');
+                const lessonNumber = url.searchParams.get('lessonNumber');
+                const subject = url.searchParams.get('subject');
+                const grade = url.searchParams.get('grade');
+
+                if (source === 'planning' && (lessonTitle || lessonNumber)) {
+                    const targetClass =
+                        classes.find((cls: any) => {
+                            const subj = (cls.subject || '').toLowerCase();
+                            const grd = (cls.grade || '').toLowerCase();
+                            return (!subject || subj.includes(subject.toLowerCase())) &&
+                                (!grade || grd.includes(grade.toLowerCase()));
+                        }) || classes[0];
+
+                    if (targetClass) {
+                        await handleClassSelect(targetClass.id);
+                    }
+                }
+            } catch {
+                // fail-silent se URL/contexto não estiver disponível
+            }
+        };
+
+        bootstrap();
     }, [userId, userProfile]);
 
     const loadInitialData = async () => {
@@ -50,42 +78,57 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             })) : [];
             setLessons(mappedLessons);
 
-            // Fetch Classes
-            const schoolId = userProfile?.school_id || '';
+            // Fetch Classes (mesma fonte de "Minhas Turmas": classes do usuário na escola ativa)
+            const schoolId = userProfile?.active_school_id || userProfile?.school_id;
             let sbClasses: Class[] = [];
 
+            // 1) Tenta carregar as mesmas turmas usadas em "Minhas Turmas"
             if (schoolId) {
-                const fetchedClasses = await getClasses(schoolId);
-                sbClasses = fetchedClasses.map((c: any) => ({
-                    id: c.id,
-                    name: c.name,
-                    subject: c.grade || '-', // Map grade to subject or default
-                    created_at: c.created_at || new Date().toISOString(),
-                    students: [] // Initialize empty if needed
-                }));
+                const { data } = await getUserClasses(userId, schoolId);
+                sbClasses = data || [];
             }
 
-            const localClassesRaw = getLocalClasses(userId);
-            const localClassesMapped: Class[] = localClassesRaw.map(c => ({
+            // 2) Se não achou nada (ou não há schoolId), carrega todas as turmas do usuário
+            if (!sbClasses.length) {
+                const { data } = await getUserClasses(userId);
+                sbClasses = data || [];
+            }
+
+            // Mapeia para o tipo Class com alunos (quando já vierem agregados)
+            sbClasses = sbClasses.map((c: any) => ({
                 id: c.id,
                 name: c.name,
-                subject: c.subject,
-                created_at: c.createdAt,
-                students: c.students.map((s: any) => ({
-                    id: s.id,
-                    name: s.name,
-                    class_id: c.id,
-                    needs_adaptation: s.needs_adaptation || false,
-                    deficiencies: s.deficiencies || [], // Legacy
-                    pdi_needs: s.pdi_needs || [], // New
-                    pedagogical_observations: s.pedagogical_observations || ''
-                }))
+                subject: c.subject || '-',
+                grade: c.grade,
+                shift: c.shift,
+                year: c.year,
+                created_at: c.created_at || new Date().toISOString(),
+                students: Array.isArray(c.students)
+                    ? c.students.map((s: any) => ({
+                        id: s.id,
+                        name: typeof s.name === 'object' ? (s.name?.name || 'Sem Nome') : (s.name || 'Sem Nome'),
+                        class_id: c.id,
+                        needs_adaptation: s.needs_adaptation || false,
+                        deficiencies: s.deficiencies || [],
+                        pdi_needs: s.pdi_needs || [],
+                        pedagogical_observations: s.pedagogical_observations || s.observations || ''
+                    }))
+                    : []
             }));
 
-            const localIds = new Set(localClassesMapped.map(c => c.id));
-            const uniqueSbClasses = (sbClasses || []).filter(c => !localIds.has(c.id));
-            const mergedClasses = [...uniqueSbClasses, ...localClassesMapped];
-            setClasses(mergedClasses);
+            // Para o módulo de PDI, usamos apenas as turmas do Supabase
+            // (fonte de verdade) para evitar estados divergentes com o
+            // fallback em localStorage.
+            const allClasses = sbClasses || [];
+            const seenKeys = new Set<string>();
+            const dedupedClasses = allClasses.filter((cls) => {
+                const key = `${cls.name}::${cls.year ?? ''}::${cls.shift ?? ''}`;
+                if (seenKeys.has(key)) return false;
+                seenKeys.add(key);
+                return true;
+            });
+
+            setClasses(dedupedClasses);
 
         } catch (e) {
             console.error("Error loading initial data", e);
@@ -114,19 +157,54 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                 }))
             };
             setSelectedClass(mappedClass);
-            const needs = mappedClass.students?.filter((s: Student) => s.needs_adaptation || (s.deficiencies && s.deficiencies.length > 0)) || [];
+            const needs = mappedClass.students?.filter((s: Student) => {
+                const hasDeficiencies = Array.isArray(s.deficiencies) && s.deficiencies.length > 0;
+                const hasPdiNeeds = Array.isArray(s.pdi_needs) && s.pdi_needs.length > 0;
+                const hasObs = typeof s.pedagogical_observations === 'string' && s.pedagogical_observations.trim().length > 0;
+                const hasLegacyObs = typeof s.observations === 'string' && s.observations.trim().length > 0;
+                return s.needs_adaptation || hasDeficiencies || hasPdiNeeds || hasObs || hasLegacyObs;
+            }) || [];
             setStudentsWithNeeds(needs);
             setAdaptations({});
         } else {
             // Supabase fallback
             const cls = classes.find(c => c.id === classId);
             if (cls) {
-                // Fetch fresh students data
-                const students = await getClassDetails(classId);
-                if (students) {
-                    const fullClass = { ...cls, students };
+                // Buscar turma + alunos diretamente do Supabase,
+                // usando o mesmo shape de dados de "Minhas Turmas"
+                const { data, error } = await getSupabaseClassDetails(classId);
+                if (!error && data) {
+                    const mappedStudents = Array.isArray(data.students)
+                        ? data.students.map((s: any) => ({
+                            id: s.id,
+                            name: typeof s.name === 'object' ? (s.name?.name || 'Sem Nome') : (s.name || 'Sem Nome'),
+                            class_id: data.id,
+                            needs_adaptation: s.needs_adaptation || false,
+                            deficiencies: s.deficiencies || [],
+                            pdi_needs: s.pdi_needs || [],
+                            pedagogical_observations: s.pedagogical_observations || s.observations || ''
+                        }))
+                        : [];
+
+                    const fullClass: Class = {
+                        id: data.id,
+                        name: data.name,
+                        subject: data.subject,
+                        grade: data.grade,
+                        shift: data.shift,
+                        year: data.year,
+                        created_at: data.created_at,
+                        students: mappedStudents
+                    };
+
                     setSelectedClass(fullClass);
-                    const needs = students?.filter((s: any) => s.needs_adaptation || (s.deficiencies && s.deficiencies.length > 0)) || [];
+                    const needs = mappedStudents.filter((s: Student) => {
+                        const hasDeficiencies = Array.isArray(s.deficiencies) && s.deficiencies.length > 0;
+                        const hasPdiNeeds = Array.isArray(s.pdi_needs) && s.pdi_needs.length > 0;
+                        const hasObs = typeof s.pedagogical_observations === 'string' && s.pedagogical_observations.trim().length > 0;
+                        const hasLegacyObs = typeof s.observations === 'string' && s.observations.trim().length > 0;
+                        return s.needs_adaptation || hasDeficiencies || hasPdiNeeds || hasObs || hasLegacyObs;
+                    });
                     setStudentsWithNeeds(needs);
                     setAdaptations({});
                 }

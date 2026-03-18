@@ -19,7 +19,7 @@ interface TermPlanningManagerProps {
 }
 
 const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, settings, setSidebarContent }) => {
-    const { updateCurrentPlan, refreshTermPlans } = useGlobalPlanning();
+    const { currentPlan, updateCurrentPlan, refreshTermPlans } = useGlobalPlanning();
     const [isSaving, setIsSaving] = useState(false);
 
     // AI Generation
@@ -90,6 +90,26 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
     useEffect(() => {
         if (setSidebarContent) setSidebarContent(null);
     }, [setSidebarContent]);
+
+    // Hidrata o formulário quando há um TermPlan selecionado na listagem
+    useEffect(() => {
+        if (!currentPlan) return;
+
+        setPeriod(currentPlan.period);
+        setRegime(currentPlan.regime);
+        setSubject(currentPlan.subject);
+        setGrade(currentPlan.grade);
+        setLevel(currentPlan.level);
+        setWorkloadWeekly(currentPlan.workloadWeekly);
+        setReserves(currentPlan.reserves);
+        setGrading(currentPlan.gradingGrid);
+        setStateBase(currentPlan.stateBase || 'Minas Gerais');
+        setEducationSphere(currentPlan.educationSphere || 'Estadual');
+        setGeneratedText(currentPlan.generatedText || '');
+        if (currentPlan.lessons && currentPlan.lessons.length) {
+            setLessons(currentPlan.lessons);
+        }
+    }, [currentPlan]);
 
     useEffect(() => {
         if (usePnld && availableBooks.length === 0) {
