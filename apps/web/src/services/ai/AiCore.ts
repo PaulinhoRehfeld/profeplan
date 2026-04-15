@@ -1,40 +1,64 @@
-import { AzureOpenAI } from "openai";
-
-// Mantém a exportação para compatibilidade, embora não seja mais usada diretamente com Azure.
+// Mantém a exportação para compatibilidade.
 export const safetySettings: unknown[] = [];
 
-const getEnvVar = (browserKey: string, nodeKey: string): string | undefined => {
-    const browserValue = typeof import.meta !== "undefined" && (import.meta as any).env && (import.meta as any).env[browserKey];
-    const nodeValue = typeof process !== "undefined" ? (process.env as Record<string, string | undefined>)[nodeKey] : undefined;
-    return (browserValue ?? nodeValue)?.toString().trim() || undefined;
-};
-
-const endpoint = getEnvVar("VITE_AZURE_OPENAI_ENDPOINT", "VITE_AZURE_OPENAI_ENDPOINT");
-const apiKey = getEnvVar("VITE_AZURE_OPENAI_API_KEY", "VITE_AZURE_OPENAI_API_KEY");
-const deployment = getEnvVar("VITE_AZURE_OPENAI_DEPLOYMENT", "VITE_AZURE_OPENAI_DEPLOYMENT");
-
-if (!endpoint || !apiKey || !deployment) {
-    throw new Error("Configuração Azure OpenAI ausente. Verifique VITE_AZURE_OPENAI_ENDPOINT, VITE_AZURE_OPENAI_API_KEY e VITE_AZURE_OPENAI_DEPLOYMENT no .env.");
-}
-
 export const GENERATION_MODELS = [
-    deployment,
+    "backend-ai-proxy",
 ];
 
-const client = new AzureOpenAI({
-    endpoint,
-    apiKey,
-    deployment,
-    apiVersion: "2024-02-15-preview",
-    // Permitido temporariamente no PWA
-    dangerouslyAllowBrowser: true,
-});
+type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
+
+type CompletionRequest = {
+    model?: string;
+    messages: ChatMessage[];
+    temperature?: number;
+    max_tokens?: number;
+};
+
+type CompletionResponse = {
+    choices: Array<{
+        message: {
+            content: string;
+        };
+    }>;
+};
+
+const callAiBackend = async (payload: CompletionRequest): Promise<CompletionResponse> => {
+    const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data?.error || `Falha no proxy de IA (HTTP ${response.status})`);
+    }
+
+    const text = typeof data?.text === "string" ? data.text : "";
+    return {
+        choices: [
+            {
+                message: {
+                    content: text,
+                },
+            },
+        ],
+    };
+};
+
+const client = {
+    chat: {
+        completions: {
+            create: async (payload: CompletionRequest) => callAiBackend(payload),
+        },
+    },
+};
 
 const getErrorMessage = (error: unknown): string =>
     error instanceof Error ? error.message : "Unknown error";
 
 // Mantém o nome público para não quebrar os serviços existentes.
-export function getGenAIClient(): AzureOpenAI {
+export function getGenAIClient(): typeof client {
     return client;
 }
 
@@ -54,7 +78,7 @@ export async function createSimpleCompletion(
     messages.push({ role: "user", content: prompt });
 
     const completion = await client.chat.completions.create({
-        model: deployment,
+        model: "backend-ai-proxy",
         messages,
         temperature,
     } as any);
@@ -84,7 +108,7 @@ export async function createChatCompletion(
     messages.push({ role: "user", content: userMessage });
 
     const completion = await client.chat.completions.create({
-        model: deployment,
+        model: "backend-ai-proxy",
         messages,
         temperature,
     } as any);
