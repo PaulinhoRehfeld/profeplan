@@ -8,6 +8,27 @@ interface LoginScreenProps {
   initialMode?: 'login' | 'signup';
 }
 
+const RETRYABLE_AUTH_STATUSES = new Set([502, 503, 504]);
+const RETRY_DELAYS_MS = [700, 1500];
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isRetryableAuthError = (err: any): boolean => {
+  const status = Number(err?.status);
+  if (RETRYABLE_AUTH_STATUSES.has(status)) return true;
+
+  const name = String(err?.name || '');
+  if (name.includes('AuthRetryableFetchError')) return true;
+
+  const message = String(err?.message || '').toLowerCase();
+  return (
+    message.includes('gateway timeout') ||
+    message.includes('failed to fetch') ||
+    message.includes('network') ||
+    message.includes('timeout')
+  );
+};
+
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,6 +42,30 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
   useEffect(() => {
     return () => { isMounted.current = false; };
   }, []);
+
+  const signInWithRetry = async (cleanEmail: string, rawPassword: string) => {
+    let attempt = 0;
+    while (true) {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: rawPassword,
+      });
+
+      if (!error) return { data, error: null };
+
+      if (!isRetryableAuthError(error) || attempt >= RETRY_DELAYS_MS.length) {
+        return { data: null, error };
+      }
+
+      const retryIn = RETRY_DELAYS_MS[attempt];
+      console.warn(
+        `[LoginScreen] Auth retryable error (tentativa ${attempt + 1}). Repetindo em ${retryIn}ms...`,
+        error
+      );
+      await delay(retryIn);
+      attempt += 1;
+    }
+  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,10 +127,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         const cleanEmail = email.trim();
         console.log('[LoginScreen] Attempting Login:', cleanEmail);
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: cleanEmail,
-          password,
-        });
+        const { data, error } = await signInWithRetry(cleanEmail, password);
 
         if (error) {
           throw error;
@@ -106,6 +148,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           setError('E-mail ou senha incorretos. Verifique suas credenciais.');
         } else if (err.message?.toLowerCase().includes('email not confirmed')) {
           setError('E-mail ainda não confirmado. Verifique sua caixa de entrada (e o Spam) para ativar sua conta.');
+        } else if (isRetryableAuthError(err)) {
+          setError('Estamos com instabilidade momentânea no servidor de autenticação. Tente novamente em alguns segundos.');
         } else {
           setError(err.message || 'Erro desconhecido na autenticação.');
         }
