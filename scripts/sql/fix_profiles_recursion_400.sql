@@ -42,7 +42,7 @@ AS $$
 DECLARE
     v_school_id TEXT;
 BEGIN
-    SELECT school_id INTO v_school_id
+    SELECT COALESCE(active_school_id, school_id) INTO v_school_id
     FROM public.profiles 
     WHERE id = auth.uid();
     

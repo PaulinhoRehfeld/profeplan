@@ -9,6 +9,8 @@ export interface LocalStudent {
     id: string;
     classId: string;
     name: string;
+    student_code?: string;
+    call_number?: number;
     needs_adaptation?: boolean;
     deficiencies?: string[];
     pedagogical_observations?: string;

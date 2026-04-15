@@ -24,19 +24,36 @@ export const findSchoolStudentBySchoolAndName = async (
     schoolId: string,
     studentName: string
 ): Promise<SchoolStudentRecord | null> => {
-    const { data, error } = await supabase
+    const normalized = (studentName || '').trim();
+    if (!normalized) return null;
+
+    // 1) Tentativa por igualdade case-insensitive (trim aplicado)
+    const { data: exact, error: exactErr } = await supabase
         .from('school_students')
         .select('id')
         .eq('school_id', schoolId)
-        .eq('name', studentName)
+        .ilike('name', normalized)
         .maybeSingle();
 
-    if (error) {
-        console.error('Error fetching school student by school/name:', error);
+    if (!exactErr && exact?.id) return exact;
+    if (exactErr) {
+        console.error('Error fetching school student by school/name (exact ilike):', exactErr);
+    }
+
+    // 2) Fallback: match parcial (reduz risco de diferenças mínimas de normalização)
+    const { data: partial, error: partialErr } = await supabase
+        .from('school_students')
+        .select('id')
+        .eq('school_id', schoolId)
+        .ilike('name', `%${normalized}%`)
+        .maybeSingle();
+
+    if (partialErr) {
+        console.error('Error fetching school student by school/name (partial ilike):', partialErr);
         return null;
     }
 
-    return data || null;
+    return partial || null;
 };
 
 export const createSchoolStudent = async (

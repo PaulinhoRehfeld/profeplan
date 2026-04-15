@@ -118,7 +118,7 @@ LANGUAGE sql
 SECURITY DEFINER
 SET search_path = public
 AS $$
-    SELECT school_id FROM public.profiles
+    SELECT COALESCE(active_school_id, school_id) FROM public.profiles
     WHERE id = auth.uid()
     LIMIT 1;
 $$;

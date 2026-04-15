@@ -61,6 +61,19 @@ export const SchoolSwitcher: React.FC<SchoolSwitcherProps> = ({ userProfile, onS
                 const activeSchoolId = userProfile.active_school_id;
                 const active = schoolList?.find(s => s.id === activeSchoolId) || schoolList?.[0] || null;
                 setActiveSchool(active);
+
+                // Se o perfil não tiver `school_id` (mas tem escola ativa),
+                // sincronizamos para destravar RLS em `school_students`.
+                if (active?.id && !userProfile?.school_id) {
+                    const { error: updateErr } = await supabase
+                        .from('profiles')
+                        .update({ active_school_id: active.id, school_id: active.id })
+                        .eq('id', userProfile.id);
+
+                    if (updateErr) {
+                        console.warn('[SchoolSwitcher] Failed to sync school_id for RLS:', updateErr);
+                    }
+                }
             } catch (err) {
                 console.error('[SchoolSwitcher] Error loading schools:', err);
             } finally {
@@ -76,7 +89,9 @@ export const SchoolSwitcher: React.FC<SchoolSwitcherProps> = ({ userProfile, onS
             // Atualizar active_school_id no perfil
             const { error } = await supabase
                 .from('profiles')
-                .update({ active_school_id: school.id })
+                // RLS em `school_students` usa `profiles.school_id`.
+                // Mantemos `school_id` sincronizado com a escola ativa para evitar falhas de validação.
+                .update({ active_school_id: school.id, school_id: school.id })
                 .eq('id', userProfile.id);
 
             if (error) throw error;

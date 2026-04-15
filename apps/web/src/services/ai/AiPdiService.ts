@@ -57,6 +57,29 @@ const extractMessageText = (content: unknown): string => {
     return "";
 };
 
+const extractJsonObjectFromText = (raw: string): string => {
+    const text = (raw || '').trim();
+
+    // Remove cercas de markdown comuns: ```json ... ``` ou ``` ... ```
+    const unfenced = text
+        .replace(/^\s*```(?:json)?\s*/i, '')
+        .replace(/\s*```\s*$/i, '')
+        .trim();
+
+    // Se já parece JSON puro, ótimo.
+    if ((unfenced.startsWith('{') && unfenced.endsWith('}')) || (unfenced.startsWith('[') && unfenced.endsWith(']'))) {
+        return unfenced;
+    }
+
+    // Fallback: extrair o primeiro bloco JSON (objeto ou array) contido no texto.
+    const objMatch = unfenced.match(/\{[\s\S]*\}/);
+    if (objMatch?.[0]) return objMatch[0];
+    const arrMatch = unfenced.match(/\[[\s\S]*\]/);
+    if (arrMatch?.[0]) return arrMatch[0];
+
+    return unfenced;
+};
+
 /**
  * [PDI_MODE]
  * Gera uma adaptação PDI/DUA para um aluno específico baseada em uma aula original.
@@ -393,7 +416,10 @@ REGRAS TÉCNICAS:
         await incrementUserUsage(userId, 'generate');
     }
 
-    const parsed = JSON.parse(text);
+    // Algumas vezes o modelo retorna o JSON cercado por ``` ou ```json.
+    // Removemos cercas de markdown antes de tentar fazer o parse.
+    const cleaned = extractJsonObjectFromText(text);
+    const parsed = JSON.parse(cleaned);
 
     if (!parsed.adaptacao_metodologica || !parsed.recursos_adaptados || !parsed.objetivos_adaptados || !parsed.estrategias_ensino) {
         throw new Error("Resposta da IA incompleta");
@@ -527,7 +553,8 @@ FORMATO DE SAÍDA (JSON PURO):
     }
 
     const text = extractMessageText(completion.choices[0]?.message?.content);
-    const parsed = JSON.parse(text);
+    const cleaned = extractJsonObjectFromText(text);
+    const parsed = JSON.parse(cleaned);
 
     if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
         throw new Error("Resposta da IA incompleta");

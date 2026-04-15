@@ -146,13 +146,51 @@ export const PdiDocumentService = {
         type: PdiRecordType,
         title: string,
         content: PdiRecordContent,
-        pdiBlock?: string
+        pdiBlock?: string,
+        schoolIdOverride?: string | null,
+        classIdOverride?: string | null
     ): Promise<PdiRecord | null> {
         try {
             const profile = await ProfileService.getProfile();
+            let schoolId =
+                schoolIdOverride ??
+                (profile as any)?.active_school_id ??
+                (profile as any)?.school_id ??
+                null;
 
-            if (!profile || !profile.school_id) {
-                console.warn('Cannot log PDI event: User not linked to a school.');
+            if (!schoolId) {
+                // Fallback: inferir a escola apenas via `classes`,
+                // usando o `classIdOverride` (evita depender de colunas opcionais em `students`).
+                try {
+                    if (classIdOverride) {
+                        const { data: clsRow, error: clsErr } = await supabase
+                            .from('classes')
+                            .select('school_id')
+                            .eq('id', classIdOverride)
+                            .maybeSingle();
+                        if (clsErr) {
+                            console.error('[PdiDocumentService] Failed to resolve school_id from `classes`:', {
+                                classIdOverride,
+                                schoolIdCandidate: (clsRow as any)?.school_id ?? null,
+                                error: clsErr
+                            });
+                        }
+                        const inferred =
+                            (clsRow as any)?.school_id ??
+                            null;
+                        if (inferred) schoolId = inferred;
+                    }
+                } catch (e) {
+                    // fail-silent: abaixo vai logar o erro final
+                }
+            }
+
+            if (!schoolId) {
+                console.error('[PdiDocumentService] Missing school_id for pdi_records insert. Ensure active_school_id/selectedClass.school_id (via classIdOverride) is set.', {
+                    studentId,
+                    type,
+                    teacherId: (profile as any)?.id ?? null
+                });
                 return null;
             }
 
@@ -160,8 +198,9 @@ export const PdiDocumentService = {
                 .from('pdi_records')
                 .insert({
                     student_id: studentId,
-                    school_id: profile.school_id,
-                    teacher_id: profile.id,
+                    // Aqui `schoolId` já foi validado/resolvido acima.
+                    school_id: schoolId,
+                    teacher_id: (profile as any)?.id ?? null,
                     type,
                     title,
                     content,
@@ -524,8 +563,58 @@ export const PdiDocumentService = {
     /**
      * Add block 9 adaptation
      */
-    async addBlock9Adaptation(pdiId: string, adaptation: Block9AdaptationInput): Promise<{ data: Block9AdaptationInput; error: null }> {
-        return { data: adaptation, error: null };
+    async addBlock9Adaptation(pdiId: string, adaptation: Block9AdaptationInput): Promise<{ data: Block9AdaptationEntry; error: null }> {
+        try {
+            const generated_at = new Date().toISOString();
+            const generated_by_ai = true;
+            const enriched: Block9AdaptationEntry = {
+                ...adaptation,
+                generated_at,
+                generated_by_ai
+            };
+
+            // Carrega o array atual para append/replace idempotente.
+            const { data: row, error: fetchErr } = await supabase
+                .from('pdi_documents')
+                .select('block_9_content')
+                .eq('id', pdiId)
+                .maybeSingle();
+
+            if (fetchErr) {
+                console.error('[PdiDocumentService] Failed to load pdi_documents.block_9_content:', fetchErr);
+                return { data: enriched, error: null };
+            }
+
+            const existing = (row?.block_9_content || []) as Block9AdaptationEntry[];
+            const idx = existing.findIndex((e) => e.lesson_id === adaptation.lesson_id);
+
+            const next =
+                idx >= 0
+                    ? [...existing.slice(0, idx), enriched, ...existing.slice(idx + 1)]
+                    : [...existing, enriched];
+
+            const { error: updateErr } = await supabase
+                .from('pdi_documents')
+                .update({ block_9_content: next })
+                .eq('id', pdiId);
+
+            if (updateErr) {
+                console.error('[PdiDocumentService] Failed to persist block_9_content:', updateErr);
+            }
+
+            return { data: enriched, error: null };
+        } catch (e) {
+            console.error('[PdiDocumentService] Exception while persisting block_9_content:', e);
+            // fail-soft: não bloqueia o fluxo, mas loga o motivo
+            return {
+                data: {
+                    ...adaptation,
+                    generated_at: new Date().toISOString(),
+                    generated_by_ai: true
+                } as Block9AdaptationEntry,
+                error: null
+            };
+        }
     },
 
     /**

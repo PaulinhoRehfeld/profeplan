@@ -31,7 +31,14 @@ Esta pasta contém a documentação de alto nível do PROFEPLAN, organizada para
 
 ---
 
-## 4. Como usar estes documentos
+## 4. Plano de execução ativo
+
+- **Estabilização + Migração Azure (paralelo)**
+  - `plano-execucao-estabilizacao-migracao-azure.md`
+
+---
+
+## 5. Como usar estes documentos
 
 1. Comece sempre por:
    - `overview-profeplan.md`

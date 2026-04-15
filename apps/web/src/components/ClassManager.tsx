@@ -210,25 +210,27 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         );
 
         // 3. PERSIST LOCAL STORAGE (Critical for Data Survival)
-        if (updatedStudents) {
-            const classToSave: any = {
-                id: selectedClass.id,
-                userId: userId,
-                name: selectedClass.name,
-                subject: selectedClass.subject,
-                createdAt: selectedClass.created_at,
-                students: updatedStudents.map(s => ({
-                    id: s.id,
-                    classId: selectedClass.id,
-                    name: s.name,
-                    needs_adaptation: s.needs_adaptation,
-                    deficiencies: s.deficiencies,
-                    pedagogical_observations: s.pedagogical_observations
-                }))
-            };
+                if (updatedStudents) {
+                    const classToSave: any = {
+                        id: selectedClass.id,
+                        userId: userId,
+                        name: selectedClass.name,
+                        subject: selectedClass.subject,
+                        createdAt: selectedClass.created_at,
+                        students: updatedStudents.map(s => ({
+                            id: s.id,
+                            classId: selectedClass.id,
+                            name: s.name,
+                            student_code: s.student_code,
+                            call_number: s.call_number,
+                            needs_adaptation: s.needs_adaptation,
+                            deficiencies: s.deficiencies,
+                            pedagogical_observations: s.pedagogical_observations
+                        }))
+                    };
 
-            updateLocalClass(userId, classToSave);
-        }
+                    updateLocalClass(userId, classToSave);
+                }
 
         // Update selected class state
         setSelectedClass({

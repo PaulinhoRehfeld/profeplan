@@ -71,6 +71,7 @@ const ClassDetail: React.FC<ClassDetailProps> = ({
                             <thead>
                                 <tr className="border-b border-slate-50 sticky top-0 bg-white z-10 shadow-sm">
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">#</th>
+                                    <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nº Chamada</th>
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Código</th>
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome do Aluno</th>
                                     <th className="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
@@ -79,24 +80,47 @@ const ClassDetail: React.FC<ClassDetailProps> = ({
                             <tbody className="divide-y divide-slate-50">
                                 {filteredStudents.length > 0 ? (
                                     filteredStudents.map((student, index) => (
-                                        <tr key={student.id || index} className={`hover:bg-slate-50 transition-colors group ${student.needs_adaptation ? 'bg-purple-50/30' : ''}`}>
-                                            <td className="px-10 py-5 text-sm font-black text-slate-300 italic">{(index + 1).toString().padStart(2, '0')}</td>
+                                        <tr
+                                            key={student.id || index}
+                                            className={`hover:bg-slate-50 transition-colors group ${student.needs_adaptation ? 'bg-purple-50/30' : ''}`}
+                                        >
+                                            <td className="px-10 py-5 text-sm font-black text-slate-300 italic">
+                                                {(index + 1).toString().padStart(2, '0')}
+                                            </td>
+                                            <td className="px-10 py-5 text-xs font-bold text-slate-500">
+                                                {student.call_number ?? '—'}
+                                            </td>
                                             <td className="px-10 py-5 text-xs font-bold text-slate-400">
                                                 {student.student_code || student.state_unique_id || '—'}
                                             </td>
                                             <td className="px-10 py-5">
                                                 <div className="flex items-center gap-2">
-                                                    <span className={`text-sm font-bold ${student.needs_adaptation ? 'text-purple-700' : 'text-slate-700'}`}>
+                                                    <span
+                                                        className={`text-sm font-bold ${student.needs_adaptation ? 'text-purple-700' : 'text-slate-700'}`}
+                                                    >
                                                         {student.name}
                                                     </span>
                                                     {student.needs_adaptation && (
-                                                        <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" title="Necessita Adaptação"></span>
+                                                        <span
+                                                            className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"
+                                                            title="Elegível para PDI (observações/inclusão presentes)"
+                                                        ></span>
                                                     )}
                                                 </div>
+                                                {student.pedagogical_observations && student.pedagogical_observations.trim().length > 0 && (
+                                                    <p className="mt-1 text-[10px] text-slate-500 line-clamp-2">
+                                                        {student.pedagogical_observations}
+                                                    </p>
+                                                )}
                                                 {student.deficiencies && student.deficiencies.length > 0 && (
                                                     <div className="flex gap-1 mt-1 flex-wrap">
                                                         {student.deficiencies.map(def => (
-                                                            <span key={def} className="text-[9px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded uppercase font-bold tracking-wider">{def}</span>
+                                                            <span
+                                                                key={def}
+                                                                className="text-[9px] px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded uppercase font-bold tracking-wider"
+                                                            >
+                                                                {def}
+                                                            </span>
                                                         ))}
                                                     </div>
                                                 )}

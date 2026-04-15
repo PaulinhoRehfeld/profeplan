@@ -9,7 +9,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    RETURN (SELECT school_id::TEXT FROM public.profiles WHERE id = auth.uid());
+    RETURN (SELECT COALESCE(active_school_id, school_id)::TEXT FROM public.profiles WHERE id = auth.uid());
 END;
 $$;
 

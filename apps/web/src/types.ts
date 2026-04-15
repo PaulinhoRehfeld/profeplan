@@ -4,6 +4,8 @@ export enum MessageRole {
   SYSTEM = 'system'
 }
 
+import type { Block9AdaptationEntry } from './types/pdi';
+
 export interface Message {
   id: string;
   role: MessageRole;
@@ -156,6 +158,8 @@ export interface Student {
   student_code?: string;
   call_number?: number;
   current_school_id?: string;
+  // FK/mapeamento oficial para a tabela `school_students` (PDI usa esse id como referência)
+  school_student_id?: string;
   school_id?: string; // Alias for compatibility
   class_id?: string;
   current_class_id?: string; // Alias for compatibility
@@ -211,6 +215,11 @@ export interface StudentAdaptation {
   originalContent: string;
   adaptedContent: string;
   status: 'pending' | 'generating' | 'completed' | 'validated';
+  /**
+   * Payload estruturado do Bloco 9 (persistido em pdi_documents.block_9_content ao validar).
+   * Opcional porque algumas telas/fluxos ainda só possuem o markdown final.
+   */
+  block9Payload?: Omit<Block9AdaptationEntry, 'generated_at' | 'generated_by_ai'>;
 }
 
 export interface EnemQuestion {

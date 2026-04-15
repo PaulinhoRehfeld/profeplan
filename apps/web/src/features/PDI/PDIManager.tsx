@@ -59,9 +59,12 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
     } = usePDIManager(userId, userProfile);
     const { openWithPrompt } = useFreedayContext();
 
-    // Update Sidebar Content
+    // Update Sidebar Content (evita loops de renderização controlando dependências)
     useEffect(() => {
         if (!setSidebarContent) return;
+
+        const studentsCount = studentsWithNeeds.length;
+        const adaptationsCount = Object.keys(adaptations).length;
         const pendingCount = studentsWithNeeds.filter(s => !adaptations[s.id]).length;
         const completedCount = studentsWithNeeds.filter(
             s => adaptations[s.id]?.status === 'completed'
@@ -69,20 +72,28 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
         const validatedCount = studentsWithNeeds.filter(
             s => adaptations[s.id]?.status === 'validated'
         ).length;
+
         setSidebarContent(
             <PDISidebar
-                studentsCount={studentsWithNeeds.length}
-                adaptationsCount={Object.keys(adaptations).length}
+                studentsCount={studentsCount}
+                adaptationsCount={adaptationsCount}
                 pendingCount={pendingCount}
                 completedCount={completedCount}
                 validatedCount={validatedCount}
                 onExportDoc={handleExportDoc}
                 onGenerateReport={handleGenerateReport}
-                hasAdaptations={Object.keys(adaptations).length > 0}
+                hasAdaptations={adaptationsCount > 0}
                 error={error}
             />
         );
-    }, [adaptations, studentsWithNeeds, error, selectedLesson, selectedClass, setSidebarContent, handleExportDoc, handleGenerateReport]);
+        // Dependências reduzidas: contamos apenas números estáveis para evitar gatilhos
+        // contínuos por re-renderizações internas do React.
+        // IMPORTANTE:
+        // Não incluímos handlers (handleExportDoc / handleGenerateReport) nas dependências
+        // para evitar loops de renderização causados por novas referências a cada render.
+        // Eles continuam acessíveis via closure mais recente.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [studentsWithNeeds.length, Object.keys(adaptations).length, error]);
 
     if (loading) {
         return (
@@ -248,7 +259,22 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                                 <div className="p-10 bg-white rounded-2xl border border-slate-200 text-center">
                                     <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                                     <h3 className="text-slate-600 font-bold">Nenhum aluno com PDI nesta turma</h3>
-                                    <button className="mt-4 text-indigo-600 font-bold text-sm hover:underline">
+                                    <p className="mt-2 text-xs text-slate-400 max-w-md mx-auto">
+                                        Para que os alunos apareçam aqui, marque-os em <strong>Minhas Turmas</strong> com
+                                        necessidade de adaptação (campo de observações e/or switch de inclusão).
+                                    </p>
+                                    <button
+                                        className="mt-4 text-indigo-600 font-bold text-sm hover:underline"
+                                        onClick={() => {
+                                            const className = selectedClass?.name || 'sua turma';
+                                            const prompt = `Quero cadastrar um aluno de inclusão para a turma "${className}". Me guie passo a passo para abrir "Minhas Turmas", editar o aluno e marcar que ele necessita adaptação (observações/inclusão) para que apareça no módulo de PDI.`;
+                                            try {
+                                                openWithPrompt(prompt);
+                                            } catch {
+                                                // fallback silencioso: não quebra a UI se o contexto da FREEDAY não estiver disponível
+                                            }
+                                        }}
+                                    >
                                         + Cadastrar Aluno de Inclusão
                                     </button>
                                 </div>

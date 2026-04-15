@@ -11,6 +11,20 @@ import {
     getLocalClassDetails,
 } from '../../services/localStorageService';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
+import { createSchoolStudent, findSchoolStudentBySchoolAndName, getSchoolStudentById } from '../../services/schoolStudentService';
+import { ProfileService } from '../../services/ProfileService';
+
+const BNCC_CODE_REGEX = /\b[A-Z]{2}\d{2}[A-Z]{2}\d{2}\b/g;
+
+/**
+ * Extrai códigos BNCC diretamente do texto já existente (não inventa códigos).
+ * Ex: EF09HI01
+ */
+const extractBnccCodes = (raw: string): string[] => {
+    const text = (raw || '').toUpperCase();
+    const matches = text.match(BNCC_CODE_REGEX) || [];
+    return [...new Set(matches)].slice(0, 10);
+};
 
 export const usePDIManager = (userId: string, userProfile: UserProfile) => {
     // State
@@ -95,26 +109,42 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             }
 
             // Mapeia para o tipo Class com alunos (quando já vierem agregados)
-            sbClasses = sbClasses.map((c: any) => ({
-                id: c.id,
-                name: c.name,
-                subject: c.subject || '-',
-                grade: c.grade,
-                shift: c.shift,
-                year: c.year,
-                created_at: c.created_at || new Date().toISOString(),
-                students: Array.isArray(c.students)
-                    ? c.students.map((s: any) => ({
-                        id: s.id,
-                        name: typeof s.name === 'object' ? (s.name?.name || 'Sem Nome') : (s.name || 'Sem Nome'),
-                        class_id: c.id,
-                        needs_adaptation: s.needs_adaptation || false,
-                        deficiencies: s.deficiencies || [],
-                        pdi_needs: s.pdi_needs || [],
-                        pedagogical_observations: s.pedagogical_observations || s.observations || ''
-                    }))
-                    : []
-            }));
+            // IMPORTANTE: carregamos `school_id`/`current_school_id` para garantir que o log do PDI
+            // consiga preencher o NOT NULL de `pdi_records.school_id`.
+            sbClasses = sbClasses.map((c: any) => {
+                const classSchoolId =
+                    c.school_id ??
+                    c.current_school_id ??
+                    (userProfile as any)?.active_school_id ??
+                    (userProfile as any)?.school_id ??
+                    null;
+
+                return {
+                    id: c.id,
+                    name: c.name,
+                    subject: c.subject || '-',
+                    grade: c.grade,
+                    shift: c.shift,
+                    year: c.year,
+                    school_id: classSchoolId,
+                    created_at: c.created_at || new Date().toISOString(),
+                    students: Array.isArray(c.students)
+                        ? c.students.map((s: any) => ({
+                            id: s.id,
+                            name: typeof s.name === 'object' ? (s.name?.name || 'Sem Nome') : (s.name || 'Sem Nome'),
+                            class_id: c.id,
+                            // Alguns fluxos usam `current_school_id` como alias de escola atual
+                            current_school_id: s.current_school_id ?? s.school_id ?? classSchoolId ?? null,
+                            school_id: s.school_id ?? s.current_school_id ?? classSchoolId ?? null,
+                            school_student_id: s.school_student_id ?? null,
+                            needs_adaptation: s.needs_adaptation || false,
+                            deficiencies: s.deficiencies || [],
+                            pdi_needs: s.pdi_needs || [],
+                            pedagogical_observations: s.pedagogical_observations || s.observations || ''
+                        }))
+                        : []
+                };
+            });
 
             // Para o módulo de PDI, usamos apenas as turmas do Supabase
             // (fonte de verdade) para evitar estados divergentes com o
@@ -147,10 +177,14 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                 name: localData.name,
                 subject: localData.subject,
                 created_at: localData.createdAt,
+                school_id: (userProfile as any)?.active_school_id ?? userProfile?.school_id ?? (userProfile as any)?.school?.id ?? null,
                 students: localData.students.map((s: any) => ({
                     id: s.id,
                     name: s.name,
                     class_id: localData.id,
+                    current_school_id: (userProfile as any)?.active_school_id ?? userProfile?.school_id ?? null,
+                    school_id: (userProfile as any)?.active_school_id ?? userProfile?.school_id ?? null,
+                    school_student_id: s.school_student_id ?? null,
                     needs_adaptation: s.needs_adaptation || false,
                     deficiencies: s.deficiencies || [],
                     pedagogical_observations: s.pedagogical_observations || ''
@@ -179,6 +213,9 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                             id: s.id,
                             name: typeof s.name === 'object' ? (s.name?.name || 'Sem Nome') : (s.name || 'Sem Nome'),
                             class_id: data.id,
+                            current_school_id: s.current_school_id ?? s.school_id ?? data.school_id ?? null,
+                            school_id: s.school_id ?? s.current_school_id ?? data.school_id ?? null,
+                            school_student_id: s.school_student_id ?? null,
                             needs_adaptation: s.needs_adaptation || false,
                             deficiencies: s.deficiencies || [],
                             pdi_needs: s.pdi_needs || [],
@@ -193,6 +230,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                         grade: data.grade,
                         shift: data.shift,
                         year: data.year,
+                        school_id: data.school_id ?? data.current_school_id ?? (userProfile as any)?.active_school_id ?? userProfile?.school_id ?? null,
                         created_at: data.created_at,
                         students: mappedStudents
                     };
@@ -220,12 +258,19 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
         setGeneratingId(student.id);
         setError('');
         try {
+            const schoolStudentId = (student as any).school_student_id ?? student.id;
+            const gradeLevel =
+                selectedClass?.grade ??
+                (selectedClass?.year !== undefined && selectedClass?.year !== null ? String(selectedClass.year) : 'Geral');
+
+            const rawLessonText = `${selectedLesson.content || ''}\n${selectedLesson.topic || ''}`;
+            const habilidadesBncc = extractBnccCodes(rawLessonText);
             // 1. Fetch detailed PDI Data
             const { data: studentData, error: studentError } = await supabase
                 .from('school_students')
                 .select('pdi_data')
-                .eq('id', student.id)
-                .single();
+                .eq('id', schoolStudentId)
+                .maybeSingle();
 
             if (studentError) console.warn("Could not fetch detailed PDI data, using basics.", studentError);
 
@@ -247,14 +292,29 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                 selectedLesson.content || 'Conteúdo não textual',
                 selectedLesson.topic || 'Aula sem título',
                 selectedClass?.subject || 'Geral',
-                selectedClass?.name || 'Série não informada',
-                [], // BNCC skills - generic if missing
+                gradeLevel,
+                habilidadesBncc,
                 studentContext,
                 userId
             );
 
             // 3. Format JSON to Markdown
-            const markdownResult = `## 🎯 Objetivos Adaptados\n${resultJSON.objetivos_adaptados.map((o: string) => `- ${o}`).join('\n')}\n\n## 🧠 Adaptação Metodológica\n${resultJSON.adaptacao_metodologica}\n\n## 🛠️ Recursos & Estratégias\n**Recursos:** ${resultJSON.recursos_adaptados.join(', ')}\n\n**Estratégias:**\n${resultJSON.estrategias_ensino.map((e: string) => `- ${e}`).join('\n')}\n\n**Tempo Estimado:** ${resultJSON.tempo_estimado || 'N/A'}`;
+            const evaluationMatch = resultJSON.adaptacao_metodologica?.match(/Avalia[cç][aã]o[^:]*:\s*([\s\S]+)/i);
+            const evaluationDifferentiated = evaluationMatch?.[1]?.trim()?.slice(0, 1200) || 'Não especificado na geração atual.';
+
+            const markdownResult = `## 🎯 Objetivos Adaptados\n${resultJSON.objetivos_adaptados.map((o: string) => `- ${o}`).join('\n')}\n\n## 🛠️ Estratégias de Acesso\n${resultJSON.estrategias_ensino.map((e: string) => `- ${e}`).join('\n')}\n\n## 🧠 Adaptação Metodológica\n${resultJSON.adaptacao_metodologica}\n\n## 📌 Avaliação Diferenciada\n${evaluationDifferentiated}\n\n## 🛠️ Recursos Adaptados\n${resultJSON.recursos_adaptados.map((r: string) => `- ${r}`).join('\n')}\n\n**Tempo Estimado:** ${resultJSON.tempo_estimado || 'N/A'}`;
+
+            const block9Payload = {
+                lesson_id: selectedLesson.id,
+                lesson_title: selectedLesson.topic || selectedLesson.title || 'Aula',
+                subject: selectedClass?.subject || 'Geral',
+                habilidades_bncc: habilidadesBncc,
+                adaptacao_metodologica: resultJSON.adaptacao_metodologica,
+                recursos_adaptados: resultJSON.recursos_adaptados,
+                objetivos_adaptados: resultJSON.objetivos_adaptados,
+                estrategias_ensino: resultJSON.estrategias_ensino,
+                tempo_estimado: resultJSON.tempo_estimado
+            };
 
             setAdaptations(prev => ({
                 ...prev,
@@ -263,7 +323,8 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                     studentName: student.name,
                     originalContent: selectedLesson.content,
                     adaptedContent: markdownResult,
-                    status: 'completed'
+                    status: 'completed',
+                    block9Payload
                 }
             }));
         } catch (e: any) {
@@ -290,8 +351,211 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
         // Save PDI Log to Supabase using the correct service
         try {
+            let schoolIdForSchoolStudent =
+                selectedClass?.school_id ??
+                (student ? (student as any).current_school_id ?? (student as any).school_id ?? null : null) ??
+                (userProfile as any)?.active_school_id ??
+                userProfile?.school_id ??
+                (userProfile as any)?.school?.id ??
+                null;
+
+            // Fallback robust: resolve school_id from the selected class.
+            if (!schoolIdForSchoolStudent && selectedClass?.id) {
+                const { data: clsRow, error: clsErr } = await supabase
+                    .from('classes')
+                    .select('school_id')
+                    .eq('id', selectedClass.id)
+                    .maybeSingle();
+
+                if (!clsErr && clsRow?.school_id) {
+                    schoolIdForSchoolStudent = clsRow.school_id;
+                } else {
+                    console.warn('[PDI] Could not resolve school_id from classes for validation.', {
+                        classId: selectedClass.id,
+                        error: clsErr
+                    });
+                }
+            }
+
+            // Last-resort fallback: recuperar escola ativa via ProfileService/RPC
+            if (!schoolIdForSchoolStudent) {
+                try {
+                    // 0) Primeiro: resolver via `teacher_schools` (evita depender de `profiles.school_id`)
+                    try {
+                        const { data: tsRow, error: tsErr } = await supabase
+                            .from('teacher_schools')
+                            .select('school_id')
+                            .eq('teacher_id', userId)
+                            .is('ended_at', null)
+                            .order('started_at', { ascending: false })
+                            .limit(1)
+                            .maybeSingle();
+
+                        if (!tsErr && (tsRow as any)?.school_id) {
+                            schoolIdForSchoolStudent = (tsRow as any).school_id;
+                            console.log('[PDI] Resolved schoolIdForSchoolStudent via teacher_schools:', schoolIdForSchoolStudent);
+                        } else if (tsErr) {
+                            console.warn('[PDI] teacher_schools lookup failed:', tsErr);
+                        } else {
+                            // Sem erro, mas sem linha ativa encontrada.
+                            console.warn('[PDI] teacher_schools lookup returned no active row:', {
+                                teacherId: userId,
+                                endedAtIsNull: true
+                            });
+
+                            // Segundo fallback: pega a última linha (ignora ended_at)
+                            try {
+                                const { data: tsLatest, error: tsLatestErr } = await supabase
+                                    .from('teacher_schools')
+                                    .select('school_id, ended_at, started_at')
+                                    .eq('teacher_id', userId)
+                                    .order('started_at', { ascending: false })
+                                    .limit(1)
+                                    .maybeSingle();
+
+                                if (!tsLatestErr && (tsLatest as any)?.school_id) {
+                                    schoolIdForSchoolStudent = (tsLatest as any).school_id;
+                                    console.log('[PDI] Resolved schoolIdForSchoolStudent via teacher_schools (latest row):', schoolIdForSchoolStudent);
+                                } else if (tsLatestErr) {
+                                    console.warn('[PDI] teacher_schools latest lookup failed:', tsLatestErr);
+                                } else {
+                                    console.warn('[PDI] teacher_schools latest lookup returned empty.', {
+                                        teacherId: userId
+                                    });
+                                }
+                            } catch (e) {
+                                // no-op
+                            }
+                        }
+                    } catch (e) {
+                        // no-op: segue para os outros fallbacks
+                    }
+
+                    // Se conseguimos via teacher_schools, sincroniza profiles.school_id para destravar RLS.
+                    if (schoolIdForSchoolStudent) {
+                        try {
+                            await supabase
+                                .from('profiles')
+                                .update({
+                                    active_school_id: schoolIdForSchoolStudent,
+                                    school_id: schoolIdForSchoolStudent
+                                })
+                                .eq('id', userId);
+                        } catch (e) {
+                            console.warn('[PDI] Failed to sync profiles.school_id after teacher_schools:', e);
+                        }
+                    }
+
+                    // 1) Próximo fallback: ProfileService
+                    const freshProfile = await ProfileService.getProfile();
+                    const candidate =
+                        (freshProfile as any)?.active_school_id ??
+                        freshProfile?.school_id ??
+                        (freshProfile as any)?.school?.id ??
+                        null;
+                    if (candidate) schoolIdForSchoolStudent = candidate;
+                } catch (e) {
+                    // no-op: seguimos para RPC
+                }
+
+                // Se existir, usar RPC que já é parte do schema/guardrails do backend.
+                try {
+                    const { data: rpcData, error: rpcErr } = await supabase.rpc('get_my_school_id_safe');
+                    if (!rpcErr && rpcData) {
+                        // Possíveis formatos: { school_id: '...' } | { id: '...' } | '...'
+                        const candidate = (rpcData as any)?.school_id ?? (rpcData as any)?.id ?? (rpcData as any);
+                        if (candidate && typeof candidate === 'string') schoolIdForSchoolStudent = candidate;
+                    }
+                    if (rpcErr) {
+                        console.warn('[PDI] RPC get_my_school_id_safe failed:', rpcErr);
+                    }
+                    if (!rpcErr && !rpcData) {
+                        console.warn('[PDI] RPC get_my_school_id_safe returned empty payload.');
+                    }
+                } catch (e) {
+                    // no-op: se não existir no schema, ignoramos.
+                }
+            }
+
+            // Se o `school_students` estiver bloqueado por RLS (muito comum quando `profiles.school_id` é vazio),
+            // sincronizamos `profiles.school_id` com a escola resolvida no front.
+            // Isso destrava leitura/inserção de `school_students` sem depender apenas de `active_school_id`.
+            if (schoolIdForSchoolStudent && !(userProfile as any)?.school_id) {
+                try {
+                    await supabase
+                        .from('profiles')
+                        .update({
+                            active_school_id: schoolIdForSchoolStudent,
+                            school_id: schoolIdForSchoolStudent
+                        })
+                        .eq('id', userId);
+                } catch (e) {
+                    console.warn('[PDI] Failed to sync profiles.school_id for RLS:', e);
+                }
+            }
+
+            let schoolStudentId = (student as any)?.school_student_id ?? null;
+
+            // Fallback 0: se `student.id` já for o ID de `school_students`, aproveita.
+            if (!schoolStudentId && student?.id) {
+                const ssById = await getSchoolStudentById(student.id);
+                if (ssById?.id) schoolStudentId = ssById.id;
+            }
+
+            // Fallback 1: resolve por nome + escola, ou cria se permitido.
+            if (!schoolStudentId) {
+                schoolStudentId = await (async () => {
+                    if (!student) return null;
+                    if (!schoolIdForSchoolStudent) return null;
+
+                    const normalizedName = (student.name || '').trim();
+                    if (!normalizedName) return null;
+
+                    // 1) Try match por case-insensitive eq (trim aplicado)
+                    try {
+                        const { data: ssExact } = await supabase
+                            .from('school_students')
+                            .select('id')
+                            .eq('school_id', schoolIdForSchoolStudent)
+                            .ilike('name', normalizedName)
+                            .maybeSingle();
+                        if (ssExact?.id) return ssExact.id;
+                    } catch (e) {
+                        // ignore
+                    }
+
+                    // 2) Fallback: match parcial (reduz variação mínima de normalização)
+                    try {
+                        const { data: ssPartial } = await supabase
+                            .from('school_students')
+                            .select('id')
+                            .eq('school_id', schoolIdForSchoolStudent)
+                            .ilike('name', `%${normalizedName}%`)
+                            .maybeSingle();
+                        if (ssPartial?.id) return ssPartial.id;
+                    } catch (e) {
+                        // ignore
+                    }
+
+                    // 3) Usar helper já robusto por ilike/partial
+                    const found = await findSchoolStudentBySchoolAndName(schoolIdForSchoolStudent, student.name);
+                    if (found?.id) return found.id;
+
+                    // 4) Se não existir ainda, tenta criar (somente se políticas permitirem)
+                    const created = await createSchoolStudent(schoolIdForSchoolStudent, student.name);
+                    if (created?.id) return created.id;
+
+                    return null;
+                })();
+            }
+
+            if (!schoolStudentId) {
+                setError('Não foi possível resolver o vínculo do aluno em `school_students` para a validação (missing/blocked mapping).');
+                return;
+            }
+
             const data = await PdiDocumentService.logEvent(
-                studentId,
+                schoolStudentId,
                 'ADAPTATION',
                 `Adaptação: ${selectedLesson.topic}`,
                 {
@@ -300,7 +564,9 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                     adaptedContent: finalContent,
                     classId: selectedClass.id
                 },
-                'block9'
+                'block9',
+                schoolIdForSchoolStudent,
+                selectedClass?.id ?? null
             );
 
             if (data) {
@@ -310,6 +576,28 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                     lessonTopic: selectedLesson.topic
                 });
                 setFeedbackModalOpen(true);
+
+                // Persistência: salva o Block 9 no pdi_documents quando o professor valida.
+                // Falha aqui não deve bloquear a trilha do PDI (pdi_records).
+                try {
+                    const payload = adaptations[studentId]?.block9Payload;
+                    if (payload) {
+                        const year =
+                            typeof selectedClass?.year === 'number' ? selectedClass.year : new Date().getFullYear();
+                        const { data: pdiDoc } = await PdiDocumentService.getOrCreatePdi(
+                            schoolStudentId,
+                            year,
+                            { studentName: studentName }
+                        );
+                        if (pdiDoc?.id) {
+                            await PdiDocumentService.addBlock9Adaptation(pdiDoc.id, payload);
+                        }
+                    } else {
+                        console.warn('[PDI] Missing block9Payload in local state; skipping block_9_content persist.');
+                    }
+                } catch (e) {
+                    console.error('[PDI] Failed to persist Block 9 on validate:', e);
+                }
 
                 // Update local state ONLY if saved successfully
                 setAdaptations(prev => ({
@@ -360,11 +648,12 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
         // Fetch latest 'ADAPTATION' record for this student
         try {
+            const schoolStudentId = (student as any)?.school_student_id ?? student.id;
             // Quick fetch for latest record
             const { data } = await supabase
                 .from('pdi_records')
                 .select('id, title')
-                .eq('student_id', student.id)
+                .eq('student_id', schoolStudentId)
                 .eq('type', 'ADAPTATION')
                 .order('date', { ascending: false })
                 .limit(1)
@@ -446,17 +735,27 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
         if (studentsWithNeeds.length === 0) return;
         const student = studentsWithNeeds[0];
         try {
-            const { data: logs, error: logsError } = await getPdiLogs(student.id);
+            const schoolStudentId = (student as any)?.school_student_id ?? student.id;
+            const timeline = await PdiDocumentService.getStudentTimeline(schoolStudentId);
+            const adaptationRecords = timeline.filter((r) => r.type === 'ADAPTATION');
 
-            if (logsError) throw logsError;
-
-            if (!logs || logs.length === 0) {
-                setError(`Sem histórico para o aluno ${student.name}. Valide pelo menos uma adaptação.`);
+            if (!adaptationRecords || adaptationRecords.length === 0) {
+                setError(`Sem histórico de adaptações para o aluno ${student.name}. Valide pelo menos uma adaptação.`);
                 return;
             }
 
             setLoading(true);
-            const logsContent = logs.map(log => `- ${log}`).join('\n');
+            const logsContent = adaptationRecords
+                .map((r) => {
+                    const adapted = (r.content as any)?.adaptedContent;
+                    const short = typeof adapted === 'string'
+                        ? adapted.replace(/\n+/g, ' ').trim().slice(0, 220)
+                        : JSON.stringify(adapted ?? '').slice(0, 220);
+                    const dateLabel = r.date || r.created_at || '';
+                    return `- ${dateLabel}: ${r.title} - ${short}${short.length >= 220 ? '...' : ''}`;
+                })
+                .join('\n');
+
             const reportHtml = generatePdiReportDoc(student.name, 'Trimestre Atual', logsContent);
 
             try {
@@ -569,6 +868,4 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
     };
 };
 
-const getPdiLogs = async (studentId: string) => {
-    return PdiDocumentService.getLogs(studentId);
-};
+// (legacy) getPdiLogs removido do fluxo de geração de relatório.

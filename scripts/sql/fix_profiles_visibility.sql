@@ -10,7 +10,7 @@ LANGUAGE sql
 SECURITY DEFINER
 STABLE
 AS $$
-    SELECT school_id FROM public.profiles WHERE id = auth.uid();
+    SELECT COALESCE(active_school_id, school_id) FROM public.profiles WHERE id = auth.uid();
 $$;
 
 CREATE OR REPLACE FUNCTION public.is_admin_safe()
