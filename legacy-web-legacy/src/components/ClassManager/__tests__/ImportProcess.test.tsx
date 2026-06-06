@@ -52,7 +52,9 @@ describe('ImportProcess', () => {
     );
 
     expect(
-      screen.getByText(/Encontramos 2 alunos/i),
+      screen.getByText((content, element) => {
+        return element?.tagName.toLowerCase() === 'p' && (element?.textContent?.replace(/\s+/g, ' ').includes('Encontramos 2 alunos') ?? false);
+      }),
     ).toBeInTheDocument();
 
     fireEvent.click(

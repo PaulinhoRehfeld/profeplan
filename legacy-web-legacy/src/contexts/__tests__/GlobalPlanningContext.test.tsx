@@ -71,18 +71,13 @@ describe('GlobalPlanningContext - refreshTermPlans → termPlans', () => {
       body: { appendChild: () => {} },
     };
 
-    const ReactDOM = require('react-dom');
+    const { render } = require('@testing-library/react');
 
-    act(() => {
-      const container = (globalThis as any).document.createElement('div');
-      (globalThis as any).document.body.appendChild(container);
-      ReactDOM.render(
-        <GlobalPlanningProvider>
-          <TestConsumer />
-        </GlobalPlanningProvider>,
-        container,
-      );
-    });
+    render(
+      <GlobalPlanningProvider>
+        <TestConsumer />
+      </GlobalPlanningProvider>
+    );
 
     const ctx = (globalThis as any).__lastPlanningContext as ReturnType<typeof useGlobalPlanning>;
 
