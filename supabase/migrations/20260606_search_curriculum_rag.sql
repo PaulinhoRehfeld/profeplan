@@ -57,13 +57,15 @@ CREATE INDEX IF NOT EXISTS curriculum_rag_content_fts_idx
 ALTER TABLE public.curriculum_rag ENABLE ROW LEVEL SECURITY;
 
 -- Leitura pública (o currículo é conteúdo público)
-CREATE POLICY IF NOT EXISTS "curriculum_rag_read_public"
+DROP POLICY IF EXISTS "curriculum_rag_read_public" ON public.curriculum_rag;
+CREATE POLICY "curriculum_rag_read_public"
   ON public.curriculum_rag
   FOR SELECT
   USING (true);
 
 -- Escrita apenas para service_role (ingestão via scripts)
-CREATE POLICY IF NOT EXISTS "curriculum_rag_insert_service_role"
+DROP POLICY IF EXISTS "curriculum_rag_insert_service_role" ON public.curriculum_rag;
+CREATE POLICY "curriculum_rag_insert_service_role"
   ON public.curriculum_rag
   FOR INSERT
   TO service_role
