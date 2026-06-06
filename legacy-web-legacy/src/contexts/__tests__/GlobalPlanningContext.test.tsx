@@ -59,7 +59,7 @@ describe('GlobalPlanningContext - refreshTermPlans → termPlans', () => {
       },
     ];
 
-    serviceFetchTermPlansMock.mockResolvedValueOnce(plansFromService);
+    serviceFetchTermPlansMock.mockResolvedValue(plansFromService);
 
     const TestConsumer: React.FC = () => {
       const ctx = useGlobalPlanning();
@@ -85,9 +85,10 @@ describe('GlobalPlanningContext - refreshTermPlans → termPlans', () => {
       await ctx.refreshTermPlans();
     });
 
+    const freshCtx = (globalThis as any).__lastPlanningContext as ReturnType<typeof useGlobalPlanning>;
     expect(serviceFetchTermPlansMock).toHaveBeenCalledWith(userId);
-    expect(ctx.termPlans).toHaveLength(1);
-    expect(ctx.termPlans[0].subject).toBe('Geografia');
+    expect(freshCtx.termPlans).toHaveLength(1);
+    expect(freshCtx.termPlans[0].subject).toBe('Geografia');
   });
 });
 
