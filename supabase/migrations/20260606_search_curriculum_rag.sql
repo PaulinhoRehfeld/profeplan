@@ -85,6 +85,21 @@ CREATE POLICY "curriculum_rag_insert_service_role"
 --   - Fallback: full-text search em português
 -- =============================================================================
 
+-- Remover todas as sobrecargas anteriores para evitar conflito de assinaturas
+DO $$
+DECLARE
+  r RECORD;
+BEGIN
+  FOR r IN 
+    SELECT oid::regprocedure AS prod
+    FROM pg_proc 
+    WHERE proname = 'search_curriculum_rag'
+  LOOP
+    EXECUTE 'DROP FUNCTION ' || r.prod || ' CASCADE';
+  END LOOP;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.search_curriculum_rag(
   query_text        TEXT,
   match_threshold   FLOAT    DEFAULT 0.5,
@@ -182,6 +197,21 @@ GRANT EXECUTE ON FUNCTION public.search_curriculum_rag TO anon, authenticated;
 -- Busca determinística do currículo SEE/MG completo para uma disciplina/período.
 -- Retorna o conteúdo concatenado (texto) ou vazio.
 -- =============================================================================
+
+-- Remover todas as sobrecargas anteriores para evitar conflito de assinaturas
+DO $$
+DECLARE
+  r RECORD;
+BEGIN
+  FOR r IN 
+    SELECT oid::regprocedure AS prod
+    FROM pg_proc 
+    WHERE proname = 'get_curriculo_completo'
+  LOOP
+    EXECUTE 'DROP FUNCTION ' || r.prod || ' CASCADE';
+  END LOOP;
+END;
+$$;
 
 CREATE OR REPLACE FUNCTION public.get_curriculo_completo(
   p_disciplina  TEXT,
