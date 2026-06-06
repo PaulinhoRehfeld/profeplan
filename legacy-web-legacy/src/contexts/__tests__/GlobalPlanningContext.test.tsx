@@ -65,11 +65,7 @@ describe('GlobalPlanningContext - refreshTermPlans → termPlans', () => {
       return null;
     };
 
-    // Mock mínimo de document/DOM para evitar dependência em jsdom/config global
-    (globalThis as any).document = {
-      createElement: () => ({}),
-      body: { appendChild: () => {} },
-    };
+
 
     const { render } = require('@testing-library/react');
 
