@@ -32,8 +32,10 @@ describe('GlobalPlanningContext - refreshTermPlans → termPlans', () => {
 
     // Sessão simulada
     getSessionMock.mockResolvedValueOnce({
-      session: {
-        user: { id: userId },
+      data: {
+        session: {
+          user: { id: userId },
+        },
       },
     });
 
