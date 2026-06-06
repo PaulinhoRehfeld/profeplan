@@ -1,0 +1,14 @@
+{
+    "framework": "vite",
+    "buildCommand": "npx vite build",
+    "outputDirectory": "dist",
+    "regions": [
+        "gru1"
+    ],
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/"
+        }
+    ]
+}

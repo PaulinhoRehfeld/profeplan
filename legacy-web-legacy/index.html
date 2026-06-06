@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- Cache Control - Force Fresh Content -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- SERVICE WORKER KILL-SWITCH -->
+  <script>
+    (function () {
+      console.log('SW Kill-Switch Active');
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          for (let r of registrations) { r.unregister(); console.log('SW Unregistered'); }
+        });
+      }
+      if ('caches' in window) {
+        caches.keys().then(function (names) {
+          for (let n of names) caches.delete(n);
+          console.log('Caches Purged');
+        });
+      }
+    })();
+  </script>
+  <!-- App Version -->
+  <meta name="app-version" content="4.0.0-FINAL-FIX" />
+  <meta name="build-date" content="2026-02-26" />
+
+  <title>PROFEPLAN v4.0.0</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/logo-pProfeplan v3.9png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <style>
+    /* Styles moved to index.css */
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+  <div id="root"></div>
+
+  <!-- Scripts de Identidade do Google (moved to end) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://apis.google.com/js/api.js" async defer></script>
+
+  <script type="module" src="/src/index.tsx"></script>
+</body>
+
+</html>

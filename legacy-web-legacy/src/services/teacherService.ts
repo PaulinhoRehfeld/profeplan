@@ -1,0 +1,235 @@
+import { supabase } from './supabaseClient';
+import { Teacher, InviteTeacherDTO } from '../types';
+
+const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : 'Unknown error';
+
+export interface PendingTeacher {
+    id: string;
+    school_id: string;
+    email_institucional: string;
+    masp: string;
+    full_name: string;
+    status: 'pending' | 'matched' | 'expired';
+    matched_profile_id?: string;
+    created_at: string;
+    matched_at?: string;
+}
+
+export interface CreatePendingTeacherDTO {
+    school_id: string;
+    email_institucional: string;
+    masp: string;
+    full_name: string;
+}
+
+/**
+ * Fetch all active teachers for a given school
+ * @param schoolId - The unique identifier of the school
+ * @returns Promise<Teacher[]> - Array of teachers in the school, or empty array on error
+ * @throws Catches and logs Supabase errors, returns empty array
+ * @example
+ * const teachers = await getTeachersBySchool('school-abc-123');
+ */
+export const getTeachersBySchool = async (schoolId: string): Promise<Teacher[]> => {
+    // Defensive trim
+    const cleanId = schoolId?.trim();
+
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, masp, school_id, role, created_at')
+        .eq('school_id', cleanId)
+        .eq('role', 'teacher')
+        .order('full_name');
+
+    if (error) {
+        console.error('Error fetching teachers:', error);
+        return [];
+    }
+
+    return data || [];
+};
+
+/**
+ * Invite a teacher to join the school
+ * Creates a pending teacher record that will be linked when the teacher signs up
+ * @param teacherData - Teacher invitation data (email, full_name, masp, school_id)
+ * @returns Promise - Object with success flag and optional error message
+ * @throws Catches and logs errors, returns success: false
+ * @example
+ * const result = await inviteTeacher({ email: 'prof@example.com', full_name: 'João Silva', school_id: 'school-123' });
+ */
+export const inviteTeacher = async (teacherData: InviteTeacherDTO): Promise<{ success: boolean; error?: string }> => {
+    try {
+        // Check if email already exists
+        const { data: existingProfile } = await supabase
+            .from('profiles')
+            .select('id, email')
+            .eq('email', teacherData.email)
+            .single();
+
+        if (existingProfile) {
+            // Update existing profile with school info
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({
+                    school_id: teacherData.school_id,
+                    full_name: teacherData.full_name,
+                    masp: teacherData.masp,
+                    role: 'teacher'
+                })
+                .eq('email', teacherData.email);
+
+            if (updateError) {
+                return { success: false, error: updateError.message };
+            }
+
+            return { success: true };
+        }
+
+        // For new teachers, we'll create a pending invitation
+        // When they sign up with this email, their profile will be linked to the school
+        // Note: This requires a companion auth flow that checks for pending invitations
+
+        return {
+            success: false,
+            error: 'Professor deve se cadastrar primeiro na plataforma. Envie o link de cadastro para o email fornecido.'
+        };
+
+    } catch (error: unknown) {
+        return { success: false, error: getErrorMessage(error) };
+    }
+};
+
+/**
+ * Update teacher information
+ */
+export const updateTeacher = async (
+    teacherId: string,
+    updates: Partial<Teacher>
+): Promise<{ success: boolean; error?: string }> => {
+    const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', teacherId);
+
+    if (error) {
+        return { success: false, error: error.message };
+    }
+
+    return { success: true };
+};
+
+/**
+ * Remove teacher from school (sets school_id to null)
+ */
+export const removeTeacherFromSchool = async (teacherId: string): Promise<{ success: boolean; error?: string }> => {
+    const { error } = await supabase
+        .from('profiles')
+        .update({ school_id: null })
+        .eq('id', teacherId);
+
+    if (error) {
+        return { success: false, error: error.message };
+    }
+
+    return { success: true };
+};
+
+/**
+ * Create a pending teacher (pre-registration)
+ * The teacher will be automatically linked when they sign up with matching email and MASP
+ */
+export const createPendingTeacher = async (data: CreatePendingTeacherDTO): Promise<{ success: boolean; data?: PendingTeacher; error?: string }> => {
+    // Validate email format
+    if (!data.email_institucional.endsWith('@educacao.mg.gov.br')) {
+        return {
+            success: false,
+            error: 'Email deve ser institucional (@educacao.mg.gov.br)'
+        };
+    }
+
+    const { data: result, error } = await supabase
+        .from('pending_teachers')
+        .insert([{
+            ...data,
+            created_by: (await supabase.auth.getUser()).data.user?.id
+        }])
+        .select()
+        .single();
+
+    if (error) {
+        if (error.code === '23505') { // Unique violation
+            return {
+                success: false,
+                error: 'Professor já cadastrado com este email e MASP'
+            };
+        }
+        return { success: false, error: error.message };
+    }
+
+    return { success: true, data: result };
+};
+
+/**
+ * Get all pending teachers for a school
+ */
+export const getPendingTeachersBySchool = async (schoolId: string): Promise<PendingTeacher[]> => {
+    const { data, error } = await supabase
+        .from('pending_teachers')
+        .select('*')
+        .eq('school_id', schoolId)
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching pending teachers:', error);
+        return [];
+    }
+
+    return data || [];
+};
+
+/**
+ * Delete a pending teacher
+ */
+export const deletePendingTeacher = async (pendingTeacherId: string): Promise<{ success: boolean; error?: string }> => {
+    const { error } = await supabase
+        .from('pending_teachers')
+        .delete()
+        .eq('id', pendingTeacherId);
+
+    if (error) {
+        return { success: false, error: error.message };
+    }
+
+    return { success: true };
+};
+
+/**
+ * Approve a pending teacher (Manually link profile)
+ */
+export const approveTeacher = async (pendingId: string): Promise<{ success: boolean; message?: string; error?: string }> => {
+    const { data, error } = await supabase.rpc('approve_teacher', {
+        p_pending_id: pendingId
+    });
+
+    if (error) return { success: false, error: error.message };
+
+    // RPC returns: { success, message, error }
+    if (data && !data.success) return { success: false, error: data.error };
+
+    return { success: true, message: data.message };
+};
+
+/**
+ * Updates teacher profile (DEPRECATED: Use userService.updateUserProfile instead)
+ */
+export const updateProfileAndLinkSchool = async (profileId: string, updates: Record<string, unknown>) => {
+    console.warn('[teacherService] updateProfileAndLinkSchool is deprecated. Use userService.updateUserProfile.');
+    const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', profileId);
+    if (error) throw error;
+    return { success: true };
+};

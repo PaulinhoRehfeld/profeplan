@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Resgatando Profeplan...</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+</head>
+
+<body style="font-family: sans-serif; text-align: center; padding: 50px;">
+    <h1>Limpando Cache Corrompido...</h1>
+    <p>Por favor, aguarde um momento enquanto restauramos o seu acesso.</p>
+    <!--
+      ESTE CAMINHO DE RESGATE É EMERGENCIAL.
+      Use apenas quando orientado pelo suporte ou em migrações críticas,
+      para limpar Service Workers e caches corrompidos. Não faz parte
+      do fluxo normal de atualização do PWA.
+    -->
+
+    <script>
+        async function rescue() {
+            console.log('Iniciando resgate nuclear...');
+
+            // 1. Unregister ALL Service Workers
+            if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (const r of regs) {
+                    await r.unregister();
+                    console.log('SW Removido');
+                }
+            }
+
+            // 2. Clear ALL Caches
+            if ('caches' in window) {
+                const names = await caches.keys();
+                for (const n of names) {
+                    await caches.delete(n);
+                    console.log('Cache Removido:', n);
+                }
+            }
+
+            // 3. Clear Local Storage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            console.log('Limpeza concluída. Redirecionando...');
+
+            // 4. Force reload from server with no-cache cache-buster
+            window.location.href = '/?v=' + Date.now();
+        }
+
+        // Executar após um pequeno delay para garantir que tudo seja processado
+        setTimeout(rescue, 1000);
+    </script>
+</body>
+
+</html>
