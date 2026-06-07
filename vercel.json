@@ -1,9 +1,9 @@
 {
     "version": 2,
     "framework": "vite",
-    "buildCommand": "npm run build --workspace=apps/web",
+    "buildCommand": "pnpm --filter profeplan-engenharia-pedagogica-v4.0 build",
     "outputDirectory": "apps/web/dist",
-    "installCommand": "npm install",
+    "installCommand": "pnpm install",
     "regions": [
         "gru1"
     ],
