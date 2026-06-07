@@ -31,7 +31,7 @@ jobs:
       - name: Run Staging Migrations
         if: github.ref == 'refs/heads/develop'
         env:
-          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL || secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: pnpm --filter @profeplan/db prisma:deploy
 
       - name: Run Production Migrations
