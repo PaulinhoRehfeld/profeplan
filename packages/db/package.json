@@ -1,0 +1,21 @@
+{
+  "name": "@profeplan/db",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "prisma:generate": "prisma generate --schema=prisma/schema.prisma",
+    "prisma:validate": "prisma validate --schema=prisma/schema.prisma",
+    "prisma:deploy": "prisma migrate deploy --schema=prisma/schema.prisma",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "pg": "^8.21.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0"
+  }
+}

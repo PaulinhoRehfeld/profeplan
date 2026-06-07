@@ -31,5 +31,10 @@
         "lightningcss-win32-x64-msvc": "1.30.2",
         "@tailwindcss/oxide-linux-x64-gnu": "4.1.18",
         "@tailwindcss/oxide-win32-x64-msvc": "4.1.18"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild"
+        ]
     }
 }

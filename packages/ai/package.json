@@ -1,0 +1,22 @@
+{
+  "name": "@profeplan/ai",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./term-plan": "./src/term-plan.ts",
+    "./prompts/term-plan": "./src/prompts/term-plan.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "validate-flow": "npx tsx src/test-flow.ts"
+  },
+  "dependencies": {
+    "@profeplan/db": "workspace:*",
+    "@profeplan/logger": "workspace:*",
+    "openai": "^4.104.0"
+  }
+}

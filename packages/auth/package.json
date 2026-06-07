@@ -1,0 +1,24 @@
+{
+  "name": "@profeplan/auth",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./session": "./src/session.ts",
+    "./tenant": "./src/tenant.ts",
+    "./supabase/client": "./src/supabase/client.ts",
+    "./supabase/server": "./src/supabase/server.ts",
+    "./supabase/middleware": "./src/supabase/middleware.ts"
+  },
+  "dependencies": {
+    "@profeplan/db": "workspace:*",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.106.2"
+  },
+  "peerDependencies": {
+    "next": ">=16.0.0",
+    "react": ">=19.0.0"
+  }
+}
