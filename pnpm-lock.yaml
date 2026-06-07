@@ -24,6 +24,9 @@ importers:
       '@vercel/node':
         specifier: ^5.6.10
         version: 5.8.12(rollup@4.61.1)
+      prettier:
+        specifier: ^3.0.0
+        version: 3.8.3
     optionalDependencies:
       '@tailwindcss/oxide-linux-x64-gnu':
         specifier: 4.1.18
@@ -3664,6 +3667,11 @@ packages:
 
   pptxgenjs@4.0.1:
     resolution: {integrity: sha512-TeJISr8wouAuXw4C1F/mC33xbZs/FuEG6nH9FG1Zj+nuPcGMP5YRHl6X+j3HSUnS1f3at6k75ZZXPMZlA5Lj9A==}
+
+  prettier@3.8.3:
+    resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
@@ -7904,6 +7912,8 @@ snapshots:
       https: 1.0.0
       image-size: 1.2.1
       jszip: 3.10.1
+
+  prettier@3.8.3: {}
 
   pretty-bytes@5.6.0: {}
 

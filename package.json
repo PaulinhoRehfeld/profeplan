@@ -11,7 +11,9 @@
         "dev": "npm run dev --workspace=apps/web",
         "build": "npm run build --workspaces --if-present",
         "lint": "npm run lint --workspaces --if-present",
-        "test": "npm run test --workspaces --if-present"
+        "test": "npm run test --workspaces --if-present",
+        "typecheck": "npm run typecheck --workspaces --if-present",
+        "prettier": "prettier --write ."
     },
     "engines": {
         "node": "22.x",
@@ -24,7 +26,8 @@
         "openai": "^4.77.0"
     },
     "devDependencies": {
-        "@vercel/node": "^5.6.10"
+        "@vercel/node": "^5.6.10",
+        "prettier": "^3.0.0"
     },
     "optionalDependencies": {
         "lightningcss-linux-x64-gnu": "1.30.2",
