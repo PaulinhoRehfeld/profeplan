@@ -2,6 +2,7 @@
     "name": "profeplan-monorepo",
     "version": "4.0.0",
     "private": true,
+    "packageManager": "pnpm@11.5.2",
     "description": "Profeplan - Industrial Monorepo Architecture",
     "workspaces": [
         "apps/*",
@@ -16,8 +17,7 @@
         "prettier": "prettier --write ."
     },
     "engines": {
-        "node": "22.x",
-        "npm": ">=10.0.0"
+        "node": "22.x"
     },
     "dependencies": {
         "@azure/search-documents": "^12.2.0",

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npx vite build",
     "preview": "vite preview",
-    "lint": "npx tsc --noEmit",
+    "lint": "pnpm tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
