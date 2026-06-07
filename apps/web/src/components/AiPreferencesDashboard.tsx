@@ -1,6 +1,6 @@
 import React from 'react';
 import { Shield, Gamepad2, GraduationCap, Target, FileText, Settings } from 'lucide-react';
-import { UserSettings } from '../../types';
+import { UserProfile, UserSettings } from '../types';
 
 interface AiPreferencesDashboardProps {
     settings: UserSettings;

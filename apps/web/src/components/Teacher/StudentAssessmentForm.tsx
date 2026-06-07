@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Save, AlertCircle, BookOpen, GraduationCap } from 'lucide-react';
-import { supabase } from '../../../services/supabaseClient';
-import { TeacherEvaluationSchema, pdiTeacherEvaluationForm, AutonomyLevel, ComprehensionLevel } from '../../../types/pdi-schema';
+import { supabase } from '../../services/supabaseClient';
+import { TeacherEvaluationSchema, pdiTeacherEvaluationForm, AutonomyLevel, ComprehensionLevel } from '../../types/pdi-schema';
 
 interface StudentAssessmentFormProps {
     studentId: string;
@@ -56,7 +56,7 @@ export const StudentAssessmentForm: React.FC<StudentAssessmentFormProps> = ({
                     // Create new if not exists (Teacher triggering creation or just linking?) 
                     // Usually Manager creates, but we can allow auto-create for fluidity or throw error.
                     // Let's safe-create.
-                    const { data: newCycle, error: createError } = await supabase
+                    const { data: newCycle, error: createError } = await (supabase as any)
                         .from('pdi_cycles')
                         .insert({
                             student_id: studentId,
@@ -72,7 +72,7 @@ export const StudentAssessmentForm: React.FC<StudentAssessmentFormProps> = ({
             }
 
             // 2. Save Evaluation
-            const { error: evalError } = await supabase
+            const { error: evalError } = await (supabase as any)
                 .from('pdi_teacher_evaluations')
                 .upsert({
                     pdi_cycle_id: targetCycleId,

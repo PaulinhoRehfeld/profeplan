@@ -15,7 +15,7 @@ import { PnldBook } from '../../types';
 interface TermPlanningManagerProps {
     userId: string;
     settings: any;
-    setSidebarContent?: (content: React.RefNode) => void;
+    setSidebarContent?: (content: React.ReactNode) => void;
 }
 
 const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, settings, setSidebarContent }) => {

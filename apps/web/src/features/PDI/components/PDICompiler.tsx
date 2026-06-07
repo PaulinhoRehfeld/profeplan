@@ -290,7 +290,7 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
             </div>
 
             {/* Print Styles */}
-            <style jsx>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @media print {
                     body {
                         print-color-adjust: exact;
@@ -309,7 +309,7 @@ const PDICompiler: React.FC<PDICompilerProps> = ({ pdiId, userId, userRole }) =>
                         display: block !important;
                     }
                 }
-            `}</style>
+            `}} />
         </div>
     );
 };

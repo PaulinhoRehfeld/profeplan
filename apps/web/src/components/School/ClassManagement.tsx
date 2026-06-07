@@ -145,7 +145,7 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({ schoolId, user
         if (!editingClass) return;
 
         // Prevent delete if has students (safety check, though DB might allow if cascade isn't set, better to warn)
-        if (editingClass.student_count && editingClass.student_count > 0) {
+        if ((editingClass as any).student_count && (editingClass as any).student_count > 0) {
             return alert('Não é possível excluir uma turma com alunos. Remova os alunos ou use a opção "Unificar" primeiro.');
         }
 
@@ -361,7 +361,7 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({ schoolId, user
                                 <p className="flex items-center gap-2"><span className="w-2 h-2 bg-purple-400 rounded-full"></span> Sala {classItem.room || '-'}</p>
                             </div>
                             <div className="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-sm text-slate-500">
-                                <Users size={16} /> {classItem.student_count || 0} alunos
+                                <Users size={16} /> {(classItem as any).student_count || 0} alunos
                             </div>
                         </div>
                     ))

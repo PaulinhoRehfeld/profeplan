@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, Save, Printer, FileText, Check, X } from 'lucide-react';
-import { Assessment, Question } from '../../../types';
+import { Assessment, AssessmentQuestion } from '../../../types';
 
 interface AssessmentPreviewProps {
     assessment: Assessment;

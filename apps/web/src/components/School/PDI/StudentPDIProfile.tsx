@@ -21,7 +21,7 @@ export const StudentPDIProfile: React.FC<StudentPDIProfileProps> = ({ studentId,
     const [schoolStudentId, setSchoolStudentId] = useState<string | null>(null);
 
     const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<PDIProfileData & { deficiencies: string[] }>({
-        resolver: zodResolver(PDI_SCHEMA),
+        resolver: zodResolver(PDI_SCHEMA) as any,
         defaultValues: {
             psychomotor: {},
             cognitive: {},

@@ -18,7 +18,7 @@ type ChatPart =
     | { inlineData: { data: string; mimeType: string } };
 
 type ChatMessage = {
-    role: "system" | "user" | "assistant" | "developer";
+    role: "system" | "user" | "assistant";
     content: string;
 };
 
@@ -147,7 +147,7 @@ export const generateProfePlanStream = async (
     // Constrói histórico no formato OpenAI (messages)
     const historyMessages: ChatMessage[] = history.map((h) => ({
         role: h.role === "user" ? "user" : "assistant",
-        content: (h.parts || []).map((p) => (p as ChatPart).text ?? "").join(" "),
+        content: (h.parts || []).map((p) => ("text" in p ? p.text : "")).join(" "),
     }));
 
     // Monta a mensagem atual do usuário (imagem/áudio ainda não integrados na chamada Azure)
@@ -180,7 +180,7 @@ export const generateProfePlanStream = async (
             messages,
             temperature: 0.8,
             stream: true,
-        });
+        } as any);
 
         // Increment Usage only after stream starts successfully
         if (userId) {
@@ -189,10 +189,10 @@ export const generateProfePlanStream = async (
 
         // Adaptador para garantir compatibilidade com o App.tsx que espera chunk.text
         async function* streamAdapter() {
-            for await (const chunk of stream) {
-                const delta = chunk.choices[0]?.delta?.content;
-                if (delta) {
-                    yield { text: delta };
+            for await (const chunk of stream as unknown as AsyncIterable<any>) {
+                const content = chunk.choices[0]?.delta?.content || "";
+                if (content) {
+                    yield { text: content };
                 }
             }
         }

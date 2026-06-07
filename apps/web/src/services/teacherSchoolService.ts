@@ -86,7 +86,7 @@ export const getTeacherSchools = async (teacherId: string): Promise<TeacherSchoo
             school_id: link.school_id,
             school_name: link.schools?.name,
             school_inep: link.schools?.inep_code,
-            role: link.role,
+            role: link.role as "teacher" | "coordinator" | "principal",
             disciplines: link.disciplines || [],
             started_at: link.started_at,
             ended_at: link.ended_at

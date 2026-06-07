@@ -74,9 +74,12 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     gradingGrid: { vistos: 5, trabalhos: 5, monthlyExam: 10, termExam: 10, others: 0 },
     stateBase: 'Minas Gerais',
     educationSphere: 'Estadual',
+    userId: 'user-1',
     generatedText: '# Planejamento',
     lessons: [
       {
+        number: 1,
+        description: 'Descrição',
         title: 'Aula 1',
         objectives: ['Objetivo 1'],
         bncc: ['EF09HI01'],

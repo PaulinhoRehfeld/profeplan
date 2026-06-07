@@ -184,6 +184,7 @@ const ClassDetail: React.FC<ClassDetailProps> = ({
                             studentId={quickLogStudent.id}
                             studentName={quickLogStudent.name}
                             onClose={() => setQuickLogStudent(null)}
+                            onSuccess={() => {}}
                         />
                     </div>
                 </div>

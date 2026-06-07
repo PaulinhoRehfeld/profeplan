@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, AlertCircle, CheckCircle, Loader, TrendingUp } from 'lucide-react';
 import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
-import { generateBlock10Diagnosis } from '../../../services/pdi/PdiDocumentService';
+import { generateBlock10Diagnosis } from '../../../services/ai/AiPdiService';
 import { GrauAutonomia } from '../../../types/pdi';
 
 interface PDIBlock10FormProps {
@@ -105,7 +105,7 @@ const PDIBlock10Form: React.FC<PDIBlock10FormProps> = ({ pdiId, studentName, use
             });
 
             if (saveError || !evaluation) {
-                throw new Error(saveError?.message || 'Erro ao salvar avaliação');
+                throw new Error((saveError as any)?.message || 'Erro ao salvar avaliação');
             }
 
             // Update with AI-generated content (metodologia)

@@ -92,12 +92,12 @@ const StudentPdiView: React.FC<StudentPdiViewProps> = ({ studentId }) => {
                                     <div className="text-xs text-slate-600 leading-relaxed bg-slate-50/50 p-3 rounded-lg border border-slate-50">
                                         {record.type === 'EVALUATION' ? (
                                             <div>
-                                                <p><span className="font-bold">Disciplina:</span> {record.content.subject}</p>
-                                                <p><span className="font-bold">Nota Total:</span> {record.content.points} pontos</p>
-                                                <p><span className="font-bold">Período:</span> {record.content.period}</p>
+                                                <p><span className="font-bold">Disciplina:</span> {(record.content as any).subject}</p>
+                                                <p><span className="font-bold">Nota Total:</span> {(record.content as any).points} pontos</p>
+                                                <p><span className="font-bold">Período:</span> {(record.content as any).period}</p>
                                             </div>
                                         ) : record.type === 'OCCURRENCE' || record.type === 'OBSERVATION' ? (
-                                            <p>{record.content.description}</p>
+                                            <p>{(record.content as any).description}</p>
                                         ) : (
                                             <pre className="whitespace-pre-wrap font-sans">{JSON.stringify(record.content, null, 2)}</pre>
                                         )}

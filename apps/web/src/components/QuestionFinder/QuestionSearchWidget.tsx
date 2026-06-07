@@ -117,9 +117,9 @@ export function QuestionSearchWidget() {
                                         )}
 
                                         {/* Imagens do Enunciado */}
-                                        {meta.files && meta.files.length > 0 && (
+                                        {(meta as any).files && (meta as any).files.length > 0 && (
                                             <div className="mb-6 flex flex-wrap gap-4 justify-center bg-gray-50 p-4 rounded-lg border border-gray-100">
-                                                {meta.files.map((file: string, idx: number) => (
+                                                {(meta as any).files.map((file: string, idx: number) => (
                                                     <img key={idx} src={file} alt="Apoio" className="max-h-48 rounded object-contain" />
                                                 ))}
                                             </div>

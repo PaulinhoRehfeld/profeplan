@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/vitest';
 import ImportProcess from '../ImportProcess';
 
 const mockParseClassListFromText = vi.fn();
@@ -43,17 +45,17 @@ describe('ImportProcess', () => {
 
     expect(
       screen.getByText(/Lendo PDF da Lista/i),
-    ).toBeInTheDocument();
+    ).toBeTruthy();
 
     await waitFor(() =>
       expect(
         screen.getByText(/Turma Encontrada!/i),
-      ).toBeInTheDocument(),
+      ).toBeTruthy(),
     );
 
     expect(
-      screen.getByText(/Encontramos 2 alunos/i),
-    ).toBeInTheDocument();
+      screen.getByText(/Encontramos 2 alunos/i)
+    ).toBeTruthy();
 
     fireEvent.click(
       screen.getByRole('button', { name: /Confirmar e Salvar/i }),
@@ -77,7 +79,7 @@ describe('ImportProcess', () => {
     await waitFor(() =>
       expect(
         screen.getByText(/Por favor, selecione um arquivo PDF./i),
-      ).toBeInTheDocument(),
+      ).toBeTruthy(),
     );
   });
 
@@ -96,7 +98,7 @@ describe('ImportProcess', () => {
     await waitFor(() =>
       expect(
         screen.getByText(/Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis./i),
-      ).toBeInTheDocument(),
+      ).toBeTruthy(),
     );
   });
 });

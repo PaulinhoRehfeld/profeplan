@@ -45,7 +45,7 @@ export const createCheckoutSession = async (priceId: string, userId: string, mod
         const stripe = await stripePromise;
         if (!stripe) throw new Error('Stripe failed to initialize');
 
-        const result = await stripe.redirectToCheckout({
+        const result = await (stripe as any).redirectToCheckout({
             sessionId: data.sessionId,
         });
 

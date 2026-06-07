@@ -26,7 +26,7 @@ export interface PdiDAL {
 
 export const pdiDAL: PdiDAL = {
   async getOrCreatePdi(studentId, year = new Date().getFullYear(), contextualData) {
-    return PdiDocumentService.getOrCreatePdi(studentId, year, contextualData);
+    return PdiDocumentService.getOrCreatePdi(studentId, year, contextualData as any);
   },
 
   async logEvent(studentId, type, title, content, pdiBlock) {

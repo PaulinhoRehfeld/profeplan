@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { School, Users, Plus, X, Loader2, Save } from 'lucide-react';
+import { supabase } from '../../../services/supabaseClient';
 
 interface Supervisor {
     id?: string;

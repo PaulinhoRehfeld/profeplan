@@ -352,6 +352,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
             {/* MODALS */}
             {isManualCreateOpen && (
                 <CreateClassModal
+                    activeSchoolId={(userProfile as any)?.active_school_id || ''}
                     onClose={() => setIsManualCreateOpen(false)}
                     onSave={handleSaveNewClass}
                 />

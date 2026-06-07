@@ -26,6 +26,7 @@ type PdiBlock10Entry = {
     professor_valor?: number;
     professor_nota_alcancada?: number;
     professor_grau_autonomia?: string;
+    ia_diagnostico?: string;
 };
 
 type FullPdiContext = {
@@ -457,11 +458,11 @@ export const generateBlock10Diagnosis = async (
         }
     }
 
-    const diagnostico_inicial = fullPdiContext.block_1_8?.bloco_1_identificacao?.diagnostico_clinico || 'Não especificado';
-    const necessidades = fullPdiContext.block_1_8?.bloco_2_diagnostico?.necessidades_especificas || [];
-    const potencialidades = fullPdiContext.block_1_8?.bloco_2_diagnostico?.potencialidades || [];
-    const desafios = fullPdiContext.block_1_8?.bloco_2_diagnostico?.desafios || [];
-    const objetivo_geral = fullPdiContext.block_1_8?.bloco_3_objetivos?.objetivo_geral || '';
+    const diagnostico_inicial = (fullPdiContext.block_1_8?.bloco_1_identificacao as any)?.diagnostico_clinico || 'Não especificado';
+    const necessidades = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.necessidades_especificas || [];
+    const potencialidades = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.potencialidades || [];
+    const desafios = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.desafios || [];
+    const objetivo_geral = (fullPdiContext.block_1_8?.bloco_3_objetivos as any)?.objetivo_geral || '';
 
     const adaptacoesRecentes = (fullPdiContext.block_9_history || [])
         .slice(-3)
@@ -584,9 +585,9 @@ export const generateBlock11Report = async (
         }
     }
 
-    const identificacao = pdiDocument.block_1_8?.bloco_1_identificacao || {};
-    const diagnostico = pdiDocument.block_1_8?.bloco_2_diagnostico || {};
-    const objetivos = pdiDocument.block_1_8?.bloco_3_objetivos || {};
+    const identificacao = (pdiDocument.block_1_8?.bloco_1_identificacao as any) || {};
+    const diagnostico = (pdiDocument.block_1_8?.bloco_2_diagnostico as any) || {};
+    const objetivos = (pdiDocument.block_1_8?.bloco_3_objetivos as any) || {};
 
     const totalAdaptacoes = pdiDocument.block_9_content?.length || 0;
     const disciplinasAdaptadas = [...new Set(pdiDocument.block_9_content?.map((a) => a.subject) || [])];

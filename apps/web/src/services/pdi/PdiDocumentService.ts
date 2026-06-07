@@ -28,8 +28,12 @@ type LegacyBlockData = {
 };
 
 type Block10EvaluationInput = {
-    professor_id: string;
+    data: string;
+    atividade_titulo: string;
     disciplina: string;
+    professor_valor: number;
+    professor_nota_alcancada: number;
+    professor_id: string;
     professor_grau_autonomia?: string;
     ia_diagnostico?: string;
 };
@@ -643,7 +647,7 @@ export const PdiDocumentService = {
                       (a, b) => new Date(b.generated_at).getTime() - new Date(a.generated_at).getTime()
                   )[0].generated_at
                 : undefined;
-        return { total: adaptations.length, last_generated: lastGenerated, subjects };
+        return { total: adaptations.length, last_generated: lastGenerated, subjects: subjects as string[] };
     },
 
     /**
@@ -702,7 +706,7 @@ export const PdiDocumentService = {
                         subject,
                         gradeLevel,
                         habilidadesBncc,
-                        studentContext,
+                        studentContext as any,
                         userId
                     );
 

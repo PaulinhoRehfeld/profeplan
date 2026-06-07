@@ -64,7 +64,7 @@ const App: React.FC = () => {
     loading: schoolsLoading,
     setActiveSchool,
     needsSelection
-  } = useActiveSchool(session?.userId);
+  } = useActiveSchool((session as any)?.userId || (session as any)?.user_id || (session as any)?.id);
   const isAdmin = userProfile?.is_admin === true || userProfile?.role === 'admin';
 
   // 2. UI STATE (Orchestration)
@@ -168,7 +168,7 @@ const App: React.FC = () => {
       syncField(userProfile.email, 'institutionalEmail', 'Email');
       syncField(userProfile.masp, 'masp', 'MASP');
       syncField(userProfile.city, 'city', 'Cidade');
-      syncField(userProfile.inep_code, 'schoolCode', 'INEP');
+      syncField((userProfile as any).inep_code, 'schoolCode', 'INEP');
       syncField(userProfile.school_name, 'institution', 'Escola');
 
       // Pedagogical Sync
@@ -347,8 +347,8 @@ const App: React.FC = () => {
               <Route
                 path="/admin/simulations"
                 element={
-                  session?.isLoggedIn && session.userId && isAdmin ? (
-                    <SimulationAdminPanel userId={session.userId} isAdmin={isAdmin} />
+                  session?.isLoggedIn && ((session as any).userId || (session as any).user_id || (session as any).id) && isAdmin ? (
+                    <SimulationAdminPanel userId={(session as any).userId || (session as any).user_id || (session as any).id} isAdmin={isAdmin} />
                   ) : (
                     <Navigate to="/" replace />
                   )

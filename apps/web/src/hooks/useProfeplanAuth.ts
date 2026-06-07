@@ -227,7 +227,7 @@ export const useProfeplanAuth = () => {
                     : (profileData.is_admin || profileData.role === 'admin' ? 'ADMIN' : 'TEACHER');
 
                 if (session.role !== derivedRole) {
-                    const updatedSession = { ...session, role: derivedRole };
+                    const updatedSession = { ...session, role: derivedRole as any };
                     setSession(updatedSession);
                     localStorage.setItem('profeplan_session', JSON.stringify(updatedSession));
                 }

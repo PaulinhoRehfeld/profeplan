@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const isAdminOrManager = isHardcodedAdmin || userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
   const allMenuItems = isAdminOrManager
-    ? [...menuItems, { id: ToolMode.SCHOOL_MANAGER, icon: Users, label: 'Gestão Escolar', feature: 'management' }]
+    ? [...menuItems, { id: ToolMode.SCHOOL_MANAGER, icon: Users, label: 'Gestão Escolar', feature: 'management', group: 'management' }]
     : menuItems;
 
   const filteredItems = allMenuItems;

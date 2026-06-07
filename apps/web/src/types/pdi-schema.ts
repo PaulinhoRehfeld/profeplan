@@ -114,7 +114,33 @@ export const PdiSchema = z.object({
 
 export const PDI_SCHEMA = PdiSchema; // Alias for backward compatibility
 
-export type PDIProfileData = z.infer<typeof PdiSchema>;
+export type PDIProfileData = z.infer<typeof PDI_SCHEMA>;
+
+export enum AutonomyLevel {
+    TOTAL = 'TOTAL',
+    AUTONOMO = 'AUTONOMO',
+    MUITO_SUPORTE = 'MUITO_SUPORTE',
+    POUCO_SUPORTE = 'POUCO_SUPORTE',
+    NENHUM_SUPORTE = 'NENHUM_SUPORTE',
+    NAO_OBSERVADO = 'NAO_OBSERVADO'
+}
+
+export enum ComprehensionLevel {
+    ALTA = 'ALTA',
+    MEDIA = 'MEDIA',
+    BAIXA = 'BAIXA',
+    NENHUMA = 'NENHUMA'
+}
+
+export const TeacherEvaluationSchema = z.object({
+    period: z.number().optional(),
+    subject: z.string().optional(),
+    autonomy_level: z.nativeEnum(AutonomyLevel).optional(),
+    comprehension_level: z.nativeEnum(ComprehensionLevel).optional(),
+    pedagogical_diagnosis: z.string().optional()
+});
+
+export type pdiTeacherEvaluationForm = z.infer<typeof TeacherEvaluationSchema>;
 // Export as Value (for PDIAnswer.APRESENTA usage)
 export const PDIAnswer = SkillStatus.enum;
 

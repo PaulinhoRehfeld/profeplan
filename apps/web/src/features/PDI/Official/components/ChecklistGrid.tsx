@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { PdiData } from '../../../../types/pdi-schema';
+import { PDIProfileData as PdiData } from '../../../../types/pdi-schema';
 
 interface ChecklistItem {
     key: string; // The key within the specific section object (e.g. 'body_schema')

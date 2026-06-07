@@ -40,6 +40,7 @@ export interface UserProfile {
   full_name?: string;
   masp?: string;
   created_at?: string;
+  active_school_id?: string;
   // Configuracoes Pedagogicas
   favorite_methodology?: string;
   teaching_style?: string;
@@ -258,6 +259,8 @@ export interface Lesson {
 
 export interface TermPlan {
   id: string; // Made mandatory for list keying
+  title?: string;
+  userId?: string;
   period: number;
   regime: 'Trimestre';
   subject: string;
@@ -302,6 +305,7 @@ export interface School {
   inep_code?: string;
   city?: string;
   state?: string;
+  sre?: string;
   created_at?: string;
 }
 
@@ -310,6 +314,7 @@ export interface SchoolStats {
   totalTeachers: number;
   totalClasses: number;
   pdiCount?: number;
+  schoolName?: string;
 }
 
 // ====== TEACHER TYPES ======

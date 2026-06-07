@@ -4,7 +4,7 @@ import {
     Loader, Edit3, Eye, Lock
 } from 'lucide-react';
 import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
-import { generateBlock11Report } from '../../../services/pdi/PdiDocumentService';
+import { generateBlock11Report } from '../../../services/ai/AiPdiService';
 
 interface PDIBlock11EditorProps {
     pdiId: string;
@@ -73,7 +73,7 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
                     block_1_8: pdi.block_1_8, // Compatibility
                     block_9_content: pdi.block_9_content || [],
                     block_10_entries: pdi.block_10_entries || [],
-                },
+                } as any,
                 userId
             );
 

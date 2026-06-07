@@ -170,8 +170,7 @@ export function FreedayProvider({ children }: { children: React.ReactNode }) {
     const startListening = useCallback(() => {
         if (isListeningRef.current || state === 'speaking') return;
 
-        const SpeechRecognitionAPI =
-            window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
         if (!SpeechRecognitionAPI) return;
 
         if (recognitionRef.current) {

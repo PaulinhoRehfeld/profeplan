@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import { PdiData } from '../../../../types/pdi-schema';
+import { PDIProfileData as PdiData } from '../../../../types/pdi-schema';
 import { GraduationCap, Plus, Trash2 } from 'lucide-react';
 
 interface SectionProps {

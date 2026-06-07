@@ -22,6 +22,9 @@ export interface UserProfile {
     role?: 'teacher' | 'supervisor' | 'admin';
     school_name?: string;
     city?: string;
+    active_school_id?: string;
+    sre?: string;
+    inep_code?: string;
     school?: {
         name?: string;
         city?: string;

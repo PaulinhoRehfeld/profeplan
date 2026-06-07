@@ -1,5 +1,6 @@
 
 import { supabase } from "./supabaseClient";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface HybridSearchParams {
     textoBusca: string;
