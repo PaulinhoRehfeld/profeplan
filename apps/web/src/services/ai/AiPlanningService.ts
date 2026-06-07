@@ -357,7 +357,7 @@ export const generateGeminiContent = async (
     }
 
     const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini", // será roteado pelo deployment Azure configurado
+        model: "gpt-4o-mini", // será roteado pelo deployment configurado
         messages,
         temperature,
     } as any);

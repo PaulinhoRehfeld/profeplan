@@ -150,7 +150,7 @@ export const generateProfePlanStream = async (
         content: (h.parts || []).map((p) => ("text" in p ? p.text : "")).join(" "),
     }));
 
-    // Monta a mensagem atual do usuário (imagem/áudio ainda não integrados na chamada Azure)
+    // Monta a mensagem atual do usuário (imagem/áudio ainda não integrados na chamada nativa)
     const userMessageContent = message || "";
 
     const messages: ChatMessage[] = [
@@ -199,7 +199,7 @@ export const generateProfePlanStream = async (
 
         return streamAdapter();
     } catch (error: unknown) {
-        console.error("Erro na Chamada do Azure OpenAI:", error);
+        console.error("Erro na Chamada da OpenAI:", error);
         throw new Error(getErrorMessage(error));
     }
 };

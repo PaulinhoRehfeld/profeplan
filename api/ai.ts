@@ -1,6 +1,6 @@
 export const maxDuration = 60;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { AzureOpenAI } from 'openai';
+import OpenAI from 'openai';
 
 type ChatMessage = {
   role: 'system' | 'user' | 'assistant';
@@ -14,25 +14,11 @@ type Body = {
   model?: string;
 };
 
-const getAzureClient = () => {
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT || process.env.VITE_AZURE_OPENAI_ENDPOINT;
-  const apiKey = process.env.AZURE_OPENAI_API_KEY || process.env.VITE_AZURE_OPENAI_API_KEY;
-  const deployment =
-    process.env.AZURE_OPENAI_DEPLOYMENT ||
-    process.env.AZURE_OPENAI_DEPLOYMENT_NAME ||
-    process.env.VITE_AZURE_OPENAI_DEPLOYMENT ||
-    'gpt-4o';
+const getOpenAIClient = () => {
+  const apiKey = process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
+  if (!apiKey) return null;
 
-  if (!endpoint || !apiKey) return null;
-
-  const client = new AzureOpenAI({
-    endpoint,
-    apiKey,
-    deployment,
-    apiVersion: '2024-02-15-preview',
-  });
-
-  return { client, deployment };
+  return new OpenAI({ apiKey });
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -56,16 +42,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'messages é obrigatório' });
     }
 
-    const azure = getAzureClient();
-    if (!azure) {
+    const openai = getOpenAIClient();
+    if (!openai) {
       return res.status(500).json({
         error:
-          'Configuração de IA ausente no backend. Defina AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY e AZURE_OPENAI_DEPLOYMENT.',
+          'Configuração de IA ausente no backend. Defina OPENAI_API_KEY nas variáveis de ambiente.',
       });
     }
 
-    const completion = await azure.client.chat.completions.create({
-      model: body.model || azure.deployment,
+    const completion = await openai.chat.completions.create({
+      model: body.model && body.model !== 'backend-ai-proxy' ? body.model : (process.env.OPENAI_MODEL || 'gpt-4o-mini'),
       messages: messages as any,
       temperature: typeof body.temperature === 'number' ? body.temperature : 0.7,
       max_tokens: typeof body.max_tokens === 'number' ? body.max_tokens : undefined,
@@ -79,4 +65,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: message });
   }
 }
-

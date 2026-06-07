@@ -1,6 +1,6 @@
 export const maxDuration = 60;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { AzureOpenAI } from 'openai';
+import OpenAI from 'openai';
 
 // ==================== Types ====================
 interface ChatMessage {
@@ -32,124 +32,26 @@ Regras de ouro:
 4. Se não souber algo específico da escola do professor, oriente de forma genérica e sugira onde ele pode conferir na plataforma.
 5. Tom: profissional, paciente e encorajador.`;
 
-// ==================== Azure Client (chat) ====================
-function getAzureClient() {
-    // Suporta tanto AZURE_OPENAI_* quanto VITE_AZURE_OPENAI_* (Vercel)
-    const endpoint = process.env.AZURE_OPENAI_ENDPOINT || process.env.VITE_AZURE_OPENAI_ENDPOINT;
-    const apiKey = process.env.AZURE_OPENAI_API_KEY || process.env.VITE_AZURE_OPENAI_API_KEY;
-    const deployment = process.env.AZURE_OPENAI_DEPLOYMENT || process.env.VITE_AZURE_OPENAI_DEPLOYMENT || 'gpt-4o';
-
-    if (!endpoint || !apiKey) return null;
-
-    return new AzureOpenAI({
-        endpoint,
-        apiKey,
-        deployment,
-        apiVersion: '2024-02-15-preview',
-    });
-}
-
-// ==================== OpenAI Direct Client (fallback) ====================
-async function chatWithOpenAI(
-    messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>
-): Promise<string> {
-    const key = process.env.OPENAI_API_KEY?.trim();
-    if (!key) throw new Error('No AI provider configured. Set AZURE_OPENAI_ENDPOINT + AZURE_OPENAI_API_KEY or OPENAI_API_KEY.');
-    const { default: OpenAI } = await import('openai');
-    const client = new OpenAI({ apiKey: key });
-    const completion = await client.chat.completions.create({
-        model: process.env.OPENAI_MODEL || 'gpt-4o',
-        messages,
-        temperature: 0.6,
-        max_tokens: 500,
-    });
-    return completion.choices[0]?.message?.content?.trim() || '';
-}
-
-// ==================== TTS Helpers (Azure TTS + OpenAI fallback) ====================
-async function ttsWithOpenAI(text: string): Promise<string | undefined> {
-    const key = process.env.OPENAI_API_KEY?.trim();
-    if (!key) return undefined;
-    try {
-        const { default: OpenAI } = await import('openai');
-        const client = new OpenAI({ apiKey: key });
-        const speech = await client.audio.speech.create({
-            model: 'tts-1',
-            voice: 'alloy',
-            input: text,
-        });
-        return Buffer.from(await speech.arrayBuffer()).toString('base64');
-    } catch {
-        return undefined;
-    }
+function getOpenAIClient() {
+    const key = process.env.OPENAI_API_KEY?.trim() || process.env.VITE_OPENAI_API_KEY?.trim();
+    if (!key) return null;
+    return new OpenAI({ apiKey: key });
 }
 
 async function gerarAudioTTS(
-    texto: string
+    texto: string,
+    client: OpenAI
 ): Promise<{ audioBase64?: string; error?: string }> {
-    const ttsEndpoint = process.env.AZURE_OPENAI_TTS_ENDPOINT?.trim();
-    const mainEndpoint = process.env.AZURE_OPENAI_ENDPOINT?.trim();
-    const baseUrl = (ttsEndpoint || mainEndpoint)?.replace(/\/$/, '');
-    const ttsKey = process.env.AZURE_OPENAI_TTS_API_KEY?.trim();
-    const mainKey = process.env.AZURE_OPENAI_API_KEY?.trim();
-    const azureKey = ttsKey || mainKey;
-    const ttsDeployment =
-        process.env.AZURE_OPENAI_TTS_DEPLOYMENT?.trim() || 'tts';
-    const isCognitiveServices =
-        baseUrl && baseUrl.includes('cognitiveservices.azure.com');
-    const apiVersion = isCognitiveServices
-        ? '2025-03-01-preview'
-        : '2025-04-01-preview';
-
-    if (baseUrl && azureKey) {
-        try {
-            const ttsUrl = `${baseUrl}/openai/deployments/${ttsDeployment}/audio/speech?api-version=${apiVersion}`;
-            const headers: Record<string, string> = {
-                'Content-Type': 'application/json',
-                ...(isCognitiveServices
-                    ? { Authorization: `Bearer ${azureKey}` }
-                    : { 'api-key': azureKey }),
-            };
-            const body: Record<string, unknown> = {
-                input: texto,
-                voice: 'alloy',
-                ...(isCognitiveServices
-                    ? { model: ttsDeployment }
-                    : { response_format: 'mp3' }),
-            };
-            const ttsRes = await fetch(ttsUrl, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(body),
-            });
-
-            if (ttsRes.ok) {
-                const arrayBuffer = await ttsRes.arrayBuffer();
-                return {
-                    audioBase64: Buffer.from(arrayBuffer).toString('base64'),
-                };
-            }
-            const errText = await ttsRes.text();
-            const errMsg = `Azure TTS ${ttsRes.status}: ${errText.slice(
-                0,
-                120
-            )}`;
-            const fallback = await ttsWithOpenAI(texto);
-            if (fallback) return { audioBase64: fallback };
-            return { error: errMsg };
-        } catch (e) {
-            const fallback = await ttsWithOpenAI(texto);
-            if (fallback) return { audioBase64: fallback };
-            return { error: (e as Error).message };
-        }
+    try {
+        const speech = await client.audio.speech.create({
+            model: 'tts-1',
+            voice: 'alloy',
+            input: texto,
+        });
+        return { audioBase64: Buffer.from(await speech.arrayBuffer()).toString('base64') };
+    } catch (e) {
+        return { error: (e as Error).message };
     }
-
-    const fallback = await ttsWithOpenAI(texto);
-    if (fallback) return { audioBase64: fallback };
-    return {
-        error:
-            'Configure AZURE_OPENAI_TTS_ENDPOINT + AZURE_OPENAI_TTS_API_KEY + AZURE_OPENAI_TTS_DEPLOYMENT, ou OPENAI_API_KEY.',
-    };
 }
 
 // ==================== Handler ====================
@@ -181,26 +83,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
         }
 
-        let text: string;
-
-        const azureClient = getAzureClient();
-        if (azureClient) {
-            // Azure OpenAI (primary)
-            const deployment = process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o';
-            const completion = await azureClient.chat.completions.create({
-                model: deployment,
-                messages: apiMessages as any,
-                temperature: 0.6,
-                max_tokens: 500,
-            });
-            text = completion.choices[0]?.message?.content?.trim() || '';
-        } else {
-            // OpenAI direct (fallback)
-            text = await chatWithOpenAI(apiMessages);
+        const client = getOpenAIClient();
+        if (!client) {
+            return res.status(500).json({ error: 'Configure OPENAI_API_KEY nas variáveis de ambiente.' });
         }
 
-        // Gera áudio com TTS (Azure ou OpenAI) usando a mesma resposta
-        const tts = await gerarAudioTTS(text);
+        const model = process.env.OPENAI_MODEL || 'gpt-4o';
+        const completion = await client.chat.completions.create({
+            model: model,
+            messages: apiMessages as any,
+            temperature: 0.6,
+            max_tokens: 500,
+        });
+        
+        const text = completion.choices[0]?.message?.content?.trim() || '';
+
+        // Gera áudio com TTS usando a mesma resposta
+        const tts = await gerarAudioTTS(text, client);
 
         return res.status(200).json({
             text,

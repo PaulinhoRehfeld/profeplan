@@ -64,7 +64,7 @@ export function getGenAIClient(): typeof client {
 
 /**
  * Helper para completions simples (prompt → resposta).
- * Usa os créditos Azure do deployment configurado.
+ * Usa a API nativa da OpenAI configurada.
  */
 export async function createSimpleCompletion(
     prompt: string,
@@ -89,7 +89,7 @@ export async function createSimpleCompletion(
 
 /**
  * Helper para chat com histórico (multi-turn).
- * Usa os créditos Azure do deployment configurado.
+ * Usa a API nativa da OpenAI configurada.
  */
 export async function createChatCompletion(
     userMessage: string,
@@ -125,10 +125,10 @@ export async function executeWithFallback<T>(
 
     for (const modelName of GENERATION_MODELS) {
         try {
-            console.log(`[AzureOpenAI] Tentando deployment/model: ${modelName} para ${actionName}...`);
+            console.log(`[OpenAI] Tentando deployment/model: ${modelName} para ${actionName}...`);
             return await operation(modelName);
         } catch (error: unknown) {
-            console.warn(`[AzureOpenAI] Falha no deployment/model ${modelName}:`, getErrorMessage(error));
+            console.warn(`[OpenAI] Falha no deployment/model ${modelName}:`, getErrorMessage(error));
             lastError = error;
         }
     }
