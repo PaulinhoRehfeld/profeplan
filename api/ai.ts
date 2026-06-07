@@ -1,3 +1,4 @@
+export const maxDuration = 60;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { AzureOpenAI } from 'openai';
 

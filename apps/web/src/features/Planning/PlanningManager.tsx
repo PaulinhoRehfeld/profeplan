@@ -538,8 +538,9 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 }, 1000);
             }
         } catch (error) {
-            console.error(error);
-            const errorMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: '❌ Erro ao processar. Tente novamente.', timestamp: new Date() };
+            console.error('[PlanningManager] Erro no fluxo AI:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+            const errorMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: `❌ Falha ao gerar: ${errorMessage}`, timestamp: new Date() };
             setMessages(prev => [...prev, errorMsg]);
         } finally {
             setIsThinking(false);
