@@ -1,23 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-/**
- * Supabase Client Initialization
- * 
- * Prioritizes environment variables following Vercel's standard (NEXT_PUBLIC_)
- * to ensure seamless integration with the deployment platform while maintaining
- * fallback support for development and initial setup.
- */
-
-// 1. Environment Detection with robust fallbacks
 const isDev = import.meta.env?.DEV || false;
 
 const getEnv = (key: string): string | undefined => {
-  // Vite standard: import.meta.env
   if (import.meta.env && import.meta.env[key]) {
     return import.meta.env[key];
   }
 
-  // Node fallback (SSR/Scripts)
   if (typeof process !== 'undefined' && process.env) {
     const value = process.env[key];
     if (value && value !== 'undefined' && value.trim() !== '') {
@@ -28,20 +17,29 @@ const getEnv = (key: string): string | undefined => {
   return undefined;
 };
 
-// Priority: VITE_ > NEXT_PUBLIC_ > Hardcoded Fallback
-const supabaseUrl = getEnv('VITE_SUPABASE_URL') || getEnv('NEXT_PUBLIC_SUPABASE_URL') || getEnv('SUPABASE_URL') || '';
-const supabaseAnonKey = getEnv('VITE_SUPABASE_ANON_KEY') || getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') || getEnv('SUPABASE_ANON_KEY') || '';
+const supabaseUrl =
+  getEnv('VITE_SUPABASE_URL') ||
+  getEnv('NEXT_PUBLIC_SUPABASE_URL') ||
+  getEnv('SUPABASE_URL') ||
+  '';
 
-// 2. Runtime Integrity Check
+const supabaseAnonKey =
+  getEnv('VITE_SUPABASE_ANON_KEY') ||
+  getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY') ||
+  getEnv('SUPABASE_ANON_KEY') ||
+  '';
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('[Supabase] ❌ CRITICAL: Missing configuration keys!', {
+  console.error('[Supabase] Missing configuration keys.', {
     hasUrl: !!supabaseUrl,
     hasKey: !!supabaseAnonKey,
-    mode: isDev ? 'DEVELOPMENT' : 'PRODUCTION'
+    mode: isDev ? 'DEVELOPMENT' : 'PRODUCTION',
   });
-} else if (isDev) {
-  console.log('[Supabase] 🚀 Client connected to:', supabaseUrl.substring(0, 15) + '...');
+  throw new Error('Supabase configuration is missing. Define VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
 }
 
-// Initialize the client. This will throw if supabaseUrl is missing or invalid.
+if (isDev) {
+  console.log('[Supabase] Client connected to:', `${supabaseUrl.substring(0, 15)}...`);
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

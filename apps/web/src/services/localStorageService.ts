@@ -97,17 +97,18 @@ export const getLocalClassDetails = (classId: string): LocalClass | null => {
 };
 
 /**
- * Remove uma turma
+ * Remove uma turma (apenas do usuário dono)
  */
-export const deleteLocalClass = (classId: string): boolean => {
+export const deleteLocalClass = (classId: string, userId: string): boolean => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return false;
 
     const allClasses: LocalClass[] = JSON.parse(stored);
-    const filtered = allClasses.filter(c => c.id !== classId);
+    // B-2: Only delete if the class belongs to the current user
+    const filtered = allClasses.filter(c => !(c.id === classId && c.userId === userId));
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-    return true;
+    return filtered.length < allClasses.length;
 };
 
 /**

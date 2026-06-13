@@ -49,7 +49,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
     // Initial Load + possível auto-seleção vinda do Planejamento
     useEffect(() => {
         const bootstrap = async () => {
-            await loadInitialData();
+            const loadedClasses = await loadInitialData();
             try {
                 const url = new URL(window.location.href);
                 const source = url.searchParams.get('source');
@@ -60,15 +60,15 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
                 if (source === 'planning' && (lessonTitle || lessonNumber)) {
                     const targetClass =
-                        classes.find((cls: any) => {
+                        loadedClasses.find((cls: any) => {
                             const subj = (cls.subject || '').toLowerCase();
                             const grd = (cls.grade || '').toLowerCase();
                             return (!subject || subj.includes(subject.toLowerCase())) &&
                                 (!grade || grd.includes(grade.toLowerCase()));
-                        }) || classes[0];
+                        }) || loadedClasses[0];
 
                     if (targetClass) {
-                        await handleClassSelect(targetClass.id);
+                        await handleClassSelect(targetClass.id, loadedClasses);
                     }
                 }
             } catch {
@@ -79,7 +79,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
         bootstrap();
     }, [userId, userProfile]);
 
-    const loadInitialData = async () => {
+    const loadInitialData = async (): Promise<Class[]> => {
         setLoading(true);
         try {
             // Fetch Lessons
@@ -159,16 +159,18 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             });
 
             setClasses(dedupedClasses);
+            return dedupedClasses;
 
         } catch (e) {
             console.error("Error loading initial data", e);
             setError("Erro ao carregar dados iniciais.");
+            return [];
         } finally {
             setLoading(false);
         }
     };
 
-    const handleClassSelect = async (classId: string) => {
+    const handleClassSelect = async (classId: string, classSource: Class[] = classes) => {
         // Local first check
         const localData = getLocalClassDetails(classId);
         if (localData) {
@@ -202,7 +204,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             setAdaptations({});
         } else {
             // Supabase fallback
-            const cls = classes.find(c => c.id === classId);
+            const cls = classSource.find(c => c.id === classId);
             if (cls) {
                 // Buscar turma + alunos diretamente do Supabase,
                 // usando o mesmo shape de dados de "Minhas Turmas"

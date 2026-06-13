@@ -3,21 +3,39 @@ import { TermPlan } from '../../types';
 
 const LOCAL_STORAGE_KEY = 'profeplan_term_plans';
 
+const getStorageKey = (userId: string) => `${LOCAL_STORAGE_KEY}:${userId}`;
+
+const readLocalPlans = (userId: string): TermPlan[] => {
+    try {
+        return JSON.parse(localStorage.getItem(getStorageKey(userId)) || '[]');
+    } catch {
+        return [];
+    }
+};
+
+const writeLocalPlans = (userId: string, plans: TermPlan[]) => {
+    localStorage.setItem(getStorageKey(userId), JSON.stringify(plans));
+};
+
 /**
  * Salva um plano trimestral (Local + Supabase)
  */
 export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<TermPlan> => {
     // 1. Save to localStorage (offline-first)
-    const existingPlans = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-    const planIndex = existingPlans.findIndex((p: TermPlan) => p.id === plan.id);
+    const planWithMeta: TermPlan = {
+        ...plan,
+        userId,
+    };
+    const existingPlans = readLocalPlans(userId);
+    const planIndex = existingPlans.findIndex((p: TermPlan) => p.id === planWithMeta.id);
 
     if (planIndex >= 0) {
-        existingPlans[planIndex] = plan;
+        existingPlans[planIndex] = planWithMeta;
     } else {
-        existingPlans.push(plan);
+        existingPlans.push(planWithMeta);
     }
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(existingPlans));
+    writeLocalPlans(userId, existingPlans);
 
     // 2. Sync to Supabase (term_plans table)
     if (supabase) {
@@ -57,11 +75,6 @@ export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<Term
             console.error('Failed to sync to Supabase', err);
         }
     }
-
-    const planWithMeta: TermPlan = {
-        ...plan,
-        userId,
-    };
 
     return planWithMeta;
 };
@@ -177,7 +190,7 @@ export const fetchTermPlans = async (userId: string): Promise<TermPlan[]> => {
 
         // Fallback: Mescla com LocalStorage se Supabase falhar
         try {
-            const localData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+            const localData = readLocalPlans(userId);
             console.log(`[DEBUG] LocalStorage Plans Found: ${localData.length}`);
             if (plans.length === 0) {
                 plans = localData;
@@ -235,11 +248,11 @@ const parseTitleMetadata = (title: string, content: string) => {
 /**
  * Deleta um plano trimestral (Local + Supabase)
  */
-export const deleteTermPlan = async (planId: string): Promise<void> => {
+export const deleteTermPlan = async (planId: string, userId: string): Promise<void> => {
     // 1. Delete from localStorage
-    const existingPlans = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+    const existingPlans = readLocalPlans(userId);
     const filteredPlans = existingPlans.filter((p: TermPlan) => p.id !== planId);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredPlans));
+    writeLocalPlans(userId, filteredPlans);
 
     // 2. Delete from Supabase
     if (supabase) {
@@ -247,7 +260,8 @@ export const deleteTermPlan = async (planId: string): Promise<void> => {
             const { error } = await supabase
                 .from('term_plans')
                 .delete()
-                .eq('id', planId);
+                .eq('id', planId)
+                .eq('user_id', userId);
 
             if (error) {
                 console.error('Supabase delete error:', error);

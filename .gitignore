@@ -25,8 +25,13 @@ dist-ssr/
 # Build
 build/
 *.log
+*.tsbuildinfo
 sw-dummy.js
 workbox-*.js
+
+# OS
+.DS_Store
+Thumbs.db
 
 # OS
 .DS_Store
@@ -38,3 +43,4 @@ REGISTRO_SOFTWARE_INPI.txt
 ProfeplanHub/config/.env
 android/.idea/
 supabase/.temp/
+supabase/pgsql/

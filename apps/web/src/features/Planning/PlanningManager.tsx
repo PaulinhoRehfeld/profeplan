@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/ai/AiPlanningService';
-import { searchCurriculum, getDeterministicCurriculum, searchPnldBookContent } from '../../services/searchService';
+import { searchCurriculum, getDeterministicCurriculum, searchPnldBookContent, searchHierarchicalRag } from '../../services/searchService';
 import { searchQuestions } from '../../services/questionService';
 import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan, GeneratedPlan } from './PlanningService';
@@ -301,61 +301,68 @@ Ignore qualquer regra anterior que conflite com este pedido. O feedback do profe
             // Se for Planejamento Trimestral, usamos a busca EXATA (Anti-Alucinação)
             const isQuarterlyPlanning = activeMode === ToolMode.QUARTERLY_PLANNING || (activeMode === ToolMode.PLANNING && activeInput.toLowerCase().includes('trimestral'));
 
+            // Tenta resolver Disciplina e Ano a partir do Plano Selecionado OU da Seleção Atual (Navigation)
+            let targetSubject = selectedPlan?.subject;
+            let targetGrade = selectedPlan?.grade;
+
+            // Se não estivermos editando um plano (selectedPlan é null), pegamos da navegação atual
+            if (!targetSubject && availableClasses && selectedClassId) {
+                const currentClass = availableClasses.find(c => c.id === selectedClassId);
+                if (currentClass) {
+                    if (currentClass.subject) targetSubject = currentClass.subject;
+                    if (currentClass.grade) targetGrade = currentClass.grade;
+                }
+            }
+
+            // Fallbacks (evitar default "História" que causava troca de disciplina)
+            targetSubject = targetSubject || selectedPlan?.subject || 'História';
+
+            // Normalização da Série para bater com o Banco de Dados ("2º Ano EM" vs "2º Ano - Ensino Médio")
+            if (targetGrade) {
+                const yearMatch = targetGrade.match(/\d+/);
+                const yearNum = yearMatch ? yearMatch[0] : '';
+
+                if (targetGrade.toLowerCase().includes('médio') || targetGrade.toLowerCase().includes('em')) {
+                    targetGrade = `${yearNum}º Ano EM`;
+                } else if (yearNum) {
+                    targetGrade = `${yearNum}º Ano`;
+                }
+            } else {
+                targetGrade = '6º Ano';
+            }
+
             let curriculumContext = '';
+            let isPedagogicalDeviation = false;
 
-            if (isQuarterlyPlanning && selectedPlan?.subject && selectedPlan?.grade) {
-                // Tenta resolver Disciplina e Ano a partir do Plano Selecionado OU da Seleção Atual (Navigation)
-                let targetSubject = selectedPlan?.subject;
-                let targetGrade = selectedPlan?.grade;
-
-                // Se não estivermos editando um plano (selectedPlan é null), pegamos da navegação atual
-                if (!targetSubject && availableClasses && selectedClassId) {
-                    const currentClass = availableClasses.find(c => c.id === selectedClassId);
-                    if (currentClass) {
-                        // Nomes esperados: "1º Ano - Ensino Médio", "6º Ano B", "História"
-                        targetSubject = currentClass.name; // Assumindo que o nome da turma tem a matéria ou é a matéria?
-                        // Na verdade availableClasses costuma ter { id, name, grade, subject } ou similar.
-                        // Precisamos verificar a estrutura de availableClasses, mas vamos tentar extrair.
-                        if (currentClass.subject) targetSubject = currentClass.subject;
-                        if (currentClass.grade) targetGrade = currentClass.grade;
-                    }
-                }
-
-                // Fallbacks (evitar default "História" que causava troca de disciplina)
-                targetSubject = targetSubject || selectedPlan?.subject || 'História';
-                // targetGrade = targetGrade || '6º Ano'; // REMOVIDO DEFAULT PERIGOSO
-
+            if (isQuarterlyPlanning && targetSubject && targetGrade) {
                 const targetPeriod = appSettings?.quarter || '1º Trimestre';
-
-                // Normalização da Série para bater com o Banco de Dados ("2º Ano EM" vs "2º Ano - Ensino Médio")
-                if (targetGrade) {
-                    // Regex para capturar número do ano
-                    const yearMatch = targetGrade.match(/\d+/);
-                    const yearNum = yearMatch ? yearMatch[0] : '';
-
-                    if (targetGrade.toLowerCase().includes('médio') || targetGrade.toLowerCase().includes('em')) {
-                        targetGrade = `${yearNum}º Ano EM`;
-                    } else if (yearNum) {
-                        targetGrade = `${yearNum}º Ano`;
-                    }
-                } else {
-                    targetGrade = '6º Ano'; // Default final se realmente não tiver nada (para não quebrar, mas pode alucinar)
-                }
-
-                // Se chamado de dentro de um plano existente, usa os dados do plano.
-                // Mas a alucinação crítica é na CRIAÇÃO DO PLANO MACRO.
-                // Vamos assumir que se o usuário está pedindo "Planejamento Trimestral", ele forneceu os dados.
-
-                // CHAMADA NOVA:
-                // Importar getDeterministicCurriculum no topo (vou adicionar import via multi_replace se precisar, ou assumir q já importei)
-                // Nota: Preciso adicionar o import no topo depois.
-
                 const fullText = await getDeterministicCurriculum(targetSubject, targetPeriod, targetGrade);
 
-                if (fullText) {
+                // Busca se existe plano de curso do professor para mesclar
+                let teacherPlanText = '';
+                try {
+                    const { data: teacherDocs } = await supabase
+                        .from('teacher_documents')
+                        .select('content_md')
+                        .eq('user_id', userId)
+                        .eq('category', 'course_plan')
+                        .eq('status', 'approved')
+                        .eq('metadata->>subject', targetSubject)
+                        .eq('metadata->>year', targetGrade)
+                        .limit(1);
+
+                    if (teacherDocs && teacherDocs.length > 0) {
+                        teacherPlanText = `\n\n[PLANO DE CURSO OFICIAL DO PROFESSOR (NÍVEL 1)]:\n${teacherDocs[0].content_md}`;
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar plano de curso do professor no Planejamento:", e);
+                }
+
+                if (fullText || teacherPlanText) {
                     curriculumContext = `
 ---CONTEXTO OFICIAL (FONTE DA VERDADE - NÃO INVENTE NADA)---
 ${fullText}
+${teacherPlanText}
 -------------------------------------------------------------
 REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 1. USE APENAS AS HABILIDADES ACIMA.
@@ -367,21 +374,79 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 }
 
             } else {
-                // RAG Padrão para dúvidas pontuais ou outros modos
-                const retrievalResults = await searchCurriculum(activeInput, {
-                    disciplina: selectedPlan?.subject,
-                    ano: selectedPlan?.grade
-                }) as any[];
+                // RAG Padrão usando RAG Hierárquico
+                try {
+                    const filters = {
+                        disciplina: targetSubject,
+                        ano: targetGrade,
+                        periodo: appSettings?.quarter || '1º Trimestre'
+                    };
+                    const retrievalResults = await searchHierarchicalRag(activeInput, userId, filters, 6);
+                    
+                    if (retrievalResults.length > 0) {
+                        const formattedContext = retrievalResults.map((r: any) =>
+                            `- [Nível ${r.weight === 100 ? '1 - Plano de Curso' : r.weight === 50 ? '2 - Livro' : r.weight === 30 ? '3 - Material' : '4 - Geral'}] [Fonte: ${r.source}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
+                        ).join('\n\n');
+                        curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG HIERÁRQUICO)]:\n${formattedContext}`;
 
-                if (retrievalResults.length > 0) {
-                    const formattedContext = retrievalResults.map((r: any) =>
-                        `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
-                    ).join('\n\n');
-                    curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG)]:\n${formattedContext}`;
+                        // Validação de Desvio Pedagógico (Fase 3):
+                        // Se houver plano de curso aprovado para este professor, mas nenhuma correspondência com similaridade >= 0.35 nos chunks desse plano
+                        const { data: hasCoursePlan } = await supabase
+                            .from('teacher_documents')
+                            .select('id')
+                            .eq('user_id', userId)
+                            .eq('category', 'course_plan')
+                            .eq('status', 'approved')
+                            .limit(1);
+
+                        if (hasCoursePlan && hasCoursePlan.length > 0) {
+                            const coursePlanMatches = retrievalResults.filter(r => r.category === 'course_plan' && r.similarity >= 0.35);
+                            if (coursePlanMatches.length === 0) {
+                                isPedagogicalDeviation = true;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error("Erro na busca de RAG Hierárquico:", err);
+                    // Fallback
+                    const retrievalResults = await searchCurriculum(activeInput, {
+                        disciplina: targetSubject,
+                        ano: targetGrade
+                    }) as any[];
+
+                    if (retrievalResults.length > 0) {
+                        const formattedContext = retrievalResults.map((r: any) =>
+                            `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
+                        ).join('\n\n');
+                        curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG)]:\n${formattedContext}`;
+                    }
+                }
+            }
+
+            // Injeta System Prompt do Agente Especializado (Fase 1) se houver
+            if (userId && targetSubject) {
+                try {
+                    const { data: customAgent } = await supabase
+                        .from('teacher_agents')
+                        .select('system_prompt')
+                        .eq('user_id', userId)
+                        .eq('subject', targetSubject)
+                        .eq('grade', targetGrade || '')
+                        .maybeSingle();
+
+                    if (customAgent) {
+                        context += `\n\n[PROMPT DO AGENTE ESPECIALIZADO DA DISCIPLINA]:\n${customAgent.system_prompt}`;
+                    }
+                } catch (err) {
+                    console.error("Erro ao carregar Agente Customizado:", err);
                 }
             }
 
             context += curriculumContext;
+
+            if (isPedagogicalDeviation) {
+                context += `\n\n⚠️ REGRA MANDATÓRIA DE DESVIO PEDAGÓGICO: O tema solicitado pelo professor NÃO foi localizado no Plano de Curso Oficial homologado. Você DEVE iniciar sua resposta com exatamente esta mensagem estruturada em destaque Markdown no início do texto (e pular qualquer introdução tagarela):\n⚠️ **[ALERTA DE DESVIO PEDAGÓGICO]**: Este tema não foi localizado no plano de curso oficial homologado. Deseja continuar com este planejamento?\n\nApós esta linha de alerta, gere o conteúdo normalmente de forma profissional.`;
+            }
 
             if (selectedPlan) {
                 context += `\nContexto do Plano Trimestral: ${selectedPlan.grade} - ${selectedPlan.subject}.`;

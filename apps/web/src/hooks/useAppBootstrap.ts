@@ -9,7 +9,7 @@ interface UseAppBootstrapProps {
   userProfile: UserProfile | null;
   settings: UserSettings;
   setSettings: (settings: UserSettings) => void;
-  refreshProfile: () => void;
+  refreshProfile: () => Promise<void>;
 }
 
 export function useAppBootstrap({
@@ -24,10 +24,23 @@ export function useAppBootstrap({
   const [retryCount, setRetryCount] = useState(0);
 
   // 1. NUCLEAR RESET MANUAL (force_reset)
+  // M-7: Requires user confirmation to prevent DoS via phishing links like /?force_reset=true
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const forceReset = urlParams.has('force_reset') || urlParams.has('reset');
     if (!forceReset) return;
+
+    // Remove the param from URL immediately to prevent re-triggering on refresh
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, '', cleanUrl);
+
+    const confirmed = window.confirm(
+      '⚠️ Resetar o aplicativo?\n\n' +
+      'Isso irá limpar todos os dados locais, cache e deslogar. ' +
+      'Use apenas se estiver com problemas técnicos.\n\n' +
+      'Confirmar?'
+    );
+    if (!confirmed) return;
 
     const runReset = async () => {
       console.warn("[AppBootstrap] ☢️ EMERGENCY NUCLEAR RESET MANUAL (force_reset)");
@@ -64,12 +77,17 @@ export function useAppBootstrap({
           
           // Observability: Log to Supabase (fire and forget)
           if (session?.user?.id || session?.userId) {
-             supabase.from('system_logs').insert({
-               event_type: 'nuclear_reset_trigger',
-               user_id: session?.user?.id || session?.userId || null,
-               route: window.location.pathname,
-               details: { results, message: 'Loader timeout 10s' }
-             }).then(() => console.log('Log sent to observability.')).catch(e => console.error(e));
+            const { error } = await supabase.from('system_logs').insert({
+              event_type: 'nuclear_reset_trigger',
+              user_id: session?.user?.id || session?.userId || null,
+              route: window.location.pathname,
+              details: { results, message: 'Loader timeout 10s' }
+            });
+            if (error) {
+              console.error(error);
+            } else {
+              console.log('Log sent to observability.');
+            }
           }
           
           setShowEmergencyReset(true);

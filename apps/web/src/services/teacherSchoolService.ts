@@ -454,18 +454,29 @@ export const getSchoolManagers = async (schoolId: string): Promise<{
     error?: string;
 }> => {
     try {
+        // A-5: Query via teacher_schools JOIN profiles instead of the legacy profiles.school_id field.
+        // This ensures managers registered through the new linkage system are found.
         const { data, error } = await supabase
-            .from('profiles')
-            .select('id, full_name, email, role')
+            .from('teacher_schools')
+            .select(`
+                profiles!teacher_schools_teacher_id_fkey (
+                    id,
+                    full_name,
+                    email,
+                    role
+                )
+            `)
             .eq('school_id', schoolId)
-            .eq('role', 'manager');
+            .is('ended_at', null); // Only active links
 
         if (error) throw error;
 
-        return {
-            success: true,
-            managers: data || []
-        };
+        // Filter to only managers and flatten from the join
+        const managers = (data || [])
+            .map((row: any) => row.profiles)
+            .filter((p: any) => p && p.role === 'manager');
+
+        return { success: true, managers };
     } catch (err: unknown) {
         console.error('[teacherSchoolService] Error fetching school managers:', err);
         return { success: false, error: getErrorMessage(err) };

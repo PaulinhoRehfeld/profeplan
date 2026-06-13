@@ -166,3 +166,132 @@ export const searchPnldBookContent = async (
         return [];
     }
 };
+
+export interface HierarchicalRagResult {
+    content: string;
+    source: string;
+    category: string;
+    similarity: number;
+    weight: number;
+    weightedScore: number;
+}
+
+/**
+ * Busca RAG Hierárquico: Realiza busca semântica em múltiplos níveis e pondera os scores pelos pesos do PRD.
+ */
+export const searchHierarchicalRag = async (
+    queryText: string,
+    userId: string,
+    filters?: { disciplina?: string; ano?: string; periodo?: string },
+    limit: number = 6
+): Promise<HierarchicalRagResult[]> => {
+    const results: HierarchicalRagResult[] = [];
+    let embedding: number[] | null = null;
+
+    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
+    
+    // 1. Tenta gerar embedding do Gemini
+    if (apiKey) {
+        try {
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
+            const embedResult = await model.embedContent(queryText);
+            embedding = embedResult.embedding.values.slice(0, 768);
+        } catch (e) {
+            console.error("[searchHierarchicalRag] Erro ao gerar embedding:", e);
+        }
+    }
+
+    // 2. Níveis 1, 2 e 3: Busca nos documentos do próprio professor no Supabase
+    if (embedding && userId) {
+        try {
+            const { data: teacherChunks, error } = await supabase.rpc('search_teacher_chunks', {
+                p_user_id: userId,
+                p_embedding: embedding,
+                p_match_threshold: 0.2,
+                p_match_count: limit
+            });
+
+            if (!error && teacherChunks) {
+                for (const chunk of teacherChunks) {
+                    let weight = 10;
+                    if (chunk.category === 'course_plan') weight = 100;
+                    else if (chunk.category === 'book') weight = 50;
+                    else if (chunk.category === 'didactic_material') weight = 30;
+
+                    results.push({
+                        content: chunk.content,
+                        source: chunk.document_title || chunk.category,
+                        category: chunk.category,
+                        similarity: chunk.similarity || 0.5,
+                        weight,
+                        weightedScore: (chunk.similarity || 0.5) * weight
+                    });
+                }
+            }
+        } catch (e) {
+            console.error("[searchHierarchicalRag] Erro ao pesquisar chunks do professor:", e);
+        }
+    } else if (userId) {
+        // Fallback básico de busca textual simples em caso de falha de embeddings
+        try {
+            const { data: docs } = await supabase
+                .from('teacher_documents')
+                .select('id, title, category, teacher_document_chunks(content)')
+                .eq('user_id', userId)
+                .eq('status', 'approved');
+
+            if (docs) {
+                for (const doc of docs) {
+                    let weight = 10;
+                    if (doc.category === 'course_plan') weight = 100;
+                    else if (doc.category === 'book') weight = 50;
+                    else if (doc.category === 'didactic_material') weight = 30;
+
+                    const chunks = (doc as any).teacher_document_chunks || [];
+                    for (const chunk of chunks) {
+                        if (chunk.content.toLowerCase().includes(queryText.toLowerCase())) {
+                            results.push({
+                                content: chunk.content,
+                                source: doc.title,
+                                category: doc.category,
+                                similarity: 0.7,
+                                weight,
+                                weightedScore: 0.7 * weight
+                            });
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("[searchHierarchicalRag] Erro no fallback textual:", e);
+        }
+    }
+
+    // 3. Nível 4: Busca no currículo oficial SEE/MG / BNCC geral (Base Geral do PROFEPLAN)
+    try {
+        const generalResults = await searchCurriculum(queryText, filters, limit, 0.3);
+        if (generalResults && Array.isArray(generalResults)) {
+            for (const item of generalResults) {
+                const similarity = item.similarity || 0.5;
+                results.push({
+                    content: item.content,
+                    source: item.fonte || 'SEE/MG',
+                    category: 'general_curriculum',
+                    similarity,
+                    weight: 10,
+                    weightedScore: similarity * 10
+                });
+            }
+        }
+    } catch (e) {
+        console.error("[searchHierarchicalRag] Erro ao buscar currículo geral:", e);
+    }
+
+    // 4. Ordena os resultados agregados pela pontuação ponderada final (decrescente)
+    results.sort((a, b) => b.weightedScore - a.weightedScore);
+
+    // Retorna os top chunks
+    return results.slice(0, limit);
+};
+

@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 import { UserProfile } from '../types';
+import { ADMIN_EMAILS, MAX_CREDITS_ADD } from '../constants';
 
 // --- CONFIGURATION ---
 const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for Testers)
@@ -109,8 +110,11 @@ export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolea
 
     // Profile Not Found
     if (!profile) {
-        console.warn(`User ${userId} not found in profiles. Allowing access as fallback (Dev/Legacy).`);
-        return { allowed: true };
+        console.warn(`User ${userId} not found in profiles. Blocking quota-protected action.`);
+        return {
+            allowed: false,
+            message: 'NÃ£o foi possÃ­vel carregar seu perfil para validar os crÃ©ditos. Tente novamente em instantes.'
+        };
     }
 
     // GOLD TIER (Unlimited)
@@ -122,7 +126,7 @@ export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolea
     if (profile.credits <= 0) {
         return {
             allowed: false,
-            message: `Créditos insuficientes (${profile.credits}). Entre em contato com o administrador (prehfeld@hotmail.com) para recarregar.`
+            message: `Créditos insuficientes (${profile.credits}). Entre em contato com o suporte para recarregar.`
         };
     }
 
@@ -276,20 +280,29 @@ export const hasFeaturePattern = (userFeatures: string[] | null | undefined, req
 // --- REFERRAL & REWARDS ---
 
 export const registerPhone = async (userId: string, phone: string) => {
-    // 1. Check if user already has phone (to avoid double reward abuse)
-    const { data: profile } = await supabase.from('profiles').select('phone, credits').eq('id', userId).maybeSingle();
-    if (profile?.phone) return { success: false, message: 'Telefone já cadastrado anteriormente.' };
+    // M-3: Atomic update — only succeeds if phone IS NULL (no TOCTOU window).
+    // If two requests race, the second will hit 0 rows updated and return a failure.
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('phone, credits')
+        .eq('id', userId)
+        .is('phone', null) // Only update if phone not yet set
+        .maybeSingle();
 
-    // 2. Update phone and Add 10 credits
-    const { error } = await supabase
+    if (error) return { success: false, message: error.message };
+    if (!data) return { success: false, message: 'Telefone já cadastrado anteriormente.' };
+
+    // Safe to update: we just confirmed phone is null in the same read
+    const { error: updateError } = await supabase
         .from('profiles')
         .update({
             phone: phone,
-            credits: (profile?.credits || 0) + 10
+            credits: (data.credits || 0) + 10
         })
-        .eq('id', userId);
+        .eq('id', userId)
+        .is('phone', null); // Atomic guard: fail if phone was set by a racing request
 
-    if (error) return { success: false, message: error.message };
+    if (updateError) return { success: false, message: updateError.message };
     return { success: true, message: 'Telefone cadastrado! Você ganhou 10 créditos.' };
 };
 
@@ -317,36 +330,39 @@ export const addReferral = async (referrerId: string, refereeEmail: string) => {
 };
 
 export const checkAndRewardReferrer = async (newUserEmail: string) => {
-    // 1. Find pending referral for this email
-    const { data: referral } = await supabase
+    // M-4: Atomic status flip — only the first caller to set status='completed' will proceed.
+    // Subsequent duplicate calls will find no 'pending' row and exit early.
+    const { data: updatedReferral, error: updateError } = await supabase
         .from('referrals')
-        .select('*')
+        .update({ status: 'completed' })
         .eq('referee_email', newUserEmail)
-        .eq('status', 'pending')
+        .eq('status', 'pending') // Atomic guard: only matches once
+        .select('referrer_id')
         .maybeSingle();
 
-    if (!referral) return; // No referral found
+    if (updateError || !updatedReferral) return; // Already completed or not found
 
-    // 2. Mark as completed
-    await supabase.from('referrals').update({ status: 'completed' }).eq('id', referral.id);
-
-    // 3. Reward Referrer (+10 Credits)
-    // We need to fetch referrer current credits first to increment safely (or use RPC if available)
+    // Safe to reward: status was 'pending' and we just atomically flipped it
     const { data: referrerProfile } = await supabase
         .from('profiles')
         .select('credits')
-        .eq('id', referral.referrer_id)
+        .eq('id', updatedReferral.referrer_id)
         .maybeSingle();
 
     if (referrerProfile) {
         await supabase
             .from('profiles')
             .update({ credits: (referrerProfile.credits || 0) + 10 })
-            .eq('id', referral.referrer_id);
+            .eq('id', updatedReferral.referrer_id);
     }
 };
 
 export const addUserCredits = async (userId: string, amount: number) => {
+    // M-5: Guard against invalid amounts
+    if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_CREDITS_ADD) {
+        return { error: { message: `Valor inválido. Deve ser entre 1 e ${MAX_CREDITS_ADD} créditos.` } };
+    }
+
     const { data: profile } = await supabase.from('profiles').select('credits').eq('id', userId).maybeSingle();
     if (!profile) return { error: { message: 'Usuário não encontrado' } };
 
@@ -355,6 +371,25 @@ export const addUserCredits = async (userId: string, amount: number) => {
 };
 
 export const updateUserRole = async (userId: string, newRole: 'teacher' | 'manager') => {
+    // C-1: Verify the caller is actually an admin before updating any role.
+    // Teachers can only change between 'teacher' and 'manager' (never 'admin').
+    // Admin escalation must be done directly in the database, never via this function.
+    const { data: { user: callerUser } } = await supabase.auth.getUser();
+    if (!callerUser) return { data: null, error: { message: 'Não autenticado.' } };
+
+    const callerEmail = callerUser.email || '';
+    const isCallerAdmin = ADMIN_EMAILS.includes(callerEmail.toLowerCase());
+
+    // Non-admin users can only change their own role, and only between teacher/manager
+    if (!isCallerAdmin && callerUser.id !== userId) {
+        return { data: null, error: { message: 'Você não tem permissão para alterar o role de outros usuários.' } };
+    }
+
+    // Nobody can assign 'admin' via this function
+    if ((newRole as string) === 'admin') {
+        return { data: null, error: { message: 'Elevação para admin não é permitida por esta função.' } };
+    }
+
     const { data, error } = await supabase
         .from('profiles')
         .update({ role: newRole })

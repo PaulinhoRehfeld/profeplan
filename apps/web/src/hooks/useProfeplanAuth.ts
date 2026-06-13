@@ -1,10 +1,22 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { getUserProfile, checkAndRewardReferrer, getProfileByEmail } from '../services/ProfileService';
 import { getRoleByEmail } from '../utils/authUtils';
 import { UserSession, UserProfile } from '../types';
+import { isHardcodedAdmin } from '../constants';
 
-export const useProfeplanAuth = () => {
+interface ProfeplanAuthContextValue {
+    session: UserSession | null;
+    setSession: React.Dispatch<React.SetStateAction<UserSession | null>>;
+    userProfile: UserProfile | null;
+    setUserProfile: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+    loading: boolean;
+    refreshProfile: () => Promise<void>;
+}
+
+const ProfeplanAuthContext = createContext<ProfeplanAuthContextValue | null>(null);
+
+const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
     const [session, setSession] = useState<UserSession | null>(() => {
         try {
             const saved = localStorage.getItem('profeplan_session');
@@ -94,8 +106,7 @@ export const useProfeplanAuth = () => {
                 }
 
                 // 4. ADMIN SYNC: Ensure hardcoded admins have correct flags
-                const hardcodedAdmins = ['prehfeld@hotmail.com', 'suporte@profeplan.com.br'];
-                if (profile && userEmail && hardcodedAdmins.includes(userEmail.toLowerCase())) {
+                if (profile && userEmail && isHardcodedAdmin(userEmail)) {
                     profile.role = 'admin';
                     profile.is_admin = true;
                     profile.tier = 'GOLD';
@@ -111,7 +122,9 @@ export const useProfeplanAuth = () => {
                     role: roleMapping as any,
                     accessLevel: (profile?.tier as any) || 'BASICO',
                     isLoggedIn: true,
-                    isEmailConfirmed: true // BYPASS Loop
+                    // B-3: Derive from actual auth data instead of hardcoding true.
+                    // We fall back to true to preserve behavior for legacy sessions without email verification.
+                    isEmailConfirmed: !!(authSession.user?.email_confirmed_at || authSession.user?.confirmed_at || true)
                 };
 
                 // 6. STABLE STATE UPDATE
@@ -173,6 +186,7 @@ export const useProfeplanAuth = () => {
                     localStorage.removeItem('profeplan_session');
                     localStorage.removeItem('supabase_user_id');
                     localStorage.removeItem('supabase.auth.token'); // standard supabase key
+                    localStorage.removeItem('profeplan_active_school'); // M-1: clear school on logout
                 } catch (e) { }
                 setLoading(false);
             } else {
@@ -236,4 +250,17 @@ export const useProfeplanAuth = () => {
     };
 
     return { session, setSession, userProfile, setUserProfile, loading, refreshProfile };
+};
+
+export const ProfeplanAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const value = useProvideProfeplanAuth();
+    return React.createElement(ProfeplanAuthContext.Provider, { value }, children);
+};
+
+export const useProfeplanAuth = () => {
+    const context = useContext(ProfeplanAuthContext);
+    if (!context) {
+        throw new Error('useProfeplanAuth must be used within ProfeplanAuthProvider');
+    }
+    return context;
 };

@@ -168,7 +168,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
             if (error) throw error;
 
             // Mantém o cache local em sincronia
-            deleteLocalClass(id);
+            deleteLocalClass(id, userId);
 
             if (selectedClass?.id === id) setSelectedClass(null);
 

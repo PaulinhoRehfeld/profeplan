@@ -14,7 +14,8 @@ export enum PlanFolder {
     OUTROS = 'OUTROS'
 }
 
-const LOCAL_STORAGE_HISTORY_KEY = 'profeplan_history_buffer';
+// A-1: Key MUST include userId to prevent data leakage between accounts
+const getHistoryKey = (userId: string) => `profeplan_history_buffer:${userId}`;
 
 export interface GeneratedPlan {
     id: string;
@@ -54,9 +55,9 @@ export const savePlan = async (userId: string, plan: Omit<GeneratedPlan, 'synced
 
     // 2. Save Locally (Draft/Backup)
     try {
-        const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || '[]');
+        const saved = JSON.parse(localStorage.getItem(getHistoryKey(userId)) || '[]');
         saved.push(newPlan);
-        localStorage.setItem(LOCAL_STORAGE_HISTORY_KEY, JSON.stringify(saved));
+        localStorage.setItem(getHistoryKey(userId), JSON.stringify(saved));
         console.log('✅ Plano salvo localmente.');
     } catch (e) {
         console.error('Erro ao salvar plano localmente:', e);
@@ -123,11 +124,11 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
 
     // C. Atualiza status local para 'synced'
     try {
-        const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || '[]');
+        const saved = JSON.parse(localStorage.getItem(getHistoryKey(userId)) || '[]');
         const updated = saved.map((p: GeneratedPlan) =>
             p.id === plan.id ? { ...p, synced: true } : p
         );
-        localStorage.setItem(LOCAL_STORAGE_HISTORY_KEY, JSON.stringify(updated));
+        localStorage.setItem(getHistoryKey(userId), JSON.stringify(updated));
     } catch (e) {
         // Ignorar erro de update local pós-sync
     }

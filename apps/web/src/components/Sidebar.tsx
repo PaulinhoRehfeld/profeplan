@@ -5,6 +5,7 @@ import { ToolMode, UserRole, UserProfile } from '../types';
 import { supabase } from '../services/supabaseClient';
 import DonationWidget from './DonationWidget';
 import { isAdmin } from '../services/ProfileService';
+import { isHardcodedAdmin } from '../constants';
 
 interface SidebarProps {
   activeMode: ToolMode;
@@ -43,14 +44,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content', group: 'content' },
     { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content', group: 'content' },
     { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management', group: 'management' },
-    { id: ToolMode.CLASSES, icon: BookOpen, label: 'Minhas Turmas', feature: 'management', group: 'management' }
+    { id: ToolMode.CLASSES, icon: BookOpen, label: 'Minhas Turmas', feature: 'management', group: 'management' },
+    { id: ToolMode.MY_DOCUMENTS, icon: LibraryBig, label: 'Meus Documentos', feature: 'management', group: 'management' }
   ];
 
   // Add School Management for admins and managers
-  const hardcodedAdmins = ['prehfeld@hotmail.com', 'suporte@profeplan.com.br'];
-  const isHardcodedAdmin = userProfile?.email && hardcodedAdmins.includes(userProfile.email.toLowerCase());
-
-  const isAdminOrManager = isHardcodedAdmin || userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
+  const isAdminOrManager = isHardcodedAdmin(userProfile?.email) || userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
   const allMenuItems = isAdminOrManager
     ? [...menuItems, { id: ToolMode.SCHOOL_MANAGER, icon: Users, label: 'Gestão Escolar', feature: 'management', group: 'management' }]
     : menuItems;

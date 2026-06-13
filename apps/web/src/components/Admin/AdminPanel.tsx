@@ -91,13 +91,20 @@ export const AdminPanel: React.FC = () => {
     const handleDeleteUser = async (user: UserProfile) => {
         if (!confirm(`Tem certeza que deseja EXCLUIR o usuário ${user.email}? Essa ação é irreversível.`)) return;
         try {
+            // 1. Delete profile data
             const { error: profileError } = await supabase.from('profiles').delete().eq('id', user.id);
-            if (profileError) console.error("Erro ao deletar perfil:", profileError);
+            if (profileError) throw new Error('Erro ao deletar perfil: ' + profileError.message);
 
-            const { error: authError } = await supabase.from('authorized_users').delete().eq('id', user.id);
-            if (authError) throw new Error("Erro ao deletar login: " + authError.message);
+            // 2. Delete from authorized_users (legacy allowlist)
+            await supabase.from('authorized_users').delete().eq('id', user.id);
 
-            alert('Usuário excluído com sucesso.');
+            // M-2: NOTE — deleting from 'authorized_users' does NOT remove the Supabase Auth user.
+            // The user will still be able to log in until their Auth entry is removed.
+            // To fully delete a user, a server-side Edge Function with the service_role key is required.
+            // TODO: Call /api/delete-user Edge Function here when implemented.
+            console.warn('[AdminPanel] ⚠️ Auth user NOT deleted from Supabase Auth. Profile data removed only.');
+
+            alert('Dados do usuário removidos. Nota: o login do usuário ainda existe no sistema de autenticação e deve ser removido pelo Supabase Dashboard.');
             loadUsers();
         } catch (e: any) {
             alert(e.message);

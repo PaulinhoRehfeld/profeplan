@@ -33,12 +33,36 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
         }
     }, [currentPlan]);
 
-    // Initial fetch
+    // M-6: Listen for auth state to get a valid userId before fetching.
+    // This avoids the blank-flash from fetching with no user on mount.
     useEffect(() => {
-        // Safe execution to prevent app crash on mount
-        refreshTermPlans().catch(err => console.error("Critical: Initial plan fetch failed", err));
-    }, []);
+        let cancelled = false;
 
+        const bootstrap = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!cancelled && session?.user?.id) {
+                refreshTermPlans(session.user.id).catch(err =>
+                    console.error('Critical: Initial plan fetch failed', err)
+                );
+            }
+        };
+
+        bootstrap();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session?.user?.id) {
+                refreshTermPlans(session.user.id).catch(console.error);
+            } else if (event === 'SIGNED_OUT') {
+                setTermPlans([]);
+                setCurrentPlan(null);
+            }
+        });
+
+        return () => {
+            cancelled = true;
+            subscription.unsubscribe();
+        };
+    }, []);
 
 
     const refreshTermPlans = async (userId?: string) => {

@@ -181,8 +181,8 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
         setIsSaving(true);
         const currentLessons = parseMarkdownToLessons(generatedText);
         const plan: TermPlan = {
-            id: `temp_${Date.now()}`,
-            created_at: new Date().toISOString(),
+            id: currentPlan?.id || `temp_${Date.now()}`,
+            created_at: currentPlan?.created_at || new Date().toISOString(),
             period, regime, subject, grade, level, workloadWeekly,
             reserves, totalClasses, gradingGrid: grading,
             stateBase, educationSphere, generatedText,

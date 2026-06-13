@@ -99,7 +99,8 @@ export enum ToolMode {
   CLASSES = 'classes',
   ASSESSMENT = 'assessment',
   SPECIALIST = 'specialist', // Action 5
-  SCHOOL_MANAGER = 'school_manager' // NOVO: Painel de Gestão Escolar (Renomeado)
+  SCHOOL_MANAGER = 'school_manager', // NOVO: Painel de Gestão Escolar (Renomeado)
+  MY_DOCUMENTS = 'my_documents'
 }
 
 // Assessment Types (Ciclo de Feedback Fechado)

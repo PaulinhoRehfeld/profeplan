@@ -14,6 +14,7 @@ const PlanningManager = React.lazy(() => import('../features/Planning/PlanningMa
 const PDIManager = React.lazy(() => import('../features/PDI/PDIManager'));
 const TermPlanningManager = React.lazy(() => import('../features/TermPlanning/TermPlanningManager'));
 const SchoolDashboard = React.lazy(() => import('../pages/SchoolDashboard'));
+const MyDocumentsManager = React.lazy(() => import('../features/MyDocuments/MyDocumentsManager'));
 
 const PageLoader = () => (
     <div className="flex items-center justify-center h-full w-full bg-slate-50 text-slate-400">
@@ -179,6 +180,14 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
                     userProfile={userProfile || { id: session.id, role: 'manager', email: session.email, school_name: 'Minha Escola', school_id: '' } as any}
                     onOpenSettings={() => setIsSettingsOpen(true)}
                 />
+            ) : activeMode === ToolMode.MY_DOCUMENTS ? (
+                isProfileComplete ? (
+                    <div className="flex-1 overflow-hidden h-full">
+                        <MyDocumentsManager userId={session.id} setSidebarContent={setCustomSidebar} />
+                    </div>
+                ) : (
+                    renderProfileBlocker()
+                )
             ) : (
                 // DEFAULT / CHAT / PLANNING
                 (isProfileComplete || activeMode !== ToolMode.PLANNING) ? (

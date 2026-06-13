@@ -54,7 +54,10 @@ describe('ImportProcess', () => {
     );
 
     expect(
-      screen.getByText(/Encontramos 2 alunos/i)
+      screen.getByText((_, element) =>
+        element?.tagName.toLowerCase() === 'p' &&
+        /Encontramos\s+2\s+alunos/i.test(element.textContent || ''),
+      )
     ).toBeTruthy();
 
     fireEvent.click(
@@ -102,4 +105,3 @@ describe('ImportProcess', () => {
     );
   });
 });
-

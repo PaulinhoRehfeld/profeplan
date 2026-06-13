@@ -1,4 +1,17 @@
 
+// ─── Security: Admin identity source of truth ───────────────────────────────
+// Change only here. Never duplicate these values elsewhere.
+export const ADMIN_EMAILS: readonly string[] = [
+    'prehfeld@hotmail.com',
+    'suporte@profeplan.com.br',
+];
+
+export const isHardcodedAdmin = (email: string | null | undefined): boolean =>
+    !!email && ADMIN_EMAILS.includes(email.toLowerCase());
+
+export const MAX_CREDITS_ADD = 1000; // Guard for addUserCredits
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const SYSTEM_PROMPT = `# SYSTEM INSTRUCTION: PROFEPLAN ASSISTENTE PEDAGÓGICO ESTRITO (RAG-DRIVEN)
 
 CONTEXTO:

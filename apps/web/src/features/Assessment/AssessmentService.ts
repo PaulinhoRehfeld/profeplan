@@ -2,7 +2,8 @@ import { supabase } from '../../services/supabaseClient';
 import { Assessment } from '../../types';
 import { PdiDocumentService } from '../../services/pdi/PdiDocumentService'; // Updated from PdiService
 
-const LOCAL_STORAGE_KEY = 'profeplan_assessments';
+// A-2: Key MUST include userId to prevent data leakage between accounts
+const getAssessmentKey = (userId: string) => `profeplan_assessments:${userId}`;
 
 /**
  * [LOCAL-FIRST]
@@ -11,13 +12,13 @@ const LOCAL_STORAGE_KEY = 'profeplan_assessments';
 export const saveAssessment = async (userId: string, assessment: Assessment) => {
     // 1. Salvar no LocalStorage (Garantia de Sobrevivência)
     try {
-        const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+        const saved = JSON.parse(localStorage.getItem(getAssessmentKey(userId)) || '[]');
 
         // Remove versão antiga se existir (Update)
         const filtered = saved.filter((a: Assessment) => a.id !== assessment.id);
 
         filtered.push(assessment);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filtered));
+        localStorage.setItem(getAssessmentKey(userId), JSON.stringify(filtered));
         console.log('✅ Avaliação salva localmente.');
     } catch (e) {
         console.error('Erro crítico ao salvar no LocalStorage:', e);
@@ -65,8 +66,6 @@ const syncAssessmentToCloud = async (userId: string, assessment: Assessment) => 
 
     if (lessonError) console.warn('Erro ao salvar memória da avaliação:', lessonError);
 
-    if (lessonError) console.warn('Erro ao salvar memória da avaliação:', lessonError);
-
     // C. PDI Automation (Sync to Block X)
     if (assessment.classId) {
         PdiDocumentService.logEventForClass(
@@ -90,14 +89,12 @@ const syncAssessmentToCloud = async (userId: string, assessment: Assessment) => 
  */
 export const getAssessments = async (userId: string): Promise<Assessment[]> => {
     // 1. Tenta Local
-    const localData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const localData = localStorage.getItem(getAssessmentKey(userId));
     if (localData) {
-        return JSON.parse(localData);
+        try { return JSON.parse(localData); } catch { return []; }
     }
 
     // 2. Se não tiver local, tenta buscar do Supabase (generated_contents)
-    // Nota: Isso é um fallback. O ideal seria parsear o markdown de volta pra JSON,
-    // mas por enquanto retornamos vazio pois o app foca na criação.
     return [];
 };
 
