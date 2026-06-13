@@ -551,36 +551,41 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                 })();
             }
 
-            if (!schoolStudentId) {
-                setError('Não foi possível resolver o vínculo do aluno em `school_students` para a validação (missing/blocked mapping).');
-                return;
+            let loggedEvent = null;
+            if (schoolStudentId) {
+                loggedEvent = await PdiDocumentService.logEvent(
+                    schoolStudentId,
+                    'ADAPTATION',
+                    `Adaptação: ${selectedLesson.topic}`,
+                    {
+                        lessonId: selectedLesson.id,
+                        originalContent: selectedLesson.content,
+                        adaptedContent: finalContent,
+                        classId: selectedClass.id
+                    },
+                    'block9',
+                    schoolIdForSchoolStudent,
+                    selectedClass?.id ?? null
+                );
+            } else {
+                console.warn('[PDI] Skipping database logging/sync: school_student_id is not resolved.');
             }
 
-            const data = await PdiDocumentService.logEvent(
-                schoolStudentId,
-                'ADAPTATION',
-                `Adaptação: ${selectedLesson.topic}`,
-                {
-                    lessonId: selectedLesson.id,
-                    originalContent: selectedLesson.content,
-                    adaptedContent: finalContent,
-                    classId: selectedClass.id
-                },
-                'block9',
-                schoolIdForSchoolStudent,
-                selectedClass?.id ?? null
-            );
-
-            if (data) {
+            // Ações comuns pós-validação (seja gravado no DB ou operado apenas localmente no front)
+            if (loggedEvent) {
                 setLastAdaptationDetails({
-                    id: data.id,
+                    id: loggedEvent.id,
                     studentName: studentName,
                     lessonTopic: selectedLesson.topic
                 });
-                setFeedbackModalOpen(true);
+            } else {
+                setLastAdaptationDetails(null);
+            }
 
-                // Persistência: salva o Block 9 no pdi_documents quando o professor valida.
-                // Falha aqui não deve bloquear a trilha do PDI (pdi_records).
+            setFeedbackModalOpen(true);
+
+            // Persistência no pdi_documents (apenas se tiver schoolStudentId)
+            if (schoolStudentId) {
                 try {
                     const payload = adaptations[studentId]?.block9Payload;
                     if (payload) {
@@ -600,16 +605,16 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                 } catch (e) {
                     console.error('[PDI] Failed to persist Block 9 on validate:', e);
                 }
-
-                // Update local state ONLY if saved successfully
-                setAdaptations(prev => ({
-                    ...prev,
-                    [studentId]: {
-                        ...prev[studentId],
-                        status: 'validated'
-                    }
-                }));
             }
+
+            // Sempre atualiza o estado local para validado para não travar a experiência do usuário
+            setAdaptations(prev => ({
+                ...prev,
+                [studentId]: {
+                    ...prev[studentId],
+                    status: 'validated'
+                }
+            }));
         } catch (err) {
             console.error("Failed to save PDI log:", err);
             setError("Erro ao salvar o histórico do aluno. Tente novamente.");
