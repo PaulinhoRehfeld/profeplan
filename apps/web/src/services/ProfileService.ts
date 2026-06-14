@@ -101,20 +101,7 @@ export const isProfileCompleteForMainFlows = (
     profile: UserProfile | null,
     settings: UserSettings
 ): boolean => {
-    if (!profile) return false;
-
-    // Campos básicos
-    const name = settings.userName || profile.full_name;
-    const institutionalEmail = settings.institutionalEmail || profile.email;
-    const masp = settings.masp || profile.masp;
-
-    // Vínculo escolar por INEP
-    const schoolInep = settings.schoolCode || (profile as any).inep_code;
-    const schoolName = settings.institution || profile.school_name;
-
-    const hasBasics = !!name && !!institutionalEmail && !!masp;
-    const hasSchool = !!schoolInep && !!schoolName;
-
-    return hasBasics && hasSchool;
+    // A obrigatoriedade de completar o perfil foi temporariamente removida.
+    return true;
 };
 

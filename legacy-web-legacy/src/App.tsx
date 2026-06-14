@@ -39,7 +39,7 @@ const PageLoader = () => (
       <span className="text-sm font-medium text-slate-600">Preparando seu Workspace...</span>
     </div>
     <div className="flex flex-col gap-2 items-center">
-      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">PROFEPLAN v4.0.0</p>
+      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">PROFEPLAN v4.0.1</p>
       <button
         onClick={() => {
           localStorage.removeItem('profeplan_session');
@@ -233,7 +233,7 @@ const App: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-950 text-white p-6 text-center">
         <Loader2 className="animate-spin w-12 h-12 text-blue-500 mb-6" />
-        <h2 className="text-2xl font-black mb-2 tracking-tighter italic">PROFEPLAN v4.0.0</h2>
+        <h2 className="text-2xl font-black mb-2 tracking-tighter italic">PROFEPLAN v4.0.1</h2>
         <p className="text-slate-400 text-sm mb-8 max-w-md">
           O carregamento está demorando mais que o esperado.
           Isso pode ser um problema temporário de conexão ou cache.

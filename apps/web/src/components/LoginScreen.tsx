@@ -67,6 +67,25 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     }
   };
 
+  const sendAuthEvent = async (event: 'login' | 'logout', email: string, success: boolean, errorMsg?: string) => {
+    try {
+      await fetch("/api/auth/event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event,
+          email,
+          success,
+          error: errorMsg,
+        }),
+      });
+    } catch (e) {
+      console.error("[LoginScreen] Erro ao enviar evento de auth para o backend:", e);
+    }
+  };
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -81,6 +100,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       }
     }, 10000);
 
+    const cleanEmail = email.trim();
+
     try {
       if (isSignUp) {
         if (!fullName.trim()) {
@@ -90,7 +111,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           return;
         }
 
-        const cleanEmail = email.trim();
         const isEducacao = cleanEmail.toLowerCase().endsWith('@educacao.mg.gov.br');
 
         const { error } = await supabase.auth.signUp({
@@ -124,7 +144,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         }
       } else {
         // --- LOGIN ---
-        const cleanEmail = email.trim();
         console.log('[LoginScreen] Attempting Login:', cleanEmail);
 
         const { data, error } = await signInWithRetry(cleanEmail, password);
@@ -135,6 +154,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
         console.log('[LoginScreen] Supabase Login Success:', data);
 
+        // Notify backend of successful login
+        await sendAuthEvent('login', cleanEmail, true);
+
         // We do NOT manually call handleAuthSuccess or onLogin here anymore.
         // We rely on useProfeplanAuth hook listening to onAuthStateChange.
         // However, we need to keep the spinner spinning until the redirect happens.
@@ -142,6 +164,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       }
     } catch (err: any) {
       console.error("Auth Error:", err);
+      if (!isSignUp) {
+        // Notify backend of failed login
+        await sendAuthEvent('login', cleanEmail, false, err.message || 'Erro desconhecido');
+      }
       if (isMounted.current) {
         setLoading(false); // Only stop loading on error
         if (err.message === 'Invalid login credentials' || err.status === 400) {
@@ -282,7 +308,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v4.0.0</p>
+          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v4.0.1</p>
         </div>
       </div>
     </div>
