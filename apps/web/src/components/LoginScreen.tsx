@@ -154,8 +154,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
         console.log('[LoginScreen] Supabase Login Success:', data);
 
-        // Notify backend of successful login
-        await sendAuthEvent('login', cleanEmail, true);
+        // Notify backend of successful login (fire-and-forget to avoid blocking the UI)
+        sendAuthEvent('login', cleanEmail, true);
 
         // We do NOT manually call handleAuthSuccess or onLogin here anymore.
         // We rely on useProfeplanAuth hook listening to onAuthStateChange.
@@ -165,8 +165,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     } catch (err: any) {
       console.error("Auth Error:", err);
       if (!isSignUp) {
-        // Notify backend of failed login
-        await sendAuthEvent('login', cleanEmail, false, err.message || 'Erro desconhecido');
+        // Notify backend of failed login (fire-and-forget to avoid blocking the UI)
+        sendAuthEvent('login', cleanEmail, false, err.message || 'Erro desconhecido');
       }
       if (isMounted.current) {
         setLoading(false); // Only stop loading on error
