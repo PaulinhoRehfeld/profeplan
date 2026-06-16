@@ -735,10 +735,10 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                             Nenhum planejamento encontrado
                         </h2>
                         <p className="text-sm text-slate-500 mb-4">
-                            Comece criando seu primeiro planejamento trimestral ou fale com a FREEDAY para organizar o trimestre com você.
+                            Comece criando seu primeiro planejamento trimestral para organizar suas aulas.
                         </p>
                         <p className="text-[11px] text-slate-400">
-                            Use o menu &ldquo;Planejamento Trimestral&rdquo; para iniciar, ou clique no botão da FREEDAY no canto da tela para pedir ajuda.
+                            Use o menu &ldquo;Planejamento Trimestral&rdquo; na barra lateral para iniciar.
                         </p>
                     </div>
                 </div>

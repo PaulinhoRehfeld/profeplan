@@ -1,0 +1,350 @@
+[
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT301) Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica. / (EM13CNT306X) Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental, podendo fazer uso de dispositivos e aplicativos digitais que viabilizem a estruturação de simulações de tais riscos, conhecer as normas de segurança, o tratamento de resíduos e reconhecer os equipamentos de proteção individual e coletivo, inclusive a tecnologia aplicada nos mesmos.",
+    "objeto_conhecimento": "Campo Elétrico.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "É interessante usar exemplos de linhas de campo elétrico, gráficos, relação entre a força elétrica e a distância entre as cargas, entre outros, além de fazer previsões sobre o movimento de cargas em regiões de Campo elétrico. O uso de modelos explicativos ajuda o estudante a formular modelos mentais e a justificar suas conclusões a respeito dos objetos de conhecimento em estudo. A leitura de textos com temáticas científicas fornecem bastante material para este tipo de trabalho. É recomendável também utilizar simuladores virtuais para facilitar a compreensão e a visualização das linhas de força do campo elétrico.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT306X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Campo Elétrico.\nHabilidades: (EM13CNT301) Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica. / (EM13CNT306X) Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental, podendo fazer uso de dispositivos e aplicativos digitais que viabilizem a estruturação de simulações de tais riscos, conhecer as normas de segurança, o tratamento de resíduos e reconhecer os equipamentos de proteção individual e coletivo, inclusive a tecnologia aplicada nos mesmos.\nSAEB: Não informados.\nOrientações: É interessante usar exemplos de linhas de campo elétrico, gráficos, relação entre a força elétrica e a distância entre as cargas, entre outros, além de fazer previsões sobre o movimento de cargas em regiões de Campo elétrico. O uso de modelos explicativos ajuda o estudante a formular modelos mentais e a justificar suas conclusões a respeito dos objetos de conhecimento em estudo. A leitura de textos com temáticas científicas fornecem bastante material para este tipo de trabalho. É recomendável também utilizar simuladores virtuais para facilitar a compreensão e a visualização das linhas de força do campo elétrico."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01 - Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica, considerando a disponibilidade de recursos, a eficiência energética, a relação custo/benefício, as características geográficas e ambientais, a produção de resíduos e os impactos socioambientais e culturais.",
+    "objeto_conhecimento": "Potencial elétrico; Diferença de Potencial e tensão elétrica; Energia Potencial Elétrica; Superfícies equipotenciais.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Ao apresentar os conceitos de potencial elétrico e diferença de potencial, recomenda-se contextualizar o estudo do potencial elétrico como uma maneira de medir a energia potencial associada a uma carga elétrica em um campo elétrico. É interessante a representação de modelos que façam o estudante se apropriar dos conceitos de Potencial elétrico e diferença de potencial e que permita que ele possa elaborar suas conclusões a partir desses. É importante que o estudante perceba a presença desses conceitos no cotidiano, através da investigação do funcionamento de equipamentos e do estudo de casos, onde é possível coletar dados em forma de textos, equações, gráficos etc. Isso possibilita que ele evidencie a eficácia dos modelos construídos nas fases de estudo e representação.",
+    "habilidade_codes": [
+      "EM13CNT106"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 1º Bimestre\nUnidade: Matéria e Energia\nObjetos: Potencial elétrico; Diferença de Potencial e tensão elétrica; Energia Potencial Elétrica; Superfícies equipotenciais.\nHabilidades: (EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica, considerando a disponibilidade de recursos, a eficiência energética, a relação custo/benefício, as características geográficas e ambientais, a produção de resíduos e os impactos socioambientais e culturais.\nSAEB: Não informados.\nOrientações: Ao apresentar os conceitos de potencial elétrico e diferença de potencial, recomenda-se contextualizar o estudo do potencial elétrico como uma maneira de medir a energia potencial associada a uma carga elétrica em um campo elétrico. É interessante a representação de modelos que façam o estudante se apropriar dos conceitos de Potencial elétrico e diferença de potencial e que permita que ele possa elaborar suas conclusões a partir desses. É importante que o estudante perceba a presença desses conceitos no cotidiano, através da investigação do funcionamento de equipamentos e do estudo de casos, onde é possível coletar dados em forma de textos, equações, gráficos etc. Isso possibilita que ele evidencie a eficácia dos modelos construídos nas fases de estudo e representação."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03",
+    "habilidade": "(EM13CNT301) Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica. / (EM13CNT306X) Avaliar os riscos envolvidos em atividades cotidianas... / (EM13CNT308) Investigar e analisar o funcionamento de equipamentos elétricos e/ou eletrônicos e sistemas de automação para compreender as tecnologias contemporâneas e avaliar seus impactos sociais, culturais e ambientais.",
+    "objeto_conhecimento": "Potencial elétrico; Diferença de Potencial e tensão elétrica; Energia Potencial Elétrica; Superfícies equipotenciais.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Ao apresentar os conceitos de potencial elétrico e diferença de potencial, recomenda-se contextualizar o estudo do potencial elétrico como uma maneira de medir a energia potencial associada a uma carga elétrica em um campo elétrico. É interessante a representação de modelos que façam o estudante se apropriar dos conceitos de Potencial elétrico e diferença de potencial e que permita que ele possa elaborar suas conclusões a partir desses. É importante que o estudante perceba a presença desses conceitos no cotidiano, através da investigação do funcionamento de equipamentos e do estudo de casos, onde é possível coletar dados em forma de textos, equações, gráficos etc. Isso possibilita que ele evidencie a eficácia dos modelos construídos nas fases de estudo e representação.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT306X",
+      "EM13CNT308"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Potencial elétrico; Diferença de Potencial e tensão elétrica; Energia Potencial Elétrica; Superfícies equipotenciais.\nHabilidades: (EM13CNT301) Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica. / (EM13CNT306X) Avaliar os riscos envolvidos em atividades cotidianas... / (EM13CNT308) Investigar e analisar o funcionamento de equipamentos elétricos e/ou eletrônicos e sistemas de automação para compreender as tecnologias contemporâneas e avaliar seus impactos sociais, culturais e ambientais.\nSAEB: Não informados.\nOrientações: Ao apresentar os conceitos de potencial elétrico e diferença de potencial, recomenda-se contextualizar o estudo do potencial elétrico como uma maneira de medir a energia potencial associada a uma carga elétrica em um campo elétrico. É interessante a representação de modelos que façam o estudante se apropriar dos conceitos de Potencial elétrico e diferença de potencial e que permita que ele possa elaborar suas conclusões a partir desses. É importante que o estudante perceba a presença desses conceitos no cotidiano, através da investigação do funcionamento de equipamentos e do estudo de casos, onde é possível coletar dados em forma de textos, equações, gráficos etc. Isso possibilita que ele evidencie a eficácia dos modelos construídos nas fases de estudo e representação."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01 - Analisar fenômenos naturais e processos tecnológicos...",
+    "habilidade": "(EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica... / (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo (geradores de energia; biogestores; motores elétricos e seus componentes; bobinas; transformadores; pilhas; baterias; fontes alternativas de energia; bioeletricidade; dispositivos eletrônicos; etc.), com base na análise dos processos de transformação e condução de energia envolvidos, com ou sem o uso de dispositivos e aplicativos digitais, para propor ações que visem a sustentabilidade, discutindo acerca dos subprodutos que a tecnologia gera e propondo ações para minimizar seus impactos.",
+    "objeto_conhecimento": "Corrente elétrica.",
+    "descritores_saeb": "EF08CI02 (Referência de base).",
+    "orientacoes_pedagogicas": "O objeto de conhecimento corrente elétrica já é tema de estudo no ensino de ciências desde o 8º ano no EF por meio da habilidade EF08CI02, em que se sugere a construção de circuitos elétricos com pilha/bateria, fios, lâmpadas ou outros dispositivos e compará-los aos circuitos elétricos residenciais. Apoiado no exposto acima, sugere-se que o professor utilize textos científicos sobre corrente elétrica e oriente os estudantes a realizar conexões do estudo do sentido real da corrente elétrica com o sentido convencional, bem como a análise da conservação da carga elétrica, estabelecendo-se assim, relações e conclusões sobre o fluxo de elétrons nos circuitos. Sugere-se que sejam realizadas abordagens qualitativas e quantitativas sobre este objeto de conhecimento.",
+    "habilidade_codes": [
+      "EM13CNT106",
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Corrente elétrica.\nHabilidades: (EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica... / (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo (geradores de energia; biogestores; motores elétricos e seus componentes; bobinas; transformadores; pilhas; baterias; fontes alternativas de energia; bioeletricidade; dispositivos eletrônicos; etc.), com base na análise dos processos de transformação e condução de energia envolvidos, com ou sem o uso de dispositivos e aplicativos digitais, para propor ações que visem a sustentabilidade, discutindo acerca dos subprodutos que a tecnologia gera e propondo ações para minimizar seus impactos.\nSAEB: EF08CI02 (Referência de base).\nOrientações: O objeto de conhecimento corrente elétrica já é tema de estudo no ensino de ciências desde o 8º ano no EF por meio da habilidade EF08CI02, em que se sugere a construção de circuitos elétricos com pilha/bateria, fios, lâmpadas ou outros dispositivos e compará-los aos circuitos elétricos residenciais. Apoiado no exposto acima, sugere-se que o professor utilize textos científicos sobre corrente elétrica e oriente os estudantes a realizar conexões do estudo do sentido real da corrente elétrica com o sentido convencional, bem como a análise da conservação da carga elétrica, estabelecendo-se assim, relações e conclusões sobre o fluxo de elétrons nos circuitos. Sugere-se que sejam realizadas abordagens qualitativas e quantitativas sobre este objeto de conhecimento."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico...",
+    "habilidade": "(EM13CNT301) Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica. / (EM13CNT307) Analisar as propriedades dos materiais para avaliar a adequação de seu uso em diferentes aplicações (industriais, cotidianas, arquitetônicas, tecnológicas, entre outras) e/ ou propor soluções seguras e sustentáveis considerando seu contexto local e cotidiano.",
+    "objeto_conhecimento": "Resistência elétrica; As Leis de Ohm.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Para o estudo das leis de Ohm é interessante apresentar as diferenças entre condutores ôhmicos e não ôhmicos, a proporcionalidade entre a tensão elétrica com a corrente elétrica, bem como, a potência dos aparelhos elétricos e suas dissipações de energia. Sugere-se ainda debater com os estudantes sobre as propriedades físicas da resistência elétrica, a resistividade e a condutibilidade dos materiais com foco nos condutores e isolantes elétricos, realizando previsões e elaborando hipóteses envolvendo as relações entre essas grandezas.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT307"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 2º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Resistência elétrica; As Leis de Ohm.\nHabilidades: (EM13CNT301) Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica. / (EM13CNT307) Analisar as propriedades dos materiais para avaliar a adequação de seu uso em diferentes aplicações (industriais, cotidianas, arquitetônicas, tecnológicas, entre outras) e/ ou propor soluções seguras e sustentáveis considerando seu contexto local e cotidiano.\nSAEB: Não informados.\nOrientações: Para o estudo das leis de Ohm é interessante apresentar as diferenças entre condutores ôhmicos e não ôhmicos, a proporcionalidade entre a tensão elétrica com a corrente elétrica, bem como, a potência dos aparelhos elétricos e suas dissipações de energia. Sugere-se ainda debater com os estudantes sobre as propriedades físicas da resistência elétrica, a resistividade e a condutibilidade dos materiais com foco nos condutores e isolantes elétricos, realizando previsões e elaborando hipóteses envolvendo as relações entre essas grandezas."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica...",
+    "objeto_conhecimento": "Circuitos Elétricos; Instrumentos de medidas elétricas.",
+    "descritores_saeb": "EF08CI02; EF08CI45MG.",
+    "orientacoes_pedagogicas": "O objeto de conhecimento elementos de um circuito elétrico encontra-se como tema de estudo no ensino de ciências desde o 8º ano no EF por meio das habilidades EF08CI02 e EF08CI45MG, em que procura-se construir circuitos elétricos com geradores, fios e lâmpadas, proporcionando uma análise das instalações elétricas nas residências, bem como no reconhecimento da importância da segurança no uso da energia elétrica. Recomenda-se portanto, trabalhar com os conceitos e as propriedades físicas dos elementos de um circuito elétrico e seus componentes utilizando textos científicos, manuais de equipamentos elétricos e simuladores virtuais educacionais com o intuito de realizar previsões, criar hipóteses, empregar instrumentos de medidas, realizar experimentos atribuindo-se assim, as funções que cada item executa em um circuito elétrico. As habilidades EF08CI02 e EF08CI45MG do EF, também estão presentes na abordagem deste objeto de conhecimento no EF, permitindo a análise dos diferentes tipos de circuitos elétricos. Recomenda-se então tratar de situações reais em que a compreensão do circuito elétrico, de seus elementos, suas aplicações em residências e indústrias contribuam nos processos de transformação de energia, impactos ambientais e inovações tecnológicas. Faz-se necessário avaliar dimensionamento de equipamentos, condições e regras de proteção em diversas profissões. É interessante apresentar os tipos de circuitos, suas propriedades, leis físicas, efeito Joule, os instrumentos de medidas elétricas como multímetro, amperímetro e voltímetro, curtos circuitos, bem como os dispositivos de segurança. O uso de simuladores virtuais educacionais permite o emprego das tecnologias para a resolução de situações reais, proporcionando contato com meios que lhes permitam construir modelos interpretativos das ciências.",
+    "habilidade_codes": [
+      "EM13CNT106"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Circuitos Elétricos; Instrumentos de medidas elétricas.\nHabilidades: (EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica...\nSAEB: EF08CI02; EF08CI45MG.\nOrientações: O objeto de conhecimento elementos de um circuito elétrico encontra-se como tema de estudo no ensino de ciências desde o 8º ano no EF por meio das habilidades EF08CI02 e EF08CI45MG, em que procura-se construir circuitos elétricos com geradores, fios e lâmpadas, proporcionando uma análise das instalações elétricas nas residências, bem como no reconhecimento da importância da segurança no uso da energia elétrica. Recomenda-se portanto, trabalhar com os conceitos e as propriedades físicas dos elementos de um circuito elétrico e seus componentes utilizando textos científicos, manuais de equipamentos elétricos e simuladores virtuais educacionais com o intuito de realizar previsões, criar hipóteses, empregar instrumentos de medidas, realizar experimentos atribuindo-se assim, as funções que cada item executa em um circuito elétrico. As habilidades EF08CI02 e EF08CI45MG do EF, também estão presentes na abordagem deste objeto de conhecimento no EF, permitindo a análise dos diferentes tipos de circuitos elétricos. Recomenda-se então tratar de situações reais em que a compreensão do circuito elétrico, de seus elementos, suas aplicações em residências e indústrias contribuam nos processos de transformação de energia, impactos ambientais e inovações tecnológicas. Faz-se necessário avaliar dimensionamento de equipamentos, condições e regras de proteção em diversas profissões. É interessante apresentar os tipos de circuitos, suas propriedades, leis físicas, efeito Joule, os instrumentos de medidas elétricas como multímetro, amperímetro e voltímetro, curtos circuitos, bem como os dispositivos de segurança. O uso de simuladores virtuais educacionais permite o emprego das tecnologias para a resolução de situações reais, proporcionando contato com meios que lhes permitam construir modelos interpretativos das ciências."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais...",
+    "objeto_conhecimento": "Potência em um aparelho elétrico.",
+    "descritores_saeb": "EF08CI03; EF08CI04.",
+    "orientacoes_pedagogicas": "Esse objeto de conhecimento está proposto no EF através das habilidades EF08CI03 e EF08CI04, onde há um tratamento fonomenológico, conceitual básico sobre a classificação dos equipamentos quanto ao consumo de energia elétrica, a eficiência energética nos equipamentos de forma geral. Sugere-se retomar o assunto reconhecendo dispositivos que transformam uma determinada forma de energia em outras e identificar essas transformações. Além disso, fazer estimativas relacionando as grandezas potência e corrente elétrica, calculando uma em função da outra, utilizando como recursos os simuladores virtuais educacionais.",
+    "habilidade_codes": [
+      "EM13CNT106"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Potência em um aparelho elétrico.\nHabilidades: (EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais...\nSAEB: EF08CI03; EF08CI04.\nOrientações: Esse objeto de conhecimento está proposto no EF através das habilidades EF08CI03 e EF08CI04, onde há um tratamento fonomenológico, conceitual básico sobre a classificação dos equipamentos quanto ao consumo de energia elétrica, a eficiência energética nos equipamentos de forma geral. Sugere-se retomar o assunto reconhecendo dispositivos que transformam uma determinada forma de energia em outras e identificar essas transformações. Além disso, fazer estimativas relacionando as grandezas potência e corrente elétrica, calculando uma em função da outra, utilizando como recursos os simuladores virtuais educacionais."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03",
+    "habilidade": "(EM13CNT301) Construir questões... / (EM13CNT303) Interpretar textos de divulgação científica... / (EM13CNT308) Investigar e analisar o funcionamento de equipamentos elétricos e/ou eletrônicos e sistemas de automação para compreender as tecnologias contemporâneas e avaliar seus impactos sociais, culturais e ambientais.",
+    "objeto_conhecimento": "Geradores e receptores.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Sugere-se abordar a diferenciação entre geradores e receptores ideais e reais, a partir do conhecimento prévio dos estudantes sobre os geradores e receptores que eles já conhecem, assim como sobre os tipos de transformação de energia que ocorrem em diversas situações. Recomenda-se o estudo das formas de dissipação de energia que ocorrem dentro dos geradores e receptores pelo efeito Joule e a definição de resistência interna. Ao formalizar os conceitos de força eletromotriz e força contraeletromotriz, sugere-se realizar o estudo qualitativo e quantitativo por meito da análise de equações e de gráficos em aplicações práticas.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT303",
+      "EM13CNT308"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 2º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Geradores e receptores.\nHabilidades: (EM13CNT301) Construir questões... / (EM13CNT303) Interpretar textos de divulgação científica... / (EM13CNT308) Investigar e analisar o funcionamento de equipamentos elétricos e/ou eletrônicos e sistemas de automação para compreender as tecnologias contemporâneas e avaliar seus impactos sociais, culturais e ambientais.\nSAEB: Não informados.\nOrientações: Sugere-se abordar a diferenciação entre geradores e receptores ideais e reais, a partir do conhecimento prévio dos estudantes sobre os geradores e receptores que eles já conhecem, assim como sobre os tipos de transformação de energia que ocorrem em diversas situações. Recomenda-se o estudo das formas de dissipação de energia que ocorrem dentro dos geradores e receptores pelo efeito Joule e a definição de resistência interna. Ao formalizar os conceitos de força eletromotriz e força contraeletromotriz, sugere-se realizar o estudo qualitativo e quantitativo por meito da análise de equações e de gráficos em aplicações práticas."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...",
+    "objeto_conhecimento": "Campo magnético de ímãs e da Terra.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Iniciando o estudo do magnetismo, pretende-se que o estudante faça conexões entre o conceito de campo magnético, as propriedades magnéticas, os tipos de ímãs e a sua orientação, usando as linhas do campo magnético. Sugere-se ainda que se faça uma abordagem histórica, explicando a utilização da bússola na orientação através do campo magnético terrestre, como nas navegações. É interessante também fazer um estudo da orientação de animais através do campo magnético terrestre (biomagnetismo), a título de curiosidade. Pode-se fazer pequenos experimentos com a utilização de ímãs de formatos diversos e limalha de ferro. A utilização dos simuladores virtuais educacionais também é uma ótima ferramenta com o objetivo de minimizar a abstração do conteúdo.",
+    "habilidade_codes": [
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 3º Bimestre\nUnidade: Matéria e Energia\nObjetos: Campo magnético de ímãs e da Terra.\nHabilidades: (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...\nSAEB: Não informados.\nOrientações: Iniciando o estudo do magnetismo, pretende-se que o estudante faça conexões entre o conceito de campo magnético, as propriedades magnéticas, os tipos de ímãs e a sua orientação, usando as linhas do campo magnético. Sugere-se ainda que se faça uma abordagem histórica, explicando a utilização da bússola na orientação através do campo magnético terrestre, como nas navegações. É interessante também fazer um estudo da orientação de animais através do campo magnético terrestre (biomagnetismo), a título de curiosidade. Pode-se fazer pequenos experimentos com a utilização de ímãs de formatos diversos e limalha de ferro. A utilização dos simuladores virtuais educacionais também é uma ótima ferramenta com o objetivo de minimizar a abstração do conteúdo."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...",
+    "objeto_conhecimento": "A introdução ao eletromagnetismo e o experimento de Oersted; Campo magnético de correntes elétricas.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Sugere-se que a introdução do eletromagnetismo seja feita de forma experimental, visando a contextualização do tema. Com a utilização de fios, pilha e bússola, pode-se reproduzir a experiência de Oersted, comprovando o efeito magnético causado em fios com correntes elétricas. Nesse tópico sugerimos que seja ressaltada a importância da descoberta do eletromagnetismo para o desenvolvimento da geração e distribuição de energia elétrica. É possível ainda, que se faça a construção de eletroímãs com materiais simples como pregos, fios elétricos e pilhas, demostrando a sua aplicabilidade.",
+    "habilidade_codes": [
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 3º Bimestre\nUnidade: Matéria e Energia\nObjetos: A introdução ao eletromagnetismo e o experimento de Oersted; Campo magnético de correntes elétricas.\nHabilidades: (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...\nSAEB: Não informados.\nOrientações: Sugere-se que a introdução do eletromagnetismo seja feita de forma experimental, visando a contextualização do tema. Com a utilização de fios, pilha e bússola, pode-se reproduzir a experiência de Oersted, comprovando o efeito magnético causado em fios com correntes elétricas. Nesse tópico sugerimos que seja ressaltada a importância da descoberta do eletromagnetismo para o desenvolvimento da geração e distribuição de energia elétrica. É possível ainda, que se faça a construção de eletroímãs com materiais simples como pregos, fios elétricos e pilhas, demostrando a sua aplicabilidade."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...",
+    "objeto_conhecimento": "Força magnética em cargas e condutores.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Aconselha-se determinar os vetores força e campo magnético utizando a simbologia tridimensional padrão, caracterizada pela regra da mão direita provocados em cargas ou por uma corrente elétrica em um fio retilíneo, em espiras e solenoides, prevendo seu comportamento e identificando a polaridade do campo magnético a que estiver submetido. É importante demonstrar que ao prever o movimento de cargas elétricas em uma região de campo magnético, poderemos relacioná-lo com fenômenos naturais como tempestades, raios e as auroras polares, entregando sentido para o conhecimento apontado em sua vida cotidiana.",
+    "habilidade_codes": [
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 3º Bimestre\nUnidade: Matéria e Energia\nObjetos: Força magnética em cargas e condutores.\nHabilidades: (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...\nSAEB: Não informados.\nOrientações: Aconselha-se determinar os vetores força e campo magnético utizando a simbologia tridimensional padrão, caracterizada pela regra da mão direita provocados em cargas ou por uma corrente elétrica em um fio retilíneo, em espiras e solenoides, prevendo seu comportamento e identificando a polaridade do campo magnético a que estiver submetido. É importante demonstrar que ao prever o movimento de cargas elétricas em uma região de campo magnético, poderemos relacioná-lo com fenômenos naturais como tempestades, raios e as auroras polares, entregando sentido para o conhecimento apontado em sua vida cotidiana."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT101) Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas. / (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...",
+    "objeto_conhecimento": "Indução de correntes elétricas; Lei de Faraday; Lei de Lenz.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Sugerimos inicialmente apresentar o conceito de eletroímã, evidenciando sua origem no eletromagnetismo e demonstrando a indução eletromagnética. Exemplificar algumas de suas aplicações tecnológicas. Recomenda-se demonstrar que a variação do fluxo magnético induz corrente elétrica em um fio condutor; abordar o experimento de Faraday e interpretar como o seu funcionamento é aplicado em usinas geradoras de energia elétrica, além de outras tecnologias; realizar previsões quantitativas por meio das equações de fluxo magnético, força eletromotriz induzida e corrente elétrica induzida. Sugere-se também fazer demonstrações do sentido da corrente elétrica induzida de acordo com a variação do fluxo magnético estabelecido pela lei de Lenz. Além de utilizar simuladores digitais que permitam uma visualização do fenômeno, como o PHET e VASCAK.",
+    "habilidade_codes": [
+      "EM13CNT101",
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 3º Bimestre\nUnidade: Matéria e Energia\nObjetos: Indução de correntes elétricas; Lei de Faraday; Lei de Lenz.\nHabilidades: (EM13CNT101) Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas. / (EM13CNT107X) Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo...\nSAEB: Não informados.\nOrientações: Sugerimos inicialmente apresentar o conceito de eletroímã, evidenciando sua origem no eletromagnetismo e demonstrando a indução eletromagnética. Exemplificar algumas de suas aplicações tecnológicas. Recomenda-se demonstrar que a variação do fluxo magnético induz corrente elétrica em um fio condutor; abordar o experimento de Faraday e interpretar como o seu funcionamento é aplicado em usinas geradoras de energia elétrica, além de outras tecnologias; realizar previsões quantitativas por meio das equações de fluxo magnético, força eletromotriz induzida e corrente elétrica induzida. Sugere-se também fazer demonstrações do sentido da corrente elétrica induzida de acordo com a variação do fluxo magnético estabelecido pela lei de Lenz. Além de utilizar simuladores digitais que permitam uma visualização do fenômeno, como o PHET e VASCAK."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT101) Analisar e representar... / (EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais... / (EM13CNT107X) Realizar previsões qualitativas e quantitativas...",
+    "objeto_conhecimento": "Transformador, gerador e motores elétricos, eletroímã; A Energia na Terra: Geração e consumo de energia.",
+    "descritores_saeb": "EF08CI01X; EF08CI06.",
+    "orientacoes_pedagogicas": "Recomenda-se neste tópico, fazer a apresentação de dipositivos que utilizam-se do Eletromagnetismo para seu funcionamento, tais como a bússola simples, os equipamentos de telecomunicação e transmissão de dados, o relé (liga/desliga), o transformador, os trêns Maglev, entre outros. Essas contribuições da ciência para a humanidade, conseguiram edificar alguns pilares das revoluções industriais e por consequência, elevaram o conhecimento que fomentaram mudanças no desenvolvimento da sociedade. Sugere-se o uso dos simuladores virtuais educacionais para as demosnstrações qualitatitivas e quantitativas das várias capacidades dos equipamentos e instrumentpos relacionados ao eletromagnetismo bem como suas aplicações. O objeto de conhecimento Energia na Terra, foi proposto no 8º ano do EF através das habilidades EF08CI01X e EF08CI06. Nelas é possível identificar e classificar as fontes de energia (renováveis e não renováveis), e as diferentes formas de geração de energia elétrica. O estudante deve ser levado a compreender o desenvolvimento da humanidade a partir do conhecimento e da utilização dos diversos tipos de energia. Deve-se relacionar a utilização da energia com o progresso de um país, tanto na produção quanto na qualidade de vida da população. Propõe-se avaliar vantagens e desvantagens que permitam o estudante elaborar hipóteses e fazer previsões que contribuam para a construção de argumentos que justifiquem a escolha entre as diferentes fontes de energia. No objeto de conhecimento Geração e Consumo de Energia Elétrica, está proposto na habilidade EF08CI06 do 8º ano com a temática geração de energia elétrica (termelétricas, hidrelétricas, eólicas etc.), suas semelhanças e diferenças, seus impactos socioambientais e o caminho percorrido para que essa energia chegue em sua cidade, comunidade, casa ou escola. Sugere-se que os estudantes deem continuidade ao desenvolvimento da referida habilidade do EF, reconhecendo que as usinas geradoras de eletricidade, em geral, provocam graves impactos ambientais desde sua geração, seu caminho até seu aproveitamento. Enquanto área do conhecimento, sugere-se, neste bimestre, professor(a), a proposta de projeto integrador entre os componentes das Ciências da Natureza e suas Tecnologias, com a temática EMERGÊNCIAS CLIMÁTICAS. Como contribuição da Física para este projeto, sugere-se abordar a necessidade de criação de uma variedade de usinas de geração de energia elétrica (Energia Solar Fotovoltaica, Energia Eólica, Energia das Marés, etc), que procuram respeitar o meio ambiente, ou que, pelo menos, seja perceptível a redução significativa de impactos, como por exemplo as emissões de gases do efeito estufa, procurando contribuir para a conscientização da população.",
+    "habilidade_codes": [
+      "EM13CNT101",
+      "EM13CNT106",
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 4º Bimestre\nUnidade: Matéria e Energia\nObjetos: Transformador, gerador e motores elétricos, eletroímã; A Energia na Terra: Geração e consumo de energia.\nHabilidades: (EM13CNT101) Analisar e representar... / (EM13CNT106) Avaliar, com ou sem o uso de dispositivos e aplicativos digitais... / (EM13CNT107X) Realizar previsões qualitativas e quantitativas...\nSAEB: EF08CI01X; EF08CI06.\nOrientações: Recomenda-se neste tópico, fazer a apresentação de dipositivos que utilizam-se do Eletromagnetismo para seu funcionamento, tais como a bússola simples, os equipamentos de telecomunicação e transmissão de dados, o relé (liga/desliga), o transformador, os trêns Maglev, entre outros. Essas contribuições da ciência para a humanidade, conseguiram edificar alguns pilares das revoluções industriais e por consequência, elevaram o conhecimento que fomentaram mudanças no desenvolvimento da sociedade. Sugere-se o uso dos simuladores virtuais educacionais para as demosnstrações qualitatitivas e quantitativas das várias capacidades dos equipamentos e instrumentpos relacionados ao eletromagnetismo bem como suas aplicações. O objeto de conhecimento Energia na Terra, foi proposto no 8º ano do EF através das habilidades EF08CI01X e EF08CI06. Nelas é possível identificar e classificar as fontes de energia (renováveis e não renováveis), e as diferentes formas de geração de energia elétrica. O estudante deve ser levado a compreender o desenvolvimento da humanidade a partir do conhecimento e da utilização dos diversos tipos de energia. Deve-se relacionar a utilização da energia com o progresso de um país, tanto na produção quanto na qualidade de vida da população. Propõe-se avaliar vantagens e desvantagens que permitam o estudante elaborar hipóteses e fazer previsões que contribuam para a construção de argumentos que justifiquem a escolha entre as diferentes fontes de energia. No objeto de conhecimento Geração e Consumo de Energia Elétrica, está proposto na habilidade EF08CI06 do 8º ano com a temática geração de energia elétrica (termelétricas, hidrelétricas, eólicas etc.), suas semelhanças e diferenças, seus impactos socioambientais e o caminho percorrido para que essa energia chegue em sua cidade, comunidade, casa ou escola. Sugere-se que os estudantes deem continuidade ao desenvolvimento da referida habilidade do EF, reconhecendo que as usinas geradoras de eletricidade, em geral, provocam graves impactos ambientais desde sua geração, seu caminho até seu aproveitamento. Enquanto área do conhecimento, sugere-se, neste bimestre, professor(a), a proposta de projeto integrador entre os componentes das Ciências da Natureza e suas Tecnologias, com a temática EMERGÊNCIAS CLIMÁTICAS. Como contribuição da Física para este projeto, sugere-se abordar a necessidade de criação de uma variedade de usinas de geração de energia elétrica (Energia Solar Fotovoltaica, Energia Eólica, Energia das Marés, etc), que procuram respeitar o meio ambiente, ou que, pelo menos, seja perceptível a redução significativa de impactos, como por exemplo as emissões de gases do efeito estufa, procurando contribuir para a conscientização da população."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT103X) Conhecer e analisar os tipos de radiação e suas origens, para avaliar as potencialidades e os riscos de sua aplicação em equipamentos de uso cotidiano, na saúde, no ambiente, na indústria, na agricultura e na geração de energia.",
+    "objeto_conhecimento": "Ondas eletromagnéticas.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Sugere-se abordar a ampla utilização das ondas eletromagnéticas no cotidiano e conhecer a diferença entre radiação ionizante e radiação não-ionizante. É importante abordar seus benefícios e malefícios, sua utilização nas comunicações, transmissões de dados, em equipamentos de uso cotidiano, na saúde, no ambiente, na indústria, na agricultura e na geração de energia, etc. Ao introduzir o estudo das ondas eletromagnéticas, recomenda-se fazer a diferenciação das diversas faixas do espectro eletromagnético, baseada na interpretação das grandezas frequência e comprimento de onda. Pretende-se que o estudante faça conexões da relação deste conceito com o campo elétrico e o campo magnético, suas propriredades e o espectro eletromagnético, bem como suas aplicações no cotidiano e nas tecnologias.",
+    "habilidade_codes": [
+      "EM13CNT103X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 4º Bimestre\nUnidade: Matéria e Energia\nObjetos: Ondas eletromagnéticas.\nHabilidades: (EM13CNT103X) Conhecer e analisar os tipos de radiação e suas origens, para avaliar as potencialidades e os riscos de sua aplicação em equipamentos de uso cotidiano, na saúde, no ambiente, na indústria, na agricultura e na geração de energia.\nSAEB: Não informados.\nOrientações: Sugere-se abordar a ampla utilização das ondas eletromagnéticas no cotidiano e conhecer a diferença entre radiação ionizante e radiação não-ionizante. É importante abordar seus benefícios e malefícios, sua utilização nas comunicações, transmissões de dados, em equipamentos de uso cotidiano, na saúde, no ambiente, na indústria, na agricultura e na geração de energia, etc. Ao introduzir o estudo das ondas eletromagnéticas, recomenda-se fazer a diferenciação das diversas faixas do espectro eletromagnético, baseada na interpretação das grandezas frequência e comprimento de onda. Pretende-se que o estudante faça conexões da relação deste conceito com o campo elétrico e o campo magnético, suas propriredades e o espectro eletromagnético, bem como suas aplicações no cotidiano e nas tecnologias."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Linguagens e Tecnologias",
+    "competencia": "Competência Específica 03",
+    "habilidade": "(EM13CNT301) Construir questões... / (EM13CNT302) Comunicar, para públicos variados... / (EM13CNT304X) Analisar e debater situações controversas... / (EM13CNT306X) Avaliar os riscos envolvidos... / (EM13CNT308) Investigar e analisar o funcionamento... / (EM13CNT310X) Investigar e analisar os efeitos de programas de infraestrutura... / (EM13CNT311MG) Investigar e analisar comportamentos específicos dos diversos tipos de ondas, para avaliar suas diferentes aplicações tecnológicas (comunicação, saúde, música, entre outros), identificar e/ou avaliar os impactos individuais, coletivos e socioambientais de tais tecnologias, a fim de promover seu uso seguro e sustentável.",
+    "objeto_conhecimento": "Ondas eletromagnéticas.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Sugere-se abordar a ampla utilização das ondas eletromagnéticas no cotidiano e conhecer a diferença entre radiação ionizante e radiação não-ionizante. É importante abordar seus benefícios e malefícios, sua utilização nas comunicações, transmissões de dados, em equipamentos de uso cotidiano, na saúde, no ambiente, na indústria, na agricultura e na geração de energia, etc. Ao introduzir o estudo das ondas eletromagnéticas, recomenda-se fazer a diferenciação das diversas faixas do espectro eletromagnético, baseada na interpretação das grandezas frequência e comprimento de onda. Pretende-se que o estudante faça conexões da relação deste conceito com o campo elétrico e o campo magnético, suas propriredades e o espectro eletromagnético, bem como suas aplicações no cotidiano e nas tecnologias.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT304X",
+      "EM13CNT306X",
+      "EM13CNT308",
+      "EM13CNT310X",
+      "EM13CNT311MG"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 4º Bimestre\nUnidade: Linguagens e Tecnologias\nObjetos: Ondas eletromagnéticas.\nHabilidades: (EM13CNT301) Construir questões... / (EM13CNT302) Comunicar, para públicos variados... / (EM13CNT304X) Analisar e debater situações controversas... / (EM13CNT306X) Avaliar os riscos envolvidos... / (EM13CNT308) Investigar e analisar o funcionamento... / (EM13CNT310X) Investigar e analisar os efeitos de programas de infraestrutura... / (EM13CNT311MG) Investigar e analisar comportamentos específicos dos diversos tipos de ondas, para avaliar suas diferentes aplicações tecnológicas (comunicação, saúde, música, entre outros), identificar e/ou avaliar os impactos individuais, coletivos e socioambientais de tais tecnologias, a fim de promover seu uso seguro e sustentável.\nSAEB: Não informados.\nOrientações: Sugere-se abordar a ampla utilização das ondas eletromagnéticas no cotidiano e conhecer a diferença entre radiação ionizante e radiação não-ionizante. É importante abordar seus benefícios e malefícios, sua utilização nas comunicações, transmissões de dados, em equipamentos de uso cotidiano, na saúde, no ambiente, na indústria, na agricultura e na geração de energia, etc. Ao introduzir o estudo das ondas eletromagnéticas, recomenda-se fazer a diferenciação das diversas faixas do espectro eletromagnético, baseada na interpretação das grandezas frequência e comprimento de onda. Pretende-se que o estudante faça conexões da relação deste conceito com o campo elétrico e o campo magnético, suas propriredades e o espectro eletromagnético, bem como suas aplicações no cotidiano e nas tecnologias."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01",
+    "habilidade": "(EM13CNT103X) Conhecer e analisar os tipos de radiação... / (EM13CNT104) Avaliar os benefícios e os riscos à saúde e ao ambiente, considerando a composição, a toxicidade e a reatividade de diferentes materiais e produtos, como também o nível de exposição a eles, posicionando-se criticamente e propondo soluções individuais e/ou coletivas para seus usos e descartes responsáveis.",
+    "objeto_conhecimento": "Modelo atômico de Bohr; Efeito fotoelétrico; Dualidade onda-matéria; Equivalência massa-energia; Radioatividade.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Para a apresentação do estudo sobre noções da Física Quântica recomenta-se apresentar um contexto histórico sobre a necessidade de uma nova teoria para explicar fenômenos em escalas subatômicas. Apresente a equação de equivalência da massa e energia, os experimentos que levaram ao desenvolvimento da teoria quântica, como o experimento de fenda dupla, o efeito fotoelétrico e o modelo atômico de Bohr e apresentar o modelo atômico atual (quântico). Recomenda-se que os estudantes sejam levados a reconhecer o comportamento dual da luz, descrevendo e analisando o efeito fotoelétrico, relacionando-o com a quantização da energia, definindo o fóton. Tal característica justifica o modelo de quantum de luz proposto por Einstein e que pode ser observado através de simuladores virtuais educacionais. É importante relacionar a energia do fóton com a sua frequência através da equação E = h.f. Ao apresentar este objeto de conhecimento, propõe-se abordar as radiações de maneira contextualizada, apresentando aplicações e os avanços tecnológicos que foram possíveis a partir do desenvolvimento de tais conhecimentos científicos. Sugere-se que sejam apresentados os conceitos de isótopo de um elemento químico, forças nucleares, e meia vida de um elemento radioativo. É recomendável também apresentar a fissão e a fusão nucleares com base nas aplicações para a geração de energia em usinas e na formação das estrelas. Além de abordar os principais conceitos em Física de partículas, conextualizando sua importância para o desenvolvimento científico, levando os estudantes ao pensamento crítico de modo que eles consigam relacionar aos fenômenos a suas aplicações, fazendo análise crítica dos efeitos do uso da radiatividade e consigam propor soluções de problemas locais ou globais.",
+    "habilidade_codes": [
+      "EM13CNT103X",
+      "EM13CNT104"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 4º Bimestre\nUnidade: Matéria e Energia\nObjetos: Modelo atômico de Bohr; Efeito fotoelétrico; Dualidade onda-matéria; Equivalência massa-energia; Radioatividade.\nHabilidades: (EM13CNT103X) Conhecer e analisar os tipos de radiação... / (EM13CNT104) Avaliar os benefícios e os riscos à saúde e ao ambiente, considerando a composição, a toxicidade e a reatividade de diferentes materiais e produtos, como também o nível de exposição a eles, posicionando-se criticamente e propondo soluções individuais e/ou coletivas para seus usos e descartes responsáveis.\nSAEB: Não informados.\nOrientações: Para a apresentação do estudo sobre noções da Física Quântica recomenta-se apresentar um contexto histórico sobre a necessidade de uma nova teoria para explicar fenômenos em escalas subatômicas. Apresente a equação de equivalência da massa e energia, os experimentos que levaram ao desenvolvimento da teoria quântica, como o experimento de fenda dupla, o efeito fotoelétrico e o modelo atômico de Bohr e apresentar o modelo atômico atual (quântico). Recomenda-se que os estudantes sejam levados a reconhecer o comportamento dual da luz, descrevendo e analisando o efeito fotoelétrico, relacionando-o com a quantização da energia, definindo o fóton. Tal característica justifica o modelo de quantum de luz proposto por Einstein e que pode ser observado através de simuladores virtuais educacionais. É importante relacionar a energia do fóton com a sua frequência através da equação E = h.f. Ao apresentar este objeto de conhecimento, propõe-se abordar as radiações de maneira contextualizada, apresentando aplicações e os avanços tecnológicos que foram possíveis a partir do desenvolvimento de tais conhecimentos científicos. Sugere-se que sejam apresentados os conceitos de isótopo de um elemento químico, forças nucleares, e meia vida de um elemento radioativo. É recomendável também apresentar a fissão e a fusão nucleares com base nas aplicações para a geração de energia em usinas e na formação das estrelas. Além de abordar os principais conceitos em Física de partículas, conextualizando sua importância para o desenvolvimento científico, levando os estudantes ao pensamento crítico de modo que eles consigam relacionar aos fenômenos a suas aplicações, fazendo análise crítica dos efeitos do uso da radiatividade e consigam propor soluções de problemas locais ou globais."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02",
+    "habilidade": "(EM13CNT203X) Avaliar e prever efeitos de intervenções nos ecossistemas, e seus impactos nos seres vivos e no corpo humano, com base nos mecanismos de manutenção da vida, nos ciclos da matéria e nas transformações e transferências de energia, utilizando representações e simulações sobre tais fatores, com ou sem o uso de dispositivos e aplicativos digitais. / (EM13CNT205) Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza, reconhecendo os limites explicativos das ciências.",
+    "objeto_conhecimento": "Modelo atômico de Bohr; Efeito fotoelétrico; Dualidade onda-matéria; Equivalência massa-energia; Radioatividade.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "(Mesma orientação pedagógica detalhada acima para Física Quântica e Radioatividade).",
+    "habilidade_codes": [
+      "EM13CNT203X",
+      "EM13CNT205"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 4º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Modelo atômico de Bohr; Efeito fotoelétrico; Dualidade onda-matéria; Equivalência massa-energia; Radioatividade.\nHabilidades: (EM13CNT203X) Avaliar e prever efeitos de intervenções nos ecossistemas, e seus impactos nos seres vivos e no corpo humano, com base nos mecanismos de manutenção da vida, nos ciclos da matéria e nas transformações e transferências de energia, utilizando representações e simulações sobre tais fatores, com ou sem o uso de dispositivos e aplicativos digitais. / (EM13CNT205) Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza, reconhecendo os limites explicativos das ciências.\nSAEB: Não informados.\nOrientações: (Mesma orientação pedagógica detalhada acima para Física Quântica e Radioatividade)."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03",
+    "habilidade": "(EM13CNT301) Construir questões... / (EM13CNT303) Interpretar textos de divulgação científica... / (EM13CNT304X) Analisar e debater situações controversas... / (EM13CNT305X) Investigar e discutir o uso indevido de conhecimentos... / (EM13CNT306X) Avaliar os riscos envolvidos... / (EM13CNT307) Analisar as propriedades dos materiais... / (EM13CNT312MG) Relacionar e avaliar as questões sociais, ambientais, políticas e econômicas controversas acerca do extrativismo regional, com argumentos que envolvam os aspectos físicos, químicos e biológicos dos subprodutos da exploração dos recursos naturais.",
+    "objeto_conhecimento": "Modelo atômico de Bohr; Efeito fotoelétrico; Dualidade onda-matéria; Equivalência massa-energia; Radioatividade.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "(Mesma orientação pedagógica detalhada acima para Física Quântica e Radioatividade).",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT303",
+      "EM13CNT304X",
+      "EM13CNT305X",
+      "EM13CNT306X",
+      "EM13CNT307",
+      "EM13CNT312MG"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Física | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Modelo atômico de Bohr; Efeito fotoelétrico; Dualidade onda-matéria; Equivalência massa-energia; Radioatividade.\nHabilidades: (EM13CNT301) Construir questões... / (EM13CNT303) Interpretar textos de divulgação científica... / (EM13CNT304X) Analisar e debater situações controversas... / (EM13CNT305X) Investigar e discutir o uso indevido de conhecimentos... / (EM13CNT306X) Avaliar os riscos envolvidos... / (EM13CNT307) Analisar as propriedades dos materiais... / (EM13CNT312MG) Relacionar e avaliar as questões sociais, ambientais, políticas e econômicas controversas acerca do extrativismo regional, com argumentos que envolvam os aspectos físicos, químicos e biológicos dos subprodutos da exploração dos recursos naturais.\nSAEB: Não informados.\nOrientações: (Mesma orientação pedagógica detalhada acima para Física Quântica e Radioatividade)."
+  }
+]

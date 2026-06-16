@@ -1,0 +1,636 @@
+[
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF05MA14) - Utilizar e compreender diferentes representações para a localização de objetos no plano, como mapas, células em planilhas eletrônicas e coordenadas geográficas, a fim de desenvolver as primeiras noções de coordenadas cartesianas.",
+    "objeto_conhecimento": "Plano cartesiano: coordenadas cartesianas (1º quadrante) e representação de deslocamentos no plano cartesiano. Conteúdos relacionados: Plano cartesiano. Coordenadas cartesianas (1º quadrante). Representação de deslocamentos no plano cartesiano.",
+    "descritores_saeb": "Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas.",
+    "orientacoes_pedagogicas": "Utilizar e compreender diferentes representações para a localização de objetos no plano, como mapas, células em planilhas eletrônicas e coordenadas geográficas, a fim de desenvolver as primeiras noções de coordenadas cartesianas, implica em desenvolver habilidades verbais, visuais e de representação especificamente relacionadas às estratégias de representação aqui mencionadas, compreendendo seus princípios, legendas, escalas e os termos relacionados na habilidade (direita, esquerda, para cima, para baixo, intersecção, etc). Uma aprendizagem importante será a de que um ponto pode ser localizado usando duas coordenadas e um sistema de eixos perpendiculares, numerados e orientados.",
+    "habilidade_codes": [
+      "EF05MA14"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 1º Bimestre\nUnidade: Geometria\nObjetos: Plano cartesiano: coordenadas cartesianas (1º quadrante) e representação de deslocamentos no plano cartesiano. Conteúdos relacionados: Plano cartesiano. Coordenadas cartesianas (1º quadrante). Representação de deslocamentos no plano cartesiano.\nHabilidades: (EF05MA14) - Utilizar e compreender diferentes representações para a localização de objetos no plano, como mapas, células em planilhas eletrônicas e coordenadas geográficas, a fim de desenvolver as primeiras noções de coordenadas cartesianas.\nSAEB: Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas.\nOrientações: Utilizar e compreender diferentes representações para a localização de objetos no plano, como mapas, células em planilhas eletrônicas e coordenadas geográficas, a fim de desenvolver as primeiras noções de coordenadas cartesianas, implica em desenvolver habilidades verbais, visuais e de representação especificamente relacionadas às estratégias de representação aqui mencionadas, compreendendo seus princípios, legendas, escalas e os termos relacionados na habilidade (direita, esquerda, para cima, para baixo, intersecção, etc). Uma aprendizagem importante será a de que um ponto pode ser localizado usando duas coordenadas e um sistema de eixos perpendiculares, numerados e orientados."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF05MA15) - Interpretar, descrever e representar a localização ou movimentação de objetos no plano cartesiano (1º quadrante), utilizando coordenadas cartesianas, indicando mudanças de direção e de sentido e giros.",
+    "objeto_conhecimento": "Plano cartesiano: coordenadas cartesianas (1º quadrante) e representação de deslocamentos no plano cartesiano. Conteúdos relacionados: Plano cartesiano. Coordenadas cartesianas (1º quadrante). Representação de deslocamentos no plano cartesiano.",
+    "descritores_saeb": "Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas.",
+    "orientacoes_pedagogicas": "Para desenvolver esta habilidade envolve que já haja o domínio de processo de localização e representação da movimentação de objetos e pessoas no espaço. Utilizar um vocabulário que expresse a localização (direita, esquerda, mais próximo, mais distante, entre outros) também é relevante. Experiências de representação de trajetos em malhas quadriculadas e de leitura de mapas auxiliam para que, então, possa ser explorada a ampliação das formas de descrição, localização e representação de trajetos e movimentos em um sistema de coordenadas ordenado (cartesiano).",
+    "habilidade_codes": [
+      "EF05MA15"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 1º Bimestre\nUnidade: Geometria\nObjetos: Plano cartesiano: coordenadas cartesianas (1º quadrante) e representação de deslocamentos no plano cartesiano. Conteúdos relacionados: Plano cartesiano. Coordenadas cartesianas (1º quadrante). Representação de deslocamentos no plano cartesiano.\nHabilidades: (EF05MA15) - Interpretar, descrever e representar a localização ou movimentação de objetos no plano cartesiano (1º quadrante), utilizando coordenadas cartesianas, indicando mudanças de direção e de sentido e giros.\nSAEB: Identificar a localização/movimentação de objeto em mapas, croquis e outras representações gráficas.\nOrientações: Para desenvolver esta habilidade envolve que já haja o domínio de processo de localização e representação da movimentação de objetos e pessoas no espaço. Utilizar um vocabulário que expresse a localização (direita, esquerda, mais próximo, mais distante, entre outros) também é relevante. Experiências de representação de trajetos em malhas quadriculadas e de leitura de mapas auxiliam para que, então, possa ser explorada a ampliação das formas de descrição, localização e representação de trajetos e movimentos em um sistema de coordenadas ordenado (cartesiano)."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF05MA09A) - Resolver problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis ao se combinar cada elemento de uma coleção com todos os elementos de outra coleção, por meio de diagramas de árvore ou por tabelas. / (EF05MA09B) - Elaborar problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis ao se combinar cada elemento de uma coleção com todos os elementos de outra coleção, por meio de diagramas de árvore ou por tabelas.",
+    "objeto_conhecimento": "Problemas de contagem do tipo: “Se cada objeto de uma coleção A for combinado com todos os elementos de uma coleção B, quantos agrupamentos desse tipo podem ser formados?”. Conteúdos relacionados: Problemas simples de contagem por meio de diagramas de árvore ou por tabelas.",
+    "descritores_saeb": "Resolver problema com números naturais, envol-vendo diferentes signifi-cados da multiplicação ou divisão: multiplicação comparativa, ideia de proporcionalidade, con-figuração retangular e combinatória.",
+    "orientacoes_pedagogicas": "Resolver e elaborar problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis ao se combinar cada elemento de uma coleção com todos os elementos de outra coleção, por meio de diagramas de árvore ou por tabelas, implica em associar problemas do tipo: “Se cada objeto de uma coleção A for combinado com todos os elementos de uma coleção B, quantos agrupamentos desse tipo podem ser formados?” . Para a resolução, as estratégias poderão ser diversas, incluindo a multiplicação.",
+    "habilidade_codes": [
+      "EF05MA09A",
+      "EF05MA09B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 1º Bimestre\nUnidade: Números\nObjetos: Problemas de contagem do tipo: “Se cada objeto de uma coleção A for combinado com todos os elementos de uma coleção B, quantos agrupamentos desse tipo podem ser formados?”. Conteúdos relacionados: Problemas simples de contagem por meio de diagramas de árvore ou por tabelas.\nHabilidades: (EF05MA09A) - Resolver problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis ao se combinar cada elemento de uma coleção com todos os elementos de outra coleção, por meio de diagramas de árvore ou por tabelas. / (EF05MA09B) - Elaborar problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis ao se combinar cada elemento de uma coleção com todos os elementos de outra coleção, por meio de diagramas de árvore ou por tabelas.\nSAEB: Resolver problema com números naturais, envol-vendo diferentes signifi-cados da multiplicação ou divisão: multiplicação comparativa, ideia de proporcionalidade, con-figuração retangular e combinatória.\nOrientações: Resolver e elaborar problemas simples de contagem envolvendo o princípio multiplicativo, como a determinação do número de agrupamentos possíveis ao se combinar cada elemento de uma coleção com todos os elementos de outra coleção, por meio de diagramas de árvore ou por tabelas, implica em associar problemas do tipo: “Se cada objeto de uma coleção A for combinado com todos os elementos de uma coleção B, quantos agrupamentos desse tipo podem ser formados?” . Para a resolução, as estratégias poderão ser diversas, incluindo a multiplicação."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Probabilidade e Estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF05MA23) - Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis).",
+    "objeto_conhecimento": "Cálculo de probabilidade de eventos equiprováveis. Conteúdos relacionados: Cálculo de probabilidade de eventos equiprováveis.",
+    "descritores_saeb": "(Não consta).",
+    "orientacoes_pedagogicas": "O desenvolvimento dessa habilidade implica em conhecer o conjunto de todas as possibilidades que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. Por exemplo, ao se lançar uma moeda o espaço amostral é cara ou coroa, ou seja há 1 em duas possibilidades de sair cara, logo a probabilidade de termos cara é de 1/2, o mesmo vale para coroa. Já no caso do lançamento de um dado comum, há 1/6 de probabilidade de sair qualquer um dos números do espaço amostral.",
+    "habilidade_codes": [
+      "EF05MA23"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 1º Bimestre\nUnidade: Probabilidade e Estatística\nObjetos: Cálculo de probabilidade de eventos equiprováveis. Conteúdos relacionados: Cálculo de probabilidade de eventos equiprováveis.\nHabilidades: (EF05MA23) - Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis).\nSAEB: (Não consta).\nOrientações: O desenvolvimento dessa habilidade implica em conhecer o conjunto de todas as possibilidades que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. Por exemplo, ao se lançar uma moeda o espaço amostral é cara ou coroa, ou seja há 1 em duas possibilidades de sair cara, logo a probabilidade de termos cara é de 1/2, o mesmo vale para coroa. Já no caso do lançamento de um dado comum, há 1/6 de probabilidade de sair qualquer um dos números do espaço amostral."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Número",
+    "competencia": "Matemática",
+    "habilidade": "(EF05MA03) - Identificar e representar frações (menores e maiores que a unidade), associando-as ao resultado de uma divisão ou à ideia de parte de um todo, utilizando a reta numérica como recurso.",
+    "objeto_conhecimento": "Representação fracionária dos números racionais: reconhecimento, significados, leitura e representação na reta numérica. Conteúdos relacionados: Frações: reconhecimento, significados, leitura e representação na reta numérica. Ideias de fração. Fração de um número. Fração e divisão. Número misto.",
+    "descritores_saeb": "Identificar fração como representação que pode estar associada a diferentes significados.",
+    "orientacoes_pedagogicas": "Identificar e representar frações (menores e maiores que a unidade), associando-as ao resultado de uma divisão ou à ideia de parte de um todo implica em compreender, simultaneamente, que o traço da fração pode significar a divisão entre o numerador e o denominador e também como indicador de que um inteiro foi dividido em certo número de partes iguais (indicadas no denominador), sem sobrar resto, e que, dessas partes, foram tomadas algumas (indicadas no numerador). Assim, a fração 2/5 pode significar 2:5 e um inteiro dividido em 5 partes das quais se tomou 2. Essa relação deve ser explorada em frações maiores, menores ou iguais a um inteiro. Não há necessidade de nomear as frações estudadas em própria, imprópria ou aparente, uma vez que o que importa na habilidade são as duas ideias envolvendo fração (como divisão e como parte de um todo) e a representação na reta numérica.",
+    "habilidade_codes": [
+      "EF05MA03"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 1º Bimestre\nUnidade: Número\nObjetos: Representação fracionária dos números racionais: reconhecimento, significados, leitura e representação na reta numérica. Conteúdos relacionados: Frações: reconhecimento, significados, leitura e representação na reta numérica. Ideias de fração. Fração de um número. Fração e divisão. Número misto.\nHabilidades: (EF05MA03) - Identificar e representar frações (menores e maiores que a unidade), associando-as ao resultado de uma divisão ou à ideia de parte de um todo, utilizando a reta numérica como recurso.\nSAEB: Identificar fração como representação que pode estar associada a diferentes significados.\nOrientações: Identificar e representar frações (menores e maiores que a unidade), associando-as ao resultado de uma divisão ou à ideia de parte de um todo implica em compreender, simultaneamente, que o traço da fração pode significar a divisão entre o numerador e o denominador e também como indicador de que um inteiro foi dividido em certo número de partes iguais (indicadas no denominador), sem sobrar resto, e que, dessas partes, foram tomadas algumas (indicadas no numerador). Assim, a fração 2/5 pode significar 2:5 e um inteiro dividido em 5 partes das quais se tomou 2. Essa relação deve ser explorada em frações maiores, menores ou iguais a um inteiro. Não há necessidade de nomear as frações estudadas em própria, imprópria ou aparente, uma vez que o que importa na habilidade são as duas ideias envolvendo fração (como divisão e como parte de um todo) e a representação na reta numérica."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF05MA04) - Identificar frações equivalentes.",
+    "objeto_conhecimento": "Comparação e ordenação de números racionais na representação decimal e na fracionária utilizando a noção de equivalência. Conteúdos relacionados: Frações equivalentes.",
+    "descritores_saeb": "Identificar fração como representação que pode estar associada a diferentes significados.",
+    "orientacoes_pedagogicas": "Identificar frações equivalentes implica em compreender que há escritas fracionárias distintas que representam a mesma quantidade ou a mesma parte de um todo. O desenvolvimento desta habilidade se relaciona diretamente com as aprendizagens referentes à habilidade (EF05MA03). A representação de frações equivalentes na reta numérica auxilia na observação de que escritas fracionárias diferentes representam quantidades iguais, quando se referem ao mesmo todo, e por isso, são representadas pelo mesmo ponto na reta numérica. Merece atenção que os alunos sejam estimulados sempre a representar as ideias aprendidas de formas diferentes (por escrito, numericamente, com desenhos), justificar suas resoluções e, ainda, escrever as aprendizagens feitas.",
+    "habilidade_codes": [
+      "EF05MA04"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 1º Bimestre\nUnidade: Números\nObjetos: Comparação e ordenação de números racionais na representação decimal e na fracionária utilizando a noção de equivalência. Conteúdos relacionados: Frações equivalentes.\nHabilidades: (EF05MA04) - Identificar frações equivalentes.\nSAEB: Identificar fração como representação que pode estar associada a diferentes significados.\nOrientações: Identificar frações equivalentes implica em compreender que há escritas fracionárias distintas que representam a mesma quantidade ou a mesma parte de um todo. O desenvolvimento desta habilidade se relaciona diretamente com as aprendizagens referentes à habilidade (EF05MA03). A representação de frações equivalentes na reta numérica auxilia na observação de que escritas fracionárias diferentes representam quantidades iguais, quando se referem ao mesmo todo, e por isso, são representadas pelo mesmo ponto na reta numérica. Merece atenção que os alunos sejam estimulados sempre a representar as ideias aprendidas de formas diferentes (por escrito, numericamente, com desenhos), justificar suas resoluções e, ainda, escrever as aprendizagens feitas."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA35MG) - Reconhecer, no contexto social, diferentes significados dos números naturais. / (EF06MA01A) - Comparar, ordenar, ler e escrever números naturais, fazendo uso da reta numérica.",
+    "objeto_conhecimento": "História dos números e do Sistema de numeração. Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Reta numérica. Conteúdos relacionados: Sistema de numeração egípcio. Sistema de numeração romano. Sistema de numeração decimal. Leitura e escrita de um número no sistema decimal. Números pares e números ímpares. Comparação de números naturais. A reta numérica e os números naturais. Adição com números naturais. Algumas propriedades da adição. Subtração com números naturais. Relação fundamental da subtração. Multiplicação com números naturais. Algumas propriedades da multiplicação. Divisão com números naturais. Divisão exata. Divisão não exata. Expressões numéricas com as quatro operações. Relação fundamental da divisão. Potenciação com números naturais. Leitura de potências. Potências de base 10. Expressões numéricas com potenciações. Arredondamentos e estimativas.",
+    "descritores_saeb": "Reconhecer e utilizar características do sistema de numeração decimal, tais como agrupamentos e trocas na base 10 e princípio do valor posicional. Identificar a localização de números naturais na reta numérica.",
+    "orientacoes_pedagogicas": "Os contextos para o desenvolvimento destas habilidades são encontrados no uso de tabelas, de textos do cotidiano, tais como jornais e revistas que poderão ser úteis para criar contextos de leitura, escrita e comparação de quantidades. Os estudantes deverão ser estimulados a representar quantidades usando algarismos e também palavras. Também é esperado que sejam exploradas contagens com intervalos diferentes, em especial usando múltiplos de 100, que são úteis no desenvolvimento de procedimentos de cálculo. Outro ponto a ser cuidado é a produção e análise de maneiras diversas de registro de quantidades no cotidiano, tais como as que aparecem em legendas de gráficos, ou no uso nas mídias (por exemplo, 200 mil). É importante que os estudantes sejam capazes de representar a comparação de números naturais usando diferentes representações, entre elas os sinais convencionais de maior (>), menor (<) e diferente (≠). Que sejam capazes de operar e resolver problemas que envolvam os números naturais.",
+    "habilidade_codes": [
+      "EF06MA35MG",
+      "EF06MA01A"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Números\nObjetos: História dos números e do Sistema de numeração. Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Reta numérica. Conteúdos relacionados: Sistema de numeração egípcio. Sistema de numeração romano. Sistema de numeração decimal. Leitura e escrita de um número no sistema decimal. Números pares e números ímpares. Comparação de números naturais. A reta numérica e os números naturais. Adição com números naturais. Algumas propriedades da adição. Subtração com números naturais. Relação fundamental da subtração. Multiplicação com números naturais. Algumas propriedades da multiplicação. Divisão com números naturais. Divisão exata. Divisão não exata. Expressões numéricas com as quatro operações. Relação fundamental da divisão. Potenciação com números naturais. Leitura de potências. Potências de base 10. Expressões numéricas com potenciações. Arredondamentos e estimativas.\nHabilidades: (EF06MA35MG) - Reconhecer, no contexto social, diferentes significados dos números naturais. / (EF06MA01A) - Comparar, ordenar, ler e escrever números naturais, fazendo uso da reta numérica.\nSAEB: Reconhecer e utilizar características do sistema de numeração decimal, tais como agrupamentos e trocas na base 10 e princípio do valor posicional. Identificar a localização de números naturais na reta numérica.\nOrientações: Os contextos para o desenvolvimento destas habilidades são encontrados no uso de tabelas, de textos do cotidiano, tais como jornais e revistas que poderão ser úteis para criar contextos de leitura, escrita e comparação de quantidades. Os estudantes deverão ser estimulados a representar quantidades usando algarismos e também palavras. Também é esperado que sejam exploradas contagens com intervalos diferentes, em especial usando múltiplos de 100, que são úteis no desenvolvimento de procedimentos de cálculo. Outro ponto a ser cuidado é a produção e análise de maneiras diversas de registro de quantidades no cotidiano, tais como as que aparecem em legendas de gráficos, ou no uso nas mídias (por exemplo, 200 mil). É importante que os estudantes sejam capazes de representar a comparação de números naturais usando diferentes representações, entre elas os sinais convencionais de maior (>), menor (<) e diferente (≠). Que sejam capazes de operar e resolver problemas que envolvam os números naturais."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA02A) - Reconhecer o sistema de numeração decimal, como o que prevaleceu no mundo ocidental, e destacar semelhanças e diferenças com outros sistemas, de modo a sistematizar suas principais características (base, valor posicional e função do zero), utilizando, inclusive, a composição e decomposição de números naturais.",
+    "objeto_conhecimento": "Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Conteúdos relacionados: Sistema de numeração egípcio. Sistema de numeração romano. Sistema de numeração decimal. Leitura e escrita de um número no sistema decimal. Números pares e números ímpares. Comparação de números naturais. A reta numérica e os números naturais. Adição com números naturais. Algumas propriedades da adição. Subtração com números naturais. Relação fundamental da subtração. Multiplicação com números naturais. Algumas propriedades da multiplicação. Divisão com números naturais. Divisão exata. Divisão não exata. Expressões numéricas com as quatro operações. Relação fundamental da divisão. Potenciação com números naturais. Leitura de potências. Potências de base 10. Expressões numéricas com potenciações. Arredondamentos e estimativas.",
+    "descritores_saeb": "Reconhecer e utilizar características do sistema de numeração decimal, tais como agrupamentos e trocas na base 10 e princípio do valor posicional. Identificar a localização de números naturais na reta numérica.",
+    "orientacoes_pedagogicas": "Os contextos para o desenvolvimento destas habilidades são encontrados no uso de tabelas, de textos do cotidiano, tais como jornais e revistas que poderão ser úteis para criar contextos de leitura, escrita e comparação de quantidades. Os estudantes deverão ser estimulados a representar quantidades usando algarismos e também palavras. Também é esperado que sejam exploradas contagens com intervalos diferentes, em especial usando múltiplos de 100, que são úteis no desenvolvimento de procedimentos de cálculo. Outro ponto a ser cuidado é a produção e análise de maneiras diversas de registro de quantidades no cotidiano, tais como as que aparecem em legendas de gráficos, ou no uso nas mídias (por exemplo, 200 mil). É importante que os estudantes sejam capazes de representar a comparação de números naturais usando diferentes representações, entre elas os sinais convencionais de maior (>), menor (<) e diferente (≠). Que sejam capazes de operar e resolver problemas que envolvam os números naturais.",
+    "habilidade_codes": [
+      "EF06MA02A"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Números\nObjetos: Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Conteúdos relacionados: Sistema de numeração egípcio. Sistema de numeração romano. Sistema de numeração decimal. Leitura e escrita de um número no sistema decimal. Números pares e números ímpares. Comparação de números naturais. A reta numérica e os números naturais. Adição com números naturais. Algumas propriedades da adição. Subtração com números naturais. Relação fundamental da subtração. Multiplicação com números naturais. Algumas propriedades da multiplicação. Divisão com números naturais. Divisão exata. Divisão não exata. Expressões numéricas com as quatro operações. Relação fundamental da divisão. Potenciação com números naturais. Leitura de potências. Potências de base 10. Expressões numéricas com potenciações. Arredondamentos e estimativas.\nHabilidades: (EF06MA02A) - Reconhecer o sistema de numeração decimal, como o que prevaleceu no mundo ocidental, e destacar semelhanças e diferenças com outros sistemas, de modo a sistematizar suas principais características (base, valor posicional e função do zero), utilizando, inclusive, a composição e decomposição de números naturais.\nSAEB: Reconhecer e utilizar características do sistema de numeração decimal, tais como agrupamentos e trocas na base 10 e princípio do valor posicional. Identificar a localização de números naturais na reta numérica.\nOrientações: Os contextos para o desenvolvimento destas habilidades são encontrados no uso de tabelas, de textos do cotidiano, tais como jornais e revistas que poderão ser úteis para criar contextos de leitura, escrita e comparação de quantidades. Os estudantes deverão ser estimulados a representar quantidades usando algarismos e também palavras. Também é esperado que sejam exploradas contagens com intervalos diferentes, em especial usando múltiplos de 100, que são úteis no desenvolvimento de procedimentos de cálculo. Outro ponto a ser cuidado é a produção e análise de maneiras diversas de registro de quantidades no cotidiano, tais como as que aparecem em legendas de gráficos, ou no uso nas mídias (por exemplo, 200 mil). É importante que os estudantes sejam capazes de representar a comparação de números naturais usando diferentes representações, entre elas os sinais convencionais de maior (>), menor (<) e diferente (≠). Que sejam capazes de operar e resolver problemas que envolvam os números naturais."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA36MG) - Operar com os números naturais: adicionar, subtrair, multiplicar, dividir, calcular potências, calcular a raiz quadrada de quadrados perfeitos. / (EF06MA03A) - Resolver problemas que envolvam cálculos (mentais ou escritos, exatos ou aproximados) com números naturais, por meio de estratégias variadas, com compreensão dos processos neles envolvidos com e sem uso de calculadora.",
+    "objeto_conhecimento": "Operações (adição, subtração, multiplicação, divisão, potenciação e radiciação) com números naturais. Divisão euclidiana. Conteúdos relacionados: Sistema de numeração egípcio. Sistema de numeração romano. Sistema de numeração decimal. Leitura e escrita de um número no sistema decimal. Números pares e números ímpares. Comparação de números naturais. A reta numérica e os números naturais. Adição com números naturais. Algumas propriedades da adição. Subtração com números naturais. Relação fundamental da subtração. Multiplicação com números naturais. Algumas propriedades da multiplicação. Divisão com números naturais. Divisão exata. Divisão não exata. Expressões numéricas com as quatro operações. Relação fundamental da divisão. Potenciação com números naturais. Leitura de potências. Potências de base 10. Expressões numéricas com potenciações. Arredondamentos e estimativas.",
+    "descritores_saeb": "Calcular o resultado de uma adição ou subtração de números naturais. Calcular o resultado de uma multiplicação ou divisão de números naturais. Resolver problema com números naturais, envolvendo diferentes significados das operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "Os contextos para o desenvolvimento destas habilidades são encontrados no uso de tabelas, de textos do cotidiano, tais como jornais e revistas que poderão ser úteis para criar contextos de leitura, escrita e comparação de quantidades. Os estudantes deverão ser estimulados a representar quantidades usando algarismos e também palavras. Também é esperado que sejam exploradas contagens com intervalos diferentes, em especial usando múltiplos de 100, que são úteis no desenvolvimento de procedimentos de cálculo. Outro ponto a ser cuidado é a produção e análise de maneiras diversas de registro de quantidades no cotidiano, tais como as que aparecem em legendas de gráficos, ou no uso nas mídias (por exemplo, 200 mil). É importante que os estudantes sejam capazes de representar a comparação de números naturais usando diferentes representações, entre elas os sinais convencionais de maior (>), menor (<) e diferente (≠). Que sejam capazes de operar e resolver problemas que envolvam os números naturais.",
+    "habilidade_codes": [
+      "EF06MA36MG",
+      "EF06MA03A"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Números\nObjetos: Operações (adição, subtração, multiplicação, divisão, potenciação e radiciação) com números naturais. Divisão euclidiana. Conteúdos relacionados: Sistema de numeração egípcio. Sistema de numeração romano. Sistema de numeração decimal. Leitura e escrita de um número no sistema decimal. Números pares e números ímpares. Comparação de números naturais. A reta numérica e os números naturais. Adição com números naturais. Algumas propriedades da adição. Subtração com números naturais. Relação fundamental da subtração. Multiplicação com números naturais. Algumas propriedades da multiplicação. Divisão com números naturais. Divisão exata. Divisão não exata. Expressões numéricas com as quatro operações. Relação fundamental da divisão. Potenciação com números naturais. Leitura de potências. Potências de base 10. Expressões numéricas com potenciações. Arredondamentos e estimativas.\nHabilidades: (EF06MA36MG) - Operar com os números naturais: adicionar, subtrair, multiplicar, dividir, calcular potências, calcular a raiz quadrada de quadrados perfeitos. / (EF06MA03A) - Resolver problemas que envolvam cálculos (mentais ou escritos, exatos ou aproximados) com números naturais, por meio de estratégias variadas, com compreensão dos processos neles envolvidos com e sem uso de calculadora.\nSAEB: Calcular o resultado de uma adição ou subtração de números naturais. Calcular o resultado de uma multiplicação ou divisão de números naturais. Resolver problema com números naturais, envolvendo diferentes significados das operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: Os contextos para o desenvolvimento destas habilidades são encontrados no uso de tabelas, de textos do cotidiano, tais como jornais e revistas que poderão ser úteis para criar contextos de leitura, escrita e comparação de quantidades. Os estudantes deverão ser estimulados a representar quantidades usando algarismos e também palavras. Também é esperado que sejam exploradas contagens com intervalos diferentes, em especial usando múltiplos de 100, que são úteis no desenvolvimento de procedimentos de cálculo. Outro ponto a ser cuidado é a produção e análise de maneiras diversas de registro de quantidades no cotidiano, tais como as que aparecem em legendas de gráficos, ou no uso nas mídias (por exemplo, 200 mil). É importante que os estudantes sejam capazes de representar a comparação de números naturais usando diferentes representações, entre elas os sinais convencionais de maior (>), menor (<) e diferente (≠). Que sejam capazes de operar e resolver problemas que envolvam os números naturais."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA55MG) - Identificar ângulo como mudança de direção. / (EF06MA25) - Reconhecer a abertura do ângulo como grandeza associada às figuras geométricas. / (EF06MA26) - Resolver problemas que envolvam a noção de ângulo em diferentes contextos e em situações reais, como ângulo de visão. / (EF06MA27) - Determinar medidas da abertura de ângulos, por meio de transferidor e/ou tecnologias digitais.",
+    "objeto_conhecimento": "Ângulos: noção, usos e medida. Conteúdos relacionados: Ângulos. Medida de um ângulo. Ângulo reto, ângulo agudo e ângulo obtuso. Construção de um ângulo com o transferidor.",
+    "descritores_saeb": "Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não retos.",
+    "orientacoes_pedagogicas": "Para que reconheçam abertura de ângulo como grandeza associada às figuras geométricas, resolvam problemas que envolvam a noção de ângulo e classificação de polígonos e façam uso de software sempre que possível, os estudantes precisam ser incentivados a analisarem e refletirem sobre problemas reais, estimulando a criatividade, o pensamento crítico e a colaboração.",
+    "habilidade_codes": [
+      "EF06MA55MG",
+      "EF06MA25",
+      "EF06MA26",
+      "EF06MA27"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Ângulos: noção, usos e medida. Conteúdos relacionados: Ângulos. Medida de um ângulo. Ângulo reto, ângulo agudo e ângulo obtuso. Construção de um ângulo com o transferidor.\nHabilidades: (EF06MA55MG) - Identificar ângulo como mudança de direção. / (EF06MA25) - Reconhecer a abertura do ângulo como grandeza associada às figuras geométricas. / (EF06MA26) - Resolver problemas que envolvam a noção de ângulo em diferentes contextos e em situações reais, como ângulo de visão. / (EF06MA27) - Determinar medidas da abertura de ângulos, por meio de transferidor e/ou tecnologias digitais.\nSAEB: Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não retos.\nOrientações: Para que reconheçam abertura de ângulo como grandeza associada às figuras geométricas, resolvam problemas que envolvam a noção de ângulo e classificação de polígonos e façam uso de software sempre que possível, os estudantes precisam ser incentivados a analisarem e refletirem sobre problemas reais, estimulando a criatividade, o pensamento crítico e a colaboração."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA19) - Identificar características dos triângulos e classificá-los em relação às medidas dos lados e dos ângulos. / (EF06MA20) - Identificar características dos quadriláteros, classificá-los em relação a lados e a ângulos e reconhecer a inclusão e a intersecção de classes entre eles. / (EF06MA22) - Utilizar instrumentos, como réguas e esquadros, ou softwares para representações de retas paralelas e perpendiculares e construção de quadriláteros, entre outros.",
+    "objeto_conhecimento": "Polígonos: classificações quanto ao número de vértices, às medidas de lados e ângulos e ao paralelismo e perpendicularismo dos lados. Construção de retas paralelas e perpendiculares, fazendo uso de réguas, esquadros e softwares. Conteúdos relacionados: Retas paralelas e retas perpendiculares. Construção geométrica de retas perpendiculares com régua e esquadro. Polígonos. Polígonos convexos e polígonos não convexos. Elementos de um polígono. Classificação dos polígonos. Triângulos. Quadriláteros. Paralelogramos. Trapézios.",
+    "descritores_saeb": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações. Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.",
+    "orientacoes_pedagogicas": "Comece reforçando a definição de triângulo e mostre situações em que peças com formato triangular são utilizadas, como em estruturas de telhados, portões, etc. Mostre para os estudantes que existem uma infinidade de objetos e superfícies que utilizam os quadriláteros, como as carteiras, as mesas, o quadro, a janela, a porta, a quadra de esportes, enfim, milhares de itens que podem ser tomados como exemplos para a aplicação prática dentro do contexto escolar e da vida do estudante. Quanto à classificação dos triângulos quanto aos lados, aponte as diferenças e as características comuns entre os triângulos escaleno, isósceles e equilátero, destacando as medidas dos lados e dos ângulos. Mostre também a classificação quanto a medidas dos ângulos de um triângulo, por meio das nomenclaturas que os classificam em acutângulo, retângulo e obtusângulo. Nas definições dos quadriláteros, (aponte as diferenças entre as figuras em relação às medidas dos lados e dos ângulos para classificá-los.), busque sempre destacar que a classificação deles pode englobar mais de um tipo de figura.",
+    "habilidade_codes": [
+      "EF06MA19",
+      "EF06MA20",
+      "EF06MA22"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Geometria\nObjetos: Polígonos: classificações quanto ao número de vértices, às medidas de lados e ângulos e ao paralelismo e perpendicularismo dos lados. Construção de retas paralelas e perpendiculares, fazendo uso de réguas, esquadros e softwares. Conteúdos relacionados: Retas paralelas e retas perpendiculares. Construção geométrica de retas perpendiculares com régua e esquadro. Polígonos. Polígonos convexos e polígonos não convexos. Elementos de um polígono. Classificação dos polígonos. Triângulos. Quadriláteros. Paralelogramos. Trapézios.\nHabilidades: (EF06MA19) - Identificar características dos triângulos e classificá-los em relação às medidas dos lados e dos ângulos. / (EF06MA20) - Identificar características dos quadriláteros, classificá-los em relação a lados e a ângulos e reconhecer a inclusão e a intersecção de classes entre eles. / (EF06MA22) - Utilizar instrumentos, como réguas e esquadros, ou softwares para representações de retas paralelas e perpendiculares e construção de quadriláteros, entre outros.\nSAEB: Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações. Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.\nOrientações: Comece reforçando a definição de triângulo e mostre situações em que peças com formato triangular são utilizadas, como em estruturas de telhados, portões, etc. Mostre para os estudantes que existem uma infinidade de objetos e superfícies que utilizam os quadriláteros, como as carteiras, as mesas, o quadro, a janela, a porta, a quadra de esportes, enfim, milhares de itens que podem ser tomados como exemplos para a aplicação prática dentro do contexto escolar e da vida do estudante. Quanto à classificação dos triângulos quanto aos lados, aponte as diferenças e as características comuns entre os triângulos escaleno, isósceles e equilátero, destacando as medidas dos lados e dos ângulos. Mostre também a classificação quanto a medidas dos ângulos de um triângulo, por meio das nomenclaturas que os classificam em acutângulo, retângulo e obtusângulo. Nas definições dos quadriláteros, (aponte as diferenças entre as figuras em relação às medidas dos lados e dos ângulos para classificá-los.), busque sempre destacar que a classificação deles pode englobar mais de um tipo de figura."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA04) - Construir algoritmo em linguagem natural e representá-lo por fluxograma que indique a resolução de um problema simples (por exemplo, se um número natural qualquer é par). / (EF06MA05) - Classificar números naturais em primos e compostos, estabelecer relações entre números, expressas pelos termos “é múltiplo de”, “é divisor de”, “é fator de”, e estabelecer, por meio de investigações, critérios de divisibilidade por 2, 3, 4, 5, 6, 8, 9, 10, 100 e 1000.",
+    "objeto_conhecimento": "Fluxograma para determinar a paridade de um número natural. Múltiplos e divisores de um número natural. Números primos e compostos. Fatoração de números naturais. Conteúdos relacionados: Fluxograma para determinar a paridade de um número natural. Múltiplos de um número natural. Divisores de um número natural. Critérios de divisibilidade. Divisibilidade por 2, 3, 4, 5, 6, 8, 9, 10, 100 e 1000. Números primos e números compostos. Múltiplos e divisores de um número natural.",
+    "descritores_saeb": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações. Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.",
+    "orientacoes_pedagogicas": "O ensino de Matemática passa a requisitar que estudantes sejam capazes de resolver situações práticas e não apenas questões técnicas de seguir modelos e/ou aplicar fórmulas. Classificar números naturais em primos e compostos implica em compreender a ideia de divisibilidade entre números naturais. É importante os estudantes identificarem que os múltiplos de determinado número têm características que facilitam sua identificação.",
+    "habilidade_codes": [
+      "EF06MA04",
+      "EF06MA05"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Números\nObjetos: Fluxograma para determinar a paridade de um número natural. Múltiplos e divisores de um número natural. Números primos e compostos. Fatoração de números naturais. Conteúdos relacionados: Fluxograma para determinar a paridade de um número natural. Múltiplos de um número natural. Divisores de um número natural. Critérios de divisibilidade. Divisibilidade por 2, 3, 4, 5, 6, 8, 9, 10, 100 e 1000. Números primos e números compostos. Múltiplos e divisores de um número natural.\nHabilidades: (EF06MA04) - Construir algoritmo em linguagem natural e representá-lo por fluxograma que indique a resolução de um problema simples (por exemplo, se um número natural qualquer é par). / (EF06MA05) - Classificar números naturais em primos e compostos, estabelecer relações entre números, expressas pelos termos “é múltiplo de”, “é divisor de”, “é fator de”, e estabelecer, por meio de investigações, critérios de divisibilidade por 2, 3, 4, 5, 6, 8, 9, 10, 100 e 1000.\nSAEB: Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações. Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.\nOrientações: O ensino de Matemática passa a requisitar que estudantes sejam capazes de resolver situações práticas e não apenas questões técnicas de seguir modelos e/ou aplicar fórmulas. Classificar números naturais em primos e compostos implica em compreender a ideia de divisibilidade entre números naturais. É importante os estudantes identificarem que os múltiplos de determinado número têm características que facilitam sua identificação."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA06A) - Resolver problemas que envolvam as ideias de múltiplo e de divisor. / (EF06MA06B) - Elaborar problemas que envolvam as ideias de múltiplo e de divisor. / (EF06MA37MG) - Fatorar números naturais em produto denúmeros primos. / (EF06MA38MG) - Utilizar a fatoração em primos em diferentes situações problema. / (EF06MA39MG) - Resolver problemas que envolvam o algoritmo de Euclides.",
+    "objeto_conhecimento": "Fluxograma para determinar a paridade de um número natural. Múltiplos e divisores de um número natural. Números primos e compostos. Fatoração de números naturais. Mínimo Múltiplo Comum. Máximo Divisor Comum. Conteúdos relacionados: Fluxograma para determinar a paridade de um número natural. Múltiplos de um número natural. Divisores de um número natural. Critérios de divisibilidade. Divisibilidade por 2, 3, 4, 5, 6, 8, 9, 10, 100 e 1000. Números primos e números compostos. Múltiplos e divisores de um número natural. Números primos. Fatoração de números naturais.",
+    "descritores_saeb": "Resolver problemas com números naturais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "É importante que os estudantes sejam colocados diante de situações-problema diversas, para que apliquem os conhecimentos referentes às habilidades anteriores. Destaca-se a importância de serem expostos a problemas cuja solução não seja dada pela aplicação imediata de um algoritmo ou conceito, mas que exija deles reflexão e análise. A elaboração de problemas é uma habilidade e, ao mesmo tempo, uma estratégia didática para que os estudantes se apropriem da linguagem matemática e de formas de expressão características dessa disciplina.",
+    "habilidade_codes": [
+      "EF06MA06A",
+      "EF06MA06B",
+      "EF06MA37MG",
+      "EF06MA38MG",
+      "EF06MA39MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 2º Bimestre\nUnidade: Números\nObjetos: Fluxograma para determinar a paridade de um número natural. Múltiplos e divisores de um número natural. Números primos e compostos. Fatoração de números naturais. Mínimo Múltiplo Comum. Máximo Divisor Comum. Conteúdos relacionados: Fluxograma para determinar a paridade de um número natural. Múltiplos de um número natural. Divisores de um número natural. Critérios de divisibilidade. Divisibilidade por 2, 3, 4, 5, 6, 8, 9, 10, 100 e 1000. Números primos e números compostos. Múltiplos e divisores de um número natural. Números primos. Fatoração de números naturais.\nHabilidades: (EF06MA06A) - Resolver problemas que envolvam as ideias de múltiplo e de divisor. / (EF06MA06B) - Elaborar problemas que envolvam as ideias de múltiplo e de divisor. / (EF06MA37MG) - Fatorar números naturais em produto denúmeros primos. / (EF06MA38MG) - Utilizar a fatoração em primos em diferentes situações problema. / (EF06MA39MG) - Resolver problemas que envolvam o algoritmo de Euclides.\nSAEB: Resolver problemas com números naturais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: É importante que os estudantes sejam colocados diante de situações-problema diversas, para que apliquem os conhecimentos referentes às habilidades anteriores. Destaca-se a importância de serem expostos a problemas cuja solução não seja dada pela aplicação imediata de um algoritmo ou conceito, mas que exija deles reflexão e análise. A elaboração de problemas é uma habilidade e, ao mesmo tempo, uma estratégia didática para que os estudantes se apropriem da linguagem matemática e de formas de expressão características dessa disciplina."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA40MG) - Determinar o M.D.C. e M.M.C. de números. / (EF06MA12) - Fazer estimativas de quantidades e aproximar números para múltiplos da potência de 10 mais próxima.",
+    "objeto_conhecimento": "Fluxograma para determinar a paridade de um número natural. Múltiplos e divisores de um número natural. Números primos e compostos. Fatoração de números naturais. Mínimo Múltiplo Comum. Máximo Divisor Comum. Aproximação de números para múltiplos de potências de 10. Conteúdos relacionados: Máximo Divisor Comum (M.D.C.). Mínimo Divisor Comum (M.M.C.). Arredondamentos e estimativas.",
+    "descritores_saeb": "(Não consta).",
+    "orientacoes_pedagogicas": "Para o desenvolvimento dessas habilidades é importante mostrar aos estudantes algumas técnicas de arredondamento, a fim de prepará-los para fazer estimativas que os habilitem a tomar decisões e fazer previsões.",
+    "habilidade_codes": [
+      "EF06MA40MG",
+      "EF06MA12"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Números\nObjetos: Fluxograma para determinar a paridade de um número natural. Múltiplos e divisores de um número natural. Números primos e compostos. Fatoração de números naturais. Mínimo Múltiplo Comum. Máximo Divisor Comum. Aproximação de números para múltiplos de potências de 10. Conteúdos relacionados: Máximo Divisor Comum (M.D.C.). Mínimo Divisor Comum (M.M.C.). Arredondamentos e estimativas.\nHabilidades: (EF06MA40MG) - Determinar o M.D.C. e M.M.C. de números. / (EF06MA12) - Fazer estimativas de quantidades e aproximar números para múltiplos da potência de 10 mais próxima.\nSAEB: (Não consta).\nOrientações: Para o desenvolvimento dessas habilidades é importante mostrar aos estudantes algumas técnicas de arredondamento, a fim de prepará-los para fazer estimativas que os habilitem a tomar decisões e fazer previsões."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA16X) - Associar pares ordenados de números a pontos do plano cartesiano do 1º quadrante, em situações como a localização dos vértices de um polígono, com ou sem o uso detecnologias digitais. / (EF06MA17) - Quantificar e estabelecer relações entre o número de vértices, faces e arestas de prismas e pirâmides, em função do seu polígono da base, para resolver problemas e desenvolver a percepção espacial.",
+    "objeto_conhecimento": "Plano cartesiano: associação dos vértices de um polígono a pares ordenados. Prismas e pirâmides: planificações e relações entre seus elementos (vértices, faces e arestas). Conteúdos relacionados: Plano cartesiano. Par ordenado. Representação de um polígono no plano cartesiano. Características de prismas e pirâmides. Planificação. Vértices, faces e arestas de prismas e pirâmides.",
+    "descritores_saeb": "Identificar a relação entre o número de vértices, faces e/ou arestas de poliedros expressa em um problema. Identificar propriedades comuns e diferenças entre poliedros e corpos redondos, relacionando figuras tridimensionais com suas planificações.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento dessas habilidades é primordial mostrar aos estudantes a importância e aplicabilidade dos poliedros, que estão presentes por toda parte no cotidiano deles. Exemplos como caixas de papelão, blocos de concreto, barras e perfis de construção, tábuas de madeira, cubos mágicos e outros podem ser utilizados para a contextualização. Separar os poliedros em prismas, pirâmides e outros, explicitando as principais características de cada grupo, em especial relativos ao tipo de superfície que os compõem, bem como à quantidade de arestas e vértices. O reconhecimento de alguns polígonos é importante para a compreensão de poliedros, em particular os prismas e pirâmides. Associar pares ordenados como a localização dos vértices de um polígono implica em explicitar a ideia de que são necessárias duas coordenadas para a localização de um objeto no plano.",
+    "habilidade_codes": [
+      "EF06MA16X",
+      "EF06MA17"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Geometria\nObjetos: Plano cartesiano: associação dos vértices de um polígono a pares ordenados. Prismas e pirâmides: planificações e relações entre seus elementos (vértices, faces e arestas). Conteúdos relacionados: Plano cartesiano. Par ordenado. Representação de um polígono no plano cartesiano. Características de prismas e pirâmides. Planificação. Vértices, faces e arestas de prismas e pirâmides.\nHabilidades: (EF06MA16X) - Associar pares ordenados de números a pontos do plano cartesiano do 1º quadrante, em situações como a localização dos vértices de um polígono, com ou sem o uso detecnologias digitais. / (EF06MA17) - Quantificar e estabelecer relações entre o número de vértices, faces e arestas de prismas e pirâmides, em função do seu polígono da base, para resolver problemas e desenvolver a percepção espacial.\nSAEB: Identificar a relação entre o número de vértices, faces e/ou arestas de poliedros expressa em um problema. Identificar propriedades comuns e diferenças entre poliedros e corpos redondos, relacionando figuras tridimensionais com suas planificações.\nOrientações: Para o desenvolvimento dessas habilidades é primordial mostrar aos estudantes a importância e aplicabilidade dos poliedros, que estão presentes por toda parte no cotidiano deles. Exemplos como caixas de papelão, blocos de concreto, barras e perfis de construção, tábuas de madeira, cubos mágicos e outros podem ser utilizados para a contextualização. Separar os poliedros em prismas, pirâmides e outros, explicitando as principais características de cada grupo, em especial relativos ao tipo de superfície que os compõem, bem como à quantidade de arestas e vértices. O reconhecimento de alguns polígonos é importante para a compreensão de poliedros, em particular os prismas e pirâmides. Associar pares ordenados como a localização dos vértices de um polígono implica em explicitar a ideia de que são necessárias duas coordenadas para a localização de um objeto no plano."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA18) - Reconhecer, nomear e comparar polígonos, considerando lados, vértices e ângulos, e classificá-los em regulares e não regulares, tanto em suas representações no plano como em faces de poliedros. / (EF06MA21) - Construir figuras planas semelhantes em situações de ampliação e de redução, com o uso de malhas quadriculadas, plano cartesiano ou tecnologias digitais. / (EF06MA23) - Construir algoritmo para resolver situações passo a passo (como na construção de dobraduras ou na indicação de deslocamento de um objeto no plano segundo pontos de referência e distâncias fornecidas etc.).",
+    "objeto_conhecimento": "Polígonos: classificações quanto ao número de vértices, às medidas de lados e ângulos e ao paralelismo e perpendicularismo dos lados. Construção de figuras semelhantes: ampliação e redução de figuras planas em malhas quadriculadas. Construção de retas paralelas e perpendiculares, fazendo uso de réguas, esquadros e softwares. Conteúdos relacionados: Nomear e comparar polígonos. Figuras semelhantes. Ampliação e redução de figuras planas na malha quadriculada. Ampliação e redução de figuras planas no plano cartesiano. Ampliação e redução de figuras planas em softwares de desenho.",
+    "descritores_saeb": "Identificar a relação entre o número de vértices, faces e/ou arestas de poliedros expressa em um problema. Identificar propriedades comuns e diferenças entre poliedros e corpos redondos, relacionando figuras tridimensionais com suas planificações.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento dessas habilidades é primordial mostrar aos estudantes a importância e aplicabilidade dos poliedros, que estão presentes por toda parte no cotidiano deles. Exemplos como caixas de papelão, blocos de concreto, barras e perfis de construção, tábuas de madeira, cubos mágicos e outros podem ser utilizados para a contextualização. Separar os poliedros em prismas, pirâmides e outros, explicitando as principais características de cada grupo, em especial relativos ao tipo de superfície que os compõem, bem como à quantidade de arestas e vértices. O reconhecimento de alguns polígonos é importante para a compreensão de poliedros, em particular os prismas e pirâmides. Associar pares ordenados como a localização dos vértices de um polígono implica em explicitar a ideia de que são necessárias duas coordenadas para a localização de um objeto no plano.",
+    "habilidade_codes": [
+      "EF06MA18",
+      "EF06MA21",
+      "EF06MA23"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Geometria\nObjetos: Polígonos: classificações quanto ao número de vértices, às medidas de lados e ângulos e ao paralelismo e perpendicularismo dos lados. Construção de figuras semelhantes: ampliação e redução de figuras planas em malhas quadriculadas. Construção de retas paralelas e perpendiculares, fazendo uso de réguas, esquadros e softwares. Conteúdos relacionados: Nomear e comparar polígonos. Figuras semelhantes. Ampliação e redução de figuras planas na malha quadriculada. Ampliação e redução de figuras planas no plano cartesiano. Ampliação e redução de figuras planas em softwares de desenho.\nHabilidades: (EF06MA18) - Reconhecer, nomear e comparar polígonos, considerando lados, vértices e ângulos, e classificá-los em regulares e não regulares, tanto em suas representações no plano como em faces de poliedros. / (EF06MA21) - Construir figuras planas semelhantes em situações de ampliação e de redução, com o uso de malhas quadriculadas, plano cartesiano ou tecnologias digitais. / (EF06MA23) - Construir algoritmo para resolver situações passo a passo (como na construção de dobraduras ou na indicação de deslocamento de um objeto no plano segundo pontos de referência e distâncias fornecidas etc.).\nSAEB: Identificar a relação entre o número de vértices, faces e/ou arestas de poliedros expressa em um problema. Identificar propriedades comuns e diferenças entre poliedros e corpos redondos, relacionando figuras tridimensionais com suas planificações.\nOrientações: Para o desenvolvimento dessas habilidades é primordial mostrar aos estudantes a importância e aplicabilidade dos poliedros, que estão presentes por toda parte no cotidiano deles. Exemplos como caixas de papelão, blocos de concreto, barras e perfis de construção, tábuas de madeira, cubos mágicos e outros podem ser utilizados para a contextualização. Separar os poliedros em prismas, pirâmides e outros, explicitando as principais características de cada grupo, em especial relativos ao tipo de superfície que os compõem, bem como à quantidade de arestas e vértices. O reconhecimento de alguns polígonos é importante para a compreensão de poliedros, em particular os prismas e pirâmides. Associar pares ordenados como a localização dos vértices de um polígono implica em explicitar a ideia de que são necessárias duas coordenadas para a localização de um objeto no plano."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA01B) - Comparar, ordenar, ler e escrever números racionais cuja representação decimal é finita, fazendo uso da reta numérica. / (EF06MA02B) - Reconhecer o sistema de numeração decimal, como o que prevaleceu no mundo ocidental, e destacar semelhanças e diferenças com outros sistemas, de modo a sistematizar suas principais características (base, valor posicional e função do zero), utilizando, inclusive, a composição e decomposição números racionais em sua representação decimal. / (EF06MA03B) - Elaborar problemas que envolvam cálculos (mentais ou escritos, exatos ou aproximados) com números racionais, por meio de estratégias variadas, com compreensão dos processos neles envolvidos com e sem uso de calculadora.",
+    "objeto_conhecimento": "História dos números e do Sistema de numeração. Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Reta numérica. Operações (adição, subtração, multiplicação, divisão, potenciação e radiciação) com números naturais. Divisão euclidiana. Conteúdos relacionados: Comparação de números racionais. Ordenação de números racionais. A reta numérica e os números racionais. Sistema de numeração decimal. Composição e decomposição de números racionais em sua representação decimal. Operações com números racionais. Problemas com números racionais.",
+    "descritores_saeb": "(Não consta).",
+    "orientacoes_pedagogicas": "Cálculos com números racionais nas formas fracionárias, percentuais e principalmente decimais, estão sempre presentes no cotidiano dos estudantes sempre que utilizam valores monetários, quando compram itens ou pagam serviços, compram produtos que são vendidos por sua massa (carnes, grãos, ração, etc.), dividem partes de um inteiro como uma pizza, um bolo, uma garrafa de refrigerante, estão utilizando os números racionais mesmo que não saibam. Utilize destes exemplos para despertar o interesse e buscar o engajamento dos estudantes. Comparar e ordenar números racionais positivos (representações fracionária e decimal), relacionando-os a pontos na reta numérica implica em compreender o significado de numerador e denominador em uma fração, a compreensão de que uma escrita fracionária representa uma quantidade (de um todo discreto ou contínuo) e que é possível analisar se uma escrita fracionária representa uma quantidade maior, menor ou igual a outra, expressando essa comparação tanto verbalmente (maior que, menor que, igual a, diferente de) quanto pelo uso dos sinais de igualdade ou desigualdade correspondentes às expressões verbais (<,>, = ou ≠).",
+    "habilidade_codes": [
+      "EF06MA01B",
+      "EF06MA02B",
+      "EF06MA03B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Números\nObjetos: História dos números e do Sistema de numeração. Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Reta numérica. Operações (adição, subtração, multiplicação, divisão, potenciação e radiciação) com números naturais. Divisão euclidiana. Conteúdos relacionados: Comparação de números racionais. Ordenação de números racionais. A reta numérica e os números racionais. Sistema de numeração decimal. Composição e decomposição de números racionais em sua representação decimal. Operações com números racionais. Problemas com números racionais.\nHabilidades: (EF06MA01B) - Comparar, ordenar, ler e escrever números racionais cuja representação decimal é finita, fazendo uso da reta numérica. / (EF06MA02B) - Reconhecer o sistema de numeração decimal, como o que prevaleceu no mundo ocidental, e destacar semelhanças e diferenças com outros sistemas, de modo a sistematizar suas principais características (base, valor posicional e função do zero), utilizando, inclusive, a composição e decomposição números racionais em sua representação decimal. / (EF06MA03B) - Elaborar problemas que envolvam cálculos (mentais ou escritos, exatos ou aproximados) com números racionais, por meio de estratégias variadas, com compreensão dos processos neles envolvidos com e sem uso de calculadora.\nSAEB: (Não consta).\nOrientações: Cálculos com números racionais nas formas fracionárias, percentuais e principalmente decimais, estão sempre presentes no cotidiano dos estudantes sempre que utilizam valores monetários, quando compram itens ou pagam serviços, compram produtos que são vendidos por sua massa (carnes, grãos, ração, etc.), dividem partes de um inteiro como uma pizza, um bolo, uma garrafa de refrigerante, estão utilizando os números racionais mesmo que não saibam. Utilize destes exemplos para despertar o interesse e buscar o engajamento dos estudantes. Comparar e ordenar números racionais positivos (representações fracionária e decimal), relacionando-os a pontos na reta numérica implica em compreender o significado de numerador e denominador em uma fração, a compreensão de que uma escrita fracionária representa uma quantidade (de um todo discreto ou contínuo) e que é possível analisar se uma escrita fracionária representa uma quantidade maior, menor ou igual a outra, expressando essa comparação tanto verbalmente (maior que, menor que, igual a, diferente de) quanto pelo uso dos sinais de igualdade ou desigualdade correspondentes às expressões verbais (<,>, = ou ≠)."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA07) - Compreender, comparar e ordenar frações associadas às ideias de partes de inteiros e resultado de divisão, identificando frações equivalentes. / (EF06MA09A) - Resolver problemas que envolvam o cálculo da fração de uma quantidade e cujo resultado seja um número natural, com e sem uso de calculadora. / (EF06MA09B) - Elaborar problemas que envolvam o cálculo da fração de uma quantidade e cujo resultado seja um número natural, com e sem uso de calculadora.",
+    "objeto_conhecimento": "Frações: significados (parte/ todo, quociente), equivalência, comparação, adição e subtração; cálculo da fração de um número natural; adição e subtração de frações. Conteúdos relacionados: Frações. A ideia de número fracionário. Leitura de frações. Número misto. Frações equivalentes. Propriedade das frações equivalentes. Simplificação de frações. Comparação de frações. Ordenação de frações. Fração de uma quantidade.",
+    "descritores_saeb": "(Não consta).",
+    "orientacoes_pedagogicas": "Identificar frações equivalentes implica em compreender que há escritas fracionárias distintas que representam a mesma quantidade ou a mesma parte de um todo. Resolver e elaborar problemas com fração envolve conhecer cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal e identificar que uma operação pode ser realizada com diferentes procedimentos de cálculo, analisando vantagens e desvantagens de cada um dependendo da situação e contextos nos quais ela aparece. Resolver e elaborar problemas com frações requer o conhecimento de cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal. É importante identificar que uma operação pode ser realizada por diferentes métodos de cálculo, analisando as vantagens e desvantagens de cada um, dependendo da situação e do contexto em que ela aparece.",
+    "habilidade_codes": [
+      "EF06MA07",
+      "EF06MA09A",
+      "EF06MA09B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Números\nObjetos: Frações: significados (parte/ todo, quociente), equivalência, comparação, adição e subtração; cálculo da fração de um número natural; adição e subtração de frações. Conteúdos relacionados: Frações. A ideia de número fracionário. Leitura de frações. Número misto. Frações equivalentes. Propriedade das frações equivalentes. Simplificação de frações. Comparação de frações. Ordenação de frações. Fração de uma quantidade.\nHabilidades: (EF06MA07) - Compreender, comparar e ordenar frações associadas às ideias de partes de inteiros e resultado de divisão, identificando frações equivalentes. / (EF06MA09A) - Resolver problemas que envolvam o cálculo da fração de uma quantidade e cujo resultado seja um número natural, com e sem uso de calculadora. / (EF06MA09B) - Elaborar problemas que envolvam o cálculo da fração de uma quantidade e cujo resultado seja um número natural, com e sem uso de calculadora.\nSAEB: (Não consta).\nOrientações: Identificar frações equivalentes implica em compreender que há escritas fracionárias distintas que representam a mesma quantidade ou a mesma parte de um todo. Resolver e elaborar problemas com fração envolve conhecer cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal e identificar que uma operação pode ser realizada com diferentes procedimentos de cálculo, analisando vantagens e desvantagens de cada um dependendo da situação e contextos nos quais ela aparece. Resolver e elaborar problemas com frações requer o conhecimento de cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal. É importante identificar que uma operação pode ser realizada por diferentes métodos de cálculo, analisando as vantagens e desvantagens de cada um, dependendo da situação e do contexto em que ela aparece."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA41MG) - Reconhecer, no contexto social, diferentes significados dos números racionais. / (EF06MA08) - Reconhecer que os números racionais positivos podem ser expressos nas formas fracionária e decimal, estabelecer relações entre essas representações, passando de uma representação para outra, e relacioná-los a pontos na reta numérica. / (EF06MA42MG) - Operar com os números racionais em forma fracionária: adicionar e subtrair. / (EF06MA10A) - Resolver problemas que envolvam adição ou subtração com números racionais positivos na representação fracionária. / (EF06MA10B) - Elaborar problemas que envolvam adição ou subtração com números racionais positivos na representação fracionária.",
+    "objeto_conhecimento": "Frações: significados (parte/ todo, quociente), equivalência, comparação, adição e subtração; cálculo da fração de um número natural; adição e subtração de frações. Conteúdos relacionados: Adição e subtração de frações. Frações com denominadores iguais. Frações com denominadores diferentes. Multiplicação de frações. Multiplicação de um número natural por uma fração. Multiplicação de duas frações. Divisão de frações. Divisão de um número natural por uma fração. Divisão de uma fração por um número natural. Transformação de uma fação em número decimal e vice-versa. Representação de números racionais na reta numérica.",
+    "descritores_saeb": "Identificar fração como representação que pode estar associada a diferentes significados.",
+    "orientacoes_pedagogicas": "Resolver e elaborar problemas com fração envolve conhecer cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal e identificar que uma operação pode ser realizada com diferentes procedimentos de cálculo, analisando vantagens e desvantagens de cada um dependendo da situação e contextos nos quais ela aparece. Resolver e elaborar problemas com frações requer o conhecimento de cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal. É importante identificar que uma operação pode ser realizada por diferentes métodos de cálculo, analisando as vantagens e desvantagens de cada um, dependendo da situação e do contexto em que ela aparece.",
+    "habilidade_codes": [
+      "EF06MA41MG",
+      "EF06MA08",
+      "EF06MA42MG",
+      "EF06MA10A",
+      "EF06MA10B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Números\nObjetos: Frações: significados (parte/ todo, quociente), equivalência, comparação, adição e subtração; cálculo da fração de um número natural; adição e subtração de frações. Conteúdos relacionados: Adição e subtração de frações. Frações com denominadores iguais. Frações com denominadores diferentes. Multiplicação de frações. Multiplicação de um número natural por uma fração. Multiplicação de duas frações. Divisão de frações. Divisão de um número natural por uma fração. Divisão de uma fração por um número natural. Transformação de uma fação em número decimal e vice-versa. Representação de números racionais na reta numérica.\nHabilidades: (EF06MA41MG) - Reconhecer, no contexto social, diferentes significados dos números racionais. / (EF06MA08) - Reconhecer que os números racionais positivos podem ser expressos nas formas fracionária e decimal, estabelecer relações entre essas representações, passando de uma representação para outra, e relacioná-los a pontos na reta numérica. / (EF06MA42MG) - Operar com os números racionais em forma fracionária: adicionar e subtrair. / (EF06MA10A) - Resolver problemas que envolvam adição ou subtração com números racionais positivos na representação fracionária. / (EF06MA10B) - Elaborar problemas que envolvam adição ou subtração com números racionais positivos na representação fracionária.\nSAEB: Identificar fração como representação que pode estar associada a diferentes significados.\nOrientações: Resolver e elaborar problemas com fração envolve conhecer cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal e identificar que uma operação pode ser realizada com diferentes procedimentos de cálculo, analisando vantagens e desvantagens de cada um dependendo da situação e contextos nos quais ela aparece. Resolver e elaborar problemas com frações requer o conhecimento de cálculos com números racionais, utilizando as propriedades do sistema de numeração decimal. É importante identificar que uma operação pode ser realizada por diferentes métodos de cálculo, analisando as vantagens e desvantagens de cada um, dependendo da situação e do contexto em que ela aparece."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA43MG) - Operar com os números racionais em forma decimal: adicionar, multiplicar, subtrair, dividir e calcular potências. / (EF06MA11A) - Resolver problemas com números racionais positivos na representação decimal, envolvendo as quatro operações fundamentais e a potenciação, por meio de estratégias diversas, utilizando estimativas e arredondamentos para verificar a razoabilidade de respostas, com e sem uso de calculadora. / (EF06MA11B) - Elaborar problemas com números racionais positivos na representação decimal, envolvendo as quatro operações fundamentais e a potenciação, por meio de estratégias diversas, utilizando estimativas e arredondamentos para verificar a razoabilidade de respostas, com e sem uso de calculadora.",
+    "objeto_conhecimento": "Operações (adição, subtração, multiplicação, divisão e potenciação) com números racionais. Conteúdos relacionados: Números decimais. Décimos, centésimos e milésimos. Leitura dos números decimais. Comparação de números decimais. Adição e subtração com números decimais. Multiplicação e divisão com números decimais. Potenciação com números decimais. Divisão com números decimais. Multiplicação e divisão de um número decimal por um número natural diferente de zero. Divisão por um número decimal.",
+    "descritores_saeb": "Resolver problema com números racionais expressos na forma decimal envolvendo diferentes significados da adição ou subtração.",
+    "orientacoes_pedagogicas": "Cálculos com números racionais nas formas fracionárias, percentuais e principalmente decimais, estão sempre presentes no cotidiano dos estudantes sempre que utilizam valores monetários, quando compram itens ou pagam serviços, compram produtos que são vendidos por sua massa (carnes, grãos, ração, etc.), dividem partes de um inteiro como uma pizza, um bolo, uma garrafa de refrigerante, estão utilizando os números racionais mesmo que não saibam. Utilize destes exemplos para despertar o interesse e buscar o engajamento dos estudantes.",
+    "habilidade_codes": [
+      "EF06MA43MG",
+      "EF06MA11A",
+      "EF06MA11B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Números\nObjetos: Operações (adição, subtração, multiplicação, divisão e potenciação) com números racionais. Conteúdos relacionados: Números decimais. Décimos, centésimos e milésimos. Leitura dos números decimais. Comparação de números decimais. Adição e subtração com números decimais. Multiplicação e divisão com números decimais. Potenciação com números decimais. Divisão com números decimais. Multiplicação e divisão de um número decimal por um número natural diferente de zero. Divisão por um número decimal.\nHabilidades: (EF06MA43MG) - Operar com os números racionais em forma decimal: adicionar, multiplicar, subtrair, dividir e calcular potências. / (EF06MA11A) - Resolver problemas com números racionais positivos na representação decimal, envolvendo as quatro operações fundamentais e a potenciação, por meio de estratégias diversas, utilizando estimativas e arredondamentos para verificar a razoabilidade de respostas, com e sem uso de calculadora. / (EF06MA11B) - Elaborar problemas com números racionais positivos na representação decimal, envolvendo as quatro operações fundamentais e a potenciação, por meio de estratégias diversas, utilizando estimativas e arredondamentos para verificar a razoabilidade de respostas, com e sem uso de calculadora.\nSAEB: Resolver problema com números racionais expressos na forma decimal envolvendo diferentes significados da adição ou subtração.\nOrientações: Cálculos com números racionais nas formas fracionárias, percentuais e principalmente decimais, estão sempre presentes no cotidiano dos estudantes sempre que utilizam valores monetários, quando compram itens ou pagam serviços, compram produtos que são vendidos por sua massa (carnes, grãos, ração, etc.), dividem partes de um inteiro como uma pizza, um bolo, uma garrafa de refrigerante, estão utilizando os números racionais mesmo que não saibam. Utilize destes exemplos para despertar o interesse e buscar o engajamento dos estudantes."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA44MG) - Interpretar e utilizar o símbolo %. / (EF06MA45MG) - Efetuar cálculos de porcentagem. / (EF06MA13A) - Resolver problemas que envolvam porcentagens, com base na ideia de proporcionalidade, sem fazer uso da “regra de três”, utilizando estratégias pessoais, cálculo mental e calculadora, em contextos de educação financeira, entre outros. / (EF06MA13B) - Elaborar problemas que envolvam porcentagens, com base na ideia de proporcionalidade, sem fazer uso da “regra de três”, utilizando estratégias pessoais, cálculo mental e calculadora, em contextos de educação financeira, entre outros.",
+    "objeto_conhecimento": "Cálculo de porcentagens por meio de estratégias diversas, sem fazer uso da “regra de três”. Conteúdos relacionados: Porcentagem. Cálculo de porcentagem. Porcentagem de um valor. Porcentagem na forma de figuras. Porcentagem escrita na forma decimal. Problemas envolvendo porcentagem. Determinação de uma porcentagem.",
+    "descritores_saeb": "Resolver problema envolvendo noções de porcentagem (25%, 50%, 100%).",
+    "orientacoes_pedagogicas": "Os estudantes precisam ser incentivados a analisar e refletir sobre problemas reais, estimulando a criatividade, o pensamento crítico e a colaboração, reconhecendo e operando frações e porcentagens no seu dia a dia. Busque demonstrar para o estudante de forma simples a aplicação da porcentagem, como por exemplo quando partimos uma pizza em 4 pedaços iguais e cada um come um pedaço, cada um está comendo 25% da pizza, ou seja, 25 + 25 + 25 + 25 = 100% da pizza.",
+    "habilidade_codes": [
+      "EF06MA44MG",
+      "EF06MA45MG",
+      "EF06MA13A",
+      "EF06MA13B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 3º Bimestre\nUnidade: Números\nObjetos: Cálculo de porcentagens por meio de estratégias diversas, sem fazer uso da “regra de três”. Conteúdos relacionados: Porcentagem. Cálculo de porcentagem. Porcentagem de um valor. Porcentagem na forma de figuras. Porcentagem escrita na forma decimal. Problemas envolvendo porcentagem. Determinação de uma porcentagem.\nHabilidades: (EF06MA44MG) - Interpretar e utilizar o símbolo %. / (EF06MA45MG) - Efetuar cálculos de porcentagem. / (EF06MA13A) - Resolver problemas que envolvam porcentagens, com base na ideia de proporcionalidade, sem fazer uso da “regra de três”, utilizando estratégias pessoais, cálculo mental e calculadora, em contextos de educação financeira, entre outros. / (EF06MA13B) - Elaborar problemas que envolvam porcentagens, com base na ideia de proporcionalidade, sem fazer uso da “regra de três”, utilizando estratégias pessoais, cálculo mental e calculadora, em contextos de educação financeira, entre outros.\nSAEB: Resolver problema envolvendo noções de porcentagem (25%, 50%, 100%).\nOrientações: Os estudantes precisam ser incentivados a analisar e refletir sobre problemas reais, estimulando a criatividade, o pensamento crítico e a colaboração, reconhecendo e operando frações e porcentagens no seu dia a dia. Busque demonstrar para o estudante de forma simples a aplicação da porcentagem, como por exemplo quando partimos uma pizza em 4 pedaços iguais e cada um come um pedaço, cada um está comendo 25% da pizza, ou seja, 25 + 25 + 25 + 25 = 100% da pizza."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Álgebra",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA14) - Reconhecer que a relação de igualdade matemática não se altera ao adicionar, subtrair, multiplicar ou dividir os seus dois membros por um mesmo número e utilizar essa noção para determinar valores desconhecidos na resolução de problemas.",
+    "objeto_conhecimento": "Propriedades da igualdade. Conteúdos relacionados: Igualdades e desigualdades. Sentenças matemáticas.",
+    "descritores_saeb": "(Não consta).",
+    "orientacoes_pedagogicas": "Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, elaborando e resolvendo problemas que tratam de partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Trabalhar com o conceito de balança pode ser um excelente caminho para a melhor compreensão dos estudantes, mostrando que quando realizamos a mesma ação em ambos lados da balança se equilibra, e quando há um desequilíbrio, é necessário acrescentar um novo peso no lado contrário para que ela seja novamente equilibrada.",
+    "habilidade_codes": [
+      "EF06MA14"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Álgebra\nObjetos: Propriedades da igualdade. Conteúdos relacionados: Igualdades e desigualdades. Sentenças matemáticas.\nHabilidades: (EF06MA14) - Reconhecer que a relação de igualdade matemática não se altera ao adicionar, subtrair, multiplicar ou dividir os seus dois membros por um mesmo número e utilizar essa noção para determinar valores desconhecidos na resolução de problemas.\nSAEB: (Não consta).\nOrientações: Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, elaborando e resolvendo problemas que tratam de partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Trabalhar com o conceito de balança pode ser um excelente caminho para a melhor compreensão dos estudantes, mostrando que quando realizamos a mesma ação em ambos lados da balança se equilibra, e quando há um desequilíbrio, é necessário acrescentar um novo peso no lado contrário para que ela seja novamente equilibrada."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Álgebra",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA15A) - Resolver problemas que envolvam a partilha de uma quantidade em duas partes desiguais, envolvendo relações aditivas e multiplicativas, bem como a razão entre as partes e entre uma das partes e o todo. / (EF06MA15B) - Elaborar problemas que envolvam a partilha de uma quantidade em duas partes desiguais, envolvendo relações aditivas e multiplicativas, bem como a razão entre as partes e entre uma das partes e o todo.",
+    "objeto_conhecimento": "Problemas que tratam da partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Conteúdos relacionados: Razões e proporções. Soma e subtração de frações. Multiplicação e divisão de frações. Multiplicação e divisão de um número natural por uma fração. Multiplicação de duas frações. Divisão de frações. Divisão de um número natural por uma fração. Divisão de uma fração por um número natural. Divisão de duas frações.",
+    "descritores_saeb": "(Não consta).",
+    "orientacoes_pedagogicas": "Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, elaborando e resolvendo problemas que tratam de partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Trabalhar com o conceito de balança pode ser um excelente caminho para a melhor compreensão dos estudantes, mostrando que quando realizamos a mesma ação em ambos lados da balança se equilibra, e quando há um desequilíbrio, é necessário acrescentar um novo peso no lado contrário para que ela seja novamente equilibrada.",
+    "habilidade_codes": [
+      "EF06MA15A",
+      "EF06MA15B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Álgebra\nObjetos: Problemas que tratam da partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Conteúdos relacionados: Razões e proporções. Soma e subtração de frações. Multiplicação e divisão de frações. Multiplicação e divisão de um número natural por uma fração. Multiplicação de duas frações. Divisão de frações. Divisão de um número natural por uma fração. Divisão de uma fração por um número natural. Divisão de duas frações.\nHabilidades: (EF06MA15A) - Resolver problemas que envolvam a partilha de uma quantidade em duas partes desiguais, envolvendo relações aditivas e multiplicativas, bem como a razão entre as partes e entre uma das partes e o todo. / (EF06MA15B) - Elaborar problemas que envolvam a partilha de uma quantidade em duas partes desiguais, envolvendo relações aditivas e multiplicativas, bem como a razão entre as partes e entre uma das partes e o todo.\nSAEB: (Não consta).\nOrientações: Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, elaborando e resolvendo problemas que tratam de partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Trabalhar com o conceito de balança pode ser um excelente caminho para a melhor compreensão dos estudantes, mostrando que quando realizamos a mesma ação em ambos lados da balança se equilibra, e quando há um desequilíbrio, é necessário acrescentar um novo peso no lado contrário para que ela seja novamente equilibrada."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA24A) - Resolver problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área (triângulos e retângulos), capacidade e volume (sólidos formados por blocos retangulares), sem uso de fórmulas, inseridos, sempre que possível, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento. / (EF06MA24B) - Elaborar problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área (triângulos e retângulos), capacidade e volume (sólidos formados por blocos retangulares), sem uso de fórmulas, inseridos, sempre que possível, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento.",
+    "objeto_conhecimento": "Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandezas: comprimento, massa, tempo, temperatura, área, capacidade e volume.",
+    "descritores_saeb": "Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, elaborando e resolvendo problemas que tratam de partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Trabalhar com o conceito de balança pode ser um excelente caminho para a melhor compreensão dos estudantes, mostrando que quando realizamos a mesma ação em ambos lados da balança se equilibra, e quando há um desequilíbrio, é necessário acrescentar um novo peso no lado contrário para que ela seja novamente equilibrada. Resolver e elaborar problemas envolvendo medidas das grandezas comprimento, área, massa, tempo, temperatura e capacidade, recorrendo a transformações entre as unidades mais usuais em contextos socioculturais, implica em identificar as grandezas, compreender o que é medi-las (comparando com outra grandeza de mesma espécie, escolhendo uma unidade e expressando a medição numericamente com a identificação da unidade utilizada), conhecer as principais unidades padrão de medida e estabelecer relações entre elas, incluindo a expressão por meio de frações ou decimais.",
+    "habilidade_codes": [
+      "EF06MA24A",
+      "EF06MA24B"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandezas: comprimento, massa, tempo, temperatura, área, capacidade e volume.\nHabilidades: (EF06MA24A) - Resolver problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área (triângulos e retângulos), capacidade e volume (sólidos formados por blocos retangulares), sem uso de fórmulas, inseridos, sempre que possível, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento. / (EF06MA24B) - Elaborar problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área (triângulos e retângulos), capacidade e volume (sólidos formados por blocos retangulares), sem uso de fórmulas, inseridos, sempre que possível, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento.\nSAEB: Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, elaborando e resolvendo problemas que tratam de partição de um todo em duas partes desiguais, envolvendo razões entre as partes e entre uma das partes e o todo. Trabalhar com o conceito de balança pode ser um excelente caminho para a melhor compreensão dos estudantes, mostrando que quando realizamos a mesma ação em ambos lados da balança se equilibra, e quando há um desequilíbrio, é necessário acrescentar um novo peso no lado contrário para que ela seja novamente equilibrada. Resolver e elaborar problemas envolvendo medidas das grandezas comprimento, área, massa, tempo, temperatura e capacidade, recorrendo a transformações entre as unidades mais usuais em contextos socioculturais, implica em identificar as grandezas, compreender o que é medi-las (comparando com outra grandeza de mesma espécie, escolhendo uma unidade e expressando a medição numericamente com a identificação da unidade utilizada), conhecer as principais unidades padrão de medida e estabelecer relações entre elas, incluindo a expressão por meio de frações ou decimais."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA28) - Interpretar, descrever e desenhar plantas baixas simples de residências e vistas aéreas. / (EF06MA29) - Analisar e descrever mudanças que ocorrem no perímetro e na área de um quadrado ao se ampliarem ou reduzirem, igualmente, as medidas de seus lados, para compreender que o perímetro é proporcional à medida do lado, o que não ocorre com a área.",
+    "objeto_conhecimento": "Plantas baixas e vistas aéreas. Perímetro de um quadrado como grandeza proporcional à medida do lado. Conteúdos relacionados: Planta baixa, perímetro, área, vista aérea. Área, perímetro, proporcionalidade, múltiplos.",
+    "descritores_saeb": "Resolver problema envolvendo o cálculo de perímetro de figuras planas.",
+    "orientacoes_pedagogicas": "Os jovens estudantes precisarão desenvolver a capacidade de resolver não apenas problemas, mas também de justificar, de explicar e de argumentar seu desenvolvimento, explicitando o raciocínio envolvido em problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área, capacidade e volume, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento.",
+    "habilidade_codes": [
+      "EF06MA28",
+      "EF06MA29"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Plantas baixas e vistas aéreas. Perímetro de um quadrado como grandeza proporcional à medida do lado. Conteúdos relacionados: Planta baixa, perímetro, área, vista aérea. Área, perímetro, proporcionalidade, múltiplos.\nHabilidades: (EF06MA28) - Interpretar, descrever e desenhar plantas baixas simples de residências e vistas aéreas. / (EF06MA29) - Analisar e descrever mudanças que ocorrem no perímetro e na área de um quadrado ao se ampliarem ou reduzirem, igualmente, as medidas de seus lados, para compreender que o perímetro é proporcional à medida do lado, o que não ocorre com a área.\nSAEB: Resolver problema envolvendo o cálculo de perímetro de figuras planas.\nOrientações: Os jovens estudantes precisarão desenvolver a capacidade de resolver não apenas problemas, mas também de justificar, de explicar e de argumentar seu desenvolvimento, explicitando o raciocínio envolvido em problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área, capacidade e volume, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA46MG) - Relacionar o metro com seus múltiplos e submúltiplos. / (EF06MA47MG) - Realizar conversões entre unidades de medidas de comprimento. / (EF06MA48MG) - Relacionar o metro quadrado com seus múltiplos e submúltiplos. / (EF06MA49MG) - Realizar conversões entre unidades de medidas de área.",
+    "objeto_conhecimento": "Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandeza comprimento. Unidades de medida de comprimento. Múltiplos e submúltiplos do metro. Conversões de unidades de comprimento. Grandeza de área. Unidades de medida de superfície ou unidades de área. Múltiplos e submúltiplos de áreas. Conversões de unidades de áreas.",
+    "descritores_saeb": "Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Os jovens estudantes precisarão desenvolver a capacidade de resolver não apenas problemas, mas também de justificar, de explicar e de argumentar seu desenvolvimento, explicitando o raciocínio envolvido em problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área, capacidade e volume, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento.",
+    "habilidade_codes": [
+      "EF06MA46MG",
+      "EF06MA47MG",
+      "EF06MA48MG",
+      "EF06MA49MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandeza comprimento. Unidades de medida de comprimento. Múltiplos e submúltiplos do metro. Conversões de unidades de comprimento. Grandeza de área. Unidades de medida de superfície ou unidades de área. Múltiplos e submúltiplos de áreas. Conversões de unidades de áreas.\nHabilidades: (EF06MA46MG) - Relacionar o metro com seus múltiplos e submúltiplos. / (EF06MA47MG) - Realizar conversões entre unidades de medidas de comprimento. / (EF06MA48MG) - Relacionar o metro quadrado com seus múltiplos e submúltiplos. / (EF06MA49MG) - Realizar conversões entre unidades de medidas de área.\nSAEB: Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Os jovens estudantes precisarão desenvolver a capacidade de resolver não apenas problemas, mas também de justificar, de explicar e de argumentar seu desenvolvimento, explicitando o raciocínio envolvido em problemas que envolvam as grandezas comprimento, massa, tempo, temperatura, área, capacidade e volume, em contextos oriundos de situações reais e/ou relacionadas às outras áreas do conhecimento."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA50MG) - Relacionar o grama com seus múltiplos e submúltiplos. / (EF06MA51MG) - Realizar conversões entre unidades de medidas de massa.",
+    "objeto_conhecimento": "Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandeza massa. Unidades de medida de massa. Múltiplos e submúltiplos de massa. Conversões de unidades de massa.",
+    "descritores_saeb": "Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Os estudantes precisam relacionar teoria com a sua realidade para o aprendizado fazer sentido. Leve uma balança para a sala de aula com alguns produtos de supermercado mostrando a relação de grama com quilograma. Utilize tambem reservatórios cilindricos como latas ou caixas de isopor para calcular volumes internos, utilizando água e recipientes com escalas para fazer as medições, medindo em litros e realizando as conversões para dm³.",
+    "habilidade_codes": [
+      "EF06MA50MG",
+      "EF06MA51MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandeza massa. Unidades de medida de massa. Múltiplos e submúltiplos de massa. Conversões de unidades de massa.\nHabilidades: (EF06MA50MG) - Relacionar o grama com seus múltiplos e submúltiplos. / (EF06MA51MG) - Realizar conversões entre unidades de medidas de massa.\nSAEB: Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Os estudantes precisam relacionar teoria com a sua realidade para o aprendizado fazer sentido. Leve uma balança para a sala de aula com alguns produtos de supermercado mostrando a relação de grama com quilograma. Utilize tambem reservatórios cilindricos como latas ou caixas de isopor para calcular volumes internos, utilizando água e recipientes com escalas para fazer as medições, medindo em litros e realizando as conversões para dm³."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA52MG) - Relacionar o metro cúbico com seus múltiplos e submúltiplos. / (EF06MA53MG) - Relacionar o decímetro cúbico com o litro e o mililitro. / (EF06MA54MG) - Realizar conversões entre unidades de medidas de volume/ capacidade.",
+    "objeto_conhecimento": "Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandeza volume. Unidade de medida de espaço ou unidade de volume. Unidades de medida de capacidade. Múltiplos e submúltiplos de volume e capacidade. Conversões de unidades de volume e capacidade.",
+    "descritores_saeb": "Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Os estudantes precisam relacionar teoria com a sua realidade para o aprendizado fazer sentido. Leve uma balança para a sala de aula com alguns produtos de supermercado mostrando a relação de grama com quilograma. Utilize tambem reservatórios cilindricos como latas ou caixas de isopor para calcular volumes internos, utilizando água e recipientes com escalas para fazer as medições, medindo em litros e realizando as conversões para dm³.",
+    "habilidade_codes": [
+      "EF06MA52MG",
+      "EF06MA53MG",
+      "EF06MA54MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Problemas sobre medidas envolvendo grandezas como comprimento, massa, tempo, temperatura, área, capacidade e volume. Conteúdos relacionados: Grandeza volume. Unidade de medida de espaço ou unidade de volume. Unidades de medida de capacidade. Múltiplos e submúltiplos de volume e capacidade. Conversões de unidades de volume e capacidade.\nHabilidades: (EF06MA52MG) - Relacionar o metro cúbico com seus múltiplos e submúltiplos. / (EF06MA53MG) - Relacionar o decímetro cúbico com o litro e o mililitro. / (EF06MA54MG) - Realizar conversões entre unidades de medidas de volume/ capacidade.\nSAEB: Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Os estudantes precisam relacionar teoria com a sua realidade para o aprendizado fazer sentido. Leve uma balança para a sala de aula com alguns produtos de supermercado mostrando a relação de grama com quilograma. Utilize tambem reservatórios cilindricos como latas ou caixas de isopor para calcular volumes internos, utilizando água e recipientes com escalas para fazer as medições, medindo em litros e realizando as conversões para dm³."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA30) - Calcular a probabilidade de um evento aleatório, expressando-a por número racional (forma fracionária, decimal e percentual) e comparar esse número com a probabilidade obtida por meio de experimentos sucessivos.",
+    "objeto_conhecimento": "Cálculo de probabilidade como a razão entre o número de resultados favoráveis e o total de resultados possíveis em um espaço amostral equiprovável. Cálculo de probabilidade por meio de muitas repetições de um experimento (frequências de ocorrências e probabilidade frequentista). Conteúdos relacionados: Números racionais. Porcentagem. Conceitos de probabilidade básica. Cálculo de probabilidade.",
+    "descritores_saeb": "Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico.",
+    "habilidade_codes": [
+      "EF06MA30"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Cálculo de probabilidade como a razão entre o número de resultados favoráveis e o total de resultados possíveis em um espaço amostral equiprovável. Cálculo de probabilidade por meio de muitas repetições de um experimento (frequências de ocorrências e probabilidade frequentista). Conteúdos relacionados: Números racionais. Porcentagem. Conceitos de probabilidade básica. Cálculo de probabilidade.\nHabilidades: (EF06MA30) - Calcular a probabilidade de um evento aleatório, expressando-a por número racional (forma fracionária, decimal e percentual) e comparar esse número com a probabilidade obtida por meio de experimentos sucessivos.\nSAEB: Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA31) - Identificar as variáveis e suas frequências e os elementos constitutivos (título, eixos, legendas, fontes e datas) em diferentes tipos de gráfico. / (EF06MA32) - Interpretar e resolver situações que envolvam dados de pesquisas sobre contextos ambientais, sustentabilidade, trânsito, consumo responsável, entre outros, apresentadas pela mídia em tabelas e em diferentes tipos de gráficos e redigir textos escritos com o objetivo de sintetizar conclusões.",
+    "objeto_conhecimento": "Leitura e interpretação de tabelas e gráficos (de colunas ou barras simples ou múltiplas) referentes a variáveis categóricas e variáveis numéricas. Conteúdos relacionados: Conceitos de estatística. Gráficos estatísticos. Elementos constitutivos (título, eixos, legendas, fontes e datas). Variáveis categóricas e variáveis numéricas.",
+    "descritores_saeb": "Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.",
+    "orientacoes_pedagogicas": "Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico.",
+    "habilidade_codes": [
+      "EF06MA31",
+      "EF06MA32"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Leitura e interpretação de tabelas e gráficos (de colunas ou barras simples ou múltiplas) referentes a variáveis categóricas e variáveis numéricas. Conteúdos relacionados: Conceitos de estatística. Gráficos estatísticos. Elementos constitutivos (título, eixos, legendas, fontes e datas). Variáveis categóricas e variáveis numéricas.\nHabilidades: (EF06MA31) - Identificar as variáveis e suas frequências e os elementos constitutivos (título, eixos, legendas, fontes e datas) em diferentes tipos de gráfico. / (EF06MA32) - Interpretar e resolver situações que envolvam dados de pesquisas sobre contextos ambientais, sustentabilidade, trânsito, consumo responsável, entre outros, apresentadas pela mídia em tabelas e em diferentes tipos de gráficos e redigir textos escritos com o objetivo de sintetizar conclusões.\nSAEB: Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.\nOrientações: Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA33) - Planejar e coletar dados de pesquisa referente a práticas sociais escolhidas pelos alunos e fazer uso de planilhas eletrônicas para registro, representação e interpretação das informações, em tabelas, vários tipos de gráficos e texto.",
+    "objeto_conhecimento": "Coleta de dados, organização e registro Construção de diferentes tipos de gráficos para representá-los e interpretação das informações. Conteúdos relacionados: Coleta de dados. Construção de gráficos e tabelas. Interpretação de gráficos e tabelas. Construção de diferentes tipos de gráficos. Fluxogramas.",
+    "descritores_saeb": "Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.",
+    "orientacoes_pedagogicas": "Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico.",
+    "habilidade_codes": [
+      "EF06MA33"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Coleta de dados, organização e registro Construção de diferentes tipos de gráficos para representá-los e interpretação das informações. Conteúdos relacionados: Coleta de dados. Construção de gráficos e tabelas. Interpretação de gráficos e tabelas. Construção de diferentes tipos de gráficos. Fluxogramas.\nHabilidades: (EF06MA33) - Planejar e coletar dados de pesquisa referente a práticas sociais escolhidas pelos alunos e fazer uso de planilhas eletrônicas para registro, representação e interpretação das informações, em tabelas, vários tipos de gráficos e texto.\nSAEB: Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.\nOrientações: Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA34) - Interpretar e desenvolver fluxogramas simples, identificando as relações entre os objetos representados (por exemplo, posição de cidades considerando as estradas que as unem, hierarquia dos funcionários de uma empresa etc.).",
+    "objeto_conhecimento": "Diferentes tipos de representação de informações: gráficos e fluxogramas. Conteúdos relacionados: Coleta de dados. Construção de gráficos e tabelas. Interpretação de gráficos e tabelas. Construção de diferentes tipos de gráficos. Fluxogramas.",
+    "descritores_saeb": "Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.",
+    "orientacoes_pedagogicas": "Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico.",
+    "habilidade_codes": [
+      "EF06MA34"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Diferentes tipos de representação de informações: gráficos e fluxogramas. Conteúdos relacionados: Coleta de dados. Construção de gráficos e tabelas. Interpretação de gráficos e tabelas. Construção de diferentes tipos de gráficos. Fluxogramas.\nHabilidades: (EF06MA34) - Interpretar e desenvolver fluxogramas simples, identificando as relações entre os objetos representados (por exemplo, posição de cidades considerando as estradas que as unem, hierarquia dos funcionários de uma empresa etc.).\nSAEB: Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.\nOrientações: Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF06MA56MG) - Relacionar o conceito de probabilidade com o de razão.",
+    "objeto_conhecimento": "Cálculo de probabilidade como a razão entre o número de resultados favoráveis e o total de resultados possíveis em um espaço amostral equiprovável. Cálculo de probabilidade por meio de muitas repetições de um experimento (frequências de ocorrências e probabilidade frequentista). Conteúdos relacionados: Conceito de probabilidade e de razão.",
+    "descritores_saeb": "Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.",
+    "orientacoes_pedagogicas": "Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico.",
+    "habilidade_codes": [
+      "EF06MA56MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | Matemática | 4º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Cálculo de probabilidade como a razão entre o número de resultados favoráveis e o total de resultados possíveis em um espaço amostral equiprovável. Cálculo de probabilidade por meio de muitas repetições de um experimento (frequências de ocorrências e probabilidade frequentista). Conteúdos relacionados: Conceito de probabilidade e de razão.\nHabilidades: (EF06MA56MG) - Relacionar o conceito de probabilidade com o de razão.\nSAEB: Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice- versa.\nOrientações: Determinar a probabilidade de ocorrência de um resultado em eventos aleatórios, quando todos os resultados possíveis têm a mesma chance de ocorrer (equiprováveis), implica em conhecer o conjunto de todas as possibilida des que fazem parte deste problema, ou seja, o espaço amostral, e comparar a chance de cada evento desse espaço amostral acontecer no total de possibilidades, associando a representação fracionária como forma de registro da probabilidade de um evento acontecer. No desenvolvimento dessas habilidades é importante sugerir que sejam analisados gráficos diversos, em particular aqueles que são veiculados na mídia. Merece destaque o cuidado com o tipo de problematização para que não sejam feitas apenas perguntas de resposta imediata. A leitura e interpretação de gráficos e tabelas desenvolve as habilidades de questionar, levantar, checar hipóteses e procurar relações entre os dados. Ao explorar a leitura de gráficos deve-se propor questões que estimulem a sua interpretação em níveis diferentes de compreensão, a partir de questões, para que o estudante relacione os dados do gráfico."
+  }
+]

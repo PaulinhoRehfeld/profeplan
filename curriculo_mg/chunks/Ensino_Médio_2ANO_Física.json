@@ -1,0 +1,200 @@
+[
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental.",
+    "objeto_conhecimento": "Trabalho de uma força constante.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Enfatizamos a importância de conhecer as percepções dos estudantes sobre o tema energia, a partir das noções intuitivas e ideias prévias sobre o assunto. O conhecimento das concepções prévias dos estudantes constitui uma ferramenta de grande importância no processo de ensino-aprendizagem, pois pode auxiliar de forma significativa no planejamento de atividades PEDAGÓGICASs. Explore trabalho mecânico enquanto energia por meio de equações, gráficos, tabelas, experimentos e simuladores virtuais educacionais. Pode-se explorar as ocorrências de variações de energia de um corpo durante o seu movimento e promover debates cujo foco seja as transformações de energia percebidas, tais como energia sonora ou calor. É importante que o estudante assimile o significado de trabalho positivo, negativo e nulo, relacionando trabalho motor e resistivo, bem como a influência dos ângulos entre o vetor força e o vetor deslocamento do corpo.",
+    "habilidade_codes": [
+      "EM13CNT302"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Trabalho de uma força constante.\nHabilidades: (EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental.\nOrientações: Enfatizamos a importância de conhecer as percepções dos estudantes sobre o tema energia, a partir das noções intuitivas e ideias prévias sobre o assunto. O conhecimento das concepções prévias dos estudantes constitui uma ferramenta de grande importância no processo de ensino-aprendizagem, pois pode auxiliar de forma significativa no planejamento de atividades PEDAGÓGICASs. Explore trabalho mecânico enquanto energia por meio de equações, gráficos, tabelas, experimentos e simuladores virtuais educacionais. Pode-se explorar as ocorrências de variações de energia de um corpo durante o seu movimento e promover debates cujo foco seja as transformações de energia percebidas, tais como energia sonora ou calor. É importante que o estudante assimile o significado de trabalho positivo, negativo e nulo, relacionando trabalho motor e resistivo, bem como a influência dos ângulos entre o vetor força e o vetor deslocamento do corpo."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02-Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra.",
+    "objeto_conhecimento": "Energias Cinética, Potencial (Gravitacional e Elástica) e energia Mecânica, Princípio da Conservação da Energia Mecânica.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Considerando-se que o estudante já tenha adquirido certo amadurecimento no estudo da física, entendemos que seja o momento de fazer a introdução de uma das leis fundamentais da mecânica: lei da conservação da energia. Sugere-se que eles possam, através de situações cotidianas, perceber as aplicações desta lei. O uso de simuladores virtuais educacionais permite a exploração de projetos tecnológicos que demonstrem a aplicabilidade do estudo deste objeto de conhecimento, identificando situações problema sob uma perpectiva científica. Sugere-se que ao introduzir o estudo da energia potencial elástica, seja abordada a Lei de Hooke. É importante que o estudante perceba que a conservação da energia mecânica só ocorre na presença de forças conservativas, que entendam a definição de forças dissipativas e que façam a distinção entre elas. Destaque, também, o teorema trabalho-energia em que, ao variar a energia, um trabalho mecânico está sendo realizado pelo sistema (ou sobre ele), de modo a identificar as trocas de energia entre o sistema e a sua vizinhança. Além disso, na presença de forças conservativas o trabalho não depende da trajetória.",
+    "habilidade_codes": [
+      "EM13CNT210MG"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 1º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Energias Cinética, Potencial (Gravitacional e Elástica) e energia Mecânica, Princípio da Conservação da Energia Mecânica.\nHabilidades: (EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra.\nOrientações: Considerando-se que o estudante já tenha adquirido certo amadurecimento no estudo da física, entendemos que seja o momento de fazer a introdução de uma das leis fundamentais da mecânica: lei da conservação da energia. Sugere-se que eles possam, através de situações cotidianas, perceber as aplicações desta lei. O uso de simuladores virtuais educacionais permite a exploração de projetos tecnológicos que demonstrem a aplicabilidade do estudo deste objeto de conhecimento, identificando situações problema sob uma perpectiva científica. Sugere-se que ao introduzir o estudo da energia potencial elástica, seja abordada a Lei de Hooke. É importante que o estudante perceba que a conservação da energia mecânica só ocorre na presença de forças conservativas, que entendam a definição de forças dissipativas e que façam a distinção entre elas. Destaque, também, o teorema trabalho-energia em que, ao variar a energia, um trabalho mecânico está sendo realizado pelo sistema (ou sobre ele), de modo a identificar as trocas de energia entre o sistema e a sua vizinhança. Além disso, na presença de forças conservativas o trabalho não depende da trajetória."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.",
+    "objeto_conhecimento": "Mudanças de estado físico.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "O objeto de conhecimento mudança de estado físico, proposto no 9º ano do EF, por meio do desenvolvimento das habilidades EF09CI01 e EF09CI56M, consite na investigação e explicação dos estados físicos da matéria e suas transformações, reconhecendo as variações de energia envolvida. Ao revisitar o conteúdo, propõe-se o aprofundamento, abordando, representando e analisando as curvas de aquecimento e dos diagramas de fase das substâncias. É importante destacar o conceito de ponto triplo e relacioná-lo às variações da temperatura e pressão, enfatizando seus efeitos nos ecossistemas e no corpo humano. Enquanto área do conhecimento, sugere-se, neste bimestre professor(a), a proposta de trabalhar de forma integrada, um projeto com todos os componentes das Ciências da Natureza e suas Tecnologias, com a temática - Saúde e bem estar: combate às doenças infectocontagiosas. Para este projeto, a Física poderá contribuir com aplicações da termometria e calorimetria. Sugere-se trabalhar com \"Os Perigos para a Saúde Humana\" do Aquecimento Global, as Ondas de Calor, a Amplitude Térmica, a Umidade Relativa do Ar, as Correntes de Convecção e a Proliferação de Doenças Respiratórias, entre outras que julgar pertinentes.",
+    "habilidade_codes": [
+      "EM13CNT301"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 2º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Mudanças de estado físico.\nHabilidades: (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.\nOrientações: O objeto de conhecimento mudança de estado físico, proposto no 9º ano do EF, por meio do desenvolvimento das habilidades EF09CI01 e EF09CI56M, consite na investigação e explicação dos estados físicos da matéria e suas transformações, reconhecendo as variações de energia envolvida. Ao revisitar o conteúdo, propõe-se o aprofundamento, abordando, representando e analisando as curvas de aquecimento e dos diagramas de fase das substâncias. É importante destacar o conceito de ponto triplo e relacioná-lo às variações da temperatura e pressão, enfatizando seus efeitos nos ecossistemas e no corpo humano. Enquanto área do conhecimento, sugere-se, neste bimestre professor(a), a proposta de trabalhar de forma integrada, um projeto com todos os componentes das Ciências da Natureza e suas Tecnologias, com a temática - Saúde e bem estar: combate às doenças infectocontagiosas. Para este projeto, a Física poderá contribuir com aplicações da termometria e calorimetria. Sugere-se trabalhar com \"Os Perigos para a Saúde Humana\" do Aquecimento Global, as Ondas de Calor, a Amplitude Térmica, a Umidade Relativa do Ar, as Correntes de Convecção e a Proliferação de Doenças Respiratórias, entre outras que julgar pertinentes."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.",
+    "objeto_conhecimento": "Transformações gasosas.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Ao iniciar o estudo das transformações gasosas, sugere-se a utilização de situações cotidianas ressaltando a diferença entre modelos microscópicos e macroscópicos para o estudo do comportamento dos gases. Aconselha-se diferenciar gases reais de gases ideais, representar e analisar, por meio de simuladores, as variáveis de um gás em sistemas abertos e fechados e suas transformações. É recomendado realizar atividades experimentais e utilizar simuladores virtuais educacionais a fim de propor previsões, intervenções, construir e analisar modelos, fazer análise de textos, criar protótipos de sistemas gasosos com o intuito de justificar o seu emprego em diferentes situações do cotidiano, seus efeitos em ecossistemas, benefícios e riscos.",
+    "habilidade_codes": [
+      "EM13CNT101"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Transformações gasosas.\nHabilidades: (EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.\nOrientações: Ao iniciar o estudo das transformações gasosas, sugere-se a utilização de situações cotidianas ressaltando a diferença entre modelos microscópicos e macroscópicos para o estudo do comportamento dos gases. Aconselha-se diferenciar gases reais de gases ideais, representar e analisar, por meio de simuladores, as variáveis de um gás em sistemas abertos e fechados e suas transformações. É recomendado realizar atividades experimentais e utilizar simuladores virtuais educacionais a fim de propor previsões, intervenções, construir e analisar modelos, fazer análise de textos, criar protótipos de sistemas gasosos com o intuito de justificar o seu emprego em diferentes situações do cotidiano, seus efeitos em ecossistemas, benefícios e riscos."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.",
+    "objeto_conhecimento": "Leis da termodinâmica (1ª Lei da Termodinâmica).",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Sugere-se introduzir a 1ª Lei da Termodinâmica iniciando-se pelo conceito de trabalho. Porém, é preciso enfatizar que a termodinâmica envolve o estudo das trocas de energia na forma de calor e trabalho. Mostre a diferença entre o sinal positivo e o sinal negativo do trabalho (expansão e compressão do gás) e identifique situações em que esses fenômenos ocorrem. Recomenda-se ainda identificar, analisar e interpretar gráficos de pressão versus volume e os impactos que as mudanças de variáveis provocam em sistemas térmicos. Aconselha-se, também, uma discussão com os estudantes sobre possíveis situações em que a energia de um sistema aumenta ou diminui. O estudo da 1ª Lei da Termodinâmica, proposto no 7º ano do EF, por meio do desenvolvimento da habilidade EF07CI04, convida a avaliar o equilíbrio termodinâmico e as implicações desse conceito para o funcionamento das máquinas térmicas. Sugere-se que, após a conceituação de energia interna, os estudantes sejam levados a compreender como ocorrem as trocas de calor com a vizinhança, as variações da energia interna e a realização de trabalho, com a finalidade de orientá-los a avaliar, fazer previsões, interpretar textos, diagramas, equações e estimar resultados.",
+    "habilidade_codes": [
+      "EM13CNT101"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Leis da termodinâmica (1ª Lei da Termodinâmica).\nHabilidades: (EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.\nOrientações: Sugere-se introduzir a 1ª Lei da Termodinâmica iniciando-se pelo conceito de trabalho. Porém, é preciso enfatizar que a termodinâmica envolve o estudo das trocas de energia na forma de calor e trabalho. Mostre a diferença entre o sinal positivo e o sinal negativo do trabalho (expansão e compressão do gás) e identifique situações em que esses fenômenos ocorrem. Recomenda-se ainda identificar, analisar e interpretar gráficos de pressão versus volume e os impactos que as mudanças de variáveis provocam em sistemas térmicos. Aconselha-se, também, uma discussão com os estudantes sobre possíveis situações em que a energia de um sistema aumenta ou diminui. O estudo da 1ª Lei da Termodinâmica, proposto no 7º ano do EF, por meio do desenvolvimento da habilidade EF07CI04, convida a avaliar o equilíbrio termodinâmico e as implicações desse conceito para o funcionamento das máquinas térmicas. Sugere-se que, após a conceituação de energia interna, os estudantes sejam levados a compreender como ocorrem as trocas de calor com a vizinhança, as variações da energia interna e a realização de trabalho, com a finalidade de orientá-los a avaliar, fazer previsões, interpretar textos, diagramas, equações e estimar resultados."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT203X) - Avaliar e prever efeitos de intervenções nos ecossistemas, e seus impactos nos seres vivos e no corpo humano, com base nos mecanismos de manutenção da vida, nos ciclos da matéria e nas transformações e transferências de energia, utilizando representações e simulações sobre tais fatores, com ou sem o uso de dispositivos e aplicativos digitais.",
+    "objeto_conhecimento": "(N/A)",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "(N/A)",
+    "habilidade_codes": [
+      "EM13CNT203X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 2º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: (N/A)\nHabilidades: (EM13CNT203X) - Avaliar e prever efeitos de intervenções nos ecossistemas, e seus impactos nos seres vivos e no corpo humano, com base nos mecanismos de manutenção da vida, nos ciclos da matéria e nas transformações e transferências de energia, utilizando representações e simulações sobre tais fatores, com ou sem o uso de dispositivos e aplicativos digitais.\nOrientações: (N/A)"
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental, podendo fazer uso de dispositivos e aplicativos digitais que viabilizem a estruturação de simulações de tais riscos, conhecer as normas de segurança, o tratamento de resíduos e reconhecer os equipamentos de proteção individual e coletivo, inclusive a tecnologia aplicada nos mesmos.",
+    "objeto_conhecimento": "Compostos inorgânicos e Química ambiental: Características e polaridade dos compostos inorgânicos. Propriedades dos compostos inorgânicos e nomenclatura. Toxicidade e reatividade de substâncias químicas. Poluição em água, ar e solo e tecnologias empregadas como solução. Efeito estufa, aquecimento global, camada de ozônio e chuva ácida. Equipamentos de proteção individual (EPI) e coletiva (EPC). Ações de segurança e descarte adequado de materiais, resíduos, substâncias nocivas e tóxicas produzidas em ambientes de trabalho e/ou laboratórios químicos.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Explique de forma geral o que são as Funções inorgânicas trabalhando na sequência óxidos, ácidos, pH, bases, reação de neutralização e sais. Explane de cada função: as definições de Arrhenius, Brönsted-Lowry e Lewis (apenas citar as duas últimas), trabalhe as classificações, fórmulas e nomenclatura de substâncias representativas importantes da função inorgânica e/ou próximas do cotidiano do estudante. Relacione as Funções inorgânicas às questões ambientais. Inicie com óxidos, enfatizando os óxidos poluentes que ampliam o efeito estufa e contribuem para o aquecimento global. Introduza ácidos, a partir da reação de formação da chuva ácida, mostrando consequências como a morte de peixes em rios e lagos devido a acidez e poluição. Apresente a escala de pH e incorpore os hidróxidos, explanando a importância da correção de solos ácidos antes do plantio (será proveitoso realizar o experimento de verificação da acidez ou basicidade da terra nessa etapa). Trabalhe a reação de neutralização e a escala em pH através de experimentos simples, como a análise de materiais cotidianos com extrato de repolho roxo. Finalize com sais, abrangendo os sais minerais contidos na água potável, nos rios e mares, e as complicações ambientais que esse desequilíbrio pode gerar.",
+    "habilidade_codes": [
+      "EM13CNT306X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 3º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Compostos inorgânicos e Química ambiental: Características e polaridade dos compostos inorgânicos. Propriedades dos compostos inorgânicos e nomenclatura. Toxicidade e reatividade de substâncias químicas. Poluição em água, ar e solo e tecnologias empregadas como solução. Efeito estufa, aquecimento global, camada de ozônio e chuva ácida. Equipamentos de proteção individual (EPI) e coletiva (EPC). Ações de segurança e descarte adequado de materiais, resíduos, substâncias nocivas e tóxicas produzidas em ambientes de trabalho e/ou laboratórios químicos.\nHabilidades: (EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental, podendo fazer uso de dispositivos e aplicativos digitais que viabilizem a estruturação de simulações de tais riscos, conhecer as normas de segurança, o tratamento de resíduos e reconhecer os equipamentos de proteção individual e coletivo, inclusive a tecnologia aplicada nos mesmos.\nOrientações: Explique de forma geral o que são as Funções inorgânicas trabalhando na sequência óxidos, ácidos, pH, bases, reação de neutralização e sais. Explane de cada função: as definições de Arrhenius, Brönsted-Lowry e Lewis (apenas citar as duas últimas), trabalhe as classificações, fórmulas e nomenclatura de substâncias representativas importantes da função inorgânica e/ou próximas do cotidiano do estudante. Relacione as Funções inorgânicas às questões ambientais. Inicie com óxidos, enfatizando os óxidos poluentes que ampliam o efeito estufa e contribuem para o aquecimento global. Introduza ácidos, a partir da reação de formação da chuva ácida, mostrando consequências como a morte de peixes em rios e lagos devido a acidez e poluição. Apresente a escala de pH e incorpore os hidróxidos, explanando a importância da correção de solos ácidos antes do plantio (será proveitoso realizar o experimento de verificação da acidez ou basicidade da terra nessa etapa). Trabalhe a reação de neutralização e a escala em pH através de experimentos simples, como a análise de materiais cotidianos com extrato de repolho roxo. Finalize com sais, abrangendo os sais minerais contidos na água potável, nos rios e mares, e as complicações ambientais que esse desequilíbrio pode gerar."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT105) - Analisar os ciclos biogeoquímicos e interpretar os efeitos de fenômenos naturais e da interferência humana sobre esses ciclos, para promover ações individuais e/ ou coletivas que minimizem consequências nocivas à vida.",
+    "objeto_conhecimento": "Ciclos Biogeoquímicos: Carbono, nitrogênio, oxigênio e fósforo; agentes poluidores da água, ar e solo; descarte inadequado de resíduis sólidos; parâmetros de qualidade da água, ar e solo. Fluxo de energia e de matéria no ecossistema. Problemas ambientais mundiais, nacionais e regionais.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "É primordial que os estudantes compreendam que os ciclos biogeoquímicos são processos naturais que descrevem a movimentação de elementos químicos entre os seres vivos e o ambiente. Nesse intuito, é necessário o entendimento que esses ciclos são interconectados e fundamentais para a manutenção dos ecossistemas, influenciando a produtividade e a saúde ambiental. A química envolvida em cada ciclo é essencial para entender como os elementos se comportam e interagem no planeta.",
+    "habilidade_codes": [
+      "EM13CNT105"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 3º Bimestre\nUnidade: Matéria e Energia\nObjetos: Ciclos Biogeoquímicos: Carbono, nitrogênio, oxigênio e fósforo; agentes poluidores da água, ar e solo; descarte inadequado de resíduis sólidos; parâmetros de qualidade da água, ar e solo. Fluxo de energia e de matéria no ecossistema. Problemas ambientais mundiais, nacionais e regionais.\nHabilidades: (EM13CNT105) - Analisar os ciclos biogeoquímicos e interpretar os efeitos de fenômenos naturais e da interferência humana sobre esses ciclos, para promover ações individuais e/ ou coletivas que minimizem consequências nocivas à vida.\nOrientações: É primordial que os estudantes compreendam que os ciclos biogeoquímicos são processos naturais que descrevem a movimentação de elementos químicos entre os seres vivos e o ambiente. Nesse intuito, é necessário o entendimento que esses ciclos são interconectados e fundamentais para a manutenção dos ecossistemas, influenciando a produtividade e a saúde ambiental. A química envolvida em cada ciclo é essencial para entender como os elementos se comportam e interagem no planeta."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT203X) - Avaliar e prever efeitos de intervenções nos ecossistemas, e seus impactos nos seres vivos e no corpo humano, com base nos mecanismos de manutenção da vida, nos ciclos da matéria e nas transformações e transferências de energia, utilizando representações e simulações sobre tais fatores, com ou sem o uso de dispositivos e aplicativos digitais.",
+    "objeto_conhecimento": "Ciclos Biogeoquímicos: Carbono, nitrogênio, oxigênio e fósforo; agentes poluidores da água, ar e solo; descarte inadequado de resíduos sólidos; parâmetros de qualidade da água, ar e solo. Fluxo de energia e de matéria no ecossistema. Problemas ambientais mundiais, nacionais e regionais.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "É primordial que os estudantes compreendam que os ciclos biogeoquímicos são processos naturais que descrevem a movimentação de elementos químicos entre os seres vivos e o ambiente. Nesse intuito, é necessário o entendimento que esses ciclos são interconectados e fundamentais para a manutenção dos ecossistemas, influenciando a produtividade e a saúde ambiental. A química envolvida em cada ciclo é essencial para entender como os elementos se comportam e interagem no planeta.",
+    "habilidade_codes": [
+      "EM13CNT203X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Ciclos Biogeoquímicos: Carbono, nitrogênio, oxigênio e fósforo; agentes poluidores da água, ar e solo; descarte inadequado de resíduos sólidos; parâmetros de qualidade da água, ar e solo. Fluxo de energia e de matéria no ecossistema. Problemas ambientais mundiais, nacionais e regionais.\nHabilidades: (EM13CNT203X) - Avaliar e prever efeitos de intervenções nos ecossistemas, e seus impactos nos seres vivos e no corpo humano, com base nos mecanismos de manutenção da vida, nos ciclos da matéria e nas transformações e transferências de energia, utilizando representações e simulações sobre tais fatores, com ou sem o uso de dispositivos e aplicativos digitais.\nOrientações: É primordial que os estudantes compreendam que os ciclos biogeoquímicos são processos naturais que descrevem a movimentação de elementos químicos entre os seres vivos e o ambiente. Nesse intuito, é necessário o entendimento que esses ciclos são interconectados e fundamentais para a manutenção dos ecossistemas, influenciando a produtividade e a saúde ambiental. A química envolvida em cada ciclo é essencial para entender como os elementos se comportam e interagem no planeta."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT107X) - Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo (geradores de energia; biodigestores; motores elétricos e seus componentes; bobinas; transformadores; pilhas; baterias; fontes alternativas de energia; bioeletricidade; dispositivos eletrônicos; etc.), com base na análise dos processos de transformação e condução de energia envolvidos, com ou sem o uso de dispositivos e aplicativos digitais, para propor ações que visem a sustentabilidade, discutindo acerca dos subprodutos que a tecnologia gera e propondo ações para minimizar seus impactos.",
+    "objeto_conhecimento": "Eletroquímica: Impactos ambientais de descarte inadequado de pilhas e baterias; funcionamento de equipamentos pilhas caseiras. Eletrólise, obtenção e produção de metais; composição e extração de minerais.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Esse objeto do conhecimento é destinado ao aprendizado do funcionamento e capacidade elétrica das pilhas e baterias a partir das reações químicas, logo os estudantes precisam compreender e reconhecer a ocorrência da reação de oxirredução, a mudança de Nox, a transferência de elétrons, as celas galvânicas, o diferencial de potencial padrão e as equações para representar a reação eletroquímica. Também é importante ser trabalhado contextos de comparação e análise da eficiência energética e do impacto ambiental causado entre diferentes formas de se produzir e armazenar energia. A abordagem deve ser contextualizada, interdisciplinar e contemporânea, inserindo a corrida tecnológica relacionada a pesquisa por novos materiais para produção de baterias mais eficientes e condizentes com a necessidade elétrica da sociedade e da pauta sustentável. Portanto, temas como o lixo eletrônico e o seu descarte correto devem ser abordados. Além disso, a associação da eletrólise a indústria também merece destaque.",
+    "habilidade_codes": [
+      "EM13CNT107X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 4º Bimestre\nUnidade: Matéria e Energia\nObjetos: Eletroquímica: Impactos ambientais de descarte inadequado de pilhas e baterias; funcionamento de equipamentos pilhas caseiras. Eletrólise, obtenção e produção de metais; composição e extração de minerais.\nHabilidades: (EM13CNT107X) - Realizar previsões qualitativas e quantitativas sobre as ações de agentes cujos funcionamentos estão relacionados ao eletromagnetismo (geradores de energia; biodigestores; motores elétricos e seus componentes; bobinas; transformadores; pilhas; baterias; fontes alternativas de energia; bioeletricidade; dispositivos eletrônicos; etc.), com base na análise dos processos de transformação e condução de energia envolvidos, com ou sem o uso de dispositivos e aplicativos digitais, para propor ações que visem a sustentabilidade, discutindo acerca dos subprodutos que a tecnologia gera e propondo ações para minimizar seus impactos.\nOrientações: Esse objeto do conhecimento é destinado ao aprendizado do funcionamento e capacidade elétrica das pilhas e baterias a partir das reações químicas, logo os estudantes precisam compreender e reconhecer a ocorrência da reação de oxirredução, a mudança de Nox, a transferência de elétrons, as celas galvânicas, o diferencial de potencial padrão e as equações para representar a reação eletroquímica. Também é importante ser trabalhado contextos de comparação e análise da eficiência energética e do impacto ambiental causado entre diferentes formas de se produzir e armazenar energia. A abordagem deve ser contextualizada, interdisciplinar e contemporânea, inserindo a corrida tecnológica relacionada a pesquisa por novos materiais para produção de baterias mais eficientes e condizentes com a necessidade elétrica da sociedade e da pauta sustentável. Portanto, temas como o lixo eletrônico e o seu descarte correto devem ser abordados. Além disso, a associação da eletrólise a indústria também merece destaque."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Vida, Terra e cosmos",
+    "competencia": "Competência específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT308) - Investigar e analisar o funcionamento de equipamentos elétricos e/ou eletrônicos e sistemas de automação para compreender as tecnologias contemporâneas e avaliar seus impactos sociais, culturais e ambientais.",
+    "objeto_conhecimento": "(N/A)",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "(N/A)",
+    "habilidade_codes": [
+      "EM13CNT308"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Física | 4º Bimestre\nUnidade: Vida, Terra e cosmos\nObjetos: (N/A)\nHabilidades: (EM13CNT308) - Investigar e analisar o funcionamento de equipamentos elétricos e/ou eletrônicos e sistemas de automação para compreender as tecnologias contemporâneas e avaliar seus impactos sociais, culturais e ambientais.\nOrientações: (N/A)"
+  }
+]

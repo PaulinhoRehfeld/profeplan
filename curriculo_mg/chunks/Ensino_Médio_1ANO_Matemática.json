@@ -1,0 +1,375 @@
+[
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números",
+    "competencia": "",
+    "habilidade": "(EF09MA03) Efetuar cálculos com números reais, inclusive potências com expoentes fracionários; (EF09MA04A) Resolver problemas com números reais, inclusive em notação científica, envolvendo diferentes operações.",
+    "objeto_conhecimento": "Potências com expoentes negativos e fracionários.",
+    "descritores_saeb": "Resolver problema com números racionais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação). Efetuar cálculos simples com valores aproximados de radicais. Resolver problema com números inteiros envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "O estudante deve concretizar as habilidades para calcular potências; identificar os elementos da radiciação; calcular raízes; escrever potências com expoentes fracionários por meio de uma raiz e vice-versa; resolver expressões utilizando as propriedades da radiciação; simplificar radicais; introduzir fator externo em um radical; efetuar adição, subtração, multiplicação e divisão com raízes; racionalizar denominadores.",
+    "habilidade_codes": [
+      "EF09MA03",
+      "EF09MA04A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Números\nObjetos: Potências com expoentes negativos e fracionários.\nHabilidades: (EF09MA03) Efetuar cálculos com números reais, inclusive potências com expoentes fracionários; (EF09MA04A) Resolver problemas com números reais, inclusive em notação científica, envolvendo diferentes operações.\nSAEB: Resolver problema com números racionais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação). Efetuar cálculos simples com valores aproximados de radicais. Resolver problema com números inteiros envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: O estudante deve concretizar as habilidades para calcular potências; identificar os elementos da radiciação; calcular raízes; escrever potências com expoentes fracionários por meio de uma raiz e vice-versa; resolver expressões utilizando as propriedades da radiciação; simplificar radicais; introduzir fator externo em um radical; efetuar adição, subtração, multiplicação e divisão com raízes; racionalizar denominadores."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Álgebra",
+    "competencia": "",
+    "habilidade": "(EF08MA07) Associar uma equação linear de 1º grau com duas incógnitas a uma reta no plano cartesiano.",
+    "objeto_conhecimento": "Associação de uma equação linear de 1º grau a uma reta no plano cartesiano.",
+    "descritores_saeb": "Resolver problemas que envolvam cálculo do valor numérico de expressões algébricas.",
+    "orientacoes_pedagogicas": "Nesta habilidade será necessário uma revisão sobre o plano cartesiano. Após esta revisão pode ser trabalhado a ideia de localização em uma determinada cidade ou região nas quais os quarteirões são regulares e de medida 1 m por exemplo, onde o eixo “y” represente o sentido Norte/Sul e o eixo “x” represente o sentido Leste/Oeste.",
+    "habilidade_codes": [
+      "EF08MA07"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Álgebra\nObjetos: Associação de uma equação linear de 1º grau a uma reta no plano cartesiano.\nHabilidades: (EF08MA07) Associar uma equação linear de 1º grau com duas incógnitas a uma reta no plano cartesiano.\nSAEB: Resolver problemas que envolvam cálculo do valor numérico de expressões algébricas.\nOrientações: Nesta habilidade será necessário uma revisão sobre o plano cartesiano. Após esta revisão pode ser trabalhado a ideia de localização em uma determinada cidade ou região nas quais os quarteirões são regulares e de medida 1 m por exemplo, onde o eixo “y” represente o sentido Norte/Sul e o eixo “x” represente o sentido Leste/Oeste."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Álgebra",
+    "competencia": "",
+    "habilidade": "(EF08MA08A) Resolver problemas relacionados ao seu contexto próximo, que possam ser representados por sistemas de equações de 1º grau com duas incógnitas e interpretá-los, utilizando, inclusive, o plano cartesiano como recurso.",
+    "objeto_conhecimento": "Sistemas de equações polinomiais de 1º grau: resolução algébrica e representação no plano cartesiano.",
+    "descritores_saeb": "Inferir uma equação, inequação polinomial de 1º grau ou um sistema de equações de 1º grau com duas incógnitas que modela um problema. Resolver problemas que possam ser representados por sistema de equações de 1º grau com duas incógnitas.",
+    "orientacoes_pedagogicas": "Estas habilidades podem ser iniciadas com uma revisão sobre o plano cartesiano. A contextualização destas habilidades com problemas reais é muito importante e pode ser empregada em muitos casos, como por exemplo a diferença de idades, diferença entre dois valores, quantidades de itens que possuam características distintas (veículos e rodas por exemplo), dentre outras. Pode-se explorar as diversos métodos de resolução de sistemas, como por exemplo o método da adição, método da substituição, método geométrico, com a utilização do plano cartesiano e softwares como Geogebra, inplot e outros.",
+    "habilidade_codes": [
+      "EF08MA08A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Álgebra\nObjetos: Sistemas de equações polinomiais de 1º grau: resolução algébrica e representação no plano cartesiano.\nHabilidades: (EF08MA08A) Resolver problemas relacionados ao seu contexto próximo, que possam ser representados por sistemas de equações de 1º grau com duas incógnitas e interpretá-los, utilizando, inclusive, o plano cartesiano como recurso.\nSAEB: Inferir uma equação, inequação polinomial de 1º grau ou um sistema de equações de 1º grau com duas incógnitas que modela um problema. Resolver problemas que possam ser representados por sistema de equações de 1º grau com duas incógnitas.\nOrientações: Estas habilidades podem ser iniciadas com uma revisão sobre o plano cartesiano. A contextualização destas habilidades com problemas reais é muito importante e pode ser empregada em muitos casos, como por exemplo a diferença de idades, diferença entre dois valores, quantidades de itens que possuam características distintas (veículos e rodas por exemplo), dentre outras. Pode-se explorar as diversos métodos de resolução de sistemas, como por exemplo o método da adição, método da substituição, método geométrico, com a utilização do plano cartesiano e softwares como Geogebra, inplot e outros."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Álgebra",
+    "competencia": "",
+    "habilidade": "(EF09MA06A) Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações numérica, algébrica e gráfica.",
+    "objeto_conhecimento": "Funções: representações numérica, algébrica e gráfica.",
+    "descritores_saeb": "Identificar uma equação ou inequação do 1º grau que expressa um problema. Identificar um sistema de equações do 1º grau que expressa um problema. Identificar a relação entre as representações algébrica e geométrica de um sistema de equações do 1º grau.",
+    "orientacoes_pedagogicas": "Aqui o estudante deve compreender a noção de função – incluindo a representação por meio de diagramas e gráficos –, e a identificar as suas variáveis. Em seguida, os estudos avançarão para o reconhecimento de uma função afim, de modo a identificar seus termos e construir gráficos. Posteriormente à compreensão do conceito de funções quadráticas e a identificação dos termos associados a elas, além de capacitá-los a escrever leis de formação. Os estudos devem prosseguir de modo a habilitar os estudantes a construir gráficos, determinar os zeros de função quadrática.",
+    "habilidade_codes": [
+      "EF09MA06A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Álgebra\nObjetos: Funções: representações numérica, algébrica e gráfica.\nHabilidades: (EF09MA06A) Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações numérica, algébrica e gráfica.\nSAEB: Identificar uma equação ou inequação do 1º grau que expressa um problema. Identificar um sistema de equações do 1º grau que expressa um problema. Identificar a relação entre as representações algébrica e geométrica de um sistema de equações do 1º grau.\nOrientações: Aqui o estudante deve compreender a noção de função – incluindo a representação por meio de diagramas e gráficos –, e a identificar as suas variáveis. Em seguida, os estudos avançarão para o reconhecimento de uma função afim, de modo a identificar seus termos e construir gráficos. Posteriormente à compreensão do conceito de funções quadráticas e a identificação dos termos associados a elas, além de capacitá-los a escrever leis de formação. Os estudos devem prosseguir de modo a habilitar os estudantes a construir gráficos, determinar os zeros de função quadrática."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Grandezas e Medidas",
+    "competencia": "",
+    "habilidade": "(EF08MA19A) Resolver problemas que envolvam medidas de área de figuras geométricas, utilizando expressões de cálculo de área (quadriláteros, triângulos e círculos), em situações como determinar medida de terrenos.",
+    "objeto_conhecimento": "Área de figuras planas. Área do círculo e comprimento de sua circunferência.",
+    "descritores_saeb": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações.",
+    "orientacoes_pedagogicas": "Nesta habilidade pode ser utilizado figuras do cotidiano, como a área do vidro da janela, a tampa da mesa o quadro, dentre outros. Mostre também que a maioria das figuras encontradas na vida real são compostas. Trabalhe e construa a ideia de como calcular áreas compostas.",
+    "habilidade_codes": [
+      "EF08MA19A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Grandezas e Medidas\nObjetos: Área de figuras planas. Área do círculo e comprimento de sua circunferência.\nHabilidades: (EF08MA19A) Resolver problemas que envolvam medidas de área de figuras geométricas, utilizando expressões de cálculo de área (quadriláteros, triângulos e círculos), em situações como determinar medida de terrenos.\nSAEB: Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações.\nOrientações: Nesta habilidade pode ser utilizado figuras do cotidiano, como a área do vidro da janela, a tampa da mesa o quadro, dentre outros. Mostre também que a maioria das figuras encontradas na vida real são compostas. Trabalhe e construa a ideia de como calcular áreas compostas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Grandezas e Medidas",
+    "competencia": "",
+    "habilidade": "(EF08MA20) Reconhecer a relação entre um litro e um decímetro cúbico e a relação entre litro e metro cúbico, para resolver problemas de cálculo de capacidade de recipientes; (EF08MA21A) Resolver problemas que envolvam o cálculo do volume de recipiente cujo formato é o de um bloco retangular; (EF09MA19A) Resolver problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas.",
+    "objeto_conhecimento": "Volume de cubo e paralelepípedo. Medidas de capacidade. Volume de prismas e cilindros.",
+    "descritores_saeb": "Resolver problemas que envolvam volume de prismas retos ou cilindros retos. Resolver problema envolvendo noções de volume.",
+    "orientacoes_pedagogicas": "Nesta habilidade pode-se trabalhar com problemas que envolvam o enchimento de recipientes como caixa d’água, piscinas, baldes, dentre outros. Podendo ser aplicado na prática utilizando água, em um local apropriado, para determinar e/ou comparar a capacidade de um recipiente, mesmo que tenha uma forma irregular.",
+    "habilidade_codes": [
+      "EF08MA20",
+      "EF08MA21A",
+      "EF09MA19A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Grandezas e Medidas\nObjetos: Volume de cubo e paralelepípedo. Medidas de capacidade. Volume de prismas e cilindros.\nHabilidades: (EF08MA20) Reconhecer a relação entre um litro e um decímetro cúbico e a relação entre litro e metro cúbico, para resolver problemas de cálculo de capacidade de recipientes; (EF08MA21A) Resolver problemas que envolvam o cálculo do volume de recipiente cujo formato é o de um bloco retangular; (EF09MA19A) Resolver problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas.\nSAEB: Resolver problemas que envolvam volume de prismas retos ou cilindros retos. Resolver problema envolvendo noções de volume.\nOrientações: Nesta habilidade pode-se trabalhar com problemas que envolvam o enchimento de recipientes como caixa d’água, piscinas, baldes, dentre outros. Podendo ser aplicado na prática utilizando água, em um local apropriado, para determinar e/ou comparar a capacidade de um recipiente, mesmo que tenha uma forma irregular."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Grandezas e Medidas",
+    "competencia": "",
+    "habilidade": "(EF09MA13) Demonstrar relações métricas do triângulo retângulo, entre elas o teorema de Pitágoras, utilizando, inclusive, a semelhança de triângulos; (EF09MA33MG) Resolver problemas que envolvam as relações métricas no triângulo retângulo.",
+    "objeto_conhecimento": "Relações métricas no triângulo retângulo. Teorema de Pitágoras: verificações experimentais e demonstração. Retas paralelas cortadas por transversais: teoremas de proporcionalidade e verificações experimentais.",
+    "descritores_saeb": "Utilizar relações métricas do triângulo retângulo para resolver problemas significativos.",
+    "orientacoes_pedagogicas": "Este é o momento proporcionará aos estudantes o avanço no estudo do triângulo retângulo, habilitando-os a reconhecer seus elementos para estabelecer relações métricas e trigonométricas. O teorema de Pitágoras também será trabalhado como procedimento de cálculo.",
+    "habilidade_codes": [
+      "EF09MA13",
+      "EF09MA33MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Grandezas e Medidas\nObjetos: Relações métricas no triângulo retângulo. Teorema de Pitágoras: verificações experimentais e demonstração. Retas paralelas cortadas por transversais: teoremas de proporcionalidade e verificações experimentais.\nHabilidades: (EF09MA13) Demonstrar relações métricas do triângulo retângulo, entre elas o teorema de Pitágoras, utilizando, inclusive, a semelhança de triângulos; (EF09MA33MG) Resolver problemas que envolvam as relações métricas no triângulo retângulo.\nSAEB: Utilizar relações métricas do triângulo retângulo para resolver problemas significativos.\nOrientações: Este é o momento proporcionará aos estudantes o avanço no estudo do triângulo retângulo, habilitando-os a reconhecer seus elementos para estabelecer relações métricas e trigonométricas. O teorema de Pitágoras também será trabalhado como procedimento de cálculo."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Probabilidade e Estatística",
+    "competencia": "",
+    "habilidade": "(EF08MA22) Calcular a probabilidade de eventos, com base na construção do espaço amostral, utilizando o princípio multiplicativo, e reconhecer que a soma das probabilidades de todos os elementos do espaço amostral é igual a 1.",
+    "objeto_conhecimento": "Princípio multiplicativo da contagem. Soma das probabilidades de todos os elementos de um espaço amostra.",
+    "descritores_saeb": "Resolver problemas que envolvam a probabilidade de ocorrência de um resultado em eventos aleatórios equiprováveis independentes ou dependentes.",
+    "orientacoes_pedagogicas": "Nesta habilidade pede-se para trabalhar com espaços amostrais obtidos por meio do principio multiplicativo e também com todo o percentual envolvido no evento, de modo que se obtenha 100% dos valores.",
+    "habilidade_codes": [
+      "EF08MA22"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Probabilidade e Estatística\nObjetos: Princípio multiplicativo da contagem. Soma das probabilidades de todos os elementos de um espaço amostra.\nHabilidades: (EF08MA22) Calcular a probabilidade de eventos, com base na construção do espaço amostral, utilizando o princípio multiplicativo, e reconhecer que a soma das probabilidades de todos os elementos do espaço amostral é igual a 1.\nSAEB: Resolver problemas que envolvam a probabilidade de ocorrência de um resultado em eventos aleatórios equiprováveis independentes ou dependentes.\nOrientações: Nesta habilidade pede-se para trabalhar com espaços amostrais obtidos por meio do principio multiplicativo e também com todo o percentual envolvido no evento, de modo que se obtenha 100% dos valores."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Probabilidade e Estatística",
+    "competencia": "",
+    "habilidade": "(EF08MA23) Avaliar a adequação de diferentes tipos de gráficos para representar um conjunto de dados de uma pesquisa.",
+    "objeto_conhecimento": "Gráficos de barras, colunas, linhas ou setores e seus elementos constitutivos e adequação para determinado conjunto de dados.",
+    "descritores_saeb": "Representar ou associar os dados de uma pesquisa estatística ou de um levantamento em listas, tabelas (simples ou de dupla entrada) ou gráficos (barras simples ou agrupadas, colunas simples ou agrupadas, pictóricos, de linhas, de setores, ou em histograma).",
+    "orientacoes_pedagogicas": "Esta habilidade visa a escolha de um tipo de gráfico mais adequado a cada situação apresentada, como por exemplo, quando precisamos representar um gosto alimentar, o gráfico mais adequado é o gráfico de setores.",
+    "habilidade_codes": [
+      "EF08MA23"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Probabilidade e Estatística\nObjetos: Gráficos de barras, colunas, linhas ou setores e seus elementos constitutivos e adequação para determinado conjunto de dados.\nHabilidades: (EF08MA23) Avaliar a adequação de diferentes tipos de gráficos para representar um conjunto de dados de uma pesquisa.\nSAEB: Representar ou associar os dados de uma pesquisa estatística ou de um levantamento em listas, tabelas (simples ou de dupla entrada) ou gráficos (barras simples ou agrupadas, colunas simples ou agrupadas, pictóricos, de linhas, de setores, ou em histograma).\nOrientações: Esta habilidade visa a escolha de um tipo de gráfico mais adequado a cada situação apresentada, como por exemplo, quando precisamos representar um gosto alimentar, o gráfico mais adequado é o gráfico de setores."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Probabilidade e Estatística",
+    "competencia": "",
+    "habilidade": "(EF09MA21) Analisar e identificar, em gráficos divulgados pela mídia, os elementos que podem induzir, às vezes propositadamente, erros de leitura, como escalas inapropriadas, legendas não explicitadas corretamente, omissão de informações importantes (fontes e datas), entre outros.",
+    "objeto_conhecimento": "Análise de gráficos divulgados pela mídia: elementos que podem induzir a erros de leitura ou de interpretação.",
+    "descritores_saeb": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos. Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.",
+    "orientacoes_pedagogicas": "",
+    "habilidade_codes": [
+      "EF09MA21"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Probabilidade e Estatística\nObjetos: Análise de gráficos divulgados pela mídia: elementos que podem induzir a erros de leitura ou de interpretação.\nHabilidades: (EF09MA21) Analisar e identificar, em gráficos divulgados pela mídia, os elementos que podem induzir, às vezes propositadamente, erros de leitura, como escalas inapropriadas, legendas não explicitadas corretamente, omissão de informações importantes (fontes e datas), entre outros.\nSAEB: Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos. Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Probabilidade e Estatística",
+    "competencia": "",
+    "habilidade": "(EF08MA25) Obter os valores de medidas de tendência central de uma pesquisa estatística (média, moda e mediana) com a compreensão de seus significados e relacioná-los com a dispersão de dados, indicada pela amplitude.",
+    "objeto_conhecimento": "Medidas de tendência: central e de dispersão.",
+    "descritores_saeb": "Calcular os valores de medidas de tendência central de uma pesquisa estatística (média aritmética simples, moda ou mediana).",
+    "orientacoes_pedagogicas": "Esta habilidade pode ser trabalhada em partes, pois apresenta uma quantidade muito grande de conceitos, sendo que muitos deles são novidades para os estudantes. O principal objetivo desta habilidade é que o estudante consiga obter as medidas de tendência centrais e consiga comparar e relacionar estes valores a dispersão dos dados, verificando se estas medidas representam bem ou não aquele conjunto de dados apresentados em uma pesquisa.",
+    "habilidade_codes": [
+      "EF08MA25"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 1º Bimestre\nUnidade: Probabilidade e Estatística\nObjetos: Medidas de tendência: central e de dispersão.\nHabilidades: (EF08MA25) Obter os valores de medidas de tendência central de uma pesquisa estatística (média, moda e mediana) com a compreensão de seus significados e relacioná-los com a dispersão de dados, indicada pela amplitude.\nSAEB: Calcular os valores de medidas de tendência central de uma pesquisa estatística (média aritmética simples, moda ou mediana).\nOrientações: Esta habilidade pode ser trabalhada em partes, pois apresenta uma quantidade muito grande de conceitos, sendo que muitos deles são novidades para os estudantes. O principal objetivo desta habilidade é que o estudante consiga obter as medidas de tendência centrais e consiga comparar e relacionar estes valores a dispersão dos dados, verificando se estas medidas representam bem ou não aquele conjunto de dados apresentados em uma pesquisa."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Geometria e medidas",
+    "competencia": "Competência 3: Utilizar estratégias, conceitos, definições e procedimentos matemáticos para interpretar, construir modelos e resolver problemas em diversos contextos, analisando a plausibilidade dos resultados e a adequação das soluções propostas, de modo a construir argumentação consistente.",
+    "habilidade": "(EM13MAT313) Utilizar, quando necessário, a notação científica para expressar uma medida, compreendendo as noções de algarismos significativos e algarismos duvidosos, e reconhecendo que toda medida é inevitavelmente acompanhada de erro.",
+    "objeto_conhecimento": "Notação científica. Algarismos significativos e técnicas de arredondamento. Estimativa e comparação de valores em notação científica e em arredondamentos. Noção de erro em medições.",
+    "descritores_saeb": "D14 – Identificar a localização de números reais na reta numérica. D15 – Resolver problema que envolva variação proporcional, direta ou inversa, entre grandezas.",
+    "orientacoes_pedagogicas": "Esta habilidade é essencial para expressar de forma eficiente “grandezas” extremamente grandes ou pequenas, como em contextos astronômicos ou microscópicos. Ao trabalhar essa habilidade, é importante destacar a capacidade investigativa que ela oferece aos estudantes, permitindo a relação com outras áreas de conhecimento, especialmente aqueles que envolvem a medição de grandezas em fenômenos físicos, químicos e biológicos.",
+    "habilidade_codes": [
+      "EM13MAT313"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 2º Bimestre\nUnidade: Geometria e medidas\nObjetos: Notação científica. Algarismos significativos e técnicas de arredondamento. Estimativa e comparação de valores em notação científica e em arredondamentos. Noção de erro em medições.\nHabilidades: (EM13MAT313) Utilizar, quando necessário, a notação científica para expressar uma medida, compreendendo as noções de algarismos significativos e algarismos duvidosos, e reconhecendo que toda medida é inevitavelmente acompanhada de erro.\nSAEB: D14 – Identificar a localização de números reais na reta numérica. D15 – Resolver problema que envolva variação proporcional, direta ou inversa, entre grandezas.\nOrientações: Esta habilidade é essencial para expressar de forma eficiente “grandezas” extremamente grandes ou pequenas, como em contextos astronômicos ou microscópicos. Ao trabalhar essa habilidade, é importante destacar a capacidade investigativa que ela oferece aos estudantes, permitindo a relação com outras áreas de conhecimento, especialmente aqueles que envolvem a medição de grandezas em fenômenos físicos, químicos e biológicos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Geometria e medidas",
+    "competencia": "Competência 1: Utilizar estratégias, conceitos e procedimentos matemáticos para interpretar situações em diversos contextos, sejam atividades cotidianas, sejam fatos das Ciências da Natureza e Humanas, das questões socioeconômicas ou tecnológicas, divulgados por diferentes meios, de modo a contribuir para uma formação geral.",
+    "habilidade": "(EM13MAT103) Interpretar e compreender textos científicos ou divulgados pelas mídias, que empregam unidades de medida de diferentes grandezas e as conversões possíveis entre elas, adotadas ou não pelo Sistema Internacional (SI), como as de armazenamento e velocidade de transferência de dados, ligadas aos avanços tecnológicos.",
+    "objeto_conhecimento": "Sistema Internacional de Medidas: principais unidades e conversões.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "A habilidade tem relação com componentes curriculares das outras áreas de conhecimento. Se espera a identificação e a leitura das diferentes grandezas e suas unidades que se apresentam no cotidiano, assim como a realização das conversões mais usuais para solucionar situações diversas.",
+    "habilidade_codes": [
+      "EM13MAT103"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 2º Bimestre\nUnidade: Geometria e medidas\nObjetos: Sistema Internacional de Medidas: principais unidades e conversões.\nHabilidades: (EM13MAT103) Interpretar e compreender textos científicos ou divulgados pelas mídias, que empregam unidades de medida de diferentes grandezas e as conversões possíveis entre elas, adotadas ou não pelo Sistema Internacional (SI), como as de armazenamento e velocidade de transferência de dados, ligadas aos avanços tecnológicos.\nOrientações: A habilidade tem relação com componentes curriculares das outras áreas de conhecimento. Se espera a identificação e a leitura das diferentes grandezas e suas unidades que se apresentam no cotidiano, assim como a realização das conversões mais usuais para solucionar situações diversas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 4: Compreender e utilizar, com flexibilidade e precisão, diferentes registros de representação matemáticos (algébrico, geométrico, estatístico, computacional etc.), na busca de solução e comunicação de resultados de problemas; Competência 1: Utilizar estratégias, conceitos e procedimentos matemáticos para interpretar situações em diversos contextos...",
+    "habilidade": "(EM13MAT404) Analisar funções definidas por uma ou mais sentenças (tabela do Imposto de Renda, contas de luz, água, gás etc.), em suas representações algébrica e gráfica, identificando domínios de validade, imagem, crescimento e decrescimento, e convertendo essas representações de uma para outra, com ou sem apoio de tecnologias digitais; (EM13MAT101) Interpretar criticamente situações econômicas, sociais e fatos relativos às Ciências da Natureza que envolvam a variação de grandezas, pela análise dos gráficos das funções representadas e das taxas de variação, com ou sem apoio de tecnologias digitais.",
+    "objeto_conhecimento": "Conjuntos. Subconjuntos. Conjuntos numéricos. Intervalos. Conceito de função. Estudo de domínio de uma função. Estudo do contradomínio e conjunto imagem. Funções definidas por partes. Gráficos de funções expressas por diversas sentenças Interpretação de gráficos e de expressões algébricas. Análise do comportamento de funções em intervalos numéricos. Variação de grandezas, como velocidade, concentração, taxas de crescimento ou decrescimento de populações, índices econômicos, etc.",
+    "descritores_saeb": "D18 – Reconhecer expressão algébrica que representa uma função a partir de uma tabela. D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento das habilidades, sugere-se começar com situações cotidianas, como organizar grupos de objetos ou classificar elementos em categorias. A partir daí, introduza conceitos básicos como conjunto, elemento, pertinência e operações (união, interseção e diferença), mostrando como eles são usados para resolver problemas práticos, como organizar dados em listas e diagramas De Venn. Após introduzir conjuntos, apresente o conceito de função como uma relação que associa cada elemento de um conjunto (domínio) a exatamente um elemento de outro conjunto (imagem). Explore associações entre gráficos de funções e um intervalo numérico, de um dado problema à representação algébrica ou gráfica da função que expressa o modelo usado na resolução do problema.",
+    "habilidade_codes": [
+      "EM13MAT404",
+      "EM13MAT101"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 2º Bimestre\nUnidade: Números e álgebra\nObjetos: Conjuntos. Subconjuntos. Conjuntos numéricos. Intervalos. Conceito de função. Estudo de domínio de uma função. Estudo do contradomínio e conjunto imagem. Funções definidas por partes. Gráficos de funções expressas por diversas sentenças Interpretação de gráficos e de expressões algébricas. Análise do comportamento de funções em intervalos numéricos. Variação de grandezas, como velocidade, concentração, taxas de crescimento ou decrescimento de populações, índices econômicos, etc.\nHabilidades: (EM13MAT404) Analisar funções definidas por uma ou mais sentenças (tabela do Imposto de Renda, contas de luz, água, gás etc.), em suas representações algébrica e gráfica, identificando domínios de validade, imagem, crescimento e decrescimento, e convertendo essas representações de uma para outra, com ou sem apoio de tecnologias digitais; (EM13MAT101) Interpretar criticamente situações econômicas, sociais e fatos relativos às Ciências da Natureza que envolvam a variação de grandezas, pela análise dos gráficos das funções representadas e das taxas de variação, com ou sem apoio de tecnologias digitais.\nSAEB: D18 – Reconhecer expressão algébrica que representa uma função a partir de uma tabela. D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto.\nOrientações: Para o desenvolvimento das habilidades, sugere-se começar com situações cotidianas, como organizar grupos de objetos ou classificar elementos em categorias. A partir daí, introduza conceitos básicos como conjunto, elemento, pertinência e operações (união, interseção e diferença), mostrando como eles são usados para resolver problemas práticos, como organizar dados em listas e diagramas De Venn. Após introduzir conjuntos, apresente o conceito de função como uma relação que associa cada elemento de um conjunto (domínio) a exatamente um elemento de outro conjunto (imagem). Explore associações entre gráficos de funções e um intervalo numérico, de um dado problema à representação algébrica ou gráfica da função que expressa o modelo usado na resolução do problema."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 3; Competência 4; Competência 5: Investigar e estabelecer conjecturas a respeito de diferentes conceitos e propriedades matemáticas, empregando estratégias e recursos, como observação de padrões, experimentações e diferentes tecnologias, identificando a necessidade, ou não, de uma demonstração cada vez mais formal na validação das referidas conjecturas.",
+    "habilidade": "(EM13MAT302A) Construir modelos empregando as funções polinomiais de 1º , para resolver problemas em contextos diversos, com ou sem apoio de tecnologias digitais; (EM13MAT401) Converter representações algébricas de funções polinomiais de 1º grau em representações geométricas no plano cartesiano, distinguindo os casos nos quais o comportamento é proporcional, recorrendo ou não a softwares ou aplicativos de álgebra e geometria dinâmica; (EM13MAT501) Investigar relações entre números expressos em tabelas para representá-los no plano cartesiano, identificando padrões e criando conjecturas para generalizar e expressar algebricamente essa generalização, reconhecendo quando essa representação é de função polinomial de 1º grau.",
+    "objeto_conhecimento": "Funções polinomiais do 1º grau (função afim, linear e constante). Estudo da variação de funções polinomiais de 1º grau: gráfico, zero da função, estudo do sinal, crescimento, decrescimento e taxa de variação da função. Gráficos de funções a partir de transformações no plano. Função linear e proporcionalidade. Variação entre grandezas (proporcionalidade e não proporcionalidade). Inequação do 1° grau.",
+    "descritores_saeb": "D18 – Reconhecer expressão algébrica que representa uma função a partir de uma tabela. D19 – Resolver problema envolvendo uma função de primeiro grau. D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D23 – Reconhecer o gráfico de uma função polinomial de primeiro grau por meio de seus coeficientes. D24 – Reconhecer a representação algébrica de uma função do primeiro grau, dado o seu gráfico. D26 – Relacionar as raízes de um polinômio com sua decomposição em fatores do 1° grau.",
+    "orientacoes_pedagogicas": "Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um esperado de conhecimentos sobre as funções polinomiais do 1º grau, para a resolução e interpretação de situações em diferentes contextos. A seguir algumas possibilidades para o desenvolvimento dessas habilidades: Usar a lei de formação de uma função afim para representar, por exemplo, o valor a ser pago num plano de telefonia composto de um valor fixo (mensalidade) e um valor variável (consumo em minutos). Modelar situações em contextos diversos por funções polinomiais de 1º da linguagem verbal para a linguagem algébrica e geométrica e vice-versa. Resoluções de situações/problemas.",
+    "habilidade_codes": [
+      "EM13MAT302A",
+      "EM13MAT401",
+      "EM13MAT501"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 2º Bimestre\nUnidade: Números e álgebra\nObjetos: Funções polinomiais do 1º grau (função afim, linear e constante). Estudo da variação de funções polinomiais de 1º grau: gráfico, zero da função, estudo do sinal, crescimento, decrescimento e taxa de variação da função. Gráficos de funções a partir de transformações no plano. Função linear e proporcionalidade. Variação entre grandezas (proporcionalidade e não proporcionalidade). Inequação do 1° grau.\nHabilidades: (EM13MAT302A) Construir modelos empregando as funções polinomiais de 1º , para resolver problemas em contextos diversos, com ou sem apoio de tecnologias digitais; (EM13MAT401) Converter representações algébricas de funções polinomiais de 1º grau em representações geométricas no plano cartesiano, distinguindo os casos nos quais o comportamento é proporcional, recorrendo ou não a softwares ou aplicativos de álgebra e geometria dinâmica; (EM13MAT501) Investigar relações entre números expressos em tabelas para representá-los no plano cartesiano, identificando padrões e criando conjecturas para generalizar e expressar algebricamente essa generalização, reconhecendo quando essa representação é de função polinomial de 1º grau.\nSAEB: D18 – Reconhecer expressão algébrica que representa uma função a partir de uma tabela. D19 – Resolver problema envolvendo uma função de primeiro grau. D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D23 – Reconhecer o gráfico de uma função polinomial de primeiro grau por meio de seus coeficientes. D24 – Reconhecer a representação algébrica de uma função do primeiro grau, dado o seu gráfico. D26 – Relacionar as raízes de um polinômio com sua decomposição em fatores do 1° grau.\nOrientações: Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um esperado de conhecimentos sobre as funções polinomiais do 1º grau, para a resolução e interpretação de situações em diferentes contextos. A seguir algumas possibilidades para o desenvolvimento dessas habilidades: Usar a lei de formação de uma função afim para representar, por exemplo, o valor a ser pago num plano de telefonia composto de um valor fixo (mensalidade) e um valor variável (consumo em minutos). Modelar situações em contextos diversos por funções polinomiais de 1º da linguagem verbal para a linguagem algébrica e geométrica e vice-versa. Resoluções de situações/problemas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 3; Competência 4; Competência 5.",
+    "habilidade": "(EM13MAT302B): Construir modelos empregando as funções polinomiais de 2º, para resolver problemas em contextos diversos, com ou sem apoio de tecnologias digitais; (EM13MAT402) Converter representações algébricas de funções polinomiais de 2º grau em representações geométricas no plano cartesiano, distinguindo os casos nos quais uma variável for diretamente proporcional ao quadrado da outra, recorrendo ou não a softwares ou aplicativos de álgebra e geometria dinâmica, entre outros materiais; (EM13MAT502) Investigar relações entre números expressos em tabelas para representá-los no plano cartesiano, identificando padrões e criando conjecturas para generalizar e expressar algebricamente essa generalização, reconhecendo quando essa representação é de função polinomial de 2º grau do tipo y = ax²; (EM13MAT503) Investigar pontos de máximo ou de mínimo de funções quadráticas em contextos envolvendo superfícies, Matemática Financeira ou Cinemática, entre outros, com apoio de tecnologias digitais.",
+    "objeto_conhecimento": "Funções e gráficos de função de 2º grau. Coeficientes de uma função quadrática. Zeros de uma função quadrática. Gráfico de uma função quadrática. Vértice da parábola. Estudo do comportamento da função quadrática: estudo do sinal, intervalos de crescimento/decrescimento, e variação da função). Pontos críticos de uma função quadrática: concavidade, pontos de máximo ou de mínimo. Gráficos de funções a partir de transformações no plano. Inequação do 2° grau.",
+    "descritores_saeb": "D17 – Resolver problema envolvendo equação do 2º grau. D18 – Reconhecer expressão algébrica que representa uma função a partir de uma tabela. D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D25 – Resolver problemas que envolvam os pontos de máximo ou de mínimo no gráfico de uma função polinomial do 2º grau.",
+    "orientacoes_pedagogicas": "Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um esperado de conhecimento sobre as funções do 2º grau, para a resolução e interpretação de situações em diferentes contextos. Essas habilidades incluem também a resolução de função polinomial de 2º grau, construção de gráficos e manipulação de expressões algébricas. Trabalhar também situação-problema que as envolvam, distinguindo quando uma variável for diretamente proporcional ao quadrado da outra e comunicando resultado por meio algébrico, geométrico, tabela, diagrama, entre outros. Pode-se utilizar softwares matemáticos com o intuito de observar o comportamento da parábola e como as curvas se alteram de acordo com seus coeficientes, pontos de máximo ou de mínimo e outros pontos especiais em diferentes contextos.",
+    "habilidade_codes": [
+      "EM13MAT302B",
+      "EM13MAT402",
+      "EM13MAT502",
+      "EM13MAT503"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 3º Bimestre\nUnidade: Números e álgebra\nObjetos: Funções e gráficos de função de 2º grau. Coeficientes de uma função quadrática. Zeros de uma função quadrática. Gráfico de uma função quadrática. Vértice da parábola. Estudo do comportamento da função quadrática: estudo do sinal, intervalos de crescimento/decrescimento, e variação da função). Pontos críticos de uma função quadrática: concavidade, pontos de máximo ou de mínimo. Gráficos de funções a partir de transformações no plano. Inequação do 2° grau.\nHabilidades: (EM13MAT302B): Construir modelos empregando as funções polinomiais de 2º, para resolver problemas em contextos diversos, com ou sem apoio de tecnologias digitais; (EM13MAT402) Converter representações algébricas de funções polinomiais de 2º grau em representações geométricas no plano cartesiano, distinguindo os casos nos quais uma variável for diretamente proporcional ao quadrado da outra, recorrendo ou não a softwares ou aplicativos de álgebra e geometria dinâmica, entre outros materiais; (EM13MAT502) Investigar relações entre números expressos em tabelas para representá-los no plano cartesiano, identificando padrões e criando conjecturas para generalizar e expressar algebricamente essa generalização, reconhecendo quando essa representação é de função polinomial de 2º grau do tipo y = ax²; (EM13MAT503) Investigar pontos de máximo ou de mínimo de funções quadráticas em contextos envolvendo superfícies, Matemática Financeira ou Cinemática, entre outros, com apoio de tecnologias digitais.\nSAEB: D17 – Resolver problema envolvendo equação do 2º grau. D18 – Reconhecer expressão algébrica que representa uma função a partir de uma tabela. D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D25 – Resolver problemas que envolvam os pontos de máximo ou de mínimo no gráfico de uma função polinomial do 2º grau.\nOrientações: Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um esperado de conhecimento sobre as funções do 2º grau, para a resolução e interpretação de situações em diferentes contextos. Essas habilidades incluem também a resolução de função polinomial de 2º grau, construção de gráficos e manipulação de expressões algébricas. Trabalhar também situação-problema que as envolvam, distinguindo quando uma variável for diretamente proporcional ao quadrado da outra e comunicando resultado por meio algébrico, geométrico, tabela, diagrama, entre outros. Pode-se utilizar softwares matemáticos com o intuito de observar o comportamento da parábola e como as curvas se alteram de acordo com seus coeficientes, pontos de máximo ou de mínimo e outros pontos especiais em diferentes contextos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 4.",
+    "habilidade": "(EM13MAT403A): Analisar, com ou sem apoio de tecnologias digitais, as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano, para identificar as características fundamentais (domínio, imagem, crescimento) de cada função; (EM13MAT403B): Estabelecer relações, com ou sem apoio de tecnologias digitais, entre as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano.",
+    "objeto_conhecimento": "Funções e gráficos de função de 2º grau. Potenciação. Equação exponencial. Função exponencial. Gráfico da função exponencial. Estudo do crescimento e análise do comportamento da função exponencial em intervalos numéricos. Gráfico de funções a partir de transformações no plano.",
+    "descritores_saeb": "D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D27 – Identificar a representação algébrica e/ou gráfica de uma função exponencial. D29 – Resolver problema que envolva função exponencial.",
+    "orientacoes_pedagogicas": "Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um todo esperado de conhecimento sobre as funções exponencial para a resolução e interpretação de situações em diferentes contextos. Essas habilidades também estão relacionadsa as diversas áreas, entre elas, pode-se citar inter-relações com a área de Ciências da Natureza (cálculo do tempo necessário para uma colônia de microrganismos dobrar de tamanho em Biologia).",
+    "habilidade_codes": [
+      "EM13MAT403A",
+      "EM13MAT403B"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 3º Bimestre\nUnidade: Números e álgebra\nObjetos: Funções e gráficos de função de 2º grau. Potenciação. Equação exponencial. Função exponencial. Gráfico da função exponencial. Estudo do crescimento e análise do comportamento da função exponencial em intervalos numéricos. Gráfico de funções a partir de transformações no plano.\nHabilidades: (EM13MAT403A): Analisar, com ou sem apoio de tecnologias digitais, as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano, para identificar as características fundamentais (domínio, imagem, crescimento) de cada função; (EM13MAT403B): Estabelecer relações, com ou sem apoio de tecnologias digitais, entre as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano.\nSAEB: D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D27 – Identificar a representação algébrica e/ou gráfica de uma função exponencial. D29 – Resolver problema que envolva função exponencial.\nOrientações: Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um todo esperado de conhecimento sobre as funções exponencial para a resolução e interpretação de situações em diferentes contextos. Essas habilidades também estão relacionadsa as diversas áreas, entre elas, pode-se citar inter-relações com a área de Ciências da Natureza (cálculo do tempo necessário para uma colônia de microrganismos dobrar de tamanho em Biologia)."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 3; Competência 4.",
+    "habilidade": "(EM13MAT305) Resolver e elaborar problemas com funções logarítmicas nos quais seja necessário compreender e interpretar a variação das grandezas envolvidas, em contextos como os de abalos sísmicos, pH, radioatividade, Matemática Financeira, entre outros; (EM13MAT403A): Analisar, com ou sem apoio de tecnologias digitais, as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano, para identificar as características fundamentais (domínio, imagem, crescimento) de cada função; (EM13MAT403B): Estabelecer relações, com ou sem apoio de tecnologias digitais, entre as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano.",
+    "objeto_conhecimento": "Logaritmo (decimal e natural). Propriedades dos logaritmos. Equação logarítmica. Função logarítmica. Gráfico de uma função logarítmica. Estudo do crescimento e análise do comportamento da função logarítmica em intervalos numéricos. Variação entre grandezas: relação entre variação exponencial e logarítmica. Gráfico de funções a partir de transformações no plano.",
+    "descritores_saeb": "D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D27 – Identificar a representação algébrica e/ou gráfica de uma função exponencial. D28 – Identificar a representação algébrica e/ou gráfica de uma função logarítmica reconhecendo-a como inversa da função exponencial. D29 – Resolver problema que envolva função exponencial.",
+    "orientacoes_pedagogicas": "Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um todo esperado de conhecimento sobre as funções exponencial e logarítmica, para a resolução e interpretação de situações em diferentes contextos. Essas habilidades também estão relacionadsa as diversas áreas, entre elas, pode-se citar inter-relações com a área de Ciências da Natureza (cálculo do ph de substâncias em Química, energia liberada por abalos sísmicos em Física, cálculo do tempo necessário para uma colônia de microrganismos dobrar de tamanho em Biologia).",
+    "habilidade_codes": [
+      "EM13MAT305",
+      "EM13MAT403A",
+      "EM13MAT403B"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 3º Bimestre\nUnidade: Números e álgebra\nObjetos: Logaritmo (decimal e natural). Propriedades dos logaritmos. Equação logarítmica. Função logarítmica. Gráfico de uma função logarítmica. Estudo do crescimento e análise do comportamento da função logarítmica em intervalos numéricos. Variação entre grandezas: relação entre variação exponencial e logarítmica. Gráfico de funções a partir de transformações no plano.\nHabilidades: (EM13MAT305) Resolver e elaborar problemas com funções logarítmicas nos quais seja necessário compreender e interpretar a variação das grandezas envolvidas, em contextos como os de abalos sísmicos, pH, radioatividade, Matemática Financeira, entre outros; (EM13MAT403A): Analisar, com ou sem apoio de tecnologias digitais, as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano, para identificar as características fundamentais (domínio, imagem, crescimento) de cada função; (EM13MAT403B): Estabelecer relações, com ou sem apoio de tecnologias digitais, entre as representações de funções exponencial e logarítmica expressas em tabelas e em plano cartesiano.\nSAEB: D20 – Analisar crescimento/decrescimento, zeros de funções reais apresentadas em gráficos. D21 – Identificar o gráfico que representa uma situação descrita em um texto. D27 – Identificar a representação algébrica e/ou gráfica de uma função exponencial. D28 – Identificar a representação algébrica e/ou gráfica de uma função logarítmica reconhecendo-a como inversa da função exponencial. D29 – Resolver problema que envolva função exponencial.\nOrientações: Professores, trabalharemos em conjunto estas habilidades, pois elas constituem um todo esperado de conhecimento sobre as funções exponencial e logarítmica, para a resolução e interpretação de situações em diferentes contextos. Essas habilidades também estão relacionadsa as diversas áreas, entre elas, pode-se citar inter-relações com a área de Ciências da Natureza (cálculo do ph de substâncias em Química, energia liberada por abalos sísmicos em Física, cálculo do tempo necessário para uma colônia de microrganismos dobrar de tamanho em Biologia)."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 5: Investigar e estabelecer conjecturas a respeito de diferentes conceitos e propriedades matemáticas, empregando estratégias e recursos, como observação de padrões, experimentações e diferentes tecnologias, identificando a necessidade, ou não, de uma demonstração cada vez mais formal na validação das referidas conjecturas.",
+    "habilidade": "(EM13MAT507) Identificar e associar progressões aritméticas (PA) a funções afins de domínios discretos, para análise de propriedades, dedução de algumas fórmulas e resolução de problemas.",
+    "objeto_conhecimento": "Sequências numéricas. Sequência numéricas: lei da função associada a cada sequência. Progressões aritméticas (PA). Fórmula do termo geral de uma PA. Soma dos n primeiros termos de uma PA. PA e função afim.",
+    "descritores_saeb": "D22 – Resolver problema envolvendo P.A. dada a fórmula do termo geral.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento desta habilidade, é interessante começar explorando a identificação de regularidades em uma sequência, seja ela representada por números ou figuras que aumentam ou diminuem de forma constante. A partir dessa identificação, os estudantes poderão associar a sequência a uma Progressão Aritmética (P.A.). Inicialmente, é fundamental que os estudantes reconheçam a diferença entre progressões aritméticas e outras formas de sequência, compreendendo que em uma P.A. a diferença entre termos consecutivos é constante. Essa compreensão inicial facilitará a introdução de conceitos mais complexos relacionados a fórmulas e aplicações práticas da P.A.",
+    "habilidade_codes": [
+      "EM13MAT507"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 4º Bimestre\nUnidade: Números e álgebra\nObjetos: Sequências numéricas. Sequência numéricas: lei da função associada a cada sequência. Progressões aritméticas (PA). Fórmula do termo geral de uma PA. Soma dos n primeiros termos de uma PA. PA e função afim.\nHabilidades: (EM13MAT507) Identificar e associar progressões aritméticas (PA) a funções afins de domínios discretos, para análise de propriedades, dedução de algumas fórmulas e resolução de problemas.\nSAEB: D22 – Resolver problema envolvendo P.A. dada a fórmula do termo geral.\nOrientações: Para o desenvolvimento desta habilidade, é interessante começar explorando a identificação de regularidades em uma sequência, seja ela representada por números ou figuras que aumentam ou diminuem de forma constante. A partir dessa identificação, os estudantes poderão associar a sequência a uma Progressão Aritmética (P.A.). Inicialmente, é fundamental que os estudantes reconheçam a diferença entre progressões aritméticas e outras formas de sequência, compreendendo que em uma P.A. a diferença entre termos consecutivos é constante. Essa compreensão inicial facilitará a introdução de conceitos mais complexos relacionados a fórmulas e aplicações práticas da P.A."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Números e álgebra",
+    "competencia": "Competência 5: Investigar e estabelecer conjecturas a respeito de diferentes conceitos e propriedades matemáticas, empregando estratégias e recursos, como observação de padrões, experimentações e diferentes tecnologias, identificando a necessidade, ou não, de uma demonstração cada vez mais formal na validação das referidas conjecturas.",
+    "habilidade": "(EM13MAT508) Identificar e associar progressões geométricas (PG) a funções exponenciais de domínios discretos, para análise de propriedades, dedução de algumas fórmulas e resolução de problemas.",
+    "objeto_conhecimento": "Progressões geométricas (PG). Fórmula do termo geral de uma PG. Soma dos n primeiros termos de uma PG. PG e a função exponencial.",
+    "descritores_saeb": "D22 – Resolver problema envolvendo P.G. dada a fórmula do termo geral.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento desta habilidade, sugere-se iniciar com exemplos que envolvem um “passo multiplicativo constante”, como o crescimento populacional e juros compostos. É útil apresentar gráficos ou infográficos que visualizem claramente esse “passo multiplicativo constante”. A contextualização com aplicações bancárias é relevante, mostrando que os juros no dia a dia geralmente são compostos. Uma abordagem interessante é utilizar Metodologias Ativas de Ensino, como a Gamificação, para tornar o aprendizado mais dinâmico. Relacione a Progressão Geométrica com funções exponenciais, explorando, por exemplo, as taxas de crescimento populacional e a formação de fractais. Isso ajuda os estudantes a perceberem que as propriedades das funções exponenciais são semelhantes às das sequências numéricas em Progressões Geométricas.",
+    "habilidade_codes": [
+      "EM13MAT508"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Matemática | 4º Bimestre\nUnidade: Números e álgebra\nObjetos: Progressões geométricas (PG). Fórmula do termo geral de uma PG. Soma dos n primeiros termos de uma PG. PG e a função exponencial.\nHabilidades: (EM13MAT508) Identificar e associar progressões geométricas (PG) a funções exponenciais de domínios discretos, para análise de propriedades, dedução de algumas fórmulas e resolução de problemas.\nSAEB: D22 – Resolver problema envolvendo P.G. dada a fórmula do termo geral.\nOrientações: Para o desenvolvimento desta habilidade, sugere-se iniciar com exemplos que envolvem um “passo multiplicativo constante”, como o crescimento populacional e juros compostos. É útil apresentar gráficos ou infográficos que visualizem claramente esse “passo multiplicativo constante”. A contextualização com aplicações bancárias é relevante, mostrando que os juros no dia a dia geralmente são compostos. Uma abordagem interessante é utilizar Metodologias Ativas de Ensino, como a Gamificação, para tornar o aprendizado mais dinâmico. Relacione a Progressão Geométrica com funções exponenciais, explorando, por exemplo, as taxas de crescimento populacional e a formação de fractais. Isso ajuda os estudantes a perceberem que as propriedades das funções exponenciais são semelhantes às das sequências numéricas em Progressões Geométricas."
+  }
+]

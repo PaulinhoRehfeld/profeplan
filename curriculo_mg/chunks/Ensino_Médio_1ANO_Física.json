@@ -1,0 +1,365 @@
+[
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Ciência e Tecnologia",
+    "competencia": "Não especificada (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF06CI29MG) - Reconhecer a ética como princípio necessário à produção do conhecimento científico; (EF06CI30MG) - Considerar o impacto do progresso pelo conhecimento científico e suas aplicações na vida, na sociedade e na cultura de cada pessoa.",
+    "objeto_conhecimento": "Conhecimento Científico; Método Científico.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Em boa parte dos casos, é no primeiro ano do Ensino Médio que o estudante se depara com a Física, enquanto componente curricular, pela primeira vez. Sugere-se, portanto, que antes de se introduzir os conceitos e as leis relacionadas, sejam apresentados aos estudantes os contextos históricos e sociais da produção científica e o seu papel na sociedade, para que eles possam compreender a Física como parte dessa construção, reconhecendo seus impactos ao longo dos séculos.",
+    "habilidade_codes": [
+      "EF06CI29MG",
+      "EF06CI30MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 1º Bimestre\nUnidade: Ciência e Tecnologia\nObjetos: Conhecimento Científico; Método Científico.\nHabilidades: (EF06CI29MG) - Reconhecer a ética como princípio necessário à produção do conhecimento científico; (EF06CI30MG) - Considerar o impacto do progresso pelo conhecimento científico e suas aplicações na vida, na sociedade e na cultura de cada pessoa.\nSAEB: Não mencionado no documento.\nOrientações: Em boa parte dos casos, é no primeiro ano do Ensino Médio que o estudante se depara com a Física, enquanto componente curricular, pela primeira vez. Sugere-se, portanto, que antes de se introduzir os conceitos e as leis relacionadas, sejam apresentados aos estudantes os contextos históricos e sociais da produção científica e o seu papel na sociedade, para que eles possam compreender a Física como parte dessa construção, reconhecendo seus impactos ao longo dos séculos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia; Ciência e Tecnologia",
+    "competencia": "Não especificada (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF07CI01) - Discutir a aplicação, ao longo da história, das máquinas simples e propor soluções e invenções para a realização de tarefas mecânicas cotidianas; (EF07CI43MG) - Perceber o papel das ciências e das tecnologias na vida cotidiana, compreendendo a maneira como as ciências e as tecnologias foram produzidas ao longo da história.",
+    "objeto_conhecimento": "Máquinas simples; Método Científico; movimentos retilíneos e circular; força de atrito e resistência do ar; máquinas simples - alavancas, roldanas e plano inclinado; Torque; experimento de Terriceli.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "O objetivo é despertar no estudante a visão de Ciências como produto das perguntas do ser humano diante dos desafios perante à natureza, de modo contextualizado social e historicamente, o que contribuiu para o progresso do conhecimento humano. Você pode apurar as concepções dos estudantes, considerando o conhecimento prévio.",
+    "habilidade_codes": [
+      "EF07CI01",
+      "EF07CI43MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 1º Bimestre\nUnidade: Matéria e energia; Ciência e Tecnologia\nObjetos: Máquinas simples; Método Científico; movimentos retilíneos e circular; força de atrito e resistência do ar; máquinas simples - alavancas, roldanas e plano inclinado; Torque; experimento de Terriceli.\nHabilidades: (EF07CI01) - Discutir a aplicação, ao longo da história, das máquinas simples e propor soluções e invenções para a realização de tarefas mecânicas cotidianas; (EF07CI43MG) - Perceber o papel das ciências e das tecnologias na vida cotidiana, compreendendo a maneira como as ciências e as tecnologias foram produzidas ao longo da história.\nSAEB: Não mencionado no documento.\nOrientações: O objetivo é despertar no estudante a visão de Ciências como produto das perguntas do ser humano diante dos desafios perante à natureza, de modo contextualizado social e historicamente, o que contribuiu para o progresso do conhecimento humano. Você pode apurar as concepções dos estudantes, considerando o conhecimento prévio."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Não especificada (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF08CI12) - Justificar, por meio da construção de modelos e da observação da Lua no céu, a ocorrência das fases da Lua e dos eclipses, com base nas posições relativas entre Sol, Terra e Lua; (EF09CI15) - Relacionar diferentes leituras do céu e explicações sobre a origem da Terra, do Sol ou do Sistema Solar às necessidades de distintas culturas (agricultura, caça, mito, orientação espacial e temporal etc.).",
+    "objeto_conhecimento": "Propagação retilínea da luz; eclipses; Astronomia.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Na História das Ciências, percebemos como o ser humano relaciona-se com a natureza e como essa relação determinou a evolução dos conhecimentos a cerca dos movimentos dos astros no céu e seus impactos nas suas atividades técnicas e cotidianas. Esse conhecimento prévio dos estudantes é favorável ao desenvolvimento dos seus estudos em Ciências da Natureza.",
+    "habilidade_codes": [
+      "EF08CI12",
+      "EF09CI15"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 1º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Propagação retilínea da luz; eclipses; Astronomia.\nHabilidades: (EF08CI12) - Justificar, por meio da construção de modelos e da observação da Lua no céu, a ocorrência das fases da Lua e dos eclipses, com base nas posições relativas entre Sol, Terra e Lua; (EF09CI15) - Relacionar diferentes leituras do céu e explicações sobre a origem da Terra, do Sol ou do Sistema Solar às necessidades de distintas culturas (agricultura, caça, mito, orientação espacial e temporal etc.).\nSAEB: Não mencionado no documento.\nOrientações: Na História das Ciências, percebemos como o ser humano relaciona-se com a natureza e como essa relação determinou a evolução dos conhecimentos a cerca dos movimentos dos astros no céu e seus impactos nas suas atividades técnicas e cotidianas. Esse conhecimento prévio dos estudantes é favorável ao desenvolvimento dos seus estudos em Ciências da Natureza."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Não especificada (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF09CI16) - Selecionar argumentos sobre a viabilidade da sobrevivência humana fora da Terra, com base nas condições necessárias à vida, nas características dos planetas e nas distâncias e nos tempos envolvidos em viagens interplanetárias e interestelares.",
+    "objeto_conhecimento": "Astronomia.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Atualmente, os estudantes estão constantemente em contato com diversas iinformações no contexto de viagens interplanetárias, interestelares, ou mesmo intergaláticas, por meio de filmes de ficção científica, documentários e séries. Mas, é importante que eles saibam diferenciar o que é ficção de realidade. Faça uma apuração de suas concepções prévias por meio de debates e incentive a participação e a expressão de suas ideias.",
+    "habilidade_codes": [
+      "EF09CI16"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 1º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Astronomia.\nHabilidades: (EF09CI16) - Selecionar argumentos sobre a viabilidade da sobrevivência humana fora da Terra, com base nas condições necessárias à vida, nas características dos planetas e nas distâncias e nos tempos envolvidos em viagens interplanetárias e interestelares.\nSAEB: Não mencionado no documento.\nOrientações: Atualmente, os estudantes estão constantemente em contato com diversas iinformações no contexto de viagens interplanetárias, interestelares, ou mesmo intergaláticas, por meio de filmes de ficção científica, documentários e séries. Mas, é importante que eles saibam diferenciar o que é ficção de realidade. Faça uma apuração de suas concepções prévias por meio de debates e incentive a participação e a expressão de suas ideias."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Não especificada (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF07CI03A) - Utilizar o conhecimento das formas de propagação do calor para justificar a utilização de determinados materiais (condutores e isolantes) na vida cotidiana; (EF08CI02) - Construir circuitos elétricos com pilha/bateria, fios e lâmpada ou outros dispositivos e compará-los a circuitos elétricos residenciais.",
+    "objeto_conhecimento": "Propagação do calor; Circuitos elétricos.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Professor(a), esses objetos de conhecimento serão aprofundado no segundo ano de EM. O objetivo dessas abordagens ainda no primeiro bimestre do primeiro ano, será para efeito de diagnóstico, considerando que o estudante já teve a oportunidade do desenvolvimento destas habilidades no Ensino Fundamental. Nesse sentido, sugere-se que esses temas sejam tratados de maneira breve e qualitativa, revisando os conceitos envolvidos em cada fenômeno.",
+    "habilidade_codes": [
+      "EF07CI03A",
+      "EF08CI02"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 1º Bimestre\nUnidade: Matéria e Energia\nObjetos: Propagação do calor; Circuitos elétricos.\nHabilidades: (EF07CI03A) - Utilizar o conhecimento das formas de propagação do calor para justificar a utilização de determinados materiais (condutores e isolantes) na vida cotidiana; (EF08CI02) - Construir circuitos elétricos com pilha/bateria, fios e lâmpada ou outros dispositivos e compará-los a circuitos elétricos residenciais.\nSAEB: Não mencionado no documento.\nOrientações: Professor(a), esses objetos de conhecimento serão aprofundado no segundo ano de EM. O objetivo dessas abordagens ainda no primeiro bimestre do primeiro ano, será para efeito de diagnóstico, considerando que o estudante já teve a oportunidade do desenvolvimento destas habilidades no Ensino Fundamental. Nesse sentido, sugere-se que esses temas sejam tratados de maneira breve e qualitativa, revisando os conceitos envolvidos em cada fenômeno."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia",
+    "competencia": "Não especificada (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF08CI03) - Classificar equipamentos elétricos residenciais (chuveiro, ferro, lâmpadas, TV, rádio, geladeira etc.) de acordo com o tipo de transformação de energia (da energia elétrica para a térmica, luminosa, sonora e mecânica, por exemplo); (EF08CI04) - Calcular o consumo de eletrodomésticos a partir dos dados de potência (descritos no próprio equipamento) e tempo médio de uso para avaliar o impacto de cada equipamento no consumo doméstico mensal.",
+    "objeto_conhecimento": "Transformação de energia; Potência elétrica.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Professor(a), esses objetos de conhecimento serão aprofundado no segundo ano de EM. O objetivo dessas abordagens ainda no primeiro bimestre do primeiro ano, será para efeito de diagnóstico, considerando que o estudante já teve a oportunidade do desenvolvimento destas habilidades no Ensino Fundamental. Nesse sentido, sugere-se que esses temas sejam tratados de maneira breve e qualitativa, revisando os conceitos envolvidos em cada fenômeno.",
+    "habilidade_codes": [
+      "EF08CI03",
+      "EF08CI04"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 1º Bimestre\nUnidade: Matéria e energia\nObjetos: Transformação de energia; Potência elétrica.\nHabilidades: (EF08CI03) - Classificar equipamentos elétricos residenciais (chuveiro, ferro, lâmpadas, TV, rádio, geladeira etc.) de acordo com o tipo de transformação de energia (da energia elétrica para a térmica, luminosa, sonora e mecânica, por exemplo); (EF08CI04) - Calcular o consumo de eletrodomésticos a partir dos dados de potência (descritos no próprio equipamento) e tempo médio de uso para avaliar o impacto de cada equipamento no consumo doméstico mensal.\nSAEB: Não mencionado no documento.\nOrientações: Professor(a), esses objetos de conhecimento serão aprofundado no segundo ano de EM. O objetivo dessas abordagens ainda no primeiro bimestre do primeiro ano, será para efeito de diagnóstico, considerando que o estudante já teve a oportunidade do desenvolvimento destas habilidades no Ensino Fundamental. Nesse sentido, sugere-se que esses temas sejam tratados de maneira breve e qualitativa, revisando os conceitos envolvidos em cada fenômeno."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações problema sob uma perspectiva científica; (EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental; (EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.",
+    "objeto_conhecimento": "Grandezas escalares; Unidades de medidas; Método científico; Vetores; Grandezas vetoriais.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Sugerimos abordar o contexto histórico das unidades de medida, a criação do sistema métrico, das unidades-padrão e a elaboração do Sistema Internacional de Unidades (SI). Sugere-se também a demonstração das conversões de unidade, evidenciando o uso no cotidiano com o emprego da notação científica. Aconselha-se igualmente, a apresentação e manipulação de alguns instrumentos de medida com a finalidade de se criar hipoteses, estimativas que facilitem as leituras técnico-cientificas. Incentive os estudantes a elaborar hipóteses, a respeito de aproximações de resultados de medidas das grandezas físicas. Ao abordar o objeto de conhecimento Método Científico, é importante levar em consideração o desenvolvimento deste assunto desde o 6º ano do Ensino Fundamental, no componente curricular Ciências, através das habilidades EF06CI29MG, EF06CI30MG e EF06CI31MG. Estas habilidades exploram como temática inicial evidenciando a importância da produção do conhecimento, sua aplicabilidade e a importância da ética no processo de produção do conhecimento científico. É interessante avaliar o conhecimento prévio dos estudantes antes de sua abordagem. Assim, propomos atividades sobre o estudo do método científico e todas as suas etapas envolvendo o estudo sobre uma problemática da escola ou do cotidiano, proporcionando situações onde os estudantes conseguirão entender as partes do processo científico: analisar, formular hipóteses, fazer experimentos e elaborar conclusões, afim de fazer debates a respeito de algum tema científico com base em argumentos referenciados. Para o objeto de conhecimento grandezas vetoriais, procure verificar o que os estudantes entendem por direção e sentido e como eles utilizam essa nomenclatura em seu cotidiano. Uma boa referência é usar uma reta horizontal ou vertical, para indicar a direção e os possíveis sentidos. Diferencie grandezas escalares e vetoriais bem como caracterize módulo, direção e sentido. Faça a relação dos vetores com as grandezas estudadas em física. Formalize o estudo dos vetores com as operações vetoriais, onde eles apresentam mesma direção e sentido (0°), mesma direção e sentidos opostos (180°) e direções perpendiculares (90°). O tratamento geométrico para esses casos particulares são plenamente satisfatórios para o Ensino Médio.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 2º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Grandezas escalares; Unidades de medidas; Método científico; Vetores; Grandezas vetoriais.\nHabilidades: (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações problema sob uma perspectiva científica; (EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental; (EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.\nSAEB: Não mencionado no documento.\nOrientações: Sugerimos abordar o contexto histórico das unidades de medida, a criação do sistema métrico, das unidades-padrão e a elaboração do Sistema Internacional de Unidades (SI). Sugere-se também a demonstração das conversões de unidade, evidenciando o uso no cotidiano com o emprego da notação científica. Aconselha-se igualmente, a apresentação e manipulação de alguns instrumentos de medida com a finalidade de se criar hipoteses, estimativas que facilitem as leituras técnico-cientificas. Incentive os estudantes a elaborar hipóteses, a respeito de aproximações de resultados de medidas das grandezas físicas. Ao abordar o objeto de conhecimento Método Científico, é importante levar em consideração o desenvolvimento deste assunto desde o 6º ano do Ensino Fundamental, no componente curricular Ciências, através das habilidades EF06CI29MG, EF06CI30MG e EF06CI31MG. Estas habilidades exploram como temática inicial evidenciando a importância da produção do conhecimento, sua aplicabilidade e a importância da ética no processo de produção do conhecimento científico. É interessante avaliar o conhecimento prévio dos estudantes antes de sua abordagem. Assim, propomos atividades sobre o estudo do método científico e todas as suas etapas envolvendo o estudo sobre uma problemática da escola ou do cotidiano, proporcionando situações onde os estudantes conseguirão entender as partes do processo científico: analisar, formular hipóteses, fazer experimentos e elaborar conclusões, afim de fazer debates a respeito de algum tema científico com base em argumentos referenciados. Para o objeto de conhecimento grandezas vetoriais, procure verificar o que os estudantes entendem por direção e sentido e como eles utilizam essa nomenclatura em seu cotidiano. Uma boa referência é usar uma reta horizontal ou vertical, para indicar a direção e os possíveis sentidos. Diferencie grandezas escalares e vetoriais bem como caracterize módulo, direção e sentido. Faça a relação dos vetores com as grandezas estudadas em física. Formalize o estudo dos vetores com as operações vetoriais, onde eles apresentam mesma direção e sentido (0°), mesma direção e sentidos opostos (180°) e direções perpendiculares (90°). O tratamento geométrico para esses casos particulares são plenamente satisfatórios para o Ensino Médio."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologia e Linguagens",
+    "competencia": "Competência Específica 02; Competência Específica 03.",
+    "habilidade": "(EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos a respeito dos movimentos de objetos na Terra, no Sistema Solar e no Universo com base na análise das interações gravitacionais, com ou sem o uso de dispositivos e aplicativos digitais; (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas...",
+    "objeto_conhecimento": "Conceitos iniciais da Cinemática: referencial, deslocamento, ponto material, trajetória, tempo.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Para estes objetos de conhecimento sugerimos que seja evidenciado o contexto histórico dos movimentos, suas propriedades, a relatividade galileana (movimento relativo), o entendimento de referencial, ponto material e trajetória. É interessante que sejam exploradas situações reais em que a compreenção das leis do movimento se fazem necessárias para avaliar condições de segurança em diversos ambiente contidianos. Deste modo espera-se que o estudante faça conexões do estudo dos movimentos dos corpos com os seus próprios movimentos, perceba as grandezas de medidas envolvidas no estudo e estabeleça suas próprias relações e conclusões.",
+    "habilidade_codes": [
+      "EM13CNT204X",
+      "EM13CNT301"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 2º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologia e Linguagens\nObjetos: Conceitos iniciais da Cinemática: referencial, deslocamento, ponto material, trajetória, tempo.\nHabilidades: (EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos a respeito dos movimentos de objetos na Terra, no Sistema Solar e no Universo com base na análise das interações gravitacionais, com ou sem o uso de dispositivos e aplicativos digitais; (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas...\nSAEB: Não mencionado no documento.\nOrientações: Para estes objetos de conhecimento sugerimos que seja evidenciado o contexto histórico dos movimentos, suas propriedades, a relatividade galileana (movimento relativo), o entendimento de referencial, ponto material e trajetória. É interessante que sejam exploradas situações reais em que a compreenção das leis do movimento se fazem necessárias para avaliar condições de segurança em diversos ambiente contidianos. Deste modo espera-se que o estudante faça conexões do estudo dos movimentos dos corpos com os seus próprios movimentos, perceba as grandezas de medidas envolvidas no estudo e estabeleça suas próprias relações e conclusões."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologia e Linguagens",
+    "competencia": "Competência Específica 02; Competência Específica 03.",
+    "habilidade": "(EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos...; (EM13CNT301) - Construir questões...; (EM13CNT303) - Interpretar textos de divulgação científica...",
+    "objeto_conhecimento": "Velocidade instantânea; Velocidade média; Movimento Retilíneo e Uniforme; Movimento Retilíneo Uniformemente Variado; Queda livre; Movimento Circular.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Ao introduzir o tema velocidade, sugere-se que o professora(a) enfatize o conceito de rapidez, a partir da qual se estabelece a relação entre a distância percorrida e o tempo gasto no percurso. Recomenda-se retomar as unidades de medida da velocidade no SI e no cotidiano. Sugerimos que durante as aulas sejam realizados debates e rodas de conversa a respeito das diferenças entre o conceito de velocidade média e instantânea. É recomendado ainda, incluir a análise da relação entre as velocidades entre corpos distintos (velocidade relativa), vista na mecânica clássica. Use como referencial o movimento de um corpo em função do outro. Ao apresentar o Movimento Retilíneo e Uniforme (MRU), aconselha-se que seja abordada a proporcionalidade entre a distância e o tempo, onde a constante de proprocionalidade é a velocidade. Essas relações oferecem condições de fazer previsões a respeito de valores de distância percorrida e tempo gasto em percursos. Sugere-se que se evidencie o refencial adotado para classificar os tipos de movimento do móvel, além do estudo dos gráficos do MRU com a finalidade observar as variações das grandezas envolvidas. Relacionar as grandezas físicas com os estudos que estão sendo feitos em matemática neste mesmo bimestre pode auxiliar na produção de sentido para ambos os conteúdos, simultaneamente. Ao apresentar os conceitos do Movimento Retilíneo Uniformimente Variado (MRUV), recomenda-se que o professor(a) procure evidenciar o conceito da taxa de variação da velodidade com o tempo, ou seja, a aceleração. Recomenda-se partir de exemplos de movimentos acelerados e retardados que os estudantes já conheça, como um carro acelerando ou freando, o movimento de um elevador subindo e descendo, demonstrando a variação da velocidade em situações cotidianas. Procure escolher o sentido positivo do movimento como o próprio sentido do movimento do objeto, o que facilita a visão do movimento no sentido oposto (retrógrado), a aceleração positiva e negativa. É interessante usar exemplos de movimento no esporte, no trânsito, em processos produtivos, entre outros. Recomenda-se contextualizar o estudo da queda livre, utilizando o experimento de Galileu, que obteve resultados contrários aos de Aristóteles. É importante que o estudante perceba que a queda livre é um caso particular do MRUV e que pode ser representado pelas mesmas equações e gráficos, mas com a aceleração constante da gravidade (g). Para estudar o Movimento Circular Uniforme, (MCU), sugerimos que se faça uma abordagem sucinta das grandezas que o compõe: Período (T), frequência (f), velocidade linear (v), velocidade angular (ω), aceleração centrípeta (aC). De posse desse conhecimento, será possível o estudo da transmissão do movimento circular através dos acoplamentos por eixo e por periferia, com a finalidade de construir modelos explicativos e avaliar suas aplicações. É interessante utilizar demonstrações de forças perpendiculares à velocidade, para realizar discussões sobre as causas do movimento circular dos corpos. Recomenda-se o uso de textos e materiais de divulgação científica, simuladores virtuais educacionais para proporcionar aos estudantes vivências de diferentes linguagens tecnológicas. Para compreender os conceitos de lançamento horizontal e oblíquo, sugerimos que identifique as principais características de cada tipo de movimento (MRU e MRUV) que estão sendo utilizados, aplicando os conceitos de cinemática e as equações do movimento. A interpretação dos movimentos de forma independente permite que eles sejam compreendidos de maneira integral. Aconselha-se desenvolver a capacidade de resolver problemas que envolvam lançamentos, utilizando a matemática como ferramenta para descrever e prever o comportamento dos corpos. Utilize simulações de física (como PhET Interactive Simulations) que permitam aos estudantes visualizar o comportamento dos objetos em diferentes condições de lançamento. Se possível, realize experimentos em sala de aula, como o lançamento de esferas em um plano horizontal e oblíquo, para que os alunos possam medir distâncias e tempos, e comparar com os resultados teóricos.",
+    "habilidade_codes": [
+      "EM13CNT204X",
+      "EM13CNT301",
+      "EM13CNT303"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 2º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologia e Linguagens\nObjetos: Velocidade instantânea; Velocidade média; Movimento Retilíneo e Uniforme; Movimento Retilíneo Uniformemente Variado; Queda livre; Movimento Circular.\nHabilidades: (EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos...; (EM13CNT301) - Construir questões...; (EM13CNT303) - Interpretar textos de divulgação científica...\nSAEB: Não mencionado no documento.\nOrientações: Ao introduzir o tema velocidade, sugere-se que o professora(a) enfatize o conceito de rapidez, a partir da qual se estabelece a relação entre a distância percorrida e o tempo gasto no percurso. Recomenda-se retomar as unidades de medida da velocidade no SI e no cotidiano. Sugerimos que durante as aulas sejam realizados debates e rodas de conversa a respeito das diferenças entre o conceito de velocidade média e instantânea. É recomendado ainda, incluir a análise da relação entre as velocidades entre corpos distintos (velocidade relativa), vista na mecânica clássica. Use como referencial o movimento de um corpo em função do outro. Ao apresentar o Movimento Retilíneo e Uniforme (MRU), aconselha-se que seja abordada a proporcionalidade entre a distância e o tempo, onde a constante de proprocionalidade é a velocidade. Essas relações oferecem condições de fazer previsões a respeito de valores de distância percorrida e tempo gasto em percursos. Sugere-se que se evidencie o refencial adotado para classificar os tipos de movimento do móvel, além do estudo dos gráficos do MRU com a finalidade observar as variações das grandezas envolvidas. Relacionar as grandezas físicas com os estudos que estão sendo feitos em matemática neste mesmo bimestre pode auxiliar na produção de sentido para ambos os conteúdos, simultaneamente. Ao apresentar os conceitos do Movimento Retilíneo Uniformimente Variado (MRUV), recomenda-se que o professor(a) procure evidenciar o conceito da taxa de variação da velodidade com o tempo, ou seja, a aceleração. Recomenda-se partir de exemplos de movimentos acelerados e retardados que os estudantes já conheça, como um carro acelerando ou freando, o movimento de um elevador subindo e descendo, demonstrando a variação da velocidade em situações cotidianas. Procure escolher o sentido positivo do movimento como o próprio sentido do movimento do objeto, o que facilita a visão do movimento no sentido oposto (retrógrado), a aceleração positiva e negativa. É interessante usar exemplos de movimento no esporte, no trânsito, em processos produtivos, entre outros. Recomenda-se contextualizar o estudo da queda livre, utilizando o experimento de Galileu, que obteve resultados contrários aos de Aristóteles. É importante que o estudante perceba que a queda livre é um caso particular do MRUV e que pode ser representado pelas mesmas equações e gráficos, mas com a aceleração constante da gravidade (g). Para estudar o Movimento Circular Uniforme, (MCU), sugerimos que se faça uma abordagem sucinta das grandezas que o compõe: Período (T), frequência (f), velocidade linear (v), velocidade angular (ω), aceleração centrípeta (aC). De posse desse conhecimento, será possível o estudo da transmissão do movimento circular através dos acoplamentos por eixo e por periferia, com a finalidade de construir modelos explicativos e avaliar suas aplicações. É interessante utilizar demonstrações de forças perpendiculares à velocidade, para realizar discussões sobre as causas do movimento circular dos corpos. Recomenda-se o uso de textos e materiais de divulgação científica, simuladores virtuais educacionais para proporcionar aos estudantes vivências de diferentes linguagens tecnológicas. Para compreender os conceitos de lançamento horizontal e oblíquo, sugerimos que identifique as principais características de cada tipo de movimento (MRU e MRUV) que estão sendo utilizados, aplicando os conceitos de cinemática e as equações do movimento. A interpretação dos movimentos de forma independente permite que eles sejam compreendidos de maneira integral. Aconselha-se desenvolver a capacidade de resolver problemas que envolvam lançamentos, utilizando a matemática como ferramenta para descrever e prever o comportamento dos corpos. Utilize simulações de física (como PhET Interactive Simulations) que permitam aos estudantes visualizar o comportamento dos objetos em diferentes condições de lançamento. Se possível, realize experimentos em sala de aula, como o lançamento de esferas em um plano horizontal e oblíquo, para que os alunos possam medir distâncias e tempos, e comparar com os resultados teóricos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologia e Linguagens",
+    "competencia": "Competência Específica 02; Competência Específica 03.",
+    "habilidade": "(EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra; (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...; (EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental...",
+    "objeto_conhecimento": "As Leis de Newtons; Força Peso; Força Normal; Força de atrito e resistência do ar; Máquinas simples - alavancas, roldanas e plano inclinado; Torque.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Ao iniciar as leis do movimento, recomenda-se resgatar o conceito de movimento na ótica de Aristóteles e Galileu para chegar ao pensamento newtoniano. Procure mostrar as causas das alterações dos movimentos, exemplos de suas aplicações, destacando sua presença na vivência diária dos estudantes. A demonstração das unidades de medidas e de processos de medição são indicados. Recomenda-se o uso de materiais simples para explicação dessas grandezas, tratar de situações reais em que a compreensão das leis do movimento se fazem necessárias. Ao formalizar as Leis de Newton, evidencie o conceito das forças naturais (gravitacionais, elétricas e magnéticas e forças nucleares fraca e forte) e suas aplicações em situações problema no cotidiano, nas mais diversas formas. É importante destacar as forças especiais peso, normal, atrito e tensão, para que ofereçam embasamento teórico para o estudo dos sistemas de blocos. Este objeto de conhecimento foi proposto através da habilidade EF07CI01 do 7º ano do EF, onde é demonstrado sua funcionalidade na vida prática e ao longo da história. Seria interessante avaliar o conhecimento prévio dos estudantes antes de sua abordagem. O uso de materiais simples e recursos diversos como simulações, videos, experimentos, etc. contribuem para criar debates sobre o funcionamento de máquinas simples, torque e suas aplicações em objetos de uso comum, ítens de segurança como os EPI’s, além de facilitar a apreensão do conteúdo.",
+    "habilidade_codes": [
+      "EM13CNT210MG",
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303",
+      "EM13CNT306X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 2º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologia e Linguagens\nObjetos: As Leis de Newtons; Força Peso; Força Normal; Força de atrito e resistência do ar; Máquinas simples - alavancas, roldanas e plano inclinado; Torque.\nHabilidades: (EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra; (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...; (EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental...\nSAEB: Não mencionado no documento.\nOrientações: Ao iniciar as leis do movimento, recomenda-se resgatar o conceito de movimento na ótica de Aristóteles e Galileu para chegar ao pensamento newtoniano. Procure mostrar as causas das alterações dos movimentos, exemplos de suas aplicações, destacando sua presença na vivência diária dos estudantes. A demonstração das unidades de medidas e de processos de medição são indicados. Recomenda-se o uso de materiais simples para explicação dessas grandezas, tratar de situações reais em que a compreensão das leis do movimento se fazem necessárias. Ao formalizar as Leis de Newton, evidencie o conceito das forças naturais (gravitacionais, elétricas e magnéticas e forças nucleares fraca e forte) e suas aplicações em situações problema no cotidiano, nas mais diversas formas. É importante destacar as forças especiais peso, normal, atrito e tensão, para que ofereçam embasamento teórico para o estudo dos sistemas de blocos. Este objeto de conhecimento foi proposto através da habilidade EF07CI01 do 7º ano do EF, onde é demonstrado sua funcionalidade na vida prática e ao longo da história. Seria interessante avaliar o conhecimento prévio dos estudantes antes de sua abordagem. O uso de materiais simples e recursos diversos como simulações, videos, experimentos, etc. contribuem para criar debates sobre o funcionamento de máquinas simples, torque e suas aplicações em objetos de uso comum, ítens de segurança como os EPI’s, além de facilitar a apreensão do conteúdo."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologia e Linguagens",
+    "competencia": "Competência Específica 02; Competência Específica 03.",
+    "habilidade": "(EM13CNT201) - Analisar e discutir modelos, teorias e leis propostos em diferentes épocas e culturas...; (EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos...; (EM13CNT209X) - Analisar a evolução estelar associando-a aos modelos de origem e distribuição dos elementos químicos no Universo...; (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...",
+    "objeto_conhecimento": "Teoria do Big bang; Evolução das estrelas.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Explore a história das ciências, mostrando as falhas e superações dos diversos modelos cosmológicos, as viagens espaciais, a primeira corrida espacial da década de 1950 e a atual onde se fala da nova viagem a Lua, agora em seu polo sul. Propõe-se também, trabalhar os modelos de formação estelar e planetário expondo os processos físicos de como a Terra acumulou os elementos químicos, físicos e biológicos necessários para formação da vida. Recomenda-se ainda, fazer uso de instrumentos educacionais diversos (videos, sites, matérias jornalisticas, etc.) para criar debates sobre cosmologia e formação dos corpos celestes. O uso de recursos aplicados à astronomia no cotidiano como o reconhecimento de áreas, plantios, água entre outros se encontram disponíveis no site do Laboratório Nacional de Astrofísica (LNA). Estes objetos de conhecimento permitem a implementação de um projeto integrador entre os componentes das Ciências da Natureza e suas Tecnologias, visando a aproximação deles, demonstrando como caminham juntos no estudo da evolução da vida na Terra. Sugerimos um tema geral, abrangente que contemple a ORIGEM DO UNIVERSO, DA TERRA E DA VIDA NA TERRA, utilizando o método ciêntífico numa perspectiva do desenvolvimento do senso crítico, utilizando-o como base de pesquisa e o ensino por investigação como norteador das estratégias pedagógicas.",
+    "habilidade_codes": [
+      "EM13CNT201",
+      "EM13CNT204X",
+      "EM13CNT209X",
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 3º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologia e Linguagens\nObjetos: Teoria do Big bang; Evolução das estrelas.\nHabilidades: (EM13CNT201) - Analisar e discutir modelos, teorias e leis propostos em diferentes épocas e culturas...; (EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos...; (EM13CNT209X) - Analisar a evolução estelar associando-a aos modelos de origem e distribuição dos elementos químicos no Universo...; (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...\nSAEB: Não mencionado no documento.\nOrientações: Explore a história das ciências, mostrando as falhas e superações dos diversos modelos cosmológicos, as viagens espaciais, a primeira corrida espacial da década de 1950 e a atual onde se fala da nova viagem a Lua, agora em seu polo sul. Propõe-se também, trabalhar os modelos de formação estelar e planetário expondo os processos físicos de como a Terra acumulou os elementos químicos, físicos e biológicos necessários para formação da vida. Recomenda-se ainda, fazer uso de instrumentos educacionais diversos (videos, sites, matérias jornalisticas, etc.) para criar debates sobre cosmologia e formação dos corpos celestes. O uso de recursos aplicados à astronomia no cotidiano como o reconhecimento de áreas, plantios, água entre outros se encontram disponíveis no site do Laboratório Nacional de Astrofísica (LNA). Estes objetos de conhecimento permitem a implementação de um projeto integrador entre os componentes das Ciências da Natureza e suas Tecnologias, visando a aproximação deles, demonstrando como caminham juntos no estudo da evolução da vida na Terra. Sugerimos um tema geral, abrangente que contemple a ORIGEM DO UNIVERSO, DA TERRA E DA VIDA NA TERRA, utilizando o método ciêntífico numa perspectiva do desenvolvimento do senso crítico, utilizando-o como base de pesquisa e o ensino por investigação como norteador das estratégias pedagógicas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologia e Linguagens",
+    "competencia": "Competência Específica 02; Competência Específica 03.",
+    "habilidade": "(EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos...; (EM13CNT210MG) - Reconhecer as leis da natureza...; (EM13CNT301) - Construir questões...",
+    "objeto_conhecimento": "Leis de Kepler; Lei da Gravitação Universal.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Sugere-se, inicialmente, a construção de uma linha de tempo sobre a evolução dos modelos planetários, partindo dos movimentos dos astros e planetas, a partir das teorias de Aristóteles, Ptolomeu, Copérnico, Galileu, entre outros até chegar em Kepler. Formalize as Leis de Kepler de forma qualitativa e quantitativa, justificando o quanto foram importantes, representando um marco na história da ciência e mudando a forma como entendemos o universo e os movimentos celestes. Procure demonstrar que elas não apenas explicaram o movimento dos planetas, mas também estabeleceram os alicerces para as descobertas científicas subsequentes, influenciando profundamente o desenvolvimento da física e da astronomia. Dando continuidade ao objeto de conhecimento Leis de Kepler, sugere-se que a abordagem ao tema Gravitação Universal seja de forma conceitual, evidenciando reflexões fundamentadas em estudos preexistentes. Sugere-se a análise quantitativa e qualitativa da Lei da Gravitação Universal, estabelecendo-se a relações entre as massas dos corpos, a distância e a força entre eles. Aconselha-se trabalhar na construção de um modelo de sistema solar em escala, aproximando os estudantes da elaboração de seu aprendizado desenvolvendo hipóteses, realizando cálculos e leituras especializadas, com a finalidade de assimilação das ações das forças gravitacionais conforme as previsões de Newton. É possível também citar as dimensões de uma galáxia conhecida e as distâncias envolvidas, entre outras abordagens, a título de exemplo de aplicação.",
+    "habilidade_codes": [
+      "EM13CNT204X",
+      "EM13CNT210MG",
+      "EM13CNT301"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 3º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologia e Linguagens\nObjetos: Leis de Kepler; Lei da Gravitação Universal.\nHabilidades: (EM13CNT204X) - Elaborar explicações, previsões e realizar cálculos...; (EM13CNT210MG) - Reconhecer as leis da natureza...; (EM13CNT301) - Construir questões...\nSAEB: Não mencionado no documento.\nOrientações: Sugere-se, inicialmente, a construção de uma linha de tempo sobre a evolução dos modelos planetários, partindo dos movimentos dos astros e planetas, a partir das teorias de Aristóteles, Ptolomeu, Copérnico, Galileu, entre outros até chegar em Kepler. Formalize as Leis de Kepler de forma qualitativa e quantitativa, justificando o quanto foram importantes, representando um marco na história da ciência e mudando a forma como entendemos o universo e os movimentos celestes. Procure demonstrar que elas não apenas explicaram o movimento dos planetas, mas também estabeleceram os alicerces para as descobertas científicas subsequentes, influenciando profundamente o desenvolvimento da física e da astronomia. Dando continuidade ao objeto de conhecimento Leis de Kepler, sugere-se que a abordagem ao tema Gravitação Universal seja de forma conceitual, evidenciando reflexões fundamentadas em estudos preexistentes. Sugere-se a análise quantitativa e qualitativa da Lei da Gravitação Universal, estabelecendo-se a relações entre as massas dos corpos, a distância e a força entre eles. Aconselha-se trabalhar na construção de um modelo de sistema solar em escala, aproximando os estudantes da elaboração de seu aprendizado desenvolvendo hipóteses, realizando cálculos e leituras especializadas, com a finalidade de assimilação das ações das forças gravitacionais conforme as previsões de Newton. É possível também citar as dimensões de uma galáxia conhecida e as distâncias envolvidas, entre outras abordagens, a título de exemplo de aplicação."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02.",
+    "habilidade": "(EM13CNT201) - Analisar e discutir modelos...; (EM13CNT204X) - Elaborar explicações...; (EM13CNT210MG) - Reconhecer as leis da natureza...",
+    "objeto_conhecimento": "Teoria especial da relatividade; Dilatação do tempo; Contração do espaço; Teoria da Relatividade Geral.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Para estes objetos de conhecimento, sugere-se que se faça o desenvolvimento o mais conceitual e fenomenológico possível, considerando a continuação da evolução das ideias a partir das Leis de Kepler, a lei da Gravitação Universal de Newton até a Teoria da Relatividade de Einstein. Aconselha-se que seja feito o confronto entre as ideias da mecânica newtoniana e a mecânica relativística, enfatizando o conceito de gravidade como deformação do espaço-tempo. A seguir, a título de informação, faça um paralelo da velocidade tratada na Física clássica, com aquela desenvolvida na Relatividade Restrita de Einsten, cujos valores da velocidade são próximos ao da luz. Estes estudos podem envolver a Dilatação do tempo e Contração do espaço, que são fundamentais para descrever como o espaço e o tempo se comportam em diferentes referenciais inerciais.",
+    "habilidade_codes": [
+      "EM13CNT201",
+      "EM13CNT204X",
+      "EM13CNT210MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Teoria especial da relatividade; Dilatação do tempo; Contração do espaço; Teoria da Relatividade Geral.\nHabilidades: (EM13CNT201) - Analisar e discutir modelos...; (EM13CNT204X) - Elaborar explicações...; (EM13CNT210MG) - Reconhecer as leis da natureza...\nSAEB: Não mencionado no documento.\nOrientações: Para estes objetos de conhecimento, sugere-se que se faça o desenvolvimento o mais conceitual e fenomenológico possível, considerando a continuação da evolução das ideias a partir das Leis de Kepler, a lei da Gravitação Universal de Newton até a Teoria da Relatividade de Einstein. Aconselha-se que seja feito o confronto entre as ideias da mecânica newtoniana e a mecânica relativística, enfatizando o conceito de gravidade como deformação do espaço-tempo. A seguir, a título de informação, faça um paralelo da velocidade tratada na Física clássica, com aquela desenvolvida na Relatividade Restrita de Einsten, cujos valores da velocidade são próximos ao da luz. Estes estudos podem envolver a Dilatação do tempo e Contração do espaço, que são fundamentais para descrever como o espaço e o tempo se comportam em diferentes referenciais inerciais."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Matéria e Energia; Tecnologia e Linguagens",
+    "competencia": "Competência Específica 01; Competência Específica 03.",
+    "habilidade": "(EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável...; (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...",
+    "objeto_conhecimento": "Impulso; Quantidade de movimento (Momento Linear) e sua conservação.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Sugere-se analisar a aplicação de uma força(F) sobre um corpo em um intervalo de tempo (t) e estabelecer a relação existente entre essas grandezas, definindo o impulso sofrido. Da mesma forma, defina a quantidade de movimento (Q) de um corpo e o relacione com a sua velocidade vetorial. Para o estudo da consevação da quantidade de movimento (Q), é importante que o estudante entenda que as grandezas envolvidas são vetoriais, que interagem dentro de um sistema de partículas pré-estabelecido e que as forças internas a este sistema não provocam variação de Q. Recomenda-se fazer a distinção entre as forças internas e externas ao sistema em estudo, de forma a identificar corretemente a conservação da quantidade de movimento do sistema. Sugerimos também que seja realizada a contextualização e a realização de experimentos sobre a quantidade de movimento transferida de um corpo a outro, reconhecida em várias situações, como em colisões, por exemplo. É possível aplicar os conhecimentos dos processos físicos para explorar os modelos e interpretar as situações hipotéticas apresentadas, de maneira a proporcionar aos estudantes o reconhecimento desses processos no cotidiano. Este tipo de interação também pode ser feita através de uma apresentação através de recursos digitais como vídeos e simuladores virtuais educacionais.",
+    "habilidade_codes": [
+      "EM13CNT101",
+      "EM13CNT301",
+      "EM13CNT302"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 4º Bimestre\nUnidade: Matéria e Energia; Tecnologia e Linguagens\nObjetos: Impulso; Quantidade de movimento (Momento Linear) e sua conservação.\nHabilidades: (EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável...; (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...\nSAEB: Não mencionado no documento.\nOrientações: Sugere-se analisar a aplicação de uma força(F) sobre um corpo em um intervalo de tempo (t) e estabelecer a relação existente entre essas grandezas, definindo o impulso sofrido. Da mesma forma, defina a quantidade de movimento (Q) de um corpo e o relacione com a sua velocidade vetorial. Para o estudo da consevação da quantidade de movimento (Q), é importante que o estudante entenda que as grandezas envolvidas são vetoriais, que interagem dentro de um sistema de partículas pré-estabelecido e que as forças internas a este sistema não provocam variação de Q. Recomenda-se fazer a distinção entre as forças internas e externas ao sistema em estudo, de forma a identificar corretemente a conservação da quantidade de movimento do sistema. Sugerimos também que seja realizada a contextualização e a realização de experimentos sobre a quantidade de movimento transferida de um corpo a outro, reconhecida em várias situações, como em colisões, por exemplo. É possível aplicar os conhecimentos dos processos físicos para explorar os modelos e interpretar as situações hipotéticas apresentadas, de maneira a proporcionar aos estudantes o reconhecimento desses processos no cotidiano. Este tipo de interação também pode ser feita através de uma apresentação através de recursos digitais como vídeos e simuladores virtuais educacionais."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03.",
+    "habilidade": "(EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...; (EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas...; (EM13CNT307) - Analisar as propriedades dos materiais para avaliar a adequação de seu uso em diferentes aplicações (industriais, cotidianas, arquitetônicas, tecnológicas, entre outras) e/ ou propor soluções seguras e sustentáveis considerando seu contexto local e cotidiano.",
+    "objeto_conhecimento": "Pressão em sólidos; Pressão em fluidos; Experimento de Torricelli (Pressão Atmosférica).",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "É interessante introduzir os conceitos de pressão e densidade de maneira experimental, demonstrando as relações entre força e área, bem como de massa e volume. O uso dos simuladores virtuais educacionais permitem ao estudante visualizar tais processos no caso da impossibilidade da aplicação da atividade experimental. É importante diferenciar densidade de massa específica de um corpo e distinguir em qual momento essas grandezas podem ser iguais. Aconselha-se relacionar situações problema onde esta distinção se envidencia, produduzindo argumentos para a escolha correta em aplicações. Ao fazer o estudo da pressão atmosférica, é interessante fazer um resgate histórico do experimento de Torricelli, enfatizando a escolha do uso do mercúrio e do significado de 1 atmosfera (1 atm). Sugerimos também fazer as relações de outras unidades de pressão fora do SI que são muito utilizadas no cotidiano e na indústria. Relacionar o valor da variação da pressão atmosférica com a altitude, com o número de moléculas por unidade de área, tipo e peso de cada uma delas.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303",
+      "EM13CNT306X",
+      "EM13CNT307"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Pressão em sólidos; Pressão em fluidos; Experimento de Torricelli (Pressão Atmosférica).\nHabilidades: (EM13CNT301) - Construir questões...; (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...; (EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas...; (EM13CNT307) - Analisar as propriedades dos materiais para avaliar a adequação de seu uso em diferentes aplicações (industriais, cotidianas, arquitetônicas, tecnológicas, entre outras) e/ ou propor soluções seguras e sustentáveis considerando seu contexto local e cotidiano.\nSAEB: Não mencionado no documento.\nOrientações: É interessante introduzir os conceitos de pressão e densidade de maneira experimental, demonstrando as relações entre força e área, bem como de massa e volume. O uso dos simuladores virtuais educacionais permitem ao estudante visualizar tais processos no caso da impossibilidade da aplicação da atividade experimental. É importante diferenciar densidade de massa específica de um corpo e distinguir em qual momento essas grandezas podem ser iguais. Aconselha-se relacionar situações problema onde esta distinção se envidencia, produduzindo argumentos para a escolha correta em aplicações. Ao fazer o estudo da pressão atmosférica, é interessante fazer um resgate histórico do experimento de Torricelli, enfatizando a escolha do uso do mercúrio e do significado de 1 atmosfera (1 atm). Sugerimos também fazer as relações de outras unidades de pressão fora do SI que são muito utilizadas no cotidiano e na indústria. Relacionar o valor da variação da pressão atmosférica com a altitude, com o número de moléculas por unidade de área, tipo e peso de cada uma delas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03.",
+    "habilidade": "(EM13CNT301); (EM13CNT302); (EM13CNT303); (EM13CNT306X); (EM13CNT307).",
+    "objeto_conhecimento": "Teorema de Stevin (Pressão absoluta).",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Sugere-se investigar, através da montagem experimental, a variação da pressão em função da altura da coluna de líquido, para que os estudantes analisem, levantem hipóteses e concluam sobre os meios que os possibilitam calcular as valores das pressões em líquidos. É importante enfatizar que a pressão absoluta sobre um ponto imerso em um fluido, em recipiente aberto, é a soma da pressão exercida pelo fluido com a pressão atmosférica. É fundamental proporcionar ao estudante a capacidade de avaliar as variações da pressão em função da altitude e da profundidade, considerando os diferentes tipos de materiais e substâncias, bem como os riscos e as normas de segurança e proteção. Propõe-se também o uso de recursos diversos para criar debates sobre ambientes de condições extremas de pressão e temperatura.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303",
+      "EM13CNT306X",
+      "EM13CNT307"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Teorema de Stevin (Pressão absoluta).\nHabilidades: (EM13CNT301); (EM13CNT302); (EM13CNT303); (EM13CNT306X); (EM13CNT307).\nSAEB: Não mencionado no documento.\nOrientações: Sugere-se investigar, através da montagem experimental, a variação da pressão em função da altura da coluna de líquido, para que os estudantes analisem, levantem hipóteses e concluam sobre os meios que os possibilitam calcular as valores das pressões em líquidos. É importante enfatizar que a pressão absoluta sobre um ponto imerso em um fluido, em recipiente aberto, é a soma da pressão exercida pelo fluido com a pressão atmosférica. É fundamental proporcionar ao estudante a capacidade de avaliar as variações da pressão em função da altitude e da profundidade, considerando os diferentes tipos de materiais e substâncias, bem como os riscos e as normas de segurança e proteção. Propõe-se também o uso de recursos diversos para criar debates sobre ambientes de condições extremas de pressão e temperatura."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03.",
+    "habilidade": "(EM13CNT303); (EM13CNT306X); (EM13CNT307).",
+    "objeto_conhecimento": "Princípio de Pascal.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "É importante uma abordagem histórica, levando-se em consideração a evolução dos equipamentos hidráulicos, enfatizando a transmissão integral de pressão no interior do fluido. Recomenda-se formalizar o Princípio de Pascal, relacioná-lo ao estudo dos vasos comunicantes e ressaltar que, no interior de um fluido, a pressão em um mesmo nível de referência é constante. É relevante salientar que, em uma prensa hidráulica, a pressão em ambos os êmbolos é sempre a mesma e que a multiplicação de forças depende exclusivamente da relação entre as áreas dos pistãos. E que, quanto maior o aumento de forças, menores serão os deslocamentos no êmbolo de força multiplicada. Sugere-se também utilizar recursos diversos (simulações, vídeos, matérias jornalísticas, demonstrações, experiemtos e outros) para criar debates sobre o funcionamento de máquinas pneumáticas, prensa e elevadores hidráulicos, freios a disco e objetos de uso comum.",
+    "habilidade_codes": [
+      "EM13CNT303",
+      "EM13CNT306X",
+      "EM13CNT307"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Princípio de Pascal.\nHabilidades: (EM13CNT303); (EM13CNT306X); (EM13CNT307).\nSAEB: Não mencionado no documento.\nOrientações: É importante uma abordagem histórica, levando-se em consideração a evolução dos equipamentos hidráulicos, enfatizando a transmissão integral de pressão no interior do fluido. Recomenda-se formalizar o Princípio de Pascal, relacioná-lo ao estudo dos vasos comunicantes e ressaltar que, no interior de um fluido, a pressão em um mesmo nível de referência é constante. É relevante salientar que, em uma prensa hidráulica, a pressão em ambos os êmbolos é sempre a mesma e que a multiplicação de forças depende exclusivamente da relação entre as áreas dos pistãos. E que, quanto maior o aumento de forças, menores serão os deslocamentos no êmbolo de força multiplicada. Sugere-se também utilizar recursos diversos (simulações, vídeos, matérias jornalísticas, demonstrações, experiemtos e outros) para criar debates sobre o funcionamento de máquinas pneumáticas, prensa e elevadores hidráulicos, freios a disco e objetos de uso comum."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Física",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03.",
+    "habilidade": "(EM13CNT301); (EM13CNT302); (EM13CNT303); (EM13CNT306X); (EM13CNT307).",
+    "objeto_conhecimento": "Princípio de Arquimedes (Empuxo).",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Aconselha-se introduzir este objeto de conhecimento por meio de um contexto histórico, apresentando a história da coroa de Heron. Segere-se que os estudantes façam uma busca em fontes confiáveis de informação sobre a história divulgada, investigando como tal medição poderia ter sido realizada na época. É recomendável que se conceitue as propriedades do empuxo, estabeleça relações entre o peso aparente e o peso real dos corpos e enfatize a compreensão sobre a definição - peso do volume deslocado. É importante evidenciar as condições de equilíbrio dos corpos, através da variação da densidade em sólidos devido ao formato, porosidade do material, volume, objetos ocos e maciços, tal como em fluidos homogêneos em virtude da pressão e temperatura.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303",
+      "EM13CNT306X",
+      "EM13CNT307"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Física | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Princípio de Arquimedes (Empuxo).\nHabilidades: (EM13CNT301); (EM13CNT302); (EM13CNT303); (EM13CNT306X); (EM13CNT307).\nSAEB: Não mencionado no documento.\nOrientações: Aconselha-se introduzir este objeto de conhecimento por meio de um contexto histórico, apresentando a história da coroa de Heron. Segere-se que os estudantes façam uma busca em fontes confiáveis de informação sobre a história divulgada, investigando como tal medição poderia ter sido realizada na época. É recomendável que se conceitue as propriedades do empuxo, estabeleça relações entre o peso aparente e o peso real dos corpos e enfatize a compreensão sobre a definição - peso do volume deslocado. É importante evidenciar as condições de equilíbrio dos corpos, através da variação da densidade em sólidos devido ao formato, porosidade do material, volume, objetos ocos e maciços, tal como em fluidos homogêneos em virtude da pressão e temperatura."
+  }
+]

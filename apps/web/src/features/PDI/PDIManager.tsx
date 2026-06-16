@@ -15,7 +15,6 @@ import { UserProfile } from '../../types';
 import { AdaptationFeedbackModal } from './components/AdaptationFeedbackModal';
 
 import { AdaptationDetailsModal } from './components/AdaptationDetailsModal';
-import { useFreedayContext } from '../../contexts/FreedayContext';
 
 interface WorkbenchProps {
     userId: string;
@@ -57,7 +56,6 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
         handleViewAdaptation,
         handleEvaluate
     } = usePDIManager(userId, userProfile);
-    const { openWithPrompt } = useFreedayContext();
 
     // Update Sidebar Content (evita loops de renderização controlando dependências)
     useEffect(() => {
@@ -198,20 +196,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                             <span className="text-xs font-bold">{error}</span>
                         </div>
                     )}
-                    <button
-                        type="button"
-                        onClick={() => {
-                            const className = selectedClass?.name || 'sua turma';
-                            const prompt = selectedLesson
-                                ? `Estou na tela de Gestão de Inclusão & PDI, trabalhando a aula "${selectedLesson.topic}" da turma ${className}. Me ajude com ideias de adaptação e inclusão para este contexto.`
-                                : `Estou na tela de Gestão de Inclusão & PDI para a turma ${className}. Me ajude a organizar por onde começar as adaptações e PDIs.`;
-                            openWithPrompt(prompt);
-                        }}
-                        className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-colors"
-                    >
-                        <Sparkles size={12} />
-                        Perguntar à FREEDAY
-                    </button>
+
                 </div>
             </div>
 
@@ -220,9 +205,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                 <div className="w-80 bg-white border-r border-slate-200 flex flex-col overflow-y-auto hidden md:flex">
                     <div className="p-4 bg-slate-50 border-b border-slate-100">
                         <h3 className="text-xs font-black uppercase text-slate-400">Minhas Turmas</h3>
-                        <p className="mt-1 text-[10px] text-slate-400">
-                            Com dúvida sobre PDI ou inclusão? Clique no botão da FREEDAY no canto da tela e peça ajuda.
-                        </p>
+
                     </div>
                     <div className="p-2 space-y-1">
                         {classes.length === 0 ? (
@@ -249,7 +232,7 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                             <BookOpen size={64} className="mb-4 text-slate-300" />
                             <p className="font-bold text-lg mb-1">Selecione uma turma para iniciar</p>
                             <p className="text-xs text-slate-400 max-w-xs">
-                                Se tiver dúvidas sobre por onde começar, fale com a FREEDAY: peça ajuda para organizar os PDIs da sua turma.
+                                Acesse os alunos cadastrados com necessidades especiais nesta turma.
                             </p>
                         </div>
                     ) : (
@@ -263,20 +246,9 @@ const PDIManager: React.FC<WorkbenchProps> = ({ userId, userProfile, setSidebarC
                                         Para que os alunos apareçam aqui, marque-os em <strong>Minhas Turmas</strong> com
                                         necessidade de adaptação (campo de observações e/or switch de inclusão).
                                     </p>
-                                    <button
-                                        className="mt-4 text-indigo-600 font-bold text-sm hover:underline"
-                                        onClick={() => {
-                                            const className = selectedClass?.name || 'sua turma';
-                                            const prompt = `Quero cadastrar um aluno de inclusão para a turma "${className}". Me guie passo a passo para abrir "Minhas Turmas", editar o aluno e marcar que ele necessita adaptação (observações/inclusão) para que apareça no módulo de PDI.`;
-                                            try {
-                                                openWithPrompt(prompt);
-                                            } catch {
-                                                // fallback silencioso: não quebra a UI se o contexto da FREEDAY não estiver disponível
-                                            }
-                                        }}
-                                    >
-                                        + Cadastrar Aluno de Inclusão
-                                    </button>
+                                    <p className="mt-4 text-xs text-slate-400 max-w-md mx-auto italic">
+                                        Para cadastrar um aluno de inclusão, acesse o menu <strong>Minhas Turmas</strong>, edite o perfil do aluno e ative a sinalização de inclusão.
+                                    </p>
                                 </div>
                             ) : (
                                 <div className="space-y-6">

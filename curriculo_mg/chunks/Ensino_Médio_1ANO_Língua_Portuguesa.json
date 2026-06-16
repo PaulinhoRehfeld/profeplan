@@ -1,0 +1,614 @@
+[
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Leitura",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF06LP01A) - Reconhecer a impossibilidade de uma neutralidade absoluta no relato de fatos.",
+    "objeto_conhecimento": "Reconstrução do contexto de produção, circulação e recepção de textos. Caracterização do campo jornalístico e relação entre os gêneros em circulação, mídias e práticas da cultura digital.",
+    "descritores_saeb": "Localizar informações explícitas em um texto; Distinguir um fato da opinião relativa a esse fato; Identificar a finalidade de textos de diferentes gêneros; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido.",
+    "orientacoes_pedagogicas": "Apresentar as características dos espaços de circulação de gêneros que impliquem a solicitação e/ou reclamação de direitos, a participação na vida da comunidade, do estado ou país, e textos que possibilitem essas ações, o que permite aos estudantes que organizem o seu discurso (oral ou escrito) utilizando recursos adequados aos interlocutores, com vistas a atingir seus objetivos. É a habilidade fundamental para o exercício da cidadania.",
+    "habilidade_codes": [
+      "EF06LP01A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Leitura\nObjetos: Reconstrução do contexto de produção, circulação e recepção de textos. Caracterização do campo jornalístico e relação entre os gêneros em circulação, mídias e práticas da cultura digital.\nHabilidades: (EF06LP01A) - Reconhecer a impossibilidade de uma neutralidade absoluta no relato de fatos.\nSAEB: Localizar informações explícitas em um texto; Distinguir um fato da opinião relativa a esse fato; Identificar a finalidade de textos de diferentes gêneros; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido.\nOrientações: Apresentar as características dos espaços de circulação de gêneros que impliquem a solicitação e/ou reclamação de direitos, a participação na vida da comunidade, do estado ou país, e textos que possibilitem essas ações, o que permite aos estudantes que organizem o seu discurso (oral ou escrito) utilizando recursos adequados aos interlocutores, com vistas a atingir seus objetivos. É a habilidade fundamental para o exercício da cidadania."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Análise Linguística/Semiótica",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF06LP11) - Utilizar, ao produzir texto, conhecimentos linguísticos e gramaticais: tempos verbais, concordância nominal e verbal, regras ortográficas, pontuação etc.",
+    "objeto_conhecimento": "Elementos notacionais da escrita/ morfossintaxe.",
+    "descritores_saeb": "Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações; Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos.",
+    "orientacoes_pedagogicas": "Podem-se apresentar aos estudantes gêneros constituídos por múltiplas linguagens e mais voltados às práticas do universo cultural juvenil e de entretenimento, em que a elaboração dos argumentos é orientada por apreciações estéticas sobre os produtos culturais, sempre pautadas por valores éticos, privilegiando os gêneros multimodais (vlogs, e-zines, por exemplo), para que o estudante tenha contato, posicione-se criticamente em relação a eles, observe características e semelhanças e planeje, considerando o contexto da produção.",
+    "habilidade_codes": [
+      "EF06LP11"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Análise Linguística/Semiótica\nObjetos: Elementos notacionais da escrita/ morfossintaxe.\nHabilidades: (EF06LP11) - Utilizar, ao produzir texto, conhecimentos linguísticos e gramaticais: tempos verbais, concordância nominal e verbal, regras ortográficas, pontuação etc.\nSAEB: Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações; Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos.\nOrientações: Podem-se apresentar aos estudantes gêneros constituídos por múltiplas linguagens e mais voltados às práticas do universo cultural juvenil e de entretenimento, em que a elaboração dos argumentos é orientada por apreciações estéticas sobre os produtos culturais, sempre pautadas por valores éticos, privilegiando os gêneros multimodais (vlogs, e-zines, por exemplo), para que o estudante tenha contato, posicione-se criticamente em relação a eles, observe características e semelhanças e planeje, considerando o contexto da produção."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Leitura",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF07LP01A) - Distinguir diferentes propostas editoriais – sensacionalismo, jornalismo investigativo etc.",
+    "objeto_conhecimento": "Reconstrução do contexto de produção, circulação e recepção de textos. Caracterização do campo jornalístico e relação entre os gêneros em circulação, mídias e práticas da cultura digital.",
+    "descritores_saeb": "Localizar informações explícitas em um texto; Identificar as marcas linguísticas que videnciam o locutor e o interlocutor de um texto; Distinguir um fato da opinião relativa a esse fato; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido.",
+    "orientacoes_pedagogicas": "É importante prever a investigação de jornais e programas feitos para adolescentes. Discutir o que move esses veículos a fazerem um jornalismo diferenciado para cada público leitor é fundamental para construir um olhar crítico sobre o campo.",
+    "habilidade_codes": [
+      "EF07LP01A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Leitura\nObjetos: Reconstrução do contexto de produção, circulação e recepção de textos. Caracterização do campo jornalístico e relação entre os gêneros em circulação, mídias e práticas da cultura digital.\nHabilidades: (EF07LP01A) - Distinguir diferentes propostas editoriais – sensacionalismo, jornalismo investigativo etc.\nSAEB: Localizar informações explícitas em um texto; Identificar as marcas linguísticas que videnciam o locutor e o interlocutor de um texto; Distinguir um fato da opinião relativa a esse fato; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido.\nOrientações: É importante prever a investigação de jornais e programas feitos para adolescentes. Discutir o que move esses veículos a fazerem um jornalismo diferenciado para cada público leitor é fundamental para construir um olhar crítico sobre o campo."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Análise Linguística/Semiótica",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF67LP25) - Reconhecer e utilizar os critérios de organização tópica (do geral para o específico, do específico para o geral etc.), as marcas linguísticas dessa organização (marcadores de ordenação e enumeração, de explicação, definição e exemplificação, por exemplo) e os mecanismos de paráfrase, de maneira a organizar mais adequadamente a coesão e a progressão temática de seus textos.",
+    "objeto_conhecimento": "Textualização. Progressão temática.",
+    "descritores_saeb": "Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto; Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la; Diferenciar as partes principais das secundárias em um texto; Estabelecer relação causa /consequência entre partes e elementos do texto; Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.",
+    "orientacoes_pedagogicas": "Trabalhar com atividades que levem ao reconhecimento de critérios utilizados na organização interna dos textos (dividir o texto em tópicos que permitam a compreensão do tema/assunto; utilizar uma ordem e uma hierarquia ao apresentá-los no texto; estabelecer as relações adequadas entre as informações), quanto à identificação das marcas linguísticas empregadas para tanto: em primeiro/segundo lugar; isto é, ou seja, por exemplo; para finalizar/ concluindo etc. Além disso, refere-se à compreensão dos mecanismos de paráfrase (dizer o mesmo que foi dito anteriormente de outra forma, em uma explicação, por exemplo), identificando as marcas linguísticas utilizadas para apresentá-la (dito de outra forma/em outras palavras). Esses aspectos contribuem para que o texto seja coeso e coerente.",
+    "habilidade_codes": [
+      "EF67LP25"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Análise Linguística/Semiótica\nObjetos: Textualização. Progressão temática.\nHabilidades: (EF67LP25) - Reconhecer e utilizar os critérios de organização tópica (do geral para o específico, do específico para o geral etc.), as marcas linguísticas dessa organização (marcadores de ordenação e enumeração, de explicação, definição e exemplificação, por exemplo) e os mecanismos de paráfrase, de maneira a organizar mais adequadamente a coesão e a progressão temática de seus textos.\nSAEB: Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto; Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la; Diferenciar as partes principais das secundárias em um texto; Estabelecer relação causa /consequência entre partes e elementos do texto; Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.\nOrientações: Trabalhar com atividades que levem ao reconhecimento de critérios utilizados na organização interna dos textos (dividir o texto em tópicos que permitam a compreensão do tema/assunto; utilizar uma ordem e uma hierarquia ao apresentá-los no texto; estabelecer as relações adequadas entre as informações), quanto à identificação das marcas linguísticas empregadas para tanto: em primeiro/segundo lugar; isto é, ou seja, por exemplo; para finalizar/ concluindo etc. Além disso, refere-se à compreensão dos mecanismos de paráfrase (dizer o mesmo que foi dito anteriormente de outra forma, em uma explicação, por exemplo), identificando as marcas linguísticas utilizadas para apresentá-la (dito de outra forma/em outras palavras). Esses aspectos contribuem para que o texto seja coeso e coerente."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Oralidade",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF67LP14) - Definir o contexto de produção da entrevista (objetivos, o que se pretende conseguir, porque aquele entrevistado etc.), levantar informações sobre o entrevistado e sobre o acontecimento ou tema em questão, preparar o roteiro de perguntar e realizar entrevista oral com envolvidos ou especialistas relacionados com o fato noticiado ou com o tema em pauta, usando roteiro previamente elaborado e formulando outras perguntas a partir das respostas dadas e, quando for o caso, selecionar partes, transcrever e proceder a uma edição escrita do texto, adequando-o a seu contexto de publicação, à construção composicional do gênero e garantindo a relevância das informações mantidas e a continuidade temática.",
+    "objeto_conhecimento": "Planejamento e produção de entrevistas orais.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Habilidade trabalhada no 6º ano necessita apenas ser retomada. A habilidade também se refere a entrevistas que são coletadas em áudio e depois transcritas e retextualizadas, como entrevista escrita, o que supõe, no processo de retextualização (transformação de um texto oral em um texto escrito), uma revisão voltada para eliminação de elementos próprios das situações de fala, como a repetição de certas palavras (como, né, aí), a oscilação e reformulação etc. Sugere-se a elaboração de projetos e sequências didáticas, nos quais os estudantes estejam diante de uma problemática que possibilite planejar, elaborar e executar uma entrevista.",
+    "habilidade_codes": [
+      "EF67LP14"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Oralidade\nObjetos: Planejamento e produção de entrevistas orais.\nHabilidades: (EF67LP14) - Definir o contexto de produção da entrevista (objetivos, o que se pretende conseguir, porque aquele entrevistado etc.), levantar informações sobre o entrevistado e sobre o acontecimento ou tema em questão, preparar o roteiro de perguntar e realizar entrevista oral com envolvidos ou especialistas relacionados com o fato noticiado ou com o tema em pauta, usando roteiro previamente elaborado e formulando outras perguntas a partir das respostas dadas e, quando for o caso, selecionar partes, transcrever e proceder a uma edição escrita do texto, adequando-o a seu contexto de publicação, à construção composicional do gênero e garantindo a relevância das informações mantidas e a continuidade temática.\nSAEB: [Não especificado na barra lateral]\nOrientações: Habilidade trabalhada no 6º ano necessita apenas ser retomada. A habilidade também se refere a entrevistas que são coletadas em áudio e depois transcritas e retextualizadas, como entrevista escrita, o que supõe, no processo de retextualização (transformação de um texto oral em um texto escrito), uma revisão voltada para eliminação de elementos próprios das situações de fala, como a repetição de certas palavras (como, né, aí), a oscilação e reformulação etc. Sugere-se a elaboração de projetos e sequências didáticas, nos quais os estudantes estejam diante de uma problemática que possibilite planejar, elaborar e executar uma entrevista."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Leitura",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF09LP01) - Analisar o fenômeno da disseminação de notícias falsas nas redes sociais e desenvolver estratégias para reconhecê-las, a partir da verificação/avaliação do veículo, fonte, data e local da publicação, autoria, URL, da análise da formatação, da comparação de diferentes fontes, da consulta a sites de curadoria que atestam a fidedignidade do relato dos fatos e denunciam boatos etc.",
+    "objeto_conhecimento": "Reconstrução do contexto de produção, circulação e recepção de textos. Caracterização do campo jornalístico e relação entre os gêneros em circulação, mídias e práticas da cultura digital.",
+    "descritores_saeb": "Identificar a finalidade de textos de diferentes gêneros; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido; Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema.",
+    "orientacoes_pedagogicas": "É importante incluir projetos que abordem fatos e assuntos polêmicos específicos do estado e/ou município, possibilitando a interação dos estudantes com revistas e jornais locais, digitais ou impressos para favorecer o desenvolvimento dessa habilidade.",
+    "habilidade_codes": [
+      "EF09LP01"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Leitura\nObjetos: Reconstrução do contexto de produção, circulação e recepção de textos. Caracterização do campo jornalístico e relação entre os gêneros em circulação, mídias e práticas da cultura digital.\nHabilidades: (EF09LP01) - Analisar o fenômeno da disseminação de notícias falsas nas redes sociais e desenvolver estratégias para reconhecê-las, a partir da verificação/avaliação do veículo, fonte, data e local da publicação, autoria, URL, da análise da formatação, da comparação de diferentes fontes, da consulta a sites de curadoria que atestam a fidedignidade do relato dos fatos e denunciam boatos etc.\nSAEB: Identificar a finalidade de textos de diferentes gêneros; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido; Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema.\nOrientações: É importante incluir projetos que abordem fatos e assuntos polêmicos específicos do estado e/ou município, possibilitando a interação dos estudantes com revistas e jornais locais, digitais ou impressos para favorecer o desenvolvimento dessa habilidade."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Leitura",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF69LP47A) - Analisar, em textos narrativos ficcionais, as diferentes formas de composição próprias de cada gênero, os recursos coesivos que constroem a passagem do tempo e articulam suas partes, a escolha lexical típica de cada gênero para a caracterização dos cenários e dos personagens e os efeitos de sentido decorrentes dos tempos verbais, dos tipos de discurso, dos verbos de enunciação e das variedades linguísticas (no discurso direto, se houver) empregados.",
+    "objeto_conhecimento": "Reconstrução da textualidade e compreensão dos efeitos de sentidos provocados pelos usos de recursos linguísticos e multissemióticos.",
+    "descritores_saeb": "Inferir o sentido de uma palavra ou expressão; Identificar a finalidade de textos de diferentes gêneros; Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.",
+    "orientacoes_pedagogicas": "Esta habilidade busca reconhecer as especificidades da participação em cada prática, apropriando-se dos diferentes gêneros orais ou escritos nelas envolvidos. Demanda o envolvimento frequente e sistemático do estudante em práticas públicas e formais de leitura e/ou Produção de Textos, orais e/ou escritos, em que a correção deve ser realizada. Em um conto, por exemplo, avaliar o campo semântico e inferir, a partir daí, seus sentidos.",
+    "habilidade_codes": [
+      "EF69LP47A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Leitura\nObjetos: Reconstrução da textualidade e compreensão dos efeitos de sentidos provocados pelos usos de recursos linguísticos e multissemióticos.\nHabilidades: (EF69LP47A) - Analisar, em textos narrativos ficcionais, as diferentes formas de composição próprias de cada gênero, os recursos coesivos que constroem a passagem do tempo e articulam suas partes, a escolha lexical típica de cada gênero para a caracterização dos cenários e dos personagens e os efeitos de sentido decorrentes dos tempos verbais, dos tipos de discurso, dos verbos de enunciação e das variedades linguísticas (no discurso direto, se houver) empregados.\nSAEB: Inferir o sentido de uma palavra ou expressão; Identificar a finalidade de textos de diferentes gêneros; Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.\nOrientações: Esta habilidade busca reconhecer as especificidades da participação em cada prática, apropriando-se dos diferentes gêneros orais ou escritos nelas envolvidos. Demanda o envolvimento frequente e sistemático do estudante em práticas públicas e formais de leitura e/ou Produção de Textos, orais e/ou escritos, em que a correção deve ser realizada. Em um conto, por exemplo, avaliar o campo semântico e inferir, a partir daí, seus sentidos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Leitura",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF69LP47B) - Identificar o enredo e o foco narrativo e percebendo como se estrutura a narrativa nos diferentes gêneros e os efeitos de sentido decorrentes do foco narrativo típico de cada gênero, da caracterização dos espaços físico e psicológico e dos tempos cronológico e psicológico, das diferentes vozes no texto (do narrador, de personagens em discurso direto e indireto), do uso de pontuação expressiva, palavras e expressões conotativas e processos figurativos e do uso de recursos linguístico-gramaticais próprios a cada gênero narrativo.",
+    "objeto_conhecimento": "Reconstrução da textualidade e compreensão dos efeitos de sentidos provocados pelos usos de recursos linguísticos e multissemióticos.",
+    "descritores_saeb": "Identificar a finalidade de textos de diferentes gêneros.",
+    "orientacoes_pedagogicas": "Por meio de uma narrativa curta, elencar e analisar os principais elementos ficcionais: foco narrativo, personagens, tempo, espaço.",
+    "habilidade_codes": [
+      "EF69LP47B"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Leitura\nObjetos: Reconstrução da textualidade e compreensão dos efeitos de sentidos provocados pelos usos de recursos linguísticos e multissemióticos.\nHabilidades: (EF69LP47B) - Identificar o enredo e o foco narrativo e percebendo como se estrutura a narrativa nos diferentes gêneros e os efeitos de sentido decorrentes do foco narrativo típico de cada gênero, da caracterização dos espaços físico e psicológico e dos tempos cronológico e psicológico, das diferentes vozes no texto (do narrador, de personagens em discurso direto e indireto), do uso de pontuação expressiva, palavras e expressões conotativas e processos figurativos e do uso de recursos linguístico-gramaticais próprios a cada gênero narrativo.\nSAEB: Identificar a finalidade de textos de diferentes gêneros.\nOrientações: Por meio de uma narrativa curta, elencar e analisar os principais elementos ficcionais: foco narrativo, personagens, tempo, espaço."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Leitura",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF69LP05) - Inferir e justificar, em textos multissemióticos (tirinhas, charges, memes, gifs etc.) o efeito de humor, ironia e/ou crítica pelo uso ambíguo de palavras, expressões ou imagens ambíguas, de clichês, de recursos iconográficos, de pontuação, etc.",
+    "objeto_conhecimento": "Efeitos de sentido.",
+    "descritores_saeb": "Identificar efeitos de ironia ou humor em textos variados; Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações; Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.",
+    "orientacoes_pedagogicas": "O desenvolvimento desta habilidade supõe o conhecimento prévio dos textos jornalísticos que motivaram a produção dos gêneros citados. Entender a crítica ou o humor de uma charge ou um meme, por exemplo, implica conhecimento do fato ou assunto criticado ou humorizado. É importante prever ações e parcerias que possibilitem aos estudantes acesso regular a jornais e revistas em diferentes mídias. A progressão no desenvolvimento desta habilidade pode ser estabelecida a partir da oposição entre apenas inferir e também justificar o efeito de humor.",
+    "habilidade_codes": [
+      "EF69LP05"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Leitura\nObjetos: Efeitos de sentido.\nHabilidades: (EF69LP05) - Inferir e justificar, em textos multissemióticos (tirinhas, charges, memes, gifs etc.) o efeito de humor, ironia e/ou crítica pelo uso ambíguo de palavras, expressões ou imagens ambíguas, de clichês, de recursos iconográficos, de pontuação, etc.\nSAEB: Identificar efeitos de ironia ou humor em textos variados; Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações; Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.\nOrientações: O desenvolvimento desta habilidade supõe o conhecimento prévio dos textos jornalísticos que motivaram a produção dos gêneros citados. Entender a crítica ou o humor de uma charge ou um meme, por exemplo, implica conhecimento do fato ou assunto criticado ou humorizado. É importante prever ações e parcerias que possibilitem aos estudantes acesso regular a jornais e revistas em diferentes mídias. A progressão no desenvolvimento desta habilidade pode ser estabelecida a partir da oposição entre apenas inferir e também justificar o efeito de humor."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Análise Linguística/Semiótica",
+    "competencia": "[Não especificado na tabela]",
+    "habilidade": "(EF69LP16) - Analisar e utilizar as formas de composição dos gêneros jornalísticos da ordem do relatar, tais como notícias (pirâmide invertida no impresso X blocos noticiosos hipertextuais e hipermidiáticos no digital, que também pode contar com imagens de vários tipos, vídeos, gravações de áudio etc.), da ordem do argumentar, tais como artigos de opinião e editorial (contextualização, defesa de tese/opinião e uso de argumentos) e das entrevistas: apresentação e contextualização do entrevistado e do tema, estrutura pergunta e resposta etc.",
+    "objeto_conhecimento": "Construção composicional.",
+    "descritores_saeb": "Identificar a finalidade de textos de diferentes gêneros; Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e aquelas em que será recebido.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento desta habilidade sugere-se um estudo baseado na comparação entre textos do mesmo gênero e de gêneros distintos, práticas de leitura, produção e análise de textos, nas quais seja possível relacionar as formas de composição dos gêneros às especificidades do campo de atuação em que circulam, aos temas e finalidades e às peculiaridades da mídia em que são publicados.",
+    "habilidade_codes": [
+      "EF69LP16"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 1º Bimestre\nUnidade: Análise Linguística/Semiótica\nObjetos: Construção composicional.\nHabilidades: (EF69LP16) - Analisar e utilizar as formas de composição dos gêneros jornalísticos da ordem do relatar, tais como notícias (pirâmide invertida no impresso X blocos noticiosos hipertextuais e hipermidiáticos no digital, que também pode contar com imagens de vários tipos, vídeos, gravações de áudio etc.), da ordem do argumentar, tais como artigos de opinião e editorial (contextualização, defesa de tese/opinião e uso de argumentos) e das entrevistas: apresentação e contextualização do entrevistado e do tema, estrutura pergunta e resposta etc.\nSAEB: Identificar a finalidade de textos de diferentes gêneros; Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto; Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e aquelas em que será recebido.\nOrientações: Para o desenvolvimento desta habilidade sugere-se um estudo baseado na comparação entre textos do mesmo gênero e de gêneros distintos, práticas de leitura, produção e análise de textos, nas quais seja possível relacionar as formas de composição dos gêneros às especificidades do campo de atuação em que circulam, aos temas e finalidades e às peculiaridades da mídia em que são publicados."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 1 / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de Atuação Social.",
+    "competencia": "(EM13LGG101) Compreender e analisar processos de produção e circulação de discursos, nas diferentes linguagens, para fazer escolhas fundamentadas em função de interesses pessoais e coletivos.",
+    "habilidade": "(EM13LP01) - Relacionar o texto, tanto na produção como na leitura/ escuta, com suas condições de produção e seu contexto sócio-histórico de circulação (leitor/audiência previstos, objetivos, pontos de vista e perspectivas, papel social do autor, época, gênero do discurso etc.), de forma a ampliar as possibilidades de construção de sentidos e de análise crítica e produzir textos adequados a diferentes situações.",
+    "objeto_conhecimento": "Contextos de produção, circulação e recepção de textos escritos e orais e de atos de linguagem. Recursos linguísticos e seus efeitos de sentidos. Compreensão e análise de gêneros textuais a partir do contexto de produção, circulação e recepção. Seleção lexical. Estratégias linguísticas. Intencionalidade discursiva. Produção Oral.",
+    "descritores_saeb": "Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto. Identificar a tese de um texto. Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la. Diferenciar as partes principais das secundárias em um texto. Identificar o conflito gerador do enredo e os elementos que constroem a narrativa. Estabelecer relação causa/conseqüência entre partes e elementos do texto. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios, etc.",
+    "orientacoes_pedagogicas": "Trabalhar com os estudantes o conceito de gêneros discursivos, evidenciando as possíveis diferenças e intersecções entre a noção de gêneros textuais. Apresentar a importância de se analisar o contexto de produção dos textos orais ou escritos, tendo em vistas novas perspectivas do ensino e aprendizagem do português na escola, especialmente quanto às funções sociais da língua, isto é, língua em uso. Incentivar práticas de leitura literária e escrita na escola no intuito de se analisar a escolha de palavras e efeitos de sentidos provocados nos textos.",
+    "habilidade_codes": [
+      "EM13LP01"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 1 / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de Atuação Social.\nObjetos: Contextos de produção, circulação e recepção de textos escritos e orais e de atos de linguagem. Recursos linguísticos e seus efeitos de sentidos. Compreensão e análise de gêneros textuais a partir do contexto de produção, circulação e recepção. Seleção lexical. Estratégias linguísticas. Intencionalidade discursiva. Produção Oral.\nHabilidades: (EM13LP01) - Relacionar o texto, tanto na produção como na leitura/ escuta, com suas condições de produção e seu contexto sócio-histórico de circulação (leitor/audiência previstos, objetivos, pontos de vista e perspectivas, papel social do autor, época, gênero do discurso etc.), de forma a ampliar as possibilidades de construção de sentidos e de análise crítica e produzir textos adequados a diferentes situações.\nSAEB: Estabelecer relações entre partes de um texto, identificando repetições ou substituições que contribuem para a continuidade de um texto. Identificar a tese de um texto. Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la. Diferenciar as partes principais das secundárias em um texto. Identificar o conflito gerador do enredo e os elementos que constroem a narrativa. Estabelecer relação causa/conseqüência entre partes e elementos do texto. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios, etc.\nOrientações: Trabalhar com os estudantes o conceito de gêneros discursivos, evidenciando as possíveis diferenças e intersecções entre a noção de gêneros textuais. Apresentar a importância de se analisar o contexto de produção dos textos orais ou escritos, tendo em vistas novas perspectivas do ensino e aprendizagem do português na escola, especialmente quanto às funções sociais da língua, isto é, língua em uso. Incentivar práticas de leitura literária e escrita na escola no intuito de se analisar a escolha de palavras e efeitos de sentidos provocados nos textos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 1 / Elementos das linguagens / Todos os campos de atuação social.",
+    "competencia": "(EM13LGG103) Analisar o funcionamento das linguagens, para interpretar e produzir criticamente discursos em textos de diversas semioses (visuais, verbais, sonoras e gestuais).",
+    "habilidade": "(EM13LP18B) - Explorar os recursos e efeitos multissemióticos disponíveis, apropriando-se de práticas colaborativas de escrita, de construção coletiva do conhecimento e de desenvolvimento por meio de projetos.",
+    "objeto_conhecimento": "Gêneros e tipos textuais. Relações entre palavras, sons, imagens, links, gestos, desenhos e fotos na construção de sentidos de textos. Relação de recursos verbais e não verbais às suas funções comunicativas, sua repercussão e interação com o leitor. Tipos de linguagens. Identificação de palavras e expressões. Infográficos. Textos multissemióticos: leitura, análise e produção. Uso de ferramentas, recursos multissemióticos e ambientes colaborativos para práticas de produção escrita. Exploração de estratégias e efeitos de sentido multissemióticos.",
+    "descritores_saeb": "Identificar efeitos de ironia ou humor em textos variados. Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos.",
+    "orientacoes_pedagogicas": "Trabalhar o conceito de multimodalidade a partir da noção do uso de múltiplas linguagens nos textos escritos. Utilizar exemplos de capas de livros didáticos, infográficos, panfletos, textos digitais etc. Incentivar a produção de textos multimodais escritos, impressos ou digitais. Utilizar plataformas e ferramentas digitais na produção de textos de forma coletiva ou individual.",
+    "habilidade_codes": [
+      "EM13LP18B"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 1 / Elementos das linguagens / Todos os campos de atuação social.\nObjetos: Gêneros e tipos textuais. Relações entre palavras, sons, imagens, links, gestos, desenhos e fotos na construção de sentidos de textos. Relação de recursos verbais e não verbais às suas funções comunicativas, sua repercussão e interação com o leitor. Tipos de linguagens. Identificação de palavras e expressões. Infográficos. Textos multissemióticos: leitura, análise e produção. Uso de ferramentas, recursos multissemióticos e ambientes colaborativos para práticas de produção escrita. Exploração de estratégias e efeitos de sentido multissemióticos.\nHabilidades: (EM13LP18B) - Explorar os recursos e efeitos multissemióticos disponíveis, apropriando-se de práticas colaborativas de escrita, de construção coletiva do conhecimento e de desenvolvimento por meio de projetos.\nSAEB: Identificar efeitos de ironia ou humor em textos variados. Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos.\nOrientações: Trabalhar o conceito de multimodalidade a partir da noção do uso de múltiplas linguagens nos textos escritos. Utilizar exemplos de capas de livros didáticos, infográficos, panfletos, textos digitais etc. Incentivar a produção de textos multimodais escritos, impressos ou digitais. Utilizar plataformas e ferramentas digitais na produção de textos de forma coletiva ou individual."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 5 / Bem estar e qualidade de Vida / Campo das Práticas de Estudo e Pesquisa.",
+    "competencia": "(EM13LGG505MG) Refletir, analisar e vivenciar as diferentes práticas esportivas escolares, as práticas esportivas de rendimento e de lazer, relacionando-as ao campo da saúde e da qualidade de vida.",
+    "habilidade": "(EM13LP28) - Organizar situações de estudo e utilizar procedimentos e estratégias de leitura adequados aos objetivos e à natureza do conhecimento em questão.",
+    "objeto_conhecimento": "Leitura de textos das diversas modalidades esportivas em revistas, blogs, jornais, sites, livros especializados, relacionando-os com a qualidade de vida. Estratégias de leitura (localizar, compreender e relacionar informações, fazer inferências). Curadoria da informação. Posicionamento crítico frente aos textos; Análise do contexto de produção, circulação e recepção de textos no campo de práticas de estudos e pesquisa.",
+    "descritores_saeb": "Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, foto etc.). Identificar a finalidade de textos de diferentes gêneros.",
+    "orientacoes_pedagogicas": "Leitura de textos das diversas modalidades esportivas em revistas, blogs, jornais, sites, livros especializados, relacionando-os com a qualidade de vida. Incentivar a prática da pesquisa /curadoria de artigos científicos sobre estudos no campo da saúde e esportes. Compreender os objetivos das regras dos jogos e analisar formas de readequá-las na escola para trabalhar a inclusão de todos os estudantes. Trabalhar o conceito de saúde, esterótipos, padrão físico, disformia corporal, trabalho em equipe, empatia etc. Realizar rodas de conversa com profissionais da saúde.",
+    "habilidade_codes": [
+      "EM13LP28"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 5 / Bem estar e qualidade de Vida / Campo das Práticas de Estudo e Pesquisa.\nObjetos: Leitura de textos das diversas modalidades esportivas em revistas, blogs, jornais, sites, livros especializados, relacionando-os com a qualidade de vida. Estratégias de leitura (localizar, compreender e relacionar informações, fazer inferências). Curadoria da informação. Posicionamento crítico frente aos textos; Análise do contexto de produção, circulação e recepção de textos no campo de práticas de estudos e pesquisa.\nHabilidades: (EM13LP28) - Organizar situações de estudo e utilizar procedimentos e estratégias de leitura adequados aos objetivos e à natureza do conhecimento em questão.\nSAEB: Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, foto etc.). Identificar a finalidade de textos de diferentes gêneros.\nOrientações: Leitura de textos das diversas modalidades esportivas em revistas, blogs, jornais, sites, livros especializados, relacionando-os com a qualidade de vida. Incentivar a prática da pesquisa /curadoria de artigos científicos sobre estudos no campo da saúde e esportes. Compreender os objetivos das regras dos jogos e analisar formas de readequá-las na escola para trabalhar a inclusão de todos os estudantes. Trabalhar o conceito de saúde, esterótipos, padrão físico, disformia corporal, trabalho em equipe, empatia etc. Realizar rodas de conversa com profissionais da saúde."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 7 / Produção, Circulação e Recepção de textos em ambientes digitais / Campo das Práticas de Estudo e Pesquisa.",
+    "competencia": "(EM13LGG704) Apropriar-se criticamente de processos de pesquisa e busca de informação, por meio de ferramentas e dos novos formatos de produção e distribuição do conhecimento na cultura de rede.",
+    "habilidade": "(EM13LP30) - Realizar pesquisas de diferentes tipos (bibliográfica, de campo, experimento científico, levantamento de dados etc.), usando fontes abertas e confiáveis, registrando o processo e comunicando os resultados, tendo em vista os objetivos pretendidos e demais elementos do contexto de produção, como forma de compreender como o conhecimento científico é produzido e apropriar-se dos procedimentos e dos gêneros textuais envolvidos na realização de pesquisas.",
+    "objeto_conhecimento": "Curadoria e divulgação de informações. Apropriação de procedimentos e técnicas digitais para estudo, pesquisa, interação e intervenção social. Produção e recepção de conhecimento, de forma consciente e crítica, na cultura de rede. Seleção e compreensão de informações, ideias e opiniões que circulam nos diversos materiais do meio digital. Busca de soluções para problemas locais, regionais e/ou globais por meio das TDIC. Produção de textos informativos no meio digital. Sites de pesquisa e análise crítica da informação. Web 2.0 e a construção do conhecimento. Procedimentos de pesquisa e gêneros de apoio à compreensão textual.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Propiciar aos estudantes a oportunidade de realizar pesquisas/curadoria em diferentes fontes (livros, enciclopédias, sites etc., sejam digitais ou impressos) para compreenderem os diferentes processos de leitura. Possibilitar momentos para análise da qualidade da informação veiculada nos textos. Permitir espaços de discussão sobre cultura em rede, cultura da participação, levando os estudantes a analisarem conceitos que permeiam o ambiente virtual, como ética, cidadania e responsabilidade digital.",
+    "habilidade_codes": [
+      "EM13LP30"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 7 / Produção, Circulação e Recepção de textos em ambientes digitais / Campo das Práticas de Estudo e Pesquisa.\nObjetos: Curadoria e divulgação de informações. Apropriação de procedimentos e técnicas digitais para estudo, pesquisa, interação e intervenção social. Produção e recepção de conhecimento, de forma consciente e crítica, na cultura de rede. Seleção e compreensão de informações, ideias e opiniões que circulam nos diversos materiais do meio digital. Busca de soluções para problemas locais, regionais e/ou globais por meio das TDIC. Produção de textos informativos no meio digital. Sites de pesquisa e análise crítica da informação. Web 2.0 e a construção do conhecimento. Procedimentos de pesquisa e gêneros de apoio à compreensão textual.\nHabilidades: (EM13LP30) - Realizar pesquisas de diferentes tipos (bibliográfica, de campo, experimento científico, levantamento de dados etc.), usando fontes abertas e confiáveis, registrando o processo e comunicando os resultados, tendo em vista os objetivos pretendidos e demais elementos do contexto de produção, como forma de compreender como o conhecimento científico é produzido e apropriar-se dos procedimentos e dos gêneros textuais envolvidos na realização de pesquisas.\nSAEB: [Não especificado na barra lateral]\nOrientações: Propiciar aos estudantes a oportunidade de realizar pesquisas/curadoria em diferentes fontes (livros, enciclopédias, sites etc., sejam digitais ou impressos) para compreenderem os diferentes processos de leitura. Possibilitar momentos para análise da qualidade da informação veiculada nos textos. Permitir espaços de discussão sobre cultura em rede, cultura da participação, levando os estudantes a analisarem conceitos que permeiam o ambiente virtual, como ética, cidadania e responsabilidade digital."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 1 / Condições de produção, circulação e recepção de discursos / Campo Jornalístico-Midiático.",
+    "competencia": "(EM13LGG110MG) Inferir informações presentes em textos de diferentes tipos e gêneros textuais/discursivos.",
+    "habilidade": "(EM13LP42B) - Identificar o enfoque preponderante da mídia e manter-se implicado, de forma crítica, com os fatos e as questões que afetam a coletividade.",
+    "objeto_conhecimento": "Inferência dos significados de palavras e expressões em textos e gêneros diversos, com base no tema, no contexto e no conhecimento das regras gramaticais e aspectos lexicais. Inferência das informações presentes em textos e gêneros diversos, com base no conhecimento prévio do leitor. Construção de sentidos de textos e gêneros diversos, com base nas escolhas lexicais feitas pelo autor. Posicionamento crítico. Avaliação de recursos não verbais com a finalidade de modificar comportamentos e hábitos.",
+    "descritores_saeb": "Inferir o sentido de uma palavra ou expressão. Inferir uma informação implícita em um texto. Distinguir um fato da opinião relativa a esse fato. Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido. Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema.",
+    "orientacoes_pedagogicas": "Proporcionar momentos para leitura de textos jornalísticos, no intuito de comparar as diferentes formas de construção do texto e intencionalidade discursiva dos autores. Ler com os estudantes textos opinativos, como editoriais e artigo de opinião, para analisar teses e estratégias argumentativas. Mediar práticas de leitura, auxiliando os discentes a perceberem informações implícitas, inferências, ideologias etc. Possibilitar rodas de leitura, para estimular debates, discussões, com o objetivo de incentivar os educandos a se posicionarem frente a questões polêmicas. Realizar leitura de textos que permitem distinguir fato de opinião.",
+    "habilidade_codes": [
+      "EM13LP42B"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 1 / Condições de produção, circulação e recepção de discursos / Campo Jornalístico-Midiático.\nObjetos: Inferência dos significados de palavras e expressões em textos e gêneros diversos, com base no tema, no contexto e no conhecimento das regras gramaticais e aspectos lexicais. Inferência das informações presentes em textos e gêneros diversos, com base no conhecimento prévio do leitor. Construção de sentidos de textos e gêneros diversos, com base nas escolhas lexicais feitas pelo autor. Posicionamento crítico. Avaliação de recursos não verbais com a finalidade de modificar comportamentos e hábitos.\nHabilidades: (EM13LP42B) - Identificar o enfoque preponderante da mídia e manter-se implicado, de forma crítica, com os fatos e as questões que afetam a coletividade.\nSAEB: Inferir o sentido de uma palavra ou expressão. Inferir uma informação implícita em um texto. Distinguir um fato da opinião relativa a esse fato. Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido. Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema.\nOrientações: Proporcionar momentos para leitura de textos jornalísticos, no intuito de comparar as diferentes formas de construção do texto e intencionalidade discursiva dos autores. Ler com os estudantes textos opinativos, como editoriais e artigo de opinião, para analisar teses e estratégias argumentativas. Mediar práticas de leitura, auxiliando os discentes a perceberem informações implícitas, inferências, ideologias etc. Possibilitar rodas de leitura, para estimular debates, discussões, com o objetivo de incentivar os educandos a se posicionarem frente a questões polêmicas. Realizar leitura de textos que permitem distinguir fato de opinião."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 2 / Condições de Produção, Circulação e Recepção de Discursos / Campo Artístico-Literário.",
+    "competencia": "(EM13LGG201) Utilizar as diversas linguagens (artísticas, corporais e verbais) em diferentes contextos, valorizando-as como fenômeno social, cultural, histórico, variável, heterogêneo e sensível aos contextos de uso.",
+    "habilidade": "(EM13LP46) - Compartilhar sentidos construídos na leitura/escuta de textos literários, percebendo diferenças e eventuais tensões entre as formas pessoais e as coletivas de apreensão desses textos, para exercitar o diálogo cultural e aguçar a perspectiva crítica.",
+    "objeto_conhecimento": "Análise de textos escritos e orais. Relação entre as escolhas discursivas (lexical, nível de formalidade, postura), os grupos que as utilizam e os aspectos sociais, culturais, históricos e políticos envolvidos. Crítica literária (estilo, estrutura, aspectos discursivos). Comparação entre textos. Teoria literária.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Estimular práticas de leitura literária, de modo a permitir a construção de sentidos dos textos. Para tanto, é importante proporcionar a formação de círculos de leitura ou clubes de leitura literária na escola. Trabalhar o conceito de fruição literária com os estudantes. Esclarecer para os discentes a diferença entre o texto literário de texto não literário. Realizar pesquisas sobre escritores locais.",
+    "habilidade_codes": [
+      "EM13LP46"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 2 / Condições de Produção, Circulação e Recepção de Discursos / Campo Artístico-Literário.\nObjetos: Análise de textos escritos e orais. Relação entre as escolhas discursivas (lexical, nível de formalidade, postura), os grupos que as utilizam e os aspectos sociais, culturais, históricos e políticos envolvidos. Crítica literária (estilo, estrutura, aspectos discursivos). Comparação entre textos. Teoria literária.\nHabilidades: (EM13LP46) - Compartilhar sentidos construídos na leitura/escuta de textos literários, percebendo diferenças e eventuais tensões entre as formas pessoais e as coletivas de apreensão desses textos, para exercitar o diálogo cultural e aguçar a perspectiva crítica.\nSAEB: [Não especificado na barra lateral]\nOrientações: Estimular práticas de leitura literária, de modo a permitir a construção de sentidos dos textos. Para tanto, é importante proporcionar a formação de círculos de leitura ou clubes de leitura literária na escola. Trabalhar o conceito de fruição literária com os estudantes. Esclarecer para os discentes a diferença entre o texto literário de texto não literário. Realizar pesquisas sobre escritores locais."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 2 / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de Atuação Social.",
+    "competencia": "(EM13LGG202) Analisar interesses, relações de poder e perspectivas de mundo nos discursos das diversas práticas de linguagem (artísticas, corporais e verbais), compreendendo criticamente o modo como circulam, constituem-se e (re) produzem significação e ideologias.",
+    "habilidade": "(EM13LP03) - Analisar relações de intertextualidade e interdiscursividade que permitam a explicitação de relações dialógicas, a identificação de posicionamentos ou de perspectivas, a compreensão de paráfrases, paródias e estilizações, entre outras possibilidades.",
+    "objeto_conhecimento": "Vínculos entre discursos, atos de linguagem, relações de poder e ideologias. Intertextualidade, interdiscursividade e intencionalidade discursiva. Diálogo entre textos: paráfrase, paródia, dentre outros.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Realizar atividades com textos literários e não literários, músicas, filmes, séries e podcasts nos quais podem ser identificados a intertextualidade e o interdiscurso. Trabalhar o conceito de discurso, intertextualidade e interdiscurso. Auxiliar os estudantes a identificarem marcas de parcialidade no textos. Levar os estudantes a compreenderem o que são e as funcionalidades de modalizadores linguísticos. Analisar com os estudantes o uso de figuras de linguagem nos textos orais e escritos.",
+    "habilidade_codes": [
+      "EM13LP03"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 2 / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de Atuação Social.\nObjetos: Vínculos entre discursos, atos de linguagem, relações de poder e ideologias. Intertextualidade, interdiscursividade e intencionalidade discursiva. Diálogo entre textos: paráfrase, paródia, dentre outros.\nHabilidades: (EM13LP03) - Analisar relações de intertextualidade e interdiscursividade que permitam a explicitação de relações dialógicas, a identificação de posicionamentos ou de perspectivas, a compreensão de paráfrases, paródias e estilizações, entre outras possibilidades.\nSAEB: [Não especificado na barra lateral]\nOrientações: Realizar atividades com textos literários e não literários, músicas, filmes, séries e podcasts nos quais podem ser identificados a intertextualidade e o interdiscurso. Trabalhar o conceito de discurso, intertextualidade e interdiscurso. Auxiliar os estudantes a identificarem marcas de parcialidade no textos. Levar os estudantes a compreenderem o que são e as funcionalidades de modalizadores linguísticos. Analisar com os estudantes o uso de figuras de linguagem nos textos orais e escritos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 4 / Língua e linguagem / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de atuação Social.",
+    "competencia": "(EM13LGG401) Analisar criticamente textos de modo a compreender e caracterizar as línguas como fenômeno (geo) político, histórico, social, cultural, variável, heterogêneo e sensível aos contextos de uso.",
+    "habilidade": "(EM13LP10) - Analisar o fenômeno da variação linguística, em seus diferentes níveis (variações fonético-fonológica, lexical, sintática, semântica e estilístico-pragmática) e em suas diferentes dimensões (regional, histórica, social, situacional, ocupacional, etária etc.), de forma a ampliar a compreensão sobre a natureza viva e dinâmica da língua e sobre o fenômeno da constituição de variedades linguísticas de prestígio e estigmatizadas, e a fundamentar o respeito às variedades linguísticas e o combate a preconceitos linguísticos.",
+    "objeto_conhecimento": "Relações entre contextos de produção, circulação e recepção de textos e usos da língua. Discussão da língua como um sistema variável, flexível, heterogêneo. Entendimento da língua como um traço da identidade do falante, construída nas relações sociais. Variação linguística. Combate ao preconceito linguístico, desrespeito e desvalorização de alguns grupos sociais. Relações entre a língua e os aspectos sociais, culturais, geopolíticos e históricos dos falantes. Língua Padrão X Língua não Padrão. Estrangeirismos.",
+    "descritores_saeb": "Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto.",
+    "orientacoes_pedagogicas": "Levar os estudantes a compreenderem a variação linguística como um fenômeno inerente a todas as línguas. Trabalhar as diferenças entre o uso da língua escrita e falada. Levar os estudantes a compreenderem o conceito de preconceito linguístico, analisando questões sociais, políticas e econômicas que o estimulam. Exibir textos orais e escritos que permitam debates e discussões sobre o tema variação linguística, como filmes, podcasts, vídeos, textos impressos ou digitais, blogs, videoblogs etc. Realizar visitas de campo em localidades diferentes, para identificar variedades linguísticas.",
+    "habilidade_codes": [
+      "EM13LP10"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 4 / Língua e linguagem / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de atuação Social.\nObjetos: Relações entre contextos de produção, circulação e recepção de textos e usos da língua. Discussão da língua como um sistema variável, flexível, heterogêneo. Entendimento da língua como um traço da identidade do falante, construída nas relações sociais. Variação linguística. Combate ao preconceito linguístico, desrespeito e desvalorização de alguns grupos sociais. Relações entre a língua e os aspectos sociais, culturais, geopolíticos e históricos dos falantes. Língua Padrão X Língua não Padrão. Estrangeirismos.\nHabilidades: (EM13LP10) - Analisar o fenômeno da variação linguística, em seus diferentes níveis (variações fonético-fonológica, lexical, sintática, semântica e estilístico-pragmática) e em suas diferentes dimensões (regional, histórica, social, situacional, ocupacional, etária etc.), de forma a ampliar a compreensão sobre a natureza viva e dinâmica da língua e sobre o fenômeno da constituição de variedades linguísticas de prestígio e estigmatizadas, e a fundamentar o respeito às variedades linguísticas e o combate a preconceitos linguísticos.\nSAEB: Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto.\nOrientações: Levar os estudantes a compreenderem a variação linguística como um fenômeno inerente a todas as línguas. Trabalhar as diferenças entre o uso da língua escrita e falada. Levar os estudantes a compreenderem o conceito de preconceito linguístico, analisando questões sociais, políticas e econômicas que o estimulam. Exibir textos orais e escritos que permitam debates e discussões sobre o tema variação linguística, como filmes, podcasts, vídeos, textos impressos ou digitais, blogs, videoblogs etc. Realizar visitas de campo em localidades diferentes, para identificar variedades linguísticas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 1 e 4 / Condições de Produção, Circulação e Recepção de Discursos / Campo de Atuação na Vida Pública.",
+    "competencia": "(EM13LGG102) Analisar visões de mundo, conflitos de interesse, preconceitos e ideologias presentes nos discursos veiculados nas diferentes mídias, ampliando suas possibilidades de explicação, interpretação e intervenção crítica da/na realidade. (EM13LGG402) Empregar, nas interações sociais, a variedade e o estilo de língua adequados à situação comunicativa, ao(s) interlocutor(es) e ao gênero textual discursivo, respeitando os usos das línguas por esse(s) interlocutor(es) e sem preconceito linguístico.",
+    "habilidade": "(EM13LP23) - Analisar criticamente o histórico e o discurso político de candidatos, propagandas políticas, políticas públicas, programas e propostas de governo, de forma a participar do debate político e tomar decisões conscientes e fundamentadas.",
+    "objeto_conhecimento": "Processo de análise crítica de produções textuais, discursos e posicionamentos políticos de candidatos, políticas públicas, programas e propostas governamentais. Participação em debates políticos com criticidade, ética e argumentações fundamentadas. Relação entre textos e discurso da esfera política.",
+    "descritores_saeb": "Identificar o tema de um texto. Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la. Identificar a finalidade de textos de diferentes gêneros. Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema.",
+    "orientacoes_pedagogicas": "Trabalhar com o gênero “debate político”, para que os estudantes realizem análises desse tipo de texto oral. Levar os estudantes a compreenderem as estratégias argumentativas, ideologias, preconceitos, formulação de estereótipos, intertextualidade presentes nesses textos. Analisar junto com os estudantes a intencionalidade de cada discurso. Estimular a visita a câmaras de vereadores ou deputados, assembleias e prefeituras. Trabalhar o conceito e funcionalidades de lideranças comunitárias.",
+    "habilidade_codes": [
+      "EM13LP23"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 1 e 4 / Condições de Produção, Circulação e Recepção de Discursos / Campo de Atuação na Vida Pública.\nObjetos: Processo de análise crítica de produções textuais, discursos e posicionamentos políticos de candidatos, políticas públicas, programas e propostas governamentais. Participação em debates políticos com criticidade, ética e argumentações fundamentadas. Relação entre textos e discurso da esfera política.\nHabilidades: (EM13LP23) - Analisar criticamente o histórico e o discurso político de candidatos, propagandas políticas, políticas públicas, programas e propostas de governo, de forma a participar do debate político e tomar decisões conscientes e fundamentadas.\nSAEB: Identificar o tema de um texto. Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la. Identificar a finalidade de textos de diferentes gêneros. Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema.\nOrientações: Trabalhar com o gênero “debate político”, para que os estudantes realizem análises desse tipo de texto oral. Levar os estudantes a compreenderem as estratégias argumentativas, ideologias, preconceitos, formulação de estereótipos, intertextualidade presentes nesses textos. Analisar junto com os estudantes a intencionalidade de cada discurso. Estimular a visita a câmaras de vereadores ou deputados, assembleias e prefeituras. Trabalhar o conceito e funcionalidades de lideranças comunitárias."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Competência Específica 1 / Referenciação Bibliográfica / Campo das Práticas de Estudo e Pesquisa.",
+    "competencia": "(EM13LGG108MG) Elaborar textos para veiculação nos diversos suportes segundo normas da ABNT.",
+    "habilidade": "(EM13LP29) - Resumir e resenhar textos, por meio do uso de paráfrases, de marcas do discurso reportado e de citações, para uso em textos de divulgação de estudos e pesquisas.",
+    "objeto_conhecimento": "Coesão e coerência. Estratégias e métodos para utilização de paráfrases, citações, marcas de discurso e resumos. Análise do contexto de produção, circulação e recepção de textos no campo de práticas de estudos e pesquisa. Organização tópico-discursiva. Produção e circulação de textos de divulgação científica.",
+    "descritores_saeb": "Identificar a tese de um texto. Diferenciar as partes principais das secundárias em um texto. Identificar a finalidade de textos de diferentes gêneros. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.",
+    "orientacoes_pedagogicas": "Trabalhar com os gêneros textuais resumo, resenha, sinopse, fichamento dentre outros, levando os estudantes a compreenderem a diferença entre eles. Estimular momentos de pesquisas/ curadoria em diferentes suportes, no intuito de que os educandos produzam alguns dos gêneros textuais citados. Levar os estudantes a entenderem o que é ABNT e a sua importância para a formatação de trabalhos escolares e textos acadêmicos. Conduzir atividades escolares que permitam a produção de resenhas escritas ou orais, veiculando-as a partir de recursos tecnológicos ou impressos.",
+    "habilidade_codes": [
+      "EM13LP29"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 2º Bimestre\nUnidade: Competência Específica 1 / Referenciação Bibliográfica / Campo das Práticas de Estudo e Pesquisa.\nObjetos: Coesão e coerência. Estratégias e métodos para utilização de paráfrases, citações, marcas de discurso e resumos. Análise do contexto de produção, circulação e recepção de textos no campo de práticas de estudos e pesquisa. Organização tópico-discursiva. Produção e circulação de textos de divulgação científica.\nHabilidades: (EM13LP29) - Resumir e resenhar textos, por meio do uso de paráfrases, de marcas do discurso reportado e de citações, para uso em textos de divulgação de estudos e pesquisas.\nSAEB: Identificar a tese de um texto. Diferenciar as partes principais das secundárias em um texto. Identificar a finalidade de textos de diferentes gêneros. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.\nOrientações: Trabalhar com os gêneros textuais resumo, resenha, sinopse, fichamento dentre outros, levando os estudantes a compreenderem a diferença entre eles. Estimular momentos de pesquisas/ curadoria em diferentes suportes, no intuito de que os educandos produzam alguns dos gêneros textuais citados. Levar os estudantes a entenderem o que é ABNT e a sua importância para a formatação de trabalhos escolares e textos acadêmicos. Conduzir atividades escolares que permitam a produção de resenhas escritas ou orais, veiculando-as a partir de recursos tecnológicos ou impressos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 1 / Elementos das linguagens / Campo Jornalístico Midiático.",
+    "competencia": "(EM13LGG106MG) Analisar o tratamento linguístico da informação nos diversos gêneros textuais/ discursivos e digitais e seus suportes e plataformas (revistas, jornais, sites, blogs, etc.), de forma produtiva e autônoma, considerando suas relações com o público-alvo.",
+    "habilidade": "(EM13LP57MG) - Reconhecer estratégias de organização textual em gêneros da esfera jornalística.",
+    "objeto_conhecimento": "Graus de informatividade de um texto oral ou escrito. Suportes textuais e efeitos de sentido. Intencionalidade discursiva. Tratamento da informação em diferentes fontes. Análise de textos. Comparação entre narrativas.",
+    "descritores_saeb": "Localizar informações explícitas em um texto. Inferir uma informação implícita em um texto. Identificar o tema de um texto. Distinguir um fato da opinião relativa a esse fato. Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema. Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido.",
+    "orientacoes_pedagogicas": "Apresentar vários gêneros textuais vinculados ao jornalismo para abordar as distintas formas de produção, apresentação e veiculação tendo em vista público-alvo, contexto de circulação e suporte. Trabalhar o conceito de graus de informatividade de um texto. Levar os estudantes a entenderem o que é qualidade da informação e desinformação. Trabalhar com identificação e análise de fake news.",
+    "habilidade_codes": [
+      "EM13LP57MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 1 / Elementos das linguagens / Campo Jornalístico Midiático.\nObjetos: Graus de informatividade de um texto oral ou escrito. Suportes textuais e efeitos de sentido. Intencionalidade discursiva. Tratamento da informação em diferentes fontes. Análise de textos. Comparação entre narrativas.\nHabilidades: (EM13LP57MG) - Reconhecer estratégias de organização textual em gêneros da esfera jornalística.\nSAEB: Localizar informações explícitas em um texto. Inferir uma informação implícita em um texto. Identificar o tema de um texto. Distinguir um fato da opinião relativa a esse fato. Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou ao mesmo tema. Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido.\nOrientações: Apresentar vários gêneros textuais vinculados ao jornalismo para abordar as distintas formas de produção, apresentação e veiculação tendo em vista público-alvo, contexto de circulação e suporte. Trabalhar o conceito de graus de informatividade de um texto. Levar os estudantes a entenderem o que é qualidade da informação e desinformação. Trabalhar com identificação e análise de fake news."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 3 / Condições de Produção, Circulação e Recepção de Discursos / Língua e Linguagem / Campo Artístico Literário.",
+    "competencia": "(EM13LGG306MG) Reconhecer efeitos de sentido do uso de metáforas, neologismos, jargões, gírias nos diversos gêneros textuais/discursivos.",
+    "habilidade": "(EM13LP49) - Perceber as peculiaridades estruturais e estilísticas de diferentes gêneros literários (a apreensão pessoal do cotidiano nas crônicas, a manifestação livre e subjetiva do eu lírico diante do mundo nos poemas, a múltipla perspectiva da vida humana e social dos romances, a dimensão política e social de textos da literatura marginal e da periferia etc.) para experimentar os diferentes ângulos de apreensão do indivíduo e do mundo pela literatura.",
+    "objeto_conhecimento": "Produção e análise de textos. Recursos lexicais e semânticos de expressão: comparação, metáfora, metonímia, neologia, gírias, jargões etc. Literatura comparada. Análise de Obras literárias que mostram o autor e seu fazer literário. Análise de Obras literárias em poesia ou prosa, cujas principais tendências sejam os efeitos de sentido. Vida cultural por meio de obras literárias.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Trabalhar as classificações das figuras de linguagem e seu uso. Levar os estudantes a compreenderem o que é seleção lexical e para que serve. Proporcionar momentos de aprendizagem sobre os diversos gêneros literários e suas características. Estimular práticas de leitura literária dentro e fora da escola. Organizar momentos para leitura de obras literárias clássicas e contemporâneas, analisando-as e comparando-as quanto aos aspectos linguísticos, estéticos, temáticos, etc.",
+    "habilidade_codes": [
+      "EM13LP49"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 3 / Condições de Produção, Circulação e Recepção de Discursos / Língua e Linguagem / Campo Artístico Literário.\nObjetos: Produção e análise de textos. Recursos lexicais e semânticos de expressão: comparação, metáfora, metonímia, neologia, gírias, jargões etc. Literatura comparada. Análise de Obras literárias que mostram o autor e seu fazer literário. Análise de Obras literárias em poesia ou prosa, cujas principais tendências sejam os efeitos de sentido. Vida cultural por meio de obras literárias.\nHabilidades: (EM13LP49) - Perceber as peculiaridades estruturais e estilísticas de diferentes gêneros literários (a apreensão pessoal do cotidiano nas crônicas, a manifestação livre e subjetiva do eu lírico diante do mundo nos poemas, a múltipla perspectiva da vida humana e social dos romances, a dimensão política e social de textos da literatura marginal e da periferia etc.) para experimentar os diferentes ângulos de apreensão do indivíduo e do mundo pela literatura.\nSAEB: [Não especificado na barra lateral]\nOrientações: Trabalhar as classificações das figuras de linguagem e seu uso. Levar os estudantes a compreenderem o que é seleção lexical e para que serve. Proporcionar momentos de aprendizagem sobre os diversos gêneros literários e suas características. Estimular práticas de leitura literária dentro e fora da escola. Organizar momentos para leitura de obras literárias clássicas e contemporâneas, analisando-as e comparando-as quanto aos aspectos linguísticos, estéticos, temáticos, etc."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 7 / Práticas de Linguagens no Universo Digital / Todos os Campos de Atuação Social.",
+    "competencia": "(EM13LGG701) Explorar tecnologias digitais da informação e comunicação (TDIC), compreendendo seus princípios e funcionalidades, e utilizá-las de modo ético, criativo, responsável e adequado a práticas de linguagem em diferentes contextos.",
+    "habilidade": "(EM13LP18A) - Utilizar softwares de edição de textos, fotos, vídeos e áudio, além de ferramentas e ambientes colaborativos para criar textos e produções multissemióticos com finalidades diversas.",
+    "objeto_conhecimento": "Produção de diferentes gêneros textuais em ambientes digitais. Uso e direito de imagem na internet. Discursos de ódio na internet. Direito autoral na internet. Produção de textos e produções multissemióticas com finalidades diversas. Uso de ferramentas, recursos multissemióticos e ambientes colaborativos para edição de textos e produções multimodais.",
+    "descritores_saeb": "Identificar efeitos de ironia ou humor em textos variados. Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Identificar a finalidade de textos de diferentes gêneros.",
+    "orientacoes_pedagogicas": "Trabalhar os conceitos de TDICs (Tecnologias Digitais de Informação e Comunicação), usos na sociedade e funcionalidades. Levar os estudantes a compreenderem os avanços tecnológicos e mudanças na cultura e práticas sociais de leitura e escrita decorrentes do uso da Internet. Proporcionar atividades com uso de plataformas e ferramentas digitais para criação e edição de áudios, vídeos dentre outras produções de forma individual ou coletiva.",
+    "habilidade_codes": [
+      "EM13LP18A"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 7 / Práticas de Linguagens no Universo Digital / Todos os Campos de Atuação Social.\nObjetos: Produção de diferentes gêneros textuais em ambientes digitais. Uso e direito de imagem na internet. Discursos de ódio na internet. Direito autoral na internet. Produção de textos e produções multissemióticas com finalidades diversas. Uso de ferramentas, recursos multissemióticos e ambientes colaborativos para edição de textos e produções multimodais.\nHabilidades: (EM13LP18A) - Utilizar softwares de edição de textos, fotos, vídeos e áudio, além de ferramentas e ambientes colaborativos para criar textos e produções multissemióticos com finalidades diversas.\nSAEB: Identificar efeitos de ironia ou humor em textos variados. Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Identificar a finalidade de textos de diferentes gêneros.\nOrientações: Trabalhar os conceitos de TDICs (Tecnologias Digitais de Informação e Comunicação), usos na sociedade e funcionalidades. Levar os estudantes a compreenderem os avanços tecnológicos e mudanças na cultura e práticas sociais de leitura e escrita decorrentes do uso da Internet. Proporcionar atividades com uso de plataformas e ferramentas digitais para criação e edição de áudios, vídeos dentre outras produções de forma individual ou coletiva."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 1 e 3 / Elementos das Linguagens / Campo da Vida Pessoal.",
+    "competencia": "(EM13LGG104) Utilizar as diferentes linguagens, levando em conta seus funcionamentos, para a compreensão e produção de textos e discursos em diversos campos de atuação social. (EM13LGG305) Mapear e criar, por meio de práticas de linguagens e línguas diversas, possibilidades de atuação social, política, artística e cultural para enfrentar desafios contemporâneos, discutindo seus princípios e objetivos de maneira crítica, criativa, solidária e ética.",
+    "habilidade": "(EM13LP19) - Apresentar-se por meio de textos multimodais diversos (perfis variados, gifs biográficos, biodata, currículo web, videocurrículo etc.) e de ferramentas digitais (ferramenta de gif, wiki, site etc.), para falar de si mesmo de formas variadas, considerando diferentes situações e objetivos.",
+    "objeto_conhecimento": "Leitura, entendimento e produção de textos orais, escritos ou multimodais, de maneira individual ou coletiva, em diferentes campos de atuação. Tipos de linguagens. Funcionamentos das linguagens. Efeitos de sentido. Tipos e gêneros textuais.",
+    "descritores_saeb": "Identificar a finalidade de textos de diferentes gêneros. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios, etc. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.",
+    "orientacoes_pedagogicas": "Trabalhar com diferentes gêneros textuais orais, presentes tanto em ambientes online quanto em contextos offline, como relatos pessoais, podcasts, videoblogs, blogs e canais virtuais, entre outros, com o objetivo de desenvolver a capacidade de apresentação pessoal. Analisar diferentes biografias em redes sociais, explorando os propósitos e intenções de cada uma. Promover a compreensão dos variados tipos de entrevistas e suas respectivas funções. Orientar os estudantes especificamente quanto ao gênero “entrevista de emprego”, destacando suas características e exigências de mercado de trabalho.",
+    "habilidade_codes": [
+      "EM13LP19"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 1 e 3 / Elementos das Linguagens / Campo da Vida Pessoal.\nObjetos: Leitura, entendimento e produção de textos orais, escritos ou multimodais, de maneira individual ou coletiva, em diferentes campos de atuação. Tipos de linguagens. Funcionamentos das linguagens. Efeitos de sentido. Tipos e gêneros textuais.\nHabilidades: (EM13LP19) - Apresentar-se por meio de textos multimodais diversos (perfis variados, gifs biográficos, biodata, currículo web, videocurrículo etc.) e de ferramentas digitais (ferramenta de gif, wiki, site etc.), para falar de si mesmo de formas variadas, considerando diferentes situações e objetivos.\nSAEB: Identificar a finalidade de textos de diferentes gêneros. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios, etc. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.\nOrientações: Trabalhar com diferentes gêneros textuais orais, presentes tanto em ambientes online quanto em contextos offline, como relatos pessoais, podcasts, videoblogs, blogs e canais virtuais, entre outros, com o objetivo de desenvolver a capacidade de apresentação pessoal. Analisar diferentes biografias em redes sociais, explorando os propósitos e intenções de cada uma. Promover a compreensão dos variados tipos de entrevistas e suas respectivas funções. Orientar os estudantes especificamente quanto ao gênero “entrevista de emprego”, destacando suas características e exigências de mercado de trabalho."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 2 e 5 / Condições de Produção, Circulação e Recepção de Discursos / Bem estar e qualidade de vida / Campo de Atuação na Vida Pública.",
+    "competencia": "(EM13LGG203X) Analisar os diálogos e os processos de disputa por legitimidade nas práticas de linguagem e suas produções (artísticas, corporais e verbais), presentes na cultura local e em outras culturas. (EM13LGG503) Vivenciar práticas corporais e significá-las em seu projeto de vida, como forma de autoconhecimento, autocuidado com o corpo e com a saúde, socialização e entretenimento.",
+    "habilidade": "(EM13LP24) - Analisar formas não institucionalizadas de participação social, sobretudo as vinculadas a manifestações artísticas, produções culturais, intervenções urbanas e formas de expressão típica das culturas juvenis que pretendam expor uma problemática ou promover uma reflexão/ação, posicionando-se em relação a essas produções e manifestações.",
+    "objeto_conhecimento": "Posicionamento ético e respeitoso com a saúde pessoal e coletiva. Processo de análise de produções textuais, discursos e manifestações artísticas e produções culturais. Apreciação e análise de expressões típicas das culturas juvenis. Engajamento em questões típicas das culturas juvenis e posicionamento em relação a manifestações artística e culturais que tratam dessas questões. Usos de recursos expressivos de diferentes linguagens.",
+    "descritores_saeb": "Identificar a finalidade de textos de diferentes gêneros. Identificar a tese de um texto. Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.",
+    "orientacoes_pedagogicas": "Conduzir os estudantes a compreenderem a importância da participação das juventudes em práticas de manifestações culturais e artísticas em espaços diversos, como praças, calçadas, ruas, estações etc., analisando a importância delas para o indivíduo e para a sociedade. Analisar o surgimento de Observatórios, ONGs, Grêmios dentre outros, compreendendo suas funcionalidades.",
+    "habilidade_codes": [
+      "EM13LP24"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 2 e 5 / Condições de Produção, Circulação e Recepção de Discursos / Bem estar e qualidade de vida / Campo de Atuação na Vida Pública.\nObjetos: Posicionamento ético e respeitoso com a saúde pessoal e coletiva. Processo de análise de produções textuais, discursos e manifestações artísticas e produções culturais. Apreciação e análise de expressões típicas das culturas juvenis. Engajamento em questões típicas das culturas juvenis e posicionamento em relação a manifestações artística e culturais que tratam dessas questões. Usos de recursos expressivos de diferentes linguagens.\nHabilidades: (EM13LP24) - Analisar formas não institucionalizadas de participação social, sobretudo as vinculadas a manifestações artísticas, produções culturais, intervenções urbanas e formas de expressão típica das culturas juvenis que pretendam expor uma problemática ou promover uma reflexão/ação, posicionando-se em relação a essas produções e manifestações.\nSAEB: Identificar a finalidade de textos de diferentes gêneros. Identificar a tese de um texto. Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.\nOrientações: Conduzir os estudantes a compreenderem a importância da participação das juventudes em práticas de manifestações culturais e artísticas em espaços diversos, como praças, calçadas, ruas, estações etc., analisando a importância delas para o indivíduo e para a sociedade. Analisar o surgimento de Observatórios, ONGs, Grêmios dentre outros, compreendendo suas funcionalidades."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 7 / Práticas de Linguagens no Universo Digital / Campo das Práticas de Estudo e Pesquisa.",
+    "competencia": "(EM13LGG701) Explorar tecnologias digitais da informação e comunicação (TDIC), compreendendo seus princípios e funcionalidades, e utilizá-las de modo ético, criativo, responsável e adequado a práticas de linguagem em diferentes contextos.",
+    "habilidade": "(EM13LP35) - Utilizar adequadamente ferramentas de apoio a apresentações orais, escolhendo e usando tipos e tamanhos de fontes que permitam boa visualização, topicalizando e/ou organizando o conteúdo em itens, inserindo de forma adequada imagens, gráficos, tabelas, formas e elementos gráficos, dimensionando a quantidade de texto e imagem por slide e usando, de forma harmônica, recursos (efeitos de transição, slides mestres, layouts personalizados, gravação de áudios em slides etc.).",
+    "objeto_conhecimento": "Produção, circulação e recepção de textos e atos de linguagem nos ambientes digitais. Uso das linguagens nos ambientes digitais, mudanças e perspectivas. Criação e edição de textos, áudios, fotos e vídeos por meio das tecnologias digitais da informação e comunicação (TDIC). Uso de aplicativos, plataformas digitais, ferramentas digitais, dicionários digitais, museus online, jogos e softwares que promovam conhecimento, estudo, prática da língua e interação social. Uso e direito de imagem na internet. Direito autoral na internet. Discursos de ódio na internet. Uso de recursos linguísticos e multissemióticos e efeitos de sentido. Uso adequado de ferramentas de apoio a apresentações orais. Planejamento, produção e edição de textos orais, Softwares e aplicativos de apresentação. Posicionamento crítico frente aos textos; Análise do contexto de produção, circulação e recepção de textos no campo de práticas de estudos e pesquisa.",
+    "descritores_saeb": "Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.",
+    "orientacoes_pedagogicas": "Mediar o uso de TDICs para criação de textos orais diversos. Estimular o uso de recursos tecnológicos para apresentação de trabalhos escolares, como plataforma digital Scratch, Canva, Capcut, dentre outras. Levar os estudantes a compreenderem a importância da estética visual no processo de produção de cartazes para apresentação de trabalhos escolares.",
+    "habilidade_codes": [
+      "EM13LP35"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 7 / Práticas de Linguagens no Universo Digital / Campo das Práticas de Estudo e Pesquisa.\nObjetos: Produção, circulação e recepção de textos e atos de linguagem nos ambientes digitais. Uso das linguagens nos ambientes digitais, mudanças e perspectivas. Criação e edição de textos, áudios, fotos e vídeos por meio das tecnologias digitais da informação e comunicação (TDIC). Uso de aplicativos, plataformas digitais, ferramentas digitais, dicionários digitais, museus online, jogos e softwares que promovam conhecimento, estudo, prática da língua e interação social. Uso e direito de imagem na internet. Direito autoral na internet. Discursos de ódio na internet. Uso de recursos linguísticos e multissemióticos e efeitos de sentido. Uso adequado de ferramentas de apoio a apresentações orais. Planejamento, produção e edição de textos orais, Softwares e aplicativos de apresentação. Posicionamento crítico frente aos textos; Análise do contexto de produção, circulação e recepção de textos no campo de práticas de estudos e pesquisa.\nHabilidades: (EM13LP35) - Utilizar adequadamente ferramentas de apoio a apresentações orais, escolhendo e usando tipos e tamanhos de fontes que permitam boa visualização, topicalizando e/ou organizando o conteúdo em itens, inserindo de forma adequada imagens, gráficos, tabelas, formas e elementos gráficos, dimensionando a quantidade de texto e imagem por slide e usando, de forma harmônica, recursos (efeitos de transição, slides mestres, layouts personalizados, gravação de áudios em slides etc.).\nSAEB: Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.\nOrientações: Mediar o uso de TDICs para criação de textos orais diversos. Estimular o uso de recursos tecnológicos para apresentação de trabalhos escolares, como plataforma digital Scratch, Canva, Capcut, dentre outras. Levar os estudantes a compreenderem a importância da estética visual no processo de produção de cartazes para apresentação de trabalhos escolares."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 1 / Condições de Produção, Circulação e Recepção de Discursos / Campo Jornalístico-Midiático.",
+    "competencia": "(EM13LGG102) Analisar visões de mundo, conflitos de interesse, preconceitos e ideologias presentes nos discursos veiculados nas diferentes mídias, ampliando suas possibilidades de explicação, interpretação e intervenção crítica da/na realidade.",
+    "habilidade": "(EM13LP36) - Analisar os interesses que movem o campo jornalístico, os impactos das novas tecnologias digitais de informação e comunicação e da Web 2.0 no campo e as condições que fazem da informação uma mercadoria e da checagem de informação uma prática (e um serviço) essencial, adotando atitude analítica e crítica diante dos textos jornalísticos.",
+    "objeto_conhecimento": "Posicionamentos assumidos em discursos e a influência deles na sociedade. Posicionamento crítico e responsável. Checagem de informações adotando atitude analítica e crítica diante dos textos jornalísticos. Curadoria de informações em fontes confiáveis.",
+    "descritores_saeb": "Inferir o sentido de uma palavra ou expressão. Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, foto etc.). Identificar a finalidade de textos de diferentes gêneros. Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto.",
+    "orientacoes_pedagogicas": "Orientar os estudantes no estudo dos diversos gêneros textuais jornalísticos, tanto em mídias impressas quanto digitais, para que possam analisar as diferentes formas de abordagem da informação. Incentivar a prática de checagem da informação, capacitando-os a identificar e reconhecer Fake News. Conscientizar os discentes sobre as responsabilidades daqueles que compartilham informações.",
+    "habilidade_codes": [
+      "EM13LP36"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 1 / Condições de Produção, Circulação e Recepção de Discursos / Campo Jornalístico-Midiático.\nObjetos: Posicionamentos assumidos em discursos e a influência deles na sociedade. Posicionamento crítico e responsável. Checagem de informações adotando atitude analítica e crítica diante dos textos jornalísticos. Curadoria de informações em fontes confiáveis.\nHabilidades: (EM13LP36) - Analisar os interesses que movem o campo jornalístico, os impactos das novas tecnologias digitais de informação e comunicação e da Web 2.0 no campo e as condições que fazem da informação uma mercadoria e da checagem de informação uma prática (e um serviço) essencial, adotando atitude analítica e crítica diante dos textos jornalísticos.\nSAEB: Inferir o sentido de uma palavra ou expressão. Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, foto etc.). Identificar a finalidade de textos de diferentes gêneros. Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema, em função das condições em que ele foi produzido e daquelas em que será recebido. Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão. Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos. Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto.\nOrientações: Orientar os estudantes no estudo dos diversos gêneros textuais jornalísticos, tanto em mídias impressas quanto digitais, para que possam analisar as diferentes formas de abordagem da informação. Incentivar a prática de checagem da informação, capacitando-os a identificar e reconhecer Fake News. Conscientizar os discentes sobre as responsabilidades daqueles que compartilham informações."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Competência Específica 2 / Diversidade e Pluralidade / Campo Jornalístico Midiático.",
+    "competencia": "(EM13LGG205MG) Conhecer e compreender os saberes, as tradições, os costumes, os modos e perspectivas de vida dos povos indígenas, campesinos, negros, quilombolas, ciganos, imigrantes e refugiados, sobretudo em Minas Gerais, para a integração de suas culturas e fortalecimento do sentimento de pertencimento.",
+    "habilidade": "(EM13LP52) - Analisar obras significativas das literaturas brasileiras e de outros países e povos, em especial a portuguesa, a indígena, a africana e a latino-americana, com base em ferramentas da crítica literária (estrutura da composição, estilo, aspectos discursivos) ou outros critérios relacionados a diferentes matrizes culturais, considerando o contexto de produção (visões de mundo, diálogos com outros textos, inserções em movimentos estéticos e culturais etc.) e o modo como dialogam com o presente.",
+    "objeto_conhecimento": "Ampliação da leitura dos clássicos de diversas nacionalidades. Diversidade Cultural. Presença e invisibilidade dos indígenas e negros na literatura brasileira.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Trabalhar com textos literários, músicas, filmes, séries e podcasts com protagonismo negro e indígena, feminino (preferencialmente as produzidas por pessoas desses grupos). É importante que essas escolhas sejam feitas levando em consideração a contemporaneidade e obras que ampliem o conhecimento discente. Propor visitas em comunidades compostas por indígenas, campesinos, negros, quilombolas, ciganos, imigrantes e refugiados, para que os estudantes conheçam as realidades desses grupos. Possibilitar rodas de conversas, debates, dentre outros sobre tais grupos.",
+    "habilidade_codes": [
+      "EM13LP52"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 3º Bimestre\nUnidade: Competência Específica 2 / Diversidade e Pluralidade / Campo Jornalístico Midiático.\nObjetos: Ampliação da leitura dos clássicos de diversas nacionalidades. Diversidade Cultural. Presença e invisibilidade dos indígenas e negros na literatura brasileira.\nHabilidades: (EM13LP52) - Analisar obras significativas das literaturas brasileiras e de outros países e povos, em especial a portuguesa, a indígena, a africana e a latino-americana, com base em ferramentas da crítica literária (estrutura da composição, estilo, aspectos discursivos) ou outros critérios relacionados a diferentes matrizes culturais, considerando o contexto de produção (visões de mundo, diálogos com outros textos, inserções em movimentos estéticos e culturais etc.) e o modo como dialogam com o presente.\nSAEB: [Não especificado na barra lateral]\nOrientações: Trabalhar com textos literários, músicas, filmes, séries e podcasts com protagonismo negro e indígena, feminino (preferencialmente as produzidas por pessoas desses grupos). É importante que essas escolhas sejam feitas levando em consideração a contemporaneidade e obras que ampliem o conhecimento discente. Propor visitas em comunidades compostas por indígenas, campesinos, negros, quilombolas, ciganos, imigrantes e refugiados, para que os estudantes conheçam as realidades desses grupos. Possibilitar rodas de conversas, debates, dentre outros sobre tais grupos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Competência Específica 1 / Condições de Produção, Circulação e Recepção de Discursos / Campo das Práticas de Estudo e Pesquisa.",
+    "competencia": "(EM13LGG101) Compreender e analisar processos de produção e circulação de discursos, nas diferentes linguagens, para fazer escolhas fundamentadas em função de interesses pessoais e coletivos.",
+    "habilidade": "(EM13LP31) - Compreender criticamente textos de divulgação científica orais, escritos e multissemióticos de diferentes áreas do conhecimento, identificando sua organização tópica e a hierarquização das informações, identificando e descartando fontes não confiáveis e problematizando enfoques tendenciosos ou superficiais.",
+    "objeto_conhecimento": "Procedimentos de apoio à compreensão, investigação, pesquisa e leitura de textos orais, escritos e multissemióticos. Posicionamento crítico frente às narrativas. Produção, reconhecimento e produção de textos observando regularidades de gêneros de divulgação científica, comparando fontes.",
+    "descritores_saeb": "Estabelecer relação causa/consequência entre partes e elementos do texto. Identificar a finalidade de textos de diferentes gêneros. Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.",
+    "orientacoes_pedagogicas": "Incentivar práticas de leitura de artigos científicos, levando os estudantes a compreender a sua estrutura, características e funcionalidades. Possibilitar pesquisas/curadoria em sites de pesquisas, plataformas de pesquisas, como Scielo Brasil, Google acadêmico, Portal da Capes, para que os estudantes conheçam outras fontes de pesquisas. Analisar textos de divulgação científica com os estudantes, no intuito de comparar informações.",
+    "habilidade_codes": [
+      "EM13LP31"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 4º Bimestre\nUnidade: Competência Específica 1 / Condições de Produção, Circulação e Recepção de Discursos / Campo das Práticas de Estudo e Pesquisa.\nObjetos: Procedimentos de apoio à compreensão, investigação, pesquisa e leitura de textos orais, escritos e multissemióticos. Posicionamento crítico frente às narrativas. Produção, reconhecimento e produção de textos observando regularidades de gêneros de divulgação científica, comparando fontes.\nHabilidades: (EM13LP31) - Compreender criticamente textos de divulgação científica orais, escritos e multissemióticos de diferentes áreas do conhecimento, identificando sua organização tópica e a hierarquização das informações, identificando e descartando fontes não confiáveis e problematizando enfoques tendenciosos ou superficiais.\nSAEB: Estabelecer relação causa/consequência entre partes e elementos do texto. Identificar a finalidade de textos de diferentes gêneros. Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto. Estabelecer relações lógico-discursivas presentes no texto, marcadas por conjunções, advérbios etc.\nOrientações: Incentivar práticas de leitura de artigos científicos, levando os estudantes a compreender a sua estrutura, características e funcionalidades. Possibilitar pesquisas/curadoria em sites de pesquisas, plataformas de pesquisas, como Scielo Brasil, Google acadêmico, Portal da Capes, para que os estudantes conheçam outras fontes de pesquisas. Analisar textos de divulgação científica com os estudantes, no intuito de comparar informações."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Competência Específica 3 / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de Atuação Social.",
+    "competencia": "(EM13LGG301) Participar de processos de produção individual e colaborativa em diferentes linguagens (artísticas, corporais e verbais), levando em conta suas formas e seus funcionamentos, para produzir sentidos em diferentes contextos.",
+    "habilidade": "(EM13LP17) - Elaborar roteiros para a produção de vídeos variados (vlog, videoclipe, videominuto, documentário etc.), apresentações teatrais, narrativas multimídia e transmídia, podcasts, playlists comentadas etc., para ampliar as possibilidades de produção de sentidos e engajar-se em práticas autorais e coletivas.",
+    "objeto_conhecimento": "Produção autoral e coletiva de roteiros para produção audiovisual. Produção de sentido em contexto de circulação de produções audiovisuais.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Promover projetos pedagógicos da área (interdisciplinares), de maneira que os estudantes realizem produções individuais ou coletivas com o uso de TDICs. Realizar visitas a teatros e cinemas. Possibilitar que os estudantes assistam a peças de teatro. Convidar para debates ou rodas de conversa produtores de diversas manifestações artísticas para ampliar o conhecimento dos jovens. Produzir feiras artísticas na escola para apresentação dos estudantes. Criar blogs, sites ou redes sociais para divulgação de produção dos estudantes observando as orientações da LGPD (Lei Geral de Proteção de Dados).",
+    "habilidade_codes": [
+      "EM13LP17"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 4º Bimestre\nUnidade: Competência Específica 3 / Condições de Produção, Circulação e Recepção de Discursos / Todos os Campos de Atuação Social.\nObjetos: Produção autoral e coletiva de roteiros para produção audiovisual. Produção de sentido em contexto de circulação de produções audiovisuais.\nHabilidades: (EM13LP17) - Elaborar roteiros para a produção de vídeos variados (vlog, videoclipe, videominuto, documentário etc.), apresentações teatrais, narrativas multimídia e transmídia, podcasts, playlists comentadas etc., para ampliar as possibilidades de produção de sentidos e engajar-se em práticas autorais e coletivas.\nSAEB: [Não especificado na barra lateral]\nOrientações: Promover projetos pedagógicos da área (interdisciplinares), de maneira que os estudantes realizem produções individuais ou coletivas com o uso de TDICs. Realizar visitas a teatros e cinemas. Possibilitar que os estudantes assistam a peças de teatro. Convidar para debates ou rodas de conversa produtores de diversas manifestações artísticas para ampliar o conhecimento dos jovens. Produzir feiras artísticas na escola para apresentação dos estudantes. Criar blogs, sites ou redes sociais para divulgação de produção dos estudantes observando as orientações da LGPD (Lei Geral de Proteção de Dados)."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Competência Específica 2, 3 e 5 / Condições de produção, circulação e recepção de discursos / Diversidade e Pluralidade / Diversidade, Pluralidade e Equidades / Campo de Atuação na Vida Pública.",
+    "competencia": "(EM13LGG204) Dialogar e produzir entendimento mútuo, nas diversas linguagens (artísticas, corporais e verbais), com vistas ao interesse comum pautado em princípios e valores de equidade assentados na democracia e nos Direitos Humanos. (EM13LGG304) Formular propostas, intervir e tomar decisões que levem em conta o bem comum e os Direitos Humanos, a consciência socioambiental e o consumo responsável em âmbito local, regional e global. (EM13LGG502) Analisar criticamente preconceitos, estereótipos e relações de poder presentes nas práticas corporais, adotando posicionamento contrário a qualquer manifestação de injustiça e desrespeito a direitos humanos e valores democráticos.",
+    "habilidade": "(EM13LP27) - Engajar-se na busca de solução para problemas que envolvam a coletividade, denunciando o desrespeito a direitos, organizando e/ou participando de discussões, campanhas e debates, produzindo textos reivindicatórios, normativos, entre outras possibilidades, como forma de fomentar os princípios democráticos e uma atuação pautada pela ética da responsabilidade, pelo consumo consciente e pela consciência socioambiental.",
+    "objeto_conhecimento": "Solução de problemas envolvidos com a coletividade. Posicionamento em debates. Produção de textos reivindicatórios/normativos. Conscientização socioambiental.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Iniciar a proposta de trabalho com debates sobre temas socioambientais em que os estudantes possam explanar, oralmente, a respeito de suas percepções sobre a temática. Posteriormente, trabalhar o gênero Cartas Reivindicatórias ou Carta Aberta e solicitar que os estudantes produzam textos baseados nas ideias colocadas pelo grupo no debate. Focar em propostas de mitigação dos problemas apresentados. Convidar representantes de órgãos públicos ou ONGs (Organizações Não Governamentais) para rodas de conversas ou debates. Promover feiras na escolas com produtos descartáveis. Discutir os 7 Rs com os estudantes, de maneira a despertar a consciência socioambiental.",
+    "habilidade_codes": [
+      "EM13LP27"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 4º Bimestre\nUnidade: Competência Específica 2, 3 e 5 / Condições de produção, circulação e recepção de discursos / Diversidade e Pluralidade / Diversidade, Pluralidade e Equidades / Campo de Atuação na Vida Pública.\nObjetos: Solução de problemas envolvidos com a coletividade. Posicionamento em debates. Produção de textos reivindicatórios/normativos. Conscientização socioambiental.\nHabilidades: (EM13LP27) - Engajar-se na busca de solução para problemas que envolvam a coletividade, denunciando o desrespeito a direitos, organizando e/ou participando de discussões, campanhas e debates, produzindo textos reivindicatórios, normativos, entre outras possibilidades, como forma de fomentar os princípios democráticos e uma atuação pautada pela ética da responsabilidade, pelo consumo consciente e pela consciência socioambiental.\nSAEB: [Não especificado na barra lateral]\nOrientações: Iniciar a proposta de trabalho com debates sobre temas socioambientais em que os estudantes possam explanar, oralmente, a respeito de suas percepções sobre a temática. Posteriormente, trabalhar o gênero Cartas Reivindicatórias ou Carta Aberta e solicitar que os estudantes produzam textos baseados nas ideias colocadas pelo grupo no debate. Focar em propostas de mitigação dos problemas apresentados. Convidar representantes de órgãos públicos ou ONGs (Organizações Não Governamentais) para rodas de conversas ou debates. Promover feiras na escolas com produtos descartáveis. Discutir os 7 Rs com os estudantes, de maneira a despertar a consciência socioambiental."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Competência Específica 1 / Elementos das linguagens / Campo Jornalístico Midiático.",
+    "competencia": "(EM13LGG105) Analisar e experimentar diversos processos de remidiação de produções multissemióticas, multimídia e transmídia, desenvolvendo diferentes modos de participação e intervenção social.",
+    "habilidade": "(EM13LP43) - Atuar de forma fundamentada, ética e crítica na produção e no compartilhamento de comentários, textos noticiosos e de opinião, memes, gifs, remixes variados etc. em redes sociais ou outros ambientes digitais.",
+    "objeto_conhecimento": "Produção de textos multissemióticos ou multimodais. Contexto de produção, circulação e recepção de textos publicitários. Análise de textos de gêneros discursivos contemporâneos de campanhas publicitárias e políticas. Apreciação (avaliação de aspectos éticos, estéticos e políticos em textos e produções artísticas e culturais.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Analisar os objetivos de publicações nas redes sociais em busca da conscientização em relação à linha tênue entre liberdade de expressão, ofensa e discurso de ódio. Desenvolver o senso de responsabilidade coletiva frente à autonomia digital. Promover debates sobre os temas “discurso de ódio”, Fake News, Cidadania Digital, Ética Digital, cultura do compartilhamento, plágio e Direitos Digitais e autorais.",
+    "habilidade_codes": [
+      "EM13LP43"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 4º Bimestre\nUnidade: Competência Específica 1 / Elementos das linguagens / Campo Jornalístico Midiático.\nObjetos: Produção de textos multissemióticos ou multimodais. Contexto de produção, circulação e recepção de textos publicitários. Análise de textos de gêneros discursivos contemporâneos de campanhas publicitárias e políticas. Apreciação (avaliação de aspectos éticos, estéticos e políticos em textos e produções artísticas e culturais.\nHabilidades: (EM13LP43) - Atuar de forma fundamentada, ética e crítica na produção e no compartilhamento de comentários, textos noticiosos e de opinião, memes, gifs, remixes variados etc. em redes sociais ou outros ambientes digitais.\nSAEB: [Não especificado na barra lateral]\nOrientações: Analisar os objetivos de publicações nas redes sociais em busca da conscientização em relação à linha tênue entre liberdade de expressão, ofensa e discurso de ódio. Desenvolver o senso de responsabilidade coletiva frente à autonomia digital. Promover debates sobre os temas “discurso de ódio”, Fake News, Cidadania Digital, Ética Digital, cultura do compartilhamento, plágio e Direitos Digitais e autorais."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Competência Específica 2 / Diversidade e Pluralidade / Campo Artístico-Literário.",
+    "competencia": "(EM13LGG205MG) Conhecer e compreender os saberes, as tradições, os costumes, os modos e perspectivas de vida dos povos indígenas, campesinos, negros, quilombolas, ciganos, imigrantes e refugiados, sobretudo em Minas Gerais, para a integração de suas culturas e fortalecimento do sentimento de pertencimento.",
+    "habilidade": "(EM13LP60MG) - Analisar relações intertextuais e interdiscursivas entre obras de diferentes autores (as) negros (as) e gêneros da literatura brasileira de um mesmo momento histórico e de momentos históricos diversos, explorando os modos como a literatura.",
+    "objeto_conhecimento": "Os negros e os indígenas na literatura brasileira. Literatura contemporânea. Autoria de negros e negras, indígenas, mulheres. Textos literários de construção identitária.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Organizar saraus literários com textos clássicos da literatura, bem como textos autorais dos discentes e de pessoas da comunidade escolar, em que sejam manifestas questões político-sociais e econômicas ou temas que tratem da realidade local. Levar os estudantes a compreenderem a importância social da literatura como fonte de registros da cultura, da política, da economia, da linguagem etc. Proporcionar rodas de conversas e debates sobre a imagem construída do negro e do indígena na literatura ao longo dos anos. Proporcionar a leitura de textos/obras de autoria negra e indígena, analisando com os estudantes a importância delas.",
+    "habilidade_codes": [
+      "EM13LP60MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 4º Bimestre\nUnidade: Competência Específica 2 / Diversidade e Pluralidade / Campo Artístico-Literário.\nObjetos: Os negros e os indígenas na literatura brasileira. Literatura contemporânea. Autoria de negros e negras, indígenas, mulheres. Textos literários de construção identitária.\nHabilidades: (EM13LP60MG) - Analisar relações intertextuais e interdiscursivas entre obras de diferentes autores (as) negros (as) e gêneros da literatura brasileira de um mesmo momento histórico e de momentos históricos diversos, explorando os modos como a literatura.\nSAEB: [Não especificado na barra lateral]\nOrientações: Organizar saraus literários com textos clássicos da literatura, bem como textos autorais dos discentes e de pessoas da comunidade escolar, em que sejam manifestas questões político-sociais e econômicas ou temas que tratem da realidade local. Levar os estudantes a compreenderem a importância social da literatura como fonte de registros da cultura, da política, da economia, da linguagem etc. Proporcionar rodas de conversas e debates sobre a imagem construída do negro e do indígena na literatura ao longo dos anos. Proporcionar a leitura de textos/obras de autoria negra e indígena, analisando com os estudantes a importância delas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Língua Portuguesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Competência Específica 3 / Condições de Produção, Circulação e Recepção de Discursos / Campo Artístico-Literário.",
+    "competencia": "(EM13LGG301) Participar de processos de produção individual e colaborativa em diferentes linguagens (artísticas, corporais e verbais), levando em conta suas formas e seus funcionamentos, para produzir sentidos em diferentes contextos.",
+    "habilidade": "(EM13LP53) - Produzir apresentações e comentários apreciativos e críticos sobre livros, filmes, discos, canções, espetáculos de teatro e dança, exposições etc. (resenhas, vlogs e podcasts literários e artísticos, playlists comentadas, fanzines, e-zines etc.).",
+    "objeto_conhecimento": "A obra literária. O autor e sua produção. Os leitores e suas percepções. O ambiente cultural de produção e recepção. História literária pelo viés do texto.",
+    "descritores_saeb": "[Não especificado na barra lateral]",
+    "orientacoes_pedagogicas": "Organizar eventos ou feiras literárias para promover apresentações artísticas de obras diversas, como forma de mediar a leitura literária entre os jovens. Apresentar aos estudantes novas formas de mediar a literatura, como blogs, vlogs, canais literários virtuais, clubes de leitura virtuais ou presenciais, redes sociais etc. Promover práticas de leitura literária e escrita de resenhas orais ou escritas sobre tais obras.",
+    "habilidade_codes": [
+      "EM13LP53"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Língua Portuguesa | 4º Bimestre\nUnidade: Competência Específica 3 / Condições de Produção, Circulação e Recepção de Discursos / Campo Artístico-Literário.\nObjetos: A obra literária. O autor e sua produção. Os leitores e suas percepções. O ambiente cultural de produção e recepção. História literária pelo viés do texto.\nHabilidades: (EM13LP53) - Produzir apresentações e comentários apreciativos e críticos sobre livros, filmes, discos, canções, espetáculos de teatro e dança, exposições etc. (resenhas, vlogs e podcasts literários e artísticos, playlists comentadas, fanzines, e-zines etc.).\nSAEB: [Não especificado na barra lateral]\nOrientações: Organizar eventos ou feiras literárias para promover apresentações artísticas de obras diversas, como forma de mediar a leitura literária entre os jovens. Apresentar aos estudantes novas formas de mediar a literatura, como blogs, vlogs, canais literários virtuais, clubes de leitura virtuais ou presenciais, redes sociais etc. Promover práticas de leitura literária e escrita de resenhas orais ou escritas sobre tais obras."
+  }
+]

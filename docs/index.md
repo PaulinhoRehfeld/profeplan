@@ -12,6 +12,9 @@ Esta pasta contém a documentação de alto nível do PROFEPLAN, organizada para
 - **Arquitetura do sistema**
   - `arquitetura-geral-profeplan.md`
 
+- **Comparativo de Repositórios (V4 vs V5) para Alinhamento**
+  - `COMPARATIVO_REPOSITORIOS.md`
+
 ---
 
 ## 2. Áreas críticas de negócio

@@ -1,0 +1,164 @@
+[
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.",
+    "objeto_conhecimento": "Introdução a Química Orgânica. Ciclo biogeoquímico do carbono. Características dos compostos orgânicos. Cadeias carbônicas.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Primeiramente, apresente a teoria da força vital e sua refutação por Wöhler. Discuta a importância dos compostos orgânicos para a vida e a sociedade e mostre a evolução da Química Orgânica ao longo do tempo, relacionando-a com avanços tecnológicos e descobertas científicas. Em seguida, apresente o átomo de Carbono abordando a tetravalência, capacidade de formar cadeias, a geometria molecular e polaridade dos compostos orgânicos. Descreva também, a alotropia entre o grafite e o diamante, o carbono amorfo, as propriedades físico-químicas de novos materiais como grafeno, nanotubos, fulerenos e o uso de tecnologias com com objetivos sustentáveis. A abordagem do ciclo do carbono pode ser feita através de esquemas, simulações, projetos de pesquisas sobre temas atuais relacionados como a pegada de carbono e as políticas públicas para mitigação das mudanças climáticas, seguidos de discussão em grupo.",
+    "habilidade_codes": [
+      "EM13CNT303"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Introdução a Química Orgânica. Ciclo biogeoquímico do carbono. Características dos compostos orgânicos. Cadeias carbônicas.\nHabilidades: (EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.\nSAEB: Não informados.\nOrientações: Primeiramente, apresente a teoria da força vital e sua refutação por Wöhler. Discuta a importância dos compostos orgânicos para a vida e a sociedade e mostre a evolução da Química Orgânica ao longo do tempo, relacionando-a com avanços tecnológicos e descobertas científicas. Em seguida, apresente o átomo de Carbono abordando a tetravalência, capacidade de formar cadeias, a geometria molecular e polaridade dos compostos orgânicos. Descreva também, a alotropia entre o grafite e o diamante, o carbono amorfo, as propriedades físico-químicas de novos materiais como grafeno, nanotubos, fulerenos e o uso de tecnologias com com objetivos sustentáveis. A abordagem do ciclo do carbono pode ser feita através de esquemas, simulações, projetos de pesquisas sobre temas atuais relacionados como a pegada de carbono e as políticas públicas para mitigação das mudanças climáticas, seguidos de discussão em grupo."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03",
+    "habilidade": "(EM13CNT309) - Analisar questões socioambientais, políticas e econômicas relativas à dependência do mundo atual em relação aos recursos não renováveis e discutir a necessidade de introdução de alternativas e novas tecnologias energéticas e de materiais, comparando diferentes tipos de motores e processos de produção de novos materiais.",
+    "objeto_conhecimento": "Função orgânica. Hidrocarbonetos: combustíveis tipos, consumo, petróleo, recursos e meios alternativos. Recursos não renováveis (gasolina, diesel) e renováveis (biodiesel, biogás, etanol). Propriedades físico-químicas de novos materiais como grafeno; uso de novas tecnologias com objetivos sustentáveis.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "O estudo das funções orgânicas precisa ser feito de maneira contextualizada para fazer sentido para o estudante e não resumir apenas em classificações e regras de nomenclatura. Nesse contexto, trabalhe a origem, estrutura mocecular, aplicação, nomenclatura, propriedades físico-químicas e características dos Hidrocarbonetos acíclicos, cíclicos e aromáticos de forma interdisciplinar, tecnológica e próxima do cotidiano dos estudantes. A composição química do petróleo é parte essencial no aprendizado desse objeto do conhecimento.",
+    "habilidade_codes": [
+      "EM13CNT309"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Função orgânica. Hidrocarbonetos: combustíveis tipos, consumo, petróleo, recursos e meios alternativos. Recursos não renováveis (gasolina, diesel) e renováveis (biodiesel, biogás, etanol). Propriedades físico-químicas de novos materiais como grafeno; uso de novas tecnologias com objetivos sustentáveis.\nHabilidades: (EM13CNT309) - Analisar questões socioambientais, políticas e econômicas relativas à dependência do mundo atual em relação aos recursos não renováveis e discutir a necessidade de introdução de alternativas e novas tecnologias energéticas e de materiais, comparando diferentes tipos de motores e processos de produção de novos materiais.\nSAEB: Não informados.\nOrientações: O estudo das funções orgânicas precisa ser feito de maneira contextualizada para fazer sentido para o estudante e não resumir apenas em classificações e regras de nomenclatura. Nesse contexto, trabalhe a origem, estrutura mocecular, aplicação, nomenclatura, propriedades físico-químicas e características dos Hidrocarbonetos acíclicos, cíclicos e aromáticos de forma interdisciplinar, tecnológica e próxima do cotidiano dos estudantes. A composição química do petróleo é parte essencial no aprendizado desse objeto do conhecimento."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 3",
+    "habilidade": "(EM13CNT310X) - Investigar e analisar os efeitos de programas de infraestrutura e demais serviços básicos (saneamento, energia elétrica, transporte, telecomunicações, cobertura vacinal, atendimento primário à saúde e produção de alimentos, entre outros) e identificar necessidades locais e/ou regionais em relação a esses serviços, a fim de avaliar e/ou promover ações que contribuam para a melhoria na qualidade de vida no âmbito social, familiar, cultural e econômico.",
+    "objeto_conhecimento": "Extrativismo e Matriz energética. Aspectos químicos, sociais sobre o extrativismo: vegetal, animal e mineral. Subprodutos gerados pelo extrativismo. Consumo, impacto e fontes alternativas. Impactos ambientais e sustentabilidade. Materiais, combustíveis e energias alternativas (novas tecnologias). Impacto social, político e ambiental das usinas: elétricas, termelétricas, eólicas, nucleares, entre outras.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Embasado pela abordagem CTSA (Ciência, Tecnologia, Sociedade e Ambiental), inicie revisando o que é energia e quais são as principais fontes energéticas renováveis e não-renováveis utilizadas globalmente. Aborde a obtenção, o extrativismo, impactos ambientais, consumo brasileiro e mundial e o uso e pesquisas promissoras sobre novas fontes energéticas mais sustentáveis. Trabalhe interdisciplinarmente com Física, Biologia e Geografia.",
+    "habilidade_codes": [
+      "EM13CNT310X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Extrativismo e Matriz energética. Aspectos químicos, sociais sobre o extrativismo: vegetal, animal e mineral. Subprodutos gerados pelo extrativismo. Consumo, impacto e fontes alternativas. Impactos ambientais e sustentabilidade. Materiais, combustíveis e energias alternativas (novas tecnologias). Impacto social, político e ambiental das usinas: elétricas, termelétricas, eólicas, nucleares, entre outras.\nHabilidades: (EM13CNT310X) - Investigar e analisar os efeitos de programas de infraestrutura e demais serviços básicos (saneamento, energia elétrica, transporte, telecomunicações, cobertura vacinal, atendimento primário à saúde e produção de alimentos, entre outros) e identificar necessidades locais e/ou regionais em relação a esses serviços, a fim de avaliar e/ou promover ações que contribuam para a melhoria na qualidade de vida no âmbito social, familiar, cultural e econômico.\nSAEB: Não informados.\nOrientações: Embasado pela abordagem CTSA (Ciência, Tecnologia, Sociedade e Ambiental), inicie revisando o que é energia e quais são as principais fontes energéticas renováveis e não-renováveis utilizadas globalmente. Aborde a obtenção, o extrativismo, impactos ambientais, consumo brasileiro e mundial e o uso e pesquisas promissoras sobre novas fontes energéticas mais sustentáveis. Trabalhe interdisciplinarmente com Física, Biologia e Geografia."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência específica 1",
+    "habilidade": "(EM13CNT106) - Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica, considerando a disponibilidade de recursos, a eficiência energética, a relação custo/benefício, as características geográficas e ambientais, a produção de resíduos e os impactos socioambientais e culturais.",
+    "objeto_conhecimento": "Extrativismo e Matriz energética. Impacto social, político e ambiental das usinas: elétricas, termelétricas, eólicas, nucleares, entre outras.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Embasado pela abordagem CTSA (Ciência, Tecnologia, Sociedade e Ambiental), inicie revisando o que é energia e quais são as principais fontes energéticas renováveis e não-renováveis utilizadas globalmente. Aborde a obtenção, o extrativismo, impactos ambientais, consumo brasileiro e mundial e o uso e pesquisas promissoras sobre novas fontes energéticas mais sustentáveis. Trabalhe interdisciplinarmente com Física, Biologia e Geografia.",
+    "habilidade_codes": [
+      "EM13CNT106"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 1º Bimestre\nUnidade: Matéria e Energia\nObjetos: Extrativismo e Matriz energética. Impacto social, político e ambiental das usinas: elétricas, termelétricas, eólicas, nucleares, entre outras.\nHabilidades: (EM13CNT106) - Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica, considerando a disponibilidade de recursos, a eficiência energética, a relação custo/benefício, as características geográficas e ambientais, a produção de resíduos e os impactos socioambientais e culturais.\nSAEB: Não informados.\nOrientações: Embasado pela abordagem CTSA (Ciência, Tecnologia, Sociedade e Ambiental), inicie revisando o que é energia e quais são as principais fontes energéticas renováveis e não-renováveis utilizadas globalmente. Aborde a obtenção, o extrativismo, impactos ambientais, consumo brasileiro e mundial e o uso e pesquisas promissoras sobre novas fontes energéticas mais sustentáveis. Trabalhe interdisciplinarmente com Física, Biologia e Geografia."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 2 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT207X) - Identificar, analisar e discutir vulnerabilidades vinculadas às vivências e aos desafios contemporâneos aos quais as juventudes estão expostas, considerando os aspectos físico, psicoemocional e social, a fim de desenvolver e divulgar ações de prevenção e de promoção da saúde e do bem-estar, sabendo identificar informações inverídicas (fake news).",
+    "objeto_conhecimento": "Funções oxigenadas e nitrogenadas: - Neurociência; substâncias que atuam no sistema nervoso - hormônios e neurotransmissores; mecanismo de ação de drogas e remédios no corpo humano. - Macromoléculas na bioquímica: aminoácidos, proteínas, DNA e RNA, enzimas, lipídeos, carboidratos; química dos alimentos.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Nesse objeto do conhecimento é necessário trabalhar a origem, a estrutura molecular, aplicação, nomenclatura, propriedades físico-químicas e características das principais compostos das funções orgânicas oxigenadas e nitrogenadas. Explore também a presença das funções orgânicas nas macromoléculas da bioquímica. Outra pauta importante de ser explorada é a discussão sobre a ação das drogas lícitas e ilícitas no corpo humano. Nessa premissa, trabalhe com a identificação das substâncias que constituem as diferentes drogas e medicamentos, analisando os grupos funcionais e algumas de suas propriedades. Informe os efeitos biológicos desses compostos, a relação com as propriedades químicas e físicas destas substâncias e a importância dessas propriedades para suas potencialidades terapêuticas com o intuito de conscientizar e esclarecer os estudantes sobre essa temática. Trabalhe esse objeto do conhecimento de forma interdisciplinar com Biologia.",
+    "habilidade_codes": [
+      "EM13CNT207X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 2º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Funções oxigenadas e nitrogenadas: - Neurociência; substâncias que atuam no sistema nervoso - hormônios e neurotransmissores; mecanismo de ação de drogas e remédios no corpo humano. - Macromoléculas na bioquímica: aminoácidos, proteínas, DNA e RNA, enzimas, lipídeos, carboidratos; química dos alimentos.\nHabilidades: (EM13CNT207X) - Identificar, analisar e discutir vulnerabilidades vinculadas às vivências e aos desafios contemporâneos aos quais as juventudes estão expostas, considerando os aspectos físico, psicoemocional e social, a fim de desenvolver e divulgar ações de prevenção e de promoção da saúde e do bem-estar, sabendo identificar informações inverídicas (fake news).\nSAEB: Não informados.\nOrientações: Nesse objeto do conhecimento é necessário trabalhar a origem, a estrutura molecular, aplicação, nomenclatura, propriedades físico-químicas e características das principais compostos das funções orgânicas oxigenadas e nitrogenadas. Explore também a presença das funções orgânicas nas macromoléculas da bioquímica. Outra pauta importante de ser explorada é a discussão sobre a ação das drogas lícitas e ilícitas no corpo humano. Nessa premissa, trabalhe com a identificação das substâncias que constituem as diferentes drogas e medicamentos, analisando os grupos funcionais e algumas de suas propriedades. Informe os efeitos biológicos desses compostos, a relação com as propriedades químicas e físicas destas substâncias e a importância dessas propriedades para suas potencialidades terapêuticas com o intuito de conscientizar e esclarecer os estudantes sobre essa temática. Trabalhe esse objeto do conhecimento de forma interdisciplinar com Biologia."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência 02 - Analisar a formação de territórios e fronteiras em diferentes tempos e espaços, mediante a compreensão das relações de poder que determinam as territorialidades e o papel geopolítico dos Estados-nações.",
+    "habilidade": "(EM13CNT212MG) - Identificar e relacionar as leis da natureza e os fenômenos relacionados às ondas eletromagnéticas, em especial o espectro visível, com eventos naturais e tecnológicos, elencando-os com os órgãos dos sentidos e com as artes, utilizando representações e simulações, com ou sem o uso de tecnologias de informação e comunicação.",
+    "objeto_conhecimento": "Isomeria. Isômeros e tipos de isômeros. Efeito da interação das radiações sobre a matéria. Tecnologias empregadas na produção de vacina; remédios. Agrotóxicos; alimentos e terapias alternativas no combate a microrganismos.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Conceitue isomeria e aborde os três tipos (constitucional, geométrica e óptica) recorrendo sempre a comparação entre compostos isômeros, a observação das fórmulas estruturais e molecular e, consequentemente, as propriedades físicas e químicas diferenciadas. Introduza exemplos de isômeros que os estudantes possam encontrar em produtos do dia a dia, como a glicose e frutose. Além disso, para uma aprendizagem mais significativa, relacione a utilização desse objeto do conhecimento a pesquisas e tecnologias empregadas nas indústrias alimenticias, farmacêuticas, agricultura, entre outras, mostrando aos estudantes, como diferentes isômeros podem participar de reações químicas de maneiras diferentes, levando a produtos distintos.",
+    "habilidade_codes": [
+      "EM13CNT212MG"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Isomeria. Isômeros e tipos de isômeros. Efeito da interação das radiações sobre a matéria. Tecnologias empregadas na produção de vacina; remédios. Agrotóxicos; alimentos e terapias alternativas no combate a microrganismos.\nHabilidades: (EM13CNT212MG) - Identificar e relacionar as leis da natureza e os fenômenos relacionados às ondas eletromagnéticas, em especial o espectro visível, com eventos naturais e tecnológicos, elencando-os com os órgãos dos sentidos e com as artes, utilizando representações e simulações, com ou sem o uso de tecnologias de informação e comunicação.\nSAEB: Não informados.\nOrientações: Conceitue isomeria e aborde os três tipos (constitucional, geométrica e óptica) recorrendo sempre a comparação entre compostos isômeros, a observação das fórmulas estruturais e molecular e, consequentemente, as propriedades físicas e químicas diferenciadas. Introduza exemplos de isômeros que os estudantes possam encontrar em produtos do dia a dia, como a glicose e frutose. Além disso, para uma aprendizagem mais significativa, relacione a utilização desse objeto do conhecimento a pesquisas e tecnologias empregadas nas indústrias alimenticias, farmacêuticas, agricultura, entre outras, mostrando aos estudantes, como diferentes isômeros podem participar de reações químicas de maneiras diferentes, levando a produtos distintos."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 3 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo.",
+    "habilidade": "(EM13CNT313MG) - Analisar as características físico-químicas dos grupos de microrganismos existentes, bem como discutir a importância desses seres para o meio ambiente, indústria e saúde. Identificar aqueles que são causadores de doenças, discutindo métodos de detecção e prevenção e tratamento para as mesmas.",
+    "objeto_conhecimento": "Isomeria. Tecnologias empregadas na produção de vacina; remédios. Agrotóxicos; alimentos e terapias alternativas no combate a microrganismos.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Conceitue isomeria e aborde os três tipos (constitucional, geométrica e óptica) recorrendo sempre a comparação entre compostos isômeros, a observação das fórmulas estruturais e molecular e, consequentemente, as propriedades físicas e químicas diferenciadas. Introduza exemplos de isômeros que os estudantes possam encontrar em produtos do dia a dia, como a glicose e frutose. Além disso, para uma aprendizagem mais significativa, relacione a utilização desse objeto do conhecimento a pesquisas e tecnologias empregadas nas indústrias alimenticias, farmacêuticas, agricultura, entre outras, mostrando aos estudantes, como diferentes isômeros podem participar de reações químicas de maneiras diferentes, levando a produtos distintos.",
+    "habilidade_codes": [
+      "EM13CNT313MG"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 3º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Isomeria. Tecnologias empregadas na produção de vacina; remédios. Agrotóxicos; alimentos e terapias alternativas no combate a microrganismos.\nHabilidades: (EM13CNT313MG) - Analisar as características físico-químicas dos grupos de microrganismos existentes, bem como discutir a importância desses seres para o meio ambiente, indústria e saúde. Identificar aqueles que são causadores de doenças, discutindo métodos de detecção e prevenção e tratamento para as mesmas.\nSAEB: Não informados.\nOrientações: Conceitue isomeria e aborde os três tipos (constitucional, geométrica e óptica) recorrendo sempre a comparação entre compostos isômeros, a observação das fórmulas estruturais e molecular e, consequentemente, as propriedades físicas e químicas diferenciadas. Introduza exemplos de isômeros que os estudantes possam encontrar em produtos do dia a dia, como a glicose e frutose. Além disso, para uma aprendizagem mais significativa, relacione a utilização desse objeto do conhecimento a pesquisas e tecnologias empregadas nas indústrias alimenticias, farmacêuticas, agricultura, entre outras, mostrando aos estudantes, como diferentes isômeros podem participar de reações químicas de maneiras diferentes, levando a produtos distintos."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 3 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo.",
+    "habilidade": "(EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental.",
+    "objeto_conhecimento": "Reações orgânicas. Materiais (propriedades físico-químicas, estruturas, composições, características, toxicidade). Natureza química dos agrotóxicos, transgênicos, aprimoramento genético, entre outros. Técnica de produção de vacinas: rendimento e custo; técnicas laboratoriais de análises de qualidade. Comunicação e argumentação com base em conhecimentos científicos sobre questões: âmbito regional, fake news, homeopatia e alopatia, entre outros.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Trabalhe as principais reações de síntese, eliminação, oxidação e substituição, apresentando as fórmulas estruturais e nomeclatura dos compostos envolvidos, mecanismos e previsões de rendimento. Exemplifique com reações importantes que acontecem no cotidiano dos estudantes ou de grande importância industrial e comercial. Aborde esse objeto do conhecimento recorrendo a reações que ocorrem em diferentes setores desde os biocombustíveis até a biotecnologia em alimentos. Recorra também a artigos cientifícos e meios confiáveis para esclarecer e desmistificar conceitos errôneos sobre ação de produtos no organismo e meio ambiente.",
+    "habilidade_codes": [
+      "EM13CNT302"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Reações orgânicas. Materiais (propriedades físico-químicas, estruturas, composições, características, toxicidade). Natureza química dos agrotóxicos, transgênicos, aprimoramento genético, entre outros. Técnica de produção de vacinas: rendimento e custo; técnicas laboratoriais de análises de qualidade. Comunicação e argumentação com base em conhecimentos científicos sobre questões: âmbito regional, fake news, homeopatia e alopatia, entre outros.\nHabilidades: (EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental.\nSAEB: Não informados.\nOrientações: Trabalhe as principais reações de síntese, eliminação, oxidação e substituição, apresentando as fórmulas estruturais e nomeclatura dos compostos envolvidos, mecanismos e previsões de rendimento. Exemplifique com reações importantes que acontecem no cotidiano dos estudantes ou de grande importância industrial e comercial. Aborde esse objeto do conhecimento recorrendo a reações que ocorrem em diferentes setores desde os biocombustíveis até a biotecnologia em alimentos. Recorra também a artigos cientifícos e meios confiáveis para esclarecer e desmistificar conceitos errôneos sobre ação de produtos no organismo e meio ambiente."
+  },
+  {
+    "grade": "3º Ano",
+    "grade_num": 3,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 3",
+    "habilidade": "(EM13CNT304X) - Analisar e debater situações controversas sobre a aplicação de conhecimentos da área de Ciências da Natureza (tais como tecnologias do DNA, tratamentos com células tronco, neurotecnologias, produção de tecnologias bélicas, estratégias de controle de pragas, entre outros), com base em argumentos consistentes, legais, éticos e responsáveis, distinguindo diferentes pontos de vista.",
+    "objeto_conhecimento": "Reações orgânicas. Natureza química dos agrotóxicos, transgênicos, aprimoramento genético, entre outros. Técnica de produção de vacinas. Comunicação e argumentação com base em conhecimentos científicos.",
+    "descritores_saeb": "Não informados.",
+    "orientacoes_pedagogicas": "Trabalhe as principais reações de síntese, eliminação, oxidação e substituição, apresentando as fórmulas estruturais e nomeclatura dos compostos envolvidos, mecanismos e previsões de rendimento. Exemplifique com reações importantes que acontecem no cotidiano dos estudantes ou de grande importância industrial e comercial. Aborde esse objeto do conhecimento recorrendo a reações que ocorrem em diferentes setores desde os biocombustíveis até a biotecnologia em alimentos. Recorra também a artigos cientifícos e meios confiáveis para esclarecer e desmistificar conceitos errôneos sobre ação de produtos no organismo e meio ambiente.",
+    "habilidade_codes": [
+      "EM13CNT304X"
+    ],
+    "chunk_text": "Ensino Médio | 3º Ano | Química | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Reações orgânicas. Natureza química dos agrotóxicos, transgênicos, aprimoramento genético, entre outros. Técnica de produção de vacinas. Comunicação e argumentação com base em conhecimentos científicos.\nHabilidades: (EM13CNT304X) - Analisar e debater situações controversas sobre a aplicação de conhecimentos da área de Ciências da Natureza (tais como tecnologias do DNA, tratamentos com células tronco, neurotecnologias, produção de tecnologias bélicas, estratégias de controle de pragas, entre outros), com base em argumentos consistentes, legais, éticos e responsáveis, distinguindo diferentes pontos de vista.\nSAEB: Não informados.\nOrientações: Trabalhe as principais reações de síntese, eliminação, oxidação e substituição, apresentando as fórmulas estruturais e nomeclatura dos compostos envolvidos, mecanismos e previsões de rendimento. Exemplifique com reações importantes que acontecem no cotidiano dos estudantes ou de grande importância industrial e comercial. Aborde esse objeto do conhecimento recorrendo a reações que ocorrem em diferentes setores desde os biocombustíveis até a biotecnologia em alimentos. Recorra também a artigos cientifícos e meios confiáveis para esclarecer e desmistificar conceitos errôneos sobre ação de produtos no organismo e meio ambiente."
+  }
+]

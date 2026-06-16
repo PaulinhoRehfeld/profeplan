@@ -1,3 +1,5 @@
+import { getAuthHeaders } from '../sessionService';
+
 // Mantém a exportação para compatibilidade.
 export const safetySettings: unknown[] = [];
 
@@ -23,9 +25,13 @@ type CompletionResponse = {
 };
 
 const callAiBackend = async (payload: CompletionRequest): Promise<CompletionResponse> => {
+    const authHeaders = await getAuthHeaders();
     const response = await fetch("/api/ai", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            ...authHeaders
+        },
         body: JSON.stringify(payload),
     });
 

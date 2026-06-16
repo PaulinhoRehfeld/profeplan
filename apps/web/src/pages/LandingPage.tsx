@@ -293,9 +293,9 @@ const FEATURES = [
   },
   {
     icon: <Mic size={24} />,
-    title: 'FREEDAY — Agente de Voz',
-    desc: 'Assistente de IA omnipresente por voz e texto. Dita comandos, navega pelas telas e lê documentos em voz alta. Mãos livres para ensinar.',
-    badge: '🎙️ Inovação',
+    title: 'Agente de Planejamento IA',
+    desc: 'IA Multi-Agentes que coordena planejamento trimestral, planos de aula, avaliações e PDI em um fluxo unificado. Resultados em minutos, não horas.',
+    badge: '🤖 IA Avançada',
     badgeColor: '#a78bfa',
   },
   {
@@ -364,8 +364,8 @@ const FAQS = [
     a: 'Sim. Oferecemos planos B2B para escolas e B2G para secretarias de educação, redes municipais e estaduais, e entidades como ONU/ODS. Entre em contato para uma proposta personalizada.',
   },
   {
-    q: 'O FREEDAY funciona offline?',
-    a: 'O FREEDAY requer conexão para as chamadas de IA. Contudo, documentos já gerados ficam salvos na plataforma e podem ser acessados e editados offline em modo de leitura.',
+    q: 'Como o PROFEPLAN garante alinhamento com o currículo de MG?',
+    a: 'O PROFEPLAN possui uma base de conhecimento com todos os Planos de Curso oficiais da SEE-MG 2026 para o Ensino Médio e Fundamental. Cada plano gerado é automaticamente vinculado à disciplina, ano e bimestre corretos, com habilidades BNCC e descritores SAEB.',
   },
 ];
 
@@ -1074,7 +1074,7 @@ const LandingPage: React.FC = () => {
                     '120 créditos/mês (renovação automática)',
                     'Tudo do Silver +',
                     'Planejamento com IA Multi-Agentes',
-                    'FREEDAY — Agente de Voz',
+                    'Planejamento com IA Multi-Agentes (BNCC + Currículo MG)',
                     'Simulados ENEM/SAEB (17k questões)',
                     'Integração com Livro PNLD',
                     'Suporte prioritário',

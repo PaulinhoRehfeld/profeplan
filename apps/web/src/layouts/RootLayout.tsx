@@ -7,7 +7,6 @@ import { useActiveSchool } from '../hooks/useActiveSchool';
 import { useAppBootstrap } from '../hooks/useAppBootstrap';
 import { ReloadPrompt } from '../components/ReloadPrompt';
 import { OfflineIndicator } from '../features/SimulationFactory';
-import { GlobalFreedayUI } from '../components/GlobalFreedayUI';
 import { AppProviders } from '../providers/AppProviders';
 
 const PageLoader = () => (
@@ -61,7 +60,7 @@ export const RootLayout: React.FC = () => {
   if (loading && !showEmergencyReset) return <PageLoader />;
   if (showEmergencyReset && loading) return <EmergencyResetScreen />;
 
-  const isPublicRoute = ['/landing', '/login', '/signup', '/privacy', '/terms', '/verify-email'].includes(location.pathname);
+  const isPublicRoute = ['/landing', '/login', '/signup', '/privacy', '/terms', '/verify-email', '/road'].includes(location.pathname);
   const isRootRoute = location.pathname === '/';
 
   if (isRootRoute) {
@@ -93,7 +92,6 @@ export const RootLayout: React.FC = () => {
       <Suspense fallback={<PageLoader />}>
         <Outlet />
       </Suspense>
-      {session?.isLoggedIn && <GlobalFreedayUI />}
     </AppProviders>
   );
 };

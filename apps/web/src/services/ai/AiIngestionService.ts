@@ -1,5 +1,4 @@
 import { createSimpleCompletion } from './AiCore';
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabase } from '../supabaseClient';
 
 export interface DocumentMetadata {
@@ -18,26 +17,22 @@ export interface IngestionResult {
 }
 
 /**
- * Obtém a chave de API do Gemini para vetorização
- */
-export const getGeminiApiKey = (): string | undefined => {
-    return (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-};
-
-/**
- * Gera o vetor (embedding) de 768 dimensões usando o modelo do Gemini
+ * Gera o vetor (embedding) de 768 dimensões usando o modelo do Gemini via backend
  */
 export const generateChunkEmbedding = async (text: string): Promise<number[] | null> => {
-    const apiKey = getGeminiApiKey();
-    if (!apiKey) {
-        console.warn("[AiIngestionService] API Key de Gemini ausente. Embedding não gerado.");
-        return null;
-    }
     try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
-        const result = await model.embedContent(text);
-        return result.embedding.values.slice(0, 768);
+        const response = await fetch("/api/ai/embeddings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text }),
+        });
+        if (!response.ok) {
+            throw new Error(`Embedding API error: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.embedding || null;
     } catch (error) {
         console.error("[AiIngestionService] Erro ao gerar embedding no Gemini:", error);
         return null;

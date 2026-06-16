@@ -1,0 +1,384 @@
+[
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI01X) - Identificar e classificar diferentes fontes (renováveis e não renováveis), os tipos de energia utilizados em residências, comunidades ou cidades e analisar os impactos ambientais gerados. (EF08CI06) - Discutir e avaliar usinas de geração de energia elétrica (termelétricas, hidrelétricas, eólicas etc.), suas semelhanças e diferenças, seus impactos socioambientais, e como essa energia chega e é usada em sua cidade, comunidade, casa ou escola.",
+    "objeto_conhecimento": "Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.",
+    "descritores_saeb": "Energia solar, eólica, de biomassa, hidrelétrica, combustíveis fósseis, nuclear; Matriz energética brasileira e mundial; impactos ambientais; alternativas de energia sustentáveis;",
+    "orientacoes_pedagogicas": "Apresentar os conceitos de fontes de energia renováveis e não renováveis, destacando exemplos como energia solar, eólica, hidrelétrica, combustíveis fósseis e nucleares. Importante que os estudantes possam analisar gráficos sobre a matriz energética brasileira e mundial, comparando os tipos de fontes energéticas mais utlizadas em cada uma delas, por exemplo: qual tipo de fonte é mais utilizado no mundo, renovável ou não renovável? O Brasil destaca-se no uso de fontes revováveis? Qual é a maior fonte de energia elétrica no Brasil? Quais fatores ambientais justificam o crescimento da energia solar e eólica no nosso pais?. As aulas devem explorar as características de cada tipo de fonte, enfatizando sua disponibilidade, sustentabilidade e impactos ambientais.",
+    "habilidade_codes": [
+      "EF08CI01X",
+      "EF08CI06"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 1º Bimestre\nUnidade: Matéria e energia\nObjetos: Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.\nHabilidades: (EF08CI01X) - Identificar e classificar diferentes fontes (renováveis e não renováveis), os tipos de energia utilizados em residências, comunidades ou cidades e analisar os impactos ambientais gerados. (EF08CI06) - Discutir e avaliar usinas de geração de energia elétrica (termelétricas, hidrelétricas, eólicas etc.), suas semelhanças e diferenças, seus impactos socioambientais, e como essa energia chega e é usada em sua cidade, comunidade, casa ou escola.\nSAEB: Energia solar, eólica, de biomassa, hidrelétrica, combustíveis fósseis, nuclear; Matriz energética brasileira e mundial; impactos ambientais; alternativas de energia sustentáveis;\nOrientações: Apresentar os conceitos de fontes de energia renováveis e não renováveis, destacando exemplos como energia solar, eólica, hidrelétrica, combustíveis fósseis e nucleares. Importante que os estudantes possam analisar gráficos sobre a matriz energética brasileira e mundial, comparando os tipos de fontes energéticas mais utlizadas em cada uma delas, por exemplo: qual tipo de fonte é mais utilizado no mundo, renovável ou não renovável? O Brasil destaca-se no uso de fontes revováveis? Qual é a maior fonte de energia elétrica no Brasil? Quais fatores ambientais justificam o crescimento da energia solar e eólica no nosso pais?. As aulas devem explorar as características de cada tipo de fonte, enfatizando sua disponibilidade, sustentabilidade e impactos ambientais."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI02) - Construir circuitos elétricos com pilha/bateria, fios e lâmpada ou outros dispositivos e compará-los a circuitos elétricos residenciais. (EF08CI45MG) - Compreender as instalações elétricas de nossas casas como um grande circuito, identificando os principais dispositivos elétricos utilizados reconhecendo a importância da segurança no uso da energia elétrica e o risco de choque elétrico.",
+    "objeto_conhecimento": "Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.",
+    "descritores_saeb": "Energia elétrica; Circuito elétrico; aparelhos eletrodomésticos; medidas de segurança.",
+    "orientacoes_pedagogicas": "O clássico experimento de circuito elétrico com limão é simples de se fazer e muito interessante. A realização de experimentos básicos de física sobre circuito elétrico pode ser realizados em sala com auxílio do professor de física da escola ou de algum profissional eletricista. Importante a abordagem de perigos de choque elétrico e conhecer normas de segurança para evitar acidentes, podendo ser produzido um cartilha sobre este assunto.",
+    "habilidade_codes": [
+      "EF08CI02",
+      "EF08CI45MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 1º Bimestre\nUnidade: Matéria e energia\nObjetos: Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.\nHabilidades: (EF08CI02) - Construir circuitos elétricos com pilha/bateria, fios e lâmpada ou outros dispositivos e compará-los a circuitos elétricos residenciais. (EF08CI45MG) - Compreender as instalações elétricas de nossas casas como um grande circuito, identificando os principais dispositivos elétricos utilizados reconhecendo a importância da segurança no uso da energia elétrica e o risco de choque elétrico.\nSAEB: Energia elétrica; Circuito elétrico; aparelhos eletrodomésticos; medidas de segurança.\nOrientações: O clássico experimento de circuito elétrico com limão é simples de se fazer e muito interessante. A realização de experimentos básicos de física sobre circuito elétrico pode ser realizados em sala com auxílio do professor de física da escola ou de algum profissional eletricista. Importante a abordagem de perigos de choque elétrico e conhecer normas de segurança para evitar acidentes, podendo ser produzido um cartilha sobre este assunto."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI04) - Calcular o consumo de eletrodomésticos a partir dos dados de potência (descritos no próprio equipamento) e tempo médio de uso para avaliar o impacto de cada equipamento no consumo doméstico mensal.",
+    "objeto_conhecimento": "Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.",
+    "descritores_saeb": "Consumo de energia; aparelhos eletrodomésticos; cálculo de consumo de energia elétrica.",
+    "orientacoes_pedagogicas": "Pode-se oportunizar atividades de análise de consumo de energia elétrica residencial, orientando os estudantes sobre como calcular a conta de luz de suas casas com base no consumo em kWh, ou Quilowatt-hora ( Essa etapa deve envolver exercícios práticos onde os estudantes relacionam a potência dos eletrodomésticos e o consumo de energia, promovendo a conscientização sobre o seu uso racional). Finalmente, enfatizar o uso consciente de energia elétrica, discutindo estratégias para economizar energia em suas rotinas diárias e reduzir os impactos ambientais. Fomentar a análise crítica dos estudantes sobre os desafios energéticos contemporâneos e o papel de cada indivíduo na construção de um futuro mais sustentável. Promover aulas interativas, com debates, atividades práticas e reflexões que envolvam a participação ativa dos estudantes.",
+    "habilidade_codes": [
+      "EF08CI04"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 1º Bimestre\nUnidade: Matéria e energia\nObjetos: Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.\nHabilidades: (EF08CI04) - Calcular o consumo de eletrodomésticos a partir dos dados de potência (descritos no próprio equipamento) e tempo médio de uso para avaliar o impacto de cada equipamento no consumo doméstico mensal.\nSAEB: Consumo de energia; aparelhos eletrodomésticos; cálculo de consumo de energia elétrica.\nOrientações: Pode-se oportunizar atividades de análise de consumo de energia elétrica residencial, orientando os estudantes sobre como calcular a conta de luz de suas casas com base no consumo em kWh, ou Quilowatt-hora ( Essa etapa deve envolver exercícios práticos onde os estudantes relacionam a potência dos eletrodomésticos e o consumo de energia, promovendo a conscientização sobre o seu uso racional). Finalmente, enfatizar o uso consciente de energia elétrica, discutindo estratégias para economizar energia em suas rotinas diárias e reduzir os impactos ambientais. Fomentar a análise crítica dos estudantes sobre os desafios energéticos contemporâneos e o papel de cada indivíduo na construção de um futuro mais sustentável. Promover aulas interativas, com debates, atividades práticas e reflexões que envolvam a participação ativa dos estudantes."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI05) - Relacionar o uso consciente da energia elétrica com a preservação ambiental.",
+    "objeto_conhecimento": "Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.",
+    "descritores_saeb": "Fontes de energia e impactos ambientais; Estratégias de conservação ambiental; Sustentabilidade.",
+    "orientacoes_pedagogicas": "Professor(a), o desenvolvimento dos ideais de conservação ambiental deve permear todas as habilidades, não precisando, necessariamente, de um momento a parte na sequência didática. Importante gerar reflexões sobre os impactos ambientais do uso de combustíveis fósseis, associando-os com o emergência climática atual; evidenciar os problemas causados na construção de hidrelétricas como inundação de grandes áreas, morte de espécies e deslocamento de pessoas atingidas por barragens; identificar impactos causados pela instalação de parques eólicos como poluição sonora, impactos visuais na paisagem, dentre outros. Utilizar metodologias ativas como sala de aula invertida, aprendizagem baseada em problemas ou em projetos, por exemplo, pode apoiar a promoção de participação efetiva dos estudantes na análise de textos e dados, discussões e elaboração de ações sustentáveis em casa, na escola ou comunidade.",
+    "habilidade_codes": [
+      "EF08CI05"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 1º Bimestre\nUnidade: Matéria e energia\nObjetos: Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.\nHabilidades: (EF08CI05) - Relacionar o uso consciente da energia elétrica com a preservação ambiental.\nSAEB: Fontes de energia e impactos ambientais; Estratégias de conservação ambiental; Sustentabilidade.\nOrientações: Professor(a), o desenvolvimento dos ideais de conservação ambiental deve permear todas as habilidades, não precisando, necessariamente, de um momento a parte na sequência didática. Importante gerar reflexões sobre os impactos ambientais do uso de combustíveis fósseis, associando-os com o emergência climática atual; evidenciar os problemas causados na construção de hidrelétricas como inundação de grandes áreas, morte de espécies e deslocamento de pessoas atingidas por barragens; identificar impactos causados pela instalação de parques eólicos como poluição sonora, impactos visuais na paisagem, dentre outros. Utilizar metodologias ativas como sala de aula invertida, aprendizagem baseada em problemas ou em projetos, por exemplo, pode apoiar a promoção de participação efetiva dos estudantes na análise de textos e dados, discussões e elaboração de ações sustentáveis em casa, na escola ou comunidade."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Matéria e energia",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI03) - Classificar equipamentos elétricos residenciais (chuveiro, ferro, lâmpadas, TV, rádio, geladeira, etc.) de acordo com o tipo de transformação de energia (da energia elétrica para a térmica, luminosa, sonora e mecânica, por exemplo).",
+    "objeto_conhecimento": "Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.",
+    "descritores_saeb": "Tipos de energia; transformações de energia.",
+    "orientacoes_pedagogicas": "Professor (a) neste momento é importante abordar os diferentes tipos de energia presentes no cotidiano dos estudantes, como energia elétrica, térmica, mecânica e química, explicando como essas formas de energia são utilizadas em residências, comunidades e cidades. Essa discussão pode incluir exemplos práticos, como o uso de energia elétrica para iluminação, aquecimento de água e funcionamento de aparelhos eletrônicos. Outro aspecto importante a ser estudado é a transformação de energia, a patir dele, os estudantes devem compreender como a energia pode ser convertida de uma forma para outra, como, por exemplo, a energia solar em energia elétrica; energia potencial em cinética e elétrica nas hidrelétricas; dentre outras. A aula pode incluir atividades práticas, como experimentos simples que demonstrem essas transformações.",
+    "habilidade_codes": [
+      "EF08CI03"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 1º Bimestre\nUnidade: Matéria e energia\nObjetos: Fontes e tipos de energia. Transformação de energia. Cálculo de consumo de energia elétrica. Circuitos elétricos. Uso consciente de energia elétrica.\nHabilidades: (EF08CI03) - Classificar equipamentos elétricos residenciais (chuveiro, ferro, lâmpadas, TV, rádio, geladeira, etc.) de acordo com o tipo de transformação de energia (da energia elétrica para a térmica, luminosa, sonora e mecânica, por exemplo).\nSAEB: Tipos de energia; transformações de energia.\nOrientações: Professor (a) neste momento é importante abordar os diferentes tipos de energia presentes no cotidiano dos estudantes, como energia elétrica, térmica, mecânica e química, explicando como essas formas de energia são utilizadas em residências, comunidades e cidades. Essa discussão pode incluir exemplos práticos, como o uso de energia elétrica para iluminação, aquecimento de água e funcionamento de aparelhos eletrônicos. Outro aspecto importante a ser estudado é a transformação de energia, a patir dele, os estudantes devem compreender como a energia pode ser convertida de uma forma para outra, como, por exemplo, a energia solar em energia elétrica; energia potencial em cinética e elétrica nas hidrelétricas; dentre outras. A aula pode incluir atividades práticas, como experimentos simples que demonstrem essas transformações."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI46MG) - Identificar os principais representantes do reino Plantae e compreender suas características gerais.",
+    "objeto_conhecimento": "Reino Plantae.",
+    "descritores_saeb": "Biomas; grupos botânicos (briófitas e pteridófitas, gimnospermas e angiospermas).",
+    "orientacoes_pedagogicas": "Pode-se apresentar o tema de forma contextualizada por meio da identificação do Bioma em que a escola, cidade ou região se encontram e o estudo das características da vegetação predominante. Nesse momento, é interessante que os estudantes compreendam sobre a importância médica e ecológica dos vegetais, evidenciando a relevância da preservação ambiental. Promover o estudo do Reino Plantae abordando os grandes grupos botânicos, suas características morfológicas principais e novidades evolutivas . A fim de tornar o processo de aprendizagem mais significativo e interessante, evite apresentar o conteúdo apenas por meio de textos e imagens dos livros e a simples memorização de nomes e conceitos. Para tanto, deve-se oportunizar aos estudantes uma maior percepção dos vegetais ao ser redor ( evitando a “cegueira botânica”) por meio de aulas práticas com amostras de plantas, como também atividades interativas em ambientes não formais de ensino como o pátio da escola e àreas verdes urbanas no seu entorno. Professor(a), elabore roteiros de aula prática para que as saídas sejam organizadas, os objetivos sejam alcançados e que os produtos (relatórios, exsicatas e outros) sejam gerados de forma satisfatória.",
+    "habilidade_codes": [
+      "EF08CI46MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 2º Bimestre\nUnidade: Vida e evolução\nObjetos: Reino Plantae.\nHabilidades: (EF08CI46MG) - Identificar os principais representantes do reino Plantae e compreender suas características gerais.\nSAEB: Biomas; grupos botânicos (briófitas e pteridófitas, gimnospermas e angiospermas).\nOrientações: Pode-se apresentar o tema de forma contextualizada por meio da identificação do Bioma em que a escola, cidade ou região se encontram e o estudo das características da vegetação predominante. Nesse momento, é interessante que os estudantes compreendam sobre a importância médica e ecológica dos vegetais, evidenciando a relevância da preservação ambiental. Promover o estudo do Reino Plantae abordando os grandes grupos botânicos, suas características morfológicas principais e novidades evolutivas . A fim de tornar o processo de aprendizagem mais significativo e interessante, evite apresentar o conteúdo apenas por meio de textos e imagens dos livros e a simples memorização de nomes e conceitos. Para tanto, deve-se oportunizar aos estudantes uma maior percepção dos vegetais ao ser redor ( evitando a “cegueira botânica”) por meio de aulas práticas com amostras de plantas, como também atividades interativas em ambientes não formais de ensino como o pátio da escola e àreas verdes urbanas no seu entorno. Professor(a), elabore roteiros de aula prática para que as saídas sejam organizadas, os objetivos sejam alcançados e que os produtos (relatórios, exsicatas e outros) sejam gerados de forma satisfatória."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI47MG) - Identificar os principais representantes do reino Animalia e compreender suas características gerais.",
+    "objeto_conhecimento": "Reino Animalia.",
+    "descritores_saeb": "Reino Animal (vertebrados e invertebrados); aspectos evolutivos; classificação; estratégias de conservação.",
+    "orientacoes_pedagogicas": "No estudo do reino Animalia, apresentar as características gerais do reino, em seguida dos principais filos, atentando para aspectos morfológicos, fisiológicos e adaptativos que diferenciam os grupos de vertebrados e invertebrados. (Diversificar a metodologia com vídeos, reportagens e curiosidades). Dentre as estratégias para estimular o protagonismo dos estudantes, solicitar a elaboração de catálago de zoologia com imagens e textos descritivos de alguns representantes dos filos. Grupos de trabalho podem ser organizados para pesquisa e apresentação sobre temas importantes de serem abordados como tráfico de animais, impactos ambientais e perda de biodiversidade (sugestão: professor (a), pesquise e utilize o Livro Vermelho da Fauna Brasileira Ameaçada de Extinção, disponível no site da ICMBIO para realizar atividades de classificação, categorias de conservação das espécies, características ecológicas, etc).",
+    "habilidade_codes": [
+      "EF08CI47MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 2º Bimestre\nUnidade: Vida e evolução\nObjetos: Reino Animalia.\nHabilidades: (EF08CI47MG) - Identificar os principais representantes do reino Animalia e compreender suas características gerais.\nSAEB: Reino Animal (vertebrados e invertebrados); aspectos evolutivos; classificação; estratégias de conservação.\nOrientações: No estudo do reino Animalia, apresentar as características gerais do reino, em seguida dos principais filos, atentando para aspectos morfológicos, fisiológicos e adaptativos que diferenciam os grupos de vertebrados e invertebrados. (Diversificar a metodologia com vídeos, reportagens e curiosidades). Dentre as estratégias para estimular o protagonismo dos estudantes, solicitar a elaboração de catálago de zoologia com imagens e textos descritivos de alguns representantes dos filos. Grupos de trabalho podem ser organizados para pesquisa e apresentação sobre temas importantes de serem abordados como tráfico de animais, impactos ambientais e perda de biodiversidade (sugestão: professor (a), pesquise e utilize o Livro Vermelho da Fauna Brasileira Ameaçada de Extinção, disponível no site da ICMBIO para realizar atividades de classificação, categorias de conservação das espécies, características ecológicas, etc)."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI07X) - Reconhecer e comparar diferentes processos reprodutivos em plantas e animais em relação aos mecanismos adaptativos e evolutivos.",
+    "objeto_conhecimento": "Sistema endócrino. Mecanismos reprodutivos. Sexualidade.",
+    "descritores_saeb": "Reprodução sexuada e assexuada. Vantagens adaptativas. Ciclos reprodutivos; Ecologia.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento desta habilidade, conceitue os tipos de reprodução, sexuada e assexuada, exemplificando e discutindo suas vantagens e desvantagens adaptativas para os organismos. Importante que os estudantes percebam a importância da variabilidade genética para a evolução das especies, como também as estratégias de cortejamento e compatibilidades para o acasalamento que garantem o sucesso reprodutivo em animais. Em plantas, pode-se oportunizar a compreensão das estruturas e ciclos reprodutivos de maneira interativa por meio da observação de flores, estróbilos, amostras de musgos e samambaias. Explicar a importância da polinização e dispersão de sementes para o sucesso adaptativo nos vegetais superiores e para a agricultura (como o declinio na população de abelhas pode afetar a produção agrícola).",
+    "habilidade_codes": [
+      "EF08CI07X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 2º Bimestre\nUnidade: Vida e evolução\nObjetos: Sistema endócrino. Mecanismos reprodutivos. Sexualidade.\nHabilidades: (EF08CI07X) - Reconhecer e comparar diferentes processos reprodutivos em plantas e animais em relação aos mecanismos adaptativos e evolutivos.\nSAEB: Reprodução sexuada e assexuada. Vantagens adaptativas. Ciclos reprodutivos; Ecologia.\nOrientações: Para o desenvolvimento desta habilidade, conceitue os tipos de reprodução, sexuada e assexuada, exemplificando e discutindo suas vantagens e desvantagens adaptativas para os organismos. Importante que os estudantes percebam a importância da variabilidade genética para a evolução das especies, como também as estratégias de cortejamento e compatibilidades para o acasalamento que garantem o sucesso reprodutivo em animais. Em plantas, pode-se oportunizar a compreensão das estruturas e ciclos reprodutivos de maneira interativa por meio da observação de flores, estróbilos, amostras de musgos e samambaias. Explicar a importância da polinização e dispersão de sementes para o sucesso adaptativo nos vegetais superiores e para a agricultura (como o declinio na população de abelhas pode afetar a produção agrícola)."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI08) - Analisar e explicar as transformações que ocorrem na puberdade, considerando a atuação dos hormônios sexuais e do sistema nervoso.",
+    "objeto_conhecimento": "Sistema endócrino. Mecanismos reprodutivos. Sexualidade.",
+    "descritores_saeb": "Anatomia e fisiologia do sistema reprodutor masculino e feminino; puberdade e adolescência; sexualidade, tabus e preconceitos.",
+    "orientacoes_pedagogicas": "Professor(a), o tema de sexualidade humana deve abordar as mudanças psicológica e sociais que ocorrem durante a adolescência, evidenciando que esta fase de transição da infância para a fase adulta é definida de forma cronológica pela Organização Mundial da Saúde e pelo Estatuto da Criança e do Adolescente, enquanto a puberdade é um conjunto de transformações físicas, hormonais e emocionais que ocorre durante a adolescência. Explicar que o início da puberdade varia de pessoa para pessoa de acordo com vários fatores. Importante promover um clima de confiança e liberdade para que os estudantes expressem suas dúvidas sem medo de se expor. Apresentar a anatomia do sistema reprodutor feminino e masculino e suas transformações sob a influência de hormônios, mostrando as funções de cada órgão para o processo de reprodução. É importante desenvolver momentos para abordar a higiene pessoal e as necessidades que surgem com a puberdade, como a necessidade do uso absorventes pelas meninas, controle de acnes e até mesmo o uso cotidiano de desodorante para controle da transpiração e proliferação de bactérias que causam mal odor.",
+    "habilidade_codes": [
+      "EF08CI08"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 2º Bimestre\nUnidade: Vida e evolução\nObjetos: Sistema endócrino. Mecanismos reprodutivos. Sexualidade.\nHabilidades: (EF08CI08) - Analisar e explicar as transformações que ocorrem na puberdade, considerando a atuação dos hormônios sexuais e do sistema nervoso.\nSAEB: Anatomia e fisiologia do sistema reprodutor masculino e feminino; puberdade e adolescência; sexualidade, tabus e preconceitos.\nOrientações: Professor(a), o tema de sexualidade humana deve abordar as mudanças psicológica e sociais que ocorrem durante a adolescência, evidenciando que esta fase de transição da infância para a fase adulta é definida de forma cronológica pela Organização Mundial da Saúde e pelo Estatuto da Criança e do Adolescente, enquanto a puberdade é um conjunto de transformações físicas, hormonais e emocionais que ocorre durante a adolescência. Explicar que o início da puberdade varia de pessoa para pessoa de acordo com vários fatores. Importante promover um clima de confiança e liberdade para que os estudantes expressem suas dúvidas sem medo de se expor. Apresentar a anatomia do sistema reprodutor feminino e masculino e suas transformações sob a influência de hormônios, mostrando as funções de cada órgão para o processo de reprodução. É importante desenvolver momentos para abordar a higiene pessoal e as necessidades que surgem com a puberdade, como a necessidade do uso absorventes pelas meninas, controle de acnes e até mesmo o uso cotidiano de desodorante para controle da transpiração e proliferação de bactérias que causam mal odor."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI09X) - Comparar o modo de ação e a eficácia dos diversos métodos contraceptivos e justificar a necessidade de compartilhar a responsabilidade na escolha e na utilização do método mais adequado à prevenção da gravidez precoce e indesejada e de Infecções Sexualmente Transmissíveis (IST). (EF08CI10X) - Identificar os principais sintomas, modos de transmissão e tratamento de algumas IST (com ênfase na AIDS), e discutir estratégias e métodos de prevenção.",
+    "objeto_conhecimento": "Sistema endócrino. Mecanismos reprodutivos. Sexualidade.",
+    "descritores_saeb": "Métodos contraceptivos; infecções sexualmente transmissíveis (ISTs), tipos, prevenção e tratamentos; comportamentos de risco.",
+    "orientacoes_pedagogicas": "Para abordar esta habilidade o professor poderá promover ampla discussão sobre os diferentes tipos de métodos contraceptivos (métodos de barreira, hormonais, intrauterinos, cirúrgicos e os comportamentais), explicando funcionamento de cada um e a importância do uso, tanto para evitar uma gravidez indesejada quanto para evitar o contágio de infecções sexualmente transmissíveis (ISTs). As ISTs devem ser apresentadas, orientando os estudantes sobre os principais agentes infecciosos, formas de contágio, além da via sexual, prevenção e tratamento, por meio de grupos de discussão, roda de conversa, palestras e outras estratégias metodológicas que promovam a participação ativa dos estudantes.",
+    "habilidade_codes": [
+      "EF08CI09X",
+      "EF08CI10X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 2º Bimestre\nUnidade: Vida e evolução\nObjetos: Sistema endócrino. Mecanismos reprodutivos. Sexualidade.\nHabilidades: (EF08CI09X) - Comparar o modo de ação e a eficácia dos diversos métodos contraceptivos e justificar a necessidade de compartilhar a responsabilidade na escolha e na utilização do método mais adequado à prevenção da gravidez precoce e indesejada e de Infecções Sexualmente Transmissíveis (IST). (EF08CI10X) - Identificar os principais sintomas, modos de transmissão e tratamento de algumas IST (com ênfase na AIDS), e discutir estratégias e métodos de prevenção.\nSAEB: Métodos contraceptivos; infecções sexualmente transmissíveis (ISTs), tipos, prevenção e tratamentos; comportamentos de risco.\nOrientações: Para abordar esta habilidade o professor poderá promover ampla discussão sobre os diferentes tipos de métodos contraceptivos (métodos de barreira, hormonais, intrauterinos, cirúrgicos e os comportamentais), explicando funcionamento de cada um e a importância do uso, tanto para evitar uma gravidez indesejada quanto para evitar o contágio de infecções sexualmente transmissíveis (ISTs). As ISTs devem ser apresentadas, orientando os estudantes sobre os principais agentes infecciosos, formas de contágio, além da via sexual, prevenção e tratamento, por meio de grupos de discussão, roda de conversa, palestras e outras estratégias metodológicas que promovam a participação ativa dos estudantes."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI11X) - Selecionar argumentos com bases científicas que evidenciem as múltiplas dimensões da sexualidade humana (biológica, sociocultural, afetiva e ética) com intuito de promover a inclusão e combater preconceitos.",
+    "objeto_conhecimento": "Sistema endócrino. Mecanismos reprodutivos. Sexualidade.",
+    "descritores_saeb": "Sexualidade e ética; fatores que influenciam na sexualidade; diversidade e respeito.",
+    "orientacoes_pedagogicas": "A inserção da temática sexualidade humana na escola deve ser realizada de forma ética, explicando que ela é influenciada não somente por fatores biológicos, mas psicológicos, sociais, econômicos, políticos, culturais, éticos, legais, históricos e religiosos. Importante gerar discussões sobre os tabus e preconceitos em relação à diversidade sexual, esclarecendo-os. Palestras com especialistas podem ajudar a aprofundar melhor neste assunto tão polêmico e tão importantes para os estudantes. Selecione textos e vídeos sobre a temática.",
+    "habilidade_codes": [
+      "EF08CI11X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 2º Bimestre\nUnidade: Vida e evolução\nObjetos: Sistema endócrino. Mecanismos reprodutivos. Sexualidade.\nHabilidades: (EF08CI11X) - Selecionar argumentos com bases científicas que evidenciem as múltiplas dimensões da sexualidade humana (biológica, sociocultural, afetiva e ética) com intuito de promover a inclusão e combater preconceitos.\nSAEB: Sexualidade e ética; fatores que influenciam na sexualidade; diversidade e respeito.\nOrientações: A inserção da temática sexualidade humana na escola deve ser realizada de forma ética, explicando que ela é influenciada não somente por fatores biológicos, mas psicológicos, sociais, econômicos, políticos, culturais, éticos, legais, históricos e religiosos. Importante gerar discussões sobre os tabus e preconceitos em relação à diversidade sexual, esclarecendo-os. Palestras com especialistas podem ajudar a aprofundar melhor neste assunto tão polêmico e tão importantes para os estudantes. Selecione textos e vídeos sobre a temática."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI48MG) - Reconhecer a importância da passagem de nutrientes e água do tubo digestório para os capilares sanguíneos.",
+    "objeto_conhecimento": "Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).",
+    "descritores_saeb": "Anatomia do sistema digestório; fisiologia da digestão; hábitos alimentares; doenças do sistema digestivo.",
+    "orientacoes_pedagogicas": "Explicar que a função de nutrição ocorre de forma integrada por diversos sistemas do corpo humano para promover a homeostase do organismo. Desenvolver a conscientização sobre a importância da alimentação equilibrada para a saúde humana e as doenças relacionadas a hábitos alimentares incorretos. Apresentar os órgãos dos sistema digestório e suas funções, além do percurso dos alimentos no tubo digestório, evidenciando a absorção dos nutrientes e da água no intestino para os capilares sanguíneos. Para onde vão os nutrientes? Instigar os estudantes para a compreensão da relação entre a digestão, respiração e o metabolismo celular.",
+    "habilidade_codes": [
+      "EF08CI48MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 3º Bimestre\nUnidade: Vida e evolução\nObjetos: Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).\nHabilidades: (EF08CI48MG) - Reconhecer a importância da passagem de nutrientes e água do tubo digestório para os capilares sanguíneos.\nSAEB: Anatomia do sistema digestório; fisiologia da digestão; hábitos alimentares; doenças do sistema digestivo.\nOrientações: Explicar que a função de nutrição ocorre de forma integrada por diversos sistemas do corpo humano para promover a homeostase do organismo. Desenvolver a conscientização sobre a importância da alimentação equilibrada para a saúde humana e as doenças relacionadas a hábitos alimentares incorretos. Apresentar os órgãos dos sistema digestório e suas funções, além do percurso dos alimentos no tubo digestório, evidenciando a absorção dos nutrientes e da água no intestino para os capilares sanguíneos. Para onde vão os nutrientes? Instigar os estudantes para a compreensão da relação entre a digestão, respiração e o metabolismo celular."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI49MG) - Reconhecer a importância das trocas gasosas para o organismo humano.",
+    "objeto_conhecimento": "Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).",
+    "descritores_saeb": "Anatomia do sistema respiratório; respiração mecânica e química; sistema respiratório e saúde.",
+    "orientacoes_pedagogicas": "O estudo do sistema respiratório pode ser iniciado de forma contextualizada com textos sobre doenças respiratórias (como COVID-19 , Infuenza, e outras doenças respiratórias) ou sobre impactos ambientais no ar e na saúde. Em seguida, apresentar os órgãos do sistema respiratório e suas funções, evidenciando o percurso do ar do nariz aos pulmões e a ocorrência da hematose. Explicar o mecanismo de respiraçao mecânica e da respiração celular ou quimica, fazendo link com a circulação sangúinea. Promover a compreensão das doenças respiratórias e medidas de prevenção.",
+    "habilidade_codes": [
+      "EF08CI49MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 3º Bimestre\nUnidade: Vida e evolução\nObjetos: Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).\nHabilidades: (EF08CI49MG) - Reconhecer a importância das trocas gasosas para o organismo humano.\nSAEB: Anatomia do sistema respiratório; respiração mecânica e química; sistema respiratório e saúde.\nOrientações: O estudo do sistema respiratório pode ser iniciado de forma contextualizada com textos sobre doenças respiratórias (como COVID-19 , Infuenza, e outras doenças respiratórias) ou sobre impactos ambientais no ar e na saúde. Em seguida, apresentar os órgãos do sistema respiratório e suas funções, evidenciando o percurso do ar do nariz aos pulmões e a ocorrência da hematose. Explicar o mecanismo de respiraçao mecânica e da respiração celular ou quimica, fazendo link com a circulação sangúinea. Promover a compreensão das doenças respiratórias e medidas de prevenção."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI50MG) - Reconhecer que o sangue é composto por elementos figurados e, principalmente, água (onde se encontram dissolvidos materiais nutritivos e resíduos metabólicos).",
+    "objeto_conhecimento": "Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).",
+    "descritores_saeb": "Anatomia do sistema circulatório; Sangue, composição e funções; sistema circulatório e saúde.",
+    "orientacoes_pedagogicas": "Explicar a composição do sangue e as funções dos glóbulos vermelhos, brancos e hemácias no organismo. Evidenciar a importância do sangue no transporte de nutrientes e outras substâncias para as células, como também na defesa do organismo e na retirada de resíduos metabólicos nos tecidos. Promover a compreensão do funcionamento do coração, detalhando suas partes e conexões com veias e artérias, diferenciando-as. Importante promover o estudo das doenças circulatórias e profilaxia, enfatizando os riscos da alimentação rica em lipídeos e seu acúmulo nas paredes dos vasos sanguíneos. Apresente os vasos linfáticos e suas funções. Trabalhar a integração entre os demais sistemas, explicitando a ligação com o excretor no processo de filtragem do sangue nos rins.",
+    "habilidade_codes": [
+      "EF08CI50MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 3º Bimestre\nUnidade: Vida e evolução\nObjetos: Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).\nHabilidades: (EF08CI50MG) - Reconhecer que o sangue é composto por elementos figurados e, principalmente, água (onde se encontram dissolvidos materiais nutritivos e resíduos metabólicos).\nSAEB: Anatomia do sistema circulatório; Sangue, composição e funções; sistema circulatório e saúde.\nOrientações: Explicar a composição do sangue e as funções dos glóbulos vermelhos, brancos e hemácias no organismo. Evidenciar a importância do sangue no transporte de nutrientes e outras substâncias para as células, como também na defesa do organismo e na retirada de resíduos metabólicos nos tecidos. Promover a compreensão do funcionamento do coração, detalhando suas partes e conexões com veias e artérias, diferenciando-as. Importante promover o estudo das doenças circulatórias e profilaxia, enfatizando os riscos da alimentação rica em lipídeos e seu acúmulo nas paredes dos vasos sanguíneos. Apresente os vasos linfáticos e suas funções. Trabalhar a integração entre os demais sistemas, explicitando a ligação com o excretor no processo de filtragem do sangue nos rins."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI51MG) - Associar a manutenção das condições internas do corpo com a eliminação de resíduos através da urina e do suor.",
+    "objeto_conhecimento": "Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).",
+    "descritores_saeb": "Anatomia do sistema excretor; tipos de excreções; importância para a homeostase; sistema excretor e saúde.",
+    "orientacoes_pedagogicas": "Iniciar com a conceituação de excretas, explicando a importância da eliminação de substâncias nitrogenadas e outras prejudiciais ao organismo, para a homeostase. Apresentar os órgãos dos sistema excretor e suas funções (a compreensão da filtração do sangue nos néfrons pode ser realizada por meio de modelos de estudo construído pelos estudantes ou por meio de esquemas representativos). Fundamental que os estudantes percebam a importância da reabsorção de água nos rins, evitando a desidratação. Promover discussões sobre o suor e o controle da temperatura corporal, como também habitos de higiene pessoal. Finalizar com doenças do sistema excretor como insuficiência renal, cálculos renais, infecção urinária e outros.",
+    "habilidade_codes": [
+      "EF08CI51MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 3º Bimestre\nUnidade: Vida e evolução\nObjetos: Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).\nHabilidades: (EF08CI51MG) - Associar a manutenção das condições internas do corpo com a eliminação de resíduos através da urina e do suor.\nSAEB: Anatomia do sistema excretor; tipos de excreções; importância para a homeostase; sistema excretor e saúde.\nOrientações: Iniciar com a conceituação de excretas, explicando a importância da eliminação de substâncias nitrogenadas e outras prejudiciais ao organismo, para a homeostase. Apresentar os órgãos dos sistema excretor e suas funções (a compreensão da filtração do sangue nos néfrons pode ser realizada por meio de modelos de estudo construído pelos estudantes ou por meio de esquemas representativos). Fundamental que os estudantes percebam a importância da reabsorção de água nos rins, evitando a desidratação. Promover discussões sobre o suor e o controle da temperatura corporal, como também habitos de higiene pessoal. Finalizar com doenças do sistema excretor como insuficiência renal, cálculos renais, infecção urinária e outros."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Vida e evolução",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI52MG) - Identificar o sistema endócrino como regulador das atividades no nosso organismo. (EF08CI53MG) - Relacionar os hormônios e suas funções, assim como as consequências para o organismo em caso de alteração.",
+    "objeto_conhecimento": "Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).",
+    "descritores_saeb": "Anatomia do sistema endócrino; tipos de glân dulas; regulação hormonal; doenças do sistema endócrino.",
+    "orientacoes_pedagogicas": "O sistema endócrino pode permear o estudo de todos os outros sistemas, evidenciando a atuação dos hormônios nos órgão alvos para que realizem suas funções digestivas, metabólicas, circulatórias, reprodutivas e outras. Esta integração facilita a compreensão deste sistema, evitando apenas a memorização de glândulas - hormônio - funções, de forma fragmentada e com pouco sentido numa habilidade à parte. Importante que os estudantes conheçam as patologias do sistema endócrino e suas consequências para o desenvolvimento e funcionamento do organismo.",
+    "habilidade_codes": [
+      "EF08CI52MG",
+      "EF08CI53MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 4º Bimestre\nUnidade: Vida e evolução\nObjetos: Funções de nutrição (Integração dos sistemas digestório, respiratório, circulatório e excretor).\nHabilidades: (EF08CI52MG) - Identificar o sistema endócrino como regulador das atividades no nosso organismo. (EF08CI53MG) - Relacionar os hormônios e suas funções, assim como as consequências para o organismo em caso de alteração.\nSAEB: Anatomia do sistema endócrino; tipos de glân dulas; regulação hormonal; doenças do sistema endócrino.\nOrientações: O sistema endócrino pode permear o estudo de todos os outros sistemas, evidenciando a atuação dos hormônios nos órgão alvos para que realizem suas funções digestivas, metabólicas, circulatórias, reprodutivas e outras. Esta integração facilita a compreensão deste sistema, evitando apenas a memorização de glândulas - hormônio - funções, de forma fragmentada e com pouco sentido numa habilidade à parte. Importante que os estudantes conheçam as patologias do sistema endócrino e suas consequências para o desenvolvimento e funcionamento do organismo."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Terra e universo",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI14) - Relacionar climas regionais aos padrões de circulação atmosférica e oceânica e ao aquecimento desigual causado pela forma e pelos movimentos da Terra.",
+    "objeto_conhecimento": "Sistema Sol, Terra e Lua. Clima.",
+    "descritores_saeb": "Movimentos da Terra; fatores e elementos climáticos; clima e tempo.",
+    "orientacoes_pedagogicas": "Explicar a forma, inclinação e movimentos da Terra relacionando-os à ocorrência das estações do ano. Abordar fatores como a latitude, altitude, massa de ar, correntes marítimas e outros que determinam os tipos climáticos na Terra. Diferenciar clima e tempo, explicando os elementos climáticos como pressão atmosférica, temperatura e umidade. Professor (a), importante contextualizar a aprendizagem por meio de textos e vídeos sobre eventos periódicos que causam mudanças climáticas como o El Niño e La Niña, como também sobre a innfluência das massas de ar no clima do planeta (explicar como se formam os “rios voadores da Amazônia” e sua influência no clima do Brasil).",
+    "habilidade_codes": [
+      "EF08CI14"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 4º Bimestre\nUnidade: Terra e universo\nObjetos: Sistema Sol, Terra e Lua. Clima.\nHabilidades: (EF08CI14) - Relacionar climas regionais aos padrões de circulação atmosférica e oceânica e ao aquecimento desigual causado pela forma e pelos movimentos da Terra.\nSAEB: Movimentos da Terra; fatores e elementos climáticos; clima e tempo.\nOrientações: Explicar a forma, inclinação e movimentos da Terra relacionando-os à ocorrência das estações do ano. Abordar fatores como a latitude, altitude, massa de ar, correntes marítimas e outros que determinam os tipos climáticos na Terra. Diferenciar clima e tempo, explicando os elementos climáticos como pressão atmosférica, temperatura e umidade. Professor (a), importante contextualizar a aprendizagem por meio de textos e vídeos sobre eventos periódicos que causam mudanças climáticas como o El Niño e La Niña, como também sobre a innfluência das massas de ar no clima do planeta (explicar como se formam os “rios voadores da Amazônia” e sua influência no clima do Brasil)."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Terra e universo",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI15) - Identificar as principais variáveis envolvidas na previsão do tempo e simular situações nas quais elas possam ser medidas.",
+    "objeto_conhecimento": "Sistema Sol, Terra e Lua. Clima.",
+    "descritores_saeb": "Previsão do tempo; metereologia e suas aplicações.",
+    "orientacoes_pedagogicas": "O estudo sobre previsões do tempo pode ser realizado por meio de análises de previsões metereológicas da cidade e/ou da região em que a escola se encontra, analisando os dados atmosféricos (precipitação, ventos, umidade relativa do ar, pressão atmosférica, entre outros). Aproveite para explorar a importância da metereologia nas diversas atividades humanas como agricultura, marinha, aeronáutica, pesca, turismo e outras. Apresente os aparelhos utilizados nas estações metereológicas, funcionamento e utilidades.",
+    "habilidade_codes": [
+      "EF08CI15"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 4º Bimestre\nUnidade: Terra e universo\nObjetos: Sistema Sol, Terra e Lua. Clima.\nHabilidades: (EF08CI15) - Identificar as principais variáveis envolvidas na previsão do tempo e simular situações nas quais elas possam ser medidas.\nSAEB: Previsão do tempo; metereologia e suas aplicações.\nOrientações: O estudo sobre previsões do tempo pode ser realizado por meio de análises de previsões metereológicas da cidade e/ou da região em que a escola se encontra, analisando os dados atmosféricos (precipitação, ventos, umidade relativa do ar, pressão atmosférica, entre outros). Aproveite para explorar a importância da metereologia nas diversas atividades humanas como agricultura, marinha, aeronáutica, pesca, turismo e outras. Apresente os aparelhos utilizados nas estações metereológicas, funcionamento e utilidades."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Terra e universo",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI16) - Discutir iniciativas que contribuam para restabelecer o equilíbrio ambiental a partir da identificação de alterações climáticas regionais e globais provocadas pela intervenção humana.",
+    "objeto_conhecimento": "Sistema Sol, Terra e Lua. Clima.",
+    "descritores_saeb": "Mudanças climáticas; aquecimento global; práticas sustentáveis.",
+    "orientacoes_pedagogicas": "Vivemos numa era em que as mudanças climáticas já são bem perceptíveis e suas consequências são divulgados nos noticiários, como secas severas, enchentes e outros eventos que levam a formação de desabrigados climáticos. Aborde os fatores antrópicos (como as atividades industriais, agropecuárias, uso de combustíveis fósseis, etc) que levam à emergência climática e às mudanças climáticas, evidenciando um modelo de desenvolvimento irresponsável que entra em choque o meio ambiente. Vale destacar aqui a importância dos esforços pela conservação ambiental, como agenda 2030, Acordo de Paris e a adoção de práticas sustentáveis em níveis global e local.",
+    "habilidade_codes": [
+      "EF08CI16"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 4º Bimestre\nUnidade: Terra e universo\nObjetos: Sistema Sol, Terra e Lua. Clima.\nHabilidades: (EF08CI16) - Discutir iniciativas que contribuam para restabelecer o equilíbrio ambiental a partir da identificação de alterações climáticas regionais e globais provocadas pela intervenção humana.\nSAEB: Mudanças climáticas; aquecimento global; práticas sustentáveis.\nOrientações: Vivemos numa era em que as mudanças climáticas já são bem perceptíveis e suas consequências são divulgados nos noticiários, como secas severas, enchentes e outros eventos que levam a formação de desabrigados climáticos. Aborde os fatores antrópicos (como as atividades industriais, agropecuárias, uso de combustíveis fósseis, etc) que levam à emergência climática e às mudanças climáticas, evidenciando um modelo de desenvolvimento irresponsável que entra em choque o meio ambiente. Vale destacar aqui a importância dos esforços pela conservação ambiental, como agenda 2030, Acordo de Paris e a adoção de práticas sustentáveis em níveis global e local."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Terra e universo",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI12) - Justificar, por meio da construção de modelos e da observação da Lua no céu, a ocorrência das fases da Lua e dos eclipses, com base nas posições relativas entre Sol, Terra e Lua.",
+    "objeto_conhecimento": "Sistema Sol, Terra e Lua. Clima.",
+    "descritores_saeb": "Fases da lua; eclipse.",
+    "orientacoes_pedagogicas": "O céu traz encantamento e curiosidades desde os tempos primórdios da humanidade. Importante que os estudantes conheçam o movimento da lua em torno do seu prório eixo, ao redor da Terra e do Sol; que saibam identificar as fases da lua, associando-as ao seu posicionamente no céu, e as influências nas mares, na agricultura e outros fenômenos terrestres. Trabalhe com curiosidades como super lua (no perigeu) e os eclipses.",
+    "habilidade_codes": [
+      "EF08CI12"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 4º Bimestre\nUnidade: Terra e universo\nObjetos: Sistema Sol, Terra e Lua. Clima.\nHabilidades: (EF08CI12) - Justificar, por meio da construção de modelos e da observação da Lua no céu, a ocorrência das fases da Lua e dos eclipses, com base nas posições relativas entre Sol, Terra e Lua.\nSAEB: Fases da lua; eclipse.\nOrientações: O céu traz encantamento e curiosidades desde os tempos primórdios da humanidade. Importante que os estudantes conheçam o movimento da lua em torno do seu prório eixo, ao redor da Terra e do Sol; que saibam identificar as fases da lua, associando-as ao seu posicionamente no céu, e as influências nas mares, na agricultura e outros fenômenos terrestres. Trabalhe com curiosidades como super lua (no perigeu) e os eclipses."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Ciências",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Terra e universo",
+    "competencia": "Ciências da Natureza",
+    "habilidade": "(EF08CI13) - Representar os movimentos de rotação e translação da Terra e analisar o papel da inclinação do eixo de rotação da Terra em relação à sua órbita na ocorrência das estações do ano, com a utilização de modelos tridimensionais.",
+    "objeto_conhecimento": "Sistema Sol, Terra e Lua. Clima.",
+    "descritores_saeb": "Movimentos da Terra; estações do ano.",
+    "orientacoes_pedagogicas": "Caracterizar os movimentos de rotação e translação da Terra por meio de representações simples. Mostrar o eixo de inclinação da Terra e explicar sua influência nos fenômenos de estações do ano, identificando equinócio e solstício.",
+    "habilidade_codes": [
+      "EF08CI13"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Ciências | 4º Bimestre\nUnidade: Terra e universo\nObjetos: Sistema Sol, Terra e Lua. Clima.\nHabilidades: (EF08CI13) - Representar os movimentos de rotação e translação da Terra e analisar o papel da inclinação do eixo de rotação da Terra em relação à sua órbita na ocorrência das estações do ano, com a utilização de modelos tridimensionais.\nSAEB: Movimentos da Terra; estações do ano.\nOrientações: Caracterizar os movimentos de rotação e translação da Terra por meio de representações simples. Mostrar o eixo de inclinação da Terra e explicar sua influência nos fenômenos de estações do ano, identificando equinócio e solstício."
+  }
+]

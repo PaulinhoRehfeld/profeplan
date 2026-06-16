@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS pdi_records (
 CREATE TABLE IF NOT EXISTS term_plans (
     id TEXT PRIMARY KEY, 
     user_id UUID REFERENCES auth.users(id),
+    title TEXT,
     period INTEGER,
     regime TEXT,
     subject TEXT,
@@ -101,6 +102,7 @@ CREATE TABLE IF NOT EXISTS term_plans (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
 
 -- 2.8 Generated Contents
 CREATE TABLE IF NOT EXISTS generated_contents (

@@ -2,6 +2,50 @@ import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
 import { executeWithFallback, getGenAIClient } from "./AiCore";
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from "./AiGuardrailsService";
 import { UserSettings } from "../../types";
+import { getAuthHeaders } from "../sessionService";
+import { supabase } from "../supabaseClient";
+
+async function shouldUseBff(userId?: string): Promise<boolean> {
+    try {
+        let currentUserId = userId;
+        if (!currentUserId) {
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUserId = user?.id;
+        }
+        if (!currentUserId) return false;
+
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('allowed_features')
+            .eq('id', currentUserId)
+            .maybeSingle();
+
+        const allowedFeatures = profile?.allowed_features || [];
+        return allowedFeatures.includes('pdi_bff') || allowedFeatures.includes('all');
+    } catch (e) {
+        console.warn('[AiPdiService] Failed to check feature flag, defaulting to legacy local flow:', e);
+        return false;
+    }
+}
+
+async function callPdiBff(action: string, payload: Record<string, any>): Promise<any> {
+    const authHeaders = await getAuthHeaders();
+    const response = await fetch("/api/pdiProxy", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            ...authHeaders
+        },
+        body: JSON.stringify({ action, ...payload }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data?.error || `Falha no proxy de PDI (HTTP ${response.status})`);
+    }
+    return data;
+}
+
 
 type PdiLogEntry = {
     created_at?: string;
@@ -93,6 +137,33 @@ export const generateStudentAdaptation = async (
     gradeLevel: string,
     context?: { stateBase?: string; educationSphere?: string; userId?: string; userSettings?: UserSettings }
 ) => {
+    if (await shouldUseBff(context?.userId)) {
+        try {
+            const guardrailsConfig = context?.userSettings
+                ? extractGuardrailsFromSettings(context.userSettings)
+                : undefined;
+            if (guardrailsConfig) {
+                guardrailsConfig.context = `Adaptação PDI - ${gradeLevel}`;
+            }
+            const result = await callPdiBff('generateStudentAdaptation', {
+                originalContent,
+                studentName,
+                deficiencies,
+                observations,
+                gradeLevel,
+                stateBase: context?.stateBase,
+                educationSphere: context?.educationSphere,
+                guardrailsConfig
+            });
+            if (context?.userId) {
+                await incrementUserUsage(context.userId, 'generate');
+            }
+            return result.text;
+        } catch (bffError) {
+            console.warn('[AiPdiService] BFF generateStudentAdaptation failed, falling back to local client completion:', bffError);
+        }
+    }
+
     // Check Quota
     if (context?.userId) {
         const quotaStatus = await checkUsageQuota(context.userId);
@@ -177,7 +248,23 @@ export const generateStudentAdaptation = async (
  * [PDI_REPORT_MODE]
  * Gera um Relatório Bimestral de PDI baseado nos logs de adaptação.
  */
-export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string, period: string) => {
+export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string, period: string, userId?: string) => {
+    if (await shouldUseBff(userId)) {
+        try {
+            const result = await callPdiBff('generatePdiReport', {
+                logs,
+                studentName,
+                period
+            });
+            if (userId) {
+                await incrementUserUsage(userId, 'generate');
+            }
+            return result.text;
+        } catch (bffError) {
+            console.warn('[AiPdiService] BFF generatePdiReport failed, falling back to local:', bffError);
+        }
+    }
+
     const client = getGenAIClient();
 
     // Sintetiza os logs para não estourar o contexto
@@ -238,7 +325,24 @@ export const generateFinalPDIReport = async (data: {
     profileData: Record<string, unknown>;
     evaluations: PdiEvaluationEntry[];
     adaptationCount: number;
-}) => {
+}, userId?: string) => {
+    if (await shouldUseBff(userId)) {
+        try {
+            const result = await callPdiBff('generateFinalPDIReport', {
+                studentName: data.studentName,
+                profileData: data.profileData,
+                evaluations: data.evaluations,
+                adaptationCount: data.adaptationCount
+            });
+            if (userId) {
+                await incrementUserUsage(userId, 'generate');
+            }
+            return result.text;
+        } catch (bffError) {
+            console.warn('[AiPdiService] BFF generateFinalPDIReport failed, falling back to local:', bffError);
+        }
+    }
+
     const client = getGenAIClient();
 
     // Formata Avaliações Docentes
@@ -324,6 +428,32 @@ export const generateBlock9Adaptation = async (
     estrategias_ensino: string[];
     tempo_estimado?: string;
 }> => {
+    if (await shouldUseBff(userId)) {
+        try {
+            const guardrailsConfig = userSettings
+                ? extractGuardrailsFromSettings(userSettings)
+                : undefined;
+            if (guardrailsConfig) {
+                guardrailsConfig.context = `PDI Bloco 9 - ${gradeLevel}`;
+            }
+            const result = await callPdiBff('generateBlock9Adaptation', {
+                lessonContent,
+                lessonTitle,
+                subject,
+                gradeLevel,
+                habilidadesBncc,
+                studentPdiContext,
+                guardrailsConfig
+            });
+            if (userId) {
+                await incrementUserUsage(userId, 'generate');
+            }
+            return result;
+        } catch (bffError) {
+            console.warn('[AiPdiService] BFF generateBlock9Adaptation failed, falling back to local:', bffError);
+        }
+    }
+
     const client = getGenAIClient();
 
     if (userId) {
@@ -417,8 +547,6 @@ REGRAS TÉCNICAS:
         await incrementUserUsage(userId, 'generate');
     }
 
-    // Algumas vezes o modelo retorna o JSON cercado por ``` ou ```json.
-    // Removemos cercas de markdown antes de tentar fazer o parse.
     const cleaned = extractJsonObjectFromText(text);
     const parsed = JSON.parse(cleaned);
 
@@ -449,6 +577,21 @@ export const generateBlock10Diagnosis = async (
     ia_metodologia: string;
     ia_diagnostico: string;
 }> => {
+    if (await shouldUseBff(userId)) {
+        try {
+            const result = await callPdiBff('generateBlock10Diagnosis', {
+                evaluationData,
+                fullPdiContext
+            });
+            if (userId) {
+                await incrementUserUsage(userId, 'generate');
+            }
+            return result;
+        } catch (bffError) {
+            console.warn('[AiPdiService] BFF generateBlock10Diagnosis failed, falling back to local:', bffError);
+        }
+    }
+
     const client = getGenAIClient();
 
     if (userId) {
@@ -576,6 +719,20 @@ export const generateBlock11Report = async (
     pdiDocument: PdiBlock11Document,
     userId?: string
 ): Promise<string> => {
+    if (await shouldUseBff(userId)) {
+        try {
+            const result = await callPdiBff('generateBlock11Report', {
+                pdiDocument
+            });
+            if (userId) {
+                await incrementUserUsage(userId, 'generate');
+            }
+            return result.text;
+        } catch (bffError) {
+            console.warn('[AiPdiService] BFF generateBlock11Report failed, falling back to local:', bffError);
+        }
+    }
+
     const client = getGenAIClient();
 
     if (userId) {

@@ -1,0 +1,394 @@
+[
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Ciência e Tecnologia",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF06CI29MG) - Reconhecer a ética como princípio necessário a produção do conhecimento científico.",
+    "objeto_conhecimento": "Ética e conhecimento científico.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Por meio de pesquisas orientadas, levar os estudantes perceberem a ética como princípio necessário à produção do conhecimento científico e para o avanço da ciência (ex: Como promover o uso de animais para experimentação levando em conta princípios éticos de respeito à vida e a não submete-los à dor e sofrimento? Que princípios éticos impedem a clonagem de humanos?). Promover um debate com os estudantes sobre os impactos que o conhecimento cientifico traz para a sociedade e sua contribuição para a saúde e qualidade de vida das pessoas, principalmente com o uso da tecnologia para a criação de vacinas, medicamentos, alimentos, entre outros.",
+    "habilidade_codes": [
+      "EF06CI29MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Ciência e Tecnologia\nObjetos: Ética e conhecimento científico.\nHabilidades: (EF06CI29MG) - Reconhecer a ética como princípio necessário a produção do conhecimento científico.\nSAEB: Não mencionado no documento.\nOrientações: Por meio de pesquisas orientadas, levar os estudantes perceberem a ética como princípio necessário à produção do conhecimento científico e para o avanço da ciência (ex: Como promover o uso de animais para experimentação levando em conta princípios éticos de respeito à vida e a não submete-los à dor e sofrimento? Que princípios éticos impedem a clonagem de humanos?). Promover um debate com os estudantes sobre os impactos que o conhecimento cientifico traz para a sociedade e sua contribuição para a saúde e qualidade de vida das pessoas, principalmente com o uso da tecnologia para a criação de vacinas, medicamentos, alimentos, entre outros."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Ciência e Tecnologia",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF06CI30MG) - Considerar o impacto do progresso pelo conhecimento científico e suas aplicações na vida, na sociedade e na cultura de cada pessoa.",
+    "objeto_conhecimento": "Ética e conhecimento científico.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Proporcionar um debate entre os estudantes sobre os impactos que os conhecimento científico trazem na vida das pessoas nos aspectos sociais e ambientais, como podem interferir na cultura de um povo, abordando os pontos positivos e negativos para a sociedade.",
+    "habilidade_codes": [
+      "EF06CI30MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Ciência e Tecnologia\nObjetos: Ética e conhecimento científico.\nHabilidades: (EF06CI30MG) - Considerar o impacto do progresso pelo conhecimento científico e suas aplicações na vida, na sociedade e na cultura de cada pessoa.\nSAEB: Não mencionado no documento.\nOrientações: Proporcionar um debate entre os estudantes sobre os impactos que os conhecimento científico trazem na vida das pessoas nos aspectos sociais e ambientais, como podem interferir na cultura de um povo, abordando os pontos positivos e negativos para a sociedade."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF09CI70MG) - Analisar textos históricos que descrevem o ambiente da Terra primiva (composição de gases, radiação e reações químicas), idenficando os argumentos que corroboram com a hipótese de Oparin sobre a origem da vida na Terra; (EF09CI10) - Comparar as ideias evolucionistas de Lamarck e Darwin apresentadas em textos científicos e históricos, identificando semelhanças e diferenças entre essas ideias e sua importância para explicar a diversidade biológica; (EF09CI11) - Discutir a evolução e a diversidade das espécies com base na atuação da seleção natural sobre as variantes de uma mesma espécie, resultantes de processo reprodutivo.",
+    "objeto_conhecimento": "Origem da vida e Evolução.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "O desenvolvimento destas habilidades exige o conhecimento das diversas hipóteses de origem da vida na Terra: Panspermia, Teoria de Oparin e Haldane e hipóteses autotrófica e heterotrófica. Promover discussões sobre as teorias para que os estudantes exponham argumentos sobre as mesmas. Disponibilizar textos sobre a as teorias da abiogênese e biogênese. Realizar experimentos como o de Redi e Spallanzani para demonstrar a biogênese. Iniciar o tema explicando sobre o fixismo, deixando claro que essa teoria foi confrontada e rejeitada no meio cientìfico. Promover a leitura e discussões sobre as ideias evolucionistas de Lamarck e Darwin evidenciando os pontos comuns e os divergentes entre essas ideias; Ao comparar as diferentes teorias, é preciso lembrar que Lamarck, apesar de alguns equívocos em sua teoria, contribuiu para o fortalecimento do pensamento evolutivo, contrapondo-se ao fixismo. Importante que os estudantes conheçam a história da viagem de Darwin no navio Beagle e suas descobertas em Galápagos, evidenciando a importância da observação e experimentação na construção de sua teoria da evolução. Explicitar a colaboração de Wallace.",
+    "habilidade_codes": [
+      "EF09CI70MG",
+      "EF09CI10",
+      "EF09CI11"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Origem da vida e Evolução.\nHabilidades: (EF09CI70MG) - Analisar textos históricos que descrevem o ambiente da Terra primiva (composição de gases, radiação e reações químicas), idenficando os argumentos que corroboram com a hipótese de Oparin sobre a origem da vida na Terra; (EF09CI10) - Comparar as ideias evolucionistas de Lamarck e Darwin apresentadas em textos científicos e históricos, identificando semelhanças e diferenças entre essas ideias e sua importância para explicar a diversidade biológica; (EF09CI11) - Discutir a evolução e a diversidade das espécies com base na atuação da seleção natural sobre as variantes de uma mesma espécie, resultantes de processo reprodutivo.\nSAEB: Não mencionado no documento.\nOrientações: O desenvolvimento destas habilidades exige o conhecimento das diversas hipóteses de origem da vida na Terra: Panspermia, Teoria de Oparin e Haldane e hipóteses autotrófica e heterotrófica. Promover discussões sobre as teorias para que os estudantes exponham argumentos sobre as mesmas. Disponibilizar textos sobre a as teorias da abiogênese e biogênese. Realizar experimentos como o de Redi e Spallanzani para demonstrar a biogênese. Iniciar o tema explicando sobre o fixismo, deixando claro que essa teoria foi confrontada e rejeitada no meio cientìfico. Promover a leitura e discussões sobre as ideias evolucionistas de Lamarck e Darwin evidenciando os pontos comuns e os divergentes entre essas ideias; Ao comparar as diferentes teorias, é preciso lembrar que Lamarck, apesar de alguns equívocos em sua teoria, contribuiu para o fortalecimento do pensamento evolutivo, contrapondo-se ao fixismo. Importante que os estudantes conheçam a história da viagem de Darwin no navio Beagle e suas descobertas em Galápagos, evidenciando a importância da observação e experimentação na construção de sua teoria da evolução. Explicitar a colaboração de Wallace."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF07CI37MG) - Utilizar como características para agrupamento dos seres vivos os seguintes critérios: modo de nutrição, modo de obtenção de oxigênio, modo de reprodução e tipo de sustentação do corpo.",
+    "objeto_conhecimento": "Classificação dos seres vivos.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Explicar as diferentes características apresentadas em cada Reino. O estudo dos reinos deve ser realizado com exemplicações vivenciadas no cotidiano dos estudantes, como a presença de bolores em frutas, utilização de leveduras em fermento biológico e na produção de cerveja, de bactérias na indústria alimentícia, da relação entre microrganismos e doenças infecciosas, dentre outros. Importante explicar que todos os organismos possuem importância ecológica, abordando, por exemplo, o papel de fungos e bactérias na reciclagem da matéria orgânica, como também de animais e plantas para o equilibrio dos ecossistemas. Elabore atividades práticas como visualização microscópica (se possível), estudo de exemplares “in vitro”, visitas a museu, zoológico, parques, dentre outras para tornar a aprendizagem mais interessante e significativa.",
+    "habilidade_codes": [
+      "EF07CI37MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Classificação dos seres vivos.\nHabilidades: (EF07CI37MG) - Utilizar como características para agrupamento dos seres vivos os seguintes critérios: modo de nutrição, modo de obtenção de oxigênio, modo de reprodução e tipo de sustentação do corpo.\nSAEB: Não mencionado no documento.\nOrientações: Explicar as diferentes características apresentadas em cada Reino. O estudo dos reinos deve ser realizado com exemplicações vivenciadas no cotidiano dos estudantes, como a presença de bolores em frutas, utilização de leveduras em fermento biológico e na produção de cerveja, de bactérias na indústria alimentícia, da relação entre microrganismos e doenças infecciosas, dentre outros. Importante explicar que todos os organismos possuem importância ecológica, abordando, por exemplo, o papel de fungos e bactérias na reciclagem da matéria orgânica, como também de animais e plantas para o equilibrio dos ecossistemas. Elabore atividades práticas como visualização microscópica (se possível), estudo de exemplares “in vitro”, visitas a museu, zoológico, parques, dentre outras para tornar a aprendizagem mais interessante e significativa."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF06CI05) - Explicar a organização básica das células e seu papel como unidade estrutural e funcional dos seres vivos.",
+    "objeto_conhecimento": "Célula como unidade da vida.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Podem ser propostas atividades para identificar os níveis de organização dos seres vivos por meio de ilustrações ou representações tridimensionais. Desenvolver concepções sobre a organização dos seres vivos e suas funções vitais básicas em uma perspectiva evolutiva, construindo ou explorando modelos que lhe permitam identificar características comuns nessa organização. Identificar a estrutura das células por meio de ilustrações. Pode-se estimular ainda que os estudantes construam modelos das estruturas celulares básicas.",
+    "habilidade_codes": [
+      "EF06CI05"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Célula como unidade da vida.\nHabilidades: (EF06CI05) - Explicar a organização básica das células e seu papel como unidade estrutural e funcional dos seres vivos.\nSAEB: Não mencionado no documento.\nOrientações: Podem ser propostas atividades para identificar os níveis de organização dos seres vivos por meio de ilustrações ou representações tridimensionais. Desenvolver concepções sobre a organização dos seres vivos e suas funções vitais básicas em uma perspectiva evolutiva, construindo ou explorando modelos que lhe permitam identificar características comuns nessa organização. Identificar a estrutura das células por meio de ilustrações. Pode-se estimular ainda que os estudantes construam modelos das estruturas celulares básicas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF09CI64MG) - Compreender a composição do núcleo celular e identificar a presença de material genéco (DNA e RNA).",
+    "objeto_conhecimento": "Núcleo celular. Divisão celular. Hereditariedade. Ideias evolucionistas.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "O estudo de citologia deve ser realizado de modo a permitir que os estudantes compreendam a célula como unidade fundamental dos seres vivos com capacidade metabólica própria. Mais importante que a memorização de organela/função de forma fragmentada, os estudantes devem compreender que o funcionamento celular depende de uma maquinaria que trabalha de forma integrada. Como exemplo desta integração, explicar o processo de síntese de proteínas de exportação que envolve o ribossomos, o retículo endoplasmátivo rugoso e o complexo de Golgi para que ocorra a formação, transporte, modificação, empacotamento, armazenamento e excreção de uma proteína. Estimular os estudantes a refletirem e buscarem as respostas para questionamentos como: Quais organelas estão envolvidas na perda da cauda de um girino? E na digestão intracelular? Explique sobre a estrutura da membrana nuclear e suas funções. Trabalhar os conceitos básicos de cromossomos, cromatina e DNA. O estudo do núcleo celular e suas estruturas pode se tornar bem interessante com a utilização de modelos de estudo de DNA e RNA produzidos pelos próprios estudantes. Outra possibilidade é estudo e interpretação de experimentos clássicos. importante também que os estudantes tenham noção dos processos de duplicação, transcrição e tradução por meio de esquemas simples.",
+    "habilidade_codes": [
+      "EF09CI64MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Núcleo celular. Divisão celular. Hereditariedade. Ideias evolucionistas.\nHabilidades: (EF09CI64MG) - Compreender a composição do núcleo celular e identificar a presença de material genéco (DNA e RNA).\nSAEB: Não mencionado no documento.\nOrientações: O estudo de citologia deve ser realizado de modo a permitir que os estudantes compreendam a célula como unidade fundamental dos seres vivos com capacidade metabólica própria. Mais importante que a memorização de organela/função de forma fragmentada, os estudantes devem compreender que o funcionamento celular depende de uma maquinaria que trabalha de forma integrada. Como exemplo desta integração, explicar o processo de síntese de proteínas de exportação que envolve o ribossomos, o retículo endoplasmátivo rugoso e o complexo de Golgi para que ocorra a formação, transporte, modificação, empacotamento, armazenamento e excreção de uma proteína. Estimular os estudantes a refletirem e buscarem as respostas para questionamentos como: Quais organelas estão envolvidas na perda da cauda de um girino? E na digestão intracelular? Explique sobre a estrutura da membrana nuclear e suas funções. Trabalhar os conceitos básicos de cromossomos, cromatina e DNA. O estudo do núcleo celular e suas estruturas pode se tornar bem interessante com a utilização de modelos de estudo de DNA e RNA produzidos pelos próprios estudantes. Outra possibilidade é estudo e interpretação de experimentos clássicos. importante também que os estudantes tenham noção dos processos de duplicação, transcrição e tradução por meio de esquemas simples."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF09CI65MG) - Reconhecer a importância da mitose nos processos de reposição das células do corpo, no desenvolvimento embrionário e na reprodução dos seres unicelulares.",
+    "objeto_conhecimento": "Núcleo celular. Divisão celular. Hereditariedade. Ideias evolucionistas.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "O estudo de divisão celular no ensino fundamental deve contemplar a noção de ploidia. Faça os esquemas da divisão da célula-mãe em duas células-filhas evidenciando a conservação do número de cromossomos. Importante os estudantes entenderem as funções da mitose nos organismos pluricelulares ( bactérias realizam o processo de divisão binária, que difere da mitose em alguns aspectos).",
+    "habilidade_codes": [
+      "EF09CI65MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Núcleo celular. Divisão celular. Hereditariedade. Ideias evolucionistas.\nHabilidades: (EF09CI65MG) - Reconhecer a importância da mitose nos processos de reposição das células do corpo, no desenvolvimento embrionário e na reprodução dos seres unicelulares.\nSAEB: Não mencionado no documento.\nOrientações: O estudo de divisão celular no ensino fundamental deve contemplar a noção de ploidia. Faça os esquemas da divisão da célula-mãe em duas células-filhas evidenciando a conservação do número de cromossomos. Importante os estudantes entenderem as funções da mitose nos organismos pluricelulares ( bactérias realizam o processo de divisão binária, que difere da mitose em alguns aspectos)."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF09CI66MG) - Reconhecer a importância da meiose no processo de formação de células reprodutivas (gametas nos animais e esporos nos vegetais).",
+    "objeto_conhecimento": "Núcleo celular. Divisão celular. Hereditariedade. Ideias evolucionistas.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Explicar as diferenças entre mitose e meiose. Faça os esquemas da divisão da célula-mãe em quatro células-filhas evidenciando a redução do número de cromossomos na formação dos gametas. As fases da meiose podem ser apresentadas para entendimento do processo, mas não precisam ser cobradas como conhecimento a ser consolidado pelos estudantes, algo que só acontecerá no ensino médio. Importante os estudantes entederem as funções da meiose nos organismos pluricelulares.",
+    "habilidade_codes": [
+      "EF09CI66MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Núcleo celular. Divisão celular. Hereditariedade. Ideias evolucionistas.\nHabilidades: (EF09CI66MG) - Reconhecer a importância da meiose no processo de formação de células reprodutivas (gametas nos animais e esporos nos vegetais).\nSAEB: Não mencionado no documento.\nOrientações: Explicar as diferenças entre mitose e meiose. Faça os esquemas da divisão da célula-mãe em quatro células-filhas evidenciando a redução do número de cromossomos na formação dos gametas. As fases da meiose podem ser apresentadas para entendimento do processo, mas não precisam ser cobradas como conhecimento a ser consolidado pelos estudantes, algo que só acontecerá no ensino médio. Importante os estudantes entederem as funções da meiose nos organismos pluricelulares."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida e Evolução",
+    "competencia": "Não especificada no 1º bimestre (Recomposição de habilidades do Ensino Fundamental)",
+    "habilidade": "(EF09CI09) - Discutir as ideias de Mendel sobre hereditariedade (fatores hereditários, segregação, gametas, fecundação), considerando-as para resolver problemas envolvendo a transmissão de caracteríscas hereditárias em diferentes organismos; (EF09CI67MG) - Entender como as leis de transmissão e a importância do ambiente são fundamentais na expressão das caracteríscas hereditárias.",
+    "objeto_conhecimento": "Núcleo celular. Divisão celular. Hereditariedade.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Nesse conteúdo, o professor deve trabalhar sobre os experimentos de Mendel, reforçar as habilidades trabalhadas na 1ª Lei de Mendel, assim o aluno deve reconhecer a diferença entre genótipo e fenótipo e os conceitos de dominância e recessividade dos genes homólogos.",
+    "habilidade_codes": [
+      "EF09CI09",
+      "EF09CI67MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 1º Bimestre\nUnidade: Vida e Evolução\nObjetos: Núcleo celular. Divisão celular. Hereditariedade.\nHabilidades: (EF09CI09) - Discutir as ideias de Mendel sobre hereditariedade (fatores hereditários, segregação, gametas, fecundação), considerando-as para resolver problemas envolvendo a transmissão de caracteríscas hereditárias em diferentes organismos; (EF09CI67MG) - Entender como as leis de transmissão e a importância do ambiente são fundamentais na expressão das caracteríscas hereditárias.\nSAEB: Não mencionado no documento.\nOrientações: Nesse conteúdo, o professor deve trabalhar sobre os experimentos de Mendel, reforçar as habilidades trabalhadas na 1ª Lei de Mendel, assim o aluno deve reconhecer a diferença entre genótipo e fenótipo e os conceitos de dominância e recessividade dos genes homólogos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Tecnologias e suas Linguagens",
+    "competencia": "Competência específica 3 - Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica; (EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental; (EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.",
+    "objeto_conhecimento": "Introdução a Biologia e Método Científico.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "É provável que os estudantes já tenham percorrido um caminho bem estruturado nas Ciências da Natureza ao longo do Ensino Fundamental. Partindo do princípio que o Ensino Médio é uma etapa da Educação Básica que oportuniza o aprofundamento e a consolidação de conteúdos das áreas de conhecimento, inclusive Ciências da Natureza e suas Tecnologias, é importante iniciarmos esta nova etapa a partir do debate sobre o pensamento científico, já que a Biologia é um dos componente desta área de natureza científica. Observe, professor(a), as habilidades priorizadas para o trabalho com a Introdução à Biologia e o Método Científico. Elas convidam a desenvolver situações de aprendizagem que oportunizem o estudante a percorrer as etapas do método científico, vivenciando-o, desde a construção de questões até a divulgação científica. Uma estratégia que pode ajudar a promover o pensamento científico dos estudantes, convidando-os a investigar algum fenômeno é realizar uma rotina de pensamento: eu vejo, eu penso, eu pergunto. Crie um ambiente que estimule a investigação, permita o erro e transforme os desafios em oportunidades. Sugira leitura de artigos de divulgação científica para que possam se apropriar mais a respeito do fenômeno investigado. E não se esqueça de criar critérios claros de avaliação e devolutivas construtivas. Sugere-se que o trabalho com estas habilidades seja realizada na perspectiva de um projeto integrador entre os componentes curriculares da área de Ciências da Natureza e suas Tecnologias, que dê subsídios para o trabalho com o próximo conteúdo: Origem da Vida.",
+    "habilidade_codes": [
+      "EM13CNT301",
+      "EM13CNT302",
+      "EM13CNT303"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 2º Bimestre\nUnidade: Tecnologias e suas Linguagens\nObjetos: Introdução a Biologia e Método Científico.\nHabilidades: (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica; (EM13CNT302) - Comunicar, para públicos variados, em diversos contextos, resultados de análises, pesquisas e/ou experimentos, elaborando e/ou interpretando textos, gráficos, tabelas, símbolos, códigos, sistemas de classificação e equações, por meio de diferentes linguagens, mídias, tecnologias digitais de informação e comunicação (TDIC), de modo a participar e/ou promover debates em torno de temas científicos e/ou tecnológicos de relevância sociocultural e ambiental; (EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.\nSAEB: Não mencionado no documento.\nOrientações: É provável que os estudantes já tenham percorrido um caminho bem estruturado nas Ciências da Natureza ao longo do Ensino Fundamental. Partindo do princípio que o Ensino Médio é uma etapa da Educação Básica que oportuniza o aprofundamento e a consolidação de conteúdos das áreas de conhecimento, inclusive Ciências da Natureza e suas Tecnologias, é importante iniciarmos esta nova etapa a partir do debate sobre o pensamento científico, já que a Biologia é um dos componente desta área de natureza científica. Observe, professor(a), as habilidades priorizadas para o trabalho com a Introdução à Biologia e o Método Científico. Elas convidam a desenvolver situações de aprendizagem que oportunizem o estudante a percorrer as etapas do método científico, vivenciando-o, desde a construção de questões até a divulgação científica. Uma estratégia que pode ajudar a promover o pensamento científico dos estudantes, convidando-os a investigar algum fenômeno é realizar uma rotina de pensamento: eu vejo, eu penso, eu pergunto. Crie um ambiente que estimule a investigação, permita o erro e transforme os desafios em oportunidades. Sugira leitura de artigos de divulgação científica para que possam se apropriar mais a respeito do fenômeno investigado. E não se esqueça de criar critérios claros de avaliação e devolutivas construtivas. Sugere-se que o trabalho com estas habilidades seja realizada na perspectiva de um projeto integrador entre os componentes curriculares da área de Ciências da Natureza e suas Tecnologias, que dê subsídios para o trabalho com o próximo conteúdo: Origem da Vida."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 2 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT201) - Analisar e discutir modelos, teorias e leis propostas em diferentes épocas e culturas para comparar distintas explicações sobre o surgimento e a evolução da Vida, da Terra e do Universo com as teorias aceitas atualmente.",
+    "objeto_conhecimento": "Origem da Vida e Evolução.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Os objetos de conhecimento até aqui relacionados (Introdução à Biologia e Método Científico trabalhados nas primeiras semanas de aula e Origem da Vida) permitem a implementação de um projeto integrador entre os componentes das Ciências da Natureza e suas Tecnologias, visando a aproximação deles, demonstrando como caminham juntos no estudo da evolução da vida na Terra. Sugere-se um tema geral, abrangente que contemple a origem do universo, da Terra e da vida na Terra, utilizando o Método Ciêntífico numa perspectiva do desenvolvimento do senso crítico, utilizando-o como base de pesquisa e o ensino por investigação como norteador das estratégias pedagógicas. Aproveite, professor(a) para, intencionalmente, oportunizar o desenvolvimento de habilidades não cognitivas, como a assertividade, ao pensar em situações de aprendizagem que levem os estudantes a analisarem a discutirem modelos que comparem as diferentes teorias do surgimento da vida, como a evolução química (na perspectiva das propostas de Oparin e Haldane, testadas por Miller e Urey), a panspermia e o criacionismo (embora este último não seja pertencente à ciência). Aproveite para diferenciar o fixismo, um dos princípios do criacionismo, com o evolucionismo. Aborde, também, a Biogênese e a Abiogênese. O professor pode conduzir esse conteúdo com foco na Teoria da Evolução, fazendo uma revisão da transmissão das características ao longo das gerações, revisando o conceito de genes, de variabilidade genética e das mutações. As habilidades adquiridas aqui servirão de base para o estudante compreender a especiação, e a partir daí, o professor já pode traçar um esboço da derivação dos organismos a partir do processo evolutivo.",
+    "habilidade_codes": [
+      "EM13CNT201"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 2º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Origem da Vida e Evolução.\nHabilidades: (EM13CNT201) - Analisar e discutir modelos, teorias e leis propostas em diferentes épocas e culturas para comparar distintas explicações sobre o surgimento e a evolução da Vida, da Terra e do Universo com as teorias aceitas atualmente.\nSAEB: Não mencionado no documento.\nOrientações: Os objetos de conhecimento até aqui relacionados (Introdução à Biologia e Método Científico trabalhados nas primeiras semanas de aula e Origem da Vida) permitem a implementação de um projeto integrador entre os componentes das Ciências da Natureza e suas Tecnologias, visando a aproximação deles, demonstrando como caminham juntos no estudo da evolução da vida na Terra. Sugere-se um tema geral, abrangente que contemple a origem do universo, da Terra e da vida na Terra, utilizando o Método Ciêntífico numa perspectiva do desenvolvimento do senso crítico, utilizando-o como base de pesquisa e o ensino por investigação como norteador das estratégias pedagógicas. Aproveite, professor(a) para, intencionalmente, oportunizar o desenvolvimento de habilidades não cognitivas, como a assertividade, ao pensar em situações de aprendizagem que levem os estudantes a analisarem a discutirem modelos que comparem as diferentes teorias do surgimento da vida, como a evolução química (na perspectiva das propostas de Oparin e Haldane, testadas por Miller e Urey), a panspermia e o criacionismo (embora este último não seja pertencente à ciência). Aproveite para diferenciar o fixismo, um dos princípios do criacionismo, com o evolucionismo. Aborde, também, a Biogênese e a Abiogênese. O professor pode conduzir esse conteúdo com foco na Teoria da Evolução, fazendo uma revisão da transmissão das características ao longo das gerações, revisando o conceito de genes, de variabilidade genética e das mutações. As habilidades adquiridas aqui servirão de base para o estudante compreender a especiação, e a partir daí, o professor já pode traçar um esboço da derivação dos organismos a partir do processo evolutivo."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 2 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT208) - Aplicar os princípios da evolução biológica para analisar a história humana, considerando sua origem, diversificação, dispersão pelo planeta e diferentes formas de interação com a natureza, valorizando e respeitando a diversidade étnica e cultural humana.",
+    "objeto_conhecimento": "Processos de Especiação.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Até chegar aqui o estudante teve uma apresentação da importância do material genético na definição de suas características e como elas podem variar. A variabilidade é o princípio do processo de especiação, pois torna os organismos originados de uma mesma população distintos o suficiente para serem considerados novas espécies. Nesse momento, o estudante deve compreender os contextos que podem ocasionar o isolamento reprodutivo entre organismos de uma mesma população, processo chave da especiação. Trabalhar as noções iniciais a partir das obervações feitas por Charles Darwin nas ilhas Galápados a respeito das variadas espécies de tentilhões e como ele compreendeu a irradiação adaptativa deles e sua especiação. Além de abordar os diferentes tipos de especiação.",
+    "habilidade_codes": [
+      "EM13CNT208"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 2º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Processos de Especiação.\nHabilidades: (EM13CNT208) - Aplicar os princípios da evolução biológica para analisar a história humana, considerando sua origem, diversificação, dispersão pelo planeta e diferentes formas de interação com a natureza, valorizando e respeitando a diversidade étnica e cultural humana.\nSAEB: Não mencionado no documento.\nOrientações: Até chegar aqui o estudante teve uma apresentação da importância do material genético na definição de suas características e como elas podem variar. A variabilidade é o princípio do processo de especiação, pois torna os organismos originados de uma mesma população distintos o suficiente para serem considerados novas espécies. Nesse momento, o estudante deve compreender os contextos que podem ocasionar o isolamento reprodutivo entre organismos de uma mesma população, processo chave da especiação. Trabalhar as noções iniciais a partir das obervações feitas por Charles Darwin nas ilhas Galápados a respeito das variadas espécies de tentilhões e como ele compreendeu a irradiação adaptativa deles e sua especiação. Além de abordar os diferentes tipos de especiação."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 2 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT202X) - Analisar as diversas formas de manifestação da vida em seus diferentes níveis de organização, bem como as condições ambientais favoráveis e os fatores limitantes a elas, tanto na Terra quanto em outros planetas, com ou sem o uso de dispositivos e aplicativos digitais.",
+    "objeto_conhecimento": "Características dos Seres Vivos.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "A habilidade 202X aparece pela primeira vez neste Plano de Curso e ela deve ser trabalhada em várias temáticas, conforme você irá observar, professor(a). Partindo do pressuposto que o número de aulas para o trabalho com as características dos seres vivos deve ser menor, não se pretende orientar que a habilidade seja completamente desenvolvida logo neste primeiro tema. Sugere-se que as características que definem a vida e a diferenciam de coisas e objetos inanimados, sejam apresentadas, incluindo uma revisão sobre a teoria celular. A constituição genética, a reprodução, metabolismo, nutrição são igualmente fundamentais. Aproveite para problematizar: os vírus são ou não considerados seres vivos?",
+    "habilidade_codes": [
+      "EM13CNT202X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 2º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Características dos Seres Vivos.\nHabilidades: (EM13CNT202X) - Analisar as diversas formas de manifestação da vida em seus diferentes níveis de organização, bem como as condições ambientais favoráveis e os fatores limitantes a elas, tanto na Terra quanto em outros planetas, com ou sem o uso de dispositivos e aplicativos digitais.\nSAEB: Não mencionado no documento.\nOrientações: A habilidade 202X aparece pela primeira vez neste Plano de Curso e ela deve ser trabalhada em várias temáticas, conforme você irá observar, professor(a). Partindo do pressuposto que o número de aulas para o trabalho com as características dos seres vivos deve ser menor, não se pretende orientar que a habilidade seja completamente desenvolvida logo neste primeiro tema. Sugere-se que as características que definem a vida e a diferenciam de coisas e objetos inanimados, sejam apresentadas, incluindo uma revisão sobre a teoria celular. A constituição genética, a reprodução, metabolismo, nutrição são igualmente fundamentais. Aproveite para problematizar: os vírus são ou não considerados seres vivos?"
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia; Vida, Terra e Cosmos; Tecnologias e suas Linguagens",
+    "competencia": "Competências Específicas 1, 2 e 3.",
+    "habilidade": "(EM13CNT103X) - Conhecer e analisar os tipos de radiação e suas origens...; (EM13CNT201) - Analisar e discutir modelos...; (EM13CNT303) - Interpretar textos de divulgação científica...; (EM13CNT202X) - Analisar as diversas formas de manifestação da vida...; (EM13CNT211MG) - Analisar e discutir os processos que alteram as propriedades coligativas em especial as que interferem no transporte por membrana celular...",
+    "objeto_conhecimento": "Composição Química dos Seres Vivos; Organização Celular e Fisiologia Celular.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Professor(a), verifique nas habilidades que você pode buscar inspirações para o desenvolvimento de sequência didática que aborde a composição química dos seres vivos. Você pode partir da interpretação de textos de divulgação científica para abordar as características físico-químicas e a importância biológica da água. É importante lembrar que o corpo humano depende de vários componentes para funcionar corretamente. Nesse sentido, os sais minerais (incluindo o Iodo, a partir do qual a habilidade 103X pode ser trabalhada) e as vitaminas podem ser explorados na perspectiva das suas funções biológicas e suas fontes alimentares, salientando que dietas pobres em determinados alimentos podem gerar carências importantes de sais minerais e vitaminas e, tais carências, podem ser fatores limitantes para a vida ou para a qualidade de vida. Escolha diferentes estratégias didáticas, priorize as metodologias ativas que favoreçam a vivência das habilidades por parte dos estudantes. Dê continuidade, professor(a) ao trabalho com a Composição Química dos seres vivos, a partir de situações de aprendizagem que oportunizem a compreensão a respeito das principais biomoléculas orgânicas, construtoras das células. Proponha a análise, por exemplo, de rótulos de alimentos para que, a partir dela, as habilidades 301, 302 e 303 possam ser, novamente priorizadas para o caminho da sua consolidação. Nesse momento, também, é interessante que o professor realize uma abordagem voltada para as organelas membranosas e não membranosas e seu funcionamento. Agora que os estudantes compreendem as diferentes células que compõem os diversos grupos de seres vivos, o professor pode realizar uma abordagem investigativa voltada para o funcionamento das organelas.",
+    "habilidade_codes": [
+      "EM13CNT103X",
+      "EM13CNT201",
+      "EM13CNT303",
+      "EM13CNT202X",
+      "EM13CNT211MG"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 2º Bimestre\nUnidade: Matéria e Energia; Vida, Terra e Cosmos; Tecnologias e suas Linguagens\nObjetos: Composição Química dos Seres Vivos; Organização Celular e Fisiologia Celular.\nHabilidades: (EM13CNT103X) - Conhecer e analisar os tipos de radiação e suas origens...; (EM13CNT201) - Analisar e discutir modelos...; (EM13CNT303) - Interpretar textos de divulgação científica...; (EM13CNT202X) - Analisar as diversas formas de manifestação da vida...; (EM13CNT211MG) - Analisar e discutir os processos que alteram as propriedades coligativas em especial as que interferem no transporte por membrana celular...\nSAEB: Não mencionado no documento.\nOrientações: Professor(a), verifique nas habilidades que você pode buscar inspirações para o desenvolvimento de sequência didática que aborde a composição química dos seres vivos. Você pode partir da interpretação de textos de divulgação científica para abordar as características físico-químicas e a importância biológica da água. É importante lembrar que o corpo humano depende de vários componentes para funcionar corretamente. Nesse sentido, os sais minerais (incluindo o Iodo, a partir do qual a habilidade 103X pode ser trabalhada) e as vitaminas podem ser explorados na perspectiva das suas funções biológicas e suas fontes alimentares, salientando que dietas pobres em determinados alimentos podem gerar carências importantes de sais minerais e vitaminas e, tais carências, podem ser fatores limitantes para a vida ou para a qualidade de vida. Escolha diferentes estratégias didáticas, priorize as metodologias ativas que favoreçam a vivência das habilidades por parte dos estudantes. Dê continuidade, professor(a) ao trabalho com a Composição Química dos seres vivos, a partir de situações de aprendizagem que oportunizem a compreensão a respeito das principais biomoléculas orgânicas, construtoras das células. Proponha a análise, por exemplo, de rótulos de alimentos para que, a partir dela, as habilidades 301, 302 e 303 possam ser, novamente priorizadas para o caminho da sua consolidação. Nesse momento, também, é interessante que o professor realize uma abordagem voltada para as organelas membranosas e não membranosas e seu funcionamento. Agora que os estudantes compreendem as diferentes células que compõem os diversos grupos de seres vivos, o professor pode realizar uma abordagem investigativa voltada para o funcionamento das organelas."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Tecnologias e suas Linguagens",
+    "competencia": "Competência específica 3.",
+    "habilidade": "(EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.",
+    "objeto_conhecimento": "Organização Celular e Fisiologia Celular.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "(Continuidade das orientações do bimestre anterior focadas em organelas e funcionamento celular através de abordagem investigativa).",
+    "habilidade_codes": [
+      "EM13CNT301"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 3º Bimestre\nUnidade: Tecnologias e suas Linguagens\nObjetos: Organização Celular e Fisiologia Celular.\nHabilidades: (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.\nSAEB: Não mencionado no documento.\nOrientações: (Continuidade das orientações do bimestre anterior focadas em organelas e funcionamento celular através de abordagem investigativa)."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência Específica 1 - Analisar fenômenos naturais e processos tecnológicos...",
+    "habilidade": "(EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.",
+    "objeto_conhecimento": "Metabolismo Energético.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "O professor deve iniciar esse conteúdo pelo conceito de metabolismo energético e homeostase, para depois aprofundar em quais são os processos envolvidos no metabolismo energético dos diferentes tipos celulares. Cabe aqui uma revisão sobre o surgimento da vida na Terra, abordando as teorias sobre qual tipo de metabolismo seria o ancestral dos demais (hipótese autotrófica e heterotrófica). O estudante deve compreender e os processos de Respiração Celular, Fermentação e Quimiossíntese, associando esses processos com os organismos que os utilizam como via metabólica, para que sejam capazes de continuar desenvolvendo as habilidades aqui relacionadas à esses objetos de conhecimento.",
+    "habilidade_codes": [
+      "EM13CNT101"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 3º Bimestre\nUnidade: Matéria e Energia\nObjetos: Metabolismo Energético.\nHabilidades: (EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.\nSAEB: Não mencionado no documento.\nOrientações: O professor deve iniciar esse conteúdo pelo conceito de metabolismo energético e homeostase, para depois aprofundar em quais são os processos envolvidos no metabolismo energético dos diferentes tipos celulares. Cabe aqui uma revisão sobre o surgimento da vida na Terra, abordando as teorias sobre qual tipo de metabolismo seria o ancestral dos demais (hipótese autotrófica e heterotrófica). O estudante deve compreender e os processos de Respiração Celular, Fermentação e Quimiossíntese, associando esses processos com os organismos que os utilizam como via metabólica, para que sejam capazes de continuar desenvolvendo as habilidades aqui relacionadas à esses objetos de conhecimento."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 2.",
+    "habilidade": "(EM13CNT201) - Analisar e discutir modelos...; (EM13CNT202X) - Analisar as diversas formas de manifestação da vida...",
+    "objeto_conhecimento": "Metabolismo Energético.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Dando continuidade ao trabalho com o Metabolismo Celular, o professor(a) deve apresentar os processos de produção de matéria orgânica: a quimiossíntese e a fotossíntese. Associe a fotossíntese à presença de cloroplasto e a necessidade da luz para que a energia seja fornecida para ser transformada. É importante que o estudante relacione às diversas questões ambientais que afetam o desenvolvimento dos seres fotossintetizantes e o papel destes na produção de oxigênio, necessário à vida de muitos seres vivos. É interessante também realizar um comparativo entre os processos de fotossíntese, respiração, fermentação e quimiossíntese para que o estudante seja capaz de diferenciá-los de maneira clara.",
+    "habilidade_codes": [
+      "EM13CNT201",
+      "EM13CNT202X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Metabolismo Energético.\nHabilidades: (EM13CNT201) - Analisar e discutir modelos...; (EM13CNT202X) - Analisar as diversas formas de manifestação da vida...\nSAEB: Não mencionado no documento.\nOrientações: Dando continuidade ao trabalho com o Metabolismo Celular, o professor(a) deve apresentar os processos de produção de matéria orgânica: a quimiossíntese e a fotossíntese. Associe a fotossíntese à presença de cloroplasto e a necessidade da luz para que a energia seja fornecida para ser transformada. É importante que o estudante relacione às diversas questões ambientais que afetam o desenvolvimento dos seres fotossintetizantes e o papel destes na produção de oxigênio, necessário à vida de muitos seres vivos. É interessante também realizar um comparativo entre os processos de fotossíntese, respiração, fermentação e quimiossíntese para que o estudante seja capaz de diferenciá-los de maneira clara."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Tecnologias e suas Linguagens",
+    "competencia": "Competência específica 3.",
+    "habilidade": "(EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...; (EM13CNT304X) - Analisar e debater situações controversas sobre a aplicação de conhecimentos da área de Ciências da Natureza (tecnologias do DNA, células tronco, neurotecnologias, tecnologias bélicas, controle de pragas), com base em argumentos consistentes, legais, éticos e responsáveis.",
+    "objeto_conhecimento": "Divisão Celular.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "O professor pode iniciar o conteúdo revisando a diferença entre a eucromatina e a heterocromatina; e abordar a constituição do cariótipo humano, trazendo uma revisão da estrutura do DNA (ácidos nucléicos que o compõem) e a estrutura dos cromossomos no momento da divisão celular. Nesse ponto, o professor deverá tratar as fases do ciclo celular e permitir que o estudante compreenda que os cromossomos homólogos, antes da replicação do DNA, não apresentarão as cromátides irmãs, já que elas são a cópia do material genético do processo de mitose. As fases da mitose e meiose devem ser identificadas e as diferenças de mitose e meiose precisam ser trabalhadas no que diz respeito às suas funções nos organismos vivos, com foco na metáfase e anáfase, esclarecendo o crossing over e sua importância para a variabilidade genética. É interessante também que o professor aborde o tema na perspectiva da formação de tumores, entre eles os cânceres, que são resultado de alterações genéticas que desregulam processos de mitose no organismo ou no desenvolvimento embrionário dos seres vivos.",
+    "habilidade_codes": [
+      "EM13CNT302",
+      "EM13CNT303",
+      "EM13CNT304X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 3º Bimestre\nUnidade: Tecnologias e suas Linguagens\nObjetos: Divisão Celular.\nHabilidades: (EM13CNT302) - Comunicar resultados...; (EM13CNT303) - Interpretar textos...; (EM13CNT304X) - Analisar e debater situações controversas sobre a aplicação de conhecimentos da área de Ciências da Natureza (tecnologias do DNA, células tronco, neurotecnologias, tecnologias bélicas, controle de pragas), com base em argumentos consistentes, legais, éticos e responsáveis.\nSAEB: Não mencionado no documento.\nOrientações: O professor pode iniciar o conteúdo revisando a diferença entre a eucromatina e a heterocromatina; e abordar a constituição do cariótipo humano, trazendo uma revisão da estrutura do DNA (ácidos nucléicos que o compõem) e a estrutura dos cromossomos no momento da divisão celular. Nesse ponto, o professor deverá tratar as fases do ciclo celular e permitir que o estudante compreenda que os cromossomos homólogos, antes da replicação do DNA, não apresentarão as cromátides irmãs, já que elas são a cópia do material genético do processo de mitose. As fases da mitose e meiose devem ser identificadas e as diferenças de mitose e meiose precisam ser trabalhadas no que diz respeito às suas funções nos organismos vivos, com foco na metáfase e anáfase, esclarecendo o crossing over e sua importância para a variabilidade genética. É interessante também que o professor aborde o tema na perspectiva da formação de tumores, entre eles os cânceres, que são resultado de alterações genéticas que desregulam processos de mitose no organismo ou no desenvolvimento embrionário dos seres vivos."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologias e suas Linguagens",
+    "competencia": "Competências Específicas 2 e 3.",
+    "habilidade": "(EM13CNT205) - Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza...; (EM13CNT304X) - Analisar e debater situações controversas...",
+    "objeto_conhecimento": "Introdução à Genética; Genética Mendeliana: 1ª Lei de Mendel, variações da 1ª Lei de Mendel e probabilidades.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Professor(a), convidamos a olhar a habilidade priorizada para ser desenvolvida no primeiro bimestre do 2ª ano. Observe que o processo cognitivo que se deseja desenvolver - “interpretar” - envolve o desenvolvimento de outros base que permitam a efetiva interpretação de dados com base em noções de probabilidade e incerteza. É importante, então, iniciar com a definição de genótipo, fenótipo, alelos, dominância, recessividade, homozigose, heterozigose. Essas definições podem ser trabalhadas numa perspectiva aplicada, utilizando características humanas, como a polidactilia, por exemplo. A partir desses conhecimentos, e garantindo que os estudantes consigam, então, fazer apontamentos e definições com autonomia, eles terão condições de compreender a genética mendeliana. Comece pela primeira lei de Mendel e apresente os heredogramas e como se realiza cálculos de probabilidades utilizando as regras do “e” e do “ou”.",
+    "habilidade_codes": [
+      "EM13CNT205",
+      "EM13CNT304X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 3º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologias e suas Linguagens\nObjetos: Introdução à Genética; Genética Mendeliana: 1ª Lei de Mendel, variações da 1ª Lei de Mendel e probabilidades.\nHabilidades: (EM13CNT205) - Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza...; (EM13CNT304X) - Analisar e debater situações controversas...\nSAEB: Não mencionado no documento.\nOrientações: Professor(a), convidamos a olhar a habilidade priorizada para ser desenvolvida no primeiro bimestre do 2ª ano. Observe que o processo cognitivo que se deseja desenvolver - “interpretar” - envolve o desenvolvimento de outros base que permitam a efetiva interpretação de dados com base em noções de probabilidade e incerteza. É importante, então, iniciar com a definição de genótipo, fenótipo, alelos, dominância, recessividade, homozigose, heterozigose. Essas definições podem ser trabalhadas numa perspectiva aplicada, utilizando características humanas, como a polidactilia, por exemplo. A partir desses conhecimentos, e garantindo que os estudantes consigam, então, fazer apontamentos e definições com autonomia, eles terão condições de compreender a genética mendeliana. Comece pela primeira lei de Mendel e apresente os heredogramas e como se realiza cálculos de probabilidades utilizando as regras do “e” e do “ou”."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Vida, Terra e Cosmos; Tecnologias e suas Linguagens",
+    "competencia": "Competências Específicas 2 e 3.",
+    "habilidade": "(EM13CNT205) - Interpretar resultados...; (EM13CNT305X) - Investigar e discutir o uso indevido de conhecimentos das Ciências da Natureza na justificativa de processos de discriminação, segregação e privação de direitos individuais e coletivos... para promover a equidade o respeito à diversidade.",
+    "objeto_conhecimento": "Genética Mendeliana: 2ª Lei de Mendel, interação de genes, herança dos cromossomos sexuais. Alterações cromossômicas.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Seguindo a mesma lógica da orientação anterior, sobre os processos cognitivos a serem desenvolvidos até a interpretação e a realização de previsões, agora, professor(a), é oportuno trabalhar na apresentação da segunda Lei de Mendel, fazendo relações com os processos de divisão celular, especificamente a meiose. Trabalhe com a herança ligada ao sexo, na perpectiva das características humanas, tais como, o daltonismo. Na sequência, apresente a genética não mendeliana, que se refere aos padrões de herança que não obedecem às Leis de Mendel, tais como: genes ligados, alelos múltiplos (aproveitando para investigar a discutir os tons da pele humana à luz dos conhecimentos sobre esse padrão de herança), codominância, dominância incompleta, herança mitocondrial e epistasia. Finalize o bimestre com uma sequência de aulas a respeito da genética dos grupos sanguíneos, apresentando os antígenos que definem os tipos sanguíneos, um caso de codominância, relacionando os tipos saguíneos aos genótipos. Trabalhe com heredogramas e probabilidades, realizando previsões sobre o nascimento de crianças em uma família com determinado tipo sanguíneo.",
+    "habilidade_codes": [
+      "EM13CNT205",
+      "EM13CNT305X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 4º Bimestre\nUnidade: Vida, Terra e Cosmos; Tecnologias e suas Linguagens\nObjetos: Genética Mendeliana: 2ª Lei de Mendel, interação de genes, herança dos cromossomos sexuais. Alterações cromossômicas.\nHabilidades: (EM13CNT205) - Interpretar resultados...; (EM13CNT305X) - Investigar e discutir o uso indevido de conhecimentos das Ciências da Natureza na justificativa de processos de discriminação, segregação e privação de direitos individuais e coletivos... para promover a equidade o respeito à diversidade.\nSAEB: Não mencionado no documento.\nOrientações: Seguindo a mesma lógica da orientação anterior, sobre os processos cognitivos a serem desenvolvidos até a interpretação e a realização de previsões, agora, professor(a), é oportuno trabalhar na apresentação da segunda Lei de Mendel, fazendo relações com os processos de divisão celular, especificamente a meiose. Trabalhe com a herança ligada ao sexo, na perpectiva das características humanas, tais como, o daltonismo. Na sequência, apresente a genética não mendeliana, que se refere aos padrões de herança que não obedecem às Leis de Mendel, tais como: genes ligados, alelos múltiplos (aproveitando para investigar a discutir os tons da pele humana à luz dos conhecimentos sobre esse padrão de herança), codominância, dominância incompleta, herança mitocondrial e epistasia. Finalize o bimestre com uma sequência de aulas a respeito da genética dos grupos sanguíneos, apresentando os antígenos que definem os tipos sanguíneos, um caso de codominância, relacionando os tipos saguíneos aos genótipos. Trabalhe com heredogramas e probabilidades, realizando previsões sobre o nascimento de crianças em uma família com determinado tipo sanguíneo."
+  },
+  {
+    "grade": "1º Ano",
+    "grade_num": 1,
+    "level": "Ensino Médio",
+    "subject": "Biologia",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologias e suas Linguagens",
+    "competencia": "Competência específica 3.",
+    "habilidade": "(EM13CNT304X) - Analisar e debater situações controversas sobre a aplicação de conhecimentos da área de Ciências da Natureza (tecnologias do DNA, células tronco, neurotecnologias, tecnologias bélicas, controle de pragas), com base em argumentos consistentes, legais, éticos e responsáveis.",
+    "objeto_conhecimento": "Biotecnologia.",
+    "descritores_saeb": "Não mencionado no documento.",
+    "orientacoes_pedagogicas": "Análise e debate são processos cognitivos avançados que exigem do estudante o conhecimento e compreensão sólidas a respeito da Biotecnologia para que, assim, consiga usar o conhecimento adquirido em situações novas para conseguir, enfim, fazer análises e se envolver em debates. Essas podem ser as expectativas de aprendizagem a serem desenvolvidas em aulas a respeito do uso e da importância de biotecnologia. Utilize nas suas aulas, professor(a), abordagens a respeito de exames de PCR, técnicas de edição de DNA, organismos modificados geneticamente, clonagem terapêutica (diferenciando da reprodutiva), células-tronco (identificando a importância delas para o organismo humano), biotecnologia na reprodução humana, terapia gênica, testes de diagnóstico pré-natal. Aborde esses temas em aulas que oportunizem o desenvolvimento do pensamento crítico dos estudantes, uma habilidade mista que é preciso garantir na Educação Básica.",
+    "habilidade_codes": [
+      "EM13CNT304X"
+    ],
+    "chunk_text": "Ensino Médio | 1º Ano | Biologia | 4º Bimestre\nUnidade: Tecnologias e suas Linguagens\nObjetos: Biotecnologia.\nHabilidades: (EM13CNT304X) - Analisar e debater situações controversas sobre a aplicação de conhecimentos da área de Ciências da Natureza (tecnologias do DNA, células tronco, neurotecnologias, tecnologias bélicas, controle de pragas), com base em argumentos consistentes, legais, éticos e responsáveis.\nSAEB: Não mencionado no documento.\nOrientações: Análise e debate são processos cognitivos avançados que exigem do estudante o conhecimento e compreensão sólidas a respeito da Biotecnologia para que, assim, consiga usar o conhecimento adquirido em situações novas para conseguir, enfim, fazer análises e se envolver em debates. Essas podem ser as expectativas de aprendizagem a serem desenvolvidas em aulas a respeito do uso e da importância de biotecnologia. Utilize nas suas aulas, professor(a), abordagens a respeito de exames de PCR, técnicas de edição de DNA, organismos modificados geneticamente, clonagem terapêutica (diferenciando da reprodutiva), células-tronco (identificando a importância delas para o organismo humano), biotecnologia na reprodução humana, terapia gênica, testes de diagnóstico pré-natal. Aborde esses temas em aulas que oportunizem o desenvolvimento do pensamento crítico dos estudantes, uma habilidade mista que é preciso garantir na Educação Básica."
+  }
+]

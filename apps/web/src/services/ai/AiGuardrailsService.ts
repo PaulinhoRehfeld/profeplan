@@ -49,16 +49,16 @@ export function generateGuardrailsPrompt(
 
 Você DEVE seguir RIGOROSAMENTE as preferências pedagógicas configuradas pelo professor:
 
-**📚 METODOLOGIA PADRÃO:**
+**📚 METODOLOGIA PADRÃO: ${config.methodology}**
 ${getMethodologyDescription(config.methodology)}
 
-**🎓 ESTILO PEDAGÓGICO:**
+**🎓 ESTILO PEDAGÓGICO: ${config.pedagogicalStyle}**
 ${getPedagogicalStyleDescription(config.pedagogicalStyle)}
 
-**📊 FOCO AVALIATIVO:**
+**📊 FOCO AVALIATIVO: ${config.assessmentFocus}**
 ${getAssessmentFocusDescription(config.assessmentFocus)}
 
-**✍️ TOM DE ESCRITA:**
+**✍️ TOM DE ESCRITA: ${config.writingTone}**
 ${getWritingToneDescription(config.writingTone)}
 
 ${config.context ? `\n**🎯 CONTEXTO DO PERÍODO:**\n${config.context}\n` : ''}

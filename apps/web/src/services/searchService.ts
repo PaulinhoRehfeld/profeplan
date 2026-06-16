@@ -1,6 +1,6 @@
 
 import { supabase } from "./supabaseClient";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getAuthHeaders } from "./sessionService";
 
 interface HybridSearchParams {
     textoBusca: string;
@@ -85,31 +85,47 @@ export const searchCurriculum = async (
     limit: number = 5,
     matchThreshold: number = 0.5
 ) => {
-    // Versão apenas-texto do searchCurriculum: não gera embeddings,
-    // delega a relevância ao RPC no Supabase (query_text based).
     try {
-        const rpcPromise = supabase.rpc('search_curriculum_rag', {
-            query_text: queryText,
-            match_threshold: matchThreshold,
-            match_count: limit,
-            filter_disciplina: filters?.disciplina || null,
-            filter_ano: filters?.ano || null,
-            filter_periodo: filters?.periodo || null
+        const authHeaders = await getAuthHeaders();
+        const response = await fetch("/api/searchProxy", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeaders
+            },
+            body: JSON.stringify({
+                queryText,
+                filters,
+                limit,
+                matchThreshold
+            })
         });
 
-        const timeoutPromise = new Promise<unknown>((_, reject) =>
-            setTimeout(() => reject(new Error("RAG Timeout")), 15000) // 15s Timeout
-        );
+        if (!response.ok) {
+            throw new Error(`Falha no proxy de busca (HTTP ${response.status})`);
+        }
 
-        const { data, error } = await Promise.race([rpcPromise, timeoutPromise]) as { data: unknown; error: unknown };
-
-        if (error) throw error;
+        const data = await response.json();
         return data || [];
-
     } catch (error) {
-        console.error("Erro ou Timeout na busca de currículo (RAG):", error);
-        // Fail gracefully: proceed without context
-        return [];
+        console.error("Erro ao realizar busca de currículo via BFF:", error);
+        // Fallback básico de busca textual direta no Supabase no cliente caso o BFF falhe
+        try {
+            console.log("⚠️ Iniciando fallback de busca direta no cliente...");
+            const { data, error: rpcError } = await supabase.rpc('search_curriculum_rag', {
+                query_text: queryText,
+                match_threshold: matchThreshold,
+                match_count: limit,
+                filter_disciplina: filters?.disciplina || null,
+                filter_ano: filters?.ano || null,
+                filter_periodo: filters?.periodo || null
+            });
+            if (rpcError) throw rpcError;
+            return data || [];
+        } catch (fallbackError) {
+            console.error("Erro fatal no fallback de busca direta:", fallbackError);
+            return [];
+        }
     }
 };
 
@@ -139,20 +155,20 @@ export const searchPnldBookContent = async (
     limit: number = 5,
     matchThreshold: number = 0.5
 ) => {
-    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-    if (!apiKey) throw new Error("API Key missing");
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
-
     try {
-        const result = await model.embedContent(queryText);
-        // Force 768 dimensions (Matryoshka slicing) to match DB
-        const fullEmbedding = result.embedding.values;
-        const embedding = fullEmbedding.slice(0, 768);
+        const response = await fetch("/api/ai/embeddings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: queryText })
+        });
+        if (!response.ok) {
+            throw new Error(`Embedding API error: ${response.status}`);
+        }
+        const { embedding } = await response.json();
+        if (!embedding) throw new Error("No embedding returned from backend");
 
         const { data, error } = await supabase.rpc('search_pnld_content', {
-            query_embedding: embedding.values,
+            query_embedding: embedding,
             match_threshold: matchThreshold,
             match_count: limit,
             filter_livro_titulo: filters?.livro_titulo || null,
@@ -188,18 +204,19 @@ export const searchHierarchicalRag = async (
     const results: HierarchicalRagResult[] = [];
     let embedding: number[] | null = null;
 
-    const apiKey = (import.meta.env && import.meta.env.VITE_GEMINI_API_KEY?.trim()) || process.env.VITE_GEMINI_API_KEY?.trim();
-    
-    // 1. Tenta gerar embedding do Gemini
-    if (apiKey) {
-        try {
-            const genAI = new GoogleGenerativeAI(apiKey);
-            const model = genAI.getGenerativeModel({ model: "models/gemini-embedding-001" });
-            const embedResult = await model.embedContent(queryText);
-            embedding = embedResult.embedding.values.slice(0, 768);
-        } catch (e) {
-            console.error("[searchHierarchicalRag] Erro ao gerar embedding:", e);
+    // 1. Tenta gerar embedding do Gemini através do backend
+    try {
+        const response = await fetch("/api/ai/embeddings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: queryText })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            embedding = data.embedding || null;
         }
+    } catch (e) {
+        console.error("[searchHierarchicalRag] Erro ao obter embedding do backend:", e);
     }
 
     // 2. Níveis 1, 2 e 3: Busca nos documentos do próprio professor no Supabase

@@ -15,6 +15,7 @@ const VerifyEmail = React.lazy(() => import('../pages/VerifyEmail'));
 const UserProfileSetup = React.lazy(() => import('../pages/UserProfileSetup'));
 const LoginScreen = React.lazy(() => import('../components/LoginScreen'));
 const SchoolSelectorScreenWrapper = React.lazy(() => import('../components/SchoolSelectorScreenWrapper'));
+const ComparativoPage = React.lazy(() => import('../pages/ComparativoPage'));
 
 // Features
 const PdiOfficialLayout = React.lazy(() => import('../features/PDI/Official/PdiOfficialLayout').then(m => ({ default: m.PdiOfficialLayout })));
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
       { path: 'verify-email', element: <VerifyEmailRoute /> },
       { path: 'login', element: <LoginRoute /> },
       { path: 'signup', element: <LoginRoute initialMode="signup" /> },
+      { path: 'road', element: <ComparativoPage /> },
       
       // Protected Core Routes
       { path: 'profile-setup', element: <UserProfileSetup /> },

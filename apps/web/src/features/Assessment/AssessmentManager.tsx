@@ -7,8 +7,6 @@ import PrintableEvaluation from '../../components/PrintableEvaluation';
 import type { Assessment } from '../../types';
 import { saveAssessment } from './AssessmentService';
 import { useToast } from '../../contexts/ToastContext';
-import { useFreedayContext } from '../../contexts/FreedayContext';
-
 // Import SubComponents
 import AssessmentSetup from './components/AssessmentSetup';
 import AssessmentPreview from './components/AssessmentPreview';
@@ -25,7 +23,6 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
     const [showPrintView, setShowPrintView] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const { showToast } = useToast();
-    const { openWithPrompt } = useFreedayContext();
 
     /* SIDEBAR EFFECT */
     useEffect(() => {
@@ -177,17 +174,7 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({ userId, settings,
                         Montagem de Avaliações Contextualizadas
                     </span>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => {
-                        const prompt = 'Estou na tela de Avaliações Contextualizadas do PROFEPLAN. Me ajude a planejar uma avaliação alinhada ao que venho trabalhando com minha turma (tipo de questões, número de itens e como equilibrar dificuldade).';
-                        openWithPrompt(prompt);
-                    }}
-                    className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-colors"
-                >
-                    <HelpCircle size={12} />
-                    Perguntar à FREEDAY
-                </button>
+
             </div>
             <div className="flex-1">
                 <AssessmentSetup

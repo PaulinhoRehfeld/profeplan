@@ -1,0 +1,435 @@
+[
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Mundo do Trabalho",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF69GE25MG) - Identificar e discutir o papel das redes virtuais na vida dos adolescentes e analisar a exclusão digital.",
+    "objeto_conhecimento": "Redes virtuais e relações sociais.",
+    "descritores_saeb": "Os impactos das redes virtuais nas relações econômicas e políticas na América e África. Relações comercias via redes virtuais. Os riscos e as potencialidades das redes virtuais nas relações institucionais entre países.",
+    "orientacoes_pedagogicas": "Apresentar para os estudantes os conceitos de inclusão digital e exclusão digital, bem como as consequências desses fatos. As redes sociais e suas influências no mundo jovem. Propor um projeto com professor de português sobre como desenvolver uma pesquisa escolar, com fontes confiáveis, aprender a referenciá-las, verificar fontes (identificar fake ou fontes duvidosas, não confiar em fóruns que publicam gabaritos e resoluções de questões prontas), escrever o que entendeu com as próprias palavras, etc.; Propor projeto visando melhor convívio na escola, pelo combate ao ciberbullying e ao bullying, discussões sobre a auto imagem, comparada à estética vendida na mídia.",
+    "habilidade_codes": [
+      "EF69GE25MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: Mundo do Trabalho\nObjetos: Redes virtuais e relações sociais.\nHabilidades: (EF69GE25MG) - Identificar e discutir o papel das redes virtuais na vida dos adolescentes e analisar a exclusão digital.\nSAEB: Os impactos das redes virtuais nas relações econômicas e políticas na América e África. Relações comercias via redes virtuais. Os riscos e as potencialidades das redes virtuais nas relações institucionais entre países.\nOrientações: Apresentar para os estudantes os conceitos de inclusão digital e exclusão digital, bem como as consequências desses fatos. As redes sociais e suas influências no mundo jovem. Propor um projeto com professor de português sobre como desenvolver uma pesquisa escolar, com fontes confiáveis, aprender a referenciá-las, verificar fontes (identificar fake ou fontes duvidosas, não confiar em fóruns que publicam gabaritos e resoluções de questões prontas), escrever o que entendeu com as próprias palavras, etc.; Propor projeto visando melhor convívio na escola, pelo combate ao ciberbullying e ao bullying, discussões sobre a auto imagem, comparada à estética vendida na mídia."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "O Sujeito e seu Lugar no Mundo",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE01) - Descrever as rotas de dispersão da população humana pelo planeta e os principais fluxos migratórios em diferentes períodos da história, discutindo os fatores históricos e condicionantes físico-naturais associados à distribuição da população humana pelos continentes.",
+    "objeto_conhecimento": "Distribuição da população mundial e deslocamentos populacionais.",
+    "descritores_saeb": "Principais rotas de migração ao longo da história. Fluxos migratórios e suas motivações (conflitos, guerras, expansão territorial, mudanças climáticas, catástrofes, crises políticas e econômicas, etc.). Distribuição da população mundial e seus fatores. O choque de civilizações e as fronteiras raciais, políticas e religiosas. Fronteiras artificiais e naturais. Identidades nacionais e fragmentação. Regionalização do espaço mundial. Leitura e interpretação de mapas.",
+    "orientacoes_pedagogicas": "Apresentar as principais teorias sobre como se deu a dispersão populacional no mundo, desde os primeiros povos no continente africano, até a atual distribuição populacional. Por meio de mapas, cronologia, evidências científica arqueológicas e caracterização das condições geográficas de tais deslocamentos. Em seguida questionar os estudantes sobre quais condições e situações as pessoas migram de um local para outro (fatores de atração e repulsão migratórios).",
+    "habilidade_codes": [
+      "EF08GE01"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: O Sujeito e seu Lugar no Mundo\nObjetos: Distribuição da população mundial e deslocamentos populacionais.\nHabilidades: (EF08GE01) - Descrever as rotas de dispersão da população humana pelo planeta e os principais fluxos migratórios em diferentes períodos da história, discutindo os fatores históricos e condicionantes físico-naturais associados à distribuição da população humana pelos continentes.\nSAEB: Principais rotas de migração ao longo da história. Fluxos migratórios e suas motivações (conflitos, guerras, expansão territorial, mudanças climáticas, catástrofes, crises políticas e econômicas, etc.). Distribuição da população mundial e seus fatores. O choque de civilizações e as fronteiras raciais, políticas e religiosas. Fronteiras artificiais e naturais. Identidades nacionais e fragmentação. Regionalização do espaço mundial. Leitura e interpretação de mapas.\nOrientações: Apresentar as principais teorias sobre como se deu a dispersão populacional no mundo, desde os primeiros povos no continente africano, até a atual distribuição populacional. Por meio de mapas, cronologia, evidências científica arqueológicas e caracterização das condições geográficas de tais deslocamentos. Em seguida questionar os estudantes sobre quais condições e situações as pessoas migram de um local para outro (fatores de atração e repulsão migratórios)."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "O Sujeito e seu Lugar no Mundo",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF89GE26MG) - Analisar e problematizar as questões raciais, religiosas e de gênero analisando suas repercussões em escala local, nacional e internacional.",
+    "objeto_conhecimento": "Relações etnico-raciais e de gênero.",
+    "descritores_saeb": "Principais rotas de migração ao longo da história. Fluxos migratórios e suas motivações (conflitos, guerras, expansão territorial, mudanças climáticas, catástrofes, crises políticas e econômicas, etc.). Distribuição da população mundial e seus fatores. O choque de civilizações e as fronteiras raciais, políticas e religiosas. Fronteiras artificiais e naturais. Identidades nacionais e fragmentação. Regionalização do espaço mundial. Leitura e interpretação de mapas.",
+    "orientacoes_pedagogicas": "Propor um entendimento sobre a diversidade étnico-racial do mundo, pelos seus padrões estéticos, culturais e de pertencimento do território. Em escala internacional e nacional. Destacando os direitos do povos e comunidades tradicionais brasileiros.",
+    "habilidade_codes": [
+      "EF89GE26MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: O Sujeito e seu Lugar no Mundo\nObjetos: Relações etnico-raciais e de gênero.\nHabilidades: (EF89GE26MG) - Analisar e problematizar as questões raciais, religiosas e de gênero analisando suas repercussões em escala local, nacional e internacional.\nSAEB: Principais rotas de migração ao longo da história. Fluxos migratórios e suas motivações (conflitos, guerras, expansão territorial, mudanças climáticas, catástrofes, crises políticas e econômicas, etc.). Distribuição da população mundial e seus fatores. O choque de civilizações e as fronteiras raciais, políticas e religiosas. Fronteiras artificiais e naturais. Identidades nacionais e fragmentação. Regionalização do espaço mundial. Leitura e interpretação de mapas.\nOrientações: Propor um entendimento sobre a diversidade étnico-racial do mundo, pelos seus padrões estéticos, culturais e de pertencimento do território. Em escala internacional e nacional. Destacando os direitos do povos e comunidades tradicionais brasileiros."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "O Sujeito e seu Lugar no Mundo",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE02X) - Relacionar fatos e situações representativas da história das famílias do Município em que se localiza a escola, considerando a diversidade e os fluxos migratórios da população nacional e mundial.",
+    "objeto_conhecimento": "Diversidade e dinâmica da população mundial e local.",
+    "descritores_saeb": "As migrações e a ocupação do território municipal. Dinâmica demográfica do país, estado e município. O município e suas características socioeconômicas, ambientais, políticas e culturais. População mundial em números. Distribuição da população por idade e sexo (pirâmides etárias). Indicadores sociais.",
+    "orientacoes_pedagogicas": "Diante do entendimento da diversidade dos povos, trabalhar a percepção do próprio estudante em sua realidade local. Propor pesquisas, questionários, levantamento histórico dos habitantes de sua cidade e entorno (que pode ser consultado no portal IBGE Cidades). Ampliar esse entendimento sobre os fluxos migratórios a nível nacional internacional, com mapas e dados demográficos de emigração e imigração.",
+    "habilidade_codes": [
+      "EF08GE02X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: O Sujeito e seu Lugar no Mundo\nObjetos: Diversidade e dinâmica da população mundial e local.\nHabilidades: (EF08GE02X) - Relacionar fatos e situações representativas da história das famílias do Município em que se localiza a escola, considerando a diversidade e os fluxos migratórios da população nacional e mundial.\nSAEB: As migrações e a ocupação do território municipal. Dinâmica demográfica do país, estado e município. O município e suas características socioeconômicas, ambientais, políticas e culturais. População mundial em números. Distribuição da população por idade e sexo (pirâmides etárias). Indicadores sociais.\nOrientações: Diante do entendimento da diversidade dos povos, trabalhar a percepção do próprio estudante em sua realidade local. Propor pesquisas, questionários, levantamento histórico dos habitantes de sua cidade e entorno (que pode ser consultado no portal IBGE Cidades). Ampliar esse entendimento sobre os fluxos migratórios a nível nacional internacional, com mapas e dados demográficos de emigração e imigração."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "O Sujeito e seu Lugar no Mundo",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE03) - Analisar aspectos representativos da dinâmica demográfica, considerando características da população (perfil etário, crescimento vegetativo e mobilidade espacial).",
+    "objeto_conhecimento": "Diversidade e dinâmica da população mundial e local.",
+    "descritores_saeb": "As migrações e a ocupação do território municipal. Dinâmica demográfica do país, estado e município. O município e suas características socioeconômicas, ambientais, políticas e culturais. População mundial em números. Distribuição da população por idade e sexo (pirâmides etárias). Indicadores sociais.",
+    "orientacoes_pedagogicas": "Desenvolver a interpretação quantitativa e qualitativa dos estudos demográficos. Buscar narrativas em sala para além da memorização dos conceitos, uma apropriação por meio da comparação da realidade dos estudantes (da escola ou da sua cidade) com a escala que se deseja trabalhar. Ao tratar do perfil etário, discutir sobre a conquista social da mulher no mercado de trabalho, entre todos os outros espaços, visando a igualdade de gênero e o combate ao feminicídio, entre outras violências de gênero. Pode também, abordar sobre os efeitos das políticas públicas que auxiliam no planejamento familiar.",
+    "habilidade_codes": [
+      "EF08GE03"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: O Sujeito e seu Lugar no Mundo\nObjetos: Diversidade e dinâmica da população mundial e local.\nHabilidades: (EF08GE03) - Analisar aspectos representativos da dinâmica demográfica, considerando características da população (perfil etário, crescimento vegetativo e mobilidade espacial).\nSAEB: As migrações e a ocupação do território municipal. Dinâmica demográfica do país, estado e município. O município e suas características socioeconômicas, ambientais, políticas e culturais. População mundial em números. Distribuição da população por idade e sexo (pirâmides etárias). Indicadores sociais.\nOrientações: Desenvolver a interpretação quantitativa e qualitativa dos estudos demográficos. Buscar narrativas em sala para além da memorização dos conceitos, uma apropriação por meio da comparação da realidade dos estudantes (da escola ou da sua cidade) com a escala que se deseja trabalhar. Ao tratar do perfil etário, discutir sobre a conquista social da mulher no mercado de trabalho, entre todos os outros espaços, visando a igualdade de gênero e o combate ao feminicídio, entre outras violências de gênero. Pode também, abordar sobre os efeitos das políticas públicas que auxiliam no planejamento familiar."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE18X) - Elaborar e interpretar mapas ou outras formas de representação cartográfica para analisar as redes e as dinâmicas urbanas e rurais, ordenamento territorial, contextos culturais, modo de vida e usos e ocupação de solos da África e América.",
+    "objeto_conhecimento": "Cartografia: anamorfose, croquis e mapas temáticos da América e África.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).",
+    "orientacoes_pedagogicas": "É fundamental se apropriar da linguagem cartográfica permitindo melhor localização e interpretação da dimensão dos fenômenos espaciais. Portanto, sempre utilizar deste recurso para desenvolver as demais habilidades do bimestre.",
+    "habilidade_codes": [
+      "EF08GE18X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial\nObjetos: Cartografia: anamorfose, croquis e mapas temáticos da América e África.\nHabilidades: (EF08GE18X) - Elaborar e interpretar mapas ou outras formas de representação cartográfica para analisar as redes e as dinâmicas urbanas e rurais, ordenamento territorial, contextos culturais, modo de vida e usos e ocupação de solos da África e América.\nSAEB: Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).\nOrientações: É fundamental se apropriar da linguagem cartográfica permitindo melhor localização e interpretação da dimensão dos fenômenos espaciais. Portanto, sempre utilizar deste recurso para desenvolver as demais habilidades do bimestre."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE19) - Interpretar cartogramas, mapas esquemáticos (croquis) e anamorfoses com informações geográficas acerca da África e América.",
+    "objeto_conhecimento": "Cartografia: anamorfose, croquis e mapas temáticos da América e África.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).",
+    "orientacoes_pedagogicas": "Sempre utilizar diferentes mapas com perspectivas e escalas variadas para desenvolver o entendimento das distâncias e proporções dos territórios, além do entendimento das redes e fluxos dos processos. A anamorfose, especificamente, é uma linguagem cartográfica que proporciona melhor comparação e visualização das proporções dos dados dos territórios representados, por meio da distorção da área dos mesmos de acordo com os valores do tema representado. No 8º ano objetiva-se um destaque maior para os países do continente americano e africano, em contraste com os demais continentes.",
+    "habilidade_codes": [
+      "EF08GE19"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial\nObjetos: Cartografia: anamorfose, croquis e mapas temáticos da América e África.\nHabilidades: (EF08GE19) - Interpretar cartogramas, mapas esquemáticos (croquis) e anamorfoses com informações geográficas acerca da África e América.\nSAEB: Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).\nOrientações: Sempre utilizar diferentes mapas com perspectivas e escalas variadas para desenvolver o entendimento das distâncias e proporções dos territórios, além do entendimento das redes e fluxos dos processos. A anamorfose, especificamente, é uma linguagem cartográfica que proporciona melhor comparação e visualização das proporções dos dados dos territórios representados, por meio da distorção da área dos mesmos de acordo com os valores do tema representado. No 8º ano objetiva-se um destaque maior para os países do continente americano e africano, em contraste com os demais continentes."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE05X) - Identificar e aplicar os conceitos de Estado, nação, território, governo e país para o entendimento de conflitos e tensões na contemporaneidade, com destaque para as situações geopolíticas na América e na África e suas múltiplas regionalizações a partir do pós guerra.",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "Estado, território, governo, nação e país. Os conflitos contemporâneos a partir dos conceitos de Estado, território, governo, nação e país. Conflitos e tensões na América e na África. Regionalizações da América. Regionalizações da África.",
+    "orientacoes_pedagogicas": "Aprofundar o entendimento das dimensões de poder e territorialidade, dentre os conceitos Estado, nação, território, governo e país. Além disso desdobrar na compreensão dos três poderes (executivo, judiciário, e legislativo) que podem servir como tema de um projeto para a educação política em âmbito municipal, estadual e federal; Fazer um levantamento de exemplos de territórios simbólicos de povos e comunidades tradicionais (seja da América ou África) e compreender os desafios para a sua resistência, frente os conflitos de terras.",
+    "habilidade_codes": [
+      "EF08GE05X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 1º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE05X) - Identificar e aplicar os conceitos de Estado, nação, território, governo e país para o entendimento de conflitos e tensões na contemporaneidade, com destaque para as situações geopolíticas na América e na África e suas múltiplas regionalizações a partir do pós guerra.\nSAEB: Estado, território, governo, nação e país. Os conflitos contemporâneos a partir dos conceitos de Estado, território, governo, nação e país. Conflitos e tensões na América e na África. Regionalizações da América. Regionalizações da África.\nOrientações: Aprofundar o entendimento das dimensões de poder e territorialidade, dentre os conceitos Estado, nação, território, governo e país. Além disso desdobrar na compreensão dos três poderes (executivo, judiciário, e legislativo) que podem servir como tema de um projeto para a educação política em âmbito municipal, estadual e federal; Fazer um levantamento de exemplos de territórios simbólicos de povos e comunidades tradicionais (seja da América ou África) e compreender os desafios para a sua resistência, frente os conflitos de terras."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE07) - Analisar os impactos geoeconômicos, geoestratégicos e geopolíticos da ascensão dos Estados Unidos da América no cenário internacional em sua posição de liderança global e na relação com a China e o Brasil.",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "As relações geoeconômicas entre EUA, Brasil e China.",
+    "orientacoes_pedagogicas": "Reconhecer as diferentes dimensões de poder dos território, pelo entendimento da geopolítica mundial; Identificar os principais expoentes das situações geográficas e analisar em que medida a soberania dos Estados está sendo fragilizada. Utilizar notícias para proporcional uma leitura mais ampla de mundo para os estudantes. Em nível quantitativo, qualitativo, social, histórico, e geográfico.",
+    "habilidade_codes": [
+      "EF08GE07"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE07) - Analisar os impactos geoeconômicos, geoestratégicos e geopolíticos da ascensão dos Estados Unidos da América no cenário internacional em sua posição de liderança global e na relação com a China e o Brasil.\nSAEB: As relações geoeconômicas entre EUA, Brasil e China.\nOrientações: Reconhecer as diferentes dimensões de poder dos território, pelo entendimento da geopolítica mundial; Identificar os principais expoentes das situações geográficas e analisar em que medida a soberania dos Estados está sendo fragilizada. Utilizar notícias para proporcional uma leitura mais ampla de mundo para os estudantes. Em nível quantitativo, qualitativo, social, histórico, e geográfico."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE08X) - Analisar a situação do Brasil e de outros países da América Latina e da África, assim como da potência estadunidense na ordem mundial do pós-guerra (nova ordem mundial globalizada).",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "Globalização/ Nova Ordem Mundial – meio técnico científico informacional e os continentes americano e africano. Identidades e interculturalidades regionais: Estados Unidos, América espanhola, portuguesa e África.",
+    "orientacoes_pedagogicas": "Por meio de uma síntese histórica dos reflexos dos processo coloniais de exploração, compreender como os países americanos e africanos sempre foram muito subordinados e violentados ao longo da história, pela implementação da antiga DIT (Divisão Internacional de Trabalho). Traçar um paralelo com esse modelo antigo com a atual DIT, no mundo globalizado, após Guerra Fria.",
+    "habilidade_codes": [
+      "EF08GE08X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE08X) - Analisar a situação do Brasil e de outros países da América Latina e da África, assim como da potência estadunidense na ordem mundial do pós-guerra (nova ordem mundial globalizada).\nSAEB: Globalização/ Nova Ordem Mundial – meio técnico científico informacional e os continentes americano e africano. Identidades e interculturalidades regionais: Estados Unidos, América espanhola, portuguesa e África.\nOrientações: Por meio de uma síntese histórica dos reflexos dos processo coloniais de exploração, compreender como os países americanos e africanos sempre foram muito subordinados e violentados ao longo da história, pela implementação da antiga DIT (Divisão Internacional de Trabalho). Traçar um paralelo com esse modelo antigo com a atual DIT, no mundo globalizado, após Guerra Fria."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE06X) - Analisar a atuação das organizações mundiais (ONU, OMC, OIT, FMI, entre outros) nos processos de integração cultural e econômica nos contextos americano e africano, reconhecendo, em seus lugares de vivência, marcas desses processos.",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "Organizações Mundiais (ONU, OMC, OTAN, FMI, OIT, OCDE e Banco Mundial). O papel das Organizações Mundiais na América e na África.",
+    "orientacoes_pedagogicas": "Explicar o papel das organizações internacionais e multilaterais em seus diversos âmbitos pela paz e na busca de conquistar mais direitos humanos. Relativizar o discurso neutro, imbuído de interesses de nações específicas, desde o fim da Segunda Guerra Mundial.",
+    "habilidade_codes": [
+      "EF08GE06X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE06X) - Analisar a atuação das organizações mundiais (ONU, OMC, OIT, FMI, entre outros) nos processos de integração cultural e econômica nos contextos americano e africano, reconhecendo, em seus lugares de vivência, marcas desses processos.\nSAEB: Organizações Mundiais (ONU, OMC, OTAN, FMI, OIT, OCDE e Banco Mundial). O papel das Organizações Mundiais na América e na África.\nOrientações: Explicar o papel das organizações internacionais e multilaterais em seus diversos âmbitos pela paz e na busca de conquistar mais direitos humanos. Relativizar o discurso neutro, imbuído de interesses de nações específicas, desde o fim da Segunda Guerra Mundial."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE09) - Analisar os padrões econômicos mundiais de produção, distribuição e intercâmbio dos produtos agrícolas e industrializados, tendo como referência os Estados Unidos da América e os países denominados de Brics (Brasil, Rússia, Índia, China e África do Sul).",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "Países que compõem os BRICS (Brasil, Índia, China, Rússia e África do Sul) e suas características políticas e econômicas no que se refere a produção, circulação e comercialização de produtos.",
+    "orientacoes_pedagogicas": "Conhecer a teoria econômica que inspirou a criação dos BRICS, sendo isso uma alternativa para o fortalecimento de tais países emergentes. Descrever o contexto econômico de superávit, em que o grupo foi proposto, antes da crise mundial de 2008. Reconhecer o setor econômico de destaque de cada país: Brasil, Rússia, Índia, China e África do Sul.",
+    "habilidade_codes": [
+      "EF08GE09"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE09) - Analisar os padrões econômicos mundiais de produção, distribuição e intercâmbio dos produtos agrícolas e industrializados, tendo como referência os Estados Unidos da América e os países denominados de Brics (Brasil, Rússia, Índia, China e África do Sul).\nSAEB: Países que compõem os BRICS (Brasil, Índia, China, Rússia e África do Sul) e suas características políticas e econômicas no que se refere a produção, circulação e comercialização de produtos.\nOrientações: Conhecer a teoria econômica que inspirou a criação dos BRICS, sendo isso uma alternativa para o fortalecimento de tais países emergentes. Descrever o contexto econômico de superávit, em que o grupo foi proposto, antes da crise mundial de 2008. Reconhecer o setor econômico de destaque de cada país: Brasil, Rússia, Índia, China e África do Sul."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE12A) - Compreender e descrever os objetivos e o papel dos blocos econômicos na integração regional no continente americano.",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "Papel dos blocos econômicos na integração dos países do continente americano no cenário mundial. Blocos econômicos integrados pelo Brasil sua função e atuação.",
+    "orientacoes_pedagogicas": "Explicar o objetivo dos blocos econômicos, criados após o fim da Guerra Fria, na nova ordem mundial multipolar, como movimentos de cooperação e fortalecimento de mercados para países específicos. Diferenciar os tipos de blocos econômicos e dar exemplo dos blocos mais atuantes na contemporaneidade.",
+    "habilidade_codes": [
+      "EF08GE12A"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE12A) - Compreender e descrever os objetivos e o papel dos blocos econômicos na integração regional no continente americano.\nSAEB: Papel dos blocos econômicos na integração dos países do continente americano no cenário mundial. Blocos econômicos integrados pelo Brasil sua função e atuação.\nOrientações: Explicar o objetivo dos blocos econômicos, criados após o fim da Guerra Fria, na nova ordem mundial multipolar, como movimentos de cooperação e fortalecimento de mercados para países específicos. Diferenciar os tipos de blocos econômicos e dar exemplo dos blocos mais atuantes na contemporaneidade."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE12B) - Analisar a importância dos organismos de integração (blocos econômicos) do território americano (Mercosul, OEA, OEI, Nafta, Unasul, Alba, Comunidade Andina, Aladi, entre outros).",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "Papel dos blocos econômicos na integração dos países do continente americano no cenário mundial. Blocos econômicos integrados pelo Brasil sua função e atuação.",
+    "orientacoes_pedagogicas": "Destacar a importância dos blocos econômicos do continente americano.",
+    "habilidade_codes": [
+      "EF08GE12B"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE12B) - Analisar a importância dos organismos de integração (blocos econômicos) do território americano (Mercosul, OEA, OEI, Nafta, Unasul, Alba, Comunidade Andina, Aladi, entre outros).\nSAEB: Papel dos blocos econômicos na integração dos países do continente americano no cenário mundial. Blocos econômicos integrados pelo Brasil sua função e atuação.\nOrientações: Destacar a importância dos blocos econômicos do continente americano."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Mundo do Trabalho",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE14X) - Reconhecer e analisar os processos de desconcentração, descentralização e recentralização das atividades econômicas a partir do capital estadunidense e chinês em diferentes regiões no mundo, com destaque para o Brasil.",
+    "objeto_conhecimento": "Os diferentes contextos e os meios técnico e tecnológico na produção.",
+    "descritores_saeb": "Panorama atual das atividades econômicas nos Estados Unidos e China e os processos de descentralização e desconcentração da produção.",
+    "orientacoes_pedagogicas": "Desenvolver um estudo da dinâmica do mercado financeiro global, principalmente do ponto de vista da flexibilização produtiva das transnacionais, dentre outras estratégias de controle de mercado, tendo o Brasil como referência para os estudantes.",
+    "habilidade_codes": [
+      "EF08GE14X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Mundo do Trabalho\nObjetos: Os diferentes contextos e os meios técnico e tecnológico na produção.\nHabilidades: (EF08GE14X) - Reconhecer e analisar os processos de desconcentração, descentralização e recentralização das atividades econômicas a partir do capital estadunidense e chinês em diferentes regiões no mundo, com destaque para o Brasil.\nSAEB: Panorama atual das atividades econômicas nos Estados Unidos e China e os processos de descentralização e desconcentração da produção.\nOrientações: Desenvolver um estudo da dinâmica do mercado financeiro global, principalmente do ponto de vista da flexibilização produtiva das transnacionais, dentre outras estratégias de controle de mercado, tendo o Brasil como referência para os estudantes."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Mundo do Trabalho",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE15X) - Analisar a importância dos principais recursos hídricos da América Latina (Aquífero Guarani, Aquífero Alter do Chão, Bacias do rio da Prata, do Amazonas e do Orinoco, sistemas de nuvens na Amazônia e nos Andes, entre outros) e discutir os desafios relacionados à gestão e comercialização da água.",
+    "objeto_conhecimento": "Transformações do espaço na sociedade urbano-industrial na América Latina.",
+    "descritores_saeb": "Bacias hidrográficas da América Latina – a importância da Bacia do Prata, Amazonas e dos Aquífero Guarani e Alter do Chão. As bacias hidrográficas e sua importância para a circulação de pessoas e mercadorias na América Latina.",
+    "orientacoes_pedagogicas": "Desenvolver o entendimento da água como um recurso, ou seja, um bem natural apropriado, que possui valor de mercado e diversos usos essenciais para a humanidade, e que por isso é um recurso valioso em disputa no Brasil, na América e em todo o mundo. Para isso o ciclo hidrológico precisa ser retomado, assim como os valores ambientais, com destaque para a preservação e conservação dos mananciais, dos aquíferos e das áreas verdes.",
+    "habilidade_codes": [
+      "EF08GE15X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Mundo do Trabalho\nObjetos: Transformações do espaço na sociedade urbano-industrial na América Latina.\nHabilidades: (EF08GE15X) - Analisar a importância dos principais recursos hídricos da América Latina (Aquífero Guarani, Aquífero Alter do Chão, Bacias do rio da Prata, do Amazonas e do Orinoco, sistemas de nuvens na Amazônia e nos Andes, entre outros) e discutir os desafios relacionados à gestão e comercialização da água.\nSAEB: Bacias hidrográficas da América Latina – a importância da Bacia do Prata, Amazonas e dos Aquífero Guarani e Alter do Chão. As bacias hidrográficas e sua importância para a circulação de pessoas e mercadorias na América Latina.\nOrientações: Desenvolver o entendimento da água como um recurso, ou seja, um bem natural apropriado, que possui valor de mercado e diversos usos essenciais para a humanidade, e que por isso é um recurso valioso em disputa no Brasil, na América e em todo o mundo. Para isso o ciclo hidrológico precisa ser retomado, assim como os valores ambientais, com destaque para a preservação e conservação dos mananciais, dos aquíferos e das áreas verdes."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Natureza, Ambientes e Qualidade de Vida",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE21) - Analisar o papel ambiental e territorial da Antártica no contexto geopolítico, sua relevância para os países da América do Sul e seu valor como área destinada à pesquisa e à compreensão do ambiente global.",
+    "objeto_conhecimento": "Identidades e interculturalidades regionais: Estados Unidos da América, América espanhola e portuguesa e África.",
+    "descritores_saeb": "A Antártida no contexto geopolítico e sua relevância para a América do Sul. Antártida importância ambiental: reserva de água doce.",
+    "orientacoes_pedagogicas": "Compreender a relevância política, ambiental científica da região da Antártida, sua relevância para os países da América do Sul e seu valor como área destinada à pesquisa e à compreensão do ambiente global.",
+    "habilidade_codes": [
+      "EF08GE21"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Natureza, Ambientes e Qualidade de Vida\nObjetos: Identidades e interculturalidades regionais: Estados Unidos da América, América espanhola e portuguesa e África.\nHabilidades: (EF08GE21) - Analisar o papel ambiental e territorial da Antártica no contexto geopolítico, sua relevância para os países da América do Sul e seu valor como área destinada à pesquisa e à compreensão do ambiente global.\nSAEB: A Antártida no contexto geopolítico e sua relevância para a América do Sul. Antártida importância ambiental: reserva de água doce.\nOrientações: Compreender a relevância política, ambiental científica da região da Antártida, sua relevância para os países da América do Sul e seu valor como área destinada à pesquisa e à compreensão do ambiente global."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE18X) - Elaborar e interpretar mapas ou outras formas de representação cartográfica para analisar as redes e as dinâmicas urbanas e rurais, ordenamento territorial, contextos culturais, modo de vida e usos e ocupação de solos da África e América.",
+    "objeto_conhecimento": "Cartografia: anamorfose, croquis e mapas temáticos da América e África.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).",
+    "orientacoes_pedagogicas": "É fundamental se apropriar da linguagem cartográfica permitindo melhor localização e interpretação da dimensão dos fenômenos espaciais. Portanto, sempre utilize deste recurso para desenvolver as demais habilidades do bimestre.",
+    "habilidade_codes": [
+      "EF08GE18X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 2º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial\nObjetos: Cartografia: anamorfose, croquis e mapas temáticos da América e África.\nHabilidades: (EF08GE18X) - Elaborar e interpretar mapas ou outras formas de representação cartográfica para analisar as redes e as dinâmicas urbanas e rurais, ordenamento territorial, contextos culturais, modo de vida e usos e ocupação de solos da África e América.\nSAEB: Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).\nOrientações: É fundamental se apropriar da linguagem cartográfica permitindo melhor localização e interpretação da dimensão dos fenômenos espaciais. Portanto, sempre utilize deste recurso para desenvolver as demais habilidades do bimestre."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "O Sujeito e seu Lugar no Mundo",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE04) - Compreender os fluxos de migração na América Latina (movimentos voluntários e forçados, assim como fatores e áreas de expulsão e atração) e as principais políticas migratórias da região.",
+    "objeto_conhecimento": "Diversidade e dinâmica da população mundial e local.",
+    "descritores_saeb": "O movimento das fronteiras entre países da América Latina e suas tensões. Como vivem as populações nos limites de fronteira. Movimentos sociais e as pautas de reivindicação por melhores condições de vida no campo e na cidade na América Latina.",
+    "orientacoes_pedagogicas": "Conhecer e estudar conflito territoriais relevantes para o entendimento da conjuntura geopolítica dos países latino americanos. Apresentar as características das leis de imigração brasileira e comparar com a de outros países, tais como europeus e EUA; Utilizar dados da ACNUR.",
+    "habilidade_codes": [
+      "EF08GE04"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 3º Bimestre\nUnidade: O Sujeito e seu Lugar no Mundo\nObjetos: Diversidade e dinâmica da população mundial e local.\nHabilidades: (EF08GE04) - Compreender os fluxos de migração na América Latina (movimentos voluntários e forçados, assim como fatores e áreas de expulsão e atração) e as principais políticas migratórias da região.\nSAEB: O movimento das fronteiras entre países da América Latina e suas tensões. Como vivem as populações nos limites de fronteira. Movimentos sociais e as pautas de reivindicação por melhores condições de vida no campo e na cidade na América Latina.\nOrientações: Conhecer e estudar conflito territoriais relevantes para o entendimento da conjuntura geopolítica dos países latino americanos. Apresentar as características das leis de imigração brasileira e comparar com a de outros países, tais como europeus e EUA; Utilizar dados da ACNUR."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE10) - Distinguir e analisar conflitos e ações dos movimentos sociais brasileiros, no campo e na cidade, comparando com outros movimentos sociais existentes nos países latino-americanos.",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "O movimento das fronteiras entre países da América Latina e suas tensões. Como vivem as populações nos limites de fronteira. Movimentos sociais e as pautas de reivindicação por melhores condições de vida no campo e na cidade na América Latina.",
+    "orientacoes_pedagogicas": "Por meio de notícias e pesquisa direcionada buscar identificar semelhanças e diferenças dos conflitos territoriais do Brasil, com outros países latino americanos, devido à sua similaridade dos processos históricos.",
+    "habilidade_codes": [
+      "EF08GE10"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 3º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE10) - Distinguir e analisar conflitos e ações dos movimentos sociais brasileiros, no campo e na cidade, comparando com outros movimentos sociais existentes nos países latino-americanos.\nSAEB: O movimento das fronteiras entre países da América Latina e suas tensões. Como vivem as populações nos limites de fronteira. Movimentos sociais e as pautas de reivindicação por melhores condições de vida no campo e na cidade na América Latina.\nOrientações: Por meio de notícias e pesquisa direcionada buscar identificar semelhanças e diferenças dos conflitos territoriais do Brasil, com outros países latino americanos, devido à sua similaridade dos processos históricos."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Conexões e Escalas",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE11) - Analisar áreas de conflito e tensões nas regiões de fronteira do continente latino-americano e o papel de organismos internacionais e regionais de cooperação nesses cenários.",
+    "objeto_conhecimento": "Corporações e organismos internacionais e do Brasil na ordem econômica mundial.",
+    "descritores_saeb": "O movimento das fronteiras entre países da América Latina e suas tensões. Como vivem as populações nos limites de fronteira. Movimentos sociais e as pautas de reivindicação por melhores condições de vida no campo e na cidade na América Latina.",
+    "orientacoes_pedagogicas": "Estudar os processos migratórios internacionais buscando identificar os fatores de atração e repulsão, dando destaque ao continente americano. Abordar o aspecto social das condições que os imigrantes passam ao longo de suas travessias.",
+    "habilidade_codes": [
+      "EF08GE11"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 3º Bimestre\nUnidade: Conexões e Escalas\nObjetos: Corporações e organismos internacionais e do Brasil na ordem econômica mundial.\nHabilidades: (EF08GE11) - Analisar áreas de conflito e tensões nas regiões de fronteira do continente latino-americano e o papel de organismos internacionais e regionais de cooperação nesses cenários.\nSAEB: O movimento das fronteiras entre países da América Latina e suas tensões. Como vivem as populações nos limites de fronteira. Movimentos sociais e as pautas de reivindicação por melhores condições de vida no campo e na cidade na América Latina.\nOrientações: Estudar os processos migratórios internacionais buscando identificar os fatores de atração e repulsão, dando destaque ao continente americano. Abordar o aspecto social das condições que os imigrantes passam ao longo de suas travessias."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Mundo do Trabalho",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE16X) - Analisar as principais problemáticas comuns às grandes cidades latino-americanas, particularmente aquelas relacionadas à distribuição, estrutura e dinâmica da população e às condições de vida e trabalho, buscando formas de combate ao trabalho escravo e infantil.",
+    "objeto_conhecimento": "Transformações do espaço na sociedade urbano-industrial na América Latina.",
+    "descritores_saeb": "Principais problemas das grandes cidades latino americanas, relacionados à distribuição, estrutura e dinâmica da população e às condições de vida e trabalho. A América Latina e o Caribe as condições de vida na América Latina.",
+    "orientacoes_pedagogicas": "Propor uma análise sobre o fenômeno da violência urbana, destacando problemas estruturais sociais, de concentração de renda, racismo estrutural e por falta de investimento em estrutura, educação e cultura. Com destaque para a corrupção, falta prioridade em políticas sociais que poderiam gerar maior mobilidade social e mais oportunidades para boa parcela das populações marginalizadas dos países em desenvolvimento. Aprofundar no debate sobre os direitos trabalhistas, informalização do mercado de trabalho e combate a situações análogas à escravidão.",
+    "habilidade_codes": [
+      "EF08GE16X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 3º Bimestre\nUnidade: Mundo do Trabalho\nObjetos: Transformações do espaço na sociedade urbano-industrial na América Latina.\nHabilidades: (EF08GE16X) - Analisar as principais problemáticas comuns às grandes cidades latino-americanas, particularmente aquelas relacionadas à distribuição, estrutura e dinâmica da população e às condições de vida e trabalho, buscando formas de combate ao trabalho escravo e infantil.\nSAEB: Principais problemas das grandes cidades latino americanas, relacionados à distribuição, estrutura e dinâmica da população e às condições de vida e trabalho. A América Latina e o Caribe as condições de vida na América Latina.\nOrientações: Propor uma análise sobre o fenômeno da violência urbana, destacando problemas estruturais sociais, de concentração de renda, racismo estrutural e por falta de investimento em estrutura, educação e cultura. Com destaque para a corrupção, falta prioridade em políticas sociais que poderiam gerar maior mobilidade social e mais oportunidades para boa parcela das populações marginalizadas dos países em desenvolvimento. Aprofundar no debate sobre os direitos trabalhistas, informalização do mercado de trabalho e combate a situações análogas à escravidão."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Mundo do Trabalho",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE17) - Analisar a segregação socioespacial em ambientes urbanos da América Latina, com atenção especial ao estudo de favelas, alagados e zona de riscos.",
+    "objeto_conhecimento": "Transformações do espaço na sociedade urbano-industrial na América Latina.",
+    "descritores_saeb": "Causas da segregação urbana é a oposição entre centro e periferia e as novas centralidades no espaço urbano.",
+    "orientacoes_pedagogicas": "Propor estudo das paisagens urbanas, em busca de contraste entre classes sociais, condições geográficas dos assentos urbanos irregulares. Além de abordar sobre o direito universal à moradia digna da ONU, e as propostas dos Estatutos das cidades e seus respectivos Planos Diretores. Comparar assentamentos urbanos irregulares do Brasil com os de outros países da América Latina.",
+    "habilidade_codes": [
+      "EF08GE17"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 3º Bimestre\nUnidade: Mundo do Trabalho\nObjetos: Transformações do espaço na sociedade urbano-industrial na América Latina.\nHabilidades: (EF08GE17) - Analisar a segregação socioespacial em ambientes urbanos da América Latina, com atenção especial ao estudo de favelas, alagados e zona de riscos.\nSAEB: Causas da segregação urbana é a oposição entre centro e periferia e as novas centralidades no espaço urbano.\nOrientações: Propor estudo das paisagens urbanas, em busca de contraste entre classes sociais, condições geográficas dos assentos urbanos irregulares. Além de abordar sobre o direito universal à moradia digna da ONU, e as propostas dos Estatutos das cidades e seus respectivos Planos Diretores. Comparar assentamentos urbanos irregulares do Brasil com os de outros países da América Latina."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF08GE19) - Interpretar cartogramas, mapas esquemáticos (croquis) e anamorfoses com informações geográficas acerca da África e América. (EF08GE18X) - Elaborar e interpretar mapas ou outras formas de representação cartográfica para analisar as redes e as dinâmicas urbanas e rurais, ordenamento territorial, contextos culturais, modo de vida e usos e ocupação de solos da África e América.",
+    "objeto_conhecimento": "Cartografia: anamorfose, croquis e mapas temáticos da América e África.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).",
+    "orientacoes_pedagogicas": "Utilizar diferentes mapas com perspectivas e escalas variadas para desenvolver o entendimento das distâncias e proporções dos territórios, além do entendimento das redes e fluxos dos processos. A anamorfose, proporciona melhor comparação e visualização das proporções dos dados dos territórios representados, por meio da distorção da área dos mesmos de acordo com os valores do tema representado. No 8º ano objetiva-se um destaque maior para os países do continente americano e africano, em contraste com os demais continentes. É fundamental se apropriar da linguagem cartográfica permitindo melhor localização e interpretação da dimensão dos fenômenos espaciais. Portanto, sempre utilize deste recurso para desenvolver as demais habilidades do bimestre.",
+    "habilidade_codes": [
+      "EF08GE19",
+      "EF08GE18X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Geografia | 3º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial\nObjetos: Cartografia: anamorfose, croquis e mapas temáticos da América e África.\nHabilidades: (EF08GE19) - Interpretar cartogramas, mapas esquemáticos (croquis) e anamorfoses com informações geográficas acerca da África e América. (EF08GE18X) - Elaborar e interpretar mapas ou outras formas de representação cartográfica para analisar as redes e as dinâmicas urbanas e rurais, ordenamento territorial, contextos culturais, modo de vida e usos e ocupação de solos da África e América.\nSAEB: Leitura, interpretação e elaboração de representações cartográficas (mapas, anamorfoses, croquis, entre outros).\nOrientações: Utilizar diferentes mapas com perspectivas e escalas variadas para desenvolver o entendimento das distâncias e proporções dos territórios, além do entendimento das redes e fluxos dos processos. A anamorfose, proporciona melhor comparação e visualização das proporções dos dados dos territórios representados, por meio da distorção da área dos mesmos de acordo com os valores do tema representado. No 8º ano objetiva-se um destaque maior para os países do continente americano e africano, em contraste com os demais continentes. É fundamental se apropriar da linguagem cartográfica permitindo melhor localização e interpretação da dimensão dos fenômenos espaciais. Portanto, sempre utilize deste recurso para desenvolver as demais habilidades do bimestre."
+  }
+]

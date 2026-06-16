@@ -15,8 +15,8 @@ const steps = [
   },
   {
     id: 'assistant',
-    title: 'Assistente pedagógico + FREEDAY',
-    body: 'Na área central você conversa com o assistente, gera planos, materiais e avaliações. A FREEDAY está sempre disponível no canto da tela.',
+    title: 'Agente Coordenador — IA Pedagógica',
+    body: 'Na área central você conversa com o Agente Coordenador, gera planos trimestrais, materiais e avaliações alinhados à BNCC e ao currículo MG.',
   },
   {
     id: 'planning',
@@ -26,7 +26,7 @@ const steps = [
   {
     id: 'pdi',
     title: 'Inclusão & PDI',
-    body: 'Na área de PDI você acompanha alunos com necessidades específicas, gera e valida adaptações com apoio da FREEDAY.',
+    body: 'Na área de PDI você acompanha alunos com necessidades específicas, gera e valida adaptações pedagógicas respeitando privacidade e ética clínica.',
   },
 ];
 

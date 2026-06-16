@@ -212,7 +212,7 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-24">
+        <div className="w-full space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-24">
             <div className="text-center space-y-2">
                 <h1 className="text-2xl font-black text-slate-800 tracking-tight uppercase italic relative inline-block">
                     Agente Coordenador

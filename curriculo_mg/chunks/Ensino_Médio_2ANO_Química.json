@@ -1,0 +1,290 @@
+[
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT310X) - Investigar e analisar os efeitos de programas de infraestrutura e demais serviços básicos (saneamento, energia elétrica, transporte, telecomunicações, cobertura vacinal, atendimento primário à saúde e produção de alimentos, entre outros) e identificar necessidades locais e/ou regionais em relação a esses serviços, a fim de avaliar e/ou promover ações que contribuam para a melhoria na qualidade de vida no âmbito social, familiar, cultural e econômico.",
+    "objeto_conhecimento": "Soluções: Misturas homogêneas e misturas heterogêneas. Solução, solvente e soluto. Processos de separação e purificação de misturas. Tratamento de água e esgoto. Relações de concentração.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Primeiramente, revise os conceitos de substâncias e misturas já abordados no E.F. e em seguida as diferenças entre misturas homogêneas e heterogêneas. Posteriormente, aborde brevemente, o conceito de dispersões, discutindo a diferença entre soluções, colóides e suspensões. Discuta a importância da água como solvente universal e sua presença em diversos processos biológicos. Apresente exemplos de soluções em diferentes estados físicos (sólidas, líquidas e gasosas). Defina os termos soluto, solvente, solução, solubilidade e concentração. Explique os diferentes tipos de soluções (saturadas, insaturadas e supersaturadas) utilizando exemplos contextualizados, ilustrações, práticas experimentais e gráficos. Apresente os principais métodos de expressar a concentração de uma solução. Realize experimentos simples para demonstrar os conceitos teóricos e explore as aplicações das soluções em diversas áreas, priorizando o meio ambiente no tratamento de água e esgoto. Realize experimentos simples para simular processos de tratamento de água, como filtração, decantação e floculação, utilize diferentes tipos de misturas (água e areia, água e óleo) para demonstrar os métodos de separação e incentive a pesquisa e a construção de protótipos de sistemas de filtração de água. Trabalhe com projeto interdisciplinar com Fsica e Biologia referente a ETA e ETE.",
+    "habilidade_codes": [
+      "EM13CNT310X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 1º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Soluções: Misturas homogêneas e misturas heterogêneas. Solução, solvente e soluto. Processos de separação e purificação de misturas. Tratamento de água e esgoto. Relações de concentração.\nHabilidades: (EM13CNT310X) - Investigar e analisar os efeitos de programas de infraestrutura e demais serviços básicos (saneamento, energia elétrica, transporte, telecomunicações, cobertura vacinal, atendimento primário à saúde e produção de alimentos, entre outros) e identificar necessidades locais e/ou regionais em relação a esses serviços, a fim de avaliar e/ou promover ações que contribuam para a melhoria na qualidade de vida no âmbito social, familiar, cultural e econômico.\nOrientações: Primeiramente, revise os conceitos de substâncias e misturas já abordados no E.F. e em seguida as diferenças entre misturas homogêneas e heterogêneas. Posteriormente, aborde brevemente, o conceito de dispersões, discutindo a diferença entre soluções, colóides e suspensões. Discuta a importância da água como solvente universal e sua presença em diversos processos biológicos. Apresente exemplos de soluções em diferentes estados físicos (sólidas, líquidas e gasosas). Defina os termos soluto, solvente, solução, solubilidade e concentração. Explique os diferentes tipos de soluções (saturadas, insaturadas e supersaturadas) utilizando exemplos contextualizados, ilustrações, práticas experimentais e gráficos. Apresente os principais métodos de expressar a concentração de uma solução. Realize experimentos simples para demonstrar os conceitos teóricos e explore as aplicações das soluções em diversas áreas, priorizando o meio ambiente no tratamento de água e esgoto. Realize experimentos simples para simular processos de tratamento de água, como filtração, decantação e floculação, utilize diferentes tipos de misturas (água e areia, água e óleo) para demonstrar os métodos de separação e incentive a pesquisa e a construção de protótipos de sistemas de filtração de água. Trabalhe com projeto interdisciplinar com Fsica e Biologia referente a ETA e ETE."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida, Terra e cosmos",
+    "competencia": "Competência específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT211MG) - Analisar e discutir os processos que alteram as propriedades coligativas em especial as que interferem no transporte por membrana celular, na temperatura e pressão de líquidos e gases.",
+    "objeto_conhecimento": "Propriedades coligativas: aplicações da tonoscopia, ebulioscopia, crioscopia e osmose em situações cotidianas.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Solicite aos estudantes que proponham hipóteses que expliquem situações do dia a dia, como a ascensão da seiva nas plantas, o motivo de não ser recomendado a ingestão da água do mar ou se é permitido alterar a concentração do soro fisiológico (solução 0,9% de NaCl) utilizado para fins terapêuticos. A partir daí, apresente os conceitos de propriedades coligativas mostrando como a presença e a natureza do soluto alteram o comportamento do solvente. Procure relacionar cada propriedade apresentada com situações do cotidiano do estudante ou de fácil visualização como forma de auxiliar na compreensão do assunto.",
+    "habilidade_codes": [
+      "EM13CNT211MG"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 1º Bimestre\nUnidade: Vida, Terra e cosmos\nObjetos: Propriedades coligativas: aplicações da tonoscopia, ebulioscopia, crioscopia e osmose em situações cotidianas.\nHabilidades: (EM13CNT211MG) - Analisar e discutir os processos que alteram as propriedades coligativas em especial as que interferem no transporte por membrana celular, na temperatura e pressão de líquidos e gases.\nOrientações: Solicite aos estudantes que proponham hipóteses que expliquem situações do dia a dia, como a ascensão da seiva nas plantas, o motivo de não ser recomendado a ingestão da água do mar ou se é permitido alterar a concentração do soro fisiológico (solução 0,9% de NaCl) utilizado para fins terapêuticos. A partir daí, apresente os conceitos de propriedades coligativas mostrando como a presença e a natureza do soluto alteram o comportamento do solvente. Procure relacionar cada propriedade apresentada com situações do cotidiano do estudante ou de fácil visualização como forma de auxiliar na compreensão do assunto."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Vida, Terra e cosmos",
+    "competencia": "Competência específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT202X) - Analisar as diversas formas de manifestação da vida em seus diferentes níveis de organização, bem como as condições ambientais favoráveis e os fatores limitantes a elas, tanto na Terra quanto em outros planetas, com ou sem o uso de dispositivos e aplicativos digitais.",
+    "objeto_conhecimento": "Equilíbrio químico: escala de pH e pOH. Composição, dinâmica e evolução da atmosfera terrestre.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "O objetivo desse objeto do conhecimento é construir uma compreensão correta do equilíbrio químico, promovendo a compreensão da dinâmica das reações químicas e dos fatores que influenciam o equilíbrio. Relacione o conceito de equilíbrio químico com fenômenos do dia a dia, como o pH de soluções. O Princípio de Le Chatelier deve ser apresentado de forma gradual após a compreensão dos processos básicos de equilíbrio. O tratamento matemático deve ser introduzido com foco na compreensão do significado da constante de equilíbrio. A ênfase deve ser na compreensão conceitual em detrimento da memorização de fórmulas.",
+    "habilidade_codes": [
+      "EM13CNT202X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 1º Bimestre\nUnidade: Vida, Terra e cosmos\nObjetos: Equilíbrio químico: escala de pH e pOH. Composição, dinâmica e evolução da atmosfera terrestre.\nHabilidades: (EM13CNT202X) - Analisar as diversas formas de manifestação da vida em seus diferentes níveis de organização, bem como as condições ambientais favoráveis e os fatores limitantes a elas, tanto na Terra quanto em outros planetas, com ou sem o uso de dispositivos e aplicativos digitais.\nOrientações: O objetivo desse objeto do conhecimento é construir uma compreensão correta do equilíbrio químico, promovendo a compreensão da dinâmica das reações químicas e dos fatores que influenciam o equilíbrio. Relacione o conceito de equilíbrio químico com fenômenos do dia a dia, como o pH de soluções. O Princípio de Le Chatelier deve ser apresentado de forma gradual após a compreensão dos processos básicos de equilíbrio. O tratamento matemático deve ser introduzido com foco na compreensão do significado da constante de equilíbrio. A ênfase deve ser na compreensão conceitual em detrimento da memorização de fórmulas."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT102XA) - Identificar e interpretar sistemas térmicos que visem à sustentabilidade, considerando sua composição e os efeitos das variáveis termodinâmicas sobre seu funcionamento.",
+    "objeto_conhecimento": "Termoquímica: Entalpia das reações químicas, composição, variáveis que influenciam, cálculo e balanço energético, variação de energia; entalpia de combustão (eficiência energética). Sistemas abertos e fechados, entalpia; combustíveis: tipos consumo, recursos e meios alternativos.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Inicie a abordagem levando os estudantes a compreenderem o conceito de calor e suas unidades de medida. Em seguida a classificar os processos químicos como exotérmicos e endotérmicos e a relacionar o estado energético de um sistema com alotropia e mudanças de estado físico. Para isso, explore o conhecimento prévio dos estudantes sobre as situações do cotidiano que envolvem a relação entre energia e matéria, como cozinhar, alimentar-se e locomover-se. Aborde também as transformações físicas e transformações químicas, utilizando o modelo de partículas para mostrar como a matéria sofre alterações em sua organização nas reações. Além disso, a compreensão do conceito de variação de entalpia, nos processos endotémicos e exotérmicos durante as transformações físicas e químicas, a represtação por meio de equações termoquímicas e a construção e interpretação de gráficos são pontos primordiais nesse objeto do conhecimento que deverá ser finalizado com o estudo da entalpia padrão e Lei de Hess.",
+    "habilidade_codes": [
+      "EM13CNT102XA"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Termoquímica: Entalpia das reações químicas, composição, variáveis que influenciam, cálculo e balanço energético, variação de energia; entalpia de combustão (eficiência energética). Sistemas abertos e fechados, entalpia; combustíveis: tipos consumo, recursos e meios alternativos.\nHabilidades: (EM13CNT102XA) - Identificar e interpretar sistemas térmicos que visem à sustentabilidade, considerando sua composição e os efeitos das variáveis termodinâmicas sobre seu funcionamento.\nOrientações: Inicie a abordagem levando os estudantes a compreenderem o conceito de calor e suas unidades de medida. Em seguida a classificar os processos químicos como exotérmicos e endotérmicos e a relacionar o estado energético de um sistema com alotropia e mudanças de estado físico. Para isso, explore o conhecimento prévio dos estudantes sobre as situações do cotidiano que envolvem a relação entre energia e matéria, como cozinhar, alimentar-se e locomover-se. Aborde também as transformações físicas e transformações químicas, utilizando o modelo de partículas para mostrar como a matéria sofre alterações em sua organização nas reações. Além disso, a compreensão do conceito de variação de entalpia, nos processos endotémicos e exotérmicos durante as transformações físicas e químicas, a represtação por meio de equações termoquímicas e a construção e interpretação de gráficos são pontos primordiais nesse objeto do conhecimento que deverá ser finalizado com o estudo da entalpia padrão e Lei de Hess."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT106) - Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica, considerando a disponibilidade de recursos, a eficiência energética, a relação custo/benefício, as características geográficas e ambientais, a produção de resíduos e os impactos socioambientais e culturais.",
+    "objeto_conhecimento": "Cinética química: Energia de ativação, teorias e fatores que afetam a velocidade e os impactos industriais; modelo cinético molecular.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Faça uma revisão sobre conceitos trabalhados anteriormente como as evidências que caracterizam uma transformação química e a necessidade de verificar os estados inicial e final de um sistema para compreender as mudanças ocorridas em função do tempo. Aborde a rapidez das transformações químicas com exemplos de reações que levam milhões de anos para ocorrer e reações que ocorrem rapidamente. Conduza a discussão no sentido de levar o estudante a compreender que a cinética de uma reação química depende do tempo em que ela ocorre, podendo ser calculada e interpretada graficamente. Por isso, utilize tabelas e gráficos com dados obtidos experimentalmente. Aborde também a teoria das colisões para explicar a ocorrência de uma reação química, interpretar o efeito da concentração, da temperatura, da pressão e da superfície de contato na rapidez de uma reação química. Finalize mostrando a importância do controle da velocidade das reações químicas em diversas áreas como a indústria, a biologia e o meio ambiente.",
+    "habilidade_codes": [
+      "EM13CNT106"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Cinética química: Energia de ativação, teorias e fatores que afetam a velocidade e os impactos industriais; modelo cinético molecular.\nHabilidades: (EM13CNT106) - Avaliar, com ou sem o uso de dispositivos e aplicativos digitais, tecnologias e possíveis soluções para as demandas que envolvem a geração, o transporte, a distribuição e o consumo de energia elétrica, considerando a disponibilidade de recursos, a eficiência energética, a relação custo/benefício, as características geográficas e ambientais, a produção de resíduos e os impactos socioambientais e culturais.\nOrientações: Faça uma revisão sobre conceitos trabalhados anteriormente como as evidências que caracterizam uma transformação química e a necessidade de verificar os estados inicial e final de um sistema para compreender as mudanças ocorridas em função do tempo. Aborde a rapidez das transformações químicas com exemplos de reações que levam milhões de anos para ocorrer e reações que ocorrem rapidamente. Conduza a discussão no sentido de levar o estudante a compreender que a cinética de uma reação química depende do tempo em que ela ocorre, podendo ser calculada e interpretada graficamente. Por isso, utilize tabelas e gráficos com dados obtidos experimentalmente. Aborde também a teoria das colisões para explicar a ocorrência de uma reação química, interpretar o efeito da concentração, da temperatura, da pressão e da superfície de contato na rapidez de uma reação química. Finalize mostrando a importância do controle da velocidade das reações químicas em diversas áreas como a indústria, a biologia e o meio ambiente."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Matéria e Energia",
+    "competencia": "Competência específica 01 Analisar fenômenos naturais e processos tecnológicos, com base nas relações entre matéria e energia, para propor ações individuais e coletivas que aperfeiçoem processos produtivos, minimizem impactos socioambientais e melhorem as condições de vida em âmbito local, regional e/ou global.",
+    "habilidade": "(EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.",
+    "objeto_conhecimento": "Leis da Termodinâmica (2ª Lei da Termodinâmica).",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Recomenda-se fazer uma abordagem qualitativa dos conceitos de processos físicos reversíveis e irreversíveis e da entropia, proporcionando a reallização de previsões, a análise e interpretação de sistemas térmicos, a transferência espontânea de calor de corpo de maior para um de menor temperatura. É relevante salientar que, em um processo termodinâmico de transferência de calor, mesmo de forma espontânea, há dissipação de energia e um aumento da entropia.",
+    "habilidade_codes": [
+      "EM13CNT101"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 2º Bimestre\nUnidade: Matéria e Energia\nObjetos: Leis da Termodinâmica (2ª Lei da Termodinâmica).\nHabilidades: (EM13CNT101) - Analisar e representar, com ou sem o uso de dispositivos e de aplicativos digitais específicos, as transformações e conservações em sistemas que envolvam quantidade de matéria, de energia e de movimento para realizar previsões sobre seus comportamentos em situações cotidianas e em processos produtivos que priorizem o desenvolvimento sustentável, o uso consciente dos recursos naturais e a preservação da vida em todas as suas formas.\nOrientações: Recomenda-se fazer uma abordagem qualitativa dos conceitos de processos físicos reversíveis e irreversíveis e da entropia, proporcionando a reallização de previsões, a análise e interpretação de sistemas térmicos, a transferência espontânea de calor de corpo de maior para um de menor temperatura. É relevante salientar que, em um processo termodinâmico de transferência de calor, mesmo de forma espontânea, há dissipação de energia e um aumento da entropia."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT307) - Analisar as propriedades dos materiais para avaliar a adequação de seu uso em diferentes aplicações (industriais, cotidianas, arquitetônicas, tecnológicas, entre outras) e/ou propor soluções seguras e sustentáveis considerando seu contexto local e cotidiano.",
+    "objeto_conhecimento": "Transformações gasosas.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Sugere-se introduzir a 1ª Lei da Termodinâmica iniciando-se pelo conceito de trabalho. Porém, é preciso enfatizar que a termodinâmica envolve o estudo das trocas de energia na forma de calor e trabalho. Mostre a diferença entre o sinal positivo e o sinal negativo do trabalho (expansão e compressão do gás) e identifique situações em que esses fenômenos ocorrem. Recomenda-se ainda identificar, analisar e interpretar gráficos de pressão versus volume e os impactos que as mudanças de variáveis provocam em sistemas térmicos. Aconselha-se, também, uma discussão com os estudantes sobre possíveis situações em que a energia de um sistema aumenta ou diminui. O estudo da 1ª Lei da Termodinâmica, proposto no 7º ano do EF, por meio do desenvolvimento da habilidade EF07CI04, convida a avaliar o equilíbrio termodinâmico e as implicações desse conceito para o funcionamento das máquinas térmicas. Sugere-se que, após a conceituação de energia interna, os estudantes sejam levados a compreender como ocorrem as trocas de calor com a vizinhança, as variações da energia interna e a realização de trabalho, com a finalidade de orientá-los a avaliar, fazer previsões, interpretar textos, diagramas, equações e estimar resultados.",
+    "habilidade_codes": [
+      "EM13CNT307"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 2º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Transformações gasosas.\nHabilidades: (EM13CNT307) - Analisar as propriedades dos materiais para avaliar a adequação de seu uso em diferentes aplicações (industriais, cotidianas, arquitetônicas, tecnológicas, entre outras) e/ou propor soluções seguras e sustentáveis considerando seu contexto local e cotidiano.\nOrientações: Sugere-se introduzir a 1ª Lei da Termodinâmica iniciando-se pelo conceito de trabalho. Porém, é preciso enfatizar que a termodinâmica envolve o estudo das trocas de energia na forma de calor e trabalho. Mostre a diferença entre o sinal positivo e o sinal negativo do trabalho (expansão e compressão do gás) e identifique situações em que esses fenômenos ocorrem. Recomenda-se ainda identificar, analisar e interpretar gráficos de pressão versus volume e os impactos que as mudanças de variáveis provocam em sistemas térmicos. Aconselha-se, também, uma discussão com os estudantes sobre possíveis situações em que a energia de um sistema aumenta ou diminui. O estudo da 1ª Lei da Termodinâmica, proposto no 7º ano do EF, por meio do desenvolvimento da habilidade EF07CI04, convida a avaliar o equilíbrio termodinâmico e as implicações desse conceito para o funcionamento das máquinas térmicas. Sugere-se que, após a conceituação de energia interna, os estudantes sejam levados a compreender como ocorrem as trocas de calor com a vizinhança, as variações da energia interna e a realização de trabalho, com a finalidade de orientá-los a avaliar, fazer previsões, interpretar textos, diagramas, equações e estimar resultados."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental, podendo fazer uso de dispositivos e aplicativos digitais que viabilizem a estruturação de simulações de tais riscos, conhecer as normas de segurança, o tratamento de resíduos e reconhecer os equipamentos de proteção individual e coletivo, inclusive a tecnologia aplicada nos mesmos.",
+    "objeto_conhecimento": "Reflexão da Luz.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Para o desenvolvimento deste objeto de conhecimento, recomenda-se elaborar questões e hipóteses utilizando a análise dos conhecimentos prévio sobre como enxergamos os objeto, diferenciando a reflexão difusa da reflexão especular. Recomenda-se trabalhar quantitativamente as leis da reflexão, determinando os comportamentos, as trajetórias da luz ao ser refletida em diferentes meios e as implicações no cotidiano.",
+    "habilidade_codes": [
+      "EM13CNT306X"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 3º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Reflexão da Luz.\nHabilidades: (EM13CNT306X) - Avaliar os riscos envolvidos em atividades cotidianas, aplicando conhecimentos das Ciências da Natureza, para justificar o uso de equipamentos e recursos, bem como comportamentos de segurança, visando à integridade física, individual e coletiva, e socioambiental, podendo fazer uso de dispositivos e aplicativos digitais que viabilizem a estruturação de simulações de tais riscos, conhecer as normas de segurança, o tratamento de resíduos e reconhecer os equipamentos de proteção individual e coletivo, inclusive a tecnologia aplicada nos mesmos.\nOrientações: Para o desenvolvimento deste objeto de conhecimento, recomenda-se elaborar questões e hipóteses utilizando a análise dos conhecimentos prévio sobre como enxergamos os objeto, diferenciando a reflexão difusa da reflexão especular. Recomenda-se trabalhar quantitativamente as leis da reflexão, determinando os comportamentos, as trajetórias da luz ao ser refletida em diferentes meios e as implicações no cotidiano."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra.",
+    "objeto_conhecimento": "Espelhos Planos e esféricos. Formação de imagens.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Para o estudo dos espelhos, sugere-se abordar qualitativamente e quantitativamente as propriedades físicas nos espelhos planos e esféricos. Definir o conceito de imagens reais e virtuais e como se formam as imagens nos espelhos planos, côncavos e convexos, com a finalidade de interpretar e analisar seu emprego em diferentes situações no cotidiano.",
+    "habilidade_codes": [
+      "EM13CNT210MG"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Espelhos Planos e esféricos. Formação de imagens.\nHabilidades: (EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra.\nOrientações: Para o estudo dos espelhos, sugere-se abordar qualitativamente e quantitativamente as propriedades físicas nos espelhos planos e esféricos. Definir o conceito de imagens reais e virtuais e como se formam as imagens nos espelhos planos, côncavos e convexos, com a finalidade de interpretar e analisar seu emprego em diferentes situações no cotidiano."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra.",
+    "objeto_conhecimento": "Instrumentos ópticos e suas aplicações.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "O objeto de conhecimento instrumentos ópticos, estão propostos no 4º, 5º e 6º anos do EF, por meio do desenvolvimento das habilidades EF04CI08MG, EF05CI13, EF06CI08A e EF06CI08B, descrevendo e reconhecendo a importância da visão, e as formas de correção de eventuais defeitos. Recomenda-se ainda, como aplicação, o estudo do olho humano, citar as partes que o compõem e suas funções, reconhecendo e associando sua similaridade com as lentes. Interpretar e elaborar hipóteses sobre os defeitos da visão como a hipermetropia, a miopia e o astigmatismo bem como justificar as formas de correção desses problemas. Aconselha-se, também, levar os estudantes a compreender o funcionamento de instrumentos ópticos, tais como máquinas fotográficas, projetores, lunetas, telescópios e microscópios, avaliando suas aplicações em processos do dia a dia.",
+    "habilidade_codes": [
+      "EM13CNT210MG"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Instrumentos ópticos e suas aplicações.\nHabilidades: (EM13CNT210MG) - Reconhecer as leis da natureza, identificar suas ocorrências, avaliar suas aplicações em processos tecnológicos e elaborar hipóteses de procedimentos para a exploração do Cosmos e do planeta Terra.\nOrientações: O objeto de conhecimento instrumentos ópticos, estão propostos no 4º, 5º e 6º anos do EF, por meio do desenvolvimento das habilidades EF04CI08MG, EF05CI13, EF06CI08A e EF06CI08B, descrevendo e reconhecendo a importância da visão, e as formas de correção de eventuais defeitos. Recomenda-se ainda, como aplicação, o estudo do olho humano, citar as partes que o compõem e suas funções, reconhecendo e associando sua similaridade com as lentes. Interpretar e elaborar hipóteses sobre os defeitos da visão como a hipermetropia, a miopia e o astigmatismo bem como justificar as formas de correção desses problemas. Aconselha-se, também, levar os estudantes a compreender o funcionamento de instrumentos ópticos, tais como máquinas fotográficas, projetores, lunetas, telescópios e microscópios, avaliando suas aplicações em processos do dia a dia."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.",
+    "objeto_conhecimento": "Reflexão da Luz.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Para o desenvolvimento deste objeto de conhecimento, recomenda-se elaborar questões e hipóteses utilizando a análise dos conhecimentos prévio sobre como enxergamos os objeto, diferenciando a reflexão difusa da reflexão especular. Recomenda-se trabalhar quantitativamente as leis da reflexão, determinando os comportamentos, as trajetórias da luz ao ser refletida em diferentes meios e as implicações no cotidiano.",
+    "habilidade_codes": [
+      "EM13CNT301"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 3º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Reflexão da Luz.\nHabilidades: (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.\nOrientações: Para o desenvolvimento deste objeto de conhecimento, recomenda-se elaborar questões e hipóteses utilizando a análise dos conhecimentos prévio sobre como enxergamos os objeto, diferenciando a reflexão difusa da reflexão especular. Recomenda-se trabalhar quantitativamente as leis da reflexão, determinando os comportamentos, as trajetórias da luz ao ser refletida em diferentes meios e as implicações no cotidiano."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT212MG) - Identificar e relacionar as leis da natureza e os fenômenos relacionados às ondas eletromagnéticas, em especial o espectro visível, com eventos naturais e tecnológicos, elencando-os com os órgãos dos sentidos e com as artes, utilizando representações e simulações, com ou sem o uso de tecnologias de informação e comunicação.",
+    "objeto_conhecimento": "Espelhos Planos e esféricos. Formação de imagens.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Para o estudo dos espelhos, sugere-se abordar qualitativamente e quantitativamente as propriedades físicas nos espelhos planos e esféricos. Definir o conceito de imagens reais e virtuais e como se formam as imagens nos espelhos planos, côncavos e convexos, com a finalidade de interpretar e analisar seu emprego em diferentes situações no cotidiano.",
+    "habilidade_codes": [
+      "EM13CNT212MG"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 3º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Espelhos Planos e esféricos. Formação de imagens.\nHabilidades: (EM13CNT212MG) - Identificar e relacionar as leis da natureza e os fenômenos relacionados às ondas eletromagnéticas, em especial o espectro visível, com eventos naturais e tecnológicos, elencando-os com os órgãos dos sentidos e com as artes, utilizando representações e simulações, com ou sem o uso de tecnologias de informação e comunicação.\nOrientações: Para o estudo dos espelhos, sugere-se abordar qualitativamente e quantitativamente as propriedades físicas nos espelhos planos e esféricos. Definir o conceito de imagens reais e virtuais e como se formam as imagens nos espelhos planos, côncavos e convexos, com a finalidade de interpretar e analisar seu emprego em diferentes situações no cotidiano."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.",
+    "objeto_conhecimento": "Dispersão da luz. Percepção de cores. Arco-iris. Prismas.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "O estudo desse objeto de conhecimento está exposto no 9º ano do EF, por meio do desenvolvimento da habilidade EF07CI04 em que se propõe planejar e executar experimentos que evidenciem que todas as cores podem ser formadas pela composição das três cores primárias e também, que a cor de um objeto está relacionada à cor da luz que o ilumina. Aconselha-se reforçar os conhecimentos prévios dos estudantes e sugere-se trabalhar com a investigação a respeito do comportamento ondulatório da luz, de modo que eles compreendam que o fenômeno da dispersão da luz branca evidencia as diversas frequências do espectro visível associadas às cores. Além disso, que eles entendam que a cor de um objeto não é uma propriedade dos materiais, e sim, um efeito dos fenômenos da reflexão e absorção.",
+    "habilidade_codes": [
+      "EM13CNT303"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Dispersão da luz. Percepção de cores. Arco-iris. Prismas.\nHabilidades: (EM13CNT303) - Interpretar textos de divulgação científica que tratem de temáticas das Ciências da Natureza, disponíveis em diferentes mídias, considerando a apresentação dos dados, tanto na forma de textos como em equações, gráficos e/ou tabelas, a consistência dos argumentos e a coerência das conclusões, visando construir estratégias de seleção de fontes confiáveis de informações.\nOrientações: O estudo desse objeto de conhecimento está exposto no 9º ano do EF, por meio do desenvolvimento da habilidade EF07CI04 em que se propõe planejar e executar experimentos que evidenciem que todas as cores podem ser formadas pela composição das três cores primárias e também, que a cor de um objeto está relacionada à cor da luz que o ilumina. Aconselha-se reforçar os conhecimentos prévios dos estudantes e sugere-se trabalhar com a investigação a respeito do comportamento ondulatório da luz, de modo que eles compreendam que o fenômeno da dispersão da luz branca evidencia as diversas frequências do espectro visível associadas às cores. Além disso, que eles entendam que a cor de um objeto não é uma propriedade dos materiais, e sim, um efeito dos fenômenos da reflexão e absorção."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT205) - Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza, reconhecendo os limites explicativos das ciências.",
+    "objeto_conhecimento": "Ondas sonoras, suas propriedades e qualidades fisiológicas. Instrumento musicais de corda, sopro e percussão.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Recomenda-se abordar fenomenologicamente as ondas sonoras e suas aplicações no cotidiano. Espera-se que os estudantes compreendam o som como uma das faixas de frequências do espectro sonoro (infrassom, som, ultrassom) e que essas ondas são produzidas por materiais que vibram e possuem a capacidade de transmitir essa vibração para outros objetos. Propõe-se que se faça a apresentação das caracterísiticas fisiológicas do som, de modo que seja possível relacioná-las às percepções que estas produzem em seus ouvidos. É importante investigar as diferentes aplicações tecnológicas das ondas sonoras, avaliar seius impactos no ambiente e na saúde. Além disso, recomenda-se fazer a abordagem do efeito doppler, tanto do som, quanto da luz, de maneira qualitativa, proporcionando uma discussão conceitual do efeito da variação aparente da frequência em função do movimento. Aconselha-se investigar e analisar o efeito Doppler da luz e avaliar suas diferentes aplicações tecnológicas como na expansão do universo.",
+    "habilidade_codes": [
+      "EM13CNT205"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 4º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: Ondas sonoras, suas propriedades e qualidades fisiológicas. Instrumento musicais de corda, sopro e percussão.\nHabilidades: (EM13CNT205) - Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza, reconhecendo os limites explicativos das ciências.\nOrientações: Recomenda-se abordar fenomenologicamente as ondas sonoras e suas aplicações no cotidiano. Espera-se que os estudantes compreendam o som como uma das faixas de frequências do espectro sonoro (infrassom, som, ultrassom) e que essas ondas são produzidas por materiais que vibram e possuem a capacidade de transmitir essa vibração para outros objetos. Propõe-se que se faça a apresentação das caracterísiticas fisiológicas do som, de modo que seja possível relacioná-las às percepções que estas produzem em seus ouvidos. É importante investigar as diferentes aplicações tecnológicas das ondas sonoras, avaliar seius impactos no ambiente e na saúde. Além disso, recomenda-se fazer a abordagem do efeito doppler, tanto do som, quanto da luz, de maneira qualitativa, proporcionando uma discussão conceitual do efeito da variação aparente da frequência em função do movimento. Aconselha-se investigar e analisar o efeito Doppler da luz e avaliar suas diferentes aplicações tecnológicas como na expansão do universo."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Tecnologia e Linguagens",
+    "competencia": "Competência Específica 03 Analisar situações-problema e avaliar aplicações do conhecimento científico e tecnológico e suas implicações no mundo, utilizando procedimentos e linguagens próprios das Ciências da Natureza, para propor soluções que considerem demandas locais, regionais e/ou globais, e comunicar suas descobertas e conclusões a públicos variados, em diversos contextos e por meio de diferentes mídias e tecnologias digitais de informação e comunicação (TDIC).",
+    "habilidade": "(EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.",
+    "objeto_conhecimento": "Ondas sonoras, suas propriedades e qualidades fisiológicas. Instrumento musicais de corda, sopro e percussão.",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "Recomenda-se abordar fenomenologicamente as ondas sonoras e suas aplicações no cotidiano. Espera-se que os estudantes compreendam o som como uma das faixas de frequências do espectro sonoro (infrassom, som, ultrassom) e que essas ondas são produzidas por materiais que vibram e possuem a capacidade de transmitir essa vibração para outros objetos. Propõe-se que se faça a apresentação das caracterísiticas fisiológicas do som, de modo que seja possível relacioná-las às percepções que estas produzem em seus ouvidos. É importante investigar as diferentes aplicações tecnológicas das ondas sonoras, avaliar seius impactos no ambiente e na saúde. Além disso, recomenda-se fazer a abordagem do efeito doppler, tanto do som, quanto da luz, de maneira qualitativa, proporcionando uma discussão conceitual do efeito da variação aparente da frequência em função do movimento. Aconselha-se investigar e analisar o efeito Doppler da luz e avaliar suas diferentes aplicações tecnológicas como na expansão do universo.",
+    "habilidade_codes": [
+      "EM13CNT301"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 4º Bimestre\nUnidade: Tecnologia e Linguagens\nObjetos: Ondas sonoras, suas propriedades e qualidades fisiológicas. Instrumento musicais de corda, sopro e percussão.\nHabilidades: (EM13CNT301) - Construir questões, elaborar hipóteses, previsões e estimativas, empregar instrumentos de medição e representar e interpretar modelos explicativos, dados e/ou resultados experimentais para construir, avaliar e justificar conclusões no enfrentamento de situações-problema sob uma perspectiva científica.\nOrientações: Recomenda-se abordar fenomenologicamente as ondas sonoras e suas aplicações no cotidiano. Espera-se que os estudantes compreendam o som como uma das faixas de frequências do espectro sonoro (infrassom, som, ultrassom) e que essas ondas são produzidas por materiais que vibram e possuem a capacidade de transmitir essa vibração para outros objetos. Propõe-se que se faça a apresentação das caracterísiticas fisiológicas do som, de modo que seja possível relacioná-las às percepções que estas produzem em seus ouvidos. É importante investigar as diferentes aplicações tecnológicas das ondas sonoras, avaliar seius impactos no ambiente e na saúde. Além disso, recomenda-se fazer a abordagem do efeito doppler, tanto do som, quanto da luz, de maneira qualitativa, proporcionando uma discussão conceitual do efeito da variação aparente da frequência em função do movimento. Aconselha-se investigar e analisar o efeito Doppler da luz e avaliar suas diferentes aplicações tecnológicas como na expansão do universo."
+  },
+  {
+    "grade": "2º Ano",
+    "grade_num": 2,
+    "level": "Ensino Médio",
+    "subject": "Química",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Vida, Terra e Cosmos",
+    "competencia": "Competência Específica 02 - Construir e utilizar interpretações sobre a dinâmica da Vida, da Terra e do Cosmos para elaborar argumentos, realizar previsões sobre o funcionamento e a evolução dos seres vivos e do Universo, e fundamentar decisões éticas e responsáveis.",
+    "habilidade": "(EM13CNT205) - Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza, reconhecendo os limites explicativos das ciências.",
+    "objeto_conhecimento": "(N/A)",
+    "descritores_saeb": "",
+    "orientacoes_pedagogicas": "(N/A)",
+    "habilidade_codes": [
+      "EM13CNT205"
+    ],
+    "chunk_text": "Ensino Médio | 2º Ano | Química | 4º Bimestre\nUnidade: Vida, Terra e Cosmos\nObjetos: (N/A)\nHabilidades: (EM13CNT205) - Interpretar resultados e realizar previsões sobre atividades experimentais, fenômenos naturais e processos tecnológicos, com base nas noções de probabilidade e incerteza, reconhecendo os limites explicativos das ciências.\nOrientações: (N/A)"
+  }
+]

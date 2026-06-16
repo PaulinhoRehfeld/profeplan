@@ -1,0 +1,344 @@
+[
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "História: tempo, espaço e formas de registros",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI01X) - Identificar diferentes formas de compreensão da noção de tempo e de periodização dos processos históricos (continuidades e rupturas), comparando os marcos referenciais dos períodos históricos.",
+    "objeto_conhecimento": "A questão do tempo, sincronias e diacronias: reflexões sobre o sentido das cronologias. Conteúdos relacionados: Introdução ao estudo de História; O trabalho do Historiador; O Tempo e a História; O tempo e as unidades de medida; Instrumentos de medição do tempo; O tempo medido por calendários; Outras medidas de tempo (períodos, milênios, séculos, décadas).",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), nesta habilidade é importante que os estudantes compreendam que as sociedades humanas têm maneiras diferentes de compreender o tempo e de marcar sua História. Você poderá trabalhar com calendários de diferentes sociedades (cristã, ortodoxa, muçulmana, judaica, chinesa etc.), tomando-se por referência a contagem dos anos, o marco de início da contagem do tempo e a comemoração do Ano Novo. É possível, ainda, prever a elaboração de linha de tempo com a periodização tradicional (Idade Antiga, Média, Moderna e Contemporânea), com la indicação de alguns marcos referenciais desses períodos (escrita, pirâmides, castelos medievais, caravelas, ferrovias etc.).",
+    "habilidade_codes": [
+      "EF06HI01X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 1º Bimestre\nUnidade: História: tempo, espaço e formas de registros\nObjetos: A questão do tempo, sincronias e diacronias: reflexões sobre o sentido das cronologias. Conteúdos relacionados: Introdução ao estudo de História; O trabalho do Historiador; O Tempo e a História; O tempo e as unidades de medida; Instrumentos de medição do tempo; O tempo medido por calendários; Outras medidas de tempo (períodos, milênios, séculos, décadas).\nHabilidades: (EF06HI01X) - Identificar diferentes formas de compreensão da noção de tempo e de periodização dos processos históricos (continuidades e rupturas), comparando os marcos referenciais dos períodos históricos.\nSAEB: Não informado.\nOrientações: Professor(a), nesta habilidade é importante que os estudantes compreendam que as sociedades humanas têm maneiras diferentes de compreender o tempo e de marcar sua História. Você poderá trabalhar com calendários de diferentes sociedades (cristã, ortodoxa, muçulmana, judaica, chinesa etc.), tomando-se por referência a contagem dos anos, o marco de início da contagem do tempo e a comemoração do Ano Novo. É possível, ainda, prever a elaboração de linha de tempo com a periodização tradicional (Idade Antiga, Média, Moderna e Contemporânea), com la indicação de alguns marcos referenciais desses períodos (escrita, pirâmides, castelos medievais, caravelas, ferrovias etc.)."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "História: tempo, espaço e formas de registros",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI02X) - Identificar a gênese da produção do saber histórico e analisar o significado das fontes que originaram determinadas formas de registro em sociedades e épocas distintas, assim como as especificidades e singularidades das transformações históricas nas respectivas comunidades.",
+    "objeto_conhecimento": "Formas de registro da história e da produção do conhecimento histórico. Conteúdos relacionados: As fontes históricas e as suas interpretações. A História e as outras áreas do conhecimento.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Nesta habilidade os estudantes precisam compreender que a construção da narrativa histórica está relacionada às fontes e às formas de registro que as sociedades, em diferentes épocas, realizaram e que cada sociedade possui uma forma de registrar sua história. É necessário que eles conheçam e identifiquem diferentes fontes históricas como os documentos escritos, depoimentos orais, fotografias, objetos, edificações, etc. O trabalho com pesquisa é essencial para a coleta de informações de determinado fato ou povo, além de permitir que as narrativas históricas e as abordagens sejam confrontadas levando a compreensão de que o saber histórico não é estanque, mas sofre alterações e reavaliações.",
+    "habilidade_codes": [
+      "EF06HI02X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 1º Bimestre\nUnidade: História: tempo, espaço e formas de registros\nObjetos: Formas de registro da história e da produção do conhecimento histórico. Conteúdos relacionados: As fontes históricas e as suas interpretações. A História e as outras áreas do conhecimento.\nHabilidades: (EF06HI02X) - Identificar a gênese da produção do saber histórico e analisar o significado das fontes que originaram determinadas formas de registro em sociedades e épocas distintas, assim como as especificidades e singularidades das transformações históricas nas respectivas comunidades.\nSAEB: Não informado.\nOrientações: Nesta habilidade os estudantes precisam compreender que a construção da narrativa histórica está relacionada às fontes e às formas de registro que as sociedades, em diferentes épocas, realizaram e que cada sociedade possui uma forma de registrar sua história. É necessário que eles conheçam e identifiquem diferentes fontes históricas como os documentos escritos, depoimentos orais, fotografias, objetos, edificações, etc. O trabalho com pesquisa é essencial para a coleta de informações de determinado fato ou povo, além de permitir que as narrativas históricas e as abordagens sejam confrontadas levando a compreensão de que o saber histórico não é estanque, mas sofre alterações e reavaliações."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "História: tempo, espaço e formas de registros",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI03X) - Identificar as hipóteses científicas sobre o surgimento da espécie humana e sua historicidade e analisar os significados dos mitos de fundação e comparar as diferentes visões a respeito da origem da vida no planeta.",
+    "objeto_conhecimento": "As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: As teorias do surgimento dos seres humanos. A evolução do ser humano.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), nesta habilidade é importante que você explique para os estudantes que o surgimento da espécie humana ainda é um tema aberto, sem respostas definitivas. Evolucionismo e criacionismo, apesar de terem abordagens completamente distintas, são teorias que não podem ser comprovadas em laboratório. O tema é polêmico, principalmente por dizer respeito a dogmas religiosos. Nesse sentido, sugere-se privilegiar a compreensão sobre o que nos torna seres humanos e o que une a humanidade em uma única espécie. Pode-se, ainda, considerar a pesquisa de algumas cosmogonias e/ou tradições religiosas de mitologias diversas: sumeriana, egípcia, grega, romana, persa, hebraica, iorubá, asteca, maia, tupi-guarani, indiana, chinesa, japonesa etc., para que o estudante possa analisar de que maneira esses mitos explicam a origem da humanidade.",
+    "habilidade_codes": [
+      "EF06HI03X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 1º Bimestre\nUnidade: História: tempo, espaço e formas de registros\nObjetos: As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: As teorias do surgimento dos seres humanos. A evolução do ser humano.\nHabilidades: (EF06HI03X) - Identificar as hipóteses científicas sobre o surgimento da espécie humana e sua historicidade e analisar os significados dos mitos de fundação e comparar as diferentes visões a respeito da origem da vida no planeta.\nSAEB: Não informado.\nOrientações: Professor(a), nesta habilidade é importante que você explique para os estudantes que o surgimento da espécie humana ainda é um tema aberto, sem respostas definitivas. Evolucionismo e criacionismo, apesar de terem abordagens completamente distintas, são teorias que não podem ser comprovadas em laboratório. O tema é polêmico, principalmente por dizer respeito a dogmas religiosos. Nesse sentido, sugere-se privilegiar a compreensão sobre o que nos torna seres humanos e o que une a humanidade em uma única espécie. Pode-se, ainda, considerar a pesquisa de algumas cosmogonias e/ou tradições religiosas de mitologias diversas: sumeriana, egípcia, grega, romana, persa, hebraica, iorubá, asteca, maia, tupi-guarani, indiana, chinesa, japonesa etc., para que o estudante possa analisar de que maneira esses mitos explicam a origem da humanidade."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "História: tempo, espaço e formas de registros",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI04X) - Conhecer as teorias sobre a origem do homem americano, refletindo sobre a importância da preservação do patrimônio arqueológico e do meio natural em que ele está inserido.",
+    "objeto_conhecimento": "As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: As teorias do surgimento do homem americano. A chegada dos seres humanos à América. Teorias sobre a origem do homem americano. Patrimônios arqueológicos.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "A habilidade diz respeito a constatar que as teorias sobre a origem do homem americano se baseiam em fontes e evidências diversas (fósseis humanos, artefatos de pedra, pesquisas genéticas, estudos linguísticos etc.), porém, elas não fornecem uma resposta segura sobre quando, como e por que a América foi povoada devido à pequena quantidade de vestígios fósseis encontrados no continente. Explique sobre as descobertas arqueológicas no Brasil, destacando as recentes polêmicas sobre a morfologia do crânio (fóssil) de Luzia (sítio de Lagoa Santa, Minas Gerais) e as datações apresentadas por Niède Guidon (Serra da Capivara, Piauí).",
+    "habilidade_codes": [
+      "EF06HI04X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 1º Bimestre\nUnidade: História: tempo, espaço e formas de registros\nObjetos: As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: As teorias do surgimento do homem americano. A chegada dos seres humanos à América. Teorias sobre a origem do homem americano. Patrimônios arqueológicos.\nHabilidades: (EF06HI04X) - Conhecer as teorias sobre a origem do homem americano, refletindo sobre a importância da preservação do patrimônio arqueológico e do meio natural em que ele está inserido.\nSAEB: Não informado.\nOrientações: A habilidade diz respeito a constatar que as teorias sobre a origem do homem americano se baseiam em fontes e evidências diversas (fósseis humanos, artefatos de pedra, pesquisas genéticas, estudos linguísticos etc.), porém, elas não fornecem uma resposta segura sobre quando, como e por que a América foi povoada devido à pequena quantidade de vestígios fósseis encontrados no continente. Explique sobre as descobertas arqueológicas no Brasil, destacando as recentes polêmicas sobre a morfologia do crânio (fóssil) de Luzia (sítio de Lagoa Santa, Minas Gerais) e as datações apresentadas por Niède Guidon (Serra da Capivara, Piauí)."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "História: tempo, espaço e formas de registros",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI05) - Descrever modificações da natureza e da paisagem realizadas por diferentes tipos de sociedade com destaque para os povos indígenas originários, povos africanos, discutindo a natureza e a lógica das transformações ocorridas.",
+    "objeto_conhecimento": "As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: Modos de vida e modificações da natureza. A vida humana no Paleolítico. O Neolítico e a Revolução Agrícola: mudanças e permanências nas paisagens. Os objetos de cerâmica. A Idade dos Metais.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "A habilidade consiste em reconhecer que os grupos humanos deixam vestígios e alterações na paisagem (modificação do solo, mudança na topografia, deslocamento de rochas, pinturas rupestres, acúmulo de artefatos etc.), entendendo que essas transformações servem de indícios para a elaboração de hipóteses sobre a presença humana, mesmo sem a descoberta de fósseis humanos. O trabalho poderá ser desenvolvido com os estudantes através de pesquisas sobre o patrimônio arqueológico pré-colonial do Brasil. Você poderá dirigir a pesquisa para o site do IPHAN (Instituto do Patrimônio Histórico e Artístico Nacional) e do IEPHA (Instituto Estadual do Patrimônio Histórico e Artístico de Minas Gerais).",
+    "habilidade_codes": [
+      "EF06HI05"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 1º Bimestre\nUnidade: História: tempo, espaço e formas de registros\nObjetos: As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: Modos de vida e modificações da natureza. A vida humana no Paleolítico. O Neolítico e a Revolução Agrícola: mudanças e permanências nas paisagens. Os objetos de cerâmica. A Idade dos Metais.\nHabilidades: (EF06HI05) - Descrever modificações da natureza e da paisagem realizadas por diferentes tipos de sociedade com destaque para os povos indígenas originários, povos africanos, discutindo a natureza e a lógica das transformações ocorridas.\nSAEB: Não informado.\nOrientações: A habilidade consiste em reconhecer que os grupos humanos deixam vestígios e alterações na paisagem (modificação do solo, mudança na topografia, deslocamento de rochas, pinturas rupestres, acúmulo de artefatos etc.), entendendo que essas transformações servem de indícios para a elaboração de hipóteses sobre a presença humana, mesmo sem a descoberta de fósseis humanos. O trabalho poderá ser desenvolvido com os estudantes através de pesquisas sobre o patrimônio arqueológico pré-colonial do Brasil. Você poderá dirigir a pesquisa para o site do IPHAN (Instituto do Patrimônio Histórico e Artístico Nacional) e do IEPHA (Instituto Estadual do Patrimônio Histórico e Artístico de Minas Gerais)."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "História: tempo, espaço e formas de registros",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI06X) - Identificar histórico e geograficamente as rotas de povoamento no território americano com foco no povoamento do atual território brasileiro.",
+    "objeto_conhecimento": "As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: O surgimento do comércio e das cidades. O nascimento do Estado e da escrita. Os vestígios e alterações na paisagem deixadas pelos grupos humanos na modificação do solo, mudança de topografia, deslocamento de rochas, gravações rupestres, acúmulo de artefatos, etc.). Mapear as possíveis rotas de povoamento da América, identificando os espaços geográficos e a direção percorrida pelos primeiros povoadores do continente, situando o povoamento do território brasileiro.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Explique para os estudantes que não há uma teoria verdadeira sobre o povoamento da América. Embora a teoria de Clóvis (de que o Estreito de Bering foi a única entrada para os primeiros grupamentos humanos que chegaram à América) seja atualmente a mais aceita em razão da grande quantidade de vestígios fósseis encontrados, as datações obtidas em sítios arqueológicos no Chile (Monte Verde) e no Brasil (Lagoa Santa, Minas Gerais), e a morfologia do fóssil do crânio de Luzia sugerem a possibilidade de que o povoamento da América tenha sido muito anterior e que tenha sido feito por mais de uma rota e em momentos históricos diferentes.",
+    "habilidade_codes": [
+      "EF06HI06X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 2º Bimestre\nUnidade: História: tempo, espaço e formas de registros\nObjetos: As origens da humanidade, seus deslocamentos e os processos de sedentarização. Conteúdos relacionados: O surgimento do comércio e das cidades. O nascimento do Estado e da escrita. Os vestígios e alterações na paisagem deixadas pelos grupos humanos na modificação do solo, mudança de topografia, deslocamento de rochas, gravações rupestres, acúmulo de artefatos, etc.). Mapear as possíveis rotas de povoamento da América, identificando os espaços geográficos e a direção percorrida pelos primeiros povoadores do continente, situando o povoamento do território brasileiro.\nHabilidades: (EF06HI06X) - Identificar histórico e geograficamente as rotas de povoamento no território americano com foco no povoamento do atual território brasileiro.\nSAEB: Não informado.\nOrientações: Explique para os estudantes que não há uma teoria verdadeira sobre o povoamento da América. Embora a teoria de Clóvis (de que o Estreito de Bering foi a única entrada para os primeiros grupamentos humanos que chegaram à América) seja atualmente a mais aceita em razão da grande quantidade de vestígios fósseis encontrados, as datações obtidas em sítios arqueológicos no Chile (Monte Verde) e no Brasil (Lagoa Santa, Minas Gerais), e a morfologia do fóssil do crânio de Luzia sugerem a possibilidade de que o povoamento da América tenha sido muito anterior e que tenha sido feito por mais de uma rota e em momentos históricos diferentes."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "A Invenção do Mundo Clássico e o contraponto com outras Sociedades",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI07X) - Identificar aspectos e formas de registro das sociedades antigas na África, Ásia, no Oriente Médio e nas Américas, distinguindo alguns significados presentes na cultura material e imaterial na tradição oral dessas sociedades.",
+    "objeto_conhecimento": "Povos da antiguidade na África (egípcios), no Oriente Médio (Mesopotâmicos) e nas Américas (Pré-colombianos). Os povos indígenas originários do atual território brasileiro e seus hábitos culturais e sociais. Conteúdos relacionados: Vestígios dos modos de vida dos povos antigos no Egito, Mesopotâmia, América e atual território brasileiro. Hábitos culturais e sociais dos antigos povos do Brasil: os sambaquis, os povos ceramistas, os sítios de Lagoa Santa e São Raimundo Nonato.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Esta habilidade tem como objetivo levar os estudantes a perceberem que os vestígios do passado podem ser transformados em documentos históricos, pois são registros (escritos ou não) das sociedades antigas. Para esse grupo etário, basta reconhecer a diversidade de registros, onde se incluem documentos escritos, orais, pictográficos e imagéticos. Fale para os estudantes que a invenção da escrita foi um marco divisor da Pré-História para a História, explicitando o contexto social de valorização da cultura letrada pelos historiadores europeus do século XIX, excluindo as outras formas de comunicação e registros das culturas sem escrita, como as pré-históricas.",
+    "habilidade_codes": [
+      "EF06HI07X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 2º Bimestre\nUnidade: A Invenção do Mundo Clássico e o contraponto com outras Sociedades\nObjetos: Povos da antiguidade na África (egípcios), no Oriente Médio (Mesopotâmicos) e nas Américas (Pré-colombianos). Os povos indígenas originários do atual território brasileiro e seus hábitos culturais e sociais. Conteúdos relacionados: Vestígios dos modos de vida dos povos antigos no Egito, Mesopotâmia, América e atual território brasileiro. Hábitos culturais e sociais dos antigos povos do Brasil: os sambaquis, os povos ceramistas, os sítios de Lagoa Santa e São Raimundo Nonato.\nHabilidades: (EF06HI07X) - Identificar aspectos e formas de registro das sociedades antigas na África, Ásia, no Oriente Médio e nas Américas, distinguindo alguns significados presentes na cultura material e imaterial na tradição oral dessas sociedades.\nSAEB: Não informado.\nOrientações: Esta habilidade tem como objetivo levar os estudantes a perceberem que os vestígios do passado podem ser transformados em documentos históricos, pois são registros (escritos ou não) das sociedades antigas. Para esse grupo etário, basta reconhecer a diversidade de registros, onde se incluem documentos escritos, orais, pictográficos e imagéticos. Fale para os estudantes que a invenção da escrita foi um marco divisor da Pré-História para a História, explicitando o contexto social de valorização da cultura letrada pelos historiadores europeus do século XIX, excluindo as outras formas de comunicação e registros das culturas sem escrita, como as pré-históricas."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "A Invenção do mundo clássico e o contraponto com outras Sociedades",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI08) - Identificar os espaços territoriais ocupados e os aportes culturais, científicos, sociais e econômicos dos astecas, maias e incas e dos povos indígenas de diversas regiões brasileiras.",
+    "objeto_conhecimento": "Povos da antiguidade na África (egípcios), no Oriente Médio (Mesopotâmicos) e nas Américas (Pré-colombianos). Os povos indígenas originários do atual território brasileiro e seus hábitos culturais e sociais. Conteúdos relacionados: As grandes sociedades americanas antigas: Astecas, Maias e Incas e os povos indígenas do território brasileiro. Modos de vida na América. Sociedades da Mesoamérica: heranças cultural, social, econômica e científica desses povos. As sociedades Maia, Inca e Asteca. Os povos originários do Brasil.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Esta habilidade consiste em mapear as grandes sociedades americanas antigas (Astecas, Maias e Incas) e os povos indígenas do território brasileiro, reconhecendo a herança cultural, social, econômica e científica desses povos. A localização geográfica deve destacar e distinguir o meio natural ocupado e os recursos disponíveis, relacionando-os aos desafios enfrentados e ao desenvolvimento das técnicas e tecnologia dessas culturas. Professor(a), mostre em um mapa a localização das áreas ocupadas pelos povos pré-coloniais do continente americano. É possível levantar hipóteses sobre eventuais contatos e influências entre eles, considerando barreiras geográficas, distâncias e diversidade de paisagens.",
+    "habilidade_codes": [
+      "EF06HI08"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 2º Bimestre\nUnidade: A Invenção do mundo clássico e o contraponto com outras Sociedades\nObjetos: Povos da antiguidade na África (egípcios), no Oriente Médio (Mesopotâmicos) e nas Américas (Pré-colombianos). Os povos indígenas originários do atual território brasileiro e seus hábitos culturais e sociais. Conteúdos relacionados: As grandes sociedades americanas antigas: Astecas, Maias e Incas e os povos indígenas do território brasileiro. Modos de vida na América. Sociedades da Mesoamérica: heranças cultural, social, econômica e científica desses povos. As sociedades Maia, Inca e Asteca. Os povos originários do Brasil.\nHabilidades: (EF06HI08) - Identificar os espaços territoriais ocupados e os aportes culturais, científicos, sociais e econômicos dos astecas, maias e incas e dos povos indígenas de diversas regiões brasileiras.\nSAEB: Não informado.\nOrientações: Esta habilidade consiste em mapear as grandes sociedades americanas antigas (Astecas, Maias e Incas) e os povos indígenas do território brasileiro, reconhecendo a herança cultural, social, econômica e científica desses povos. A localização geográfica deve destacar e distinguir o meio natural ocupado e os recursos disponíveis, relacionando-os aos desafios enfrentados e ao desenvolvimento das técnicas e tecnologia dessas culturas. Professor(a), mostre em um mapa a localização das áreas ocupadas pelos povos pré-coloniais do continente americano. É possível levantar hipóteses sobre eventuais contatos e influências entre eles, considerando barreiras geográficas, distâncias e diversidade de paisagens."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "A Invenção do mundo clássico e o contraponto com outras Sociedades",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI09) - Discutir o conceito de Antiguidade Clássica, seu alcance e limite na tradição ocidental, assim como os impactos sobre outras sociedades e culturas.",
+    "objeto_conhecimento": "O Ocidente Clássico: aspectos da cultura na Grécia e em Roma. Conteúdos relacionados: Sociedades antigas do Oriente: Mesopotâmia, Sumérios, Hebreus, Fenícios, Persas, China e Índia. A organização da vida coletiva dos povos antigos e suas heranças cultural, econômica, social e religiosa. Povos da antiguidade na África. Egito: a civilização do Rio Nilo. As funções do Faraó e seus colaboradores. A economia, a sociedade, a religião e a escrita na civilização egípcia.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), habilidade diz respeito a compreender que o conceito de Antiguidade Clássica é uma construção muito posterior à própria antiguidade, feita por humanistas e estudiosos europeus para os quais a herança cultural do Ocidente era tributária unicamente do mundo greco-romano. É um conceito excludente, que desconsidera outras sociedades complexas (inclusive europeias, como os etruscos e celtas) e limitante, pois avalia as culturas humanas sob um mesmo padrão material e cultural. A discussão do conceito requer o conhecimento dos aportes culturais da Grécia e da Roma antigas. No desenvolvimento das aulas, explicite aprendizagens relativas à Antiguidade Clássica: Quais os aspectos marcantes da cultura da Grécia e da Roma antigas? Que legado nos deixaram? Por que usamos o termo Antiguidade? Os gregos e os romanos se consideravam “antigos”? Quem os considerou assim? Pode-se considerar que um povo é mais evoluído do que outro? Por quê? Que critérios se usa para fazer essa avaliação?",
+    "habilidade_codes": [
+      "EF06HI09"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 2º Bimestre\nUnidade: A Invenção do mundo clássico e o contraponto com outras Sociedades\nObjetos: O Ocidente Clássico: aspectos da cultura na Grécia e em Roma. Conteúdos relacionados: Sociedades antigas do Oriente: Mesopotâmia, Sumérios, Hebreus, Fenícios, Persas, China e Índia. A organização da vida coletiva dos povos antigos e suas heranças cultural, econômica, social e religiosa. Povos da antiguidade na África. Egito: a civilização do Rio Nilo. As funções do Faraó e seus colaboradores. A economia, a sociedade, a religião e a escrita na civilização egípcia.\nHabilidades: (EF06HI09) - Discutir o conceito de Antiguidade Clássica, seu alcance e limite na tradição ocidental, assim como os impactos sobre outras sociedades e culturas.\nSAEB: Não informado.\nOrientações: Professor(a), habilidade diz respeito a compreender que o conceito de Antiguidade Clássica é uma construção muito posterior à própria antiguidade, feita por humanistas e estudiosos europeus para os quais a herança cultural do Ocidente era tributária unicamente do mundo greco-romano. É um conceito excludente, que desconsidera outras sociedades complexas (inclusive europeias, como os etruscos e celtas) e limitante, pois avalia as culturas humanas sob um mesmo padrão material e cultural. A discussão do conceito requer o conhecimento dos aportes culturais da Grécia e da Roma antigas. No desenvolvimento das aulas, explicite aprendizagens relativas à Antiguidade Clássica: Quais os aspectos marcantes da cultura da Grécia e da Roma antigas? Que legado nos deixaram? Por que usamos o termo Antiguidade? Os gregos e os romanos se consideravam “antigos”? Quem os considerou assim? Pode-se considerar que um povo é mais evoluído do que outro? Por quê? Que critérios se usa para fazer essa avaliação?"
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Lógicas de organização política",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI10X) - Explicar a formação da Grécia Antiga, com ênfase na formação da pólis e nas transformações políticas, sociais, culturais e seu legado para a contemporaneidade.",
+    "objeto_conhecimento": "As noções de cidadania e política na Grécia e em Roma. Conteúdos relacionados: A Grécia Antiga e sua formação: Período Pré- Homérico, Período Homérico e Período Arcaico. As cidades-estados gregas: Esparta e Atenas. Esparta: um Estado militar fortificado. Atenas: o nascimento da democracia. Período Clássico: a filosofia grega, os jogos olímpicos, expansão militar e síntese cultural. As mulheres na Grécia. A religião, a História, a medicina e a arte na Grécia Antiga.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), o objetivo desta habilidade é explicar como a dissolução das aldeias agrícolas (genos), com terras de uso coletivo e sob a autoridade de um chefe-família, levou à formação das cidades-estados gregas (pólis), com hierarquia social complexa, propriedade privada, economia mercantil dinâmica e vida política com participação dos cidadãos. No desenvolvimento das aulas você poderá utilizar mapas do Mediterrâneo Oriental, para que o estudante possa realizar com a sua ajuda, uma investigação geográfica da Península Balcânica e regiões no entorno do mar Egeu. Para ampliar as aprendizagens explique sobre os aspectos geográficos que contribuíram para a formação das cidades-estados gregas e as relações marítimas com regiões vizinhas que possibilitaram a expansão e o domínio da cultura grega.",
+    "habilidade_codes": [
+      "EF06HI10X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 2º Bimestre\nUnidade: Lógicas de organização política\nObjetos: As noções de cidadania e política na Grécia e em Roma. Conteúdos relacionados: A Grécia Antiga e sua formação: Período Pré- Homérico, Período Homérico e Período Arcaico. As cidades-estados gregas: Esparta e Atenas. Esparta: um Estado militar fortificado. Atenas: o nascimento da democracia. Período Clássico: a filosofia grega, os jogos olímpicos, expansão militar e síntese cultural. As mulheres na Grécia. A religião, a História, a medicina e a arte na Grécia Antiga.\nHabilidades: (EF06HI10X) - Explicar a formação da Grécia Antiga, com ênfase na formação da pólis e nas transformações políticas, sociais, culturais e seu legado para a contemporaneidade.\nSAEB: Não informado.\nOrientações: Professor(a), o objetivo desta habilidade é explicar como a dissolução das aldeias agrícolas (genos), com terras de uso coletivo e sob a autoridade de um chefe-família, levou à formação das cidades-estados gregas (pólis), com hierarquia social complexa, propriedade privada, economia mercantil dinâmica e vida política com participação dos cidadãos. No desenvolvimento das aulas você poderá utilizar mapas do Mediterrâneo Oriental, para que o estudante possa realizar com a sua ajuda, uma investigação geográfica da Península Balcânica e regiões no entorno do mar Egeu. Para ampliar as aprendizagens explique sobre os aspectos geográficos que contribuíram para a formação das cidades-estados gregas e as relações marítimas com regiões vizinhas que possibilitaram a expansão e o domínio da cultura grega."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Lógicas de organização política",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI11X) - Caracterizar o processo de formação da Roma Antiga e suas configurações sociais e políticas nos períodos monárquico, republicano e imperial.",
+    "objeto_conhecimento": "Domínios e expansão das culturas grega e romana. Conteúdos relacionados: Roma Antiga e suas origens lendárias. O período monárquico (753 a.C a 509 a.C.). A República (509 a.C. a 27 a.C.). As lutas entre plebeus e patrícios. O nascimento do Direito romano. As conquistas romanas e suas consequências.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Esta habilidade requer a explicação de quais fatores econômicos e sociais que levaram Roma a se transformar de uma aldeia sob autoridade de um rei em uma cidade imperial governada por um Senado, e compreender o funcionamento da República romana. Professor(a), para desenvolver as aulas você poderá utilizar mapas da bacia do Mediterrâneo para mostrar a localização de Roma e a proximidade geográfica com a Grécia, além de mostrar a possibilidade de acesso marítimo, bem como com outros povos (Egito, Palestina etc.). Pode-se, ainda, aprofundar o conteúdo da habilidade, explicitando para os estudantes como as guerras de conquistas geraram conflitos e tensões sociais e políticas que acabaram por transformar a República em Império.",
+    "habilidade_codes": [
+      "EF06HI11X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 3º Bimestre\nUnidade: Lógicas de organização política\nObjetos: Domínios e expansão das culturas grega e romana. Conteúdos relacionados: Roma Antiga e suas origens lendárias. O período monárquico (753 a.C a 509 a.C.). A República (509 a.C. a 27 a.C.). As lutas entre plebeus e patrícios. O nascimento do Direito romano. As conquistas romanas e suas consequências.\nHabilidades: (EF06HI11X) - Caracterizar o processo de formação da Roma Antiga e suas configurações sociais e políticas nos períodos monárquico, republicano e imperial.\nSAEB: Não informado.\nOrientações: Esta habilidade requer a explicação de quais fatores econômicos e sociais que levaram Roma a se transformar de uma aldeia sob autoridade de um rei em uma cidade imperial governada por um Senado, e compreender o funcionamento da República romana. Professor(a), para desenvolver as aulas você poderá utilizar mapas da bacia do Mediterrâneo para mostrar a localização de Roma e a proximidade geográfica com a Grécia, além de mostrar a possibilidade de acesso marítimo, bem como com outros povos (Egito, Palestina etc.). Pode-se, ainda, aprofundar o conteúdo da habilidade, explicitando para os estudantes como as guerras de conquistas geraram conflitos e tensões sociais e políticas que acabaram por transformar a República em Império."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Lógicas de organização política",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI12X) - Associar o conceito de cidadania a dinâmicas de inclusão e exclusão na Grécia e Roma antigas, contextualizando em nossa sociedade atual.",
+    "objeto_conhecimento": "Significados do conceito de “império” e as lógicas de conquista, conflito e negociação dessa forma de organização política. Conteúdos relacionados: Roma Antiga e suas origens lendárias. O período monárquico (753 a.C a 509 a.C.). A República (509 a.C. a 27 a.C.). As lutas entre plebeus e patrícios. O nascimento do Direito romano. As conquistas romanas e suas consequências.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), esta habilidade diz respeito a compreender que cidadania não é uma definição estanque, mas um conceito histórico e que, seu sentido variou no tempo e no espaço, incluindo sua abrangência e permeabilidade. Proponha para os estudantes uma pesquisa comparativa sobre como era a cidadania na Grécia e Roma antigas e nas sociedades atuais, permitindo aos estudantes a compreensão de que, na História, a comunidade cidadã nunca foi igualitária nem harmônica, mas, ao contrário, sempre oscilou em meio a desigualdades sociais e disputas internas. Mostre que a cidadania implica sentimento comunitário, de pertencimento e inclusão no conjunto de direitos civis, políticos e econômicos. O tema permite estabelecer conexões com o presente, destacando a longa luta pela extensão da cidadania às classes menos favorecidas, demonstrando o quanto essa conquista é recente.",
+    "habilidade_codes": [
+      "EF06HI12X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 3º Bimestre\nUnidade: Lógicas de organização política\nObjetos: Significados do conceito de “império” e as lógicas de conquista, conflito e negociação dessa forma de organização política. Conteúdos relacionados: Roma Antiga e suas origens lendárias. O período monárquico (753 a.C a 509 a.C.). A República (509 a.C. a 27 a.C.). As lutas entre plebeus e patrícios. O nascimento do Direito romano. As conquistas romanas e suas consequências.\nHabilidades: (EF06HI12X) - Associar o conceito de cidadania a dinâmicas de inclusão e exclusão na Grécia e Roma antigas, contextualizando em nossa sociedade atual.\nSAEB: Não informado.\nOrientações: Professor(a), esta habilidade diz respeito a compreender que cidadania não é uma definição estanque, mas um conceito histórico e que, seu sentido variou no tempo e no espaço, incluindo sua abrangência e permeabilidade. Proponha para os estudantes uma pesquisa comparativa sobre como era a cidadania na Grécia e Roma antigas e nas sociedades atuais, permitindo aos estudantes a compreensão de que, na História, a comunidade cidadã nunca foi igualitária nem harmônica, mas, ao contrário, sempre oscilou em meio a desigualdades sociais e disputas internas. Mostre que a cidadania implica sentimento comunitário, de pertencimento e inclusão no conjunto de direitos civis, políticos e econômicos. O tema permite estabelecer conexões com o presente, destacando a longa luta pela extensão da cidadania às classes menos favorecidas, demonstrando o quanto essa conquista é recente."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Lógicas de organização política",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI13) - Conceituar “império” no mundo antigo, com vistas à análise das diferentes formas de equilíbrio e desequilíbrio entre as partes envolvidas.",
+    "objeto_conhecimento": "As diferentes formas de organização política na África: reinos, impérios, cidades-estados e sociedades linhageiras ou aldeias. Conteúdos relacionados: Significados do conceito de “império” e as lógicas de conquista, conflito e negociação dessa forma de organização política.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), conceituar é uma habilidade complexa para esse grupo etário. Espera-se que o estudante identifique a origem histórica do termo império e compreenda o significado primário do conceito: império é conquista e domínio sobre outro. O estudo das relações de Roma com suas províncias permite ao estudante analisar como o império se estruturava. Trabalhe com pesquisa sobre os diferentes significados do termo império e como este termo foi empregado na antiguidade nas relações políticas, econômicas ou culturais marcadas pelo domínio ou poder de um país sobre outros. De qualquer maneira, há um consenso de que o termo império indica um território geográfico extenso, não necessariamente contíguo, composto por sociedades ou culturas diversas sob a autoridade de um soberano (denominado imperador).",
+    "habilidade_codes": [
+      "EF06HI13"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 3º Bimestre\nUnidade: Lógicas de organização política\nObjetos: As diferentes formas de organização política na África: reinos, impérios, cidades-estados e sociedades linhageiras ou aldeias. Conteúdos relacionados: Significados do conceito de “império” e as lógicas de conquista, conflito e negociação dessa forma de organização política.\nHabilidades: (EF06HI13) - Conceituar “império” no mundo antigo, com vistas à análise das diferentes formas de equilíbrio e desequilíbrio entre as partes envolvidas.\nSAEB: Não informado.\nOrientações: Professor(a), conceituar é uma habilidade complexa para esse grupo etário. Espera-se que o estudante identifique a origem histórica do termo império e compreenda o significado primário do conceito: império é conquista e domínio sobre outro. O estudo das relações de Roma com suas províncias permite ao estudante analisar como o império se estruturava. Trabalhe com pesquisa sobre os diferentes significados do termo império e como este termo foi empregado na antiguidade nas relações políticas, econômicas ou culturais marcadas pelo domínio ou poder de um país sobre outros. De qualquer maneira, há um consenso de que o termo império indica um território geográfico extenso, não necessariamente contíguo, composto por sociedades ou culturas diversas sob a autoridade de um soberano (denominado imperador)."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Lógicas de organização política",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI14) - Identificar e analisar diferentes formas de contato, adaptação ou exclusão entre populações em diferentes tempos e espaços.",
+    "objeto_conhecimento": "A passagem do mundo antigo para o mundo medieval. A fragmentação do poder político na Idade Média. Conteúdos relacionados: O nascimento do Mundo Medieval. Os reinos germânicos. A Igreja e os reinos germânicos. A fragmentação do poder. O Império Bizantino. Cristianismo. O Islã e sua expansão. Maomé e o monoteísmo. Os muçulmanos na Península Ibérica e na África.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), identificar e analisar significa que o estudante deve perceber as relações entre os grupos populacionais envolvidos na passagem do mundo antigo para o mundo medieval (romanos, germânicos, hunos e, posteriormente, vikings, magiares e muçulmanos) e concluir como essas relações foram se alterando com o declínio do Império Romano, levando, por fim, à sua derrocada. Desenvolva suas aulas de forma que os estudantes possam estabelecer uma analogia entre as invasões bárbaras do século IV e V e a questão atual da crise dos refugiados para a Europa e outros continentes, para compreender que a migração de povos faz parte da História e conhecer suas motivações e desdobramentos pode servir de referência para as políticas internacionais contemporâneas.",
+    "habilidade_codes": [
+      "EF06HI14"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 3º Bimestre\nUnidade: Lógicas de organização política\nObjetos: A passagem do mundo antigo para o mundo medieval. A fragmentação do poder político na Idade Média. Conteúdos relacionados: O nascimento do Mundo Medieval. Os reinos germânicos. A Igreja e os reinos germânicos. A fragmentação do poder. O Império Bizantino. Cristianismo. O Islã e sua expansão. Maomé e o monoteísmo. Os muçulmanos na Península Ibérica e na África.\nHabilidades: (EF06HI14) - Identificar e analisar diferentes formas de contato, adaptação ou exclusão entre populações em diferentes tempos e espaços.\nSAEB: Não informado.\nOrientações: Professor(a), identificar e analisar significa que o estudante deve perceber as relações entre os grupos populacionais envolvidos na passagem do mundo antigo para o mundo medieval (romanos, germânicos, hunos e, posteriormente, vikings, magiares e muçulmanos) e concluir como essas relações foram se alterando com o declínio do Império Romano, levando, por fim, à sua derrocada. Desenvolva suas aulas de forma que os estudantes possam estabelecer uma analogia entre as invasões bárbaras do século IV e V e a questão atual da crise dos refugiados para a Europa e outros continentes, para compreender que a migração de povos faz parte da História e conhecer suas motivações e desdobramentos pode servir de referência para as políticas internacionais contemporâneas."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Lógicas de organização política",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI15) - Descrever as dinâmicas de circulação de pessoas, produtos e culturas no Mediterrâneo e seu significado.",
+    "objeto_conhecimento": "O Mediterrâneo como espaço de interação entre as sociedades da Europa, da África e do Oriente Médio. Conteúdos relacionados: Significados do conceito de “império” e as lógicas de conquista, conflito e negociação dessa forma de organização política.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), esta habilidade diz respeito a compreender de onde e para onde iam as mercadorias no Mediterrâneo, bem como que mercadorias eram essas, que caminhos e meios de transporte foram utilizados e que regiões e/ou continentes o comércio envolvia. Para responder a essas e outras perguntas, o estudante deve se apropriar da aprendizagem de leitura de mapas econômicos, o que envolve a observação atenta da representação gráfica de rotas comerciais, a identificação do espaço geográfico e a compreensão das legendas e ícones. Isso permite ao estudante compreender e descrever, por escrito ou oralmente, as interações entre diferentes sociedades conectadas por aquelas vias. Ressalte para a turma que a circulação de pessoas e produtos no Mediterrâneo também desempenhou um papel fundamental na disseminação e intercâmbio de culturas, conquistas territoriais, migrações, colonizações e o estabelecimento de rotas comerciais que promoveram o contato entre diferentes grupos étnicos, religiões e tradições culturais.",
+    "habilidade_codes": [
+      "EF06HI15"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 3º Bimestre\nUnidade: Lógicas de organização política\nObjetos: O Mediterrâneo como espaço de interação entre as sociedades da Europa, da África e do Oriente Médio. Conteúdos relacionados: Significados do conceito de “império” e as lógicas de conquista, conflito e negociação dessa forma de organização política.\nHabilidades: (EF06HI15) - Descrever as dinâmicas de circulação de pessoas, produtos e culturas no Mediterrâneo e seu significado.\nSAEB: Não informado.\nOrientações: Professor(a), esta habilidade diz respeito a compreender de onde e para onde iam as mercadorias no Mediterrâneo, bem como que mercadorias eram essas, que caminhos e meios de transporte foram utilizados e que regiões e/ou continentes o comércio envolvia. Para responder a essas e outras perguntas, o estudante deve se apropriar da aprendizagem de leitura de mapas econômicos, o que envolve a observação atenta da representação gráfica de rotas comerciais, a identificação do espaço geográfico e a compreensão das legendas e ícones. Isso permite ao estudante compreender e descrever, por escrito ou oralmente, as interações entre diferentes sociedades conectadas por aquelas vias. Ressalte para a turma que a circulação de pessoas e produtos no Mediterrâneo também desempenhou um papel fundamental na disseminação e intercâmbio de culturas, conquistas territoriais, migrações, colonizações e o estabelecimento de rotas comerciais que promoveram o contato entre diferentes grupos étnicos, religiões e tradições culturais."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Trabalho e Formas de Organização Social e Cultural",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI16X) - Caracterizar e comparar as dinâmicas de abastecimento e as formas de organização do trabalho e da vida social em diferentes sociedades e períodos, com destaque para as relações de conflito e poder entre senhores e servos.",
+    "objeto_conhecimento": "Senhores e servos no mundo antigo e no medieval. Escravização e trabalho livre em diferentes temporalidades e espaços (Roma Antiga, Europa medieval e África). Conteúdos relacionados: A expansão feudal. O crescimento da produção agrícola e o aumento populacional. O crescimento das cidades: criação de mercados, feiras e circulação de produtos para comércio. As corporações de ofício e a burguesia. A sociedade feudal. Mundo do trabalho: servidão, escravização, trabalho livre. Fome, Peste Negra e Revoltas populares. A Guerra dos Cem Anos. O fim do feudalismo.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), as habilidades de caracterizar e comparar exigem dos estudantes a mobilização de aprendizagens que lhes permitam elaborar uma análise mais abrangente e na qual eles possam identificar os marcos principais desses períodos históricos (apogeu do Império Romano, crise do escravismo, ruralização da economia e renascimento comercial) e diferenciar a distribuição de produtos, as relações sociais e de trabalho (escravismo, colonato e servidão) naqueles momentos.",
+    "habilidade_codes": [
+      "EF06HI16X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 4º Bimestre\nUnidade: Trabalho e Formas de Organização Social e Cultural\nObjetos: Senhores e servos no mundo antigo e no medieval. Escravização e trabalho livre em diferentes temporalidades e espaços (Roma Antiga, Europa medieval e África). Conteúdos relacionados: A expansão feudal. O crescimento da produção agrícola e o aumento populacional. O crescimento das cidades: criação de mercados, feiras e circulação de produtos para comércio. As corporações de ofício e a burguesia. A sociedade feudal. Mundo do trabalho: servidão, escravização, trabalho livre. Fome, Peste Negra e Revoltas populares. A Guerra dos Cem Anos. O fim do feudalismo.\nHabilidades: (EF06HI16X) - Caracterizar e comparar as dinâmicas de abastecimento e as formas de organização do trabalho e da vida social em diferentes sociedades e períodos, com destaque para as relações de conflito e poder entre senhores e servos.\nSAEB: Não informado.\nOrientações: Professor(a), as habilidades de caracterizar e comparar exigem dos estudantes a mobilização de aprendizagens que lhes permitam elaborar uma análise mais abrangente e na qual eles possam identificar os marcos principais desses períodos históricos (apogeu do Império Romano, crise do escravismo, ruralização da economia e renascimento comercial) e diferenciar a distribuição de produtos, as relações sociais e de trabalho (escravismo, colonato e servidão) naqueles momentos."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Trabalho e Formas de Organização Social e Cultural",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI17X) - Diferenciar escravidão, servidão e trabalho livre no mundo antigo, fazendo uma analogia com os tipos de trabalho na sociedade brasileira atual.",
+    "objeto_conhecimento": "Lógicas comerciais na Antiguidade romana e no mundo medieval. Conteúdos relacionados: A expansão feudal. O crescimento da produção agrícola e o aumento populacional. O crescimento das cidades: criação de mercados, feiras e circulação de produtos para comércio. As corporações de ofício e a burguesia. A sociedade feudal. Mundo do trabalho: servidão, escravização, trabalho livre. Fome, Peste Negra e Revoltas populares. A Guerra dos Cem Anos. O fim do feudalismo.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), esta habilidade é bastante complexa, pois ela requer que os estudantes diferenciem as formas de trabalho no mundo antigo e compreendam os conceitos no contexto histórico da época a qual se referem, pois esses termos recebem conceitos diferentes quando tratados no contexto da Idade Moderna. Para essa faixa etária, o importante é que eles entendam que o trabalho compulsório não define a escravização e que, no mundo antigo, havia trabalho livre não remunerado. Eles devem também perceber que o escravizado antigo não era, necessariamente, um negro africano já que a a escravização antiga não tinha uma identidade étnica nem racial e que sempre conviveu com outras formas de trabalho onde o poder do senhor sobre seu escravizado era grande, mas não ilimitado. Essas distinções são importantes para o estudante adquirir uma visão das sociedades humanas menos rígida e dualista, e que perceba nuances e relativize situações.",
+    "habilidade_codes": [
+      "EF06HI17X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 4º Bimestre\nUnidade: Trabalho e Formas de Organização Social e Cultural\nObjetos: Lógicas comerciais na Antiguidade romana e no mundo medieval. Conteúdos relacionados: A expansão feudal. O crescimento da produção agrícola e o aumento populacional. O crescimento das cidades: criação de mercados, feiras e circulação de produtos para comércio. As corporações de ofício e a burguesia. A sociedade feudal. Mundo do trabalho: servidão, escravização, trabalho livre. Fome, Peste Negra e Revoltas populares. A Guerra dos Cem Anos. O fim do feudalismo.\nHabilidades: (EF06HI17X) - Diferenciar escravidão, servidão e trabalho livre no mundo antigo, fazendo uma analogia com os tipos de trabalho na sociedade brasileira atual.\nSAEB: Não informado.\nOrientações: Professor(a), esta habilidade é bastante complexa, pois ela requer que os estudantes diferenciem as formas de trabalho no mundo antigo e compreendam os conceitos no contexto histórico da época a qual se referem, pois esses termos recebem conceitos diferentes quando tratados no contexto da Idade Moderna. Para essa faixa etária, o importante é que eles entendam que o trabalho compulsório não define a escravização e que, no mundo antigo, havia trabalho livre não remunerado. Eles devem também perceber que o escravizado antigo não era, necessariamente, um negro africano já que a a escravização antiga não tinha uma identidade étnica nem racial e que sempre conviveu com outras formas de trabalho onde o poder do senhor sobre seu escravizado era grande, mas não ilimitado. Essas distinções são importantes para o estudante adquirir uma visão das sociedades humanas menos rígida e dualista, e que perceba nuances e relativize situações."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Trabalho e Formas de Organização Social e Cultural",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI18X) - Analisar o papel da religião cristã na cultura e nos modos de organização social no período medieval, desconstruindo generalizações relacionados a esse período.",
+    "objeto_conhecimento": "O papel da religião cristã, dos mosteiros e da cultura na Idade Média. Conteúdos relacionados: O poder da Igreja. As Cruzadas.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), analisar o papel do cristianismo na cultura e sociedade medieval significa avaliar o poder da Igreja no controle e manutenção da unidade religiosa e mental da época. Para além desse aspecto, o estudante deve compreender o papel da Igreja medieval, em especial dos mosteiros, na preservação de manuscritos do mundo clássico e oriental, no desenvolvimento do pensamento filosófico e das ciências, na formação das primeiras universidades e nos avanços tecnológicos dos séculos XI e XII. Nas suas aulas, você poderá explorar os traços do cristianismo medieval no Brasil trazidos pelos colonizadores portugueses, relativos a aspectos religiosos como por exemplo o crescimento das cidades brasileiras à volta de uma igreja cujo santo padroeiro é festejado em feriado local.",
+    "habilidade_codes": [
+      "EF06HI18X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 4º Bimestre\nUnidade: Trabalho e Formas de Organização Social e Cultural\nObjetos: O papel da religião cristã, dos mosteiros e da cultura na Idade Média. Conteúdos relacionados: O poder da Igreja. As Cruzadas.\nHabilidades: (EF06HI18X) - Analisar o papel da religião cristã na cultura e nos modos de organização social no período medieval, desconstruindo generalizações relacionados a esse período.\nSAEB: Não informado.\nOrientações: Professor(a), analisar o papel do cristianismo na cultura e sociedade medieval significa avaliar o poder da Igreja no controle e manutenção da unidade religiosa e mental da época. Para além desse aspecto, o estudante deve compreender o papel da Igreja medieval, em especial dos mosteiros, na preservação de manuscritos do mundo clássico e oriental, no desenvolvimento do pensamento filosófico e das ciências, na formação das primeiras universidades e nos avanços tecnológicos dos séculos XI e XII. Nas suas aulas, você poderá explorar os traços do cristianismo medieval no Brasil trazidos pelos colonizadores portugueses, relativos a aspectos religiosos como por exemplo o crescimento das cidades brasileiras à volta de uma igreja cujo santo padroeiro é festejado em feriado local."
+  },
+  {
+    "grade": "6º Ano",
+    "grade_num": 6,
+    "level": "Ensino Fundamental",
+    "subject": "História",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Trabalho e Formas de Organização Social e Cultural",
+    "competencia": "Ciências Humanas",
+    "habilidade": "(EF06HI19X) - Descrever e analisar os diferentes papéis sociais das mulheres no mundo antigo e nas sociedades medievais, identificando as relações de poder e dominação relacionando com a contemporaneidade.",
+    "objeto_conhecimento": "O papel da religião cristã, dos mosteiros e da cultura na Idade Média. Conteúdos relacionados: As mulheres no mundo antigo, feudal e contemporâneo.",
+    "descritores_saeb": "Não informado.",
+    "orientacoes_pedagogicas": "Professor(a), descrever e analisar os papéis sociais das mulheres na Grécia, na Roma antiga e no mundo medieval exigem a leitura atenta e a percepção de nuances nas entrelinhas de poemas, contos populares, peças teatrais e na leitura crítica de imagens (relevos, esculturas, pinturas e iluminuras), uma vez que, nesses períodos, cabia à mulher o papel de esposa e mãe. Apesar da documentação existente desses períodos priorizar as mulheres dos altos estratos sociais, pode-se abranger mulheres de outros segmentos sociais – livres, escravizadas e servas – por meio da análise de fontes diversas, como desenhos, pinturas, esculturas, peças teatrais, poemas e contos populares, relatando, depois, o que se aprendeu. É importante que você mostre para os estudantes as mulheres nas diversas sociedades, para além da europeia, enfatizando a situação da mulher hoje no Brasil e em outras sociedades contemporâneas.",
+    "habilidade_codes": [
+      "EF06HI19X"
+    ],
+    "chunk_text": "Ensino Fundamental | 6º Ano | História | 4º Bimestre\nUnidade: Trabalho e Formas de Organização Social e Cultural\nObjetos: O papel da religião cristã, dos mosteiros e da cultura na Idade Média. Conteúdos relacionados: As mulheres no mundo antigo, feudal e contemporâneo.\nHabilidades: (EF06HI19X) - Descrever e analisar os diferentes papéis sociais das mulheres no mundo antigo e nas sociedades medievais, identificando as relações de poder e dominação relacionando com a contemporaneidade.\nSAEB: Não informado.\nOrientações: Professor(a), descrever e analisar os papéis sociais das mulheres na Grécia, na Roma antiga e no mundo medieval exigem a leitura atenta e a percepção de nuances nas entrelinhas de poemas, contos populares, peças teatrais e na leitura crítica de imagens (relevos, esculturas, pinturas e iluminuras), uma vez que, nesses períodos, cabia à mulher o papel de esposa e mãe. Apesar da documentação existente desses períodos priorizar as mulheres dos altos estratos sociais, pode-se abranger mulheres de outros segmentos sociais – livres, escravizadas e servas – por meio da análise de fontes diversas, como desenhos, pinturas, esculturas, peças teatrais, poemas e contos populares, relatando, depois, o que se aprendeu. É importante que você mostre para os estudantes as mulheres nas diversas sociedades, para além da europeia, enfatizando a situação da mulher hoje no Brasil e em outras sociedades contemporâneas."
+  }
+]

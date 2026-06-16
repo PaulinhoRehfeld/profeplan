@@ -1,0 +1,480 @@
+[
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA01A) - Resolver problemas com números naturais, envolvendo as noções de divisor e de múltiplo, podendo incluir máximo divisor comum ou mínimo múltiplo comum, por meio de estratégias diversas, sem a aplicação de algoritmos. (EF07MA01B) - Elaborar problemas com números naturais, envolvendo as noções de divisor e de múltiplo, podendo incluir máximo divisor comum ou mínimo múltiplo comum, por meio de estratégias diversas, sem a aplicação de algoritmos.",
+    "objeto_conhecimento": "Múltiplos e divisores de um número natural. Conteúdos relacionados: Retomando múltiplos e divisores de números naturais. Múltiplos e divisores de um número inteiro. Problemas envolvendo múltiplos e divisores. Máximo divisor comum. Mínimo múltiplo comum.",
+    "descritores_saeb": "Resolver problemas com números naturais, envolvendo diferentes significados das operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "Para o desenvolvimento destas habilidades, não se deve esquecer de conceituar as noções de múltiplos e divisores em situações do cotidiano, para que de fato haja a apropriação do conhecimento e consolidação das habilidades. Os conceitos de múltiplos e divisores são fundamentais não apenas para a matemática escolar, mas também para entender a estrutura dos números em diversas situações cotidianas. Por exemplo, ao dividir uma pizza entre amigos ou ao calcular os dias da semana em que um determinado evento se repetirá, estamos utilizando esses conceitos. Compreender múltiplos e divisores nos permite resolver problemas de maneira mais eficiente e lógica.",
+    "habilidade_codes": [
+      "EF07MA01A",
+      "EF07MA01B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 1º Bimestre\nUnidade: Números.\nObjetos: Múltiplos e divisores de um número natural. Conteúdos relacionados: Retomando múltiplos e divisores de números naturais. Múltiplos e divisores de um número inteiro. Problemas envolvendo múltiplos e divisores. Máximo divisor comum. Mínimo múltiplo comum.\nHabilidades: (EF07MA01A) - Resolver problemas com números naturais, envolvendo as noções de divisor e de múltiplo, podendo incluir máximo divisor comum ou mínimo múltiplo comum, por meio de estratégias diversas, sem a aplicação de algoritmos. (EF07MA01B) - Elaborar problemas com números naturais, envolvendo as noções de divisor e de múltiplo, podendo incluir máximo divisor comum ou mínimo múltiplo comum, por meio de estratégias diversas, sem a aplicação de algoritmos.\nSAEB: Resolver problemas com números naturais, envolvendo diferentes significados das operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: Para o desenvolvimento destas habilidades, não se deve esquecer de conceituar as noções de múltiplos e divisores em situações do cotidiano, para que de fato haja a apropriação do conhecimento e consolidação das habilidades. Os conceitos de múltiplos e divisores são fundamentais não apenas para a matemática escolar, mas também para entender a estrutura dos números em diversas situações cotidianas. Por exemplo, ao dividir uma pizza entre amigos ou ao calcular os dias da semana em que um determinado evento se repetirá, estamos utilizando esses conceitos. Compreender múltiplos e divisores nos permite resolver problemas de maneira mais eficiente e lógica."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA40MG) - Reconhecer a necessidade da ampliação do conjunto dos números naturais por meio de situações contextualizadas e/ou resolução de problemas. (EF07MA03) - Comparar e ordenar números inteiros em diferentes contextos, incluindo o histórico, associá-los a pontos da reta numérica e utilizá-los em situações que envolvam adição e subtração. (EF07MA41MG) - Operar com números inteiros: adicionar, multiplicar, subtrair, dividir, calcular potências e raiz n-ésima de números inteiros que são potências de n. (EF07MA04A) - Resolver problemas que envolvam operações com números inteiros. (EF07MA04B) - Elaborar problemas que envolvam operações com números inteiros.",
+    "objeto_conhecimento": "Números Inteiros: usos, história, ordenação, associação com pontos da reta numérica e operações. Conteúdos relacionados: Números Inteiros (Z). Origem e estruturação dos números inteiros. Representação geométrica dos números inteiros. Números opostos, módulo e comparações. Operações com números inteiros (Z). Expressões Numéricas.",
+    "descritores_saeb": "Identificar a localização de números inteiros na reta numérica. Efetuar cálculos com números inteiros, envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação). Resolver problema com números inteiros envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "Familiarizar os estudantes com o conjunto dos números inteiros, por meio de situações cotidianas onde é necessário a utilização dos mesmos. É importante a apresentação contextualizada e prática de situações problemas que envolvam operações com números inteiros, onde os estudantes percebam com naturalidade a necessidade da ampliação dos números naturais para os inteiros, bem como o processo de operar com os mesmos. Números negativos são essenciais para representar situações que envolvem falta, dívida ou temperaturas abaixo de zero. Eles são fundamentais em diversas áreas, da física à economia, ajudando-nos a descrever o mundo ao nosso redor de forma mais precisa. É importante levar em consideração que os estudantes desenvolvem, nos anos iniciais, uma ideia intuitiva de números negativos, uma vez que já trabalharam com situações que envolvem perdas em jogo ou variações de temperaturas, por exemplo. Converse com os estudantes sobre a história dos números negativos. Conte-lhes que somente no século XIX os números negativos foram interpretados como uma ampliação dos números naturais e incorporam as regras da aritmética. É a partir dessa perspectiva que os números inteiros devem ser abordados. Assim, os primeiros textos e atividades devem ter como objetivo conduzir os estudantes à percepção de que esses números, desde a sua origem, foram criados para atender às necessidades da humanidade em diferentes momentos históricos. Neste processo de apropriação do conceito e desenvolvimento de números inteiros, através da metodologia de atividade de situações problemas voltados à aprendizagem das operações de adição, subtração, multiplicação e divisão com números inteiros, explore situações de aprendizagem que levem o estudante a: ampliar e construir novos significados para essas quatro operações; resolver situações problemas; interpretar e utilizar diferentes representações dos números inteiros no dia a dia.",
+    "habilidade_codes": [
+      "EF07MA40MG",
+      "EF07MA03",
+      "EF07MA41MG",
+      "EF07MA04A",
+      "EF07MA04B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 1º Bimestre\nUnidade: Números.\nObjetos: Números Inteiros: usos, história, ordenação, associação com pontos da reta numérica e operações. Conteúdos relacionados: Números Inteiros (Z). Origem e estruturação dos números inteiros. Representação geométrica dos números inteiros. Números opostos, módulo e comparações. Operações com números inteiros (Z). Expressões Numéricas.\nHabilidades: (EF07MA40MG) - Reconhecer a necessidade da ampliação do conjunto dos números naturais por meio de situações contextualizadas e/ou resolução de problemas. (EF07MA03) - Comparar e ordenar números inteiros em diferentes contextos, incluindo o histórico, associá-los a pontos da reta numérica e utilizá-los em situações que envolvam adição e subtração. (EF07MA41MG) - Operar com números inteiros: adicionar, multiplicar, subtrair, dividir, calcular potências e raiz n-ésima de números inteiros que são potências de n. (EF07MA04A) - Resolver problemas que envolvam operações com números inteiros. (EF07MA04B) - Elaborar problemas que envolvam operações com números inteiros.\nSAEB: Identificar a localização de números inteiros na reta numérica. Efetuar cálculos com números inteiros, envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação). Resolver problema com números inteiros envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: Familiarizar os estudantes com o conjunto dos números inteiros, por meio de situações cotidianas onde é necessário a utilização dos mesmos. É importante a apresentação contextualizada e prática de situações problemas que envolvam operações com números inteiros, onde os estudantes percebam com naturalidade a necessidade da ampliação dos números naturais para os inteiros, bem como o processo de operar com os mesmos. Números negativos são essenciais para representar situações que envolvem falta, dívida ou temperaturas abaixo de zero. Eles são fundamentais em diversas áreas, da física à economia, ajudando-nos a descrever o mundo ao nosso redor de forma mais precisa. É importante levar em consideração que os estudantes desenvolvem, nos anos iniciais, uma ideia intuitiva de números negativos, uma vez que já trabalharam com situações que envolvem perdas em jogo ou variações de temperaturas, por exemplo. Converse com os estudantes sobre a história dos números negativos. Conte-lhes que somente no século XIX os números negativos foram interpretados como uma ampliação dos números naturais e incorporam as regras da aritmética. É a partir dessa perspectiva que os números inteiros devem ser abordados. Assim, os primeiros textos e atividades devem ter como objetivo conduzir os estudantes à percepção de que esses números, desde a sua origem, foram criados para atender às necessidades da humanidade em diferentes momentos históricos. Neste processo de apropriação do conceito e desenvolvimento de números inteiros, através da metodologia de atividade de situações problemas voltados à aprendizagem das operações de adição, subtração, multiplicação e divisão com números inteiros, explore situações de aprendizagem que levem o estudante a: ampliar e construir novos significados para essas quatro operações; resolver situações problemas; interpretar e utilizar diferentes representações dos números inteiros no dia a dia."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA42MG) - Reconhecer a necessidade da ampliação do conjunto dos números inteiros por meio de situações contextualizadas e/ou resolução de problemas. (EF07MA43MG) - Reconhecer, no contexto social, diferentes significados dos números racionais. (EF07MA44MG) - Identificar a representação decimal e fracionária de um número racional. (EF07MA45MG) - Operar com números racionais em forma decimal e fracionária: adicionar, multiplicar, subtrair, dividir e calcular potências e raiz n-ésima números racionais que são potências de n. (EF07MA05) - Resolver um mesmo problema utilizando diferentes algoritmos. (EF07MA06) - Reconhecer que as resoluções de um grupo de problemas que têm a mesma estrutura podem ser obtidas utilizando os mesmos procedimentos. (EF07MA07) - Representar por meio de um fluxograma os passos utilizados para resolver um grupo de problemas. (EF07MA08) - Comparar e ordenar frações associadas às ideias de partes de inteiros, resultado da divisão, razão e operador. (EF07MA09) - Utilizar, na resolução de problemas, a associação entre razão e fração, como a fração 2/3 para expressar a razão de duas partes de uma grandeza para três partes da mesma ou três partes de outra grandeza.",
+    "objeto_conhecimento": "Fração e seus significados: como parte de inteiros, resultado da divisão, razão e operador. Conteúdos relacionados: Os números racionais. Representação dos números racionais na reta numérica. Módulo de um número racional. Oposto ou simétrico de um número racional. Comparação de números racionais. Adição e subtração de números racionais. Multiplicação de números racionais. Divisão de números racionais. Potenciação de números racionais. Raiz quadrada de números racionais. Expressões numéricas com números racionais.",
+    "descritores_saeb": "Identificar fração como representação que pode estar associada a diferentes significados. Reconhecer as diferentes representações de um número racional. Efetuar cálculos que envolvam operações com números racionais (adição, subtração, multiplicação, divisão, potenciação). Identificar a localização de números racionais na reta numérica.",
+    "orientacoes_pedagogicas": "Essas habilidades compreendem o estudo das frações (menores e maiores que a unidade), associando-as ao resultado de uma divisão ou à ideia de parte de um todo implica em compreender, simultaneamente, que o traço da fração pode significar a divisão entre o numerador e o denominador e também como indicador de que um inteiro foi dividido em certo número de partes iguais (indicadas no denominador), sem sobrar resto, e que, dessas partes, foram tomadas algumas (indicadas no numerador). Propor aos estudantes uma roda de conversa e introduzir o trabalho do bimestre trazendo para a sala de aula ações do cotidiano como instrumento de discussão e resolução de problemas. Propor um projeto contemplando formas, ações, métodos e conclusão envolvendo os conjuntos numéricos e em especial os conjuntos dos números racionais. Podemos mostrar aos estudantes que trabalhar com Números Racionais (numeração decimal, frações, porcentagens, dízimas periódicas, dentre outros), proporciona-lhe uma melhor compreensão e atuação no mundo cotidiano. Reconhecer e resolver problemas envolvendo os números racionais, faz com que os estudantes ampliem a possibilidade de analisar situações relacionadas ao seu dia a dia, pois esses números estão presentes em grande parte da nossa vida como, por exemplo, em receitas culinárias, dosagem de materiais de limpeza e higiene, jornais e revistas (apresentação para análise de dados nas reportagens ou em gráficos e tabelas), problemas escolares, dentre outros. Sendo sua utilização muito ampla e significativa para os estudantes. O uso das frações hoje em dia é comum, porém houve um tempo em que registros de representações fracionárias não eram conhecidos. Todos nós fazemos medições das mais variadas grandezas e circunstâncias, tomamos as frações como uso e daí surge necessidade de medição e distribuição de quantidades. A apresentação dos resultados dos projetos, em grupos, deve ser feita com a participação de todos os membros do grupo.",
+    "habilidade_codes": [
+      "EF07MA42MG",
+      "EF07MA43MG",
+      "EF07MA44MG",
+      "EF07MA45MG",
+      "EF07MA05",
+      "EF07MA06",
+      "EF07MA07",
+      "EF07MA08",
+      "EF07MA09"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 1º Bimestre\nUnidade: Números.\nObjetos: Fração e seus significados: como parte de inteiros, resultado da divisão, razão e operador. Conteúdos relacionados: Os números racionais. Representação dos números racionais na reta numérica. Módulo de um número racional. Oposto ou simétrico de um número racional. Comparação de números racionais. Adição e subtração de números racionais. Multiplicação de números racionais. Divisão de números racionais. Potenciação de números racionais. Raiz quadrada de números racionais. Expressões numéricas com números racionais.\nHabilidades: (EF07MA42MG) - Reconhecer a necessidade da ampliação do conjunto dos números inteiros por meio de situações contextualizadas e/ou resolução de problemas. (EF07MA43MG) - Reconhecer, no contexto social, diferentes significados dos números racionais. (EF07MA44MG) - Identificar a representação decimal e fracionária de um número racional. (EF07MA45MG) - Operar com números racionais em forma decimal e fracionária: adicionar, multiplicar, subtrair, dividir e calcular potências e raiz n-ésima números racionais que são potências de n. (EF07MA05) - Resolver um mesmo problema utilizando diferentes algoritmos. (EF07MA06) - Reconhecer que as resoluções de um grupo de problemas que têm a mesma estrutura podem ser obtidas utilizando os mesmos procedimentos. (EF07MA07) - Representar por meio de um fluxograma os passos utilizados para resolver um grupo de problemas. (EF07MA08) - Comparar e ordenar frações associadas às ideias de partes de inteiros, resultado da divisão, razão e operador. (EF07MA09) - Utilizar, na resolução de problemas, a associação entre razão e fração, como a fração 2/3 para expressar a razão de duas partes de uma grandeza para três partes da mesma ou três partes de outra grandeza.\nSAEB: Identificar fração como representação que pode estar associada a diferentes significados. Reconhecer as diferentes representações de um número racional. Efetuar cálculos que envolvam operações com números racionais (adição, subtração, multiplicação, divisão, potenciação). Identificar a localização de números racionais na reta numérica.\nOrientações: Essas habilidades compreendem o estudo das frações (menores e maiores que a unidade), associando-as ao resultado de uma divisão ou à ideia de parte de um todo implica em compreender, simultaneamente, que o traço da fração pode significar a divisão entre o numerador e o denominador e também como indicador de que um inteiro foi dividido em certo número de partes iguais (indicadas no denominador), sem sobrar resto, e que, dessas partes, foram tomadas algumas (indicadas no numerador). Propor aos estudantes uma roda de conversa e introduzir o trabalho do bimestre trazendo para a sala de aula ações do cotidiano como instrumento de discussão e resolução de problemas. Propor um projeto contemplando formas, ações, métodos e conclusão envolvendo os conjuntos numéricos e em especial os conjuntos dos números racionais. Podemos mostrar aos estudantes que trabalhar com Números Racionais (numeração decimal, frações, porcentagens, dízimas periódicas, dentre outros), proporciona-lhe uma melhor compreensão e atuação no mundo cotidiano. Reconhecer e resolver problemas envolvendo os números racionais, faz com que os estudantes ampliem a possibilidade de analisar situações relacionadas ao seu dia a dia, pois esses números estão presentes em grande parte da nossa vida como, por exemplo, em receitas culinárias, dosagem de materiais de limpeza e higiene, jornais e revistas (apresentação para análise de dados nas reportagens ou em gráficos e tabelas), problemas escolares, dentre outros. Sendo sua utilização muito ampla e significativa para os estudantes. O uso das frações hoje em dia é comum, porém houve um tempo em que registros de representações fracionárias não eram conhecidos. Todos nós fazemos medições das mais variadas grandezas e circunstâncias, tomamos as frações como uso e daí surge necessidade de medição e distribuição de quantidades. A apresentação dos resultados dos projetos, em grupos, deve ser feita com a participação de todos os membros do grupo."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA10) - Comparar e ordenar números racionais em diferentes contextos e associá-los a pontos da reta numérica. (EF07MA11) - Compreender e utilizar a multiplicação e a divisão de números racionais, a relação entre elas e suas propriedades operatórias. (EF07MA12A) - resolver problemas que envolvam as operações com números racionais. (EF07MA12B) - Elaborar problemas que envolvam as operações com números racionais.",
+    "objeto_conhecimento": "Números racionais na representação fracionária e na decimal: usos, ordenação e associação com pontos da reta numérica e operações. Conteúdos relacionados: Os números racionais. Representação dos números racionais na reta numérica. Módulo de um número racional. Oposto ou simétrico de um número racional. Comparação de números racionais. Adição e subtração de números racionais. Multiplicação de números racionais. Divisão de números racionais. Potenciação de números racionais. Raiz quadrada de números racionais. Expressões numéricas com números racionais.",
+    "descritores_saeb": "Identificar a localização de números racionais na reta numérica. Efetuar cálculos que envolvam operações com números racionais (adição, subtração, multiplicação, divisão, potenciação). Resolver problemas com números racionais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "Essas habilidades compreendem o estudo sobre o conjunto dos números racionais. Busca-se uma ampliação dos conjuntos numéricos, sendo relevante dar ênfase às diferentes representações que um mesmo número pode ter: fracionária, decimal e percentual. Essas representações tomarão sentido à medida que forem contextualizadas e relacionadas entre si. Elaborar uma revisão das sobre os números naturais e inteiros envolvendo as operações básicas da Matemática. Sugerir aos estudantes escreverem as respostas no quadro e, com base nesses exemplos, introduza o conceito de fração com ideia de parte e todo, explicando como é feita a leitura de frações. Pedir a turma para formar grupos de quatro estudantes e propor a construção de um projeto onde o tema escolhido por eles aborde os números racionais, conceito e aplicação. Debater com os estudantes em sala de aula: todo número inteiro é racional, mas nem todo número racional é inteiro. Pedir aos estudantes que realizem as atividades dos números racionais apresentadas e, depois, que localizem o resultado obtido em uma reta numérica que contenha uma escala com números inteiros para auxiliar na resolução das demais atividades. Na construção do projeto, sugerir a abordagem e aplicação como forma de significar o aprendizado dos números racionais na vida. Explicitar a importância do aprendizado de frações e a transformação em números racionais. A conclusão deve ser apresentada pelos grupos e avaliados por eles como forma de aprimorar a criticidade.",
+    "habilidade_codes": [
+      "EF07MA10",
+      "EF07MA11",
+      "EF07MA12A",
+      "EF07MA12B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 1º Bimestre\nUnidade: Números.\nObjetos: Números racionais na representação fracionária e na decimal: usos, ordenação e associação com pontos da reta numérica e operações. Conteúdos relacionados: Os números racionais. Representação dos números racionais na reta numérica. Módulo de um número racional. Oposto ou simétrico de um número racional. Comparação de números racionais. Adição e subtração de números racionais. Multiplicação de números racionais. Divisão de números racionais. Potenciação de números racionais. Raiz quadrada de números racionais. Expressões numéricas com números racionais.\nHabilidades: (EF07MA10) - Comparar e ordenar números racionais em diferentes contextos e associá-los a pontos da reta numérica. (EF07MA11) - Compreender e utilizar a multiplicação e a divisão de números racionais, a relação entre elas e suas propriedades operatórias. (EF07MA12A) - resolver problemas que envolvam as operações com números racionais. (EF07MA12B) - Elaborar problemas que envolvam as operações com números racionais.\nSAEB: Identificar a localização de números racionais na reta numérica. Efetuar cálculos que envolvam operações com números racionais (adição, subtração, multiplicação, divisão, potenciação). Resolver problemas com números racionais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: Essas habilidades compreendem o estudo sobre o conjunto dos números racionais. Busca-se uma ampliação dos conjuntos numéricos, sendo relevante dar ênfase às diferentes representações que um mesmo número pode ter: fracionária, decimal e percentual. Essas representações tomarão sentido à medida que forem contextualizadas e relacionadas entre si. Elaborar uma revisão das sobre os números naturais e inteiros envolvendo as operações básicas da Matemática. Sugerir aos estudantes escreverem as respostas no quadro e, com base nesses exemplos, introduza o conceito de fração com ideia de parte e todo, explicando como é feita a leitura de frações. Pedir a turma para formar grupos de quatro estudantes e propor a construção de um projeto onde o tema escolhido por eles aborde os números racionais, conceito e aplicação. Debater com os estudantes em sala de aula: todo número inteiro é racional, mas nem todo número racional é inteiro. Pedir aos estudantes que realizem as atividades dos números racionais apresentadas e, depois, que localizem o resultado obtido em uma reta numérica que contenha uma escala com números inteiros para auxiliar na resolução das demais atividades. Na construção do projeto, sugerir a abordagem e aplicação como forma de significar o aprendizado dos números racionais na vida. Explicitar a importância do aprendizado de frações e a transformação em números racionais. A conclusão deve ser apresentada pelos grupos e avaliados por eles como forma de aprimorar a criticidade."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Probabilidade e Estatística.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA34) - Planejar e realizar experimentos aleatórios ou simulações que envolvem cálculo de probabilidades ou estimativas por meio de frequência de ocorrências.",
+    "objeto_conhecimento": "Experimentos aleatórios: espaço amostral e estimativa de probabilidade por meio de frequência de ocorrências. Conteúdos relacionados: Probabilidade. Cálculo de probabilidades.",
+    "descritores_saeb": "N/A",
+    "orientacoes_pedagogicas": "Introduzir o conceito de probabilidade como medida de chance de um evento acontecer. Reforçar com os estudantes sobre o papel fundamental que a probabilidade desempenha em nossas vidas diárias, pois nos ajuda a tomar decisões informadas em face da incerteza. Comentar com eles sobre algumas áreas em que a probabilidade é importante. Explicar que compreender e usar conceitos probabilísticos pode nos ajudar a tomar decisões mais informadas, lidar com a incerteza e avaliar riscos em diversas áreas de nossas vidas.",
+    "habilidade_codes": [
+      "EF07MA34"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 2º Bimestre\nUnidade: Probabilidade e Estatística.\nObjetos: Experimentos aleatórios: espaço amostral e estimativa de probabilidade por meio de frequência de ocorrências. Conteúdos relacionados: Probabilidade. Cálculo de probabilidades.\nHabilidades: (EF07MA34) - Planejar e realizar experimentos aleatórios ou simulações que envolvem cálculo de probabilidades ou estimativas por meio de frequência de ocorrências.\nSAEB: N/A\nOrientações: Introduzir o conceito de probabilidade como medida de chance de um evento acontecer. Reforçar com os estudantes sobre o papel fundamental que a probabilidade desempenha em nossas vidas diárias, pois nos ajuda a tomar decisões informadas em face da incerteza. Comentar com eles sobre algumas áreas em que a probabilidade é importante. Explicar que compreender e usar conceitos probabilísticos pode nos ajudar a tomar decisões mais informadas, lidar com a incerteza e avaliar riscos em diversas áreas de nossas vidas."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Probabilidade e Estatística.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA35) - Compreender, em contextos significativos, o significado de média estatística como indicador da tendência de uma pesquisa, calcular seu valor e relacioná-lo, intuitivamente, com a amplitude do conjunto de dados.",
+    "objeto_conhecimento": "Estatística: média e amplitude de um conjunto de dados. Conteúdos relacionados: Médias. Amplitude.",
+    "descritores_saeb": "N/A",
+    "orientacoes_pedagogicas": "Apresentar propostas que incentivam os estudantes a argumentarem e analisar diferentes situações envolvendo o cálculo de média aritmética para que possam, por exemplo, identificar os indicadores mais adequados para determinada situação ou, ainda, perceber que a mesma informação pode ser muito importante em um caso é irrelevante ou inadequada em outro.",
+    "habilidade_codes": [
+      "EF07MA35"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 2º Bimestre\nUnidade: Probabilidade e Estatística.\nObjetos: Estatística: média e amplitude de um conjunto de dados. Conteúdos relacionados: Médias. Amplitude.\nHabilidades: (EF07MA35) - Compreender, em contextos significativos, o significado de média estatística como indicador da tendência de uma pesquisa, calcular seu valor e relacioná-lo, intuitivamente, com a amplitude do conjunto de dados.\nSAEB: N/A\nOrientações: Apresentar propostas que incentivam os estudantes a argumentarem e analisar diferentes situações envolvendo o cálculo de média aritmética para que possam, por exemplo, identificar os indicadores mais adequados para determinada situação ou, ainda, perceber que a mesma informação pode ser muito importante em um caso é irrelevante ou inadequada em outro."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Probabilidade e Estatística.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA36) - Planejar e realizar pesquisa envolvendo tema da realidade social, identificando a necessidade de ser censitária ou de usar amostra, e interpretar os dados para comunicá-los por meio de relatório escrito, tabelas e gráficos, com o apoio de planilhas eletrônicas.",
+    "objeto_conhecimento": "Pesquisa amostral e pesquisa censitária. Planejamento de pesquisa, coleta e organização dos dados, construção de tabelas e gráficos e interpretação das informações. Conteúdos relacionados: Pesquisa estatística. População e amostra.",
+    "descritores_saeb": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos. Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.",
+    "orientacoes_pedagogicas": "A estatística está presente em, praticamente, todas as áreas do conhecimento e em nosso dia a dia, por isso é importante o professor contextualizar e abrir discussões sobre o conteúdo, há vários assuntos e conceitos que podem ser abordados despertando o interesse dos estudantes. Realizar pesquisa, organizar dados, realizar cálculos e, por fim, analisar os números obtidos para tomada de decisão são etapas importantes que o professor, além de ensinar o conteúdo, deve reforçar a compreensão e entendimento dos estudantes de como isso pode auxiliar o nosso mundo em que vivemos. A estatística é um conteúdo muito interessante, mas que envolve muitos cálculos e isso pode acabar desmotivando um pouco os estudantes. A proposta de utilizar o Excel, além de motivar os estudantes com uma ferramenta computacional e uma aula diferenciada, facilitará os cálculos e irá contribuir para que a aula seja mais dinâmica, oportunizando o professor a trabalhar melhor os conceitos teóricos.",
+    "habilidade_codes": [
+      "EF07MA36"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 2º Bimestre\nUnidade: Probabilidade e Estatística.\nObjetos: Pesquisa amostral e pesquisa censitária. Planejamento de pesquisa, coleta e organização dos dados, construção de tabelas e gráficos e interpretação das informações. Conteúdos relacionados: Pesquisa estatística. População e amostra.\nHabilidades: (EF07MA36) - Planejar e realizar pesquisa envolvendo tema da realidade social, identificando a necessidade de ser censitária ou de usar amostra, e interpretar os dados para comunicá-los por meio de relatório escrito, tabelas e gráficos, com o apoio de planilhas eletrônicas.\nSAEB: Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos. Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.\nOrientações: A estatística está presente em, praticamente, todas as áreas do conhecimento e em nosso dia a dia, por isso é importante o professor contextualizar e abrir discussões sobre o conteúdo, há vários assuntos e conceitos que podem ser abordados despertando o interesse dos estudantes. Realizar pesquisa, organizar dados, realizar cálculos e, por fim, analisar os números obtidos para tomada de decisão são etapas importantes que o professor, além de ensinar o conteúdo, deve reforçar a compreensão e entendimento dos estudantes de como isso pode auxiliar o nosso mundo em que vivemos. A estatística é um conteúdo muito interessante, mas que envolve muitos cálculos e isso pode acabar desmotivando um pouco os estudantes. A proposta de utilizar o Excel, além de motivar os estudantes com uma ferramenta computacional e uma aula diferenciada, facilitará os cálculos e irá contribuir para que a aula seja mais dinâmica, oportunizando o professor a trabalhar melhor os conceitos teóricos."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Probabilidade e Estatística.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA37) - Interpretar e analisar dados apresentados em gráfico de setores divulgados pela mídia e compreender quando é possível ou conveniente sua utilização.",
+    "objeto_conhecimento": "Gráficos de setores: interpretação, pertinência e construção para representar conjunto de dados. Conteúdos relacionados: Gráficos.",
+    "descritores_saeb": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos. Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.",
+    "orientacoes_pedagogicas": "Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, resolvendo e construindo os conceitos de leitura e interpretação de tabelas, gráficos, coleta de dados, organização e registro.",
+    "habilidade_codes": [
+      "EF07MA37"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 2º Bimestre\nUnidade: Probabilidade e Estatística.\nObjetos: Gráficos de setores: interpretação, pertinência e construção para representar conjunto de dados. Conteúdos relacionados: Gráficos.\nHabilidades: (EF07MA37) - Interpretar e analisar dados apresentados em gráfico de setores divulgados pela mídia e compreender quando é possível ou conveniente sua utilização.\nSAEB: Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos. Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.\nOrientações: Os estudantes devem ser instigados a pensar, argumentar, trabalhar em grupo, resolvendo e construindo os conceitos de leitura e interpretação de tabelas, gráficos, coleta de dados, organização e registro."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Algebra.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA13) - Compreender a ideia de variável, representada por letra ou símbolo, para expressar relação entre duas grandezas, diferenciando-a da ideia de incógnita. (EF07MA14) - Classificar sequências em recursivas e não recursivas, reconhecendo que o conceito de recursão está presente não apenas na matemática, mas também nas artes e na literatura. (EF07MA15) - Utilizar a simbologia algébrica para expressar regularidades encontradas em sequências numéricas. (EF07MA16) - Reconhecer se duas expressões algébricas obtidas para descrever a regularidade de uma mesma sequência numérica são ou não equivalentes. (EF07MA49MG) - Reconhecer uma equação de primeiro grau e utilizá-la na modelagem de diferentes situações. (EF07MA50MG) - Identificar a raiz de uma equação do primeiro grau. (EF07MA51MG) - Resolver uma equação do primeiro grau. (EF07MA18A) - Resolver problemas que possam ser representados por equações polinomiais de 1º grau, redutíveis à forma ax + b = c, fazendo uso das propriedades da igualdade. (EF07MA18B) - Elaborar problemas que possam ser representados por equações polinomiais de 1º grau, redutíveis à forma ax + b = c, fazendo uso das propriedades da igualdade.",
+    "objeto_conhecimento": "Linguagem algébrica: variável e incógnita. Equivalência de expressões algébricas: identificação da regularidade de uma sequência numérica. Equações polinomiais do 1º grau. Conteúdos relacionados: Linguagem algébrica e regularidades. Expressões algébricas. Valor numérico de uma expressão algébrica. Termos algébricos. Adição e multiplicação de termos algébricos. Equações. Raiz de uma equação. Resolução de equações do 1° grau com uma incógnita. Resolução de problemas.",
+    "descritores_saeb": "Calcular o valor numérico de uma expressão algébrica. Identificar a expressão algébrica que expressa uma regularidade observada em sequências de números ou figuras (padrões).",
+    "orientacoes_pedagogicas": "Para o desenvolvimento dessas habilidades é necessário que os estudantes estabeleçam conexões entre variável e função e entre incógnita e equação. As técnicas de resolução de equação e inequações, devem ser desenvolvidas como uma maneira de representar e resolver determinados tipos de problemas e não como objetos de estudo em si mesmo. Apresente aos estudantes a importância do aprendizado da álgebra para a construção deste importante conceito. Explique que a álgebra é a área da matemática que estuda os números desconhecidos e as diferentes maneiras de desvendá-los, utilizando símbolos para representar os números desconhecidos que são chamados de variáveis ou incógnitas. Trabalhe as habilidades que tratam de diferentes representações das equações polinomiais de 1º grau. Estas habilidades são uma ferramenta poderosa para resolver uma variedade de problemas do dia a dia. Através delas, podemos representar situações complexas de forma simples e modelar diferentes situações matemáticas. Explore o conceito dessas equações, suas complexidades, sua raiz ou a solução do problema e como elas se manifestam em situações comuns enfrentadas pelos estudantes. Embora essas equações possam parecer simples à primeira vista, elas podem apresentar complexidades que exigem habilidades matemáticas e raciocínio lógico para resolver. Por exemplo, problemas do mundo real muitas vezes exigem a formulação da equação a partir de uma situação descrita em linguagem comum. Isso requer a capacidade de traduzir o problema para uma linguagem matemática e, em seguida, resolver a equação resultante para encontrar a solução.",
+    "habilidade_codes": [
+      "EF07MA13",
+      "EF07MA14",
+      "EF07MA15",
+      "EF07MA16",
+      "EF07MA49MG",
+      "EF07MA50MG",
+      "EF07MA51MG",
+      "EF07MA18A",
+      "EF07MA18B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 2º Bimestre\nUnidade: Algebra.\nObjetos: Linguagem algébrica: variável e incógnita. Equivalência de expressões algébricas: identificação da regularidade de uma sequência numérica. Equações polinomiais do 1º grau. Conteúdos relacionados: Linguagem algébrica e regularidades. Expressões algébricas. Valor numérico de uma expressão algébrica. Termos algébricos. Adição e multiplicação de termos algébricos. Equações. Raiz de uma equação. Resolução de equações do 1° grau com uma incógnita. Resolução de problemas.\nHabilidades: (EF07MA13) - Compreender a ideia de variável, representada por letra ou símbolo, para expressar relação entre duas grandezas, diferenciando-a da ideia de incógnita. (EF07MA14) - Classificar sequências em recursivas e não recursivas, reconhecendo que o conceito de recursão está presente não apenas na matemática, mas também nas artes e na literatura. (EF07MA15) - Utilizar a simbologia algébrica para expressar regularidades encontradas em sequências numéricas. (EF07MA16) - Reconhecer se duas expressões algébricas obtidas para descrever a regularidade de uma mesma sequência numérica são ou não equivalentes. (EF07MA49MG) - Reconhecer uma equação de primeiro grau e utilizá-la na modelagem de diferentes situações. (EF07MA50MG) - Identificar a raiz de uma equação do primeiro grau. (EF07MA51MG) - Resolver uma equação do primeiro grau. (EF07MA18A) - Resolver problemas que possam ser representados por equações polinomiais de 1º grau, redutíveis à forma ax + b = c, fazendo uso das propriedades da igualdade. (EF07MA18B) - Elaborar problemas que possam ser representados por equações polinomiais de 1º grau, redutíveis à forma ax + b = c, fazendo uso das propriedades da igualdade.\nSAEB: Calcular o valor numérico de uma expressão algébrica. Identificar a expressão algébrica que expressa uma regularidade observada em sequências de números ou figuras (padrões).\nOrientações: Para o desenvolvimento dessas habilidades é necessário que os estudantes estabeleçam conexões entre variável e função e entre incógnita e equação. As técnicas de resolução de equação e inequações, devem ser desenvolvidas como uma maneira de representar e resolver determinados tipos de problemas e não como objetos de estudo em si mesmo. Apresente aos estudantes a importância do aprendizado da álgebra para a construção deste importante conceito. Explique que a álgebra é a área da matemática que estuda os números desconhecidos e as diferentes maneiras de desvendá-los, utilizando símbolos para representar os números desconhecidos que são chamados de variáveis ou incógnitas. Trabalhe as habilidades que tratam de diferentes representações das equações polinomiais de 1º grau. Estas habilidades são uma ferramenta poderosa para resolver uma variedade de problemas do dia a dia. Através delas, podemos representar situações complexas de forma simples e modelar diferentes situações matemáticas. Explore o conceito dessas equações, suas complexidades, sua raiz ou a solução do problema e como elas se manifestam em situações comuns enfrentadas pelos estudantes. Embora essas equações possam parecer simples à primeira vista, elas podem apresentar complexidades que exigem habilidades matemáticas e raciocínio lógico para resolver. Por exemplo, problemas do mundo real muitas vezes exigem a formulação da equação a partir de uma situação descrita em linguagem comum. Isso requer a capacidade de traduzir o problema para uma linguagem matemática e, em seguida, resolver a equação resultante para encontrar a solução."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Algebra.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA46MG) - Reconhecer a variação e dependência de grandezas para compreender a realidade. (EF07MA47MG) - Identificar grandezas diretamente proporcionais. (EF07MA48MG) - Identificar grandezas inversamente proporcionais. (EF07MA17A) - Resolver problemas que envolvam variação de proporcionalidade direta e de proporcionalidade inversa entre duas grandezas, utilizando sentença algébrica para expressar a relação entre elas. (EF07MA17B) - Elaborar problemas que envolvam variação de proporcionalidade direta e de proporcionalidade inversa entre duas grandezas, utilizando sentença algébrica para expressar a relação entre elas.",
+    "objeto_conhecimento": "Problemas envolvendo grandezas diretamente proporcionais e grandezas inversamente proporcionais. Conteúdos relacionados: Proporcionalidade. Razão. Proporção. Propriedade fundamental das proporções. Sequências de números diretamente proporcionais. Sequências de números inversamente proporcionais. Grandezas e proporcionalidade. Grandezas diretamente proporcionais. Grandezas inversamente proporcionais. Regra de três simples.",
+    "descritores_saeb": "Resolver problema que envolva variação proporcional, direta ou inversa, entre grandezas.",
+    "orientacoes_pedagogicas": "Utilizar processos e ferramentas matemáticas, inclusive tecnologias digitais disponíveis, para modelar e resolver problemas cotidianos, sociais e de outras áreas de conhecimento, validando estratégias e resultados. Enfrentar situações-problema em múltiplos contextos, incluindo-se situações imaginadas, não diretamente relacionadas com o aspecto prático-utilitário, expressar suas respostas e sintetizar conclusões, utilizando diferentes registros e linguagens (gráficos, tabelas, esquemas, além de texto escrito na linguagem materna e outras linguagens para descrever algoritmos, como fluxogramas, e dados). Apresente um trabalho sobre as Grandezas e proporcionalidade, estabelecendo os conceitos através de exercícios sobre as grandezas diretamente proporcionais e inversamente proporcionais. O estudante terá como resolver problemas que envolvam variação proporcional, direta ou inversa, entre grandezas, sabendo as propriedade fundamental das proporções. Estabelecer as relações entre as sequências de números diretamente proporcionais e inversamente proporcionais. A razão estabelece uma comparação entre duas grandezas, o coeficiente entre dois números. Uma sentença matemática que expressa uma igualdade entre duas razões é chamada proporção. Relembramos que a razão está relacionada à operação de divisão. Vale explicitar que quando duas grandezas são proporcionais, elas têm uma relação de proporção. Para se encontrar a razão entre duas grandezas, é necessário que as unidades de medida sejam as mesmas.",
+    "habilidade_codes": [
+      "EF07MA46MG",
+      "EF07MA47MG",
+      "EF07MA48MG",
+      "EF07MA17A",
+      "EF07MA17B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 2º Bimestre\nUnidade: Algebra.\nObjetos: Problemas envolvendo grandezas diretamente proporcionais e grandezas inversamente proporcionais. Conteúdos relacionados: Proporcionalidade. Razão. Proporção. Propriedade fundamental das proporções. Sequências de números diretamente proporcionais. Sequências de números inversamente proporcionais. Grandezas e proporcionalidade. Grandezas diretamente proporcionais. Grandezas inversamente proporcionais. Regra de três simples.\nHabilidades: (EF07MA46MG) - Reconhecer a variação e dependência de grandezas para compreender a realidade. (EF07MA47MG) - Identificar grandezas diretamente proporcionais. (EF07MA48MG) - Identificar grandezas inversamente proporcionais. (EF07MA17A) - Resolver problemas que envolvam variação de proporcionalidade direta e de proporcionalidade inversa entre duas grandezas, utilizando sentença algébrica para expressar a relação entre elas. (EF07MA17B) - Elaborar problemas que envolvam variação de proporcionalidade direta e de proporcionalidade inversa entre duas grandezas, utilizando sentença algébrica para expressar a relação entre elas.\nSAEB: Resolver problema que envolva variação proporcional, direta ou inversa, entre grandezas.\nOrientações: Utilizar processos e ferramentas matemáticas, inclusive tecnologias digitais disponíveis, para modelar e resolver problemas cotidianos, sociais e de outras áreas de conhecimento, validando estratégias e resultados. Enfrentar situações-problema em múltiplos contextos, incluindo-se situações imaginadas, não diretamente relacionadas com o aspecto prático-utilitário, expressar suas respostas e sintetizar conclusões, utilizando diferentes registros e linguagens (gráficos, tabelas, esquemas, além de texto escrito na linguagem materna e outras linguagens para descrever algoritmos, como fluxogramas, e dados). Apresente um trabalho sobre as Grandezas e proporcionalidade, estabelecendo os conceitos através de exercícios sobre as grandezas diretamente proporcionais e inversamente proporcionais. O estudante terá como resolver problemas que envolvam variação proporcional, direta ou inversa, entre grandezas, sabendo as propriedade fundamental das proporções. Estabelecer as relações entre as sequências de números diretamente proporcionais e inversamente proporcionais. A razão estabelece uma comparação entre duas grandezas, o coeficiente entre dois números. Uma sentença matemática que expressa uma igualdade entre duas razões é chamada proporção. Relembramos que a razão está relacionada à operação de divisão. Vale explicitar que quando duas grandezas são proporcionais, elas têm uma relação de proporção. Para se encontrar a razão entre duas grandezas, é necessário que as unidades de medida sejam as mesmas."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Números.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA38MG) - Resolver problemas que envolvam o cálculo de porcentagem. (EF07MA39MG) - Resolver problemas comparando preços à vista e a prazo. (EF07MA02A) - Resolver problemas que envolvam porcentagens, como os que lidam com acréscimos e decréscimos simples, utilizando estratégias pessoais, cálculo mental e/ou calculadora, no contexto de educação financeira, entre outros. (EF07MA02B) - Elaborar problemas que envolvam porcentagens, como os que lidam com acréscimos e decréscimos simples, utilizando estratégias pessoais, cálculo mental e/ou calculadora, no contexto de educação financeira, entre outros.",
+    "objeto_conhecimento": "Cálculo de porcentagens e de acréscimos e decréscimos simples. Conteúdos relacionados: Porcentagem e juro simples. Porcentagem. Cálculo de acréscimos e descontos.",
+    "descritores_saeb": "Resolver problema que envolva porcentagem.",
+    "orientacoes_pedagogicas": "Resolver e elaborar problemas que envolvam porcentagem implica em conhecer frações, suas representações e significados, incluindo a ideia de equivalência, que permitirá compreender que 10% é o mesmo que 10/100 ou 1/10, que 25% é o mesmo que 25/100 ou 1/4 e assim por diante. Para que os cálculos sejam realizados utilizando estratégias pessoais, cálculo mental e calculadora, será importante a compreensão do significado de calcular “1/10 de”; “1/4 de”; “1/2 de” uma quantidade. Os contextos de educação financeira, envolvendo a relação com sistema monetário (gastei 10% do previsto; paguei 50% à vista; usei 100% do meu dinheiro) envolve a relação das porcentagens com seu uso cotidiano. Para calcular a porcentagem, apresentamos três formas distintas: transformação da porcentagem em fração com denominador igual a 100; transformação da porcentagem em número decimal; regra de três. A escolha da forma como se deve resolver o problema é de cunho pessoal do estudante, sendo o mais adequado, adaptá-lo ao que requer o comando.",
+    "habilidade_codes": [
+      "EF07MA38MG",
+      "EF07MA39MG",
+      "EF07MA02A",
+      "EF07MA02B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Números.\nObjetos: Cálculo de porcentagens e de acréscimos e decréscimos simples. Conteúdos relacionados: Porcentagem e juro simples. Porcentagem. Cálculo de acréscimos e descontos.\nHabilidades: (EF07MA38MG) - Resolver problemas que envolvam o cálculo de porcentagem. (EF07MA39MG) - Resolver problemas comparando preços à vista e a prazo. (EF07MA02A) - Resolver problemas que envolvam porcentagens, como os que lidam com acréscimos e decréscimos simples, utilizando estratégias pessoais, cálculo mental e/ou calculadora, no contexto de educação financeira, entre outros. (EF07MA02B) - Elaborar problemas que envolvam porcentagens, como os que lidam com acréscimos e decréscimos simples, utilizando estratégias pessoais, cálculo mental e/ou calculadora, no contexto de educação financeira, entre outros.\nSAEB: Resolver problema que envolva porcentagem.\nOrientações: Resolver e elaborar problemas que envolvam porcentagem implica em conhecer frações, suas representações e significados, incluindo a ideia de equivalência, que permitirá compreender que 10% é o mesmo que 10/100 ou 1/10, que 25% é o mesmo que 25/100 ou 1/4 e assim por diante. Para que os cálculos sejam realizados utilizando estratégias pessoais, cálculo mental e calculadora, será importante a compreensão do significado de calcular “1/10 de”; “1/4 de”; “1/2 de” uma quantidade. Os contextos de educação financeira, envolvendo a relação com sistema monetário (gastei 10% do previsto; paguei 50% à vista; usei 100% do meu dinheiro) envolve a relação das porcentagens com seu uso cotidiano. Para calcular a porcentagem, apresentamos três formas distintas: transformação da porcentagem em fração com denominador igual a 100; transformação da porcentagem em número decimal; regra de três. A escolha da forma como se deve resolver o problema é de cunho pessoal do estudante, sendo o mais adequado, adaptá-lo ao que requer o comando."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA55MG) - Utilizar termos ângulo, retas paralelas, transversais e perpendiculares para descrever situações do mundo físico ou objetos. (EF07MA23) - Verificar relações entre os ângulos formados por retas paralelas cortadas por uma transversal, com e sem uso de softwares de geometria dinâmica.",
+    "objeto_conhecimento": "Relações entre os ângulos formados por retas paralelas intersectadas por uma transversal. Conteúdos relacionados: Retas e ângulos. Retas. Semirreta e segmento de reta. Posições relativas entre duas retas. O ângulo e seus elementos. Medida de ângulo. Como medir um ângulo utilizando o transferidor. Ângulo reto, ângulo agudo e ângulo obtuso. Construção de um ângulo com o transferidor. Construção de alguns ângulos com um par de esquadros.",
+    "descritores_saeb": "Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não-retos.",
+    "orientacoes_pedagogicas": "Para o desenvolvimento destas habilidades é interessante fomentar a prática. Utilizar de régua, transferidor, barbante e outros elementos para conceituar e visualizar os elementos da geometria. Sair da sala de aula e Identificar esses elementos no espaço físico também é uma boa sugestão. A finalidade desta habilidade é preparar os estudantes para entender e aplicar os conceitos relacionados aos ângulos formados por retas paralelas cortadas por uma transversal. Ao definir, claramente, os objetivos, os estudantes poderão focar em aspectos específicos do conteúdo, facilitando a assimilação e a aplicação prática desses conceitos em problemas matemáticos.",
+    "habilidade_codes": [
+      "EF07MA55MG",
+      "EF07MA23"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Geometria.\nObjetos: Relações entre os ângulos formados por retas paralelas intersectadas por uma transversal. Conteúdos relacionados: Retas e ângulos. Retas. Semirreta e segmento de reta. Posições relativas entre duas retas. O ângulo e seus elementos. Medida de ângulo. Como medir um ângulo utilizando o transferidor. Ângulo reto, ângulo agudo e ângulo obtuso. Construção de um ângulo com o transferidor. Construção de alguns ângulos com um par de esquadros.\nHabilidades: (EF07MA55MG) - Utilizar termos ângulo, retas paralelas, transversais e perpendiculares para descrever situações do mundo físico ou objetos. (EF07MA23) - Verificar relações entre os ângulos formados por retas paralelas cortadas por uma transversal, com e sem uso de softwares de geometria dinâmica.\nSAEB: Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não-retos.\nOrientações: Para o desenvolvimento destas habilidades é interessante fomentar a prática. Utilizar de régua, transferidor, barbante e outros elementos para conceituar e visualizar os elementos da geometria. Sair da sala de aula e Identificar esses elementos no espaço físico também é uma boa sugestão. A finalidade desta habilidade é preparar os estudantes para entender e aplicar os conceitos relacionados aos ângulos formados por retas paralelas cortadas por uma transversal. Ao definir, claramente, os objetivos, os estudantes poderão focar em aspectos específicos do conteúdo, facilitando a assimilação e a aplicação prática desses conceitos em problemas matemáticos."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA28) - Descrever, por escrito e por meio de um fluxograma, um algoritmo para a construção de um polígono regular (como quadrado e triângulo equilátero), conhecida a medida de seu lado.",
+    "objeto_conhecimento": "Polígonos regulares: quadrado e triângulo equilátero. Conteúdos relacionados: Polígonos regulares. Elementos de um polígono.",
+    "descritores_saeb": "Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares).",
+    "orientacoes_pedagogicas": "Resolver problemas utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares). Explorar também a composição de figuras planas formando ladrilhamentos e mosaicos e explorando a possibilidade ou não de formá-los com diferentes regiões poligonais regulares. Estabelecer ideia de figuras planas dentro do contexto escolar e proponha aos estudantes que encontrem figuras no contexto da sua residência e descreva-os.",
+    "habilidade_codes": [
+      "EF07MA28"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Geometria.\nObjetos: Polígonos regulares: quadrado e triângulo equilátero. Conteúdos relacionados: Polígonos regulares. Elementos de um polígono.\nHabilidades: (EF07MA28) - Descrever, por escrito e por meio de um fluxograma, um algoritmo para a construção de um polígono regular (como quadrado e triângulo equilátero), conhecida a medida de seu lado.\nSAEB: Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares).\nOrientações: Resolver problemas utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares). Explorar também a composição de figuras planas formando ladrilhamentos e mosaicos e explorando a possibilidade ou não de formá-los com diferentes regiões poligonais regulares. Estabelecer ideia de figuras planas dentro do contexto escolar e proponha aos estudantes que encontrem figuras no contexto da sua residência e descreva-os."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA56MG) - Utilizar as relações entre ângulos formados por retas paralelas com transversais para obter a soma dos ângulos internos e externos de um polígono. (EF07MA27) - Calcular medidas de ângulos internos de polígonos regulares, sem o uso de fórmulas, e estabelecer relações entre ângulos internos e externos de polígonos, preferencialmente vinculadas à construção de mosaicos e de ladrilhamentos.",
+    "objeto_conhecimento": "Ângulos internos e externos de um polígono. Polígonos regulares: quadrado e triângulo equilátero. Conteúdos relacionados: Polígonos. Elementos de um polígono. Soma das medidas dos ângulos internos de um polígono. Medidas de ângulos internos e externos de um polígono.",
+    "descritores_saeb": "Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares).",
+    "orientacoes_pedagogicas": "Um polígono é uma figura geométrica plana, fechada cujos lados são formados por linhas retas. Em cada vértice de um polígono, independentemente do número de lados, existe um ângulo interno e externo, ou seja, os ângulos de dentro e fora da figura fechada. Compreender a relação desses ângulos é bastante útil em diversos problemas da matemática e suas especificidades. Também é muito importante saber como calcular a soma dos ângulos internos. Isso pode ser feito por meio de uma simples relação entre as retas paralelas ou transversais, ou então pela divisão do polígono em triângulos. Verificar a relação entre as medidas do ângulo interno e do ângulo externo em cada vértice dele e explorar a soma das medidas de abertura dos ângulos internos e a soma das medidas de abertura dos ângulos externos.",
+    "habilidade_codes": [
+      "EF07MA56MG",
+      "EF07MA27"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Geometria.\nObjetos: Ângulos internos e externos de um polígono. Polígonos regulares: quadrado e triângulo equilátero. Conteúdos relacionados: Polígonos. Elementos de um polígono. Soma das medidas dos ângulos internos de um polígono. Medidas de ângulos internos e externos de um polígono.\nHabilidades: (EF07MA56MG) - Utilizar as relações entre ângulos formados por retas paralelas com transversais para obter a soma dos ângulos internos e externos de um polígono. (EF07MA27) - Calcular medidas de ângulos internos de polígonos regulares, sem o uso de fórmulas, e estabelecer relações entre ângulos internos e externos de polígonos, preferencialmente vinculadas à construção de mosaicos e de ladrilhamentos.\nSAEB: Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares).\nOrientações: Um polígono é uma figura geométrica plana, fechada cujos lados são formados por linhas retas. Em cada vértice de um polígono, independentemente do número de lados, existe um ângulo interno e externo, ou seja, os ângulos de dentro e fora da figura fechada. Compreender a relação desses ângulos é bastante útil em diversos problemas da matemática e suas especificidades. Também é muito importante saber como calcular a soma dos ângulos internos. Isso pode ser feito por meio de uma simples relação entre as retas paralelas ou transversais, ou então pela divisão do polígono em triângulos. Verificar a relação entre as medidas do ângulo interno e do ângulo externo em cada vértice dele e explorar a soma das medidas de abertura dos ângulos internos e a soma das medidas de abertura dos ângulos externos."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA24) - Construir triângulos, usando régua e compasso, reconhecer a condição de existência do triângulo quanto à medida dos lados e verificar que a soma das medidas dos ângulos internos de um triângulo é 180°. (EF07MA25) - Reconhecer a rigidez geométrica dos triângulos e suas aplicações, como na construção de estruturas arquitetônicas (telhados, estruturas metálicas e outras) ou nas artes plásticas. (EF07MA26) - Descrever, por escrito e por meio de um fluxograma, um algoritmo para a construção de um triângulo qualquer, conhecidas as medidas dos três lados.",
+    "objeto_conhecimento": "Triângulos: construção, condição de existência e soma das medidas dos ângulos internos. Conteúdos relacionados: Triângulo. Principais elementos de um triângulo. Construção de triângulos. Desigualdade triangular.",
+    "descritores_saeb": "Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares).",
+    "orientacoes_pedagogicas": "No trabalho com essas habilidades o polígono mais ressaltado é o triângulo. Deve-se fazer um trabalho analisando a soma das medidas de abertura dos ângulos internos, a construção do triângulo equilátero, a rigidez do triângulo e a condição de existência. Ao constatar concretamente que a soma das medidas de abertura dos ângulos internos de um triângulo é igual a 180°, dar a oportunidade aos estudantes de explorarem a soma das medidas de abertura dos ângulos internos de um polígono convexo qualquer. Explorar também a composição de figuras planas formando ladrilhamentos e mosaicos e explorando a possibilidade ou não de formá-los com diferentes regiões poligonais regulares.",
+    "habilidade_codes": [
+      "EF07MA24",
+      "EF07MA25",
+      "EF07MA26"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Geometria.\nObjetos: Triângulos: construção, condição de existência e soma das medidas dos ângulos internos. Conteúdos relacionados: Triângulo. Principais elementos de um triângulo. Construção de triângulos. Desigualdade triangular.\nHabilidades: (EF07MA24) - Construir triângulos, usando régua e compasso, reconhecer a condição de existência do triângulo quanto à medida dos lados e verificar que a soma das medidas dos ângulos internos de um triângulo é 180°. (EF07MA25) - Reconhecer a rigidez geométrica dos triângulos e suas aplicações, como na construção de estruturas arquitetônicas (telhados, estruturas metálicas e outras) ou nas artes plásticas. (EF07MA26) - Descrever, por escrito e por meio de um fluxograma, um algoritmo para a construção de um triângulo qualquer, conhecidas as medidas dos três lados.\nSAEB: Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares).\nOrientações: No trabalho com essas habilidades o polígono mais ressaltado é o triângulo. Deve-se fazer um trabalho analisando a soma das medidas de abertura dos ângulos internos, a construção do triângulo equilátero, a rigidez do triângulo e a condição de existência. Ao constatar concretamente que a soma das medidas de abertura dos ângulos internos de um triângulo é igual a 180°, dar a oportunidade aos estudantes de explorarem a soma das medidas de abertura dos ângulos internos de um polígono convexo qualquer. Explorar também a composição de figuras planas formando ladrilhamentos e mosaicos e explorando a possibilidade ou não de formá-los com diferentes regiões poligonais regulares."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Grandezas e medidas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA29A) - Resolver problemas que envolvam medidas de grandezas inseridos em contextos oriundos de situações cotidianas ou de outras áreas do conhecimento, reconhecendo que toda medida empírica é aproximada. (EF07MA29B) - Elaborar problemas que envolvam medidas de grandezas inseridos em contextos oriundos de situações cotidianas ou de outras áreas do conhecimento, reconhecendo que toda medida empírica é aproximada.",
+    "objeto_conhecimento": "Problemas envolvendo medições. Conteúdos relacionados: Situações que envolvem medições.",
+    "descritores_saeb": "Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Essas habilidades implicam na ampliação dos conhecimentos relacionados às grandezas e às medidas, iniciados nos anos anteriores, os estudantes devem fazer explorações relacionadas às unidades de medida de volume, de temperatura e de comprimento. Além disso, devem ser incentivados: a explorar grandezas e medidas que envolvem números racionais; a identificar e calcular a medida de abertura de um ângulo; a perceber grandezas diretamente proporcionais e grandezas inversamente proporcionais; a ampliar os conhecimentos sobre a velocidade média; a calcular a medida de perímetro e a medida de área de diferentes regiões planas; e a calcular a medida de volume de paralelepípedos ou blocos retangulares.",
+    "habilidade_codes": [
+      "EF07MA29A",
+      "EF07MA29B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Grandezas e medidas.\nObjetos: Problemas envolvendo medições. Conteúdos relacionados: Situações que envolvem medições.\nHabilidades: (EF07MA29A) - Resolver problemas que envolvam medidas de grandezas inseridos em contextos oriundos de situações cotidianas ou de outras áreas do conhecimento, reconhecendo que toda medida empírica é aproximada. (EF07MA29B) - Elaborar problemas que envolvam medidas de grandezas inseridos em contextos oriundos de situações cotidianas ou de outras áreas do conhecimento, reconhecendo que toda medida empírica é aproximada.\nSAEB: Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Essas habilidades implicam na ampliação dos conhecimentos relacionados às grandezas e às medidas, iniciados nos anos anteriores, os estudantes devem fazer explorações relacionadas às unidades de medida de volume, de temperatura e de comprimento. Além disso, devem ser incentivados: a explorar grandezas e medidas que envolvem números racionais; a identificar e calcular a medida de abertura de um ângulo; a perceber grandezas diretamente proporcionais e grandezas inversamente proporcionais; a ampliar os conhecimentos sobre a velocidade média; a calcular a medida de perímetro e a medida de área de diferentes regiões planas; e a calcular a medida de volume de paralelepípedos ou blocos retangulares."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Grandezas e medidas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA31) - Estabelecer expressões de cálculo de área de triângulos e de quadriláteros. (EF07MA32A) - Resolver problemas de cálculo de medida de área de figuras planas que podem ser decompostas por quadrados, retângulos e/ou triângulos, utilizando a equivalência entre áreas. (EF07MA32B) - Elaborar problemas de cálculo de medida de área de figuras planas que podem ser decompostas por quadrados, retângulos e/ou triângulos, utilizando a equivalência entre áreas.",
+    "objeto_conhecimento": "Equivalência de área de figuras planas: cálculo de áreas de figuras que podem ser decompostas por outras, cujas áreas podem ser facilmente determinadas como triângulos e quadriláteros. Conteúdos relacionados: Área. Área de polígonos. Área de um retângulo. Área de um paralelogramo. Área de um triângulo. Área de um trapézio. Área de um losango.",
+    "descritores_saeb": "Resolver problema envolvendo o cálculo de área de figuras planas.",
+    "orientacoes_pedagogicas": "Trabalhar com problemas envolvendo medições e equivalência de área de figuras planas que envolva cálculo de áreas de figuras que podem ser decompostas por outras, cujas áreas podem ser facilmente determinadas como triângulos e quadriláteros.",
+    "habilidade_codes": [
+      "EF07MA31",
+      "EF07MA32A",
+      "EF07MA32B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Grandezas e medidas.\nObjetos: Equivalência de área de figuras planas: cálculo de áreas de figuras que podem ser decompostas por outras, cujas áreas podem ser facilmente determinadas como triângulos e quadriláteros. Conteúdos relacionados: Área. Área de polígonos. Área de um retângulo. Área de um paralelogramo. Área de um triângulo. Área de um trapézio. Área de um losango.\nHabilidades: (EF07MA31) - Estabelecer expressões de cálculo de área de triângulos e de quadriláteros. (EF07MA32A) - Resolver problemas de cálculo de medida de área de figuras planas que podem ser decompostas por quadrados, retângulos e/ou triângulos, utilizando a equivalência entre áreas. (EF07MA32B) - Elaborar problemas de cálculo de medida de área de figuras planas que podem ser decompostas por quadrados, retângulos e/ou triângulos, utilizando a equivalência entre áreas.\nSAEB: Resolver problema envolvendo o cálculo de área de figuras planas.\nOrientações: Trabalhar com problemas envolvendo medições e equivalência de área de figuras planas que envolva cálculo de áreas de figuras que podem ser decompostas por outras, cujas áreas podem ser facilmente determinadas como triângulos e quadriláteros."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA22) - Construir circunferências, utilizando compasso, reconhecê-las como lugar geométrico e utilizá-las para fazer composições artísticas e resolver problemas que envolvam objetos equidistantes.",
+    "objeto_conhecimento": "A circunferência como lugar geométrico. Conteúdos relacionados: Circunferência.",
+    "descritores_saeb": "N/A",
+    "orientacoes_pedagogicas": "Ao construir recursos com o auxílio do compasso, os estudantes desenvolvem habilidades motoras finas e compreendem o conceito de lugar geométrico, identificando as características como o conjunto de pontos equidistantes de um centro. Para potencializar o aprendizado, recomendamos propor atividades que envolvam a criação de obras artísticas com recursos, estimulando a, e resolvendo problemas aplicados, como o planejamento de espaços criativos regulares em um jardim ou em estruturas arquitetônicas.",
+    "habilidade_codes": [
+      "EF07MA22"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 3º Bimestre\nUnidade: Geometria.\nObjetos: A circunferência como lugar geométrico. Conteúdos relacionados: Circunferência.\nHabilidades: (EF07MA22) - Construir circunferências, utilizando compasso, reconhecê-las como lugar geométrico e utilizá-las para fazer composições artísticas e resolver problemas que envolvam objetos equidistantes.\nSAEB: N/A\nOrientações: Ao construir recursos com o auxílio do compasso, os estudantes desenvolvem habilidades motoras finas e compreendem o conceito de lugar geométrico, identificando as características como o conjunto de pontos equidistantes de um centro. Para potencializar o aprendizado, recomendamos propor atividades que envolvam a criação de obras artísticas com recursos, estimulando a, e resolvendo problemas aplicados, como o planejamento de espaços criativos regulares em um jardim ou em estruturas arquitetônicas."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA33) - Estabelecer o número π como a razão entre a medida de uma circunferência e seu diâmetro, para compreender e resolver problemas, inclusive os de natureza histórica.",
+    "objeto_conhecimento": "Medida do comprimento da circunferência. Conteúdos relacionados: Perímetro ou comprimento de uma circunferência.",
+    "descritores_saeb": "Reconhecer círculo/ circunferência, seus elementos e algumas de suas relações.",
+    "orientacoes_pedagogicas": "No estudo dessa habilidade apresentar o número π como razão entre a medida de comprimento da circunferência e a medida de comprimento do diâmetro dela.",
+    "habilidade_codes": [
+      "EF07MA33"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas.\nObjetos: Medida do comprimento da circunferência. Conteúdos relacionados: Perímetro ou comprimento de uma circunferência.\nHabilidades: (EF07MA33) - Estabelecer o número π como a razão entre a medida de uma circunferência e seu diâmetro, para compreender e resolver problemas, inclusive os de natureza histórica.\nSAEB: Reconhecer círculo/ circunferência, seus elementos e algumas de suas relações.\nOrientações: No estudo dessa habilidade apresentar o número π como razão entre a medida de comprimento da circunferência e a medida de comprimento do diâmetro dela."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA52MG) - Reconhecer o plano cartesiano. (EF07MA53MG) - Localizar pontos no plano cartesiano. (EF07MA54MG) - Representar um conjunto de dados graficamente no plano cartesiano. (EF07MA19) - Realizar transformações de polígonos representados no plano cartesiano, decorrentes da multiplicação das coordenadas de seus vértices por um número inteiro. (EF07MA20) - Reconhecer e representar, no plano cartesiano, o simétrico de figuras em relação aos eixos e à origem.",
+    "objeto_conhecimento": "Transformações geométricas de polígonos no plano cartesiano: multiplicação das coordenadas por um número inteiro e obtenção de simétricos em relação aos eixos e à origem. Conteúdos relacionados: Os quadrantes do plano cartesiano. O polígono no plano cartesiano. Transformações geométricas no plano cartesiano. Representação de um polígono no plano cartesiano. Simetria em relação à origem do plano cartesiano. Simetria em relação aos eixos do plano cartesiano.",
+    "descritores_saeb": "Interpretar informações apresentadas por meio de coordenadas cartesianas.",
+    "orientacoes_pedagogicas": "Para desenvolver esta habilidade o estudante precisa compreender o conceito de plano cartesiano. Compreender o conceito de coordenadas. Localizar pontos no plano. Representar pontos do plano com pares ordenados de números inteiros. Compreender os conceitos de abscissa, ordenada e origem do plano cartesiano. Explorar a construção de figuras sobre o plano cartesiano. Realizar transformações de polígonos representados no plano cartesiano implica em multiplicar as coordenadas de seus vértices por um número inteiro.",
+    "habilidade_codes": [
+      "EF07MA52MG",
+      "EF07MA53MG",
+      "EF07MA54MG",
+      "EF07MA19",
+      "EF07MA20"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 4º Bimestre\nUnidade: Geometria.\nObjetos: Transformações geométricas de polígonos no plano cartesiano: multiplicação das coordenadas por um número inteiro e obtenção de simétricos em relação aos eixos e à origem. Conteúdos relacionados: Os quadrantes do plano cartesiano. O polígono no plano cartesiano. Transformações geométricas no plano cartesiano. Representação de um polígono no plano cartesiano. Simetria em relação à origem do plano cartesiano. Simetria em relação aos eixos do plano cartesiano.\nHabilidades: (EF07MA52MG) - Reconhecer o plano cartesiano. (EF07MA53MG) - Localizar pontos no plano cartesiano. (EF07MA54MG) - Representar um conjunto de dados graficamente no plano cartesiano. (EF07MA19) - Realizar transformações de polígonos representados no plano cartesiano, decorrentes da multiplicação das coordenadas de seus vértices por um número inteiro. (EF07MA20) - Reconhecer e representar, no plano cartesiano, o simétrico de figuras em relação aos eixos e à origem.\nSAEB: Interpretar informações apresentadas por meio de coordenadas cartesianas.\nOrientações: Para desenvolver esta habilidade o estudante precisa compreender o conceito de plano cartesiano. Compreender o conceito de coordenadas. Localizar pontos no plano. Representar pontos do plano com pares ordenados de números inteiros. Compreender os conceitos de abscissa, ordenada e origem do plano cartesiano. Explorar a construção de figuras sobre o plano cartesiano. Realizar transformações de polígonos representados no plano cartesiano implica em multiplicar as coordenadas de seus vértices por um número inteiro."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Geometria.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA21) - Reconhecer e construir figuras obtidas por simetrias de translação, rotação e reflexão, usando instrumentos de desenho ou softwares de geometria dinâmica e vincular esse estudo a representações planas de obras de arte, elementos arquitetônicos, entre outros.",
+    "objeto_conhecimento": "Simetrias de translação, rotação e reflexão. Conteúdos relacionados: Construções de figuras simétricas. Transformações geométricas: Isometrias; Translação; Rotação; Reflexão.",
+    "descritores_saeb": "Reconhecer círculo/ circunferência, seus elementos e algumas de suas relações.",
+    "orientacoes_pedagogicas": "Retomar com os estudantes a representação de pontos no plano cartesiano conhecendo suas coordenadas, dadas por pares ordenados (x, y), e identificando o quadrante ou sobre que eixo esses pontos se encontram. Aqui, o objetivo não é destacar o nome de cada coordenada (abscissa para x e ordenada para y), mas apresentar essa nomenclatura aos estudantes. Explorar também a identificação das coordenadas de pontos marcados no plano cartesiano, verificando se os estudantes determinam com facilidade as coordenadas desses pontos. O trabalho com simetria deve ser proposto e realizado por meio de dobraduras, recortes e explorações. Apresentar intuitivamente a simetria de uma figura em relação a um ou mais eixos, a simetria em regiões planas e a simétrica de uma figura, mostrando ainda como a simetria pode ser relacionada a situações do cotidiano.",
+    "habilidade_codes": [
+      "EF07MA21"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 4º Bimestre\nUnidade: Geometria.\nObjetos: Simetrias de translação, rotação e reflexão. Conteúdos relacionados: Construções de figuras simétricas. Transformações geométricas: Isometrias; Translação; Rotação; Reflexão.\nHabilidades: (EF07MA21) - Reconhecer e construir figuras obtidas por simetrias de translação, rotação e reflexão, usando instrumentos de desenho ou softwares de geometria dinâmica e vincular esse estudo a representações planas de obras de arte, elementos arquitetônicos, entre outros.\nSAEB: Reconhecer círculo/ circunferência, seus elementos e algumas de suas relações.\nOrientações: Retomar com os estudantes a representação de pontos no plano cartesiano conhecendo suas coordenadas, dadas por pares ordenados (x, y), e identificando o quadrante ou sobre que eixo esses pontos se encontram. Aqui, o objetivo não é destacar o nome de cada coordenada (abscissa para x e ordenada para y), mas apresentar essa nomenclatura aos estudantes. Explorar também a identificação das coordenadas de pontos marcados no plano cartesiano, verificando se os estudantes determinam com facilidade as coordenadas desses pontos. O trabalho com simetria deve ser proposto e realizado por meio de dobraduras, recortes e explorações. Apresentar intuitivamente a simetria de uma figura em relação a um ou mais eixos, a simetria em regiões planas e a simétrica de uma figura, mostrando ainda como a simetria pode ser relacionada a situações do cotidiano."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA57MG) - Relacionar o metro cúbico com seus múltiplos e submúltiplos. (EF07MA58MG) - Relacionar o decímetro cúbico com o litro e o mililitro. (EF07MA59MG) - Realizar conversões entre unidades de medidas de volume/ capacidade.",
+    "objeto_conhecimento": "Problemas envolvendo medições. Conteúdos relacionados: Situações que envolvem medições. Volume de um paralelepípedo retângulo. Volume de um cubo.",
+    "descritores_saeb": "Cálculo de volume de blocos retangulares, utilizando unidades de medida convencionais mais usuais.",
+    "orientacoes_pedagogicas": "Nestas habilidades tem como finalidade preparar os estudantes para aplicação prática do conceito de volume. Ao desenvolver habilidades práticas de cálculo de volume, os estudantes estarão mais aptos a resolver problemas reais e aplicar esses conhecimentos em contextos do mercado de trabalho, onde o cálculo de volume é essencial.",
+    "habilidade_codes": [
+      "EF07MA57MG",
+      "EF07MA58MG",
+      "EF07MA59MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas.\nObjetos: Problemas envolvendo medições. Conteúdos relacionados: Situações que envolvem medições. Volume de um paralelepípedo retângulo. Volume de um cubo.\nHabilidades: (EF07MA57MG) - Relacionar o metro cúbico com seus múltiplos e submúltiplos. (EF07MA58MG) - Relacionar o decímetro cúbico com o litro e o mililitro. (EF07MA59MG) - Realizar conversões entre unidades de medidas de volume/ capacidade.\nSAEB: Cálculo de volume de blocos retangulares, utilizando unidades de medida convencionais mais usuais.\nOrientações: Nestas habilidades tem como finalidade preparar os estudantes para aplicação prática do conceito de volume. Ao desenvolver habilidades práticas de cálculo de volume, os estudantes estarão mais aptos a resolver problemas reais e aplicar esses conhecimentos em contextos do mercado de trabalho, onde o cálculo de volume é essencial."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA60MG) - Escolher adequadamente múltiplos ou submúltiplos do metro cúbico para efetuar medidas. (EF07MA61MG) - Fazer estimativas de volumes e capacidades.",
+    "objeto_conhecimento": "Cálculo de volume de blocos retangulares, utilizando unidades de medida convencionais mais usuais. Conteúdos relacionados: Múltiplos e submúltiplos do metro cubico. Estimativa de volume e capacidade.",
+    "descritores_saeb": "Resolver problema envolvendo noções de volume.",
+    "orientacoes_pedagogicas": "A sugestão para o estudo deste objeto de conhecimento é a prática da aula invertida. Primeiramente deve ser apresentado aos estudantes a medida de volume no sistema internacional de unidades (SI) que é o metro cúbico (m³). Sendo que 1 m³ corresponde ao espaço ocupado por um cubo de 1 m de aresta. As unidades do sistema métrico decimal de volume são: quilômetro cúbico (km³), hectômetro cúbico (hm³), decâmetro cúbico (dam³), metro cúbico (m³), decímetro cúbico (dm³), centímetro cúbico (cm³) e milímetro cúbico (mm³). A expectativa é desenvolver nos estudantes a habilidade para elaborarem toda estrutura de convenção entre as medidas com ou sem o uso de ferramentas digitais.",
+    "habilidade_codes": [
+      "EF07MA60MG",
+      "EF07MA61MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas.\nObjetos: Cálculo de volume de blocos retangulares, utilizando unidades de medida convencionais mais usuais. Conteúdos relacionados: Múltiplos e submúltiplos do metro cubico. Estimativa de volume e capacidade.\nHabilidades: (EF07MA60MG) - Escolher adequadamente múltiplos ou submúltiplos do metro cúbico para efetuar medidas. (EF07MA61MG) - Fazer estimativas de volumes e capacidades.\nSAEB: Resolver problema envolvendo noções de volume.\nOrientações: A sugestão para o estudo deste objeto de conhecimento é a prática da aula invertida. Primeiramente deve ser apresentado aos estudantes a medida de volume no sistema internacional de unidades (SI) que é o metro cúbico (m³). Sendo que 1 m³ corresponde ao espaço ocupado por um cubo de 1 m de aresta. As unidades do sistema métrico decimal de volume são: quilômetro cúbico (km³), hectômetro cúbico (hm³), decâmetro cúbico (dam³), metro cúbico (m³), decímetro cúbico (dm³), centímetro cúbico (cm³) e milímetro cúbico (mm³). A expectativa é desenvolver nos estudantes a habilidade para elaborarem toda estrutura de convenção entre as medidas com ou sem o uso de ferramentas digitais."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07MA30A) - Resolver problemas de cálculo de medida do volume de blocos retangulares, envolvendo as unidades usuais (metro cúbico, decímetro cúbico e centímetro cúbico). (EF07MA30B) - Elaborar problemas de cálculo de medida do volume de blocos retangulares, envolvendo as unidades usuais (metro cúbico, decímetro cúbico e centímetro cúbico).",
+    "objeto_conhecimento": "Cálculo de volume de blocos retangulares, utilizando unidades de medida convencionais mais usuais. Conteúdos relacionados: Volume de um paralelepípedo retoretângulo. Volume de um cubo.",
+    "descritores_saeb": "Resolver problema envolvendo noções de volume.",
+    "orientacoes_pedagogicas": "Essas habilidades implicam na ampliação dos conhecimentos relacionados às grandezas e às medidas, iniciados nos anos anteriores, os estudantes devem fazer explorações relacionadas às unidades de medida de volume. Além disso, devem ser incentivados: a explorar grandezas e medidas que envolvem números racionais. Preparar os estudantes para aplicação prática do conceito de volume. Ao desenvolver habilidades práticas de cálculo de volume, os estudantes estarão mais aptos a resolver problemas reais e aplicar esses conhecimentos em contextos do mercado de trabalho, onde o cálculo de volume é essencial.",
+    "habilidade_codes": [
+      "EF07MA30A",
+      "EF07MA30B"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas.\nObjetos: Cálculo de volume de blocos retangulares, utilizando unidades de medida convencionais mais usuais. Conteúdos relacionados: Volume de um paralelepípedo retoretângulo. Volume de um cubo.\nHabilidades: (EF07MA30A) - Resolver problemas de cálculo de medida do volume de blocos retangulares, envolvendo as unidades usuais (metro cúbico, decímetro cúbico e centímetro cúbico). (EF07MA30B) - Elaborar problemas de cálculo de medida do volume de blocos retangulares, envolvendo as unidades usuais (metro cúbico, decímetro cúbico e centímetro cúbico).\nSAEB: Resolver problema envolvendo noções de volume.\nOrientações: Essas habilidades implicam na ampliação dos conhecimentos relacionados às grandezas e às medidas, iniciados nos anos anteriores, os estudantes devem fazer explorações relacionadas às unidades de medida de volume. Além disso, devem ser incentivados: a explorar grandezas e medidas que envolvem números racionais. Preparar os estudantes para aplicação prática do conceito de volume. Ao desenvolver habilidades práticas de cálculo de volume, os estudantes estarão mais aptos a resolver problemas reais e aplicar esses conhecimentos em contextos do mercado de trabalho, onde o cálculo de volume é essencial."
+  }
+]

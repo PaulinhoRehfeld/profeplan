@@ -44,3 +44,4 @@ ProfeplanHub/config/.env
 android/.idea/
 supabase/.temp/
 supabase/pgsql/
+supabase/pg_bin.zip

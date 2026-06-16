@@ -1,0 +1,362 @@
+[
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE09) - Interpretar e elaborar mapas temáticos e históricos, inclusive utilizando tecnologias digitais, com informações demográficas e econômicas do Brasil (cartogramas), identificando padrões espaciais, regionalizações e analogias espaciais.",
+    "objeto_conhecimento": "Mapas temáticos do Brasil.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de mapas temáticos. Leitura, interpretação e elaboração de mapas temáticos mediados pelas tecnologias digitais.",
+    "orientacoes_pedagogicas": "É fundamental proporcionar aos estudantes uma compreensão abrangente da construção e interpretação de mapas como ferramentas para análise geográfica. Explique o conceito de mapas temáticos e como eles se diferenciam dos mapas físicos e políticos. Apresentar também, mapas históricos, fotografias aéreas, imagens de satélite e croquis como recursos pedagógicos que ajudem na delimitação e espacialização de fenômenos geográficos. Utilizar exemplos práticos para que os estudantes possam identificar padrões regionais e discutir as diferenças entre as diversas regiões do Brasil. Tais como: mapas de populacionais, migrações, IDH, produção agrícola no Brasil, setores econômicos, PIB, entre outros, Para que os estudantes possam identificar padrões regionais e discutir as diferenças entre as diversas regiões do Brasil. Propor atividades em que os estudantes criem seus próprios mapas temáticos, tanto manualmente quanto digitalmente, utilizando dados fornecidos, como população e PIB. Estimular o uso de ferramentas como IBGE Mapas e Google Earth para explorar mapas interativos, além de softwares como QGIS ou ferramentas mais simples, como o Canva, para a criação de mapas. Combinar o uso de tecnologias digitais com exercícios práticos para aprimorar a capacidade de leitura, interpretação e criação de mapas, enfatizando a identificação de padrões regionais no Brasil.",
+    "habilidade_codes": [
+      "EF07GE09"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 1º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial.\nObjetos: Mapas temáticos do Brasil.\nHabilidades: (EF07GE09) - Interpretar e elaborar mapas temáticos e históricos, inclusive utilizando tecnologias digitais, com informações demográficas e econômicas do Brasil (cartogramas), identificando padrões espaciais, regionalizações e analogias espaciais.\nSAEB: Leitura, interpretação e elaboração de mapas temáticos. Leitura, interpretação e elaboração de mapas temáticos mediados pelas tecnologias digitais.\nOrientações: É fundamental proporcionar aos estudantes uma compreensão abrangente da construção e interpretação de mapas como ferramentas para análise geográfica. Explique o conceito de mapas temáticos e como eles se diferenciam dos mapas físicos e políticos. Apresentar também, mapas históricos, fotografias aéreas, imagens de satélite e croquis como recursos pedagógicos que ajudem na delimitação e espacialização de fenômenos geográficos. Utilizar exemplos práticos para que os estudantes possam identificar padrões regionais e discutir as diferenças entre as diversas regiões do Brasil. Tais como: mapas de populacionais, migrações, IDH, produção agrícola no Brasil, setores econômicos, PIB, entre outros, Para que os estudantes possam identificar padrões regionais e discutir as diferenças entre as diversas regiões do Brasil. Propor atividades em que os estudantes criem seus próprios mapas temáticos, tanto manualmente quanto digitalmente, utilizando dados fornecidos, como população e PIB. Estimular o uso de ferramentas como IBGE Mapas e Google Earth para explorar mapas interativos, além de softwares como QGIS ou ferramentas mais simples, como o Canva, para a criação de mapas. Combinar o uso de tecnologias digitais com exercícios práticos para aprimorar a capacidade de leitura, interpretação e criação de mapas, enfatizando a identificação de padrões regionais no Brasil."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Mundo do Trabalho.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE05X) - Identificar e analisar fatos e situações representativas das alterações ocorridas entre o período mercantilista (expansão ultramarina) e o advento do capitalismo, no Brasil e no mundo.",
+    "objeto_conhecimento": "Produção, circulação e consumo de mercadorias.",
+    "descritores_saeb": "Capitalismo comercial e expansão ultramarina. A transição entre mercantilismo e capitalismo e suas influências na formação territorial brasileira.",
+    "orientacoes_pedagogicas": "Estudar o renascimento comercial e a expansão marítima. Apresentar a transição entre o modelo mercantilista e o capitalista, além de caracterizar as fases do modo de produção capitalista. Analisar criticamente as desigualdades socioeconômicas existentes no sistema capitalismo.",
+    "habilidade_codes": [
+      "EF07GE05X"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 1º Bimestre\nUnidade: Mundo do Trabalho.\nObjetos: Produção, circulação e consumo de mercadorias.\nHabilidades: (EF07GE05X) - Identificar e analisar fatos e situações representativas das alterações ocorridas entre o período mercantilista (expansão ultramarina) e o advento do capitalismo, no Brasil e no mundo.\nSAEB: Capitalismo comercial e expansão ultramarina. A transição entre mercantilismo e capitalismo e suas influências na formação territorial brasileira.\nOrientações: Estudar o renascimento comercial e a expansão marítima. Apresentar a transição entre o modelo mercantilista e o capitalista, além de caracterizar as fases do modo de produção capitalista. Analisar criticamente as desigualdades socioeconômicas existentes no sistema capitalismo."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Mundo do Trabalho.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE08X) - Estabelecer relações entre os processos de industrialização e inovação tecnológica com as transformações socioeconômicas do território brasileiro, no campo e na cidade.",
+    "objeto_conhecimento": "Desigualdade social e o trabalho.",
+    "descritores_saeb": "Fases e características o processo de industrialização no Brasil. A modernização do espaço urbano (cidade) e rural (campo) brasileiro com o avanço das técnicas e da tecnologia. Urbanização no Brasil e no mundo.",
+    "orientacoes_pedagogicas": "Analisar as paisagens do campo e da cidade comparando as e identificando as mudanças nessas paisagens nas últimas décadas. Estudar a modernização agrícola. As mudanças recentes no mercado de trabalho no campo relacionadas ao desenvolvimento tecnológico. O processo de industrialização brasileiro. As consequências de um processo de industrialização tardio.",
+    "habilidade_codes": [
+      "EF07GE08X"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 1º Bimestre\nUnidade: Mundo do Trabalho.\nObjetos: Desigualdade social e o trabalho.\nHabilidades: (EF07GE08X) - Estabelecer relações entre os processos de industrialização e inovação tecnológica com as transformações socioeconômicas do território brasileiro, no campo e na cidade.\nSAEB: Fases e características o processo de industrialização no Brasil. A modernização do espaço urbano (cidade) e rural (campo) brasileiro com o avanço das técnicas e da tecnologia. Urbanização no Brasil e no mundo.\nOrientações: Analisar as paisagens do campo e da cidade comparando as e identificando as mudanças nessas paisagens nas últimas décadas. Estudar a modernização agrícola. As mudanças recentes no mercado de trabalho no campo relacionadas ao desenvolvimento tecnológico. O processo de industrialização brasileiro. As consequências de um processo de industrialização tardio."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Mundo do Trabalho.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE07) - Analisar a influência e o papel das redes de transporte e comunicação na configuração do território brasileiro.",
+    "objeto_conhecimento": "Desigualdade social e o trabalho.",
+    "descritores_saeb": "A produção do espaço no modo de produção capitalista. Balança comercial: importação e exportação. Sociedade de consumo.",
+    "orientacoes_pedagogicas": "As redes de transporte são essenciais para a circulação de mercadorias e de pessoas, e o grau de desenvolvimento dos transportes é também considerado como indicador desenvolvimento de um país. Em conjunto com os meios de comunicação, as redes de transporte conectam diversas localidades, empresas e pessoas, em nível local, nacional e global. Apresentar a papel das redes de transporte e telecomunicações na formação de redes urbanas. Identificação dos modais de transporte e novos meios de comunicação. Expor a malha rodoviária brasileira e seu papel na integração nacional.",
+    "habilidade_codes": [
+      "EF07GE07"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 1º Bimestre\nUnidade: Mundo do Trabalho.\nObjetos: Desigualdade social e o trabalho.\nHabilidades: (EF07GE07) - Analisar a influência e o papel das redes de transporte e comunicação na configuração do território brasileiro.\nSAEB: A produção do espaço no modo de produção capitalista. Balança comercial: importação e exportação. Sociedade de consumo.\nOrientações: As redes de transporte são essenciais para a circulação de mercadorias e de pessoas, e o grau de desenvolvimento dos transportes é também considerado como indicador desenvolvimento de um país. Em conjunto com os meios de comunicação, as redes de transporte conectam diversas localidades, empresas e pessoas, em nível local, nacional e global. Apresentar a papel das redes de transporte e telecomunicações na formação de redes urbanas. Identificação dos modais de transporte e novos meios de comunicação. Expor a malha rodoviária brasileira e seu papel na integração nacional."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Conexões e Escalas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE02) - Analisar a influência dos fluxos econômicos e populacionais na formação socioeconômica e territorial do Brasil, compreendendo os conflitos e as tensões históricas e contemporâneas.",
+    "objeto_conhecimento": "Formação territorial do Brasil.",
+    "descritores_saeb": "Formação do território brasileiro (povo, nação, país, Estado, sociedade e cidadania). O Estado e suas funções: território e fronteiras. Formação do território brasileiro: fluxos econômicos. Formação do território brasileiro: movimentos migratórios - internos e externos. Movimentos migratórios principais motivos: sobrevivência, catástrofes naturais, guerras, epidemias, melhor es condições de vida, entre outros.",
+    "orientacoes_pedagogicas": "Identificar e analisar as transformações do território brasileiro resultante da dinâmica histórica de uso e ocupação. Apresentar as diferentes atividades econômicas que promoveram a interiorização do território brasileiro nos diferentes tempos históricos. Discutir sobre a utilização de mão de obra escravizada indígena e africana neste processo assim como a atuação dos bandeirantes, levantando questionamentos sobre heróis nacionais relacionados. Discutir sobre a distribuição de terras no Brasil considerando a concentração fundiária, grilagem de terras, especulação imobiliária e conflitos atuais referentes a esta pauta.",
+    "habilidade_codes": [
+      "EF07GE02"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 1º Bimestre\nUnidade: Conexões e Escalas.\nObjetos: Formação territorial do Brasil.\nHabilidades: (EF07GE02) - Analisar a influência dos fluxos econômicos e populacionais na formação socioeconômica e territorial do Brasil, compreendendo os conflitos e as tensões históricas e contemporâneas.\nSAEB: Formação do território brasileiro (povo, nação, país, Estado, sociedade e cidadania). O Estado e suas funções: território e fronteiras. Formação do território brasileiro: fluxos econômicos. Formação do território brasileiro: movimentos migratórios - internos e externos. Movimentos migratórios principais motivos: sobrevivência, catástrofes naturais, guerras, epidemias, melhor es condições de vida, entre outros.\nOrientações: Identificar e analisar as transformações do território brasileiro resultante da dinâmica histórica de uso e ocupação. Apresentar as diferentes atividades econômicas que promoveram a interiorização do território brasileiro nos diferentes tempos históricos. Discutir sobre a utilização de mão de obra escravizada indígena e africana neste processo assim como a atuação dos bandeirantes, levantando questionamentos sobre heróis nacionais relacionados. Discutir sobre a distribuição de terras no Brasil considerando a concentração fundiária, grilagem de terras, especulação imobiliária e conflitos atuais referentes a esta pauta."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE10) - Elaborar e interpretar gráficos de barras, gráficos de setores e histogramas, com base em dados socioeconômicos das regiões brasileiras.",
+    "objeto_conhecimento": "Mapas temáticos do Brasil.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de gráficos de barras, gráficos de setores e histogramas.",
+    "orientacoes_pedagogicas": "Os gráficos recursos visuais comumente utilizados para facilitar a leitura e compreensão de informações, divulgação de dados e pesquisas. Apresentar diferentes tipos de gráficos com dados socioeconômicos das regiões brasileiras, auxiliando na leitura e interpretação destes. Incentivar a produção de gráficos utilizando também recursos digitais para a elaboração.",
+    "habilidade_codes": [
+      "EF07GE10"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 2º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial.\nObjetos: Mapas temáticos do Brasil.\nHabilidades: (EF07GE10) - Elaborar e interpretar gráficos de barras, gráficos de setores e histogramas, com base em dados socioeconômicos das regiões brasileiras.\nSAEB: Leitura, interpretação e elaboração de gráficos de barras, gráficos de setores e histogramas.\nOrientações: Os gráficos recursos visuais comumente utilizados para facilitar a leitura e compreensão de informações, divulgação de dados e pesquisas. Apresentar diferentes tipos de gráficos com dados socioeconômicos das regiões brasileiras, auxiliando na leitura e interpretação destes. Incentivar a produção de gráficos utilizando também recursos digitais para a elaboração."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE09) - Interpretar e elaborar mapas temáticos e históricos, inclusive utilizando tecnologias digitais, com informações demográficas e econômicas do Brasil (cartogramas), identificando padrões espaciais, regionalizações e analogias espaciais.",
+    "objeto_conhecimento": "Mapas temáticos do Brasil.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de mapas temáticos mediados pelas tecnologias digitais.",
+    "orientacoes_pedagogicas": "Utilizar nas aulas mapas temáticos, históricos, fotografias aéreas, imagens de satélite, croquis como ferramentas PEDAGÓGICASs auxiliares no processo de delimitação de um fenômeno geográfico e sua espacialização.",
+    "habilidade_codes": [
+      "EF07GE09"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 2º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial.\nObjetos: Mapas temáticos do Brasil.\nHabilidades: (EF07GE09) - Interpretar e elaborar mapas temáticos e históricos, inclusive utilizando tecnologias digitais, com informações demográficas e econômicas do Brasil (cartogramas), identificando padrões espaciais, regionalizações e analogias espaciais.\nSAEB: Leitura, interpretação e elaboração de mapas temáticos mediados pelas tecnologias digitais.\nOrientações: Utilizar nas aulas mapas temáticos, históricos, fotografias aéreas, imagens de satélite, croquis como ferramentas PEDAGÓGICASs auxiliares no processo de delimitação de um fenômeno geográfico e sua espacialização."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "O sujeito e seu lugar no mundo.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE13MG) - Reconhecer aspectos da formação territorial do Brasil, com destaque para as questões histórico-geográficas, processos migratórios e diversidade étnico-cultural nas diferentes paisagens e regiões.",
+    "objeto_conhecimento": "Regionalizações o Brasil.",
+    "descritores_saeb": "Regionalização oficial do Brasil: as regiões brasileiras segundo o Instituto Brasileiro de Geografia e Estatística (IBGE). Regionalizações não oficiais: As diferentes regionalizações e suas características histórico-geográficas, socioeconômicas e culturais.",
+    "orientacoes_pedagogicas": "Apresentar com base em mapas temáticos do Brasil as ideias e concepções sobre a formação territorial do Brasil. Expor as características da população brasileira, a desigualdade social, econômica, de gênero e o trabalho. Formação do território brasileiro: fluxos econômicos; movimentos migratórios internos, externos, voluntários e forçados. Movimentos migratórios são os principais motivos: sobrevivência, catástrofes naturais, guerras, epidemias, melhores condições de vida.",
+    "habilidade_codes": [
+      "EF07GE13MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 2º Bimestre\nUnidade: O sujeito e seu lugar no mundo.\nObjetos: Regionalizações o Brasil.\nHabilidades: (EF07GE13MG) - Reconhecer aspectos da formação territorial do Brasil, com destaque para as questões histórico-geográficas, processos migratórios e diversidade étnico-cultural nas diferentes paisagens e regiões.\nSAEB: Regionalização oficial do Brasil: as regiões brasileiras segundo o Instituto Brasileiro de Geografia e Estatística (IBGE). Regionalizações não oficiais: As diferentes regionalizações e suas características histórico-geográficas, socioeconômicas e culturais.\nOrientações: Apresentar com base em mapas temáticos do Brasil as ideias e concepções sobre a formação territorial do Brasil. Expor as características da população brasileira, a desigualdade social, econômica, de gênero e o trabalho. Formação do território brasileiro: fluxos econômicos; movimentos migratórios internos, externos, voluntários e forçados. Movimentos migratórios são os principais motivos: sobrevivência, catástrofes naturais, guerras, epidemias, melhores condições de vida."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Conexões e Escalas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE04) - Analisar a distribuição territorial da população brasileira, considerando a diversidade étnico-cultural (indígena, africana, europeia e asiática), assim como aspectos de renda, sexo e idade nas regiões brasileiras.",
+    "objeto_conhecimento": "Características da população brasileira.",
+    "descritores_saeb": "As diversas etnias que compõem o povo brasileiro. Distribuição e concentração da população brasileira no território. População absoluta, população relativa, crescimento vegetativo, taxas de natalidade, mortalidade e analfabetismo. Censo Demográfico: acesso a moradia, saneamento básico, educação, renda. Setores da economia: primário, secundário e terciário. Os setores da economia e as relações de trabalho. Pirâmides etárias.",
+    "orientacoes_pedagogicas": "Apresentar a distribuição da população brasileira pelo território. Discutir a chegada de imigrantes (forçados e voluntários) no Brasil e os contextos de sua vinda, de quais locais do globo vieram, sob quais condições, para exercer quais funções. Com relação ao imigrantes africanos, apresentar as regiões da África de onde originaram, e quais atividades econômicas desempenhavam no continente, além dos seus conhecimentos acerca de assuntos variados. Explicar a distribuição dos imigrantes pelo território de acordo com a sua nacionalidade realizando um paralelo com os aspectos de renda, sexo e idade nas regiões brasileiras.",
+    "habilidade_codes": [
+      "EF07GE04"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 2º Bimestre\nUnidade: Conexões e Escalas.\nObjetos: Características da população brasileira.\nHabilidades: (EF07GE04) - Analisar a distribuição territorial da população brasileira, considerando a diversidade étnico-cultural (indígena, africana, europeia e asiática), assim como aspectos de renda, sexo e idade nas regiões brasileiras.\nSAEB: As diversas etnias que compõem o povo brasileiro. Distribuição e concentração da população brasileira no território. População absoluta, população relativa, crescimento vegetativo, taxas de natalidade, mortalidade e analfabetismo. Censo Demográfico: acesso a moradia, saneamento básico, educação, renda. Setores da economia: primário, secundário e terciário. Os setores da economia e as relações de trabalho. Pirâmides etárias.\nOrientações: Apresentar a distribuição da população brasileira pelo território. Discutir a chegada de imigrantes (forçados e voluntários) no Brasil e os contextos de sua vinda, de quais locais do globo vieram, sob quais condições, para exercer quais funções. Com relação ao imigrantes africanos, apresentar as regiões da África de onde originaram, e quais atividades econômicas desempenhavam no continente, além dos seus conhecimentos acerca de assuntos variados. Explicar a distribuição dos imigrantes pelo território de acordo com a sua nacionalidade realizando um paralelo com os aspectos de renda, sexo e idade nas regiões brasileiras."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "O sujeito e seu lugar no mundo.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE01) - Avaliar, por meio de exemplos extraídos dos meios de comunicação, ideias e estereótipos acerca das paisagens e da formação territorial do Brasil.",
+    "objeto_conhecimento": "Ideias e concepções sobre a formação territorial do Brasil.",
+    "descritores_saeb": "O imaginário sobre o Brasil no exterior. Os estereótipos sobre o Brasil a partir do descobrimento: paraíso. Formação territorial do Brasil: questões histórico geográficas, processos migratórios e características populacionais diante da diversidade étnico-cultural nos distintos territórios.",
+    "orientacoes_pedagogicas": "Apresentar que o Brasil é um país de proporções continentais, e sua localização no globo assim como o sua extensão territorial são fatores que conferem a ele distintas paisagens. Debater sobre os estereótipos acerca das paisagens brasileiras e como estes são ora reforçados ora quebrados pelos meios de comunicação.",
+    "habilidade_codes": [
+      "EF07GE01"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 2º Bimestre\nUnidade: O sujeito e seu lugar no mundo.\nObjetos: Ideias e concepções sobre a formação territorial do Brasil.\nHabilidades: (EF07GE01) - Avaliar, por meio de exemplos extraídos dos meios de comunicação, ideias e estereótipos acerca das paisagens e da formação territorial do Brasil.\nSAEB: O imaginário sobre o Brasil no exterior. Os estereótipos sobre o Brasil a partir do descobrimento: paraíso. Formação territorial do Brasil: questões histórico geográficas, processos migratórios e características populacionais diante da diversidade étnico-cultural nos distintos territórios.\nOrientações: Apresentar que o Brasil é um país de proporções continentais, e sua localização no globo assim como o sua extensão territorial são fatores que conferem a ele distintas paisagens. Debater sobre os estereótipos acerca das paisagens brasileiras e como estes são ora reforçados ora quebrados pelos meios de comunicação."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Natureza, Ambientes e Qualidade de Vida.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE12X) - Identificar e comparar unidades de conservação existentes no Município de residência e em outras localidades brasileiras, com base na organização do Sistema Nacional de Unidades de Conservação (SNUC), destacando sua importância na manutenção dos recursos hídricos e da biodiversidade natural e cultural.",
+    "objeto_conhecimento": "Biodiversidade brasileira.",
+    "descritores_saeb": "Sistema Nacional de Unidades de Conservação (Lei 9.985 de 2000). Formas de apropriação dos biomas com o avanço urbano-industrial-agropecuário. Finalidades da criação de Unidades, Parques e Reservas Extrativistas. A interações entre as populações locais e as Unidades de Conservação, Parques e Reservas Extrativistas.",
+    "orientacoes_pedagogicas": "Incentivar a pesquisa sobre unidades de conservação, os critérios para a sua criação, a sua importância para a preservação da biodiversidade natural, cultural e manutenção dos recursos hídricos. Conhecer por meio de trabalhos e campo as unidades de conservação presentes no municípios ou próximas. Com o auxílio de imagens de satélites, fotografias aéreas e informações de sites oficiais conhecer as unidades de conservação do Brasil.",
+    "habilidade_codes": [
+      "EF07GE12X"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 3º Bimestre\nUnidade: Natureza, Ambientes e Qualidade de Vida.\nObjetos: Biodiversidade brasileira.\nHabilidades: (EF07GE12X) - Identificar e comparar unidades de conservação existentes no Município de residência e em outras localidades brasileiras, com base na organização do Sistema Nacional de Unidades de Conservação (SNUC), destacando sua importância na manutenção dos recursos hídricos e da biodiversidade natural e cultural.\nSAEB: Sistema Nacional de Unidades de Conservação (Lei 9.985 de 2000). Formas de apropriação dos biomas com o avanço urbano-industrial-agropecuário. Finalidades da criação de Unidades, Parques e Reservas Extrativistas. A interações entre as populações locais e as Unidades de Conservação, Parques e Reservas Extrativistas.\nOrientações: Incentivar a pesquisa sobre unidades de conservação, os critérios para a sua criação, a sua importância para a preservação da biodiversidade natural, cultural e manutenção dos recursos hídricos. Conhecer por meio de trabalhos e campo as unidades de conservação presentes no municípios ou próximas. Com o auxílio de imagens de satélites, fotografias aéreas e informações de sites oficiais conhecer as unidades de conservação do Brasil."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Natureza, Ambientes e Qualidade de Vida.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE11X) - Identificar e caracterizar os domínios morfoclimáticos a partir da dinâmica dos componentes físico-naturais no território nacional, bem como sua distribuição e biodiversidade (Florestas Tropicais, Cerrados, Caatingas, Campos Sulinos e Matas de Araucária), enfatizando os domínios presentes no território mineiro.",
+    "objeto_conhecimento": "Biodiversidade brasileira.",
+    "descritores_saeb": "Domínios morfoclimáticos do Brasil: características, localização, usos, situação de conservação e preservação. Domínios morfoclimáticos do Brasil e seus componentes físicos naturais: clima, solo, vegetação, fauna, flora, relevo, entre outros. Biodiversidade dos domínios morfoclimáticos. Domínios morfoclimáticos semelhanças e diferenças.",
+    "orientacoes_pedagogicas": "Apresentar os domínios morfoclimáticos brasileiros e os critérios utilizados para a sua classificação. Estudar sobre a biodiversidade nos diferentes domínios, suas características e localização. Enfatizar os domínios presentes no território de Minas Gerais, principalmente o da região onde está localizada a escola, incentivando a conhecer, observar, preservar e valorizar.",
+    "habilidade_codes": [
+      "EF07GE11X"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 3º Bimestre\nUnidade: Natureza, Ambientes e Qualidade de Vida.\nObjetos: Biodiversidade brasileira.\nHabilidades: (EF07GE11X) - Identificar e caracterizar os domínios morfoclimáticos a partir da dinâmica dos componentes físico-naturais no território nacional, bem como sua distribuição e biodiversidade (Florestas Tropicais, Cerrados, Caatingas, Campos Sulinos e Matas de Araucária), enfatizando os domínios presentes no território mineiro.\nSAEB: Domínios morfoclimáticos do Brasil: características, localização, usos, situação de conservação e preservação. Domínios morfoclimáticos do Brasil e seus componentes físicos naturais: clima, solo, vegetação, fauna, flora, relevo, entre outros. Biodiversidade dos domínios morfoclimáticos. Domínios morfoclimáticos semelhanças e diferenças.\nOrientações: Apresentar os domínios morfoclimáticos brasileiros e os critérios utilizados para a sua classificação. Estudar sobre a biodiversidade nos diferentes domínios, suas características e localização. Enfatizar os domínios presentes no território de Minas Gerais, principalmente o da região onde está localizada a escola, incentivando a conhecer, observar, preservar e valorizar."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Natureza, Ambientes e Qualidade de Vida.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE15MG) - Relacionar a importância das unidades de conservação e sítios arqueológicos com a preservação da memória e identidade de um povo, enfatizando o patrimônio natural e cultural de Minas Gerais.",
+    "objeto_conhecimento": "Biodiversidade brasileira.",
+    "descritores_saeb": "Arqueologia e Sítios arqueológicos. Os principais sítios arqueológicos brasileiros (mineiros), e mundiais. Os impactos ambientais sofridos pelos Sítios arqueológicos.",
+    "orientacoes_pedagogicas": "Estudar sobre o patrimônio natural e cultural de Minas Gerais, as unidades de conservação e sítios arqueológicos do estado, realizando visitas guiadas a estes se existirem no Município de residência. Destacar a importância da preservação destes patrimônios relacionando com a preservação da memória e da identidade de um povo. Buscar trabalhar de maneira interdisciplinar com outras disciplinas como história, ensino religioso e ciências.",
+    "habilidade_codes": [
+      "EF07GE15MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 3º Bimestre\nUnidade: Natureza, Ambientes e Qualidade de Vida.\nObjetos: Biodiversidade brasileira.\nHabilidades: (EF07GE15MG) - Relacionar a importância das unidades de conservação e sítios arqueológicos com a preservação da memória e identidade de um povo, enfatizando o patrimônio natural e cultural de Minas Gerais.\nSAEB: Arqueologia e Sítios arqueológicos. Os principais sítios arqueológicos brasileiros (mineiros), e mundiais. Os impactos ambientais sofridos pelos Sítios arqueológicos.\nOrientações: Estudar sobre o patrimônio natural e cultural de Minas Gerais, as unidades de conservação e sítios arqueológicos do estado, realizando visitas guiadas a estes se existirem no Município de residência. Destacar a importância da preservação destes patrimônios relacionando com a preservação da memória e da identidade de um povo. Buscar trabalhar de maneira interdisciplinar com outras disciplinas como história, ensino religioso e ciências."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Mundo do Trabalho.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE06X) - Identificar e discutir em que medida a produção, a circulação e o consumo de mercadorias provocam impactos ambientais, assim como influem na distribuição de riquezas, nas relações de trabalho formais e informais em diferentes lugares.",
+    "objeto_conhecimento": "Produção, circulação e consumo de mercadorias.",
+    "descritores_saeb": "Direitos legais de cada um dos povos sobre a terra ou área ocupada.",
+    "orientacoes_pedagogicas": "Identificar os conceitos de produção, circulação e consumo de mercadorias, seus impactos ambientais, sociais e nas relações de trabalho, utilizando notícias e dados recentes. Analisar como os setores econômicos afetam territórios tradicionais, relacionando-os à legislação ambiental e aos órgãos fiscalizadores. Propor investigação de casos reais, como conflitos em terras indígenas, avaliando a aplicação da legislação e soluções possíveis. Comparar impactos econômicos, destacando recursos renováveis e não renováveis e promover atividades para desenvolver soluções sustentáveis. Proporcionar uma reflexão acerca do consumismo, recursos renováveis e não renováveis, produção de lixo e direitos socioambientais.",
+    "habilidade_codes": [
+      "EF07GE06X"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 3º Bimestre\nUnidade: Mundo do Trabalho.\nObjetos: Produção, circulação e consumo de mercadorias.\nHabilidades: (EF07GE06X) - Identificar e discutir em que medida a produção, a circulação e o consumo de mercadorias provocam impactos ambientais, assim como influem na distribuição de riquezas, nas relações de trabalho formais e informais em diferentes lugares.\nSAEB: Direitos legais de cada um dos povos sobre a terra ou área ocupada.\nOrientações: Identificar os conceitos de produção, circulação e consumo de mercadorias, seus impactos ambientais, sociais e nas relações de trabalho, utilizando notícias e dados recentes. Analisar como os setores econômicos afetam territórios tradicionais, relacionando-os à legislação ambiental e aos órgãos fiscalizadores. Propor investigação de casos reais, como conflitos em terras indígenas, avaliando a aplicação da legislação e soluções possíveis. Comparar impactos econômicos, destacando recursos renováveis e não renováveis e promover atividades para desenvolver soluções sustentáveis. Proporcionar uma reflexão acerca do consumismo, recursos renováveis e não renováveis, produção de lixo e direitos socioambientais."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Conexões e Escalas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE03) - Selecionar argumentos que reconheçam as territorialidades dos povos indígenas originários, das comunidades remanescentes de quilombos, de povos das florestas e do cerrado, de ribeirinhos e caiçaras, entre outros grupos sociais do campo e da cidade, como direitos legais dessas comunidades.",
+    "objeto_conhecimento": "Formação territorial do Brasil.",
+    "descritores_saeb": "Direitos legais de cada um dos povos sobre a terra ou área ocupada.",
+    "orientacoes_pedagogicas": "Incentivar a pesquisa sobre os povos indígenas originários, das comunidades remanescentes de quilombos, de povos das florestas e do cerrado, de ribeirinhos e caiçaras, entre outros grupos sociais do campo e da cidade. Sua culturas, tradições, distribuição pelo Brasil, história, condições de vida atuais, lutas, resistências e direitos conquistados. Selecionar nos meios de comunicação notícias sobre conflitos recentes e históricos enfrentados por estes povos e provocar um debate sobre estes na perspectiva dos direitos humanos e da Constituição da República Federativa do Brasil de 1988.",
+    "habilidade_codes": [
+      "EF07GE03"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 3º Bimestre\nUnidade: Conexões e Escalas.\nObjetos: Formação territorial do Brasil.\nHabilidades: (EF07GE03) - Selecionar argumentos que reconheçam as territorialidades dos povos indígenas originários, das comunidades remanescentes de quilombos, de povos das florestas e do cerrado, de ribeirinhos e caiçaras, entre outros grupos sociais do campo e da cidade, como direitos legais dessas comunidades.\nSAEB: Direitos legais de cada um dos povos sobre a terra ou área ocupada.\nOrientações: Incentivar a pesquisa sobre os povos indígenas originários, das comunidades remanescentes de quilombos, de povos das florestas e do cerrado, de ribeirinhos e caiçaras, entre outros grupos sociais do campo e da cidade. Sua culturas, tradições, distribuição pelo Brasil, história, condições de vida atuais, lutas, resistências e direitos conquistados. Selecionar nos meios de comunicação notícias sobre conflitos recentes e históricos enfrentados por estes povos e provocar um debate sobre estes na perspectiva dos direitos humanos e da Constituição da República Federativa do Brasil de 1988."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE09) - Interpretar e elaborar mapas temáticos e históricos, inclusive utilizando tecnologias digitais, com informações demográficas e econômicas do Brasil (cartogramas), identificando padrões espaciais, regionalizações e analogias espaciais.",
+    "objeto_conhecimento": "Mapas temáticos do Brasil.",
+    "descritores_saeb": "Leitura, interpretação e elaboração de mapas temáticos.",
+    "orientacoes_pedagogicas": "Utilizar nas aulas mapas temáticos, históricos, fotografias aéreas, imagens de satélite, croquis como ferramentas PEDAGÓGICASs auxiliares no processo de delimitação de um fenômeno geográfico e sua espacialização.",
+    "habilidade_codes": [
+      "EF07GE09"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 3º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial.\nObjetos: Mapas temáticos do Brasil.\nHabilidades: (EF07GE09) - Interpretar e elaborar mapas temáticos e históricos, inclusive utilizando tecnologias digitais, com informações demográficas e econômicas do Brasil (cartogramas), identificando padrões espaciais, regionalizações e analogias espaciais.\nSAEB: Leitura, interpretação e elaboração de mapas temáticos.\nOrientações: Utilizar nas aulas mapas temáticos, históricos, fotografias aéreas, imagens de satélite, croquis como ferramentas PEDAGÓGICASs auxiliares no processo de delimitação de um fenômeno geográfico e sua espacialização."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Conexões e Escalas.",
+    "competencia": "N/A",
+    "habilidade": "(EF67GE16MG) - Descrever e localizar, no meio urbano e rural do estado de Minas Gerais, os aspectos relevantes do regionalismo mineiro manifestado em sua sociodiversidade.",
+    "objeto_conhecimento": "Patrimônio e Preservação da mineiridade.",
+    "descritores_saeb": "O estado de Minas Gerais no Brasil. As características naturais, socioeconômicas e culturais do estado de Minas Gerais.",
+    "orientacoes_pedagogicas": "A cultura mineira é extremamente rica e diversificada, refletindo influências do colonizador português, dos povos indígenas originários do território, dos povos africanos trazidos como escravizados e dos imigrantes europeus. Essas contribuições estão presentes no artesanato, nas manifestações populares, na culinária, na arte, na arquitetura, na língua, nas crenças e em diversos outros aspectos da vida cotidiana. Nesse contexto, é essencial apresentar aos estudantes as tradições culturais de Minas Gerais, destacando como essas influências moldaram as paisagens e os hábitos locais. Essa abordagem deve partir da realidade da comunidade em que estão inseridos, ressaltando a importância da preservação dessas tradições para a valorização de nossa identidade cultural.",
+    "habilidade_codes": [
+      "EF67GE16MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 4º Bimestre\nUnidade: Conexões e Escalas.\nObjetos: Patrimônio e Preservação da mineiridade.\nHabilidades: (EF67GE16MG) - Descrever e localizar, no meio urbano e rural do estado de Minas Gerais, os aspectos relevantes do regionalismo mineiro manifestado em sua sociodiversidade.\nSAEB: O estado de Minas Gerais no Brasil. As características naturais, socioeconômicas e culturais do estado de Minas Gerais.\nOrientações: A cultura mineira é extremamente rica e diversificada, refletindo influências do colonizador português, dos povos indígenas originários do território, dos povos africanos trazidos como escravizados e dos imigrantes europeus. Essas contribuições estão presentes no artesanato, nas manifestações populares, na culinária, na arte, na arquitetura, na língua, nas crenças e em diversos outros aspectos da vida cotidiana. Nesse contexto, é essencial apresentar aos estudantes as tradições culturais de Minas Gerais, destacando como essas influências moldaram as paisagens e os hábitos locais. Essa abordagem deve partir da realidade da comunidade em que estão inseridos, ressaltando a importância da preservação dessas tradições para a valorização de nossa identidade cultural."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Conexões e Escalas.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE14MG) - Reconhecer características socioespaciais e identitárias dos povos indígenas, quilombolas, ribeirinhos, povos da floresta e demais grupos sociais do campo e da cidade que vivem no Brasil.",
+    "objeto_conhecimento": "Formação territorial do Brasil.",
+    "descritores_saeb": "Paisagem cultural: cultura brasileira povos indígenas, quilombolas, ribeirinhos, populações tradicionais, caiçaras, da floresta. A produção do espaço no modo vida dos povos indígenas, quilombolas, ribeirinhos, populações tradicionais, caiçaras, da floresta.",
+    "orientacoes_pedagogicas": "Apresentar aos estudantes informações sobre os povos indígenas, quilombolas, ribeirinhos, caiçaras, povos da floresta e demais grupos sociais do campo e da cidade que vivem no Brasil e especificamente em Minas Gerais. Destacando suas tradições, modos de vida e características socioespaciais. Utilizar mapas e imagens para ilustrar como organizam e utilizam o espaço, relacionando suas práticas culturais e econômicas às paisagens que produzem, comparando-as com as urbanas. Propor atividades de investigação por meio de reportagens ou entrevistas e analisem como seus modos de vida influenciam a paisagem cultural e natural. Discutir os impactos da urbanização e das políticas públicas sobre essas populações, relacionando a preservação de suas identidades culturais e a sustentabilidade. Estudar também suas lutas, reivindicações, resistências e contribuições para a cultura e a ciência do Brasil, com ênfase em Minas Gerais.",
+    "habilidade_codes": [
+      "EF07GE14MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 4º Bimestre\nUnidade: Conexões e Escalas.\nObjetos: Formação territorial do Brasil.\nHabilidades: (EF07GE14MG) - Reconhecer características socioespaciais e identitárias dos povos indígenas, quilombolas, ribeirinhos, povos da floresta e demais grupos sociais do campo e da cidade que vivem no Brasil.\nSAEB: Paisagem cultural: cultura brasileira povos indígenas, quilombolas, ribeirinhos, populações tradicionais, caiçaras, da floresta. A produção do espaço no modo vida dos povos indígenas, quilombolas, ribeirinhos, populações tradicionais, caiçaras, da floresta.\nOrientações: Apresentar aos estudantes informações sobre os povos indígenas, quilombolas, ribeirinhos, caiçaras, povos da floresta e demais grupos sociais do campo e da cidade que vivem no Brasil e especificamente em Minas Gerais. Destacando suas tradições, modos de vida e características socioespaciais. Utilizar mapas e imagens para ilustrar como organizam e utilizam o espaço, relacionando suas práticas culturais e econômicas às paisagens que produzem, comparando-as com as urbanas. Propor atividades de investigação por meio de reportagens ou entrevistas e analisem como seus modos de vida influenciam a paisagem cultural e natural. Discutir os impactos da urbanização e das políticas públicas sobre essas populações, relacionando a preservação de suas identidades culturais e a sustentabilidade. Estudar também suas lutas, reivindicações, resistências e contribuições para a cultura e a ciência do Brasil, com ênfase em Minas Gerais."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Mundo do Trabalho.",
+    "competencia": "N/A",
+    "habilidade": "(EF69GE17MG) - Identificar e discutir o papel das redes virtuais na vida dos adolescentes e analisar a exclusão digital.",
+    "objeto_conhecimento": "Redes virtuais e relações sociais.",
+    "descritores_saeb": "Inclusão e exclusão digital. Redes virtuais.",
+    "orientacoes_pedagogicas": "Apresentar questões como inclusão e exclusão digital, redes sociais e virtuais, bullying, ciberbullying, introduzindo a temática das fake news e como as redes sociais atuam perante os estereótipos entre as diferentes regiões brasileiras. Expor os impactos do desenvolvimento tecnológico na comunicação. Analisar os constantes e recentes avanços tecnológicos na área da comunicação e como esta impacta na vida dos adolescentes permitindo que eles exponham seus pontos de vista.",
+    "habilidade_codes": [
+      "EF69GE17MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 4º Bimestre\nUnidade: Mundo do Trabalho.\nObjetos: Redes virtuais e relações sociais.\nHabilidades: (EF69GE17MG) - Identificar e discutir o papel das redes virtuais na vida dos adolescentes e analisar a exclusão digital.\nSAEB: Inclusão e exclusão digital. Redes virtuais.\nOrientações: Apresentar questões como inclusão e exclusão digital, redes sociais e virtuais, bullying, ciberbullying, introduzindo a temática das fake news e como as redes sociais atuam perante os estereótipos entre as diferentes regiões brasileiras. Expor os impactos do desenvolvimento tecnológico na comunicação. Analisar os constantes e recentes avanços tecnológicos na área da comunicação e como esta impacta na vida dos adolescentes permitindo que eles exponham seus pontos de vista."
+  },
+  {
+    "grade": "7º Ano",
+    "grade_num": 7,
+    "level": "Ensino Fundamental",
+    "subject": "Geografia",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Formas de Representação e Pensamento Espacial.",
+    "competencia": "N/A",
+    "habilidade": "(EF07GE10) - Elaborar e interpretar gráficos de barras, gráficos de setores e histogramas, com base em dados socioeconômicos das regiões brasileiras.",
+    "objeto_conhecimento": "Mapas temáticos do Brasil.",
+    "descritores_saeb": "Produção e interpretação de gráficos, tabelas e histogramas referentes a dados socioeconômicos.",
+    "orientacoes_pedagogicas": "Apresentar gráficos de diferentes tipos estimulando os estudantes na sua leitura e interpretação, além da sua elaboração. Expor gráficos que tragam dados socioeconômicos das regiões brasileiras estabelecendo uma comparação entre elas e seu papéis na economia nacional, considerando os processos históricos que levaram ao cenário atual. Trabalhar a desconstrução de estereótipos e preconceitos sobre as diferentes regiões brasileiras apresentando cada uma com suas características e particularidades.",
+    "habilidade_codes": [
+      "EF07GE10"
+    ],
+    "chunk_text": "Ensino Fundamental | 7º Ano | Geografia | 4º Bimestre\nUnidade: Formas de Representação e Pensamento Espacial.\nObjetos: Mapas temáticos do Brasil.\nHabilidades: (EF07GE10) - Elaborar e interpretar gráficos de barras, gráficos de setores e histogramas, com base em dados socioeconômicos das regiões brasileiras.\nSAEB: Produção e interpretação de gráficos, tabelas e histogramas referentes a dados socioeconômicos.\nOrientações: Apresentar gráficos de diferentes tipos estimulando os estudantes na sua leitura e interpretação, além da sua elaboração. Expor gráficos que tragam dados socioeconômicos das regiões brasileiras estabelecendo uma comparação entre elas e seu papéis na economia nacional, considerando os processos históricos que levaram ao cenário atual. Trabalhar a desconstrução de estereótipos e preconceitos sobre as diferentes regiões brasileiras apresentando cada uma com suas características e particularidades."
+  }
+]

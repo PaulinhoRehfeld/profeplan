@@ -28,13 +28,16 @@ export const initializeSubjectCache = async (): Promise<void> => {
             return;
         }
 
-        if (data) {
+        if (data && data.length > 0) {
             data.forEach(({ input_variant, normalized_name }) => {
                 // Cache case-insensitive
                 subjectCache.set(input_variant.toLowerCase(), normalized_name);
             });
             cacheInitialized = true;
             console.log(`✅ Subject cache initialized with ${subjectCache.size} variants`);
+        } else {
+            console.warn('⚠️ subject_aliases table is empty or not found. Run migration: infra/supabase/migrations/20260209_create_subject_aliases.sql');
+            // Do NOT set cacheInitialized=true so we retry on next call
         }
     } catch (err) {
         console.error('Erro crítico ao inicializar cache:', err);

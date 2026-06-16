@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { ProfileService } from '../ProfileService';
 import { checkUsageQuota } from '../ProfileService';
 import { createSimpleCompletion } from '../ai/AiCore';
+import { getAuthHeaders } from '../sessionService';
 
 const getErrorMessage = (error: unknown): string =>
     error instanceof Error ? error.message : 'Unknown error';
@@ -1238,6 +1239,44 @@ export const generateBlock9Adaptation = async (
     estrategias_ensino: string[];
     tempo_estimado?: string;
 }> => {
+    if (userId) {
+        try {
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('allowed_features')
+                .eq('id', userId)
+                .maybeSingle();
+
+            const allowedFeatures = profile?.allowed_features || [];
+            if (allowedFeatures.includes('pdi_bff') || allowedFeatures.includes('all')) {
+                const authHeaders = await getAuthHeaders();
+                const response = await fetch("/api/pdiProxy", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...authHeaders
+                    },
+                    body: JSON.stringify({
+                        action: 'generateBlock9Adaptation',
+                        lessonContent,
+                        lessonTitle,
+                        subject,
+                        gradeLevel,
+                        habilidadesBncc,
+                        studentPdiContext
+                    }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return data;
+                }
+            }
+        } catch (bffError) {
+            console.warn('[PdiDocumentService] BFF generateBlock9Adaptation failed, falling back to local:', bffError);
+        }
+    }
+
     if (userId) {
         const quotaStatus = await checkUsageQuota(userId);
         if (!quotaStatus.allowed) {

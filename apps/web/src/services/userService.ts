@@ -36,27 +36,81 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
             .eq('id', userId)
             .maybeSingle();
 
-        // 2. Fallback: If ID not found/mismatched but we have email, try email
-        if ((error || !data) && email) {
-            console.warn(`[userService] Profile not found for ID ${userId}. Attempting fallback by email: ${email}`);
-            const { data: recoveredProfile } = await getProfileByEmail(email);
+        // 2. Fallback: If ID not found/mismatched, attempt to resolve email from active session
+        let activeEmail = email;
+        if ((error || !data) && !activeEmail) {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user?.email) {
+                    activeEmail = session.user.email;
+                } else {
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (user?.email) {
+                        activeEmail = user.email;
+                    }
+                }
+            } catch (authErr) {
+                console.warn("[userService] Optional auth session fetch failed:", authErr);
+            }
+        }
+
+        if ((error || !data) && activeEmail) {
+            console.warn(`[userService] Profile not found for ID ${userId}. Attempting fallback by email: ${activeEmail}`);
+            const { data: recoveredProfile } = await getProfileByEmail(activeEmail);
             if (recoveredProfile) {
                 console.log('[userService] Profile recovered by email!');
                 return recoveredProfile as UserProfile;
             }
         }
 
+
         if (error || !data) {
             console.error("[userService] ❌ Error fetching profile:", error);
-                const status =
-                    error && typeof error === 'object' && 'status' in error
-                        ? (error as { status?: number }).status
-                        : undefined;
-                if (error?.code === '42501' || status === 403) {
+            const status =
+                error && typeof error === 'object' && 'status' in error
+                    ? (error as { status?: number }).status
+                    : undefined;
+            if (error?.code === '42501' || status === 403) {
                 console.error("[userService] ⛔ RLS PERMISSION DENIED. Check Supabase Policies for 'profiles' table.");
             }
+
+            // ── Auto-create profile as last resort (trigger may have failed) ──
+            try {
+                const { data: { user: authUser } } = await supabase.auth.getUser();
+                if (authUser && authUser.id === userId) {
+                    console.warn('[userService] Attempting emergency profile creation for:', userId);
+                    const fallbackEmail = authUser.email || activeEmail || '';
+                    const { data: created, error: createErr } = await supabase
+                        .from('profiles')
+                        .upsert({
+                            id: userId,
+                            email: fallbackEmail,
+                            full_name: authUser.user_metadata?.full_name
+                                || authUser.user_metadata?.name
+                                || fallbackEmail.split('@')[0],
+                            role: 'teacher',
+                            tier: 'GOLD',
+                            is_unlimited: true,
+                            credits: 9999,
+                        }, { onConflict: 'id' })
+                        .select()
+                        .maybeSingle();
+
+                    if (!createErr && created) {
+                        console.log('[userService] ✅ Emergency profile created successfully.');
+                        return created as UserProfile;
+                    }
+                    if (createErr) {
+                        console.error('[userService] Emergency profile creation failed:', createErr);
+                    }
+                }
+            } catch (emergencyErr) {
+                console.warn('[userService] Emergency profile creation threw:', emergencyErr);
+            }
+
             return null;
         }
+
 
         let schoolName = undefined;
         let inepCode = undefined;

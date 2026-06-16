@@ -1,13 +1,14 @@
 export function getOpenAIApiKey() {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY is required to use @profeplan/ai.');
+    throw new Error('DEEPSEEK_API_KEY or OPENAI_API_KEY is required to use @profeplan/ai.');
   }
 
   return apiKey;
 }
 
 export function getOpenAIModel() {
-  return process.env.OPENAI_MODEL ?? 'gpt-5.4-mini';
+  return process.env.OPENAI_MODEL ?? 'deepseek-reasoner';
 }
+

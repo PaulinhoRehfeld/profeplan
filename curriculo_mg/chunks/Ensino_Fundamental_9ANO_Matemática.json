@@ -1,0 +1,381 @@
+[
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA24MG) - Reconhecer a necessidade da ampliação do conjunto dos números racionais por meio de situações contextualizadas e/ou resolução de problemas. (EF09MA01) - Reconhecer que, uma vez fixada uma unidade de comprimento, existem segmentos de reta cujo comprimento não é expresso por número racional (como as medidas de diagonais de um polígono e alturas de um triângulo, quando se toma a medida de cada lado como unidade).",
+    "objeto_conhecimento": "Necessidade dos números reais para medir qualquer segmento de reta. Números irracionais: reconhecimento e localização de alguns na reta numérica. Conteúdos relacionados: Os números reais; Reta numérica; Números irracionais; Dízimas periódicas e não periódicas; Representação dos conjuntos numéricos; Arredondamentos; Teorema de Pitágoras; Potenciação e radiciação com números reais; Potência de expoente inteiro; Potência de expoente racional; Propriedades das potências; Raiz quadrada; Raiz cúbica; Raiz n-ésima; Propriedades dos radicais; Transformando raízes em potências; Adição e subtração com raízes; Multiplicação e divisão com raízes; Potenciação e radiciação.",
+    "descritores_saeb": "Reconhecer as diferentes representações de um número racional; Reconhecer as representações decimais dos números racionais como uma extensão do sistema de numeração decimal, identificando a existência de “ordens” como décimos, centésimos e milésimos.",
+    "orientacoes_pedagogicas": "Podem ser desenvolvidos alguns projetos de investigação sobre as histórias dos seguintes tópicos matemáticos: a história do surgimento dos conjuntos numéricos; número de ouro e razão áurea; números de Fibonacci; o número pi. Cabe também, neste momento, utilizar o recurso da sala de aula invertida. Calcular a medida da diagonal de um quadrado de lado l e/ou a altura de um triângulo equilátero, utilizando o teorema de Pitágoras, como exemplos de segmentos cujo comprimento não é expresso por número real. Utilizar a espiral pitagórica para localizar números irracionais na reta numérica. O estudante deve concretizar as habilidades para calcular potências; identificar os elementos da radiciação; calcular raízes; escrever potências com expoentes fracionários por meio de uma raiz e vice-versa; resolver expressões utilizando as propriedades da radiciação; simplificar radicais; introduzir fator externo em um radical; efetuar adição, subtração, multiplicação e divisão com raízes; racionalizar denominadores. Pode-se apresentar aos estudantes o Método de Herão, como uma forma utilizada para obter a aproximação de raízes quadradas. Verifique se os estudantes compreenderam que, quando o radicando é negativo, a raiz existirá no conjunto dos números reais apenas se o índice da radiciação for ímpar.",
+    "habilidade_codes": [
+      "EF09MA24MG",
+      "EF09MA01"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 1º Bimestre\nUnidade: Números\nObjetos: Necessidade dos números reais para medir qualquer segmento de reta. Números irracionais: reconhecimento e localização de alguns na reta numérica. Conteúdos relacionados: Os números reais; Reta numérica; Números irracionais; Dízimas periódicas e não periódicas; Representação dos conjuntos numéricos; Arredondamentos; Teorema de Pitágoras; Potenciação e radiciação com números reais; Potência de expoente inteiro; Potência de expoente racional; Propriedades das potências; Raiz quadrada; Raiz cúbica; Raiz n-ésima; Propriedades dos radicais; Transformando raízes em potências; Adição e subtração com raízes; Multiplicação e divisão com raízes; Potenciação e radiciação.\nHabilidades: (EF09MA24MG) - Reconhecer a necessidade da ampliação do conjunto dos números racionais por meio de situações contextualizadas e/ou resolução de problemas. (EF09MA01) - Reconhecer que, uma vez fixada uma unidade de comprimento, existem segmentos de reta cujo comprimento não é expresso por número racional (como as medidas de diagonais de um polígono e alturas de um triângulo, quando se toma a medida de cada lado como unidade).\nSAEB: Reconhecer as diferentes representações de um número racional; Reconhecer as representações decimais dos números racionais como uma extensão do sistema de numeração decimal, identificando a existência de “ordens” como décimos, centésimos e milésimos.\nOrientações: Podem ser desenvolvidos alguns projetos de investigação sobre as histórias dos seguintes tópicos matemáticos: a história do surgimento dos conjuntos numéricos; número de ouro e razão áurea; números de Fibonacci; o número pi. Cabe também, neste momento, utilizar o recurso da sala de aula invertida. Calcular a medida da diagonal de um quadrado de lado l e/ou a altura de um triângulo equilátero, utilizando o teorema de Pitágoras, como exemplos de segmentos cujo comprimento não é expresso por número real. Utilizar a espiral pitagórica para localizar números irracionais na reta numérica. O estudante deve concretizar as habilidades para calcular potências; identificar os elementos da radiciação; calcular raízes; escrever potências com expoentes fracionários por meio de uma raiz e vice-versa; resolver expressões utilizando as propriedades da radiciação; simplificar radicais; introduzir fator externo em um radical; efetuar adição, subtração, multiplicação e divisão com raízes; racionalizar denominadores. Pode-se apresentar aos estudantes o Método de Herão, como uma forma utilizada para obter a aproximação de raízes quadradas. Verifique se os estudantes compreenderam que, quando o radicando é negativo, a raiz existirá no conjunto dos números reais apenas se o índice da radiciação for ímpar."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA25MG) - Reconhecer, no contexto social, diferentes significados dos números reais. (EF09MA26MG) - Identificar as dízimas não periódicas com os números irracionais apresentando o número π e outros. (EF09MA02) - Reconhecer um número irracional como um número real cuja representação decimal é infinita e não periódica, e estimar a localização de alguns deles na reta numérica. (EF09MA03) - Efetuar cálculos com números reais, inclusive potências com expoentes fracionários.",
+    "objeto_conhecimento": "Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Potências com expoentes negativos e fracionários. Conteúdos relacionados: Sistema de numeração egípcio; Sistema de numeração romano; Sistema de numeração decimal; Leitura e escrita de um número no sistema decimal; Números pares e números ímpares; Comparação de números naturais; A reta numérica e os números naturais; Adição com números naturais; Algumas propriedades da adição; Subtração com números naturais; Relação fundamental da subtração; Multiplicação com números naturais; Algumas propriedades da multiplicação; Divisão com números naturais; Divisão exata; Divisão não exata; Expressões numéricas com as quatro operações; Relação fundamental da divisão; Potenciação com números naturais; Leitura de potências; Potências de base 10; Expressões numéricas com potenciações; Arredondamentos e estimativas.",
+    "descritores_saeb": "Reconhecer as diferentes representações de um número racional; Resolver problema com números racionais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação); Efetuar cálculos simples com valores aproximados de radicais.",
+    "orientacoes_pedagogicas": "(Mesmas orientações do bloco anterior, integrando a história dos conjuntos numéricos, o número pi, o uso da reta numérica para localização de irracionais e o desenvolvimento de cálculos com potências e raízes, incluindo o Método de Herão para aproximações).",
+    "habilidade_codes": [
+      "EF09MA25MG",
+      "EF09MA26MG",
+      "EF09MA02",
+      "EF09MA03"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 1º Bimestre\nUnidade: Números\nObjetos: Sistema de numeração decimal: características, leitura, escrita e comparação de números naturais e de números racionais representados na forma decimal. Potências com expoentes negativos e fracionários. Conteúdos relacionados: Sistema de numeração egípcio; Sistema de numeração romano; Sistema de numeração decimal; Leitura e escrita de um número no sistema decimal; Números pares e números ímpares; Comparação de números naturais; A reta numérica e os números naturais; Adição com números naturais; Algumas propriedades da adição; Subtração com números naturais; Relação fundamental da subtração; Multiplicação com números naturais; Algumas propriedades da multiplicação; Divisão com números naturais; Divisão exata; Divisão não exata; Expressões numéricas com as quatro operações; Relação fundamental da divisão; Potenciação com números naturais; Leitura de potências; Potências de base 10; Expressões numéricas com potenciações; Arredondamentos e estimativas.\nHabilidades: (EF09MA25MG) - Reconhecer, no contexto social, diferentes significados dos números reais. (EF09MA26MG) - Identificar as dízimas não periódicas com os números irracionais apresentando o número π e outros. (EF09MA02) - Reconhecer um número irracional como um número real cuja representação decimal é infinita e não periódica, e estimar a localização de alguns deles na reta numérica. (EF09MA03) - Efetuar cálculos com números reais, inclusive potências com expoentes fracionários.\nSAEB: Reconhecer as diferentes representações de um número racional; Resolver problema com números racionais envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação); Efetuar cálculos simples com valores aproximados de radicais.\nOrientações: (Mesmas orientações do bloco anterior, integrando a história dos conjuntos numéricos, o número pi, o uso da reta numérica para localização de irracionais e o desenvolvimento de cálculos com potências e raízes, incluindo o Método de Herão para aproximações)."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA04A) - Resolver problemas com números reais, inclusive em notação científica, envolvendo diferentes operações. (EF09MA04B) - Elaborar problemas com números reais, inclusive em notação científica, envolvendo diferentes operações.",
+    "objeto_conhecimento": "Números reais: notação científica e problemas. Conteúdos relacionados: Potências de dez; Notação científica; Operações com notação científica.",
+    "descritores_saeb": "Resolver problema com números inteiros envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).",
+    "orientacoes_pedagogicas": "O estudante deve reconhecer que existem grandezas cuja representação decimal não é a mais adequada, como a distância entre a Terra e o Sol ou o raio do átomo de hidrogênio medidos em metros, justificando o uso da notação científica nesses casos.",
+    "habilidade_codes": [
+      "EF09MA04A",
+      "EF09MA04B"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 1º Bimestre\nUnidade: Números\nObjetos: Números reais: notação científica e problemas. Conteúdos relacionados: Potências de dez; Notação científica; Operações com notação científica.\nHabilidades: (EF09MA04A) - Resolver problemas com números reais, inclusive em notação científica, envolvendo diferentes operações. (EF09MA04B) - Elaborar problemas com números reais, inclusive em notação científica, envolvendo diferentes operações.\nSAEB: Resolver problema com números inteiros envolvendo as operações (adição, subtração, multiplicação, divisão, potenciação).\nOrientações: O estudante deve reconhecer que existem grandezas cuja representação decimal não é a mais adequada, como a distância entre a Terra e o Sol ou o raio do átomo de hidrogênio medidos em metros, justificando o uso da notação científica nesses casos."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA18) - Reconhecer e empregar unidades usadas para expressar medidas muito grandes ou muito pequenas, tais como distância entre planetas e sistemas solares, tamanho de vírus ou de células, capacidade de armazenamento de computadores, entre outros.",
+    "objeto_conhecimento": "Unidades de medida para medir distâncias muito grandes e muito pequenas. Unidades de medida utilizadas na informática. Conteúdos relacionados: Unidades de medidas de comprimento muito grandes ou muito pequenas; Sistema binário; Notação científica; Grandezas em informática (mega, giga, tera); Conversões de unidades de medida em informática.",
+    "descritores_saeb": "Reconhecer as representações decimais dos números racionais como uma extensão do sistema de numeração decimal, identificando a existência de “ordens” como décimos, centésimos e milésimos.",
+    "orientacoes_pedagogicas": "Apresentar a Unidade Astronômica, utilizada para representar distâncias dentro do sistema solar. Apresentar a tabela com os múltiplos e submúltiplos de unidades de medida, seus prefixos e símbolos. Pode-se apresentar o bit como menor unidade de informação que o computador pode armazenar e sua relação com o sistema binário. Além de unidades de medida de capacidade de armazenamento, apresente aos estudantes outras unidades de medida em informática, como taxa de transferência de dados e velocidade de processamento. Este é um bom momento para trabalhar rotinas de pensamento com os estudantes utilizando, por exemplo, imagens de computadores e suas configurações.",
+    "habilidade_codes": [
+      "EF09MA18"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 1º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Unidades de medida para medir distâncias muito grandes e muito pequenas. Unidades de medida utilizadas na informática. Conteúdos relacionados: Unidades de medidas de comprimento muito grandes ou muito pequenas; Sistema binário; Notação científica; Grandezas em informática (mega, giga, tera); Conversões de unidades de medida em informática.\nHabilidades: (EF09MA18) - Reconhecer e empregar unidades usadas para expressar medidas muito grandes ou muito pequenas, tais como distância entre planetas e sistemas solares, tamanho de vírus ou de células, capacidade de armazenamento de computadores, entre outros.\nSAEB: Reconhecer as representações decimais dos números racionais como uma extensão do sistema de numeração decimal, identificando a existência de “ordens” como décimos, centésimos e milésimos.\nOrientações: Apresentar a Unidade Astronômica, utilizada para representar distâncias dentro do sistema solar. Apresentar a tabela com os múltiplos e submúltiplos de unidades de medida, seus prefixos e símbolos. Pode-se apresentar o bit como menor unidade de informação que o computador pode armazenar e sua relação com o sistema binário. Além de unidades de medida de capacidade de armazenamento, apresente aos estudantes outras unidades de medida em informática, como taxa de transferência de dados e velocidade de processamento. Este é um bom momento para trabalhar rotinas de pensamento com os estudantes utilizando, por exemplo, imagens de computadores e suas configurações."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Álgebra",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA09) - Compreender os processos de fatoração de expressões algébricas, com base em suas relações com os produtos notáveis, para resolver e elaborar problemas que possam ser representados por equações polinomiais do 2º grau.",
+    "objeto_conhecimento": "Expressões algébricas: fatoração e produtos notáveis. Resolução de equações polinomiais do 2º grau por meio de fatorações. Conteúdos relacionados: Produtos notáveis; Quadrado da soma de dois termos; Quadrado da diferença de dois termos; Produto da soma pela diferença de dois termos; Fatoração; Fatoração com um fator comum em evidência; Fatoração por agrupamento; Fatoração da diferença de dois quadrados; Fatoração do trinômio quadrado perfeito; Equações do 2º grau com 1 incógnita; Raízes de equação do 2º grau; Resolução de equações do 2º grau por meio de fatoração.",
+    "descritores_saeb": "Calcular o valor numérico de uma expressão algébrica; Resolver problema que envolva equação do 2º grau.",
+    "orientacoes_pedagogicas": "Neste momento aproveita-se os exemplos feitos em racionalização e dá-se continuidade aos produtos notáveis (numa retomada do 8º ano) para introduzir o conceito de fatoração de uma equação do 2º grau e enfatizar as relações entre os seus coeficientes e suas raízes. Aqui o estudante deve reconhecer a equação do 2º grau e seus elementos, classificação em completas e incompletas. Os assuntos trabalhados possibilitarão que os estudantes compreendam a relação entre as raízes de uma equação do 2º grau e seu discriminante e entre as raízes e seus coeficientes, e ainda que avancem para a resolução de sistemas que recaem em equações do 2º grau.",
+    "habilidade_codes": [
+      "EF09MA09"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 1º Bimestre\nUnidade: Álgebra\nObjetos: Expressões algébricas: fatoração e produtos notáveis. Resolução de equações polinomiais do 2º grau por meio de fatorações. Conteúdos relacionados: Produtos notáveis; Quadrado da soma de dois termos; Quadrado da diferença de dois termos; Produto da soma pela diferença de dois termos; Fatoração; Fatoração com um fator comum em evidência; Fatoração por agrupamento; Fatoração da diferença de dois quadrados; Fatoração do trinômio quadrado perfeito; Equações do 2º grau com 1 incógnita; Raízes de equação do 2º grau; Resolução de equações do 2º grau por meio de fatoração.\nHabilidades: (EF09MA09) - Compreender os processos de fatoração de expressões algébricas, com base em suas relações com os produtos notáveis, para resolver e elaborar problemas que possam ser representados por equações polinomiais do 2º grau.\nSAEB: Calcular o valor numérico de uma expressão algébrica; Resolver problema que envolva equação do 2º grau.\nOrientações: Neste momento aproveita-se os exemplos feitos em racionalização e dá-se continuidade aos produtos notáveis (numa retomada do 8º ano) para introduzir o conceito de fatoração de uma equação do 2º grau e enfatizar as relações entre os seus coeficientes e suas raízes. Aqui o estudante deve reconhecer a equação do 2º grau e seus elementos, classificação em completas e incompletas. Os assuntos trabalhados possibilitarão que os estudantes compreendam a relação entre as raízes de uma equação do 2º grau e seu discriminante e entre as raízes e seus coeficientes, e ainda que avancem para a resolução de sistemas que recaem em equações do 2º grau."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Álgebra",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA07) - Resolver problemas que envolvam a razão entre duas grandezas de espécies diferentes, como velocidade e densidade demográfica. (EF09MA08A) - Resolver problemas que envolvam relações de proporcionalidade direta e inversa entre duas ou mais grandezas, inclusive escalas, divisão em partes proporcionais e taxa de variação, em contextos socioculturais, ambientais e de outras áreas. (EF09MA08B) - Elaborar problemas que envolvam relações de proporcionalidade direta e inversa entre duas ou mais grandezas, inclusive escalas, divisão em partes proporcionais e taxa de variação, em contextos socioculturais, ambientais e outras áreas.",
+    "objeto_conhecimento": "Razão entre grandezas de espécies diferentes. Grandezas diretamente proporcionais e grandezas inversamente proporcionais. Conteúdos relacionados: Razão e proporção; Divisão proporcional; Grandezas diretamente proporcionais; Grandezas inversamente proporcionais; Regra de três simples; Comparando mais de 2 grandezas; Regra de três composta.",
+    "descritores_saeb": "Resolver problema que envolva variação proporcional, direta ou inversa, entre grandezas.",
+    "orientacoes_pedagogicas": "Resolver e elaborar problemas que envolvam razão entre grandezas distintas aplicando regra de três simples ou composta são habilidades valiosas, ao aprofundar esses conceitos oferecemos aos estudantes ferramentas para resolver desafios complexos em diferentes áreas. Podemos considerar, por exemplo, como a densidade demográfica impacta a qualidade de vida em diferentes regiões urbanas ou como a taxa de variação em recursos naturais afeta o equilíbrio ambiental.",
+    "habilidade_codes": [
+      "EF09MA07",
+      "EF09MA08A",
+      "EF09MA08B"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 2º Bimestre\nUnidade: Álgebra\nObjetos: Razão entre grandezas de espécies diferentes. Grandezas diretamente proporcionais e grandezas inversamente proporcionais. Conteúdos relacionados: Razão e proporção; Divisão proporcional; Grandezas diretamente proporcionais; Grandezas inversamente proporcionais; Regra de três simples; Comparando mais de 2 grandezas; Regra de três composta.\nHabilidades: (EF09MA07) - Resolver problemas que envolvam a razão entre duas grandezas de espécies diferentes, como velocidade e densidade demográfica. (EF09MA08A) - Resolver problemas que envolvam relações de proporcionalidade direta e inversa entre duas ou mais grandezas, inclusive escalas, divisão em partes proporcionais e taxa de variação, em contextos socioculturais, ambientais e de outras áreas. (EF09MA08B) - Elaborar problemas que envolvam relações de proporcionalidade direta e inversa entre duas ou mais grandezas, inclusive escalas, divisão em partes proporcionais e taxa de variação, em contextos socioculturais, ambientais e outras áreas.\nSAEB: Resolver problema que envolva variação proporcional, direta ou inversa, entre grandezas.\nOrientações: Resolver e elaborar problemas que envolvam razão entre grandezas distintas aplicando regra de três simples ou composta são habilidades valiosas, ao aprofundar esses conceitos oferecemos aos estudantes ferramentas para resolver desafios complexos em diferentes áreas. Podemos considerar, por exemplo, como a densidade demográfica impacta a qualidade de vida em diferentes regiões urbanas ou como a taxa de variação em recursos naturais afeta o equilíbrio ambiental."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Números",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA05A) - Resolver problemas que envolvam porcentagens, com a ideia de aplicação de percentuais sucessivos e a determinação das taxas percentuais, preferencialmente com o uso de tecnologias digitais, no contexto da educação financeira. (EF09MA05B) - Elaborar problemas que envolvam porcentagens, com a ideia de aplicação de percentuais sucessivos e a determinação das taxas percentuais, preferencialmente com o uso de tecnologias digitais, no contexto da educação financeira.",
+    "objeto_conhecimento": "Porcentagens: problemas que envolvem cálculo de percentuais sucessivos. Conteúdos relacionados: Taxa de juro e montante; Cálculo com porcentuais sucessivos; Reconhecer elementos da Matemática financeira no dia a dia; Calcular acréscimos e descontos sucessivos em diferentes situações, inclusive em contextos de matemática financeira; Identificar os termos utilizados para calcular juro.",
+    "descritores_saeb": "Resolver problema que envolva porcentagem.",
+    "orientacoes_pedagogicas": "A formação de cidadãos críticos é um dos objetivos da Matemática. Conhecer elementos da Matemática financeira é importante para que os estudantes se conscientizem de como consumir de maneira adequada. Escolher a melhor forma de pagamento na compra de um produto e calcular a taxa de juro cobrada em um empréstimo são exemplos de situações nas quais é necessário o conhecimento sobre Matemática financeira. É importante a conscientização dos estudantes quanto ao importante ato de poupar dinheiro, sobre o seu uso e a necessidade de administrar adequadamente sua vida financeira desde jovens, possibilitando que tenham melhor relação com circunstâncias de consumo, financiamento, dívida e poupança. Aproveite esse momento para ensiná-los a construir uma planilha de gastos, por exemplo. Pode-se calcular porcentagens abordadas em situações do dia a dia (contas, inflação, INPC, índices acumulativos, etc.). Podemos também realizar cálculos nos sistemas de juro simples e de juro compostos exemplificando com boletos bancários, faturas de cartão, contas de luz, etc.), utilizando, inclusive, calculadoras.",
+    "habilidade_codes": [
+      "EF09MA05A",
+      "EF09MA05B"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 2º Bimestre\nUnidade: Números\nObjetos: Porcentagens: problemas que envolvem cálculo de percentuais sucessivos. Conteúdos relacionados: Taxa de juro e montante; Cálculo com porcentuais sucessivos; Reconhecer elementos da Matemática financeira no dia a dia; Calcular acréscimos e descontos sucessivos em diferentes situações, inclusive em contextos de matemática financeira; Identificar os termos utilizados para calcular juro.\nHabilidades: (EF09MA05A) - Resolver problemas que envolvam porcentagens, com a ideia de aplicação de percentuais sucessivos e a determinação das taxas percentuais, preferencialmente com o uso de tecnologias digitais, no contexto da educação financeira. (EF09MA05B) - Elaborar problemas que envolvam porcentagens, com a ideia de aplicação de percentuais sucessivos e a determinação das taxas percentuais, preferencialmente com o uso de tecnologias digitais, no contexto da educação financeira.\nSAEB: Resolver problema que envolva porcentagem.\nOrientações: A formação de cidadãos críticos é um dos objetivos da Matemática. Conhecer elementos da Matemática financeira é importante para que os estudantes se conscientizem de como consumir de maneira adequada. Escolher a melhor forma de pagamento na compra de um produto e calcular a taxa de juro cobrada em um empréstimo são exemplos de situações nas quais é necessário o conhecimento sobre Matemática financeira. É importante a conscientização dos estudantes quanto ao importante ato de poupar dinheiro, sobre o seu uso e a necessidade de administrar adequadamente sua vida financeira desde jovens, possibilitando que tenham melhor relação com circunstâncias de consumo, financiamento, dívida e poupança. Aproveite esse momento para ensiná-los a construir uma planilha de gastos, por exemplo. Pode-se calcular porcentagens abordadas em situações do dia a dia (contas, inflação, INPC, índices acumulativos, etc.). Podemos também realizar cálculos nos sistemas de juro simples e de juro compostos exemplificando com boletos bancários, faturas de cartão, contas de luz, etc.), utilizando, inclusive, calculadoras."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Álgebra",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA06A) - Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações numérica, algébrica e gráfica. (EF09MA06B) - Utilizar o conceito de função para analisar situações que envolvam relações funcionais entre duas variáveis.",
+    "objeto_conhecimento": "Funções: representações numérica, algébrica e gráfica. Conteúdos relacionados: Ideia de função; Função afim; A notação f(x); Valor de uma função; Representação gráfica de uma função; Gráfico da função afim; Zero de uma função afim; Variação de uma função afim; Introdução a função quadrática.",
+    "descritores_saeb": "Identificar uma equação ou inequação do 1º grau que expressa um problema; Identificar um sistema de equações do 1º grau que expressa um problema; Identificar a relação entre as representações algébrica e geométrica de um sistema de equações do 1º grau.",
+    "orientacoes_pedagogicas": "Aqui o estudante deve compreender a noção de função incluindo a representação por meio de diagramas e gráficos e a identificar as suas variáveis. Em seguida, os estudos avançarão para o reconhecimento de uma função afim, de modo a identificar seus termos e construir gráficos. Eles devem compreender o conceito de funções quadráticas e a identificar os termos associados a elas. Para trabalhar a análise de situações que envolvam relações funcionais entre duas variáveis pode-se utilizar exemplos como o preço a pagar por uma viagem de táxi ou carro de aplicativo e a distância percorrida, a distância percorrida e o tempo gasto em um deslocamento com velocidade constante, entre outros.",
+    "habilidade_codes": [
+      "EF09MA06A",
+      "EF09MA06B"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 2º Bimestre\nUnidade: Álgebra\nObjetos: Funções: representações numérica, algébrica e gráfica. Conteúdos relacionados: Ideia de função; Função afim; A notação f(x); Valor de uma função; Representação gráfica de uma função; Gráfico da função afim; Zero de uma função afim; Variação de uma função afim; Introdução a função quadrática.\nHabilidades: (EF09MA06A) - Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações numérica, algébrica e gráfica. (EF09MA06B) - Utilizar o conceito de função para analisar situações que envolvam relações funcionais entre duas variáveis.\nSAEB: Identificar uma equação ou inequação do 1º grau que expressa um problema; Identificar um sistema de equações do 1º grau que expressa um problema; Identificar a relação entre as representações algébrica e geométrica de um sistema de equações do 1º grau.\nOrientações: Aqui o estudante deve compreender a noção de função incluindo a representação por meio de diagramas e gráficos e a identificar as suas variáveis. Em seguida, os estudos avançarão para o reconhecimento de uma função afim, de modo a identificar seus termos e construir gráficos. Eles devem compreender o conceito de funções quadráticas e a identificar os termos associados a elas. Para trabalhar a análise de situações que envolvam relações funcionais entre duas variáveis pode-se utilizar exemplos como o preço a pagar por uma viagem de táxi ou carro de aplicativo e a distância percorrida, a distância percorrida e o tempo gasto em um deslocamento com velocidade constante, entre outros."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA10) - Demonstrar relações simples entre os ângulos formados por retas paralelas cortadas por uma transversal.",
+    "objeto_conhecimento": "Demonstrações de relações entre os ângulos formados por retas paralelas intersectadas por uma transversal. Conteúdos relacionados: Comparação de grandezas; Razão de segmento de reta; Feixe de retas paralelas; Teorema de Tales; Ângulos formados por duas retas paralelas e uma transversal; Teorema de Tales nos triângulos; Semelhança; Teorema fundamental da semelhança.",
+    "descritores_saeb": "Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.",
+    "orientacoes_pedagogicas": "Neste momento, retomar os conceitos de ângulos opostos pelo vértice e ângulos formados por um feixe de retas paralelas e uma transversal, e prosseguir abordando o cálculo da razão entre dois segmentos de reta.",
+    "habilidade_codes": [
+      "EF09MA10"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 2º Bimestre\nUnidade: Geometria\nObjetos: Demonstrações de relações entre os ângulos formados por retas paralelas intersectadas por uma transversal. Conteúdos relacionados: Comparação de grandezas; Razão de segmento de reta; Feixe de retas paralelas; Teorema de Tales; Ângulos formados por duas retas paralelas e uma transversal; Teorema de Tales nos triângulos; Semelhança; Teorema fundamental da semelhança.\nHabilidades: (EF09MA10) - Demonstrar relações simples entre os ângulos formados por retas paralelas cortadas por uma transversal.\nSAEB: Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.\nOrientações: Neste momento, retomar os conceitos de ângulos opostos pelo vértice e ângulos formados por um feixe de retas paralelas e uma transversal, e prosseguir abordando o cálculo da razão entre dois segmentos de reta."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA30MG) - Resolver problemas que envolvam o teorema de Tales.",
+    "objeto_conhecimento": "Semelhança de triângulos e Teorema de Tales. Conteúdos relacionados: Comparação de grandezas; Razão de segmento de reta; Feixe de retas paralelas; Teorema de Tales; Ângulos formados por duas retas paralelas e uma transversal; Teorema de Tales nos triângulos; Semelhança; Teorema fundamental da semelhança.",
+    "descritores_saeb": "Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.",
+    "orientacoes_pedagogicas": "Os estudantes devem calcular a razão entre dois segmentos de reta. Verificar e compreender o teorema de Tales. Identificar segmentos proporcionais. Utilizar o teorema de Tales para determinar a medida de um segmento de reta. Também serão estudados os conceitos de polígonos semelhantes, ampliação e redução, utilizando homotética e a semelhança de triângulos. Pode-se trabalhar com as escalas utilizadas para construções de maquetes e/ou mapas.",
+    "habilidade_codes": [
+      "EF09MA30MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 2º Bimestre\nUnidade: Geometria\nObjetos: Semelhança de triângulos e Teorema de Tales. Conteúdos relacionados: Comparação de grandezas; Razão de segmento de reta; Feixe de retas paralelas; Teorema de Tales; Ângulos formados por duas retas paralelas e uma transversal; Teorema de Tales nos triângulos; Semelhança; Teorema fundamental da semelhança.\nHabilidades: (EF09MA30MG) - Resolver problemas que envolvam o teorema de Tales.\nSAEB: Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.\nOrientações: Os estudantes devem calcular a razão entre dois segmentos de reta. Verificar e compreender o teorema de Tales. Identificar segmentos proporcionais. Utilizar o teorema de Tales para determinar a medida de um segmento de reta. Também serão estudados os conceitos de polígonos semelhantes, ampliação e redução, utilizando homotética e a semelhança de triângulos. Pode-se trabalhar com as escalas utilizadas para construções de maquetes e/ou mapas."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA12) - Reconhecer as condições necessárias e suficientes para que dois triângulos sejam semelhantes. (EF09MA29MG) - Reconhecer triângulos congruentes a partir dos critérios de congruência.",
+    "objeto_conhecimento": "Semelhança de triângulos e Teorema de Tales. Conteúdos relacionados: Comparação de grandezas; Razão de segmento de reta; Semelhança; Figuras semelhantes; Polígonos semelhantes; Triângulos semelhantes; Teorema fundamental da semelhança; Casos de semelhança de triângulos.",
+    "descritores_saeb": "Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.",
+    "orientacoes_pedagogicas": "Os estudantes devem calcular a razão entre dois segmentos de reta. Identificar segmentos proporcionais. Também serão estudados os conceitos de polígonos semelhantes, ampliação e redução, utilizando homotética e a semelhança de triângulos. Pode-se trabalhar com as escalas utilizadas para construções de maquetes e/ou mapas.",
+    "habilidade_codes": [
+      "EF09MA12",
+      "EF09MA29MG"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 3º Bimestre\nUnidade: Geometria\nObjetos: Semelhança de triângulos e Teorema de Tales. Conteúdos relacionados: Comparação de grandezas; Razão de segmento de reta; Semelhança; Figuras semelhantes; Polígonos semelhantes; Triângulos semelhantes; Teorema fundamental da semelhança; Casos de semelhança de triângulos.\nHabilidades: (EF09MA12) - Reconhecer as condições necessárias e suficientes para que dois triângulos sejam semelhantes. (EF09MA29MG) - Reconhecer triângulos congruentes a partir dos critérios de congruência.\nSAEB: Identificar propriedades de triângulos pela comparação de medidas de lados e ângulos.\nOrientações: Os estudantes devem calcular a razão entre dois segmentos de reta. Identificar segmentos proporcionais. Também serão estudados os conceitos de polígonos semelhantes, ampliação e redução, utilizando homotética e a semelhança de triângulos. Pode-se trabalhar com as escalas utilizadas para construções de maquetes e/ou mapas."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA31MG) - Utilizar semelhança de triângulos para descrever as relações métricas no triângulo retângulo. (EF09MA32MG) - Utilizar semelhança de triângulos para obter o teorema de Pitágoras. (EF09MA13) - Demonstrar relações métricas do triângulo retângulo, entre elas o teorema de Pitágoras, utilizando, inclusive, a semelhança de triângulos. (EF09MA33MG) - Resolver problemas que envolvam as relações métricas no triângulo retângulo. (EF09MA14A) - Resolver problemas de aplicação do teorema de Pitágoras ou das relações de proporcionalidade envolvendo retas paralelas cortadas por secantes. (EF09MA14B) - Elaborar problemas de aplicação do teorema de Pitágoras ou das relações de proporcionalidade envolvendo retas paralelas cortadas por secantes.",
+    "objeto_conhecimento": "Relações métricas no triângulo retângulo. Teorema de Pitágoras: verificações experimentais e demonstração. Retas paralelas cortadas por transversais: teoremas de proporcionalidade e verificações experimentais. Conteúdos relacionados: Triângulo retângulo; Relações métricas no triângulo retângulo; Teorema de Pitágoras: verificação experimentais e demonstração; Ângulos notáveis; Tabela trigonométrica; Seno, cosseno e tangente de ângulos agudos.",
+    "descritores_saeb": "Utilizar relações métricas do triângulo retângulo para resolver problemas significativos.",
+    "orientacoes_pedagogicas": "Este momento proporcionará aos estudantes o avanço no estudo do triângulo retângulo, habilitando-os a reconhecer seus elementos para estabelecer relações métricas e trigonométricas. Pode-se sugerir a pesquisa de como Tales conseguiu medir a altura da pirâmide de Quéops utilizando seus conhecimentos sobre segmentos proporcionais e semelhança de triângulos. É importante que os estudantes compreendam e demostrem o teorema de Pitágoras a partir das relações métricas no triângulo retângulo, utilizando também a semelhança de triângulos. O teorema de Pitágoras também será trabalhado como procedimento de cálculo. Trabalhe algumas de suas aplicações, como no cálculo da diagonal de um quadrado ou para calcular a altura de um triângulo. Pode-se pesquisar sobre a vida de Pitágoras e também sobre o teorema que leva o seu nome, indicando sua importância para diversos povos em diferentes épocas, especialmente para medições de terras e construções. Também podemos utilizar as relações métricas no triângulo retângulo para encontrar os valores do seno, do cosseno e da tangente dos ângulos notáveis.",
+    "habilidade_codes": [
+      "EF09MA31MG",
+      "EF09MA32MG",
+      "EF09MA13",
+      "EF09MA33MG",
+      "EF09MA14A",
+      "EF09MA14B"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 3º Bimestre\nUnidade: Geometria\nObjetos: Relações métricas no triângulo retângulo. Teorema de Pitágoras: verificações experimentais e demonstração. Retas paralelas cortadas por transversais: teoremas de proporcionalidade e verificações experimentais. Conteúdos relacionados: Triângulo retângulo; Relações métricas no triângulo retângulo; Teorema de Pitágoras: verificação experimentais e demonstração; Ângulos notáveis; Tabela trigonométrica; Seno, cosseno e tangente de ângulos agudos.\nHabilidades: (EF09MA31MG) - Utilizar semelhança de triângulos para descrever as relações métricas no triângulo retângulo. (EF09MA32MG) - Utilizar semelhança de triângulos para obter o teorema de Pitágoras. (EF09MA13) - Demonstrar relações métricas do triângulo retângulo, entre elas o teorema de Pitágoras, utilizando, inclusive, a semelhança de triângulos. (EF09MA33MG) - Resolver problemas que envolvam as relações métricas no triângulo retângulo. (EF09MA14A) - Resolver problemas de aplicação do teorema de Pitágoras ou das relações de proporcionalidade envolvendo retas paralelas cortadas por secantes. (EF09MA14B) - Elaborar problemas de aplicação do teorema de Pitágoras ou das relações de proporcionalidade envolvendo retas paralelas cortadas por secantes.\nSAEB: Utilizar relações métricas do triângulo retângulo para resolver problemas significativos.\nOrientações: Este momento proporcionará aos estudantes o avanço no estudo do triângulo retângulo, habilitando-os a reconhecer seus elementos para estabelecer relações métricas e trigonométricas. Pode-se sugerir a pesquisa de como Tales conseguiu medir a altura da pirâmide de Quéops utilizando seus conhecimentos sobre segmentos proporcionais e semelhança de triângulos. É importante que os estudantes compreendam e demostrem o teorema de Pitágoras a partir das relações métricas no triângulo retângulo, utilizando também a semelhança de triângulos. O teorema de Pitágoras também será trabalhado como procedimento de cálculo. Trabalhe algumas de suas aplicações, como no cálculo da diagonal de um quadrado ou para calcular a altura de um triângulo. Pode-se pesquisar sobre a vida de Pitágoras e também sobre o teorema que leva o seu nome, indicando sua importância para diversos povos em diferentes épocas, especialmente para medições de terras e construções. Também podemos utilizar as relações métricas no triângulo retângulo para encontrar os valores do seno, do cosseno e da tangente dos ângulos notáveis."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA21) - Analisar e identificar, em gráficos divulgados pela mídia, os elementos que podem induzir, às vezes propositadamente, erros de leitura, como escalas inapropriadas, legendas não explicitadas corretamente, omissão de informações importantes (fontes e datas), entre outros. (EF09MA22) - Escolher e construir o gráfico mais adequado (colunas, setores, linhas), com ou sem uso de planilhas eletrônicas, para apresentar um determinado conjunto de dados, destacando aspectos como as medidas de tendência central.",
+    "objeto_conhecimento": "Análise de gráficos divulgados pela mídia: elementos que podem induzir a erros de leitura ou de interpretação. Leitura, interpretação e representação de dados de pesquisa expressos em tabelas de dupla entrada, gráficos de colunas simples e agrupadas, gráficos de barras e de setores e gráficos pictóricos. Conteúdos relacionados: Estatística; Tipos de variáveis; Amostra; Gráficos (diferentes tipos, construção e análise); Tabela de frequências; Intervalos de classe; Histograma; Média, mediana e moda; Pesquisa estatística: planejamento e coleta de dados; Pesquisa estatística: apresentação e conclusão.",
+    "descritores_saeb": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos; Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.",
+    "orientacoes_pedagogicas": "Saber construir, ler e interpretar gráficos e tabelas é uma habilidade fundamental para o estudante compreender o mundo de forma crítica, a fim de conseguir tirar conclusões próprias e até mesmo fazer previsões sobre determinados assuntos e informações. Busque compreender os conhecimentos prévios de cada um e apresentar os diferentes tipos de gráficos, junto às suas principais características. O estudante deve reconhecer e utilizar cada um desses gráficos. Posteriormente trabalhe o desenvolvimento do olhar crítico sobre informações divulgadas pelas mídias através de gráficos que podem induzir a erros de leitura. Neste momento é interessante explorar atividades geradoras de debates, onde é possível avaliar, além das habilidades em destaque, o desenvolvimento de competências gerais como a empatia, a cooperação e a comunicação, observando se o estudante é capaz de defender suas ideias e pontos de vista de forma ética com base em dados e informações confiáveis.",
+    "habilidade_codes": [
+      "EF09MA21",
+      "EF09MA22"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 3º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Análise de gráficos divulgados pela mídia: elementos que podem induzir a erros de leitura ou de interpretação. Leitura, interpretação e representação de dados de pesquisa expressos em tabelas de dupla entrada, gráficos de colunas simples e agrupadas, gráficos de barras e de setores e gráficos pictóricos. Conteúdos relacionados: Estatística; Tipos de variáveis; Amostra; Gráficos (diferentes tipos, construção e análise); Tabela de frequências; Intervalos de classe; Histograma; Média, mediana e moda; Pesquisa estatística: planejamento e coleta de dados; Pesquisa estatística: apresentação e conclusão.\nHabilidades: (EF09MA21) - Analisar e identificar, em gráficos divulgados pela mídia, os elementos que podem induzir, às vezes propositadamente, erros de leitura, como escalas inapropriadas, legendas não explicitadas corretamente, omissão de informações importantes (fontes e datas), entre outros. (EF09MA22) - Escolher e construir o gráfico mais adequado (colunas, setores, linhas), com ou sem uso de planilhas eletrônicas, para apresentar um determinado conjunto de dados, destacando aspectos como as medidas de tendência central.\nSAEB: Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos; Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.\nOrientações: Saber construir, ler e interpretar gráficos e tabelas é uma habilidade fundamental para o estudante compreender o mundo de forma crítica, a fim de conseguir tirar conclusões próprias e até mesmo fazer previsões sobre determinados assuntos e informações. Busque compreender os conhecimentos prévios de cada um e apresentar os diferentes tipos de gráficos, junto às suas principais características. O estudante deve reconhecer e utilizar cada um desses gráficos. Posteriormente trabalhe o desenvolvimento do olhar crítico sobre informações divulgadas pelas mídias através de gráficos que podem induzir a erros de leitura. Neste momento é interessante explorar atividades geradoras de debates, onde é possível avaliar, além das habilidades em destaque, o desenvolvimento de competências gerais como a empatia, a cooperação e a comunicação, observando se o estudante é capaz de defender suas ideias e pontos de vista de forma ética com base em dados e informações confiáveis."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA23) - Planejar e executar pesquisa amostral envolvendo tema da realidade social e comunicar os resultados por meio de relatório contendo avaliação de medidas de tendência central e da amplitude, tabelas e gráficos adequados, construídos com o apoio de planilhas eletrônicas.",
+    "objeto_conhecimento": "Planejamento e execução de pesquisa amostral e apresentação de relatório. Conteúdos relacionados: Estatística; Tipos de variáveis; Amostra; Gráficos (diferentes tipos, construção e análise); Tabela de frequências; Intervalos de classe; Histograma; Média, mediana e moda; Pesquisa estatística: planejamento e coleta de dados; Pesquisa estatística: apresentação e conclusão.",
+    "descritores_saeb": "Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos; Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.",
+    "orientacoes_pedagogicas": "Proponha atividades aos estudantes, que contribuam para o desenvolvimento da habilidade de planejar pesquisas estatísticas, nas quais os tipos de questionamentos, o tipo de amostragem e a representação dos dados são partes fundamentais. Possibilite que os estudantes realizem as atividades em duplas ou grupos e assim compartilhem suas ideias e experiências. Pesquisas amostrais podem ser realizadas dentro da sala de aula ou no ambiente escolar de modo que possam não somente planejar e realizar a pesquisa, mas também organizar os dados, realizar os cálculos estatísticos e comunicar os resultados para a turma ou até mesmo para toda a comunidade escolar.",
+    "habilidade_codes": [
+      "EF09MA23"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 3º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Planejamento e execução de pesquisa amostral e apresentação de relatório. Conteúdos relacionados: Estatística; Tipos de variáveis; Amostra; Gráficos (diferentes tipos, construção e análise); Tabela de frequências; Intervalos de classe; Histograma; Média, mediana e moda; Pesquisa estatística: planejamento e coleta de dados; Pesquisa estatística: apresentação e conclusão.\nHabilidades: (EF09MA23) - Planejar e executar pesquisa amostral envolvendo tema da realidade social e comunicar os resultados por meio de relatório contendo avaliação de medidas de tendência central e da amplitude, tabelas e gráficos adequados, construídos com o apoio de planilhas eletrônicas.\nSAEB: Resolver problema envolvendo informações apresentadas em tabelas e/ou gráficos; Associar informações apresentadas em listas e/ou tabelas simples aos gráficos que as representam e vice-versa.\nOrientações: Proponha atividades aos estudantes, que contribuam para o desenvolvimento da habilidade de planejar pesquisas estatísticas, nas quais os tipos de questionamentos, o tipo de amostragem e a representação dos dados são partes fundamentais. Possibilite que os estudantes realizem as atividades em duplas ou grupos e assim compartilhem suas ideias e experiências. Pesquisas amostrais podem ser realizadas dentro da sala de aula ou no ambiente escolar de modo que possam não somente planejar e realizar a pesquisa, mas também organizar os dados, realizar os cálculos estatísticos e comunicar os resultados para a turma ou até mesmo para toda a comunidade escolar."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Probabilidade e estatística",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA20) - Reconhecer, em experimentos aleatórios, eventos independentes e dependentes e calcular a probabilidade de sua ocorrência, nos dois casos.",
+    "objeto_conhecimento": "Análise de probabilidade de eventos aleatórios: eventos dependentes e independentes. Conteúdos relacionados: Princípios da contagem; Probabilidade; Noções de probabilidade condicional e de independência.",
+    "descritores_saeb": "Não especificado.",
+    "orientacoes_pedagogicas": "Para iniciar os estudos pode-se propor uma pesquisa sobre a evolução no conceito de “acaso” e suas diferentes interpretações ao longo da história e as primeiras observações sobre o conceito de aleatoriedade aplicados aos jogos de dados, avaliando incertezas sobre os resultados. Os estudantes devem compreender e utilizar o princípio fundamental da contagem para determinar o espaço amostral e/ou eventos em experimentos aleatórios. Utilize situações-problema através das quais o estudante possa identificar as diferenças entre eventos independentes e dependentes e aplicar esse conhecimento em situações do cotidiano, como quando sorteamos números aleatórios sucessivamente em um jogo de bingo, que são eventos dependentes ou no nascimento de dois filhos de um casal, que são eventos independentes.",
+    "habilidade_codes": [
+      "EF09MA20"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 4º Bimestre\nUnidade: Probabilidade e estatística\nObjetos: Análise de probabilidade de eventos aleatórios: eventos dependentes e independentes. Conteúdos relacionados: Princípios da contagem; Probabilidade; Noções de probabilidade condicional e de independência.\nHabilidades: (EF09MA20) - Reconhecer, em experimentos aleatórios, eventos independentes e dependentes e calcular a probabilidade de sua ocorrência, nos dois casos.\nSAEB: Não especificado.\nOrientações: Para iniciar os estudos pode-se propor uma pesquisa sobre a evolução no conceito de “acaso” e suas diferentes interpretações ao longo da história e as primeiras observações sobre o conceito de aleatoriedade aplicados aos jogos de dados, avaliando incertezas sobre os resultados. Os estudantes devem compreender e utilizar o princípio fundamental da contagem para determinar o espaço amostral e/ou eventos em experimentos aleatórios. Utilize situações-problema através das quais o estudante possa identificar as diferenças entre eventos independentes e dependentes e aplicar esse conhecimento em situações do cotidiano, como quando sorteamos números aleatórios sucessivamente em um jogo de bingo, que são eventos dependentes ou no nascimento de dois filhos de um casal, que são eventos independentes."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA16) - Determinar o ponto médio de um segmento de reta e a distância entre dois pontos quaisquer, dadas as coordenadas desses pontos no plano cartesiano, sem o uso de fórmulas, e utilizar esse conhecimento para calcular, por exemplo, medidas de perímetros e áreas de figuras planas construídas no plano.",
+    "objeto_conhecimento": "Distância entre pontos no plano cartesiano. Conteúdos relacionados: Plano cartesiano; Sistema de coordenadas cartesianas; Distância entre dois pontos no plano cartesiana; Utilizar o teorema de Pitágoras como um procedimento de cálculo; Determinar o ponto médio de um segmento de reta e a distância entre dois pontos no plano cartesiano; Calcular a medida da área e do perímetro de figuras representadas no plano cartesiano.",
+    "descritores_saeb": "Interpretar informações apresentadas por meio de coordenadas cartesianas.",
+    "orientacoes_pedagogicas": "Neste momento assim como em diversos outros, os estudantes são levados a compreender as relações entre os diferentes campos da Matemática, como a Geometria e a Álgebra. Os estudantes devem calcular a distância entre dois pontos no plano cartesiano, utilizando inclusive o teorema de Pitágoras. Calcular as coordenadas do ponto médio de um segmento, utilizando inclusive o teorema de Tales. Calcular o perímetro e a área de polígonos no plano cartesiano. Sugestão: Pode-se inserir um mapa em um sistema de coordenadas cartesianas e pedir aos estudantes para estimarem a distância entre duas cidades, por exemplo.",
+    "habilidade_codes": [
+      "EF09MA16"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 4º Bimestre\nUnidade: Geometria\nObjetos: Distância entre pontos no plano cartesiano. Conteúdos relacionados: Plano cartesiano; Sistema de coordenadas cartesianas; Distância entre dois pontos no plano cartesiana; Utilizar o teorema de Pitágoras como um procedimento de cálculo; Determinar o ponto médio de um segmento de reta e a distância entre dois pontos no plano cartesiano; Calcular a medida da área e do perímetro de figuras representadas no plano cartesiano.\nHabilidades: (EF09MA16) - Determinar o ponto médio de um segmento de reta e a distância entre dois pontos quaisquer, dadas as coordenadas desses pontos no plano cartesiano, sem o uso de fórmulas, e utilizar esse conhecimento para calcular, por exemplo, medidas de perímetros e áreas de figuras planas construídas no plano.\nSAEB: Interpretar informações apresentadas por meio de coordenadas cartesianas.\nOrientações: Neste momento assim como em diversos outros, os estudantes são levados a compreender as relações entre os diferentes campos da Matemática, como a Geometria e a Álgebra. Os estudantes devem calcular a distância entre dois pontos no plano cartesiano, utilizando inclusive o teorema de Pitágoras. Calcular as coordenadas do ponto médio de um segmento, utilizando inclusive o teorema de Tales. Calcular o perímetro e a área de polígonos no plano cartesiano. Sugestão: Pode-se inserir um mapa em um sistema de coordenadas cartesianas e pedir aos estudantes para estimarem a distância entre duas cidades, por exemplo."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA27MG) - Identificar ângulos centrais e inscritos em uma circunferência. (EF09MA28MG) - Relacionar medidas de ângulos centrais, inscritos e arcos em uma circunferência. (EF09MA11) - Resolver problemas por meio do estabelecimento de relações entre arcos, ângulos centrais e ângulos inscritos na circunferência, fazendo uso, inclusive, de softwares de geometria dinâmica.",
+    "objeto_conhecimento": "Relações entre arcos e ângulos na circunferência de um círculo. Conteúdos relacionados: Circunferência; Corda e diâmetro de uma circunferência; Posições de um ponto em relação a uma circunferência; Posições de uma reta em relação a uma circunferência; Arco de circunferência; Comprimento de circunferência; Comprimento de um arco de circunferência; Ângulo central e ângulo inscrito na circunferência.",
+    "descritores_saeb": "Identificar relação entre quadriláteros por meio de suas propriedades; Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares); Reconhecer círculo/circunferência, seus elementos e algumas de suas relações.",
+    "orientacoes_pedagogicas": "Conceitue os elementos de uma circunferência (centro, raio, diâmetro, corda, arcos, ângulo central, ângulo inscrito). Apresente a relação entre a medida do ângulo central e do ângulo inscrito correspondente, demonstrando os diferentes casos de ocorrência. Avançando para o estudo do cálculo da medida do comprimento de circunferências e de arcos de circunferências, da medida da área de círculos, de setores circulares e coroas circulares e, ainda, habilitando os estudantes a diferenciarem círculo de circunferência. Pode-se utilizar o Geogebra para os estudantes conseguirem compreender melhor a relação entre ângulos centrais e inscritos e também para calcular áreas de círculos e setores circulares.",
+    "habilidade_codes": [
+      "EF09MA27MG",
+      "EF09MA28MG",
+      "EF09MA11"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 4º Bimestre\nUnidade: Geometria\nObjetos: Relações entre arcos e ângulos na circunferência de um círculo. Conteúdos relacionados: Circunferência; Corda e diâmetro de uma circunferência; Posições de um ponto em relação a uma circunferência; Posições de uma reta em relação a uma circunferência; Arco de circunferência; Comprimento de circunferência; Comprimento de um arco de circunferência; Ângulo central e ângulo inscrito na circunferência.\nHabilidades: (EF09MA27MG) - Identificar ângulos centrais e inscritos em uma circunferência. (EF09MA28MG) - Relacionar medidas de ângulos centrais, inscritos e arcos em uma circunferência. (EF09MA11) - Resolver problemas por meio do estabelecimento de relações entre arcos, ângulos centrais e ângulos inscritos na circunferência, fazendo uso, inclusive, de softwares de geometria dinâmica.\nSAEB: Identificar relação entre quadriláteros por meio de suas propriedades; Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares); Reconhecer círculo/circunferência, seus elementos e algumas de suas relações.\nOrientações: Conceitue os elementos de uma circunferência (centro, raio, diâmetro, corda, arcos, ângulo central, ângulo inscrito). Apresente a relação entre a medida do ângulo central e do ângulo inscrito correspondente, demonstrando os diferentes casos de ocorrência. Avançando para o estudo do cálculo da medida do comprimento de circunferências e de arcos de circunferências, da medida da área de círculos, de setores circulares e coroas circulares e, ainda, habilitando os estudantes a diferenciarem círculo de circunferência. Pode-se utilizar o Geogebra para os estudantes conseguirem compreender melhor a relação entre ângulos centrais e inscritos e também para calcular áreas de círculos e setores circulares."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA15) - Descrever, por escrito e por meio de um fluxograma, um algoritmo para a construção de um polígono regular cuja medida do lado é conhecida, utilizando régua e compasso, como também softwares.",
+    "objeto_conhecimento": "Polígonos regulares. Conteúdos relacionados: Polígonos côncavos e polígonos convexos; Polígonos regulares; Elementos de um polígono regular; Polígonos inscritos e polígonos circunscritos a uma circunferência; Relações métricas nos polígonos regulares; Construção de polígonos regulares.",
+    "descritores_saeb": "Identificar relação entre quadriláteros por meio de suas propriedades; Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares); Reconhecer círculo/circunferência, seus elementos e algumas de suas relações.",
+    "orientacoes_pedagogicas": "Uma sugestão simples de atividade consiste em propor aos estudantes a construção de um triângulo equilátero a partir da interceção de duas circunferências, usando régua e compasso, e posteriormente, a criação de um algoritmo mostrando o passo a passo desse processo e ainda a apresentação desse algoritmo através de um fluxograma. Pode-se usar o Geogebra para a construção de polígonos regulares a partir de um algoritmo já definido e posteriormente trabalhar com os estudantes o refinamento desse algoritmo. Outra sugestão é apresentar o processo de Rinaldini, para a construção de polígonos inscritos em uma circunferência usando régua e compasso.",
+    "habilidade_codes": [
+      "EF09MA15"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 4º Bimestre\nUnidade: Geometria\nObjetos: Polígonos regulares. Conteúdos relacionados: Polígonos côncavos e polígonos convexos; Polígonos regulares; Elementos de um polígono regular; Polígonos inscritos e polígonos circunscritos a uma circunferência; Relações métricas nos polígonos regulares; Construção de polígonos regulares.\nHabilidades: (EF09MA15) - Descrever, por escrito e por meio de um fluxograma, um algoritmo para a construção de um polígono regular cuja medida do lado é conhecida, utilizando régua e compasso, como também softwares.\nSAEB: Identificar relação entre quadriláteros por meio de suas propriedades; Resolver problema utilizando propriedades dos polígonos (soma de seus ângulos internos, número de diagonais, cálculo da medida de cada ângulo interno nos polígonos regulares); Reconhecer círculo/circunferência, seus elementos e algumas de suas relações.\nOrientações: Uma sugestão simples de atividade consiste em propor aos estudantes a construção de um triângulo equilátero a partir da interceção de duas circunferências, usando régua e compasso, e posteriormente, a criação de um algoritmo mostrando o passo a passo desse processo e ainda a apresentação desse algoritmo através de um fluxograma. Pode-se usar o Geogebra para a construção de polígonos regulares a partir de um algoritmo já definido e posteriormente trabalhar com os estudantes o refinamento desse algoritmo. Outra sugestão é apresentar o processo de Rinaldini, para a construção de polígonos inscritos em uma circunferência usando régua e compasso."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Grandezas e medidas",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA19A) - Resolver problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas. (EF09MA19B) - Elaborar problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas.",
+    "objeto_conhecimento": "Volume de prismas e cilindros. Conteúdos relacionados: Prismas; Cilindros; Planificações de prismas e cilindros; Volume de prismas; Volume do cilindro; Volume do paralelepípedo retângulo; Volume do cubo; Unidades de medida de volume; Volume e capacidade.",
+    "descritores_saeb": "Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações; Resolver problema envolvendo noções de volume; Resolver problema utilizando relações entre diferentes unidades de medida.",
+    "orientacoes_pedagogicas": "Os estudantes devem identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando sólidos geométricos com as suas planificações. Através da construção de sólidos geométricos é possível realizar um estudo sobre os elementos que compõem um prisma, analisando suas principais vistas ortogonais e destacando semelhanças e diferenças entre as faces de diferentes sólidos. Pode-se utilizar diferentes objetos de uso cotidiano que possuam formato cilíndrico ou de prisma reto (potes de sorvete, latas de leite condensado, caixas de sapato, embalagens de pizza, etc.) para que os estudantes resolvam e elaborem problemas envolvendo o cálculo do volume desses objetos.",
+    "habilidade_codes": [
+      "EF09MA19A",
+      "EF09MA19B"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 4º Bimestre\nUnidade: Grandezas e medidas\nObjetos: Volume de prismas e cilindros. Conteúdos relacionados: Prismas; Cilindros; Planificações de prismas e cilindros; Volume de prismas; Volume do cilindro; Volume do paralelepípedo retângulo; Volume do cubo; Unidades de medida de volume; Volume e capacidade.\nHabilidades: (EF09MA19A) - Resolver problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas. (EF09MA19B) - Elaborar problemas que envolvam medidas de volumes de prismas e de cilindros retos, inclusive com uso de expressões de cálculo, em situações cotidianas.\nSAEB: Identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando-as com as suas planificações; Resolver problema envolvendo noções de volume; Resolver problema utilizando relações entre diferentes unidades de medida.\nOrientações: Os estudantes devem identificar propriedades comuns e diferenças entre figuras bidimensionais e tridimensionais, relacionando sólidos geométricos com as suas planificações. Através da construção de sólidos geométricos é possível realizar um estudo sobre os elementos que compõem um prisma, analisando suas principais vistas ortogonais e destacando semelhanças e diferenças entre as faces de diferentes sólidos. Pode-se utilizar diferentes objetos de uso cotidiano que possuam formato cilíndrico ou de prisma reto (potes de sorvete, latas de leite condensado, caixas de sapato, embalagens de pizza, etc.) para que os estudantes resolvam e elaborem problemas envolvendo o cálculo do volume desses objetos."
+  },
+  {
+    "grade": "9º Ano",
+    "grade_num": 9,
+    "level": "Ensino Fundamental",
+    "subject": "Matemática",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Geometria",
+    "competencia": "Matemática",
+    "habilidade": "(EF09MA17) - Reconhecer vistas ortogonais de figuras espaciais e aplicar esse conhecimento para desenhar objetos em perspectiva.",
+    "objeto_conhecimento": "Vistas ortogonais de figuras espaciais. Conteúdos relacionados: Projeção ortogonal; Vistas ortogonais; Perspectiva.",
+    "descritores_saeb": "Reconhecer a conservação ou modificação de medidas dos lados, do perímetro, da área em ampliação e/ou redução de figuras poligonais usando malhas quadriculadas; Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não-retos.",
+    "orientacoes_pedagogicas": "Este tópico proporcionará aos estudantes reconhecer vistas ortogonais de figuras espaciais e aplicar esse conhecimento no desenho de objetos em perspectiva, contemplando a habilidade. Aproveite o assunto das técnicas em perspectiva e faça uma relação com o componente curricular Arte, de maneira que o professor responsável possa contribuir com informações sobre as técnicas e dizer em quais situações artísticas essas perspectivas são comumente utilizadas.",
+    "habilidade_codes": [
+      "EF09MA17"
+    ],
+    "chunk_text": "Ensino Fundamental | 9º Ano | Matemática | 4º Bimestre\nUnidade: Geometria\nObjetos: Vistas ortogonais de figuras espaciais. Conteúdos relacionados: Projeção ortogonal; Vistas ortogonais; Perspectiva.\nHabilidades: (EF09MA17) - Reconhecer vistas ortogonais de figuras espaciais e aplicar esse conhecimento para desenhar objetos em perspectiva.\nSAEB: Reconhecer a conservação ou modificação de medidas dos lados, do perímetro, da área em ampliação e/ou redução de figuras poligonais usando malhas quadriculadas; Reconhecer ângulos como mudança de direção ou giros, identificando ângulos retos e não-retos.\nOrientações: Este tópico proporcionará aos estudantes reconhecer vistas ortogonais de figuras espaciais e aplicar esse conhecimento no desenho de objetos em perspectiva, contemplando a habilidade. Aproveite o assunto das técnicas em perspectiva e faça uma relação com o componente curricular Arte, de maneira que o professor responsável possa contribuir com informações sobre as técnicas e dizer em quais situações artísticas essas perspectivas são comumente utilizadas."
+  }
+]

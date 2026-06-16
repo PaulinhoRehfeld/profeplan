@@ -1,0 +1,362 @@
+[
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Manifestações culturais",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI18) - Construir repertório cultural por meio do contato com manifestações artístico-culturais vinculadas à língua inglesa (artes plásticas e visuais, literatura, música, cinema, dança, festividades, entre outros), valorizando a diversidade entre culturas.",
+    "objeto_conhecimento": "Construção de repertório artístico-cultural.",
+    "descritores_saeb": "Uso de sites, músicas do interesse dos estudantes, documentários, filmes etc. Textos literários como contos, poemas trechos de romances de escritores de Língua Inglesa.",
+    "orientacoes_pedagogicas": "Verificar palavras e expressões comuns de outros países que utilizam a língua inglesa como oficial e nativa. Apresentar músicas de diferentes países que utilizam a língua inglesa, a fim de trabalhar o “listening” e como a entonação se modifica conforme cada país. Utilizar os eventos que são comemorados em cada um desses países e introduzi-los na realidade dos nossos estudantes. Analisar obras de arte, músicas e estilos, pinturas e esculturas de artistas famosos e consagrados de diferentes países de língua inglesa e compará-los com as nossas manifestações artísticas. Criar um releitura de alguma apresentação de arte dos países de língua inglesa.",
+    "habilidade_codes": [
+      "EF08LI18"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 1º Bimestre\nUnidade: Manifestações culturais\nObjetos: Construção de repertório artístico-cultural.\nHabilidades: (EF08LI18) - Construir repertório cultural por meio do contato com manifestações artístico-culturais vinculadas à língua inglesa (artes plásticas e visuais, literatura, música, cinema, dança, festividades, entre outros), valorizando a diversidade entre culturas.\nSAEB: Uso de sites, músicas do interesse dos estudantes, documentários, filmes etc. Textos literários como contos, poemas trechos de romances de escritores de Língua Inglesa.\nOrientações: Verificar palavras e expressões comuns de outros países que utilizam a língua inglesa como oficial e nativa. Apresentar músicas de diferentes países que utilizam a língua inglesa, a fim de trabalhar o “listening” e como a entonação se modifica conforme cada país. Utilizar os eventos que são comemorados em cada um desses países e introduzi-los na realidade dos nossos estudantes. Analisar obras de arte, músicas e estilos, pinturas e esculturas de artistas famosos e consagrados de diferentes países de língua inglesa e compará-los com as nossas manifestações artísticas. Criar um releitura de alguma apresentação de arte dos países de língua inglesa."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Estratégias de leitura",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI05) - Inferir informações e relações que não aparecem de modo explícito no texto para construção de sentidos.",
+    "objeto_conhecimento": "Construção de sentidos por meio de inferências e reconhecimento de implícitos.",
+    "descritores_saeb": "Uso de sites, músicas do interesse dos estudantes, documentários, filmes etc. Textos literários como contos, poemas trechos de romances de escritores de Língua Inglesa.",
+    "orientacoes_pedagogicas": "Analisar diferentes tipos e gêneros textuais em diferentes níveis de complexidade, com o intuito de compreender e inferir as informações do texto, estabelecendo um senso crítico e analítico. Trabalhar um texto específico com os estudantes e solicitar que eles criem questionamentos sobre o texto, como por exemplo “O que aconteceu?”, “Por que isso ocorreu?”, “Qual poderia ser o fim ou como poderíamos mudar esse fim?”. Este momento é oportuno para trabalhar/e ou relembrar as Wh Questions. Selecionar um texto argumentativo e criar um debate regrado, para que os estudantes possam estabelecer o senso crítico e posicionamento sobre o fato apresentado. Apresentar um pequeno texto e solicitar a recriação do gênero textual.",
+    "habilidade_codes": [
+      "EF08LI05"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 1º Bimestre\nUnidade: Estratégias de leitura\nObjetos: Construção de sentidos por meio de inferências e reconhecimento de implícitos.\nHabilidades: (EF08LI05) - Inferir informações e relações que não aparecem de modo explícito no texto para construção de sentidos.\nSAEB: Uso de sites, músicas do interesse dos estudantes, documentários, filmes etc. Textos literários como contos, poemas trechos de romances de escritores de Língua Inglesa.\nOrientações: Analisar diferentes tipos e gêneros textuais em diferentes níveis de complexidade, com o intuito de compreender e inferir as informações do texto, estabelecendo um senso crítico e analítico. Trabalhar um texto específico com os estudantes e solicitar que eles criem questionamentos sobre o texto, como por exemplo “O que aconteceu?”, “Por que isso ocorreu?”, “Qual poderia ser o fim ou como poderíamos mudar esse fim?”. Este momento é oportuno para trabalhar/e ou relembrar as Wh Questions. Selecionar um texto argumentativo e criar um debate regrado, para que os estudantes possam estabelecer o senso crítico e posicionamento sobre o fato apresentado. Apresentar um pequeno texto e solicitar a recriação do gênero textual."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Avaliação dos textos lidos",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI08) - Analisar, criticamente, o conteúdo de textos, comparando diferentes perspectivas apresentadas sobre um mesmo assunto.",
+    "objeto_conhecimento": "Reflexão pós-leitura.",
+    "descritores_saeb": "Reportagem; perfil; folder; biografias; história em quadrinhos; instruções; letras de músicas; poema; diagramas e gráficos; infográfico; notícia; artigo; anúncio publicitário; resenhas; manchetes; charge; piada; horóscopo; receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter; mensagens formais e informais de e-mail; mensagens no facebook.",
+    "orientacoes_pedagogicas": "Selecionar diferentes sites que abordem uma mesma notícia. Aqui o estudante poderá analisar como cada veículo de informação aborda o mesmo fato de maneiras diferentes. Analisar manchetes e os efeitos causados pela seleção vocabular de diferentes jornais e revistas. Verificar indicadores de notícias falsas, apresentando para os estudantes o papel e o valor da curadoria da informação.",
+    "habilidade_codes": [
+      "EF08LI08"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 1º Bimestre\nUnidade: Avaliação dos textos lidos\nObjetos: Reflexão pós-leitura.\nHabilidades: (EF08LI08) - Analisar, criticamente, o conteúdo de textos, comparando diferentes perspectivas apresentadas sobre um mesmo assunto.\nSAEB: Reportagem; perfil; folder; biografias; história em quadrinhos; instruções; letras de músicas; poema; diagramas e gráficos; infográfico; notícia; artigo; anúncio publicitário; resenhas; manchetes; charge; piada; horóscopo; receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter; mensagens formais e informais de e-mail; mensagens no facebook.\nOrientações: Selecionar diferentes sites que abordem uma mesma notícia. Aqui o estudante poderá analisar como cada veículo de informação aborda o mesmo fato de maneiras diferentes. Analisar manchetes e os efeitos causados pela seleção vocabular de diferentes jornais e revistas. Verificar indicadores de notícias falsas, apresentando para os estudantes o papel e o valor da curadoria da informação."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Interação discursiva",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI01) - Fazer uso da língua inglesa para resolver mal-entendidos, emitir opiniões e esclarecer informações por meio de paráfrases ou justificativas.",
+    "objeto_conhecimento": "Negociação de sentidos (mal-entendidos no uso da língua inglesa e conflito de opiniões).",
+    "descritores_saeb": "Diálogos variados.",
+    "orientacoes_pedagogicas": "Trabalhar vocabulários de situações do dia a dia, com o objetivo de evitar mal-entendido. Criar situações do cotidiano, como ir ao restaurante, ao shopping, ao mercado, à farmácia. Elaborar perguntas e respostas de palavras que geram duplicidade de sentidos e semelhanças sonora e gráfica. Comparar estruturas gramaticais de dois ou mais países que utilizam a língua inglesa. Apresentar para os estudantes imagens de situações do nosso dia a dia e solicitar que digam em inglês se concordam ou discordam. Trabalhar textos argumentativos com a finalidade de propor uma construção de ideias dos temas, percebendo a intencionalidade de cada um deles. Apresentar situações em diferentes contextos, localizando palavras com a mesma grafia e sons, porém com diferentes significados.",
+    "habilidade_codes": [
+      "EF08LI01"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 1º Bimestre\nUnidade: Interação discursiva\nObjetos: Negociação de sentidos (mal-entendidos no uso da língua inglesa e conflito de opiniões).\nHabilidades: (EF08LI01) - Fazer uso da língua inglesa para resolver mal-entendidos, emitir opiniões e esclarecer informações por meio de paráfrases ou justificativas.\nSAEB: Diálogos variados.\nOrientações: Trabalhar vocabulários de situações do dia a dia, com o objetivo de evitar mal-entendido. Criar situações do cotidiano, como ir ao restaurante, ao shopping, ao mercado, à farmácia. Elaborar perguntas e respostas de palavras que geram duplicidade de sentidos e semelhanças sonora e gráfica. Comparar estruturas gramaticais de dois ou mais países que utilizam a língua inglesa. Apresentar para os estudantes imagens de situações do nosso dia a dia e solicitar que digam em inglês se concordam ou discordam. Trabalhar textos argumentativos com a finalidade de propor uma construção de ideias dos temas, percebendo a intencionalidade de cada um deles. Apresentar situações em diferentes contextos, localizando palavras com a mesma grafia e sons, porém com diferentes significados."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 1,
+    "unidade_tematica": "Compreensão oral",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI03) - Construir o sentido global de textos orais, relacionando suas partes, o assunto principal e informações relevantes.",
+    "objeto_conhecimento": "Compreensão de textos orais, multimodais, de cunho informativo/jornalístico.",
+    "descritores_saeb": "Apresentação de podcasts ou vídeos de jornais da internet ou televisão.",
+    "orientacoes_pedagogicas": "Apresentar para os estudantes um podcast simples em inglês e solicitar que identifiquem o tema central a partir da escuta. Apresentar músicas de diferentes gêneros e estilos musicais e questionar os estudantes sobre a temática de cada uma delas e a identidade do artista. Apresentar vídeos de entrevistas e pedir que os estudantes localizem as informações básicas e essências do que está sendo revelado. Propor a criação de podcasts e blogs, apresentar para a turma e questioná-los sobre os assuntos abordados.",
+    "habilidade_codes": [
+      "EF08LI03"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 1º Bimestre\nUnidade: Compreensão oral\nObjetos: Compreensão de textos orais, multimodais, de cunho informativo/jornalístico.\nHabilidades: (EF08LI03) - Construir o sentido global de textos orais, relacionando suas partes, o assunto principal e informações relevantes.\nSAEB: Apresentação de podcasts ou vídeos de jornais da internet ou televisão.\nOrientações: Apresentar para os estudantes um podcast simples em inglês e solicitar que identifiquem o tema central a partir da escuta. Apresentar músicas de diferentes gêneros e estilos musicais e questionar os estudantes sobre a temática de cada uma delas e a identidade do artista. Apresentar vídeos de entrevistas e pedir que os estudantes localizem as informações básicas e essências do que está sendo revelado. Propor a criação de podcasts e blogs, apresentar para a turma e questioná-los sobre os assuntos abordados."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Estratégias de escrita: escrita e pós-escrita.",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI09) - Avaliar a própria produção escrita e a de colegas com a ajuda do professor, com base no contexto de comunicação (finalidade e adequação ao público, conteúdo a ser comunicado, organização textual, legibilidade, estrutura de frases).",
+    "objeto_conhecimento": "Revisão de textos com a mediação do professor.",
+    "descritores_saeb": "Textos orais, gravações, telejornais e vídeos.",
+    "orientacoes_pedagogicas": "Escolher um tema e solicitar aos estudantes uma produção de escrita. Explicar para os estudantes que toda e qualquer produção textual não é realizada do nada. Todo texto necessita de uma contextualização e aplicação. Solicitar que os estudantes produzam diferentes gêneros textuais com base em diferentes temas da atualidade e comparar os textos de um estudante A com de um estudante B.",
+    "habilidade_codes": [
+      "EF08LI09"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 2º Bimestre\nUnidade: Estratégias de escrita: escrita e pós-escrita.\nObjetos: Revisão de textos com a mediação do professor.\nHabilidades: (EF08LI09) - Avaliar a própria produção escrita e a de colegas com a ajuda do professor, com base no contexto de comunicação (finalidade e adequação ao público, conteúdo a ser comunicado, organização textual, legibilidade, estrutura de frases).\nSAEB: Textos orais, gravações, telejornais e vídeos.\nOrientações: Escolher um tema e solicitar aos estudantes uma produção de escrita. Explicar para os estudantes que toda e qualquer produção textual não é realizada do nada. Todo texto necessita de uma contextualização e aplicação. Solicitar que os estudantes produzam diferentes gêneros textuais com base em diferentes temas da atualidade e comparar os textos de um estudante A com de um estudante B."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Estudo do léxico",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI12) - Construir repertório lexical relativo a planos, previsões e expectativas para o futuro.",
+    "objeto_conhecimento": "Construção de repertório lexical.",
+    "descritores_saeb": "Reportagem; perfil; folder; biografias; história em quadrinhos; instruções; letras de músicas; poema; diagramas e gráficos; infográfico; notícia.",
+    "orientacoes_pedagogicas": "Trabalhar com a consulta de um dicionário bilíngue, auxiliando os estudantes na descoberta das palavras que fazem parte do repertório lexical. Indicar para os estudantes palavras-chave que compõem a estrutura do texto que será apresentado. Lembrar e/ou relembrar formação de palavras.",
+    "habilidade_codes": [
+      "EF08LI12"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 2º Bimestre\nUnidade: Estudo do léxico\nObjetos: Construção de repertório lexical.\nHabilidades: (EF08LI12) - Construir repertório lexical relativo a planos, previsões e expectativas para o futuro.\nSAEB: Reportagem; perfil; folder; biografias; história em quadrinhos; instruções; letras de músicas; poema; diagramas e gráficos; infográfico; notícia.\nOrientações: Trabalhar com a consulta de um dicionário bilíngue, auxiliando os estudantes na descoberta das palavras que fazem parte do repertório lexical. Indicar para os estudantes palavras-chave que compõem a estrutura do texto que será apresentado. Lembrar e/ou relembrar formação de palavras."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Produção oral",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI04) - Utilizar recursos e repertório linguísticos apropriados para informar/comunicar/falar do futuro: planos, previsões, possibilidades e probabilidades.",
+    "objeto_conhecimento": "Produção de textos orais com autonomia.",
+    "descritores_saeb": "Diálogos onde os interlocutores falam de seus projetos de vida.",
+    "orientacoes_pedagogicas": "Elaborar mapas mentais sobre o eu de hoje e o eu do futuro, abordando assuntos que demonstram o planejamento futuro de vida. Criar lista de ações que serão desenvolvidas no fim de semana com os amigos ou familiares. Proporcionar aos estudantes a oralidade contemplando situações que abordem perspectivas para o futuro: viagem, carreira profissional, intercâmbio, etc.",
+    "habilidade_codes": [
+      "EF08LI04"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 2º Bimestre\nUnidade: Produção oral\nObjetos: Produção de textos orais com autonomia.\nHabilidades: (EF08LI04) - Utilizar recursos e repertório linguísticos apropriados para informar/comunicar/falar do futuro: planos, previsões, possibilidades e probabilidades.\nSAEB: Diálogos onde os interlocutores falam de seus projetos de vida.\nOrientações: Elaborar mapas mentais sobre o eu de hoje e o eu do futuro, abordando assuntos que demonstram o planejamento futuro de vida. Criar lista de ações que serão desenvolvidas no fim de semana com os amigos ou familiares. Proporcionar aos estudantes a oralidade contemplando situações que abordem perspectivas para o futuro: viagem, carreira profissional, intercâmbio, etc."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Gramática",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI14) - Utilizar formas verbais do futuro para descrever planos e expectativas e fazer previsões.",
+    "objeto_conhecimento": "Verbos para indicar o futuro.",
+    "descritores_saeb": "Artigo; anúncio publicitário; resenhas; manchetes; charge; piada; horóscopo; receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter, mensagens formais e informais de e-mail; mensagens no facebook.",
+    "orientacoes_pedagogicas": "Apresentar as formas verbais do futuro em inglês com exemplos práticos do dia a dia, utilizando os gêneros textuais. Apresentar a ideia de um projeto de vida e aplicar por meio de frases no futuro. Criar uma lista de frases em inglês e solicitar que os estudantes completem de acordo com a forma correta das formas verbais do futuro em inglês. Elaborar uma linha do tempo do nascimento aos planos para o futuro. Criar um paralelo histórico-científico do início às novas criações.",
+    "habilidade_codes": [
+      "EF08LI14"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 2º Bimestre\nUnidade: Gramática\nObjetos: Verbos para indicar o futuro.\nHabilidades: (EF08LI14) - Utilizar formas verbais do futuro para descrever planos e expectativas e fazer previsões.\nSAEB: Artigo; anúncio publicitário; resenhas; manchetes; charge; piada; horóscopo; receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter, mensagens formais e informais de e-mail; mensagens no facebook.\nOrientações: Apresentar as formas verbais do futuro em inglês com exemplos práticos do dia a dia, utilizando os gêneros textuais. Apresentar a ideia de um projeto de vida e aplicar por meio de frases no futuro. Criar uma lista de frases em inglês e solicitar que os estudantes completem de acordo com a forma correta das formas verbais do futuro em inglês. Elaborar uma linha do tempo do nascimento aos planos para o futuro. Criar um paralelo histórico-científico do início às novas criações."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Práticas de leitura e fruição",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI06) - Apreciar textos narrativos em língua inglesa (contos, romances, entre outros, em versão original ou simplificada), como forma de valorizar o patrimônio cultural produzido em língua inglesa.",
+    "objeto_conhecimento": "Verbos para indicar o futuro.",
+    "descritores_saeb": "Uso de textos literários como contos, poemas ou vídeos e filmes referentes a essas obras. Contos de terror (Edgar Allan Poe e outros).",
+    "orientacoes_pedagogicas": "Apresentar textos privilegiando os gêneros textuais mencionados na habilidade. Trabalhar com vídeos que envolvem a temática, ampliando a curiosidade dos estudantes. Mostrar para os estudantes a estrutura dos gêneros textuais que se apresentam. Organizar uma feira literária com a doação de obras literárias. Propor visitas e encontros à biblioteca da escola para a seleção de obras literárias.",
+    "habilidade_codes": [
+      "EF08LI06"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 2º Bimestre\nUnidade: Práticas de leitura e fruição\nObjetos: Verbos para indicar o futuro.\nHabilidades: (EF08LI06) - Apreciar textos narrativos em língua inglesa (contos, romances, entre outros, em versão original ou simplificada), como forma de valorizar o patrimônio cultural produzido em língua inglesa.\nSAEB: Uso de textos literários como contos, poemas ou vídeos e filmes referentes a essas obras. Contos de terror (Edgar Allan Poe e outros).\nOrientações: Apresentar textos privilegiando os gêneros textuais mencionados na habilidade. Trabalhar com vídeos que envolvem a temática, ampliando a curiosidade dos estudantes. Mostrar para os estudantes a estrutura dos gêneros textuais que se apresentam. Organizar uma feira literária com a doação de obras literárias. Propor visitas e encontros à biblioteca da escola para a seleção de obras literárias."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 2,
+    "unidade_tematica": "Práticas de leitura e fruição",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI07) - Explorar ambientes virtuais e/ou aplicativos para acessar e usufruir do patrimônio artístico literário em língua inglesa.",
+    "objeto_conhecimento": "Verbos para indicar o futuro.",
+    "descritores_saeb": "Uso de sites de museus com um vasto repertório de pinturas de artistas de Língua Inglesa.",
+    "orientacoes_pedagogicas": "Apresentar para os estudantes plataformas digitais que favoreçam a prática da leitura. Estimular e discutir sobre a criação de uma lista de leitura com base no estilo que mais seja atrativo para os estudantes. Explorar a sala de informática para trabalhar textos virtuais.",
+    "habilidade_codes": [
+      "EF08LI07"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 2º Bimestre\nUnidade: Práticas de leitura e fruição\nObjetos: Verbos para indicar o futuro.\nHabilidades: (EF08LI07) - Explorar ambientes virtuais e/ou aplicativos para acessar e usufruir do patrimônio artístico literário em língua inglesa.\nSAEB: Uso de sites de museus com um vasto repertório de pinturas de artistas de Língua Inglesa.\nOrientações: Apresentar para os estudantes plataformas digitais que favoreçam a prática da leitura. Estimular e discutir sobre a criação de uma lista de leitura com base no estilo que mais seja atrativo para os estudantes. Explorar a sala de informática para trabalhar textos virtuais."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Manifestações culturais",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI11) - Produzir textos (comentários em fóruns, relatos pessoais, mensagens instantâneas, tweets, reportagens, histórias de ficção, blogues, entre outros), com o uso de estratégias de escrita (planejamento, produção de rascunho, revisão e edição final), apontando sonhos e projetos para o futuro (pessoal, da família, da comunidade ou do planeta).",
+    "objeto_conhecimento": "Construção de repertório artístico-cultural.",
+    "descritores_saeb": "Uso de sites, blogs, youtube ou mesmo textos impressos nos mais variados gêneros.",
+    "orientacoes_pedagogicas": "Apresentar para os estudantes os tipos textuais e a diversidade de gêneros textuais e gêneros digitais. Mostrar, explicar e exemplificar as etapas de produção de textos escritos. Apresentar textos que privilegiem o repertório artístico-cultural, como dança, arte, teatro e outros.",
+    "habilidade_codes": [
+      "EF08LI11"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 3º Bimestre\nUnidade: Manifestações culturais\nObjetos: Construção de repertório artístico-cultural.\nHabilidades: (EF08LI11) - Produzir textos (comentários em fóruns, relatos pessoais, mensagens instantâneas, tweets, reportagens, histórias de ficção, blogues, entre outros), com o uso de estratégias de escrita (planejamento, produção de rascunho, revisão e edição final), apontando sonhos e projetos para o futuro (pessoal, da família, da comunidade ou do planeta).\nSAEB: Uso de sites, blogs, youtube ou mesmo textos impressos nos mais variados gêneros.\nOrientações: Apresentar para os estudantes os tipos textuais e a diversidade de gêneros textuais e gêneros digitais. Mostrar, explicar e exemplificar as etapas de produção de textos escritos. Apresentar textos que privilegiem o repertório artístico-cultural, como dança, arte, teatro e outros."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Gramática",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI15) - Utilizar, de modo inteligível, as formas comparativas e superlativas de adjetivos para comparar qualidades e quantidades.",
+    "objeto_conhecimento": "Comparativos e superlativos.",
+    "descritores_saeb": "Uso de sites, blogs, youtube ou mesmo textos impressos nos mais variados gêneros.",
+    "orientacoes_pedagogicas": "Explicar para os estudantes o que são adjetivos com exemplos e usos no dia a dia, privilegiando o ensino por meio dos gêneros textuais. Explicar para os estudantes a formação e aplicação do grau dos adjetivos (comparativo e superlativo). Criar situações em que os estudantes precisarão comparar e analisar diferente objetos, coisas ou lugares, expressando a opinião de cada um com marcas de uso dos adjetivos. Elaborar uma lista de frases para que os estudantes possam completá-las. Criar situações que envolvam as temáticas mais diversificadas e solicitar que os estudantes criem frases com o uso dos adjetivos.",
+    "habilidade_codes": [
+      "EF08LI15"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 3º Bimestre\nUnidade: Gramática\nObjetos: Comparativos e superlativos.\nHabilidades: (EF08LI15) - Utilizar, de modo inteligível, as formas comparativas e superlativas de adjetivos para comparar qualidades e quantidades.\nSAEB: Uso de sites, blogs, youtube ou mesmo textos impressos nos mais variados gêneros.\nOrientações: Explicar para os estudantes o que são adjetivos com exemplos e usos no dia a dia, privilegiando o ensino por meio dos gêneros textuais. Explicar para os estudantes a formação e aplicação do grau dos adjetivos (comparativo e superlativo). Criar situações em que os estudantes precisarão comparar e analisar diferente objetos, coisas ou lugares, expressando a opinião de cada um com marcas de uso dos adjetivos. Elaborar uma lista de frases para que os estudantes possam completá-las. Criar situações que envolvam as temáticas mais diversificadas e solicitar que os estudantes criem frases com o uso dos adjetivos."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Estratégias de escrita: escrita e pós-escrita",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI10) - Reconstruir o texto, com cortes, acréscimos, reformulações e correções, para aprimoramento, edição e publicação final.",
+    "objeto_conhecimento": "Revisão de textos com a mediação do professor.",
+    "descritores_saeb": "Uso de sites, blogs, youtube ou mesmo textos impressos nos mais variados gêneros.",
+    "orientacoes_pedagogicas": "Introduzir e explicar para os estudantes a importância da revisão de textos com exemplos básicos e simples de pequenos parágrafos que apresentam ausência de coesão e coerência. Mostrar as etapas de elaboração textual: delimitação do tipo e gênero, temática, construção lógico-semântica, revisão e elaboração final. Solicitar que os estudantes produzam pequenos textos de gêneros diversos e realizar a troca dos textos entre eles com o objetivo de fazê-los perceber a relevância da revisão dos textos antes mesmo da finalização deles.",
+    "habilidade_codes": [
+      "EF08LI10"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 3º Bimestre\nUnidade: Estratégias de escrita: escrita e pós-escrita\nObjetos: Revisão de textos com a mediação do professor.\nHabilidades: (EF08LI10) - Reconstruir o texto, com cortes, acréscimos, reformulações e correções, para aprimoramento, edição e publicação final.\nSAEB: Uso de sites, blogs, youtube ou mesmo textos impressos nos mais variados gêneros.\nOrientações: Introduzir e explicar para os estudantes a importância da revisão de textos com exemplos básicos e simples de pequenos parágrafos que apresentam ausência de coesão e coerência. Mostrar as etapas de elaboração textual: delimitação do tipo e gênero, temática, construção lógico-semântica, revisão e elaboração final. Solicitar que os estudantes produzam pequenos textos de gêneros diversos e realizar a troca dos textos entre eles com o objetivo de fazê-los perceber a relevância da revisão dos textos antes mesmo da finalização deles."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Gramática",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI16) - Utilizar, de modo inteligível, corretamente, some, any, many, much.",
+    "objeto_conhecimento": "Quantificadores.",
+    "descritores_saeb": "Receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter, mensagens formais e informais de e-mail; mensagens no facebook.",
+    "orientacoes_pedagogicas": "Introduzir, explicar e exemplificar os substantivos contáveis e incontáveis através dos gêneros textuais. Apresentar os quantificadores e como aplicá-los, dando exemplos. Apresentar erros comuns do uso dos quantificadores de acordo com o substantivo contável ou incontável. Elaborar diálogos do dia a dia em que utilizamos os quantificadores.",
+    "habilidade_codes": [
+      "EF08LI16"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 3º Bimestre\nUnidade: Gramática\nObjetos: Quantificadores.\nHabilidades: (EF08LI16) - Utilizar, de modo inteligível, corretamente, some, any, many, much.\nSAEB: Receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter, mensagens formais e informais de e-mail; mensagens no facebook.\nOrientações: Introduzir, explicar e exemplificar os substantivos contáveis e incontáveis através dos gêneros textuais. Apresentar os quantificadores e como aplicá-los, dando exemplos. Apresentar erros comuns do uso dos quantificadores de acordo com o substantivo contável ou incontável. Elaborar diálogos do dia a dia em que utilizamos os quantificadores."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 3,
+    "unidade_tematica": "Comunicação intercultural",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI19) - Investigar de que forma expressões, gestos e comportamentos são interpretados em função de aspectos culturais.",
+    "objeto_conhecimento": "Impacto de aspectos culturais na comunicação.",
+    "descritores_saeb": "Receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter, mensagens formais e informais de e-mail; mensagens no facebook.",
+    "orientacoes_pedagogicas": "Apresentar para os estudantes uma lista de palavras que expressem sentimentos. Apresentar para os estudantes vídeos que demonstram a fisionomia das pessoas de acordo com o sentimento em que elas estão no momento. Solicitar que os estudantes elaborem expressões faciais com base em algum sentimento. Demonstrar expressões corporais e significado de cada uma delas e como se apresentam. Apresentar diferentes formas de expressão facial, corporal e gestual de acordo com cada cultura.",
+    "habilidade_codes": [
+      "EF08LI19"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 3º Bimestre\nUnidade: Comunicação intercultural\nObjetos: Impacto de aspectos culturais na comunicação.\nHabilidades: (EF08LI19) - Investigar de que forma expressões, gestos e comportamentos são interpretados em função de aspectos culturais.\nSAEB: Receita culinária; convite; jogo; provérbio; verbetes; rótulo; placa de aviso; cartaz; guia turístico; classificados; conto; fábula; crônica; tirinha; fichas de cadastro; tweets no twitter, mensagens formais e informais de e-mail; mensagens no facebook.\nOrientações: Apresentar para os estudantes uma lista de palavras que expressem sentimentos. Apresentar para os estudantes vídeos que demonstram a fisionomia das pessoas de acordo com o sentimento em que elas estão no momento. Solicitar que os estudantes elaborem expressões faciais com base em algum sentimento. Demonstrar expressões corporais e significado de cada uma delas e como se apresentam. Apresentar diferentes formas de expressão facial, corporal e gestual de acordo com cada cultura."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Comunicação intercultural",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI20) - Examinar fatores que podem impedir o entendimento entre pessoas de culturas diferentes que falam a língua inglesa.",
+    "objeto_conhecimento": "Impacto de aspectos culturais na comunicação.",
+    "descritores_saeb": "Uso de texto ou vídeo que aborde os diversos sotaques do inglês ao redor do mundo.",
+    "orientacoes_pedagogicas": "Explicar para os estudantes o conceito de língua e cultura e como podem sofrer alterações conforme o local. Entender a formação da diversidade cultural e valorizar as culturas locais de cada país de língua inglesa. Entender como diferentes culturas podem colaborar para mal-entendidos caso não se tenha conhecimento prévio sobre. Listar expressões idiomáticas e apresentar para os estudantes a diversidade que há nelas conforme cada cultura e regionalização. Criar um guia cultural dos países de língua inglesa.",
+    "habilidade_codes": [
+      "EF08LI20"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 4º Bimestre\nUnidade: Comunicação intercultural\nObjetos: Impacto de aspectos culturais na comunicação.\nHabilidades: (EF08LI20) - Examinar fatores que podem impedir o entendimento entre pessoas de culturas diferentes que falam a língua inglesa.\nSAEB: Uso de texto ou vídeo que aborde os diversos sotaques do inglês ao redor do mundo.\nOrientações: Explicar para os estudantes o conceito de língua e cultura e como podem sofrer alterações conforme o local. Entender a formação da diversidade cultural e valorizar as culturas locais de cada país de língua inglesa. Entender como diferentes culturas podem colaborar para mal-entendidos caso não se tenha conhecimento prévio sobre. Listar expressões idiomáticas e apresentar para os estudantes a diversidade que há nelas conforme cada cultura e regionalização. Criar um guia cultural dos países de língua inglesa."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Gramática",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI17X) - Empregar, de modo inteligível, os pronomes relativos (who, which, that, whose) para construir períodos com elos coesivos mais fortes.",
+    "objeto_conhecimento": "Pronomes relativos.",
+    "descritores_saeb": "Diálogos simples que apresentem os pronomes interrogativos/relativos ou textos dos mais variados gêneros.",
+    "orientacoes_pedagogicas": "Apresentar, explicar e indicar a função do pronomes relativos, através dos diferentes gêneros textuais. Solicitar que os estudantes complete frases de acordo com o pronome relativo. Solicitar que os estudantes elaborem frases com os diferentes tipos de pronomes relativos com base em situações reais do dia a dia. Criar sentenças em que há duas frases e transformá-las em apenas um período. Identificar os pronomes relativos em um dado texto e os efeitos de sentidos causados.",
+    "habilidade_codes": [
+      "EF08LI17X"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 4º Bimestre\nUnidade: Gramática\nObjetos: Pronomes relativos.\nHabilidades: (EF08LI17X) - Empregar, de modo inteligível, os pronomes relativos (who, which, that, whose) para construir períodos com elos coesivos mais fortes.\nSAEB: Diálogos simples que apresentem os pronomes interrogativos/relativos ou textos dos mais variados gêneros.\nOrientações: Apresentar, explicar e indicar a função do pronomes relativos, através dos diferentes gêneros textuais. Solicitar que os estudantes complete frases de acordo com o pronome relativo. Solicitar que os estudantes elaborem frases com os diferentes tipos de pronomes relativos com base em situações reais do dia a dia. Criar sentenças em que há duas frases e transformá-las em apenas um período. Identificar os pronomes relativos em um dado texto e os efeitos de sentidos causados."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Interação discursiva",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI02) - Explorar o uso de recursos linguísticos (frases incompletas, hesitações, entre outros) e paralinguísticos (gestos, expressões faciais, entre outros) em situações de interação oral.",
+    "objeto_conhecimento": "Usos de recursos linguísticos e paralinguísticos no intercâmbio oral.",
+    "descritores_saeb": "Uso da fala dos próprios estudantes ou trechos de podcaste ou filmes onde se terá condições de comparar a entonação e gestos dos atores.",
+    "orientacoes_pedagogicas": "Apresentar frases do dia a dia para os estudantes e solicitar que eles identifiquem o contexto de utilização. Apresentar objetos diversos e solicitar que os estudantes façam a apresentação dele. Criar um jogo de descrição de algo e solicitar que os estudantes adivinhem o que é. Apresentar para os estudantes gestos e expressões faciais e corporais que denotam uma mensagem em diferentes contextos de produção.",
+    "habilidade_codes": [
+      "EF08LI02"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 4º Bimestre\nUnidade: Interação discursiva\nObjetos: Usos de recursos linguísticos e paralinguísticos no intercâmbio oral.\nHabilidades: (EF08LI02) - Explorar o uso de recursos linguísticos (frases incompletas, hesitações, entre outros) e paralinguísticos (gestos, expressões faciais, entre outros) em situações de interação oral.\nSAEB: Uso da fala dos próprios estudantes ou trechos de podcaste ou filmes onde se terá condições de comparar a entonação e gestos dos atores.\nOrientações: Apresentar frases do dia a dia para os estudantes e solicitar que eles identifiquem o contexto de utilização. Apresentar objetos diversos e solicitar que os estudantes façam a apresentação dele. Criar um jogo de descrição de algo e solicitar que os estudantes adivinhem o que é. Apresentar para os estudantes gestos e expressões faciais e corporais que denotam uma mensagem em diferentes contextos de produção."
+  },
+  {
+    "grade": "8º Ano",
+    "grade_num": 8,
+    "level": "Ensino Fundamental",
+    "subject": "Língua Inglesa",
+    "regime": "Bimestre",
+    "period": 4,
+    "unidade_tematica": "Estudo do léxico",
+    "competencia": "Linguagens",
+    "habilidade": "(EF08LI13) - Reconhecer sufixos e prefixos comuns utilizados na formação de palavras em língua inglesa.",
+    "objeto_conhecimento": "Formação de palavras: prefixos e sufixos.",
+    "descritores_saeb": "Uso da fala dos próprios estudantes ou trechos de podcaste ou filmes onde se terá condições de comparar a entonação e gestos dos atores.",
+    "orientacoes_pedagogicas": "Apresentar o conceito, funções e exemplos de prefixo e sufixo, abordando os gêneros textuais. Apresentar uma lista de prefixos e sufixos e os significados em inglês. Solicitar que os estudantes elaborem frases com diferentes palavras a partir da formação da palavra por meio do prefixo e sufixo.",
+    "habilidade_codes": [
+      "EF08LI13"
+    ],
+    "chunk_text": "Ensino Fundamental | 8º Ano | Língua Inglesa | 4º Bimestre\nUnidade: Estudo do léxico\nObjetos: Formação de palavras: prefixos e sufixos.\nHabilidades: (EF08LI13) - Reconhecer sufixos e prefixos comuns utilizados na formação de palavras em língua inglesa.\nSAEB: Uso da fala dos próprios estudantes ou trechos de podcaste ou filmes onde se terá condições de comparar a entonação e gestos dos atores.\nOrientações: Apresentar o conceito, funções e exemplos de prefixo e sufixo, abordando os gêneros textuais. Apresentar uma lista de prefixos e sufixos e os significados em inglês. Solicitar que os estudantes elaborem frases com diferentes palavras a partir da formação da palavra por meio do prefixo e sufixo."
+  }
+]
