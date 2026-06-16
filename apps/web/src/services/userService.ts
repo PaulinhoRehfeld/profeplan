@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient';
 import { UserProfile } from '../types';
-import { ADMIN_EMAILS, MAX_CREDITS_ADD } from '../constants';
+import { ADMIN_EMAILS, MAX_CREDITS_ADD, isHardcodedAdmin } from '../constants';
 
 // --- CONFIGURATION ---
 const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for Testers)
@@ -80,6 +80,7 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
                 if (authUser && authUser.id === userId) {
                     console.warn('[userService] Attempting emergency profile creation for:', userId);
                     const fallbackEmail = authUser.email || activeEmail || '';
+                    const userIsAdmin = isHardcodedAdmin(fallbackEmail);
                     const { data: created, error: createErr } = await supabase
                         .from('profiles')
                         .upsert({
@@ -88,10 +89,11 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
                             full_name: authUser.user_metadata?.full_name
                                 || authUser.user_metadata?.name
                                 || fallbackEmail.split('@')[0],
-                            role: 'teacher',
-                            tier: 'GOLD',
-                            is_unlimited: true,
-                            credits: 9999,
+                            role: userIsAdmin ? 'admin' : 'teacher',
+                            is_admin: userIsAdmin,
+                            tier: userIsAdmin ? 'GOLD' : 'FREE',
+                            is_unlimited: userIsAdmin,
+                            credits: userIsAdmin ? 9999 : 10,
                         }, { onConflict: 'id' })
                         .select()
                         .maybeSingle();
@@ -148,7 +150,7 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
                 ...profileData,
                 tier: 'GOLD',
                 is_unlimited: true,
-                credits: 9999 // Visual sugar
+                credits: 9999 // Beta visual sugar — production uses DB values
             };
         }
 
