@@ -1,7 +1,13 @@
 export const maxDuration = 60;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import OpenAI from 'openai';
-import { logger } from '@profeplan/logger';
+
+// Inline logger — @profeplan/logger não é disponível no ambiente Vercel serverless
+const logger = {
+  info: (msg: string, meta?: unknown) => console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
+  error: (msg: string, meta?: unknown) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
+  audit: (action: string, actor: string, details?: unknown) => console.log(JSON.stringify({ level: 'AUDIT', action, actor, ...(details ? { details } : {}) })),
+};
 
 type ChatMessage = {
   role: 'system' | 'user' | 'assistant';

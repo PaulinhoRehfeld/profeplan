@@ -77,14 +77,21 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
             // ── Auto-create profile as last resort (trigger may have failed) ──
             try {
                 const { data: { user: authUser } } = await supabase.auth.getUser();
-                if (authUser && authUser.id === userId) {
-                    console.warn('[userService] Attempting emergency profile creation for:', userId);
+                if (!authUser) {
+                    console.warn('[userService] No active auth session — cannot create emergency profile.');
+                } else {
+                    // If stored userId differs from session (Ghost ID), use session ID
+                    const targetId = authUser.id === userId ? userId : authUser.id;
+                    if (authUser.id !== userId) {
+                        console.warn(`[userService] Ghost ID detected: stored=${userId} auth=${authUser.id}. Using auth ID.`);
+                    }
+                    console.warn('[userService] Attempting emergency profile creation for:', targetId);
                     const fallbackEmail = authUser.email || activeEmail || '';
                     const userIsAdmin = isHardcodedAdmin(fallbackEmail);
                     const { data: created, error: createErr } = await supabase
                         .from('profiles')
                         .upsert({
-                            id: userId,
+                            id: targetId,
                             email: fallbackEmail,
                             full_name: authUser.user_metadata?.full_name
                                 || authUser.user_metadata?.name
@@ -104,6 +111,20 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
                     }
                     if (createErr) {
                         console.error('[userService] Emergency profile creation failed:', createErr);
+                    } else {
+                        // Upsert succeeded but select returned null (RLS on return=representation).
+                        // Retry the read separately.
+                        console.warn('[userService] Upsert returned null — retrying SELECT after write...');
+                        const { data: retryData, error: retryErr } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('id', targetId)
+                            .maybeSingle();
+                        if (!retryErr && retryData) {
+                            console.log('[userService] ✅ Profile confirmed via retry SELECT.');
+                            return retryData as UserProfile;
+                        }
+                        console.error('[userService] Retry SELECT also failed:', retryErr);
                     }
                 }
             } catch (emergencyErr) {
@@ -169,7 +190,7 @@ export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolea
         console.warn(`User ${userId} not found in profiles. Blocking quota-protected action.`);
         return {
             allowed: false,
-            message: 'NÃ£o foi possÃ­vel carregar seu perfil para validar os crÃ©ditos. Tente novamente em instantes.'
+            message: 'Não foi possível carregar seu perfil para validar os créditos. Tente novamente em instantes.'
         };
     }
 
