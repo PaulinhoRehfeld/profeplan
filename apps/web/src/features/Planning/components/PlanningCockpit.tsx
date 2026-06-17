@@ -11,7 +11,6 @@ import { UserProfile, PnldBook } from '../../../types';
 import { PnldService } from '../../../services/PnldService';
 import { IterativeFeedbackWidget } from '../../../components/Feedback/IterativeFeedbackWidget';
 import { saveFeedbackPreference } from '../../../services/userFeedbackPreferencesService';
-import { useFreedayContext } from '../../../contexts/FreedayContext';
 import { LessonPlanWizard } from './LessonPlanWizard';
 
 interface PlanningCockpitProps {
@@ -56,7 +55,6 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     const [latestAssistantMessage, setLatestAssistantMessage] = useState<string>('');
     const [isWizardOpen, setIsWizardOpen] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
-    const { openWithPrompt } = useFreedayContext();
 
     useEffect(() => {
         refreshProfile();
@@ -629,23 +627,6 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
                         >
                             <Plus size={12} />
                             Novo Plano de Aula
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const currentPlan = termPlans.find(p => p.id === selectedTermPlanId);
-                                const subject = currentPlan?.subject || 'sua disciplina';
-                                const grade = currentPlan?.grade || '';
-                                const prompt = selectedLesson
-                                    ? `Estou no cockpit de Planejamento da Aula ${selectedLesson.number} (${selectedLesson.title}) de ${subject} ${grade}. Me ajude a revisar ou melhorar este planejamento.`
-                                    : `Estou no cockpit de Planejamento Trimestral de ${subject} ${grade}. O que você recomenda como próximos passos para planejar minhas aulas?`;
-                                openWithPrompt(prompt);
-                            }}
-                            className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 transition-colors"
-                            aria-label="Perguntar à FREEDAY sobre este planejamento"
-                        >
-                            <HelpCircle size={12} />
-                            Perguntar à FREEDAY
                         </button>
                     </div>
                 </div>

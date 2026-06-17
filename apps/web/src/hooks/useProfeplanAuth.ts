@@ -5,6 +5,11 @@ import { getRoleByEmail } from '../utils/authUtils';
 import { UserSession, UserProfile } from '../types';
 import { isHardcodedAdmin } from '../constants';
 
+const applyAdminOverride = (profile: UserProfile, email: string | null | undefined): UserProfile => {
+    if (!isHardcodedAdmin(email)) return profile;
+    return { ...profile, role: 'admin', is_admin: true, tier: 'GOLD', is_unlimited: true };
+};
+
 interface ProfeplanAuthContextValue {
     session: UserSession | null;
     setSession: React.Dispatch<React.SetStateAction<UserSession | null>>;
@@ -85,15 +90,16 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                 // 3. EMERGENCY CREATION: If still no profile, create a new one
                 if (!profile) {
                     console.warn(`[Auth] 🩹 Profile STILL null for ID ${userId}. Attempting emergency creation...`);
+                    const isAdminEmail = isHardcodedAdmin(userEmail);
                     const { data: upsertData, error: upsertError } = await supabase.from('profiles').upsert({
                         id: userId,
                         email: userEmail,
                         full_name: authSession.user.user_metadata?.full_name || '',
-                        role: getRoleByEmail(userEmail || ''),
-                        tier: 'SILVER',
-                        credits: 10,
-                        is_unlimited: false,
-                        is_admin: false,
+                        role: isAdminEmail ? 'admin' : getRoleByEmail(userEmail || ''),
+                        tier: isAdminEmail ? 'GOLD' : 'SILVER',
+                        credits: isAdminEmail ? 9999 : 10,
+                        is_unlimited: isAdminEmail,
+                        is_admin: isAdminEmail,
                         allowed_features: ['all']
                     }, { onConflict: 'id' });
 
@@ -106,11 +112,8 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                 }
 
                 // 4. ADMIN SYNC: Ensure hardcoded admins have correct flags
-                if (profile && userEmail && isHardcodedAdmin(userEmail)) {
-                    profile.role = 'admin';
-                    profile.is_admin = true;
-                    profile.tier = 'GOLD';
-                    profile.is_unlimited = true;
+                if (profile && userEmail) {
+                    profile = applyAdminOverride(profile, userEmail);
                 }
 
                 // 5. CONSOLIDATE SESSION
@@ -233,8 +236,9 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
 
     const refreshProfile = async () => {
         if (session?.id) {
-            const profileData = await getUserProfile(session.id, session.email);
-            if (profileData) {
+            const rawProfile = await getUserProfile(session.id, session.email);
+            if (rawProfile) {
+                const profileData = applyAdminOverride(rawProfile, session.email);
                 setUserProfile(profileData);
                 const derivedRole = profileData.role === 'manager'
                     ? 'SCHOOL_MANAGER'
