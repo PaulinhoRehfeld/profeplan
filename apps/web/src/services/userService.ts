@@ -107,7 +107,17 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
 
             // ── Auto-create profile as last resort (trigger may have failed) ──
             try {
-                const { data: { user: authUser } } = await supabase.auth.getUser();
+                // Reuse activeAuthUser from outer scope (already validated), fallback to fresh getUser()
+                let authUser = activeAuthUser;
+                let userMetaName: string | undefined;
+                if (!authUser) {
+                    const { data: { user: freshUser } } = await supabase.auth.getUser();
+                    if (freshUser) {
+                        authUser = { id: freshUser.id, email: freshUser.email };
+                        userMetaName = freshUser.user_metadata?.full_name || freshUser.user_metadata?.name;
+                    }
+                }
+
                 if (!authUser) {
                     console.warn('[userService] No active auth session — cannot create emergency profile.');
                 } else {
@@ -124,8 +134,7 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
                         .upsert({
                             id: targetId,
                             email: fallbackEmail,
-                            full_name: authUser.user_metadata?.full_name
-                                || authUser.user_metadata?.name
+                            full_name: userMetaName
                                 || fallbackEmail.split('@')[0],
                             role: userIsAdmin ? 'admin' : 'teacher',
                             is_admin: userIsAdmin,
