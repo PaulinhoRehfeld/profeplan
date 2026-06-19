@@ -1,148 +1,98 @@
 /**
- * @deprecated Para Simulados ENEM/SAEB, use features/SimulationFactory
+ * Serviço de Busca de Questões ENEM
  * 
- * Este arquivo foi substituído por um módulo isolado para prevenir quebras.
- * Mantido apenas para compatibilidade com outros módulos (Assessment, etc.)
- * 
- * Migração:
- * ```typescript
- * import { questionBank } from '@/features/SimulationFactory';
- * const result = await questionBank.search({ query, areas });
- * ```
+ * Usa o EnemAgent nativo (JSON estático no domínio) em vez de Supabase,
+ * eliminando custo de banco e risco de estouro de cota.
  */
-
-import { supabase } from './supabaseClient';
 import { EnemQuestion } from '../types';
+import { searchEnemQuestions, preloadEnemAgent } from './enemAgent';
+
+// Pré-carrega o agente em background ao importar este módulo
+preloadEnemAgent();
 
 // Mapeamento de Áreas para Disciplinas (Normalização)
 const AREA_MAP: Record<string, string[]> = {
-    'Humanas': ['História', 'Geografia', 'Filosofia', 'Sociologia', 'Ciências Humanas'],
-    'Natureza': ['Física', 'Química', 'Biologia', 'Ciências da Natureza'],
-    'Linguagens': ['Português', 'Literatura', 'Inglês', 'Espanhol', 'Artes', 'Educação Física', 'Linguagens'],
-    'Matemática': ['Matemática']
+    'Humanas': ['ciencias-humanas', 'historia', 'geografia', 'filosofia', 'sociologia'],
+    'Natureza': ['ciencias-natureza', 'fisica', 'quimica', 'biologia'],
+    'Linguagens': ['linguagens', 'portugues', 'literatura', 'ingles', 'espanhol', 'artes'],
+    'Matematica': ['matematica'],
+    'Matemática': ['matematica'],
 };
 
-const getErrorMessage = (error: unknown): string =>
-    error instanceof Error ? error.message : 'Unknown error';
-
-type EnemQuestionRow = {
-    id: number;
-    metadata: EnemQuestion['metadata'];
-    content?: string;
-    embedding?: any;
+/**
+ * Divide o conteúdo da questão em context (texto base) e alternativesIntroduction (comando).
+ * Heurística: última frase antes das alternativas é o comando.
+ */
+const splitContent = (conteudo: string): { context: string; alternativesIntroduction: string } => {
+    const trimmed = conteudo.trim();
+    
+    // Tenta encontrar o último parágrafo significativo como comando
+    const paragraphs = trimmed.split(/\n\s*\n/);
+    
+    if (paragraphs.length <= 1) {
+        // Tenta dividir na última frase que termina com ? ou :
+        const sentences = trimmed.split(/(?<=[.?!:])\s+(?=[A-ZÀ-Ú])/);
+        if (sentences.length > 1) {
+            const last = sentences.pop() || '';
+            return { context: sentences.join(' '), alternativesIntroduction: last };
+        }
+        return { context: trimmed, alternativesIntroduction: '' };
+    }
+    
+    const lastParagraph = paragraphs.pop() || '';
+    const context = paragraphs.join('\n\n');
+    
+    // Se o último parágrafo for curto, provavelmente é o comando
+    if (lastParagraph.length < 300) {
+        return { context, alternativesIntroduction: lastParagraph };
+    }
+    
+    return { context: trimmed, alternativesIntroduction: '' };
 };
 
 export const searchQuestions = async (query: string, areas?: string[]): Promise<EnemQuestion[]> => {
     try {
         if (!query.trim()) return [];
 
-        console.log(`🔍 [Text Search] Iniciando busca para: "${query}" [Áreas: ${areas?.join(', ') || 'Todas'}]`);
+        // Converte áreas para disciplinas do ENEM
+        const disciplinas = areas && areas.length > 0
+            ? areas.flatMap(area => AREA_MAP[area] || [])
+            : undefined;
 
-        // TEMPORARY FIX: Using text-only search (embeddings API unavailable)
-        // Database schema: enem_questions has 'metadata' JSONB column, not individual fields
-        // Primary search: 'content' field contains full question text (most effective)
-        // Secondary: metadata->>context and metadata->>alternativesIntroduction
-
-        // Build search query for multiple fields
-        const searchPattern = `%${query}%`;
-
-        const textResponse = await supabase
-            .from('enem_questions')
-            .select('*')
-            .ilike('content', searchPattern)
-            .limit(50); // Increased limit for text-only search
-
-        // Dummy vector response for compatibility
-        const vectorResponse = { data: [], error: null };
-
-        if (vectorResponse.error) {
-            console.error('❌ Erro na RPC Supabase:', vectorResponse.error);
-            // Não lança erro fatal, tenta usar só o texto se houver
-        }
-
-        if (textResponse.error) {
-            console.error('❌ Erro na Busca Textual:', textResponse.error);
-        }
-
-        const vectorQuestions = (vectorResponse.data as EnemQuestion[]) || [];
-        const textQuestions = ((textResponse.data as EnemQuestionRow[] | null) || []).map(row => ({
-            id: row.id,
-            metadata: row.metadata,
-            _source: 'text'
-        })) as EnemQuestion[];
-
-        console.log(`📊 Stats: Vetorial=${vectorQuestions.length}, Textual=${textQuestions.length}`);
-
-        // 3. Merge e Deduplicação
-        const combinedMap = new Map<number, EnemQuestion>();
-
-        // Prioridade para Vetorial (pontuação de similaridade implícita na ordem)
-        vectorQuestions.forEach(q => combinedMap.set(q.id, q));
-        // Adiciona Textual (se não existir, é um ganho de recall)
-        textQuestions.forEach(q => {
-            if (!combinedMap.has(q.id)) {
-                combinedMap.set(q.id, q);
-            }
+        const results = await searchEnemQuestions({
+            query,
+            disciplinas,
+            limit: 15,
         });
 
-        let finalQuestions = Array.from(combinedMap.values());
-
-        // 4. Hidratação de Metadata 
-        // Nota: Se a busca vetorial retornar partial objects (dependendo da RPC), hidratamos.
-        // Se a busca textual selecionou 'metadata', já temos.
-        const needsHydration = finalQuestions.some(q => !q.metadata || !q.metadata.alternatives);
-
-
-        if (needsHydration && finalQuestions.length > 0) {
-            console.log('⚠️ Hydrating metadata...');
-            const ids = finalQuestions.filter(q => !q.metadata || !q.metadata.alternatives).map(q => q.id);
-
-            if (ids.length > 0) {
-                const { data: details } = await supabase
-                    .from('enem_questions')
-                    .select('id, metadata')
-                    .in('id', ids);
-
-                if (details) {
-                    finalQuestions = finalQuestions.map(q => {
-                        const detail = details.find((d: EnemQuestionRow) => d.id === q.id);
-                        return detail ? { ...q, metadata: detail.metadata } : q;
-                    });
-                }
-            }
-        }
-
-        // 5. Filtragem Client-Side por Área(s)
-        if (areas && areas.length > 0 && finalQuestions.length > 0) {
-            const targetDisciplines = areas.flatMap(area => AREA_MAP[area] || []);
-
-            if (targetDisciplines.length > 0) {
-                console.log(`🎯 Filtrando por Disciplinas: ${targetDisciplines.join(', ')}`);
-
-                finalQuestions = finalQuestions.filter(q => {
-                    // Check both possible keys
-                    const qDisc = q.metadata?.discipline || q.metadata?.disciplina || '';
-
-                    // Improved normalization: remove accents, lowercase, AND remove non-alphanumeric chars (like hyphens)
-                    const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
-
-                    const normalizedDisc = normalize(qDisc);
-
-                    const isMatch = targetDisciplines.some(td => {
-                        const normalizedTd = normalize(td);
-                        return normalizedDisc.includes(normalizedTd) || normalizedTd.includes(normalizedDisc);
-                    });
-
-                    return isMatch;
-                });
-            }
-        }
-
-        console.log(`✅ ${finalQuestions.length} questões retornadas após merge e filtros.`);
-        return finalQuestions.slice(0, 15); // Retorna top 15 combinadas
+        // Mapeia para o formato EnemQuestion esperado pelos consumidores
+        return results.map(r => {
+            const q = r.questao;
+            const { context, alternativesIntroduction } = splitContent(q.conteudo);
+            
+            return {
+                id: q.id,
+                similarity: r.score / 100, // Normaliza score para 0-1 aproximado
+                metadata: {
+                    id_original: q.id,
+                    year: q.ano,
+                    discipline: q.disciplina,
+                    disciplina: q.disciplina,
+                    context,
+                    alternativesIntroduction,
+                    alternatives: q.alternativas.map(a => ({
+                        letter: a.letra,
+                        text: a.texto,
+                        isCorrect: a.letra === q.gabarito,
+                    })),
+                    bncc: [],
+                    tags: [q.disciplina, `enem-${q.ano}`],
+                },
+            } as EnemQuestion;
+        });
 
     } catch (error: unknown) {
-        console.error('❌ Erro no serviço searchQuestions:', error);
-        throw new Error(getErrorMessage(error));
+        console.error('[questionService] Erro na busca ENEM:', error);
+        return [];
     }
 };
