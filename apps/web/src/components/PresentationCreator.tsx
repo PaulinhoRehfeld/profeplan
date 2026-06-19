@@ -213,7 +213,7 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
             const content = s.contentBulletPoints?.join(' | ') || '';
             const safeContent = content.replace(/;/g, ',');
             const safeTitle = s.title.replace(/;/g, ',');
-            const safeImg = (s.imageSuggestion || '').replace(/;/g, ',');
+            const safeImg = (s.imageSearchQuery || s.imageSuggestion || '').replace(/;/g, ',');
             const safeNote = (s.speakerNotes || '').replace(/;/g, ',');
             csv += `${safeTitle};${safeContent};${safeImg};${safeNote}\n`;
         });
@@ -266,7 +266,7 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
                             <div className="text-center p-8">
                                 <ImageIcon size={48} className="mx-auto text-slate-300 mb-4 group-hover:scale-110 transition-transform" />
                                 <p className="text-sm text-slate-400 italic font-medium max-w-xs mx-auto">
-                                    "{slide.imageSuggestion}"
+                                    "{slide.imageSearchQuery || slide.imageSuggestion}"
                                 </p>
                             </div>
                         </div>
@@ -340,11 +340,11 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
                                         </li>
                                     ))}
                                 </ul>
-                                {slide.imageSuggestion && (
+                                {(slide.imageSearchQuery || slide.imageSuggestion) && (
                                     <div className="bg-fuchsia-50 p-3 rounded-xl border border-fuchsia-100 flex gap-3 items-center">
                                         <ImageIcon size={16} className="text-fuchsia-500 shrink-0" />
                                         <p className="text-[9px] text-fuchsia-800 italic leading-tight line-clamp-3">
-                                            IMG: {slide.imageSuggestion}
+                                            IMG: {slide.imageSearchQuery || slide.imageSuggestion}
                                         </p>
                                     </div>
                                 )}
@@ -497,9 +497,10 @@ function getPreziMarkdownFromPresentation(presentation: any): string {
                 lines.push(`- ${pt}`);
             });
         }
-        if (slide.imageSuggestion) {
+        const imageQuery = slide.imageSearchQuery || slide.imageSuggestion;
+        if (imageQuery) {
             lines.push('');
-            lines.push(`> Sugestão de imagem: _${slide.imageSuggestion}_`);
+            lines.push(`> Sugestão de imagem: _${imageQuery}_`);
         }
         if (slide.speakerNotes) {
             lines.push('');

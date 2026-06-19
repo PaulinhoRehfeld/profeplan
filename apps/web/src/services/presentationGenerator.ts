@@ -65,8 +65,9 @@ export const generateHighFidelityPPT = async (slideData: SlideStructure[], topic
                 slideRef.addText(slide.contentPoints.map(p => ({ text: p, options: { breakLine: true } })), { placeholder: "content" });
 
                 // Busca e insere a imagem se houver uma query de busca
-                if (slide.imageSearchQuery) {
-                    const image = await getRelevantImage(slide.imageSearchQuery);
+                if (slide.imageSearchQuery || (slide as any).imageSuggestion) {
+                    const query = slide.imageSearchQuery || (slide as any).imageSuggestion;
+                    const image = await getRelevantImage(query);
                     if (image) {
                         // Adiciona a imagem sobre o retângulo placeholder
                         slideRef.addImage({ path: image.url, x: 5.5, y: 1.5, w: 4.5, h: 4.0 });
