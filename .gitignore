@@ -45,3 +45,4 @@ android/.idea/
 supabase/.temp/
 supabase/pgsql/
 supabase/pg_bin.zip
+.vercel

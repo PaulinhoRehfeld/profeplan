@@ -1,6 +1,11 @@
 export const maxDuration = 60;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+const buildSearchProxyUrl = (baseUrl: string): string => {
+  const normalized = baseUrl.trim().replace(/\/+$/, '');
+  return normalized.endsWith('/searchProxy') ? normalized : `${normalized}/searchProxy`;
+};
+
 /**
  * Proxy de busca de currículo: encaminha a requisição para o Azure BFF (searchProxy).
  * Requer a variável de ambiente BFF_BASE_URL apontando para o Azure Function App,
@@ -26,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'Search service not configured. BFF_BASE_URL is missing.' });
   }
 
-  const targetUrl = `${bffBaseUrl}/searchProxy`;
+  const targetUrl = buildSearchProxyUrl(bffBaseUrl);
 
   try {
     const upstreamRes = await fetch(targetUrl, {

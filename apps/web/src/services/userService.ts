@@ -8,6 +8,30 @@ const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for
 const getErrorMessage = (error: unknown): string =>
     error instanceof Error ? error.message : 'Unknown error';
 
+const getActiveAuthUser = async (): Promise<{ id: string; email?: string } | null> => {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.id) {
+            return {
+                id: session.user.id,
+                email: session.user.email || undefined
+            };
+        }
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.id) {
+            return {
+                id: user.id,
+                email: user.email || undefined
+            };
+        }
+    } catch (authErr) {
+        console.warn("[userService] Optional auth user fetch failed:", authErr);
+    }
+
+    return null;
+};
+
 // Helper to recover from Session ID mismatch (Ghost ID)
 export const getProfileByEmail = async (email: string) => {
     const { data, error } = await supabase
@@ -29,15 +53,22 @@ export const getProfileByEmail = async (email: string) => {
 
 export const getUserProfile = async (userId: string, email?: string): Promise<UserProfile | null> => {
     try {
+        const activeAuthUser = await getActiveAuthUser();
+        const lookupUserId = activeAuthUser?.id || userId;
+        let activeEmail = email || activeAuthUser?.email;
+
+        if (activeAuthUser?.id && activeAuthUser.id !== userId) {
+            console.warn(`[userService] Session ID mismatch detected. requested=${userId} auth=${activeAuthUser.id}. Using auth ID.`);
+        }
+
         // 1. Try fetching by ID first
         const { data, error } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', userId)
+            .eq('id', lookupUserId)
             .maybeSingle();
 
         // 2. Fallback: If ID not found/mismatched, attempt to resolve email from active session
-        let activeEmail = email;
         if ((error || !data) && !activeEmail) {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
@@ -55,7 +86,7 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
         }
 
         if ((error || !data) && activeEmail) {
-            console.warn(`[userService] Profile not found for ID ${userId}. Attempting fallback by email: ${activeEmail}`);
+            console.warn(`[userService] Profile not found for ID ${lookupUserId}. Attempting fallback by email: ${activeEmail}`);
             const { data: recoveredProfile } = await getProfileByEmail(activeEmail);
             if (recoveredProfile) {
                 console.log('[userService] Profile recovered by email!');
@@ -81,9 +112,9 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
                     console.warn('[userService] No active auth session — cannot create emergency profile.');
                 } else {
                     // If stored userId differs from session (Ghost ID), use session ID
-                    const targetId = authUser.id === userId ? userId : authUser.id;
-                    if (authUser.id !== userId) {
-                        console.warn(`[userService] Ghost ID detected: stored=${userId} auth=${authUser.id}. Using auth ID.`);
+                    const targetId = authUser.id === lookupUserId ? lookupUserId : authUser.id;
+                    if (authUser.id !== lookupUserId) {
+                        console.warn(`[userService] Ghost ID detected: stored=${lookupUserId} auth=${authUser.id}. Using auth ID.`);
                     }
                     console.warn('[userService] Attempting emergency profile creation for:', targetId);
                     const fallbackEmail = authUser.email || activeEmail || '';
