@@ -11,11 +11,12 @@ const logger = {
 const VECTOR_DIM = 768;
 
 const getDeepSeekClient = (): OpenAI | null => {
-  const apiKey = process.env.DEEPSEEK_API_KEY?.trim();
+  const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) return null;
+  const isDeepSeek = apiKey.startsWith('sk-') && !!process.env.DEEPSEEK_API_KEY;
   return new OpenAI({
     apiKey,
-    baseURL: process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com',
+    baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
   });
 };
 
