@@ -15,14 +15,18 @@ type GuardrailsConfig = {
   context?: string;
 };
 
-const getDeepSeekClient = (): OpenAI | null => {
+const getDeepSeekClient = (): { client: OpenAI; model: string } | null => {
   const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) return null;
-  const isDeepSeek = apiKey.startsWith('sk-') && !!process.env.DEEPSEEK_API_KEY;
-  return new OpenAI({
-    apiKey,
-    baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
-  });
+  const isDeepSeek = apiKey.startsWith('sk-f2a4') || !!process.env.DEEPSEEK_API_KEY;
+  const model = isDeepSeek ? 'deepseek-chat' : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
+  return {
+    client: new OpenAI({
+      apiKey,
+      baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
+    }),
+    model,
+  };
 };
 
 const generateGuardrailsPrompt = (config?: GuardrailsConfig): string => {
@@ -51,12 +55,13 @@ const extractJsonFromText = (raw: string): string => {
 
 const chatCompletion = async (
   client: OpenAI,
+  model: string,
   systemInstruction: string,
   prompt: string,
   isJson: boolean = false,
 ): Promise<string> => {
   const response = await client.chat.completions.create({
-    model: 'deepseek-chat',
+    model,
     messages: [
       { role: 'system', content: systemInstruction },
       { role: 'user', content: prompt },
@@ -80,9 +85,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const client = getDeepSeekClient();
-  if (!client) {
-    return res.status(500).json({ error: 'DEEPSEEK_API_KEY não configurada no servidor.' });
+  const deepseek = getDeepSeekClient();
+  if (!deepseek) {
+    return res.status(500).json({ error: 'DEEPSEEK_API_KEY ou OPENAI_API_KEY não configurada no servidor.' });
   }
 
   let body: any;
@@ -254,7 +259,7 @@ Retorne APENAS JSON:
         return res.status(400).json({ error: `Unknown action: ${action}` });
     }
 
-    const result = await chatCompletion(client, systemInstruction, prompt, isJson);
+    const result = await chatCompletion(deepseek.client, deepseek.model, systemInstruction, prompt, isJson);
 
     if (isJson) {
       const jsonStr = extractJsonFromText(result);

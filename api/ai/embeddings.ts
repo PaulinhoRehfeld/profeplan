@@ -10,14 +10,18 @@ const logger = {
 
 const VECTOR_DIM = 768;
 
-const getDeepSeekClient = (): OpenAI | null => {
+const getDeepSeekClient = (): { client: OpenAI; model: string } | null => {
   const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) return null;
-  const isDeepSeek = apiKey.startsWith('sk-') && !!process.env.DEEPSEEK_API_KEY;
-  return new OpenAI({
-    apiKey,
-    baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
-  });
+  const isDeepSeek = apiKey.startsWith('sk-f2a4') || !!process.env.DEEPSEEK_API_KEY;
+  const model = isDeepSeek ? 'deepseek-chat' : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
+  return {
+    client: new OpenAI({
+      apiKey,
+      baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
+    }),
+    model,
+  };
 };
 
 /**
@@ -25,11 +29,11 @@ const getDeepSeekClient = (): OpenAI | null => {
  * O DeepSeek não possui API nativa de embeddings, então usamos prompt engineering
  * para gerar um vetor semântico determinístico a partir do texto.
  */
-const generateEmbedding = async (client: OpenAI, text: string): Promise<number[]> => {
+const generateEmbedding = async (client: OpenAI, model: string, text: string): Promise<number[]> => {
   const systemPrompt = `You are a semantic embedding generator. Analyze the following text and output exactly 768 floating-point numbers between -1 and 1 that represent its semantic meaning. The vector should capture the topic, sentiment, key concepts, and domain of the text. Output ONLY a valid JSON array of 768 numbers, nothing else. No explanation, no markdown, just the array.`;
 
   const response = await client.chat.completions.create({
-    model: 'deepseek-chat',
+    model,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: text.slice(0, 8000) },
@@ -79,14 +83,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'O parâmetro "text" é obrigatório e deve ser uma string.' });
     }
 
-    const client = getDeepSeekClient();
-    if (!client) {
-      const errMsg = 'DEEPSEEK_API_KEY não configurada no servidor.';
+    const deepseek = getDeepSeekClient();
+    if (!deepseek) {
+      const errMsg = 'DEEPSEEK_API_KEY ou OPENAI_API_KEY não configurada no servidor.';
       logger.error(`[API/Embeddings] ${errMsg}`);
       return res.status(500).json({ error: errMsg });
     }
 
-    const embedding = await generateEmbedding(client, text);
+    const embedding = await generateEmbedding(deepseek.client, deepseek.model, text);
 
     logger.info('[API/Embeddings] Embedding gerado via DeepSeek.', { length: text.length, dim: embedding.length });
     return res.status(200).json({ embedding });

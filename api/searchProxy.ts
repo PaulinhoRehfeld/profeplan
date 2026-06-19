@@ -19,13 +19,18 @@ const getSupabaseClient = () => {
   });
 };
 
-const getDeepSeekClient = (): OpenAI | null => {
-  const apiKey = process.env.DEEPSEEK_API_KEY?.trim();
+const getDeepSeekClient = (): { client: OpenAI; model: string } | null => {
+  const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) return null;
-  return new OpenAI({
-    apiKey,
-    baseURL: process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com',
-  });
+  const isDeepSeek = apiKey.startsWith('sk-f2a4') || !!process.env.DEEPSEEK_API_KEY;
+  const model = isDeepSeek ? 'deepseek-chat' : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
+  return {
+    client: new OpenAI({
+      apiKey,
+      baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
+    }),
+    model,
+  };
 };
 
 /**
@@ -98,8 +103,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           `[${i}] ${r.disciplina || ''} - ${r.ano_escolar || ''} - ${r.periodo || ''}: ${(r.content || '').slice(0, 500)}`
         ).join('\n\n');
 
-        const response = await deepseek.chat.completions.create({
-          model: 'deepseek-chat',
+        const response = await deepseek.client.chat.completions.create({
+          model: deepseek.model,
           messages: [
             {
               role: 'system',
