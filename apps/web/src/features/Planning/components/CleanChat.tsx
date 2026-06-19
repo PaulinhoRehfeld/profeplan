@@ -1,8 +1,7 @@
 
 import React from 'react';
-import { Bot, User, Loader2, Send, Trash2, CalendarRange, LayoutDashboard, Users, BookOpen } from 'lucide-react';
+import { Bot, User, Loader2, Send, Trash2, CalendarRange, LayoutDashboard, Users, BookOpen, Save, Download } from 'lucide-react';
 import { Message, MessageRole } from '../../../types';
-import { QuestionSearchWidget } from '../../../components/QuestionFinder/QuestionSearchWidget';
 
 interface CleanChatProps {
     messages: Message[];
@@ -11,11 +10,13 @@ interface CleanChatProps {
     setInput: (val: string) => void;
     handleSendMessage: (e: React.FormEvent) => void;
     handleClearChat: () => void;
-    messagesEndRef: React.RefObject<HTMLDivElement>;
+    messagesEndRef: React.RefObject<HTMLDivElement | null>;
+    onSave?: (content: string) => void;
+    onExport?: (content: string) => void;
 }
 
 export const CleanChat: React.FC<CleanChatProps> = ({
-    messages, isThinking, input, setInput, handleSendMessage, handleClearChat, messagesEndRef
+    messages, isThinking, input, setInput, handleSendMessage, handleClearChat, messagesEndRef, onSave, onExport
 }) => {
     return (
         <div className="flex-1 flex flex-col h-full relative bg-slate-50/50">
@@ -97,6 +98,26 @@ export const CleanChat: React.FC<CleanChatProps> = ({
                         </div>
                         <div className={`max-w-[85%] p-4 rounded-[2rem] shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}>
                             {msg.content}
+                            {msg.role === MessageRole.ASSISTANT && msg.content.length > 80 && (
+                                <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
+                                    {onSave && (
+                                        <button
+                                            onClick={() => onSave(msg.content)}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors"
+                                        >
+                                            <Save size={12} /> Salvar
+                                        </button>
+                                    )}
+                                    {onExport && (
+                                        <button
+                                            onClick={() => onExport(msg.content)}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors"
+                                        >
+                                            <Download size={12} /> Baixar DOCX
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}

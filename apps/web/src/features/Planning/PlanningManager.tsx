@@ -794,6 +794,8 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                 handleSendMessage={handleSendMessage}
                 handleClearChat={handleClearChat}
                 messagesEndRef={messagesEndRef}
+                onSave={handleSavePlan}
+                onExport={handleExportDocx}
             />
         </div>
     );
