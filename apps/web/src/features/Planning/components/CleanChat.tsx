@@ -2,6 +2,7 @@
 import React from 'react';
 import { Bot, User, Loader2, Send, Trash2, CalendarRange, LayoutDashboard, Users, BookOpen, Save, Download } from 'lucide-react';
 import { Message, MessageRole } from '../../../types';
+import { QuestionSearchWidget } from '../../../components/QuestionFinder/QuestionSearchWidget';
 
 interface CleanChatProps {
     messages: Message[];

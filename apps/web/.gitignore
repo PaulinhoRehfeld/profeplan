@@ -35,3 +35,4 @@ scripts/archive/
 scripts/js_legacy/*.bkp
 scripts/js_legacy/*.old
 
+.env*.local
