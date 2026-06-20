@@ -52,7 +52,10 @@ export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
                             type="number"
                             min="1"
                             value={creditAmount}
-                            onChange={e => setCreditAmount(parseInt(e.target.value))}
+                            onChange={e => {
+                                const val = e.target.value;
+                                setCreditAmount(val === '' ? 0 : parseInt(val, 10));
+                            }}
                             className="w-full px-4 py-3 border border-slate-300 rounded-xl text-center text-lg font-bold text-indigo-700 focus:ring-2 focus:ring-amber-200 outline-none"
                         />
                     </div>

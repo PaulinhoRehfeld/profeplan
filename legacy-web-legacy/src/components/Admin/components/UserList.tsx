@@ -84,7 +84,10 @@ export const UserList: React.FC<UserListProps> = ({
                                             type="number"
                                             className="w-20 border rounded px-2 py-1 text-xs"
                                             value={editingUser.credits}
-                                            onChange={(e) => setEditingUser({ ...editingUser, credits: parseInt(e.target.value) })}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                setEditingUser({ ...editingUser, credits: val === '' ? 0 : parseInt(val, 10) });
+                                            }}
                                         />
                                     ) : (
                                         user.is_unlimited ? '∞ (Ilimitado)' : `${user.credits} CR`

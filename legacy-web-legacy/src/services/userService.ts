@@ -254,11 +254,29 @@ export const updateUserProfile = async (
 };
 
 export const updateUserProfileAdmin = async (targetUserId: string, updates: Partial<UserProfile>) => {
-    const { data, error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', targetUserId);
-    return { data, error };
+    // Usa RPC SECURITY DEFINER que bypassa RLS — mesma abordagem do get_all_profiles_secure
+    const { data: result, error } = await supabase.rpc('admin_update_profile', {
+        p_target_id: targetUserId,
+        p_tier: updates.tier ?? null,
+        p_credits: updates.credits ?? null,
+        p_is_unlimited: updates.is_unlimited ?? null,
+        p_role: updates.role ?? null,
+        p_is_admin: updates.is_admin ?? null,
+    });
+
+    if (error) {
+        console.error('[userService] admin_update_profile RPC error:', error);
+        return { data: null, error };
+    }
+
+    // RPC retorna { success: boolean, error?: string }
+    const parsed = result as { success: boolean; error?: string } | null;
+    if (parsed && !parsed.success) {
+        console.error('[userService] admin_update_profile failed:', parsed.error);
+        return { data: null, error: { message: parsed.error || 'Falha ao atualizar perfil.' } };
+    }
+
+    return { data: result, error: null };
 };
 
 export const isAdmin = (profile: UserProfile | null) => {
@@ -347,11 +365,23 @@ export const checkAndRewardReferrer = async (newUserEmail: string) => {
 };
 
 export const addUserCredits = async (userId: string, amount: number) => {
-    const { data: profile } = await supabase.from('profiles').select('credits').eq('id', userId).maybeSingle();
-    if (!profile) return { error: { message: 'Usuário não encontrado' } };
+    // Usa RPC SECURITY DEFINER que bypassa RLS
+    const { data: result, error } = await supabase.rpc('admin_add_credits', {
+        p_target_id: userId,
+        p_amount: amount,
+    });
 
-    const newCredits = (profile.credits || 0) + amount;
-    return await supabase.from('profiles').update({ credits: newCredits }).eq('id', userId);
+    if (error) {
+        console.error('[userService] admin_add_credits RPC error:', error);
+        return { error };
+    }
+
+    const parsed = result as { success: boolean; error?: string } | null;
+    if (parsed && !parsed.success) {
+        return { error: { message: parsed.error || 'Falha ao adicionar créditos.' } };
+    }
+
+    return { data: result, error: null };
 };
 
 export const updateUserRole = async (userId: string, newRole: 'teacher' | 'manager') => {

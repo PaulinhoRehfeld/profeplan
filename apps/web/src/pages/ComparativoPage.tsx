@@ -106,7 +106,7 @@ export default function ComparativoPage() {
     {
       phase: 3,
       title: 'Fase 5: Estabilização de Rotas',
-      status: 'Fase Atual (V4.0.1)',
+      status: 'Fase Atual (V4.1.1)',
       color: 'bg-amber-500 animate-pulse',
       description: 'Consolidação das rotas de PDI, importador de turmas do SIMADE e testes automatizados de ponta a ponta.'
     },
@@ -458,7 +458,7 @@ export default function ComparativoPage() {
             <div className="text-sm md:text-lg space-y-3 font-mono text-slate-300 leading-relaxed border-t border-white/10 pt-4">
               <p>📍 <strong>Localização:</strong> apps/web</p>
               <p>⚙️ <strong>Serviço:</strong> Vite Dev Server</p>
-              <p>🛡️ <strong>Ambiente:</strong> Monorepo V4.0.1 Rodando Localmente</p>
+              <p>🛡️ <strong>Ambiente:</strong> Monorepo V4.1.1 Rodando Localmente</p>
               <p className="text-blue-400">🔗 <strong>Próximo Passo:</strong> Utilize este painel interativo durante a reunião para guiar a equipe e demonstrar visualmente onde o PROFEPLAN está e onde ele irá pousar na versão 5.</p>
             </div>
           </div>
