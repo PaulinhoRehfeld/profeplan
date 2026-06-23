@@ -68,6 +68,24 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
             .eq('id', lookupUserId)
             .maybeSingle();
 
+        // 1b. Silent RLS block: data=null, error=null means JWT may be stale — try refreshing session
+        if (!error && !data) {
+            try {
+                await supabase.auth.refreshSession();
+                const { data: refreshedData } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', lookupUserId)
+                    .maybeSingle();
+                if (refreshedData) {
+                    console.log('[userService] Profile recovered after session refresh.');
+                    return refreshedData as UserProfile;
+                }
+            } catch (refreshErr) {
+                console.warn('[userService] Session refresh attempt failed:', refreshErr);
+            }
+        }
+
         // 2. Fallback: If ID not found/mismatched, attempt to resolve email from active session
         if ((error || !data) && !activeEmail) {
             try {

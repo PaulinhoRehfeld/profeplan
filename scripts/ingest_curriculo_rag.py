@@ -1,220 +1,291 @@
+"""
+ingest_curriculo_rag.py
+Ingestão dos MDs do currículo MG → tabela curriculos_mg no Supabase.
+
+Migrado de Gemini → DeepSeek (OpenAI-compatible).
+Os embeddings são gerados via prompt engineering (768 dim) igual ao api/ai/embeddings.ts.
+
+Uso:
+  python ingest_curriculo_rag.py             # Ingere novos arquivos
+  python ingest_curriculo_rag.py --truncate  # Limpa a tabela antes de inserir
+"""
+
 import os
+import re
 import glob
+import json
+import time
 import argparse
-from langchain_text_splitters import MarkdownHeaderTextSplitter
-import google.generativeai as genai
-from langchain_core.embeddings import Embeddings
+from openai import OpenAI
 from supabase import create_client
-from langchain_community.vectorstores import SupabaseVectorStore
 from dotenv import load_dotenv
 
-# Carrega variáveis de ambiente do arquivo .env na raiz do projeto
 load_dotenv()
 
-# CONFIGURAÇÃO DE AMBIENTE
-# Caminho para os arquivos Markdown (Hardcoded conforme solicitado pelo usuário, mas seguro)
-MD_PATH = r"C:\Users\Admin\PROFEPLANPDFS\PlanosMG\MD" 
+# ─── Caminhos ────────────────────────────────────────────────────────────────
+# Diretório dos MDs curados (lista com orientações pedagógicas, sem tabelas PDF)
+MD_PATH = os.path.join(os.path.dirname(__file__), "..", "curriculo_mg", "PlanosMG", "MD")
+MD_PATH = os.path.abspath(MD_PATH)
 
-# Resgate de variáveis com Fallback
-SUPABASE_URL = os.getenv("VITE_SUPABASE_URL") or os.getenv("SUPABASE_URL")
-# PRIORIDADE: Service Role (Escrita irrestrita) > Anon Key (Pode falhar por RLS)
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")
-GOOGLE_API_KEY = os.getenv("VITE_GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+# ─── Variáveis de ambiente ───────────────────────────────────────────────────
+SUPABASE_URL  = os.getenv("VITE_SUPABASE_URL") or os.getenv("SUPABASE_URL")
+SUPABASE_KEY  = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")
+DEEPSEEK_KEY  = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_BASE = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com")
 
-def setup_client():
-    if not SUPABASE_URL or not SUPABASE_KEY or not GOOGLE_API_KEY:
-        print("[ERROR] ERRO CRÍTICO: Variáveis de ambiente faltando.")
-        print(f"   SUPABASE_URL: {'OK' if SUPABASE_URL else 'FALTANDO'}")
-        print(f"   SUPABASE_KEY: {'OK' if SUPABASE_KEY else 'FALTANDO (Recomendado: SUPABASE_SERVICE_ROLE_KEY)'}")
-        print(f"   GOOGLE_API_KEY: {'OK' if GOOGLE_API_KEY else 'FALTANDO'}")
-        print("   Verifique seu arquivo .env")
-        exit(1)
-    
-    return create_client(SUPABASE_URL, SUPABASE_KEY)
+VECTOR_DIM = 768
 
-class CustomGeminiEmbeddings(Embeddings):
-    def __init__(self, api_key, model_name="models/gemini-embedding-001"):
-        genai.configure(api_key=api_key)
-        self.model_name = model_name
+# ─── Lógica de deduplicação ──────────────────────────────────────────────────
+# Quando existe o par (sem acento, com acento), o sem acento é a versão curada
+# com orientações pedagógicas ricas — o com acento é conversão bruta de tabela PDF.
+# Descartamos os arquivos COM acento quando o par SEM acento existe.
+PREFER_NO_ACCENT = True  # Altere para False para incluir TODOS os arquivos
 
-    def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        # Batch support handled by genai or naive loop
-        # GenAI has batch_embed_contents but restricted in some regions/models?
-        # Let's do loop for safety or batch if possible.
-        # "models/gemini-embedding-001" supports batch? Listing said yes: 'asyncBatchEmbedContent'
-        # But 'embed_content' is easier for 768 enforcement.
-        results = []
-        for text in texts:
-            res = genai.embed_content(
-                model=self.model_name,
-                content=text,
-                task_type="retrieval_document",
-                output_dimensionality=768
+def should_skip(filename: str, all_files: list[str]) -> bool:
+    """Retorna True se o arquivo for a versão pior de um par duplicado."""
+    if not PREFER_NO_ACCENT:
+        return False
+    # Normaliza: remove acentos e underscores extras para comparação
+    def normalize(name):
+        n = name.upper()
+        n = n.replace("Á","A").replace("Ã","A").replace("É","E").replace("Ê","E")
+        n = n.replace("Í","I").replace("Ó","O").replace("Ô","O").replace("Ú","U")
+        n = n.replace("Ç","C").replace("_","").replace(" ","").replace("-","")
+        return n.replace(".MD", "")
+
+    norm_current = normalize(filename)
+    # Verifica se existe outro arquivo com a mesma normalização
+    for other in all_files:
+        if other == filename:
+            continue
+        if normalize(other) == norm_current:
+            # Tem par — mantém o maior (mais conteúdo)
+            current_path = os.path.join(MD_PATH, filename)
+            other_path   = os.path.join(MD_PATH, other)
+            if os.path.getsize(current_path) < os.path.getsize(other_path):
+                return True  # este é o menor → descartar
+    return False
+
+
+# ─── DeepSeek embeddings via prompt ─────────────────────────────────────────
+def gerar_embedding(client: OpenAI, text: str) -> list[float] | None:
+    system_prompt = (
+        "You are a semantic embedding generator. Analyze the following text and output "
+        f"exactly {VECTOR_DIM} floating-point numbers between -1 and 1 that represent its "
+        "semantic meaning. Output ONLY a valid JSON array of numbers, nothing else."
+    )
+    for attempt in range(3):
+        try:
+            resp = client.chat.completions.create(
+                model="deepseek-chat",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user",   "content": text[:6000]},
+                ],
+                temperature=0.05,
+                max_tokens=4096,
             )
-            # Handle return format
-            if isinstance(res, dict) and 'embedding' in res:
-                results.append(res['embedding'])
-            else:
-                results.append(res)
-        return results
+            raw = resp.choices[0].message.content or ""
+            match = re.search(r"\[[\s\S]*\]", raw)
+            if not match:
+                raise ValueError("Sem array JSON na resposta")
+            vec = json.loads(match.group(0))
+            if len(vec) < VECTOR_DIM:
+                vec += [0.0] * (VECTOR_DIM - len(vec))
+            return vec[:VECTOR_DIM]
+        except Exception as e:
+            print(f"      [WARN] Tentativa {attempt + 1}/3 de embedding falhou: {e}")
+            time.sleep(3 * (attempt + 1))
+    return None
 
-    def embed_query(self, text: str) -> list[float]:
-        res = genai.embed_content(
-            model=self.model_name,
-            content=text,
-            task_type="retrieval_query",
-            output_dimensionality=768
-        )
-        if isinstance(res, dict) and 'embedding' in res:
-            return res['embedding']
+
+# ─── Chunking por cabeçalhos Markdown ────────────────────────────────────────
+def chunkar_md(conteudo: str) -> list[dict]:
+    """
+    Divide o MD em blocos por período (### 1° Bimestre / ### 1° Trimestre).
+    Retorna lista de dicts: {text, disciplina, ano_escolar, periodo}.
+    """
+    linhas = conteudo.split("\n")
+
+    disciplina = ""
+    ano_escolar = ""
+    periodo = ""
+    buffer: list[str] = []
+    blocos: list[dict] = []
+
+    def flush():
+        content = "\n".join(buffer).strip()
+        if content and periodo:
+            blocos.append({
+                "text": f"Disciplina: {disciplina}. Ano: {ano_escolar}. Período: {periodo}.\n---\n{content}",
+                "disciplina": disciplina,
+                "ano_escolar": ano_escolar,
+                "periodo": periodo,
+            })
+
+    for linha in linhas:
+        stripped = linha.strip()
+        if stripped.startswith("# "):
+            flush(); buffer = []
+            disciplina = stripped[2:].strip()
+        elif stripped.startswith("## "):
+            flush(); buffer = []
+            ano_escolar = stripped[3:].strip()
+        elif stripped.startswith("### "):
+            flush(); buffer = []
+            periodo = stripped[4:].strip().replace("°", "º")
         else:
-            return res
+            buffer.append(linha)
 
-def processar_arquivos(should_truncate=False):
-    supabase = setup_client()
-    embeddings = CustomGeminiEmbeddings(api_key=GOOGLE_API_KEY, model_name="models/gemini-embedding-001")
+    flush()
+    return blocos
+
+
+# ─── Normalização do nome do arquivo ─────────────────────────────────────────
+def normalizar_metadados(nome_arquivo: str) -> dict:
+    """Extrai disciplina, ano e nível a partir do nome do arquivo."""
+    base = nome_arquivo.replace(".md", "").replace(".MD", "")
+    parts = base.split("_")
+
+    nivel = ""
+    ano_num = ""
+    disciplina_raw = ""
+
+    if len(parts) >= 3:
+        raw_ano   = parts[0]  # ex: 1ANO, 6ANO
+        raw_nivel = parts[1]  # ex: EM, EF
+        disciplina_raw = "_".join(parts[2:]).title()
+
+        ano_num = ''.join(filter(str.isdigit, raw_ano))
+        nivel = "EM" if "EM" in raw_nivel.upper() else "EF"
+
+    ano_formatado = (
+        f"{ano_num}º Ano EM" if nivel == "EM"
+        else f"{ano_num}º Ano"
+    )
+
+    # Ajustes finos na disciplina
+    disciplina = disciplina_raw
+    for busca, troca in [
+        ("Historia", "História"), ("Matematica", "Matemática"),
+        ("Fisica", "Física"),     ("Quimica", "Química"),
+        ("Biologia", "Biologia"), ("Sociologia", "Sociologia"),
+        ("Filosofia", "Filosofia"), ("Geografia", "Geografia"),
+        ("Ciencias", "Ciências"), ("Lingua_Portuguesa", "Língua Portuguesa"),
+        ("Lingua_Inglesa", "Língua Inglesa"), ("Linguaportuguesa", "Língua Portuguesa"),
+        ("Linguainglesa", "Língua Inglesa"), ("Educacaofisica", "Educação Física"),
+        ("Educação_Física", "Educação Física"), ("Educação_Digital", "Educação Digital"),
+        ("Ensinoreligioso", "Ensino Religioso"),
+    ]:
+        if busca.lower() in disciplina.lower():
+            disciplina = troca
+            break
+
+    return {"disciplina": disciplina, "ano_escolar": ano_formatado, "nivel": nivel}
+
+
+# ─── Main ────────────────────────────────────────────────────────────────────
+def processar_arquivos(should_truncate: bool = False):
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        print("[ERROR] SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY são obrigatórios.")
+        exit(1)
+    if not DEEPSEEK_KEY:
+        print("[ERROR] DEEPSEEK_API_KEY é obrigatório.")
+        exit(1)
+
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    openai_client = OpenAI(api_key=DEEPSEEK_KEY, base_url=DEEPSEEK_BASE)
 
     if not os.path.exists(MD_PATH):
         print(f"[ERROR] Diretório não encontrado: {MD_PATH}")
-        print("   Verifique se a pasta existe ou edite a variável MD_PATH no script.")
-        return
+        exit(1)
 
     if should_truncate:
-        print("[INFO] Tentando limpar registros antigos (Flag --truncate)...")
+        print("[INFO] Limpando registros antigos (curriculos_mg)...")
         try:
-             # Tenta deletar registros onde 'estado' é 'MG'. 
-             # Nota: Se RLS estiver ativo e usar Anon Key, isso pode falhar.
-             supabase.table("curriculos_mg").delete().eq("metadata->>estado", "MG").execute()
-             print("[OK] Limpeza concluída (registros filtrados por estado='MG').")
+            supabase.table("curriculos_mg").delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
+            print("[OK] Tabela limpa.")
         except Exception as e:
             print(f"[WARN] Não foi possível limpar automaticamente: {e}")
-            print("   Recomendação: Execute 'TRUNCATE TABLE curriculos_mg;' no SQL Editor do Supabase.")
 
-    arquivos_md = glob.glob(os.path.join(MD_PATH, "*.md"))
+    todos_arquivos = [os.path.basename(f) for f in glob.glob(os.path.join(MD_PATH, "*.md"))]
+    arquivos_md = sorted(glob.glob(os.path.join(MD_PATH, "*.md")))
+
+    # Filtrar arquivos com typo ou de teste
+    arquivos_md = [f for f in arquivos_md if not os.path.basename(f).startswith("test_")]
+
     print(f"\n[INFO] Diretório: {MD_PATH}")
-    print(f"[INFO] Arquivos encontrados: {len(arquivos_md)}")
-
-    # Headers para split inteligente
-    # Headers para split inteligente: Apenas até o Trimestre para manter o contexto UNIFICADO.
-    headers_to_split_on = [
-        ("#", "disciplina"),
-        ("##", "ano_escolar"),
-        ("###", "periodo"), 
-        # REMOVIDO: ("####", "unidade_tematica"),
-        # REMOVIDO: ("#####", "objeto_conhecimento")
-        # MOTIVO: Queremos o bloco INTEIRO do trimestre para evitar alucinação no planejamento macro.
-    ]
-    
-    splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
+    print(f"[INFO] Total de arquivos encontrados: {len(arquivos_md)}")
 
     total_chunks = 0
-    total_files = 0
+    total_files  = 0
+    skipped      = 0
 
     for i, arquivo in enumerate(arquivos_md):
-        nome_arquivo = os.path.basename(arquivo)
-        print(f"\n[{i+1}/{len(arquivos_md)}] Processando: {nome_arquivo}...")
+        nome = os.path.basename(arquivo)
+
+        if should_skip(nome, todos_arquivos):
+            print(f"\n[{i+1}/{len(arquivos_md)}] SKIP (versão inferior): {nome}")
+            skipped += 1
+            continue
+
+        print(f"\n[{i+1}/{len(arquivos_md)}] Processando: {nome}...")
+        meta_arquivo = normalizar_metadados(nome)
 
         try:
-            with open(arquivo, 'r', encoding='utf-8') as f:
+            with open(arquivo, encoding="utf-8") as f:
                 conteudo = f.read()
 
-            # 1. Chunking
-            chunks = splitter.split_text(conteudo)
-            
-            if not chunks:
-                print(f"   [WARN] Nenhum chunk gerado para {nome_arquivo}. Verifique formatação (#).")
+            blocos = chunkar_md(conteudo)
+
+            if not blocos:
+                print(f"   [WARN] Nenhum chunk gerado — verifique formatação de cabeçalhos (#).")
                 continue
 
-            # 2. Enriquecimento
-            for doc in chunks:
-                doc.metadata["source"] = nome_arquivo
-                doc.metadata["estado"] = "MG"
-                
-                # Resgate seguro de metadados
-                # PRIORIDADE: Filename (Fonte de Verdade Estrutural)
-                # Formato esperado: RAIO_NIVEL_MATERIA.md (ex: 2ANO_EM_HISTORIA.md)
-                
-                parts = nome_arquivo.replace('.md', '').split('_')
-                
-                # Defaults vindos do header
-                disc_header = doc.metadata.get('disciplina', 'Geral')
-                ano_header = doc.metadata.get('ano_escolar', 'N/A')
-                per_header = doc.metadata.get('periodo', 'Geral')
-                
-                # Normalização via Filename (se possível)
-                if len(parts) >= 3:
-                    raw_ano = parts[0] # 2ANO
-                    raw_nivel = parts[1] # EM ou EF
-                    raw_disc = parts[2] # HISTORIA
-                    
-                    # Normalizar Ano
-                    if "EM" in raw_nivel.upper():
-                        # Ex: 1ANO -> 1º Ano EM
-                        numero_ano = ''.join(filter(str.isdigit, raw_ano))
-                        ano = f"{numero_ano}º Ano EM"
-                    else:
-                        # Ex: 6ANO -> 6º Ano
-                        numero_ano = ''.join(filter(str.isdigit, raw_ano))
-                        ano = f"{numero_ano}º Ano" # Fundamental assume padrão "Xº Ano"
-                        
-                    # Normalizar Disciplina (Capitalize bonitinho)
-                    # Mapeamento básico ou Capitalize
-                    disciplina = raw_disc.title() 
-                    # Ajustes finos
-                    if "Historia" in disciplina: disciplina = "História"
-                    if "Matematica" in disciplina: disciplina = "Matemática"
-                    if "Lingua" in disciplina: disciplina = raw_disc.replace("LINGUA", "Língua ").title()
-                else:
-                    # Fallback para o header se o nome do arquivo fugir do padrão
-                    ano = ano_header
-                    disciplina = disc_header
+            inseridos = 0
+            for bloco in blocos:
+                disciplina  = bloco["disciplina"] or meta_arquivo["disciplina"]
+                ano_escolar = bloco["ano_escolar"] or meta_arquivo["ano_escolar"]
+                periodo     = bloco["periodo"]
+                texto       = bloco["text"]
 
-                # Atualiza metadados no doc
-                doc.metadata['ano_escolar'] = ano
-                doc.metadata['disciplina'] = disciplina
-                
-                # Periodo vem do Header mesmo (### 1º Bimestre)
-                # Normalizar Periodo: Remover quebras de linha ou espaços extras, Title Case, e Ordinal
-                per = per_header.replace('\n', ' ').strip().title().replace('°', 'º')
-                doc.metadata['periodo'] = per
-                
-                # Limpeza básica do conteúdo (mantendo quebras de linha para legibilidade do LLM)
-                conteudo_limpo = doc.page_content.strip()
+                print(f"   → Chunk: {disciplina} | {ano_escolar} | {periodo} ({len(texto)} chars)")
 
-                # Texto Rico para Embedding (Opcional, mas bom para busca híbrida se precisar)
-                # O importante agora é que 'content' tem TUDO desse trimestre.
-                texto_rico = (
-                    f"Disciplina: {disciplina}. Ano: {ano}. Período: {per}.\n"
-                    f"---\n"
-                    f"{conteudo_limpo}"
-                )
-                
-                doc.page_content = texto_rico
+                embedding = gerar_embedding(openai_client, texto)
+                if not embedding:
+                    print(f"     [WARN] Embedding falhou — chunk ignorado.")
+                    continue
 
-            # 3. Upload (SupabaseVectorStore)
-            if chunks:
-                SupabaseVectorStore.from_documents(
-                    documents=chunks,
-                    embedding=embeddings,
-                    client=supabase,
-                    table_name="curriculos_mg",
-                    query_name="match_curriculo_enem"
-                )
-                
-                count = len(chunks)
-                total_chunks += count
-                total_files += 1
-                print(f"   [OK] {count} vetores inseridos com sucesso.")
+                supabase.table("curriculos_mg").insert({
+                    "content": texto,
+                    "embedding": embedding,
+                    "metadata": {
+                        "disciplina": disciplina,
+                        "ano_escolar": ano_escolar,
+                        "periodo": periodo,
+                        "source": nome,
+                        "estado": "MG",
+                        "nivel": meta_arquivo["nivel"],
+                        "ano_base": 2026,
+                    }
+                }).execute()
+
+                inseridos += 1
+                time.sleep(0.5)  # Evita rate-limit
+
+            total_chunks += inseridos
+            total_files  += 1
+            print(f"   [OK] {inseridos}/{len(blocos)} chunks inseridos.")
 
         except Exception as e:
-            print(f"   [ERROR] Erro em {nome_arquivo}: {e}")
+            print(f"   [ERROR] {nome}: {e}")
 
-    print(f"\n[INFO] PROCESSO CONCLUÍDO!")
-    print(f"[INFO] Resumo: {total_files} arquivos processados, {total_chunks} vetores criados na base.")
+    print(f"\n{'─'*60}")
+    print(f"[CONCLUÍDO] {total_files} arquivos | {total_chunks} vetores | {skipped} ignorados (duplicatas)")
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Ingestão de Currículos MG para Supabase RAG")
-    parser.add_argument("--truncate", action="store_true", help="Tenta limpar a tabela antes de inserir")
+    parser = argparse.ArgumentParser(description="Ingestão de Currículos MG → Supabase (DeepSeek)")
+    parser.add_argument("--truncate", action="store_true", help="Limpa a tabela antes de inserir")
     args = parser.parse_args()
-    
     processar_arquivos(should_truncate=args.truncate)

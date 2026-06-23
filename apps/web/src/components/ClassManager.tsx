@@ -46,18 +46,39 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
 
             if (error) throw error;
 
-            if (data) {
-                setClasses(data.map((c: any) => ({
-                    id: c.id,
-                    name: c.name,
-                    subject: c.subject,
-                    created_at: c.created_at,
-                    students: Array.isArray(c.students) ? c.students.map((s: any) => ({
-                        ...s,
-                        name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome'
-                    })) : []
-                })) as any);
+            const remoteClasses = (data || []).map((c: any) => ({
+                id: c.id,
+                name: c.name,
+                subject: c.subject,
+                created_at: c.created_at,
+                students: Array.isArray(c.students) ? c.students.map((s: any) => ({
+                    ...s,
+                    name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome'
+                })) : []
+            }));
+
+            // Se Supabase retornou vazio (pode ser RLS bloqueando por sessão expirada),
+            // usa o localStorage como fallback para não perder dados importados.
+            if (remoteClasses.length === 0) {
+                const localData = getLocalClasses(userId);
+                if (localData.length > 0) {
+                    console.warn('[ClassManager] Supabase returned 0 classes. Showing local backup.');
+                    setClasses(localData.map(c => ({
+                        id: c.id,
+                        name: c.name,
+                        subject: c.subject,
+                        created_at: c.createdAt,
+                        students: Array.isArray(c.students) ? c.students.map((s: any) => ({
+                            ...s,
+                            name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome',
+                            needs_adaptation: s.needs_adaptation ?? false
+                        })) : []
+                    })));
+                    return;
+                }
             }
+
+            setClasses(remoteClasses as any);
         } catch (err) {
             console.warn("Supabase fetch failed, falling back to local:", err);
             // Fallback to local
@@ -67,10 +88,10 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                 name: c.name,
                 subject: c.subject,
                 created_at: c.createdAt,
-                students: Array.isArray(c.students) ? c.students.map((s: any) => ({ 
-                    ...s, 
+                students: Array.isArray(c.students) ? c.students.map((s: any) => ({
+                    ...s,
                     name: s?.name && typeof s.name === 'object' ? s.name.name || 'Sem Nome' : s?.name || 'Sem Nome',
-                    needs_adaptation: s.needs_adaptation ?? false 
+                    needs_adaptation: s.needs_adaptation ?? false
                 })) : []
             })));
         } finally {
@@ -79,39 +100,55 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
     };
 
     const handleSaveNewClass = async (data: { name: string, subject: string, students: string[] }) => {
-        const { saveClassStructure } = await import('../services/supabaseService');
-
-        await saveClassStructure(userId, {
-            className: data.name,
-            subject: data.subject,
-            students: data.students,
-            schoolId: userProfile?.active_school_id || userProfile?.school_id
-        });
-
-        // ALSO save local for backup and immediate UI availability in other components
+        // Salva local primeiro — backup garantido independente do Supabase
         saveClassToLocal(userId, {
             className: data.name,
             subject: data.subject,
             students: data.students
         });
 
+        try {
+            const { saveClassStructure } = await import('../services/supabaseService');
+            await saveClassStructure(userId, {
+                className: data.name,
+                subject: data.subject,
+                students: data.students,
+                schoolId: userProfile?.active_school_id || userProfile?.school_id
+            });
+        } catch (err: any) {
+            const is401 = err?.status === 401 || err?.message?.includes('401') || err?.message?.includes('row-level security');
+            console.warn('[ClassManager] Supabase save failed on createClass. Saved locally.', err?.message);
+            if (!is401) throw err;
+        }
+
         fetchClasses();
     };
 
     const handleImportComplete = async (parsedData: { className: string, subject: string, students: string[] }) => {
-        // Save to Supabase
-        const { saveClassStructure } = await import('../services/supabaseService');
-        await saveClassStructure(userId, {
-            className: parsedData.className,
-            subject: parsedData.subject,
-            students: parsedData.students,
-            schoolId: userProfile?.active_school_id || userProfile?.school_id
-        });
-
-        // Also save local for backup (optional, but good for offline)
+        // Sempre salva local primeiro — garante que o dado não se perde mesmo com sessão expirada
         saveClassToLocal(userId, parsedData);
 
-        setImportingFile(null); // Close import view
+        // Tenta sincronizar com Supabase; falha silenciosa (401/RLS) não deve bloquear o usuário
+        try {
+            const { saveClassStructure } = await import('../services/supabaseService');
+            await saveClassStructure(userId, {
+                className: parsedData.className,
+                subject: parsedData.subject,
+                students: parsedData.students,
+                schoolId: userProfile?.active_school_id || userProfile?.school_id
+            });
+        } catch (err: any) {
+            const is401 = err?.status === 401 || err?.message?.includes('401') || err?.message?.includes('row-level security');
+            console.warn('[ClassManager] Supabase save failed (session issue?). Saved locally.', err?.message);
+            if (is401) {
+                // Sessão expirada: dado está no localStorage, será sincronizado após o login
+                setError('Turma salva localmente. Faça login novamente para sincronizar com o servidor.');
+            } else {
+                throw err; // Erro inesperado — repassa para o ImportProcess mostrar
+            }
+        }
+
+        setImportingFile(null);
         fetchClasses();
     };
 

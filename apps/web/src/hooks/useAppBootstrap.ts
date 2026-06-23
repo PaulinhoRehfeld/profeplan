@@ -155,15 +155,26 @@ export function useAppBootstrap({
     }
   }, [userProfile, loading]);
 
-  // 4. AUTO-RETRY Profile
+  // 4. AUTO-RETRY Profile → força logout se sessão Supabase estiver morta
   useEffect(() => {
-    if (!loading && session?.isLoggedIn && !userProfile && retryCount < 3) {
-      const timer = setTimeout(() => {
-        console.warn(`[AppBootstrap] ⚠️ Session active but profile missing. Retrying sync (${retryCount + 1}/3)...`);
-        setRetryCount(prev => prev + 1);
-        refreshProfile();
-      }, 3000);
-      return () => clearTimeout(timer);
+    if (!loading && session?.isLoggedIn && !userProfile) {
+      if (retryCount < 3) {
+        const timer = setTimeout(() => {
+          console.warn(`[AppBootstrap] ⚠️ Session active but profile missing. Retrying sync (${retryCount + 1}/3)...`);
+          setRetryCount(prev => prev + 1);
+          refreshProfile();
+        }, 3000);
+        return () => clearTimeout(timer);
+      } else {
+        // Após 3 tentativas sem sucesso, a sessão do Supabase está morta.
+        // Limpa o estado local e redireciona para o login.
+        console.error('[AppBootstrap] ❌ Sessão Supabase inválida após 3 tentativas. Forçando logout.');
+        supabase.auth.signOut().finally(() => {
+          localStorage.removeItem('profeplan_session');
+          localStorage.removeItem('supabase_user_id');
+          window.location.href = '/login';
+        });
+      }
     }
   }, [loading, session?.isLoggedIn, !!userProfile, retryCount]);
 

@@ -90,7 +90,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (rpcError) {
       logger.error('[searchProxy] Erro na RPC search_curriculum_rag:', rpcError);
-      return res.status(500).json({ error: 'Curriculum search failed', details: rpcError.message });
+      // Return empty results — curriculum search is non-blocking; generation proceeds without it
+      return res.status(200).json([]);
     }
 
     let results = (data || []) as any[];

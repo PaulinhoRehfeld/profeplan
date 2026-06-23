@@ -17,7 +17,7 @@ export interface IngestionResult {
 }
 
 /**
- * Gera o vetor (embedding) de 768 dimensões usando o modelo do Gemini via backend
+ * Gera o vetor (embedding) de 768 dimensões usando DeepSeek via backend
  */
 export const generateChunkEmbedding = async (text: string): Promise<number[] | null> => {
     try {
@@ -34,7 +34,7 @@ export const generateChunkEmbedding = async (text: string): Promise<number[] | n
         const data = await response.json();
         return data.embedding || null;
     } catch (error) {
-        console.error("[AiIngestionService] Erro ao gerar embedding no Gemini:", error);
+        console.error("[AiIngestionService] Erro ao gerar embedding no DeepSeek:", error);
         return null;
     }
 };

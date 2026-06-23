@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, FileText, Calendar, BookOpen, Clock, Target, CheckCircle2, Sparkles, PenTool, Book, Loader2 } from 'lucide-react';
+import { aiQueue } from '../../services/ai/AiQueue';
 import { useGlobalPlanning, TermPlan } from '../../contexts/GlobalPlanningContext';
 import { PlanningAuthority } from '../../services/PlanningAuthorityService';
 import { KnowledgeManifest } from '../../components/Governance/KnowledgeManifest';
@@ -28,6 +29,7 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
     const [generatedText, setGeneratedText] = useState('');
     const [lessons, setLessons] = useState<any[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [queuePosition, setQueuePosition] = useState(0);
 
     // Feedback System
     const [showFeedback, setShowFeedback] = useState(false);
@@ -116,6 +118,12 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
             loadBooks();
         }
     }, [usePnld, availableBooks.length]);
+
+    useEffect(() => {
+        return aiQueue.subscribe(state => {
+            setQueuePosition(state.position);
+        });
+    }, []);
 
     const loadBooks = async () => {
         setIsLoadingBooks(true);
@@ -401,8 +409,13 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({ userId, setti
                         <Sparkles className="w-6 h-6 animate-pulse" />
                         <h2 className="font-black uppercase tracking-widest text-sm">IA de Planejamento</h2>
                     </div>
-                    <button onClick={handleGenerate} disabled={isGenerating} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-xs uppercase hover:bg-indigo-700 disabled:opacity-50">
-                        {isGenerating ? <Clock className="animate-spin" size={16} /> : <Sparkles size={16} />} Gerar Planejamento
+                    <button onClick={handleGenerate} disabled={isGenerating} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-xs uppercase hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2">
+                        {isGenerating ? <Clock className="animate-spin" size={16} /> : <Sparkles size={16} />}
+                        {isGenerating && queuePosition > 0
+                            ? `Na fila (posição ${queuePosition})...`
+                            : isGenerating
+                            ? 'Gerando...'
+                            : 'Gerar Planejamento'}
                     </button>
                 </div>
                 <div className="relative">

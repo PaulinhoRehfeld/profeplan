@@ -21,14 +21,28 @@ type Body = {
   model?: string;
 };
 
-const getOpenAIClient = () => {
-  const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim() || process.env.VITE_OPENAI_API_KEY?.trim();
-  if (!apiKey) return null;
+const getAIClient = (): { client: OpenAI; defaultModel: string } | null => {
+  const deepseekKey = process.env.DEEPSEEK_API_KEY?.trim();
+  const openaiKey = process.env.OPENAI_API_KEY?.trim() || process.env.VITE_OPENAI_API_KEY?.trim();
 
-  const isDeepSeek = apiKey.startsWith('sk-f2a4') || !!process.env.DEEPSEEK_API_KEY;
-  const baseURL = isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined;
+  if (deepseekKey) {
+    return {
+      client: new OpenAI({
+        apiKey: deepseekKey,
+        baseURL: process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com',
+      }),
+      defaultModel: process.env.OPENAI_MODEL || 'deepseek-chat',
+    };
+  }
 
-  return new OpenAI({ apiKey, baseURL });
+  if (openaiKey) {
+    return {
+      client: new OpenAI({ apiKey: openaiKey }),
+      defaultModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    };
+  }
+
+  return null;
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -52,14 +66,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'messages é obrigatório' });
     }
 
-    const openai = getOpenAIClient();
-    if (!openai) {
-      const errMsg = 'Configuração de IA ausente no backend. Defina DEEPSEEK_API_KEY ou OPENAI_API_KEY nas variáveis de ambiente.';
+    const ai = getAIClient();
+    if (!ai) {
+      const errMsg = 'Configuração de IA ausente no backend. Defina DEEPSEEK_API_KEY nas variáveis de ambiente do Vercel.';
       logger.error(`[API/AI] ${errMsg}`);
       return res.status(500).json({ error: errMsg });
     }
 
-    const modelName = body.model && body.model !== 'backend-ai-proxy' ? body.model : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
+    const { client: openai, defaultModel } = ai;
+    const modelName = body.model && body.model !== 'backend-ai-proxy' ? body.model : defaultModel;
 
     logger.info(`[API/AI] Iniciando geração de completion. Modelo: ${modelName}`);
 
@@ -76,10 +91,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    const completion = await openai.chat.completions.create(requestOptions);
+    const completion = await (async () => {
+      const MAX_ATTEMPTS = 3;
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        try {
+          return await openai.chat.completions.create(requestOptions);
+        } catch (err: any) {
+          const is429 = err?.status === 429 || String(err?.message).includes('429');
+          if (is429 && attempt < MAX_ATTEMPTS - 1) {
+            const delay = 3000 * Math.pow(2, attempt);
+            logger.info(`[API/AI] Rate limit — retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_ATTEMPTS})`);
+            await new Promise(r => setTimeout(r, delay));
+            continue;
+          }
+          throw err;
+        }
+      }
+    })();
 
-
-    const text = completion.choices?.[0]?.message?.content?.toString() || '';
+    const text = completion!.choices?.[0]?.message?.content?.toString() || '';
 
     logger.audit('AI_COMPLETION', 'system', {
       model: modelName,

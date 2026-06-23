@@ -4,6 +4,7 @@ import { getLocalClasses } from '../../../services/localStorageService';
 import { searchQuestions } from '../../../services/questionService';
 import { generateAssessmentWithContext } from '../../../services/ai/AiAssessmentService';
 import { Assessment } from '../../../types';
+import { aiQueue } from '../../../services/ai/AiQueue';
 
 interface AssessmentSetupProps {
     userId: string;
@@ -28,7 +29,14 @@ const AssessmentSetup: React.FC<AssessmentSetupProps> = ({ userId, onAssessmentG
 
     // Status State
     const [isGenerating, setIsGenerating] = useState(false);
+    const [queuePosition, setQueuePosition] = useState(0);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        return aiQueue.subscribe(state => {
+            setQueuePosition(state.position);
+        });
+    }, []);
 
     // Fetch Classes on Mount
     useEffect(() => {
@@ -414,7 +422,11 @@ const AssessmentSetup: React.FC<AssessmentSetupProps> = ({ userId, onAssessmentG
                         {isGenerating ? (
                             <>
                                 <Loader2 className="w-6 h-6 animate-spin" />
-                                <span className="animate-pulse">Gemini Construindo Avaliação...</span>
+                                <span className="animate-pulse">
+                                    {queuePosition > 0
+                                        ? `Na fila (posição ${queuePosition})...`
+                                        : 'Construindo Avaliação...'}
+                                </span>
                             </>
                         ) : (
                             <>
@@ -425,7 +437,7 @@ const AssessmentSetup: React.FC<AssessmentSetupProps> = ({ userId, onAssessmentG
                         )}
                     </button>
                     <p className="text-center text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-4">
-                        O Gemini analisará as aulas selecionadas e gerará questões híbridas (v1.5 Flash)
+                        A IA analisará as aulas selecionadas e gerará questões híbridas
                     </p>
                 </div>
             </div>

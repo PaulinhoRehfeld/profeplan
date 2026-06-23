@@ -4,6 +4,7 @@
 export const ADMIN_EMAILS: readonly string[] = [
     'prehfeld@hotmail.com',
     'suporte@profeplan.com.br',
+    'suporte@wrtech-ai.com',
 ];
 
 export const isHardcodedAdmin = (email: string | null | undefined): boolean =>

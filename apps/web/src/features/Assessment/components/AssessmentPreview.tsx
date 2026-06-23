@@ -88,8 +88,8 @@ const AssessmentPreview: React.FC<AssessmentPreviewProps> = ({
                     ))}
                 </div>
 
-                {/* MOBILE ACTION BAR (Visible when Sidebar is hidden on small screens) */}
-                <div className="lg:hidden grid grid-cols-1 gap-3 pt-4 pb-10">
+                {/* ACTION BAR — visível em todas as telas */}
+                <div className="grid grid-cols-1 gap-3 pt-4 pb-10">
                     <button
                         onClick={onSave}
                         disabled={isSaving}

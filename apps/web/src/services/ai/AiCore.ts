@@ -1,4 +1,5 @@
 import { getAuthHeaders } from '../sessionService';
+import { aiQueue } from './AiQueue';
 
 // Mantém a exportação para compatibilidade.
 export const safetySettings: unknown[] = [];
@@ -24,32 +25,30 @@ type CompletionResponse = {
     }>;
 };
 
-const callAiBackend = async (payload: CompletionRequest): Promise<CompletionResponse> => {
-    const authHeaders = await getAuthHeaders();
-    const response = await fetch("/api/ai", {
-        method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            ...authHeaders
-        },
-        body: JSON.stringify(payload),
-    });
-
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-        throw new Error(data?.error || `Falha no proxy de IA (HTTP ${response.status})`);
-    }
-
-    const text = typeof data?.text === "string" ? data.text : "";
-    return {
-        choices: [
-            {
-                message: {
-                    content: text,
-                },
+const callAiBackend = (payload: CompletionRequest): Promise<CompletionResponse> => {
+    return aiQueue.run(async () => {
+        const authHeaders = await getAuthHeaders();
+        const response = await fetch("/api/ai", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeaders,
             },
-        ],
-    };
+            body: JSON.stringify(payload),
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            const err: any = new Error(data?.error || `Falha no proxy de IA (HTTP ${response.status})`);
+            err.status = response.status;
+            throw err;
+        }
+
+        const text = typeof data?.text === "string" ? data.text : "";
+        return {
+            choices: [{ message: { content: text } }],
+        };
+    });
 };
 
 const client = {

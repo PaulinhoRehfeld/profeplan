@@ -10,18 +10,28 @@ const logger = {
 
 const VECTOR_DIM = 768;
 
-const getDeepSeekClient = (): { client: OpenAI; model: string } | null => {
-  const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
-  if (!apiKey) return null;
-  const isDeepSeek = apiKey.startsWith('sk-f2a4') || !!process.env.DEEPSEEK_API_KEY;
-  const model = isDeepSeek ? 'deepseek-chat' : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
-  return {
-    client: new OpenAI({
-      apiKey,
-      baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
-    }),
-    model,
-  };
+const getAIClient = (): { client: OpenAI; model: string } | null => {
+  const deepseekKey = process.env.DEEPSEEK_API_KEY?.trim();
+  const openaiKey = process.env.OPENAI_API_KEY?.trim();
+
+  if (deepseekKey) {
+    return {
+      client: new OpenAI({
+        apiKey: deepseekKey,
+        baseURL: process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com',
+      }),
+      model: 'deepseek-chat',
+    };
+  }
+
+  if (openaiKey) {
+    return {
+      client: new OpenAI({ apiKey: openaiKey }),
+      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    };
+  }
+
+  return null;
 };
 
 /**
@@ -83,7 +93,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'O parâmetro "text" é obrigatório e deve ser uma string.' });
     }
 
-    const deepseek = getDeepSeekClient();
+    const deepseek = getAIClient();
     if (!deepseek) {
       const errMsg = 'DEEPSEEK_API_KEY ou OPENAI_API_KEY não configurada no servidor.';
       logger.error(`[API/Embeddings] ${errMsg}`);

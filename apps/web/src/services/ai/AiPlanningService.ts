@@ -168,16 +168,28 @@ export const generateTermPlan = async (
 
     const totalPoints = prova01Points + prova02Points + vistosPoints + trabalhosPoints + othersPoints;
 
+    // Extrai códigos de habilidades do currículo para listar explicitamente no prompt
+    const extractedCodes = curriculumContext
+        ? [...curriculumContext.matchAll(/\b(E[MF]\d{2}[A-Z]{2,5}\d{2,4}[A-Z0-9]*)\b/g)].map(m => m[1])
+        : [];
+    const uniqueCodes = [...new Set(extractedCodes)];
+    const codesBlock = uniqueCodes.length > 0
+        ? `\n[CÓDIGOS DE HABILIDADES IDENTIFICADOS NESTE PERÍODO]:\n${uniqueCodes.map(c => `• ${c}`).join('\n')}\n`
+        : '';
+
     const prompt = `
-    Atue como um Coordenador Pedagógico especialista em BNCC e currículos da Secretaria de Educação (SEE/MG).
-    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo e rigoroso.
+    Atue como um Coordenador Pedagógico especialista em BNCC e currículos da Secretaria de Educação de Minas Gerais (SEE/MG).
+    Gere um "MAPA DE PLANEJAMENTO DE AULA/2026" completo, rigoroso e FIEL ao currículo oficial abaixo.
 
     ${guardrailsPrompt}
 
-    [DIRETRIZES CRÍTICAS DE GOVERNANÇA (RLM)]:
-    1. PRIORIDADE FONTE DA VERDADE: Use o currículo oficial fornecido abaixo. Se for de Química, Física ou Biologia, siga os pacotes da SEE.
-    2. RIGOR NA AVALIAÇÃO: A Prova 01 DEVE ser agendada para a Aula ${midpoint}. Não aceite variações.
-    3. GRADE DE PONTOS: Os valores de pontos informados abaixo são MANDATÓRIOS. O total deve somar ${totalPoints}.
+    [DIRETRIZES CRÍTICAS DE GOVERNANÇA (RLM) — INVIOLÁVEIS]:
+    1. CURRÍCULO É LEI: Cada aula DEVE trabalhar ao menos uma habilidade listada no bloco [CURRÍCULO OFICIAL SEE/MG] abaixo. Não invente habilidades.
+    2. CODES OBRIGATÓRIOS: Use os códigos BNCC/SAEB extraídos (ex: EM13MAT101, EF09MA03) em cada aula na seção **BNCC:**.
+    3. SEQUÊNCIA PEDAGÓGICA: Siga a ordem dos Objetos de Conhecimento e Unidades Temáticas exatamente como estão no currículo.
+    4. ORIENTAÇÕES PEDAGÓGICAS: Incorpore as sugestões metodológicas oficiais (sala invertida, experimentos, discussões) nas descrições de aula.
+    5. RIGOR NA AVALIAÇÃO: Prova 01 DEVE ser Aula ${midpoint}. Inegociável.
+    6. GRADE DE PONTOS: Total DEVE somar ${totalPoints}.
 
     DADOS DO CONTEXTO:
     - Estado (Base Curricular): ${context.stateBase}
@@ -189,8 +201,11 @@ export const generateTermPlan = async (
     - Período: ${context.period}º Trimestre
     - Total de Aulas: ${context.totalClasses}
 
-    [DADOS DO CURRÍCULO OFICIAL]:
-    ${curriculumContext ? curriculumContext : "Use a BNCC geral atualizada."}
+    [CURRÍCULO OFICIAL SEE/MG — FONTE DA VERDADE (PRIORIDADE MÁXIMA)]:
+    ${curriculumContext
+        ? `${curriculumContext}\n${codesBlock}\n⚠️ TODO o conteúdo gerado DEVE ser derivado exclusivamente das habilidades e objetos de conhecimento acima.`
+        : `⚠️ ATENÇÃO: Currículo oficial não encontrado no banco de dados para ${context.subject} / ${context.grade} / ${context.period}º Trimestre. Use a BNCC geral como fallback e ALERTE o professor no início do planejamento gerado.`
+    }
     
     ${pnldInstruction}
 
