@@ -74,7 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const supabase = getSupabaseClient();
   if (!supabase) {
     logger.error('[searchProxy] SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não configurados.');
-    return res.status(500).json({ error: 'Search service not configured. Missing Supabase credentials.' });
+    return res.status(200).json([]); // non-blocking: return empty instead of 500
   }
 
   try {
@@ -145,6 +145,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Search error';
     logger.error(`[searchProxy] Erro na busca: ${message}`, error);
-    return res.status(500).json({ error: `Search error: ${message}` });
+    return res.status(200).json([]); // non-blocking: return empty instead of 500
   }
 }

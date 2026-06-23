@@ -102,16 +102,15 @@ export const searchCurriculum = async (
         });
 
         if (!response.ok) {
-            throw new Error(`Falha no proxy de busca (HTTP ${response.status})`);
+            console.warn(`[searchService] searchProxy retornou ${response.status} — usando fallback direto.`);
+            throw new Error(`HTTP ${response.status}`);
         }
 
         const data = await response.json();
         return data || [];
     } catch (error) {
-        console.error("Erro ao realizar busca de currículo via BFF:", error);
-        // Fallback básico de busca textual direta no Supabase no cliente caso o BFF falhe
+        // Fallback: busca textual direta no Supabase (RPC criada pela migration 20260623)
         try {
-            console.log("⚠️ Iniciando fallback de busca direta no cliente...");
             const { data, error: rpcError } = await supabase.rpc('search_curriculum_rag', {
                 query_text: queryText,
                 match_threshold: matchThreshold,
@@ -120,10 +119,12 @@ export const searchCurriculum = async (
                 filter_ano: filters?.ano || null,
                 filter_periodo: filters?.periodo || null
             });
-            if (rpcError) throw rpcError;
+            if (rpcError) {
+                console.warn('[searchService] Fallback RPC também falhou — sem currículo no contexto.');
+                return [];
+            }
             return data || [];
-        } catch (fallbackError) {
-            console.error("Erro fatal no fallback de busca direta:", fallbackError);
+        } catch {
             return [];
         }
     }
