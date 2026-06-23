@@ -10,20 +10,21 @@ const getErrorMessage = (error: unknown): string =>
 
 const getActiveAuthUser = async (): Promise<{ id: string; email?: string } | null> => {
     try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user?.id) {
-            return {
-                id: session.user.id,
-                email: session.user.email || undefined
-            };
+        // Try to get and refresh session proactively before any DB query
+        const { data: { session }, error: refreshErr } = await supabase.auth.refreshSession();
+        if (!refreshErr && session?.user?.id) {
+            return { id: session.user.id, email: session.user.email || undefined };
+        }
+
+        // Fallback: read stored session (may have stale JWT but at least has the ID)
+        const { data: { session: storedSession } } = await supabase.auth.getSession();
+        if (storedSession?.user?.id) {
+            return { id: storedSession.user.id, email: storedSession.user.email || undefined };
         }
 
         const { data: { user } } = await supabase.auth.getUser();
         if (user?.id) {
-            return {
-                id: user.id,
-                email: user.email || undefined
-            };
+            return { id: user.id, email: user.email || undefined };
         }
     } catch (authErr) {
         console.warn("[userService] Optional auth user fetch failed:", authErr);
@@ -245,6 +246,16 @@ export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolea
 
     // Profile Not Found
     if (!profile) {
+        // Admin bypass: if session email is hardcoded admin, allow unconditionally
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const email = session?.user?.email;
+            if (email && isHardcodedAdmin(email)) {
+                console.warn(`[userService] Profile null para admin ${email} — liberando bypass.`);
+                return { allowed: true };
+            }
+        } catch { /* silent */ }
+
         console.warn(`User ${userId} not found in profiles. Blocking quota-protected action.`);
         return {
             allowed: false,
