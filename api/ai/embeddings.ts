@@ -1,112 +1,54 @@
-export const maxDuration = 60;
+export const maxDuration = 30;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import OpenAI from 'openai';
 
-// Inline logger — @profeplan/logger não é disponível no ambiente Vercel serverless
-const logger = {
-  info: (msg: string, meta?: unknown) => console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
-  error: (msg: string, meta?: unknown) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
-};
+const GEMINI_EMBED_URL =
+  'https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent';
 
-const VECTOR_DIM = 768;
+async function generateGeminiEmbedding(text: string): Promise<number[]> {
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
+  if (!apiKey) throw new Error('GEMINI_API_KEY não configurada no servidor.');
 
-const getAIClient = (): { client: OpenAI; model: string } | null => {
-  const deepseekKey = process.env.DEEPSEEK_API_KEY?.trim();
-  const openaiKey = process.env.OPENAI_API_KEY?.trim();
-
-  if (deepseekKey) {
-    return {
-      client: new OpenAI({
-        apiKey: deepseekKey,
-        baseURL: process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com',
-      }),
-      model: 'deepseek-chat',
-    };
-  }
-
-  if (openaiKey) {
-    return {
-      client: new OpenAI({ apiKey: openaiKey }),
-      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
-    };
-  }
-
-  return null;
-};
-
-/**
- * Gera embedding semântico de 768 dimensões usando DeepSeek Chat.
- * O DeepSeek não possui API nativa de embeddings, então usamos prompt engineering
- * para gerar um vetor semântico determinístico a partir do texto.
- */
-const generateEmbedding = async (client: OpenAI, model: string, text: string): Promise<number[]> => {
-  const systemPrompt = `You are a semantic embedding generator. Analyze the following text and output exactly 768 floating-point numbers between -1 and 1 that represent its semantic meaning. The vector should capture the topic, sentiment, key concepts, and domain of the text. Output ONLY a valid JSON array of 768 numbers, nothing else. No explanation, no markdown, just the array.`;
-
-  const response = await client.chat.completions.create({
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: text.slice(0, 8000) },
-    ],
-    temperature: 0.1,
-    max_tokens: 4096,
+  const response = await fetch(`${GEMINI_EMBED_URL}?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'models/text-embedding-004',
+      content: { parts: [{ text }] },
+    }),
   });
 
-  const raw = response.choices[0]?.message?.content?.trim() || '';
-
-  // Extract JSON array from response (handle possible markdown wrapping)
-  const jsonMatch = raw.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) {
-    throw new Error('DeepSeek did not return a valid embedding array');
+  if (!response.ok) {
+    const body = await response.text().catch(() => response.statusText);
+    throw new Error(`Gemini API ${response.status}: ${body}`);
   }
 
-  const vector = JSON.parse(jsonMatch[0]) as number[];
-
-  if (!Array.isArray(vector) || vector.length < VECTOR_DIM) {
-    // Pad or truncate to exactly 768
-    const padded = vector.slice(0, VECTOR_DIM);
-    while (padded.length < VECTOR_DIM) {
-      padded.push(0);
-    }
-    return padded;
+  const data = (await response.json()) as { embedding?: { values?: number[] } };
+  const values = data?.embedding?.values;
+  if (!values || values.length === 0) {
+    throw new Error('Gemini retornou embedding vazio');
   }
-
-  return vector.slice(0, VECTOR_DIM);
-};
+  return values;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  const { text } = (req.body || {}) as { text?: string };
+  if (!text || typeof text !== 'string' || !text.trim()) {
+    return res.status(400).json({ error: 'O parâmetro "text" é obrigatório.' });
   }
 
   try {
-    const { text } = (req.body || {}) as { text?: string };
-    if (!text || typeof text !== 'string') {
-      return res.status(400).json({ error: 'O parâmetro "text" é obrigatório e deve ser uma string.' });
-    }
-
-    const deepseek = getAIClient();
-    if (!deepseek) {
-      const errMsg = 'DEEPSEEK_API_KEY ou OPENAI_API_KEY não configurada no servidor.';
-      logger.error(`[API/Embeddings] ${errMsg}`);
-      return res.status(500).json({ error: errMsg });
-    }
-
-    const embedding = await generateEmbedding(deepseek.client, deepseek.model, text);
-
-    logger.info('[API/Embeddings] Embedding gerado via DeepSeek.', { length: text.length, dim: embedding.length });
+    const embedding = await generateGeminiEmbedding(text.slice(0, 10_000));
     return res.status(200).json({ embedding });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Erro interno';
-    logger.error(`[API/Embeddings] Falha na geração de embedding: ${message}`, error);
+    console.error('[API/Embeddings]', message);
     return res.status(500).json({ error: message });
   }
 }
