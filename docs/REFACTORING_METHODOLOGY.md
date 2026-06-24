@@ -178,7 +178,29 @@ Baseline atual (2026-06-24): `tsc` EXIT 0 · `vitest` 27/27 verdes · `vite buil
 
 ### Entradas
 
-#### [2026-06-24] userService.ts — Fase 1 (piloto), parcial
+#### [2026-06-24] userService.ts — Fase 1 (piloto) ✅ CONCLUÍDA
+
+- **Resultado final:** `userService.ts` (540 LOC) **eliminado**, decomposto em 4 módulos coesos +
+  fachada, com **0 consumidores alterados** e **comportamento idêntico** (41 testes verdes em todos os passos).
+
+| Módulo | LOC | Responsabilidade |
+|---|---|---|
+| `profile/profileRepository.ts` | 374 | leitura/gravação de perfil + sessão |
+| `admin/adminProfiles.ts` | 103 | ações administrativas |
+| `credits/quota.ts` | 89 | quota e dedução de crédito |
+| `referrals/referrals.ts` | 85 | indicações e recompensas |
+| `ProfileService.ts` (fachada) | 107 | API pública estável (re-exports) |
+
+- **Commits:** fc05dbf, 2e23452, 489cb17, 7be574f, 0bb8a7b, 44ffa34, 1621892.
+- **Lição confirmada:** o padrão "fachada + re-export" permite decompor um god file com
+  fan-in altíssimo sem tocar em nenhum dos ~40 consumidores. O `profileRepository` (374 LOC)
+  ainda é o maior pedaço e pode ser subdividido no futuro (ex.: separar a "criação de emergência"),
+  mas já está isolado e testado.
+- **Próximo god file (Fase 2):** `PdiDocumentService.ts` (1223 LOC) — mesmo protocolo.
+
+---
+
+#### [2026-06-24] userService.ts — Fase 1 (piloto), histórico parcial
 
 - **Hipótese:** o arquivo mistura 5 responsabilidades (auth/perfil/créditos/admin/referrals)
   que podem ser separadas sem mudar comportamento, mantendo `ProfileService` como fachada.

@@ -1,13 +1,14 @@
 /**
- * TESTES DE CARACTERIZAÇÃO — userService.ts
+ * TESTES DE CARACTERIZAÇÃO — perfil/créditos (via fachada ProfileService)
  * ------------------------------------------------------------------
- * Estes testes NÃO validam o comportamento "ideal". Eles FIXAM o
- * comportamento ATUAL do userService antes da refatoração, servindo
- * como rede de segurança (golden master). Se um destes testes quebrar
+ * Originalmente escritos contra userService.ts, hoje decomposto em
+ * profile/profileRepository, credits/quota, admin e referrals. Importam pela
+ * fachada ProfileService (API pública estável). FIXAM o comportamento ATUAL,
+ * servindo como rede de segurança (golden master). Se um destes testes quebrar
  * durante a refatoração, significa que o comportamento mudou — o que,
  * numa refatoração pura, é proibido.
  *
- * Cobre as funções que serão movidas para módulos coesos na Fase 1:
+ * Funções movidas para módulos coesos na Fase 1:
  *   - checkUsageQuota   → credits/quota
  *   - incrementUserUsage→ credits/quota
  *   - getUserProfile    → profile/profileRepository
