@@ -1,7 +1,7 @@
 import { supabase } from '../supabaseClient';
 import { UserProfile } from '../../types';
 import { isHardcodedAdmin } from '../../constants';
-import { getUserProfile } from '../userService';
+import { getUserProfile } from '../profile/profileRepository';
 
 /**
  * Módulo de créditos / quota.

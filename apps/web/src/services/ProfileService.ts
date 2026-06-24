@@ -82,7 +82,7 @@ export {
     updateUserProfile,
     isAdmin,
     hasFeaturePattern,
-} from './userService';
+} from './profile/profileRepository';
 
 // Créditos / quota extraídos para módulo coeso (refatoração Fase 1)
 export { checkUsageQuota, incrementUserUsage } from './credits/quota';

@@ -1,6 +1,12 @@
-import { supabase } from './supabaseClient';
-import { UserProfile } from '../types';
-import { isHardcodedAdmin } from '../constants';
+import { supabase } from '../supabaseClient';
+import { UserProfile } from '../../types';
+import { isHardcodedAdmin } from '../../constants';
+
+/**
+ * Repositório de perfil — leitura/gravação de profiles e helpers de sessão.
+ * Extraído de userService.ts (refatoração Fase 1 — ver docs/REFACTORING_METHODOLOGY.md).
+ * Comportamento idêntico ao original; coberto por userService.characterization.test.ts.
+ */
 
 // --- CONFIGURATION ---
 const IS_BETA_TESTING = false; // Set to TRUE for Play Store Beta (Free Gold for Testers)
@@ -224,13 +230,6 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
     }
 };
 
-// checkUsageQuota e incrementUserUsage foram extraídos para ./credits/quota.ts
-// (refatoração Fase 1). Reexportados pela fachada ProfileService.ts.
-
-// --- ADMIN FUNCTIONS ---
-// getAllUsers, updateUserProfileAdmin, addUserCredits e updateUserRole foram
-// extraídos para ./admin/adminProfiles.ts (refatoração Fase 1). Reexportados pela fachada.
-
 /**
  * Updates a user profile and deterministically links to a school via INEP code.
  * Follows the government unique ID logic (MASP for Teachers, INEP for Schools).
@@ -373,7 +372,3 @@ export const hasFeaturePattern = (userFeatures: string[] | null | undefined, req
     if (userFeatures.includes('all')) return true;
     return userFeatures.includes(requiredFeature);
 };
-
-// --- REFERRAL & REWARDS ---
-// registerPhone, addReferral e checkAndRewardReferrer foram extraídos para
-// ./referrals/referrals.ts (refatoração Fase 1). Reexportados pela fachada.
