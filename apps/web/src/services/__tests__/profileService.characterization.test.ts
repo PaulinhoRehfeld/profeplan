@@ -129,7 +129,7 @@ describe('checkUsageQuota (caracterização)', () => {
     expect(r.allowed).toBe(true);
   });
 
-  it('perfil null + SEM sessão → bloqueado com mensagem de sessão expirada', async () => {
+  it('perfil null + SEM sessão (nem no servidor) → bloqueado com "sessão expirou"', async () => {
     mocked.auth.getSession.mockResolvedValue(session(null));
     mocked.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
     mocked.from.mockReturnValue(createQuery({ data: null, error: null }));
@@ -137,6 +137,24 @@ describe('checkUsageQuota (caracterização)', () => {
     const r = await checkUsageQuota('u1');
     expect(r.allowed).toBe(false);
     expect(r.message).toContain('sessão expirou');
+  });
+
+  it('perfil null + getSession sem sessão mas getUser confirma → allowed', async () => {
+    mocked.auth.getSession.mockResolvedValue(session(null));
+    mocked.auth.getUser.mockResolvedValue({ data: { user: { id: 'u1', email: 'teacher@test.com' } }, error: null });
+    mocked.from.mockReturnValue(createQuery({ data: null, error: null }));
+
+    const r = await checkUsageQuota('u1');
+    expect(r.allowed).toBe(true);
+  });
+
+  it('perfil null + falha de conexão (getSession lança) → bloqueado com "Falha de conexão"', async () => {
+    mocked.auth.getSession.mockRejectedValue(new Error('Failed to fetch'));
+    mocked.from.mockReturnValue(createQuery({ data: null, error: null }));
+
+    const r = await checkUsageQuota('u1');
+    expect(r.allowed).toBe(false);
+    expect(r.message).toContain('Falha de conexão');
   });
 });
 

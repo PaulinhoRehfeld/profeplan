@@ -308,7 +308,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v4.3.5</p>
+          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v4.3.6</p>
         </div>
       </div>
     </div>

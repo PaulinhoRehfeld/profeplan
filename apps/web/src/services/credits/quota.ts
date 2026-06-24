@@ -14,26 +14,51 @@ export const checkUsageQuota = async (userId: string, preloadedProfile?: UserPro
 
     // Profile Not Found
     if (!profile) {
+        // networkError distingue "blip de conexão" (retryável) de "sessão realmente
+        // morta" (relogar). getSession() lê do storage (sem rede); se a busca do perfil
+        // falhou por conectividade, a sessão local ainda deve estar presente.
+        let networkError = false;
         try {
             const { data: { session } } = await supabase.auth.getSession();
             const email = session?.user?.email;
 
             // Admin bypass
             if (email && isHardcodedAdmin(email)) {
-                console.warn(`[userService] Profile null para admin ${email} — liberando bypass.`);
+                console.warn(`[quota] Profile null para admin ${email} — liberando bypass.`);
                 return { allowed: true };
             }
 
-            // Session exists but profile inaccessible (expired JWT / RLS block / DB issue).
-            // Allow the action rather than blocking a legitimately authenticated user.
-            // Credit deduction still runs after the action via incrementUserUsage.
+            // Sessão presente localmente → permite. O BFF revalida o JWT no servidor;
+            // a dedução de crédito ocorre depois via incrementUserUsage.
             if (session?.user?.id) {
-                console.warn(`[userService] Profile null mas sessão ativa (${session.user.id}) — permitindo. Possível JWT expirado.`);
+                console.warn(`[quota] Profile null mas sessão ativa (${session.user.id}) — permitindo.`);
                 return { allowed: true };
             }
-        } catch { /* silent */ }
 
-        // Truly no session — block
+            // getSession() não trouxe sessão: confirma no servidor antes de declarar morta.
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user?.id) {
+                    console.warn(`[quota] Profile null mas getUser confirma sessão (${user.id}) — permitindo.`);
+                    return { allowed: true };
+                }
+            } catch {
+                networkError = true;
+            }
+        } catch {
+            // getSession lançou — tratamos como problema de conectividade, não sessão morta.
+            networkError = true;
+        }
+
+        if (networkError) {
+            console.warn(`[quota] Falha de conexão ao validar sessão de ${userId}.`);
+            return {
+                allowed: false,
+                message: 'Falha de conexão com o servidor. Verifique sua internet e tente novamente em instantes.'
+            };
+        }
+
+        // Sem sessão local nem no servidor — sessão realmente expirada.
         console.warn(`User ${userId} not found in profiles and no active session. Blocking.`);
         return {
             allowed: false,
