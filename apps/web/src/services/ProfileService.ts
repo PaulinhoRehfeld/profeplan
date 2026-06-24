@@ -84,15 +84,15 @@ export {
     updateUserProfileAdmin,
     isAdmin,
     hasFeaturePattern,
-    registerPhone,
-    addReferral,
-    checkAndRewardReferrer,
     addUserCredits,
     updateUserRole
 } from './userService';
 
 // Créditos / quota extraídos para módulo coeso (refatoração Fase 1)
 export { checkUsageQuota, incrementUserUsage } from './credits/quota';
+
+// Indicações / recompensas extraídas para módulo coeso (refatoração Fase 1)
+export { registerPhone, addReferral, checkAndRewardReferrer } from './referrals/referrals';
 
 /**
  * Verifica se o Perfil Profissional está completo o suficiente
