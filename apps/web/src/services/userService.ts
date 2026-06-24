@@ -344,6 +344,9 @@ export const updateUserProfile = async (
             email: profileData.institutionalEmail?.trim().toLowerCase(),
             masp: profileData.masp?.trim(),
             city: profileData.city?.trim(),
+            // Nome da escola (texto livre). O vínculo formal por INEP/school_id é
+            // tratado via teacher_schools; aqui persistimos apenas o nome exibido.
+            school_name: (profileData.institution as string | undefined)?.trim(),
             // Pedagogical settings
             favorite_methodology: profileData.favoriteMethodology,
             teaching_style: profileData.teachingStyle,
@@ -368,13 +371,29 @@ export const updateUserProfile = async (
             // The teacher_schools table is the source of truth for multi-school support
         }
 
-        // 3. Update the profiles table
-        console.log("[userService] Sending update to Supabase for user:", userId, updates);
+        // 3. Resolve o id canônico do auth.uid(). O RLS de UPDATE exige auth.uid() = id;
+        //    se o userId passado divergir (Ghost ID), o update afeta 0 linhas SEM erro.
+        let targetId = userId;
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.id) {
+                if (user.id !== userId) {
+                    console.warn(`[userService] updateUserProfile: id divergente (param=${userId} auth=${user.id}). Usando auth id.`);
+                }
+                targetId = user.id;
+            }
+        } catch { /* segue com o userId recebido */ }
 
-        const { error: updateError, count } = await supabase
+        // 4. Update com .select() para detectar 0 linhas afetadas. RLS bloqueado ou linha
+        //    inexistente retornam sucesso com 0 linhas — antes o app reportava "salvo"
+        //    sem ter salvado nada.
+        console.log("[userService] Sending update to Supabase for user:", targetId, updates);
+
+        const { data: updatedRows, error: updateError } = await supabase
             .from('profiles')
             .update(updates)
-            .eq('id', userId);
+            .eq('id', targetId)
+            .select('id');
 
         if (updateError) {
             console.error("[userService] Supabase Update Error:", updateError);
@@ -388,7 +407,27 @@ export const updateUserProfile = async (
             return { success: false, error: updateError.message };
         }
 
-        console.log("[userService] Update successful. Rows affected:", count);
+        // 5. 0 linhas afetadas: a linha pode não existir → tenta upsert (criar/atualizar).
+        if (!updatedRows || updatedRows.length === 0) {
+            console.warn('[userService] Update afetou 0 linhas — tentando upsert de recuperação.');
+            const { data: upserted, error: upsertErr } = await supabase
+                .from('profiles')
+                .upsert({ id: targetId, ...updates }, { onConflict: 'id' })
+                .select('id')
+                .maybeSingle();
+
+            if (upsertErr || !upserted) {
+                console.error('[userService] Upsert de recuperação falhou:', upsertErr);
+                return {
+                    success: false,
+                    error: upsertErr?.message || 'As alterações não foram salvas. Verifique se sua sessão está ativa e tente novamente.'
+                };
+            }
+            console.log('[userService] ✅ Perfil criado/atualizado via upsert.');
+            return { success: true, message };
+        }
+
+        console.log("[userService] ✅ Update successful. Rows affected:", updatedRows.length);
         return { success: true, message };
     } catch (err: unknown) {
         console.error("[userService] Fatal error in updateUserProfile:", err);
