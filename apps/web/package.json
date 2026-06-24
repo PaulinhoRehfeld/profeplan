@@ -28,7 +28,6 @@
     "@stripe/stripe-js": "^8.6.1",
     "@supabase/supabase-js": "^2.45.4",
     "@tailwindcss/vite": "^4.1.18",
-    "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
     "docx": "9.1.0",
     "dotenv": "^17.2.3",
@@ -54,6 +53,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
+    "@types/node": "^22.14.0",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

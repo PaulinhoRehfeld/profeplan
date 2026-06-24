@@ -71,9 +71,9 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
 
             // If no explicit ID, try session
             if (!targetUserId) {
-                const { data: session } = await supabase.auth.getSession();
-                if (session.session?.user) {
-                    targetUserId = session.session.user.id;
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.user) {
+                    targetUserId = session.user.id;
                 }
             }
 

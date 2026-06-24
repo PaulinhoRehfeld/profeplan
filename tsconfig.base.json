@@ -16,9 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@profeplan/types": ["packages/types/src"],
-      "@profeplan/ui": ["packages/ui/src"],
       "@profeplan/auth": ["packages/auth/src"],
-      "@profeplan/config": ["packages/config/src"],
       "@profeplan/logger": ["packages/logger/src"],
       "@profeplan/db": ["packages/db/src"],
       "@profeplan/ai": ["packages/ai/src"]

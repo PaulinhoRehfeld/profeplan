@@ -9,26 +9,34 @@
         "packages/*"
     ],
     "scripts": {
-        "dev": "npm run dev --workspace=apps/web",
-        "build": "npm run build --workspaces --if-present",
-        "lint": "npm run lint --workspaces --if-present",
-        "test": "npm run test --workspaces --if-present",
-        "typecheck": "npm run typecheck --workspaces --if-present",
+        "dev": "pnpm --filter profeplan-engenharia-pedagogica-v4.0 dev",
+        "build": "pnpm -r build",
+        "lint": "pnpm -r lint",
+        "test": "pnpm -r test",
+        "typecheck": "pnpm -r typecheck",
         "prettier": "prettier --write ."
     },
     "engines": {
         "node": "22.x"
     },
-    "dependencies": {
+    "devDependencies": {
+        "@vercel/node": "^5.6.10",
         "@supabase/supabase-js": "^2.45.4",
         "csv-parser": "^3.2.0",
         "dotenv": "^17.3.1",
-        "openai": "^4.77.0"
-    },
-    "devDependencies": {
-        "@vercel/node": "^5.6.10",
+        "openai": "^4.77.0",
         "prettier": "^3.0.0",
-        "typescript": "~5.8.3"
+        "typescript": "~5.8.3",
+        "eslint": "^8.57.0",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "eslint-plugin-react": "^7.34.0",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-prettier": "^5.1.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-import-resolver-typescript": "^3.6.0"
     },
     "optionalDependencies": {
         "@tailwindcss/oxide-linux-x64-gnu": "4.1.18",

@@ -39,6 +39,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
     // CENTRALIZED AUTH LOGIC
     useEffect(() => {
         console.log('[Auth] Initializing Listener...');
+        let cancelled = false;
 
         const handleLogin = async (authSession: any) => {
             let profile: UserProfile | null = null;
@@ -125,25 +126,25 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                     role: roleMapping as any,
                     accessLevel: (profile?.tier as any) || 'BASICO',
                     isLoggedIn: true,
-                    // B-3: Derive from actual auth data instead of hardcoding true.
-                    // We fall back to true to preserve behavior for legacy sessions without email verification.
-                    isEmailConfirmed: !!(authSession.user?.email_confirmed_at || authSession.user?.confirmed_at || true)
+                    isEmailConfirmed: !!(authSession.user?.email_confirmed_at || authSession.user?.confirmed_at)
                 };
 
                 // 6. STABLE STATE UPDATE
-                // We only update if something changed to avoid re-render loops
-                setSession(prev => {
-                    const isIdentical = prev?.id === newSession.id && prev?.role === newSession.role && prev?.accessLevel === newSession.accessLevel;
-                    if (isIdentical) {
-                        console.log('[Auth] Session stable. Skipping update.');
-                        return prev;
-                    }
-                    console.log('[Auth] Updating session state.');
-                    return newSession;
-                });
+                // Guard cancelled para evitar atualizar estado de componente desmontado
+                if (!cancelled) {
+                    setSession(prev => {
+                        const isIdentical = prev?.id === newSession.id && prev?.role === newSession.role && prev?.accessLevel === newSession.accessLevel;
+                        if (isIdentical) {
+                            console.log('[Auth] Session stable. Skipping update.');
+                            return prev;
+                        }
+                        console.log('[Auth] Updating session state.');
+                        return newSession;
+                    });
 
-                if (profile) {
-                    setUserProfile(profile); // Simplify: React handles identical values well for simple objects
+                    if (profile) {
+                        setUserProfile(profile);
+                    }
                 }
 
                 // 7. PERSISTENCE (Selective - No more clear())
@@ -157,10 +158,10 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                 console.log('[Auth] ✅ Login sequence finished.');
             } catch (err: any) {
                 console.error('[Auth] 🚨 Fatal error in handleLogin:', err?.message || err);
-                setUserProfile(null);
+                if (!cancelled) setUserProfile(null);
             } finally {
                 console.log('[Auth] 🏁 handleLogin finalized.');
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         };
 
@@ -230,6 +231,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
         }
 
         return () => {
+            cancelled = true;
             subscription.unsubscribe();
         };
     }, []);

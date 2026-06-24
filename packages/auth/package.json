@@ -15,7 +15,7 @@
   "dependencies": {
     "@profeplan/db": "workspace:*",
     "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.106.2"
+    "@supabase/supabase-js": "^2.45.4"
   },
   "peerDependencies": {
     "next": ">=16.0.0",

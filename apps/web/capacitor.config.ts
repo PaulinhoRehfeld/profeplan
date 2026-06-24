@@ -5,13 +5,12 @@ const config: CapacitorConfig = {
   appName: 'PROFEPLAN',
   webDir: 'dist',
   server: {
-    cleartext: true,
     androidScheme: 'https'
   },
   android: {
-    allowMixedContent: true,
+    allowMixedContent: false,
     captureInput: true,
-    webContentsDebuggingEnabled: true
+    webContentsDebuggingEnabled: false
   }
 };
 

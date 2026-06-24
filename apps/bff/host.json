@@ -1,0 +1,33 @@
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.*, 5.0.0)"
+  },
+  "extensions": {
+    "http": {
+      "routePrefix": "api",
+      "cors": {
+        "allowedOrigins": [
+          "https://profeplan.com.br",
+          "https://www.profeplan.com.br",
+          "http://localhost:5173",
+          "http://localhost:3000"
+        ],
+        "allowedHeaders": [
+          "Authorization",
+          "Content-Type"
+        ],
+        "allowCredentials": false
+      }
+    }
+  }
+}

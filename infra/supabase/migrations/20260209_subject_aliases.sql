@@ -1,28 +1,28 @@
 -- ================================================
--- PHASE 1: Normalização de Disciplinas
+-- PHASE 1: Normalização de Disciplinas (SUPLEMENTO)
 -- ================================================
--- Criação da tabela subject_aliases para normalização escalável
--- Substitui os 14 IFs hardcoded no AiPlanningService.ts
+-- NOTA: A migration 20260209_create_subject_aliases.sql cria a tabela e popula
+-- com os dados principais. Este arquivo adiciona variantes extras com ON CONFLICT DO NOTHING,
+-- portanto é seguro executar ambos em qualquer ordem.
+-- Bugs de espaço em branco das versões originais foram corrigidos aqui.
 
 CREATE TABLE IF NOT EXISTS subject_aliases (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     input_variant TEXT NOT NULL UNIQUE,
     normalized_name TEXT NOT NULL,
-    category TEXT, -- Ex: "Linguagens", "Ciências Humanas", "Ciências da Natureza"
+    category TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Índice para busca rápida por variante
-CREATE INDEX IF NOT EXISTS idx_subject_aliases_input 
+CREATE INDEX IF NOT EXISTS idx_subject_aliases_input
 ON subject_aliases(LOWER(input_variant));
 
--- Popular com variantes comuns
+-- Variantes adicionais (ON CONFLICT DO NOTHING garante idempotência)
 INSERT INTO subject_aliases (input_variant, normalized_name, category) VALUES
--- Língua Portuguesa
-('portugues', 'Língua Portuguesa', 'Linguagens'),
-(' português', 'Língua Portuguesa', 'Linguagens'),
-('lingua portuguesa', 'Língua Portuguesa', 'Linguagens'),
+-- Língua Portuguesa (variante com espaço: corrigida de ' português')
 ('português', 'Língua Portuguesa', 'Linguagens'),
+('portugues', 'Língua Portuguesa', 'Linguagens'),
+('lingua portuguesa', 'Língua Portuguesa', 'Linguagens'),
 ('Língua Portuguesa', 'Língua Portuguesa', 'Linguagens'),
 
 -- História
@@ -72,11 +72,11 @@ INSERT INTO subject_aliases (input_variant, normalized_name, category) VALUES
 ('arte', 'Artes', 'Linguagens'),
 ('Artes', 'Artes', 'Linguagens'),
 
--- Educação Física
+-- Educação Física (variante com espaço: corrigida de ' ed fisica')
+('ed fisica', 'Educação Física', 'Linguagens'),
 ('educacao fisica', 'Educação Física', 'Linguagens'),
 ('educação física', 'Educação Física', 'Linguagens'),
 ('Educação Física', 'Educação Física', 'Linguagens'),
-(' ed fisica', 'Educação Física', 'Linguagens'),
 
 -- Redação
 ('redacao', 'Redação', 'Linguagens'),
@@ -84,12 +84,3 @@ INSERT INTO subject_aliases (input_variant, normalized_name, category) VALUES
 ('Redação', 'Redação', 'Linguagens')
 
 ON CONFLICT (input_variant) DO NOTHING;
-
--- Verificar inserção
-SELECT 
-    category,
-    COUNT(*) as total_variants,
-    STRING_AGG(DISTINCT normalized_name, ', ') as subjects
-FROM subject_aliases
-GROUP BY category
-ORDER BY category;

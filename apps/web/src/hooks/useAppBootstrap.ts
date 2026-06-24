@@ -69,12 +69,15 @@ export function useAppBootstrap({
   // 2. SAFETY TIMEOUT & OBSERVABILITY
   useEffect(() => {
     if (loading) {
+      let cancelled = false;
       const timer = setTimeout(async () => {
+        if (cancelled) return;
         console.warn("[AppBootstrap] 🚨 Loader Timeout reached (10s). Running auto-diagnostics...");
         try {
           const results = await runDiagnostics();
+          if (cancelled) return;
           console.table(results);
-          
+
           // Observability: Log to Supabase (fire and forget)
           if (session?.user?.id || session?.userId) {
             const { error } = await supabase.from('system_logs').insert({
@@ -89,14 +92,17 @@ export function useAppBootstrap({
               console.log('Log sent to observability.');
             }
           }
-          
-          setShowEmergencyReset(true);
+
+          if (!cancelled) setShowEmergencyReset(true);
         } catch (err) {
           console.error("[AppBootstrap] Auto-diagnostic failed:", err);
-          setShowEmergencyReset(true);
+          if (!cancelled) setShowEmergencyReset(true);
         }
       }, 10000);
-      return () => clearTimeout(timer);
+      return () => {
+        cancelled = true;
+        clearTimeout(timer);
+      };
     }
   }, [loading, session]);
 
