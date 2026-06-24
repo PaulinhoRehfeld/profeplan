@@ -178,6 +178,26 @@ Baseline atual (2026-06-24): `tsc` EXIT 0 · `vitest` 27/27 verdes · `vite buil
 
 ### Entradas
 
+#### [2026-06-24] PdiDocumentService.ts — Fase 2 (em andamento)
+
+- **Hipótese:** o god file (1223 LOC) reúne CRUD de PDI, timeline/records, blocos,
+  export DOCX e IA — separáveis sem mudar comportamento.
+- **Estrutura mapeada:** objeto `PdiDocumentService` (~30 métodos, usa `this`),
+  12 funções puras de render DOCX (`createBlockNSection`), e `generateBlock9Adaptation` (IA, standalone).
+- **Cobertura antes:** 0% → **depois:** 6 testes de caracterização (logEvent, logEventForClass, getStudentTimeline).
+- **Passos concluídos:**
+  - `test(pdi): caracterização ...` (83b39f3) — rede de segurança dos métodos de escrita.
+  - `refactor(pdi): extrai helpers de export DOCX para pdiDocxSections` (c61015e) —
+    **1223 → 893 LOC** no god file; novo `pdiDocxSections.ts` (355 LOC).
+- **Verificação:** tsc EXIT 0 · vitest 47/47 · build OK.
+- **Pendente (próxima sessão):** decompor os métodos do objeto (CRUD documento, records,
+  blocos, IA) em módulos coesos. É o passo mais delicado — os métodos usam `this`
+  (ex.: logEventForClass → this.logEvent); a extração exige converter para funções
+  standalone ou compor sub-objetos sem quebrar o binding. Caracterização atual cobre
+  os métodos de escrita centrais; ampliar antes de mover os demais.
+
+---
+
 #### [2026-06-24] userService.ts — Fase 1 (piloto) ✅ CONCLUÍDA
 
 - **Resultado final:** `userService.ts` (540 LOC) **eliminado**, decomposto em 4 módulos coesos +
