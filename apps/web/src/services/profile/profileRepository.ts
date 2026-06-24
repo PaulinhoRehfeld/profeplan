@@ -57,6 +57,55 @@ export const getProfileByEmail = async (email: string) => {
 
 export const getUserProfile = async (userId: string, email?: string): Promise<UserProfile | null> => {
     try {
+        // 0. Preferential path: SECURITY DEFINER RPC bypasses RLS and resolves Ghost ID
+        //    server-side. Avoids the entire class of "profile not found" errors caused by
+        //    RLS USING (auth.uid() = id) blocking rows whose id ≠ auth.uid() (Ghost ID).
+        const { data: rpcProfile, error: rpcError } = await supabase.rpc('get_my_profile');
+        const rpcUnavailable =
+            rpcError?.code === 'PGRST202' ||
+            /function.*get_my_profile.*does not exist/i.test(rpcError?.message || '') ||
+            /could not find the function/i.test(rpcError?.message || '');
+
+        if (!rpcError && rpcProfile) {
+            // RPC succeeded — skip direct table queries and go straight to school join
+            const data = rpcProfile as any;
+            let schoolName: string | undefined;
+            let inepCode: string | undefined;
+            if (data?.school_id) {
+                try {
+                    const { data: schoolData } = await supabase
+                        .from('schools')
+                        .select('name, inep_code')
+                        .eq('id', (data.school_id as string).trim())
+                        .maybeSingle();
+                    if (schoolData) {
+                        schoolName = schoolData.name;
+                        inepCode = schoolData.inep_code;
+                    }
+                } catch { /* optional */ }
+            }
+            const profileData: UserProfile = {
+                ...data,
+                full_name: data.full_name || data.userName || '',
+                school_name: schoolName || data.school_name,
+                inep_code: inepCode,
+            };
+            console.log('[userService] Profile Loaded (via RPC):', profileData.full_name);
+            if (IS_BETA_TESTING) {
+                return { ...profileData, tier: 'GOLD', is_unlimited: true, credits: 9999 };
+            }
+            return profileData;
+        }
+
+        if (rpcError && !rpcUnavailable) {
+            // RPC exists but errored (auth issue, network, etc.) — log and fall through
+            console.warn('[userService] get_my_profile RPC error (falling through):', rpcError.message);
+        }
+
+        if (rpcUnavailable) {
+            console.warn('[userService] get_my_profile RPC not deployed — run 20260624_get_my_profile_rpc.sql in Supabase.');
+        }
+
         const activeAuthUser = await getActiveAuthUser();
         const lookupUserId = activeAuthUser?.id || userId;
         let activeEmail = email || activeAuthUser?.email;
