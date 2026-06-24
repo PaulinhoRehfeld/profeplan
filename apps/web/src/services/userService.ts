@@ -241,8 +241,8 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
     }
 };
 
-export const checkUsageQuota = async (userId: string): Promise<{ allowed: boolean; message?: string }> => {
-    const profile = await getUserProfile(userId);
+export const checkUsageQuota = async (userId: string, preloadedProfile?: UserProfile | null): Promise<{ allowed: boolean; message?: string }> => {
+    const profile = preloadedProfile ?? await getUserProfile(userId);
 
     // Profile Not Found
     if (!profile) {

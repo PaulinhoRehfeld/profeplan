@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useProfeplanAuth } from '../../hooks/useProfeplanAuth';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/ai/AiPlanningService';
 import { searchCurriculum, getDeterministicCurriculum, searchPnldBookContent, searchHierarchicalRag } from '../../services/searchService';
@@ -59,6 +60,7 @@ const PlanningManager: React.FC<PlanningManagerProps> = ({
     setActiveMode,
 }) => {
     // --- Global State ---
+    const { userProfile } = useProfeplanAuth();
     const { termPlans, refreshTermPlans } = useGlobalPlanning();
     const [localSettings, setLocalSettings] = useState<any>(appSettings || {});
 
@@ -569,7 +571,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                     title,
                     content: response,
                     createdAt: new Date().toISOString()
-                }, folder)
+                }, folder, userProfile)
                     .then(() => {
                         console.log('✅ Conteúdo salvo no Drive com sucesso!');
                         showToast('success', 'Conteúdo salvo em “Meus Arquivos”.');
@@ -662,7 +664,7 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
                     title: title,
                     content: content,
                     createdAt: new Date().toISOString()
-                }, folder)
+                }, folder, userProfile)
             );
 
             showToast('success', 'Plano salvo em “Meus Arquivos”.');

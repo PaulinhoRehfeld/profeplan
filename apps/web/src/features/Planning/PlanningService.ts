@@ -1,5 +1,6 @@
 import { supabase } from '../../services/supabaseClient';
 import { checkUsageQuota, incrementUserUsage } from '../../services/ProfileService';
+import type { UserProfile } from '../../types';
 import { PdiDocumentService } from '../../services/pdi/PdiDocumentService'; // Updated from PdiService
 
 // --- FOLDER STRUCTURE ENUM ---
@@ -37,10 +38,10 @@ export interface GeneratedPlan {
  * Salva o plano e consome 1 crédito.
  * Lógica: Check Quota -> Save Local -> Sync Cloud (DB) -> Deduct Credit
  */
-export const savePlan = async (userId: string, plan: Omit<GeneratedPlan, 'synced' | 'id' | 'folder'>, targetFolder: PlanFolder) => {
+export const savePlan = async (userId: string, plan: Omit<GeneratedPlan, 'synced' | 'id' | 'folder'>, targetFolder: PlanFolder, preloadedProfile?: UserProfile | null) => {
 
     // 1. Check Credit Balance (Gatekeeper)
-    const quota = await checkUsageQuota(userId);
+    const quota = await checkUsageQuota(userId, preloadedProfile);
     if (!quota.allowed) {
         throw new Error(quota.message || "Saldo insuficiente.");
     }
