@@ -10,21 +10,24 @@ const getErrorMessage = (error: unknown): string =>
 
 const getActiveAuthUser = async (): Promise<{ id: string; email?: string } | null> => {
     try {
-        // Try to get and refresh session proactively before any DB query
+        // 1. Try to refresh — handles expired access token when refresh token is still valid
         const { data: { session }, error: refreshErr } = await supabase.auth.refreshSession();
         if (!refreshErr && session?.user?.id) {
             return { id: session.user.id, email: session.user.email || undefined };
         }
 
-        // Fallback: read stored session (may have stale JWT but at least has the ID)
-        const { data: { session: storedSession } } = await supabase.auth.getSession();
-        if (storedSession?.user?.id) {
-            return { id: storedSession.user.id, email: storedSession.user.email || undefined };
+        // 2. Server-side validation — confirms the current JWT is accepted by Supabase Auth
+        // Must come BEFORE getSession() which returns local storage without any validation
+        const { data: { user }, error: userErr } = await supabase.auth.getUser();
+        if (!userErr && user?.id) {
+            return { id: user.id, email: user.email || undefined };
         }
 
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user?.id) {
-            return { id: user.id, email: user.email || undefined };
+        // 3. Last resort: local session (JWT may be expired — RLS queries will likely fail)
+        const { data: { session: storedSession } } = await supabase.auth.getSession();
+        if (storedSession?.user?.id) {
+            console.warn('[userService] Using stale local session — DB queries may fail (JWT expired)');
+            return { id: storedSession.user.id, email: storedSession.user.email || undefined };
         }
     } catch (authErr) {
         console.warn("[userService] Optional auth user fetch failed:", authErr);
@@ -246,20 +249,30 @@ export const checkUsageQuota = async (userId: string, preloadedProfile?: UserPro
 
     // Profile Not Found
     if (!profile) {
-        // Admin bypass: if session email is hardcoded admin, allow unconditionally
         try {
             const { data: { session } } = await supabase.auth.getSession();
             const email = session?.user?.email;
+
+            // Admin bypass
             if (email && isHardcodedAdmin(email)) {
                 console.warn(`[userService] Profile null para admin ${email} — liberando bypass.`);
                 return { allowed: true };
             }
+
+            // Session exists but profile inaccessible (expired JWT / RLS block / DB issue).
+            // Allow the action rather than blocking a legitimately authenticated user.
+            // Credit deduction still runs after the action via incrementUserUsage.
+            if (session?.user?.id) {
+                console.warn(`[userService] Profile null mas sessão ativa (${session.user.id}) — permitindo. Possível JWT expirado.`);
+                return { allowed: true };
+            }
         } catch { /* silent */ }
 
-        console.warn(`User ${userId} not found in profiles. Blocking quota-protected action.`);
+        // Truly no session — block
+        console.warn(`User ${userId} not found in profiles and no active session. Blocking.`);
         return {
             allowed: false,
-            message: 'Não foi possível carregar seu perfil para validar os créditos. Tente novamente em instantes.'
+            message: 'Sua sessão expirou. Recarregue a página e faça login novamente.'
         };
     }
 
