@@ -25,25 +25,38 @@ BEGIN
     RETURN NULL;
   END IF;
 
+  -- Resolve o email do usuário autenticado (necessário para o fallback Ghost ID)
+  SELECT email INTO v_email FROM auth.users WHERE id = v_uid;
+
   -- 1. Lookup canônico: id = auth.uid()
   SELECT * INTO v_row FROM public.profiles WHERE id = v_uid LIMIT 1;
-  IF FOUND THEN
+
+  -- Se encontrou por id mas credits é NULL, pode ser um perfil vazio criado pelo
+  -- trigger de novo usuário. Tenta encontrar um perfil mais completo pelo email.
+  IF FOUND AND v_row.credits IS NOT NULL THEN
     RETURN v_row;
   END IF;
 
-  -- 2. Ghost ID fallback: resolve por email
-  SELECT email INTO v_email FROM auth.users WHERE id = v_uid;
-
+  -- 2. Ghost ID / perfil enriquecido: busca pelo email, preferindo o com mais créditos
   IF v_email IS NOT NULL THEN
-    SELECT * INTO v_row
-    FROM public.profiles
-    WHERE lower(email) = lower(v_email)
-    ORDER BY created_at DESC
-    LIMIT 1;
+    DECLARE v_rich public.profiles;
+    BEGIN
+      SELECT * INTO v_rich
+      FROM public.profiles
+      WHERE lower(email) = lower(v_email)
+        AND credits IS NOT NULL
+      ORDER BY credits DESC, created_at DESC
+      LIMIT 1;
 
-    IF FOUND THEN
-      RETURN v_row;
-    END IF;
+      IF FOUND THEN
+        RETURN v_rich;
+      END IF;
+    END;
+  END IF;
+
+  -- 3. Último recurso: retorna o perfil por id mesmo com credits NULL
+  IF FOUND THEN
+    RETURN v_row;
   END IF;
 
   RETURN NULL;

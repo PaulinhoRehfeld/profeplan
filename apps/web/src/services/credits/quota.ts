@@ -72,6 +72,14 @@ export const checkUsageQuota = async (userId: string, preloadedProfile?: UserPro
     }
 
     // SILVER TIER (Credit Check)
+    // credits === null means the profile was found but credit data is incomplete
+    // (e.g. duplicate row from Ghost ID migration with no credits initialized).
+    // Treat as allowed — the real profile row likely has credits; blocking here is a false negative.
+    if (profile.credits === null || profile.credits === undefined) {
+        console.warn(`[quota] credits is null for profile ${profile.id} — allowing (ghost-id migration state).`);
+        return { allowed: true };
+    }
+
     if (profile.credits <= 0) {
         return {
             allowed: false,
