@@ -36,7 +36,7 @@ import {
   incrementUserUsage,
   getUserProfile,
   updateUserProfile,
-} from '../userService';
+} from '../ProfileService';
 
 const mocked = supabase as unknown as {
   from: ReturnType<typeof vi.fn>;
