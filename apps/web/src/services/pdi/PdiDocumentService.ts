@@ -153,15 +153,21 @@ export const PdiDocumentService = {
         content: PdiRecordContent,
         pdiBlock?: string,
         schoolIdOverride?: string | null,
-        classIdOverride?: string | null
+        classIdOverride?: string | null,
+        teacherIdOverride?: string | null
     ): Promise<PdiRecord | null> {
         try {
-            const profile = await ProfileService.getProfile();
+            // Só busca o profile se faltar algum override — evita N getProfile()
+            // quando chamado em lote por logEventForClass (1 turma = N alunos).
+            const profile = (schoolIdOverride && teacherIdOverride)
+                ? null
+                : await ProfileService.getProfile();
             let schoolId =
                 schoolIdOverride ??
                 (profile as any)?.active_school_id ??
                 (profile as any)?.school_id ??
                 null;
+            const teacherId = teacherIdOverride ?? (profile as any)?.id ?? null;
 
             if (!schoolId) {
                 // Fallback: inferir a escola apenas via `classes`,
@@ -194,7 +200,7 @@ export const PdiDocumentService = {
                 console.error('[PdiDocumentService] Missing school_id for pdi_records insert. Ensure active_school_id/selectedClass.school_id (via classIdOverride) is set.', {
                     studentId,
                     type,
-                    teacherId: (profile as any)?.id ?? null
+                    teacherId
                 });
                 return null;
             }
@@ -205,7 +211,7 @@ export const PdiDocumentService = {
                     student_id: studentId,
                     // Aqui `schoolId` já foi validado/resolvido acima.
                     school_id: schoolId,
-                    teacher_id: (profile as any)?.id ?? null,
+                    teacher_id: teacherId,
                     type,
                     title,
                     content,
@@ -261,6 +267,26 @@ export const PdiDocumentService = {
         pdiBlock?: string
     ): Promise<(PdiRecord | null)[]> {
         try {
+            // Resolve school_id e teacher_id UMA única vez para a turma inteira.
+            // Antes, cada aluno disparava seu próprio getProfile() + query em `classes`
+            // (N alunos = 2N round-trips), causando lentidão e, quando o profile não
+            // tinha school_id, N erros "Missing school_id".
+            const profile = await ProfileService.getProfile();
+            const teacherId = (profile as any)?.id ?? null;
+            let schoolId =
+                (profile as any)?.active_school_id ??
+                (profile as any)?.school_id ??
+                null;
+
+            if (!schoolId) {
+                const { data: clsRow } = await supabase
+                    .from('classes')
+                    .select('school_id')
+                    .eq('id', classId)
+                    .maybeSingle();
+                schoolId = (clsRow as any)?.school_id ?? null;
+            }
+
             // Fetch all students in the class
             const { data: students, error: studentsError } = await supabase
                 .from('students')
@@ -272,9 +298,16 @@ export const PdiDocumentService = {
                 return [];
             }
 
-            // Log for each student (parallel)
+            if (!schoolId) {
+                // Um único aviso em vez de N erros idênticos. A automação de PDI é
+                // best-effort; sem escola resolvida, simplesmente não registra.
+                console.warn(`[PdiDocumentService] logEventForClass: school_id não resolvido para a turma ${classId}. Automação de PDI ignorada (${students.length} alunos).`);
+                return [];
+            }
+
+            // Log for each student (parallel) — overrides resolvidos evitam getProfile por aluno
             return Promise.all(
-                students.map(s => this.logEvent(s.id, type, title, content, pdiBlock))
+                students.map(s => this.logEvent(s.id, type, title, content, pdiBlock, schoolId, classId, teacherId))
             );
         } catch (error) {
             console.error('Exception in logEventForClass:', error);
