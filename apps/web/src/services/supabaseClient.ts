@@ -42,4 +42,13 @@ if (isDev) {
   console.log('[Supabase] Client connected to:', `${supabaseUrl.substring(0, 15)}...`);
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // Mantém a sessão no localStorage e renova o token automaticamente em background.
+    // O auto-refresh do cliente é seguro para concorrência (lock interno) — por isso
+    // nenhum código deve chamar refreshSession() manualmente no caminho quente.
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});

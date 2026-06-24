@@ -168,7 +168,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, authSession) => {
             console.log(`[Auth] 📡 Event: ${event} | User: ${authSession?.user?.email || 'none'}`);
 
-            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED') {
                 if (authSession) {
                     handleLogin(authSession).catch(err => {
                         console.error("[Auth] 🚨 handleLogin failed inside listener:", err);

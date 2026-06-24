@@ -10,27 +10,21 @@ const getErrorMessage = (error: unknown): string =>
 
 const getActiveAuthUser = async (): Promise<{ id: string; email?: string } | null> => {
     try {
-        // 1. Try to refresh — handles expired access token when refresh token is still valid
-        const { data: { session }, error: refreshErr } = await supabase.auth.refreshSession();
-        if (!refreshErr && session?.user?.id) {
+        // getSession() lê a sessão do storage e renova o access token automaticamente
+        // quando expirado, usando um lock interno que deduplica refreshes concorrentes.
+        //
+        // CRÍTICO: NUNCA chamar refreshSession() manualmente aqui. O fluxo de gerar dispara
+        // várias checagens de quota/sessão concorrentes; cada refreshSession() rotaciona o
+        // refresh token. A segunda chamada concorrente usa o token já rotacionado, falha com
+        // "refresh token already used", e o supabase-js limpa a sessão e dispara SIGNED_OUT.
+        // Esse é o bug "sua sessão expirou". O auto-refresh do cliente (autoRefreshToken)
+        // já mantém o token válido em background com segurança de concorrência.
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (!error && session?.user?.id) {
             return { id: session.user.id, email: session.user.email || undefined };
         }
-
-        // 2. Server-side validation — confirms the current JWT is accepted by Supabase Auth
-        // Must come BEFORE getSession() which returns local storage without any validation
-        const { data: { user }, error: userErr } = await supabase.auth.getUser();
-        if (!userErr && user?.id) {
-            return { id: user.id, email: user.email || undefined };
-        }
-
-        // 3. Last resort: local session (JWT may be expired — RLS queries will likely fail)
-        const { data: { session: storedSession } } = await supabase.auth.getSession();
-        if (storedSession?.user?.id) {
-            console.warn('[userService] Using stale local session — DB queries may fail (JWT expired)');
-            return { id: storedSession.user.id, email: storedSession.user.email || undefined };
-        }
     } catch (authErr) {
-        console.warn("[userService] Optional auth user fetch failed:", authErr);
+        console.warn("[userService] Auth session fetch failed:", authErr);
     }
 
     return null;
@@ -72,23 +66,9 @@ export const getUserProfile = async (userId: string, email?: string): Promise<Us
             .eq('id', lookupUserId)
             .maybeSingle();
 
-        // 1b. Silent RLS block: data=null, error=null means JWT may be stale — try refreshing session
-        if (!error && !data) {
-            try {
-                await supabase.auth.refreshSession();
-                const { data: refreshedData } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', lookupUserId)
-                    .maybeSingle();
-                if (refreshedData) {
-                    console.log('[userService] Profile recovered after session refresh.');
-                    return refreshedData as UserProfile;
-                }
-            } catch (refreshErr) {
-                console.warn('[userService] Session refresh attempt failed:', refreshErr);
-            }
-        }
+        // 1b. data=null, error=null: linha inexistente ou bloqueio RLS legítimo.
+        // NÃO forçar refreshSession() aqui (causa rotação concorrente do refresh token).
+        // O auto-refresh do cliente já garante token válido; recuperação por email abaixo.
 
         // 2. Fallback: If ID not found/mismatched, attempt to resolve email from active session
         if ((error || !data) && !activeEmail) {
