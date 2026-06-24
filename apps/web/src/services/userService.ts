@@ -371,8 +371,26 @@ export const updateUserProfile = async (
             // The teacher_schools table is the source of truth for multi-school support
         }
 
-        // 3. Resolve o id canônico do auth.uid(). O RLS de UPDATE exige auth.uid() = id;
-        //    se o userId passado divergir (Ghost ID), o update afeta 0 linhas SEM erro.
+        // 2.5. Caminho preferencial: RPC SECURITY DEFINER update_my_profile.
+        //      Usa auth.uid() no servidor e resolve Ghost ID por email, sem esbarrar
+        //      em RLS nem mexer na PK (que quebraria foreign keys).
+        const { error: rpcError } = await supabase.rpc('update_my_profile', { p_updates: updates });
+        if (!rpcError) {
+            console.log('[userService] ✅ Perfil salvo via update_my_profile RPC.');
+            return { success: true, message };
+        }
+        const fnMissing =
+            (rpcError as any)?.code === 'PGRST202' ||
+            /function .*update_my_profile.* does not exist/i.test(rpcError.message || '') ||
+            /could not find the function/i.test(rpcError.message || '');
+        if (!fnMissing) {
+            console.error('[userService] update_my_profile RPC error:', rpcError);
+            return { success: false, error: rpcError.message };
+        }
+        console.warn('[userService] RPC update_my_profile ausente — usando update direto (rode a migration 20260624_update_my_profile_rpc.sql).');
+
+        // 3. Fallback legado: resolve o id canônico do auth.uid(). O RLS de UPDATE exige
+        //    auth.uid() = id; se o userId passado divergir (Ghost ID), afeta 0 linhas.
         let targetId = userId;
         try {
             const { data: { user } } = await supabase.auth.getUser();
