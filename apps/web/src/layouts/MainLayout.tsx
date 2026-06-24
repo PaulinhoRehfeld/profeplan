@@ -102,7 +102,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             <Menu size={24} />
                         </button>
                         <div className="flex flex-col">
-                            <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V4.3.3</h2>
+                            <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">PROFEPLAN V4.3.4</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
                                 <div className="flex flex-col">

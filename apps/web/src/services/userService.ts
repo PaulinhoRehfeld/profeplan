@@ -344,9 +344,9 @@ export const updateUserProfile = async (
             email: profileData.institutionalEmail?.trim().toLowerCase(),
             masp: profileData.masp?.trim(),
             city: profileData.city?.trim(),
-            // Nome da escola (texto livre). O vínculo formal por INEP/school_id é
-            // tratado via teacher_schools; aqui persistimos apenas o nome exibido.
-            school_name: (profileData.institution as string | undefined)?.trim(),
+            // NOTA: o nome da escola (institution) é texto livre e NÃO é coluna de
+            // `profiles` — fica apenas nas settings locais (documentos). O vínculo
+            // formal da escola é feito SOMENTE pelo código INEP via reconcileTeacherByInep.
             // Pedagogical settings
             favorite_methodology: profileData.favoriteMethodology,
             teaching_style: profileData.teachingStyle,

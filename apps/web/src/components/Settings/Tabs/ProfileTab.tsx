@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { User, BookOpen, ImageIcon, Trash2, FileText, Loader2, Plus, X, Mail } from 'lucide-react';
 import { UserSettings } from '../../../types';
 import { updateUserProfile } from '../../../services/ProfileService';
+import { reconcileTeacherByInep } from '../../../services/teacherSchoolService';
 
 interface ProfileTabProps {
     userProfile: any;
@@ -87,16 +88,27 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({ userProfile, initialSett
 
             if (result.error) throw new Error(result.error);
 
+            // Vínculo da escola SOMENTE pelo código INEP (o nome é texto livre).
+            // reconcileTeacherByInep normaliza o INEP, encontra a escola e cria o
+            // vínculo em teacher_schools + define active_school_id.
+            let schoolMsg = '';
+            const inep = (localSettings.schoolCode || '').trim();
+            if (inep) {
+                const link = await reconcileTeacherByInep(userId, inep);
+                if (link.success) {
+                    schoolMsg = `\n🏫 Escola vinculada por INEP: ${link.schoolName || inep}`;
+                } else {
+                    schoolMsg = `\n⚠️ Não foi possível vincular a escola pelo INEP: ${link.error || 'código não encontrado'}`;
+                }
+            }
+
             const newSettings = { ...localSettings };
             setLocalSettings(newSettings);
             setSettings(newSettings);
             localStorage.setItem('profeplan_settings', JSON.stringify(newSettings));
 
-            if (result.message) {
-                alert('✅ ' + result.message);
-            } else {
-                alert('✅ Perfil atualizado com sucesso!');
-            }
+            const baseMsg = result.message ? '✅ ' + result.message : '✅ Perfil atualizado com sucesso!';
+            alert(baseMsg + schoolMsg);
 
             await onSaveSuccess();
             onClose();
