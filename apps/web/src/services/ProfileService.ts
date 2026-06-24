@@ -79,13 +79,9 @@ export const ProfileService = {
 export {
     getProfileByEmail,
     getUserProfile,
-    getAllUsers,
     updateUserProfile,
-    updateUserProfileAdmin,
     isAdmin,
     hasFeaturePattern,
-    addUserCredits,
-    updateUserRole
 } from './userService';
 
 // Créditos / quota extraídos para módulo coeso (refatoração Fase 1)
@@ -93,6 +89,9 @@ export { checkUsageQuota, incrementUserUsage } from './credits/quota';
 
 // Indicações / recompensas extraídas para módulo coeso (refatoração Fase 1)
 export { registerPhone, addReferral, checkAndRewardReferrer } from './referrals/referrals';
+
+// Ações administrativas de perfil extraídas para módulo coeso (refatoração Fase 1)
+export { getAllUsers, updateUserProfileAdmin, addUserCredits, updateUserRole } from './admin/adminProfiles';
 
 /**
  * Verifica se o Perfil Profissional está completo o suficiente
