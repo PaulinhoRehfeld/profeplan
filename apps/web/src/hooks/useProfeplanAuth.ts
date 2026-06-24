@@ -168,16 +168,25 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, authSession) => {
             console.log(`[Auth] 📡 Event: ${event} | User: ${authSession?.user?.email || 'none'}`);
 
-            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED') {
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
                 if (authSession) {
                     handleLogin(authSession).catch(err => {
                         console.error("[Auth] 🚨 handleLogin failed inside listener:", err);
                         setLoading(false);
                     });
                 } else {
-                    // Logic for INITIAL_SESSION with no authSession
                     if (event === 'INITIAL_SESSION') {
-                        console.log('[Auth] ℹ️ Initial session checked - No active persistent session found.');
+                        // Supabase confirma sem sessão ativa — limpa sessão customizada stale
+                        // Evita estado quebrado: UI mostra logado mas JWT morto bloqueia todas as queries
+                        console.warn('[Auth] ⚠️ INITIAL_SESSION sem authSession — limpando sessão stale.');
+                        try {
+                            localStorage.removeItem('profeplan_session');
+                            localStorage.removeItem('supabase_user_id');
+                        } catch { /* noop */ }
+                        if (!cancelled) {
+                            setSession(null);
+                            setUserProfile(null);
+                        }
                         setLoading(false);
                     }
                 }
