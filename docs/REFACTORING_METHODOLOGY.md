@@ -178,7 +178,28 @@ Baseline atual (2026-06-24): `tsc` EXIT 0 · `vitest` 27/27 verdes · `vite buil
 
 ### Entradas
 
-_(vazio — primeira entrada será o piloto `userService.ts`)_
+#### [2026-06-24] userService.ts — Fase 1 (piloto), parcial
+
+- **Hipótese:** o arquivo mistura 5 responsabilidades (auth/perfil/créditos/admin/referrals)
+  que podem ser separadas sem mudar comportamento, mantendo `ProfileService` como fachada.
+- **Responsabilidades identificadas:** sessão (getActiveAuthUser), perfil (getUserProfile,
+  getProfileByEmail, updateUserProfile), créditos (checkUsageQuota, incrementUserUsage),
+  admin (getAllUsers, updateUserProfileAdmin, addUserCredits, updateUserRole),
+  referrals (registerPhone, addReferral, checkAndRewardReferrer), predicados (isAdmin, hasFeaturePattern).
+- **Cobertura antes:** 0% → **depois:** 14 testes de caracterização (credits, getUserProfile, updateUserProfile).
+- **LOC antes:** 540 (userService) → **depois:** 337 (userService) + 75 (credits/quota) + 72 (referrals) + 85 (admin).
+- **Passos atômicos (commits):**
+  - `test(userService): caracterização antes do refactor` (fc05dbf)
+  - `test(userService): importa via fachada ProfileService` (2e23452)
+  - `refactor(credits): extrai checkUsageQuota e incrementUserUsage` (489cb17)
+  - `refactor(referrals): extrai registerPhone, addReferral, checkAndRewardReferrer` (7be574f)
+  - `refactor(admin): extrai getAllUsers, updateUserProfileAdmin, addUserCredits, updateUserRole` (0bb8a7b)
+- **Verificação final:** tsc [x] · vitest 41/41 [x] · build [x] (a cada passo).
+- **Comportamento alterado?** NÃO (garantido pelos 14 testes verdes em todos os passos).
+- **Pendente (próxima sessão):** extrair perfil (getUserProfile, getProfileByEmail, updateUserProfile,
+  getActiveAuthUser) para `profile/profileRepository.ts`. É o passo mais delicado (getUserProfile tem
+  join de escola + criação de emergência + ghost healing) — feito com calma, isolado.
+- **Observações:** padrão "fachada + re-export" funcionou: **nenhum** dos ~40 consumidores precisou mudar.
 
 ---
 
