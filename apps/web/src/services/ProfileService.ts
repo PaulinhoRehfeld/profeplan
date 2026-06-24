@@ -79,8 +79,6 @@ export const ProfileService = {
 export {
     getProfileByEmail,
     getUserProfile,
-    checkUsageQuota,
-    incrementUserUsage,
     getAllUsers,
     updateUserProfile,
     updateUserProfileAdmin,
@@ -92,6 +90,9 @@ export {
     addUserCredits,
     updateUserRole
 } from './userService';
+
+// Créditos / quota extraídos para módulo coeso (refatoração Fase 1)
+export { checkUsageQuota, incrementUserUsage } from './credits/quota';
 
 /**
  * Verifica se o Perfil Profissional está completo o suficiente
