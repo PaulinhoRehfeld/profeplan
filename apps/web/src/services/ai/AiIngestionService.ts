@@ -157,6 +157,20 @@ export const chunkMarkdownContent = (markdown: string, maxCharacters: number = 8
 };
 
 /**
+ * Resolve o UUID real de auth.uid() a partir da sessão do Supabase.
+ * Usa getSession() (leitura local, sem roundtrip de rede) em vez do userId
+ * recebido como prop, que pode ser um ghost UUID do localStorage customizado.
+ * Lança erro claro se não houver sessão ativa, em vez de silenciosamente usar
+ * um UUID errado que quebraria o RLS.
+ */
+const resolveAuthUid = async (): Promise<string> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const uid = session?.user?.id;
+    if (!uid) throw new Error('Sessão expirada. Faça login novamente para continuar.');
+    return uid;
+};
+
+/**
  * Cria uma nova versão ou o documento inicial no banco de dados.
  */
 export const savePendingDocument = async (
@@ -167,11 +181,7 @@ export const savePendingDocument = async (
     parsedResult: IngestionResult
 ) => {
     try {
-        // Usa auth.uid() direto para garantir que o user_id inserido bate com a
-        // política RLS (auth.uid() = user_id). O userId passado como prop pode ser
-        // um ghost UUID em cache no localStorage enquanto o JWT tem o UUID real.
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        const authUid = authUser?.id ?? userId;
+        const authUid = await resolveAuthUid();
 
         // 1. Resolve a versão
         const { count, error: countError } = await supabase
@@ -218,6 +228,8 @@ export const approveDocumentAndIngest = async (
     onProgress?: (msg: string) => void
 ) => {
     try {
+        const authUid = await resolveAuthUid();
+
         if (onProgress) onProgress("Recuperando documento...");
         
         // 1. Busca o documento
@@ -247,7 +259,7 @@ export const approveDocumentAndIngest = async (
                 .from('teacher_document_chunks')
                 .insert({
                     document_id: documentId,
-                    user_id: userId,
+                    user_id: authUid,
                     content: chunkText,
                     embedding: embedding
                 });
@@ -277,7 +289,7 @@ export const approveDocumentAndIngest = async (
             const { data: existingAgent } = await supabase
                 .from('teacher_agents')
                 .select('id')
-                .eq('user_id', userId)
+                .eq('user_id', authUid)
                 .eq('subject', subject)
                 .eq('grade', year)
                 .maybeSingle();
@@ -294,7 +306,7 @@ export const approveDocumentAndIngest = async (
                 await supabase
                     .from('teacher_agents')
                     .insert({
-                        user_id: userId,
+                        user_id: authUid,
                         name: agentName,
                         subject,
                         grade: year,
