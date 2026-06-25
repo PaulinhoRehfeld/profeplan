@@ -1,5 +1,6 @@
 import { createSimpleCompletion } from './AiCore';
 import { supabase } from '../supabaseClient';
+import { parseCurriculo } from './agents/CurriculoAgent';
 
 export interface DocumentMetadata {
     subject: string;
@@ -43,6 +44,11 @@ export const generateChunkEmbedding = async (text: string): Promise<number[] | n
  * Envia o texto extraído para a IA processar em Markdown estruturado, metadados e relatório de curadoria.
  */
 export const parseAndAuditPdfText = async (rawText: string, category: string): Promise<IngestionResult> => {
+    // Planos de Curso CRMG: agente especializado com 2 passes independentes
+    if (category === 'course_plan') {
+        return parseCurriculo(rawText);
+    }
+
     const prompt = `
 Você é um parser e auditor pedagógico especializado em processamento de documentos educacionais (Planos de Curso, Livros, Materiais Didáticos).
 Você receberá o texto bruto extraído de um arquivo PDF. Sua tarefa é processar e estruturar esse conteúdo em Markdown e extrair metadados e um relatório de curadoria.
