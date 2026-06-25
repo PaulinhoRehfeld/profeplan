@@ -21,10 +21,14 @@ export const MyDocumentsManager: React.FC<MyDocumentsManagerProps> = ({ userId }
 
     const fetchDocuments = async () => {
         setLoading(true);
+        // Resolve auth.uid() real para coincidir com a política RLS.
+        // session.id pode ser ghost UUID em cache; auth.getUser() retorna o JWT atual.
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        const authUid = authUser?.id ?? userId;
         const { data, error } = await supabase
             .from('teacher_documents')
             .select('*')
-            .eq('user_id', userId)
+            .eq('user_id', authUid)
             .order('created_at', { ascending: false });
 
         if (!error && data) {

@@ -161,11 +161,17 @@ export const savePendingDocument = async (
     parsedResult: IngestionResult
 ) => {
     try {
+        // Usa auth.uid() direto para garantir que o user_id inserido bate com a
+        // política RLS (auth.uid() = user_id). O userId passado como prop pode ser
+        // um ghost UUID em cache no localStorage enquanto o JWT tem o UUID real.
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        const authUid = authUser?.id ?? userId;
+
         // 1. Resolve a versão
         const { count, error: countError } = await supabase
             .from('teacher_documents')
             .select('*', { count: 'exact', head: true })
-            .eq('user_id', userId)
+            .eq('user_id', authUid)
             .eq('filename', filename);
 
         if (countError) throw countError;
@@ -175,7 +181,7 @@ export const savePendingDocument = async (
         const { data, error } = await supabase
             .from('teacher_documents')
             .insert({
-                user_id: userId,
+                user_id: authUid,
                 category,
                 title: nextVersion > 1 ? `${title} (V${nextVersion})` : title,
                 filename,
