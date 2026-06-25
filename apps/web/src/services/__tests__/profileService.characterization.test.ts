@@ -181,8 +181,9 @@ describe('incrementUserUsage (caracterização)', () => {
   });
 
   it('tarefa paga + créditos > 0 → deduz 1 crédito via update', async () => {
-    mocked.auth.getSession.mockResolvedValue(session({ id: 'u1', email: 'teacher@test.com' }));
     const profile = { id: 'u1', is_unlimited: false, tier: 'FREE', credits: 5 };
+    // getUserProfile usa get_my_profile RPC; incrementUserUsage usa from() para o update
+    mocked.rpc.mockResolvedValue({ data: profile, error: null });
     const q = createQuery({ data: profile, error: null });
     mocked.from.mockReturnValue(q);
 
@@ -196,17 +197,20 @@ describe('incrementUserUsage (caracterização)', () => {
 // getUserProfile — leitura de perfil
 // ──────────────────────────────────────────────────────────────────
 describe('getUserProfile (caracterização)', () => {
-  it('perfil existente (sem school_id) → retorna dados do banco', async () => {
-    mocked.auth.getSession.mockResolvedValue(session({ id: 'u1', email: 'teacher@test.com' }));
+  it('perfil existente → RPC retorna perfil diretamente', async () => {
     const profile = { id: 'u1', full_name: 'Maria', tier: 'GOLD', credits: 10 };
-    mocked.from.mockReturnValue(createQuery({ data: profile, error: null }));
+    // get_my_profile RPC é o caminho preferencial (SECURITY DEFINER, bypassa RLS)
+    mocked.rpc.mockResolvedValue({ data: profile, error: null });
+    mocked.from.mockReturnValue(createQuery({ data: null, error: null })); // fallback não atingido
 
     const result = await getUserProfile('u1', 'teacher@test.com');
 
     expect(result).toMatchObject({ id: 'u1', full_name: 'Maria', tier: 'GOLD' });
   });
 
-  it('perfil inexistente e sem sessão → retorna null', async () => {
+  it('RPC indisponível + perfil inexistente + sem sessão → retorna null', async () => {
+    // RPC ausente (PGRST202) → cai no caminho legado
+    mocked.rpc.mockResolvedValue({ data: null, error: { code: 'PGRST202', message: 'function not found' } });
     mocked.auth.getSession.mockResolvedValue(session(null));
     mocked.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
     mocked.from.mockReturnValue(createQuery({ data: null, error: null }));

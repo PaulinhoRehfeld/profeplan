@@ -1,12 +1,11 @@
-import { supabase } from '../supabaseClient';
-import { PdiSchema, PDIProfileData } from '../../types/pdi-schema';
+/**
+ * Fachada de PdiDocumentService — Fase 2 refatoração.
+ * Todos os métodos delegam para sub-módulos coesos.
+ * Ver docs/REFACTORING_METHODOLOGY.md.
+ */
 import { PdiDocument, TeacherEntry, PdiCompleteness, UserProfile } from '../../types';
+import { PDIProfileData } from '../../types/pdi-schema';
 import { Block9AdaptationEntry } from '../../types/pdi';
-import { z } from 'zod';
-import { ProfileService } from '../ProfileService';
-import { checkUsageQuota } from '../ProfileService';
-import { createSimpleCompletion } from '../ai/AiCore';
-import { getAuthHeaders } from '../sessionService';
 import type { DocxModule } from './pdiDocxSections';
 import {
     createBlock1Section, createBlock2Section, createBlock3Section, createBlock4Section,
@@ -14,25 +13,44 @@ import {
     createBlock9Summary, createBlock10Summary, createBlock11Section, createSignatureSection,
 } from './pdiDocxSections';
 
-const getErrorMessage = (error: unknown): string =>
-    error instanceof Error ? error.message : 'Unknown error';
+// Sub-módulos extraídos
+import {
+    logEvent as _logEvent,
+    getStudentTimeline as _getStudentTimeline,
+    logEventForClass as _logEventForClass,
+    updateRecordContent as _updateRecordContent,
+    getPdiLogs as _getPdiLogs,
+    getLogs as _getLogs,
+} from './pdiRecordRepository';
+import {
+    saveTeacherEntry as _saveTeacherEntry,
+    getTeacherEntries as _getTeacherEntries,
+    addBlock10Evaluation as _addBlock10Evaluation,
+    updateBlock10WithAI as _updateBlock10WithAI,
+} from './pdiTeacherEntryRepository';
+import {
+    getOrCreatePdi as _getOrCreatePdi,
+    createPdiDocument as _createPdiDocument,
+    getPdiDocument as _getPdiDocument,
+    updatePdiSection as _updatePdiSection,
+    updateBlock1to8 as _updateBlock1to8,
+    getSchoolPdis as _getSchoolPdis,
+    updateBlock11ByProgument as _updateBlock11ByProgument,
+    approveBlock11 as _approveBlock11,
+} from './pdiDocumentRepository';
+import {
+    addBlock9Adaptation as _addBlock9Adaptation,
+    getStudentAdaptations as _getStudentAdaptations,
+    getAdaptationStats as _getAdaptationStats,
+    generateAdaptationsForLesson as _generateAdaptationsForLesson,
+    generateBlock9Adaptation as _generateBlock9Adaptation,
+} from './pdiBlock9Service';
+import { mapToCompatibility as _mapToCompatibility, calculateCompleteness as _calculateCompleteness } from './pdiUtils';
+
+// Re-exports de tipos para backward-compatibility
+export type { PdiRecordType, PdiRecord } from './pdiRecordRepository';
 
 type PdiRecordContent = Record<string, unknown>;
-
-type LegacyBlockData = {
-    bloco_1_identificacao?: {
-        nome_completo?: string;
-        data_nascimento?: string;
-        serie?: string;
-        turma?: string;
-        turno?: string;
-    };
-    bloco_2_diagnostico?: {
-        laudo_medico?: string;
-        restricoes_atividades?: string;
-        medication?: string;
-    };
-};
 
 type Block10EvaluationInput = {
     data: string;
@@ -47,788 +65,54 @@ type Block10EvaluationInput = {
 
 type Block9AdaptationInput = Omit<Block9AdaptationEntry, 'generated_at' | 'generated_by_ai'>;
 
-type PdiDocRow = {
-    id: string;
-    content_data?: {
-        clinical_health?: { diagnosis_cid?: string };
-        pedagogical?: { specific_needs?: string; general_objective?: string; technological_resources?: string; adapted_materials?: string };
-        cognitive?: { potentials?: string; challenges?: string };
-    };
-    school_students?: { name?: string };
-};
-
-/**
- * PDI Record Type for logging events
- */
-export type PdiRecordType = 'EVALUATION' | 'OCCURRENCE' | 'LESSON_PLAN' | 'OBSERVATION' | 'ADAPTATION';
-
-/**
- * PDI Record - Consolidation from PdiService
- */
-export interface PdiRecord {
-    id: string;
-    student_id: string;
-    school_id: string;
-    teacher_id: string;
-    type: PdiRecordType;
-    pdi_block?: string;
-    title: string;
-    content: PdiRecordContent;
-    date: string;
-    created_at: string;
-}
-
-
 export const PdiDocumentService = {
-    /**
-     * Create or retrieve an existing PDI document for a student
-     * If no PDI exists for the given year, creates a new one with optional contextual data
-     * @param studentId - The unique identifier of the student
-     * @param year - Academic year (defaults to current year)
-     * @param contextualData - Optional data to pre-fill the PDI (profile, student name)
-     * @returns Promise - Object with PDI document or error
-     * @example
-     * const result = await PdiDocumentService.getOrCreatePdi('student-123', 2025, { studentName: 'João' });
-     */
-    async getOrCreatePdi(
-        studentId: string,
-        year: number = new Date().getFullYear(),
-        contextualData?: { profile?: UserProfile | null; studentName?: string }
-    ): Promise<{ data: PdiDocument | null; error: unknown }> {
-        const { data: existing, error: fetchError } = await supabase
-            .from('pdi_documents')
-            .select('*')
-            .eq('student_id', studentId)
-            .eq('year', year)
-            .maybeSingle();
-
-        if (fetchError) return { data: null, error: fetchError };
-        if (existing) return { data: existing, error: null };
-
-        // Create new PDI with auto-filled data if available
-        const initialContent: Partial<PDIProfileData> = {};
-
-        if (contextualData?.profile) {
-            initialContent.institutional = {
-                school_name: contextualData.profile.school_name || contextualData.profile.school?.name,
-                city: contextualData.profile.city || contextualData.profile.school?.city,
-                sre: contextualData.profile.school?.sre
-            };
-        }
-
-        if (contextualData?.studentName) {
-            initialContent.student_data = {
-                name: contextualData.studentName
-            };
-        }
-
-        const { data: newDoc, error: createError } = await supabase
-            .from('pdi_documents')
-            .insert({
-                student_id: studentId,
-                year,
-                // Mantém alinhamento com o CHECK CONSTRAINT do banco:
-                // status IN ('em_andamento', 'finalizado', 'arquivado')
-                status: 'em_andamento',
-                content_data: initialContent
-            })
-            .select()
-            .single();
-
-        return { data: newDoc, error: createError };
-    },
-
-    /**
-     * Log an event to the student's PDI timeline
-     * Records an occurrence, lesson plan, evaluation, observation, or adaptation
-     * Consolidated from legacy PdiService.logEvent()
-     * @param studentId - The student's unique identifier
-     * @param type - Type of record (EVALUATION | OCCURRENCE | LESSON_PLAN | OBSERVATION | ADAPTATION)
-     * @param title - Brief title of the event
-     * @param content - Detailed content of the event
-     * @param pdiBlock - Optional PDI block reference (Block 1-11)
-     * @returns Promise<PdiRecord | null> - Created record or null if failed
-     * @throws Catches errors and logs them, returns null on failure
-     * @example
-     * const record = await PdiDocumentService.logEvent(studentId, 'EVALUATION', 'Math Test', { score: 8 });
-     */
-    async logEvent(
-        studentId: string,
-        type: PdiRecordType,
-        title: string,
-        content: PdiRecordContent,
-        pdiBlock?: string,
-        schoolIdOverride?: string | null,
-        classIdOverride?: string | null,
-        teacherIdOverride?: string | null
-    ): Promise<PdiRecord | null> {
-        try {
-            // Só busca o profile se faltar algum override — evita N getProfile()
-            // quando chamado em lote por logEventForClass (1 turma = N alunos).
-            const profile = (schoolIdOverride && teacherIdOverride)
-                ? null
-                : await ProfileService.getProfile();
-            let schoolId =
-                schoolIdOverride ??
-                (profile as any)?.active_school_id ??
-                (profile as any)?.school_id ??
-                null;
-            const teacherId = teacherIdOverride ?? (profile as any)?.id ?? null;
-
-            if (!schoolId) {
-                // Fallback: inferir a escola apenas via `classes`,
-                // usando o `classIdOverride` (evita depender de colunas opcionais em `students`).
-                try {
-                    if (classIdOverride) {
-                        const { data: clsRow, error: clsErr } = await supabase
-                            .from('classes')
-                            .select('school_id')
-                            .eq('id', classIdOverride)
-                            .maybeSingle();
-                        if (clsErr) {
-                            console.error('[PdiDocumentService] Failed to resolve school_id from `classes`:', {
-                                classIdOverride,
-                                schoolIdCandidate: (clsRow as any)?.school_id ?? null,
-                                error: clsErr
-                            });
-                        }
-                        const inferred =
-                            (clsRow as any)?.school_id ??
-                            null;
-                        if (inferred) schoolId = inferred;
-                    }
-                } catch (e) {
-                    // fail-silent: abaixo vai logar o erro final
-                }
-            }
-
-            if (!schoolId) {
-                console.error('[PdiDocumentService] Missing school_id for pdi_records insert. Ensure active_school_id/selectedClass.school_id (via classIdOverride) is set.', {
-                    studentId,
-                    type,
-                    teacherId
-                });
-                return null;
-            }
-
-            const { data, error } = await supabase
-                .from('pdi_records')
-                .insert({
-                    student_id: studentId,
-                    // Aqui `schoolId` já foi validado/resolvido acima.
-                    school_id: schoolId,
-                    teacher_id: teacherId,
-                    type,
-                    title,
-                    content,
-                    pdi_block: pdiBlock,
-                    date: new Date().toISOString()
-                })
-                .select()
-                .single();
-
-            if (error) {
-                console.error('Error logging PDI event:', error);
-                return null;
-            }
-
-            return data || null;
-        } catch (error) {
-            console.error('Exception in logEvent:', error);
-            return null;
-        }
-    },
-
-    /**
-     * Fetch the timeline of records for a specific student
-     */
-    async getStudentTimeline(studentId: string): Promise<PdiRecord[]> {
-        try {
-            const { data, error } = await supabase
-                .from('pdi_records')
-                .select('*')
-                .eq('student_id', studentId)
-                .order('date', { ascending: false });
-
-            if (error) {
-                console.error('Error fetching PDI timeline:', error);
-                return [];
-            }
-
-            return data || [];
-        } catch (error) {
-            console.error('Exception in getStudentTimeline:', error);
-            return [];
-        }
-    },
-
-    /**
-     * Log event for all students in a class
-     */
-    async logEventForClass(
-        classId: string,
-        type: PdiRecordType,
-        title: string,
-        content: PdiRecordContent,
-        pdiBlock?: string
-    ): Promise<(PdiRecord | null)[]> {
-        try {
-            // Resolve school_id e teacher_id UMA única vez para a turma inteira.
-            // Antes, cada aluno disparava seu próprio getProfile() + query em `classes`
-            // (N alunos = 2N round-trips), causando lentidão e, quando o profile não
-            // tinha school_id, N erros "Missing school_id".
-            const profile = await ProfileService.getProfile();
-            const teacherId = (profile as any)?.id ?? null;
-            let schoolId =
-                (profile as any)?.active_school_id ??
-                (profile as any)?.school_id ??
-                null;
-
-            if (!schoolId) {
-                const { data: clsRow } = await supabase
-                    .from('classes')
-                    .select('school_id')
-                    .eq('id', classId)
-                    .maybeSingle();
-                schoolId = (clsRow as any)?.school_id ?? null;
-            }
-
-            // Fetch all students in the class
-            const { data: students, error: studentsError } = await supabase
-                .from('students')
-                .select('id')
-                .eq('class_id', classId);
-
-            if (studentsError || !students) {
-                console.error('Error fetching students:', studentsError);
-                return [];
-            }
-
-            if (!schoolId) {
-                // Um único aviso em vez de N erros idênticos. A automação de PDI é
-                // best-effort; sem escola resolvida, simplesmente não registra.
-                console.warn(`[PdiDocumentService] logEventForClass: school_id não resolvido para a turma ${classId}. Automação de PDI ignorada (${students.length} alunos).`);
-                return [];
-            }
-
-            // Log for each student (parallel) — overrides resolvidos evitam getProfile por aluno
-            return Promise.all(
-                students.map(s => this.logEvent(s.id, type, title, content, pdiBlock, schoolId, classId, teacherId))
-            );
-        } catch (error) {
-            console.error('Exception in logEventForClass:', error);
-            return [];
-        }
-    },
-
-    /**
-     * Update PDI record content
-     */
-    async updateRecordContent(recordId: string, newContent: PdiRecordContent): Promise<{ success: boolean; error?: string }> {
-        try {
-            const { error } = await supabase
-                .from('pdi_records')
-                .update({ content: newContent })
-                .eq('id', recordId);
-
-            if (error) {
-                return { success: false, error: error.message };
-            }
-
-            return { success: true };
-        } catch (error: unknown) {
-            console.error('Exception in updateRecordContent:', error);
-            return { success: false, error: getErrorMessage(error) };
-        }
-    },
-
-    /**
-     * Legacy/Compat: Fetch PDI logs with {data, error} signature
-     */
-    async getPdiLogs(studentId: string): Promise<{ data: PdiRecord[] | null; error: unknown }> {
-        try {
-            const { data, error } = await supabase
-                .from('pdi_records')
-                .select('*')
-                .eq('student_id', studentId)
-                .order('date', { ascending: false });
-
-            return { data, error };
-        } catch (error) {
-            return { data: null, error };
-        }
-    },
-
-    /**
-     * Get logs for a specific student
-     */
-    async getLogs(studentId: string): Promise<{ data: unknown[] | null; error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_logs')
-            .select('*')
-            .eq('student_id', studentId)
-            .order('created_at', { ascending: false });
-
-        return { data, error };
-    },
-
-    async updatePdiSection(pdiId: string, sectionKey: keyof PDIProfileData, sectionData: unknown): Promise<{ data: PdiDocument | null, error: unknown }> {
-        try {
-            const SectionSchema = PdiSchema.shape[sectionKey];
-            const validatedData = SectionSchema.parse(sectionData);
-
-            const { data: currentPdi, error: fetchError } = await supabase
-                .from('pdi_documents')
-                .select('content_data')
-                .eq('id', pdiId)
-                .single();
-
-            if (fetchError) throw fetchError;
-
-            const currentContent = currentPdi?.content_data || {};
-            const updatedContent = {
-                ...currentContent,
-                [sectionKey]: validatedData
-            };
-
-            const { data: updatedPdi, error: updateError } = await supabase
-                .from('pdi_documents')
-                .update({
-                    content_data: updatedContent,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', pdiId)
-                .select()
-                .single();
-
-            return { data: updatedPdi, error: updateError };
-
-        } catch (validationOrDbError: unknown) {
-            console.error("PDI Update Error:", validationOrDbError);
-            return { data: null, error: validationOrDbError };
-        }
-    },
-
-    /**
-     * Upsert a Teacher Evaluation Entry (Seção X)
-     */
-    async saveTeacherEntry(entry: TeacherEntry): Promise<{ data: TeacherEntry | null; error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_teacher_entries')
-            .upsert(entry, { onConflict: 'pdi_document_id, teacher_id, subject, bimester' })
-            .select()
-            .single();
-
-        return { data, error };
-    },
-
-    /**
-     * Get all teacher entries for a PDI
-     */
-    async getTeacherEntries(pdiId: string): Promise<{ data: TeacherEntry[] | null, error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_teacher_entries')
-            .select('*')
-            .eq('pdi_document_id', pdiId);
-
-        return { data, error };
-    },
-
-    /**
-     * Get PDIs for a school
-     */
-    async getSchoolPdis(schoolId: string): Promise<PdiDocument[]> {
-        const { data, error } = await supabase
-            .from('pdi_documents')
-            .select(`
-                *,
-                school_students:students!inner (
-                    name,
-                    current_school_id
-                )
-            `)
-            .eq('school_students.current_school_id', schoolId)
-            .order('updated_at', { ascending: false });
-
-        if (error) {
-            console.error('Error fetching School PDIs:', error);
-            return [];
-        }
-
-        return (data || []) as unknown as PdiDocument[];
-    },
-
-    /**
-     * Map database PdiDocument to Frontend Compatibility PdiDocument
-     */
-    mapToCompatibility(pdi: Record<string, unknown> & { content_data?: Record<string, unknown>; school_students?: { name?: string }; student_name?: string; updated_at?: string }): PdiDocument {
-        const content = (pdi.content_data as Partial<PDIProfileData>) || {};
-        const mapped = {
-            ...pdi,
-            student_name: pdi.school_students?.name || pdi.student_name,
-            last_updated: pdi.updated_at,
-            blocks_completed: {
-                block_1_8: !!content.student_data?.name,
-                block_9: Array.isArray(pdi.block_9_content) ? (pdi.block_9_content as unknown[]).length > 0 : false,
-                block_10: Array.isArray(pdi.block_10_entries) ? (pdi.block_10_entries as unknown[]).length > 0 : false,
-                block_11: !!pdi.final_report
-            }
-        } as PdiDocument;
-
-        return mapped;
-    },
-
-    /**
-     * Calculate Completeness based on JSONB Content
-     */
-    calculateCompleteness(pdi: PdiDocument): PdiCompleteness {
-        const completed: string[] = [];
-        const missing: string[] = [];
-        const content = (pdi.content_data as Partial<PDIProfileData>) || {};
-
-        if (content.institutional?.school_name) completed.push('Dados Institucionais');
-        else missing.push('Dados Institucionais');
-
-        if (content.student_data?.name) completed.push('Dados do Estudante');
-        else missing.push('Dados do Estudante');
-
-        if (content.clinical_health && Object.keys(content.clinical_health).length > 0) completed.push('Dados Clínicos');
-        else missing.push('Dados Clínicos');
-
-        if (content.psychomotor && Object.keys(content.psychomotor).length > 5) completed.push('Psicomotor');
-        else missing.push('Psicomotor');
-
-        if (content.cognitive && Object.keys(content.cognitive).length > 5) completed.push('Cognitivo');
-        else missing.push('Cognitivo');
-
-        if (content.communication && Object.keys(content.communication).length > 0) completed.push('Comunicação');
-        else missing.push('Comunicação');
-
-        const totalSections = 6;
-        const percentage = Math.round((completed.length / totalSections) * 100);
-
-        return {
-            overall_percentage: percentage,
-            missing_sections: missing,
-            blocks_status: [] // Stub for now or implement properly
-        };
-    },
-
-    /**
-     * Fetch PDI by ID
-     */
-    async getPdiDocument(pdiId: string): Promise<{ data: PdiDocument | null, error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_documents')
-            .select(`
-                *,
-                school_students:students (name, current_school_id)
-            `)
-            .eq('id', pdiId)
-            .maybeSingle();
-
-        return {
-            data: data ? this.mapToCompatibility(data) : null,
-            error
-        };
-    },
-
-    /**
-     * Legacy method - update blocks 1-8
-     */
-    async updateBlock1to8(pdiId: string, blockData: LegacyBlockData): Promise<{ data: PdiDocument | null, error: unknown }> {
-        const updates: Partial<PDIProfileData> = {};
-
-        if (blockData.bloco_1_identificacao) {
-            const b1 = blockData.bloco_1_identificacao;
-            updates.student_data = {
-                name: b1.nome_completo,
-                dob: b1.data_nascimento,
-                school_year: b1.serie,
-                class_name: b1.turma,
-                shift: b1.turno
-            };
-        }
-
-        if (blockData.bloco_2_diagnostico) {
-            const b2 = blockData.bloco_2_diagnostico;
-            updates.clinical_health = {
-                diagnosis_cid: b2.laudo_medico,
-                medical_updates: b2.restricoes_atividades,
-                medication: b2.medication
-            };
-        }
-
-        const { data, error } = await supabase
-            .from('pdi_documents')
-            .update({
-                content_data: updates,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', pdiId)
-            .select()
-            .single();
-
-        return { data: data ? this.mapToCompatibility(data) : null, error };
-    },
-
-    /**
-     * Create PDI alias
-     */
-    async createPdiDocument(studentId: string, schoolId: string, year: number): Promise<{ data: PdiDocument | null, error: unknown }> {
-        return this.getOrCreatePdi(studentId, year);
-    },
-
-    /**
-     * Save block 10 evaluation
-     */
-    async addBlock10Evaluation(pdiId: string, evaluation: Block10EvaluationInput): Promise<{ data: TeacherEntry | null, error: unknown }> {
-        return this.saveTeacherEntry({
-            pdi_document_id: pdiId,
-            teacher_id: evaluation.professor_id,
-            bimester: 1,
-            subject: evaluation.disciplina,
-            autonomy_level: evaluation.professor_grau_autonomia,
-            observations: evaluation.ia_diagnostico
-        });
-    },
-
-    /**
-     * Update block 10 entry
-     */
-    async updateBlock10WithAI(pdiId: string, evaluationId: string, aiDiagnosis: string): Promise<{ data: unknown; error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_teacher_entries')
-            .update({ observations: aiDiagnosis })
-            .eq('id', evaluationId);
-        return { data, error };
-    },
-
-    /**
-     * Add block 9 adaptation
-     */
-    async addBlock9Adaptation(pdiId: string, adaptation: Block9AdaptationInput): Promise<{ data: Block9AdaptationEntry; error: null }> {
-        try {
-            const generated_at = new Date().toISOString();
-            const generated_by_ai = true;
-            const enriched: Block9AdaptationEntry = {
-                ...adaptation,
-                generated_at,
-                generated_by_ai
-            };
-
-            // Carrega o array atual para append/replace idempotente.
-            const { data: row, error: fetchErr } = await supabase
-                .from('pdi_documents')
-                .select('block_9_content')
-                .eq('id', pdiId)
-                .maybeSingle();
-
-            if (fetchErr) {
-                console.error('[PdiDocumentService] Failed to load pdi_documents.block_9_content:', fetchErr);
-                return { data: enriched, error: null };
-            }
-
-            const existing = (row?.block_9_content || []) as Block9AdaptationEntry[];
-            const idx = existing.findIndex((e) => e.lesson_id === adaptation.lesson_id);
-
-            const next =
-                idx >= 0
-                    ? [...existing.slice(0, idx), enriched, ...existing.slice(idx + 1)]
-                    : [...existing, enriched];
-
-            const { error: updateErr } = await supabase
-                .from('pdi_documents')
-                .update({ block_9_content: next })
-                .eq('id', pdiId);
-
-            if (updateErr) {
-                console.error('[PdiDocumentService] Failed to persist block_9_content:', updateErr);
-            }
-
-            return { data: enriched, error: null };
-        } catch (e) {
-            console.error('[PdiDocumentService] Exception while persisting block_9_content:', e);
-            // fail-soft: não bloqueia o fluxo, mas loga o motivo
-            return {
-                data: {
-                    ...adaptation,
-                    generated_at: new Date().toISOString(),
-                    generated_by_ai: true
-                } as Block9AdaptationEntry,
-                error: null
-            };
-        }
-    },
-
-    /**
-     * Get all Block 9 adaptations for a PDI (consolidado de PdiBlock9Service)
-     */
-    async getStudentAdaptations(pdiId: string): Promise<Block9AdaptationEntry[]> {
-        try {
-            const { data: pdi } = await this.getPdiDocument(pdiId);
-            if (!pdi) return [];
-            return (pdi.block_9_content || []) as Block9AdaptationEntry[];
-        } catch (error) {
-            console.error('Error fetching Block 9 adaptations:', error);
-            return [];
-        }
-    },
-
-    /**
-     * Get Block 9 adaptation statistics (consolidado de PdiBlock9Service)
-     */
-    async getAdaptationStats(pdiId: string): Promise<{ total: number; last_generated?: string; subjects: string[] }> {
-        const adaptations = await this.getStudentAdaptations(pdiId);
-        const subjects = [...new Set(adaptations.map((a) => a.subject))];
-        const lastGenerated =
-            adaptations.length > 0
-                ? adaptations.sort(
-                      (a, b) => new Date(b.generated_at).getTime() - new Date(a.generated_at).getTime()
-                  )[0].generated_at
-                : undefined;
-        return { total: adaptations.length, last_generated: lastGenerated, subjects: subjects as string[] };
-    },
-
-    /**
-     * Generate Block 9 adaptations for all students with active PDIs in a class (consolidado de PdiBlock9Service)
-     */
-    async generateAdaptationsForLesson(
-        lessonId: string,
-        lessonTitle: string,
-        lessonContent: string,
-        subject: string,
-        gradeLevel: string,
-        habilidadesBncc: string[],
-        classId: string,
-        schoolId: string,
-        userId: string,
-        year: number
-    ): Promise<{ success: boolean; adaptationsCreated: number; errors: string[] }> {
-        const errors: string[] = [];
-        let adaptationsCreated = 0;
-
-        try {
-            const { data: studentsWithPdi, error: studentsError } = await supabase
-                .from('pdi_documents')
-                .select(`id, student_id, year, content_data, school_students (id, name)`)
-                .eq('school_id', schoolId)
-                .eq('year', year)
-                .eq('status', 'em_andamento');
-
-            if (studentsError || !studentsWithPdi || studentsWithPdi.length === 0) {
-                if (studentsError) errors.push(`Erro ao buscar alunos com PDI: ${studentsError.message}`);
-                return { success: !studentsError, adaptationsCreated: 0, errors };
-            }
-
-            for (const pdiDoc of studentsWithPdi as PdiDocRow[]) {
-                try {
-                    const content = pdiDoc.content_data || {};
-                    const studentContext = {
-                        nome_completo: pdiDoc.school_students?.name || 'Estudante',
-                        diagnostico_clinico: content.clinical_health?.diagnosis_cid,
-                        necessidades_especificas: content.pedagogical?.specific_needs,
-                        potencialidades: content.cognitive?.potentials,
-                        desafios: content.cognitive?.challenges,
-                        objetivo_geral: content.pedagogical?.general_objective,
-                        recursos_tecnologicos: content.pedagogical?.technological_resources,
-                        materiais_adaptados: content.pedagogical?.adapted_materials
-                    };
-
-                    if (!studentContext.nome_completo) {
-                        errors.push(`${studentContext.nome_completo}: Formulário base incompleto`);
-                        continue;
-                    }
-
-                    const adaptationResult = await generateBlock9Adaptation(
-                        lessonContent,
-                        lessonTitle,
-                        subject,
-                        gradeLevel,
-                        habilidadesBncc,
-                        studentContext as any,
-                        userId
-                    );
-
-                    const newAdaptation: Omit<Block9AdaptationEntry, 'generated_at' | 'generated_by_ai'> = {
-                        lesson_id: lessonId,
-                        lesson_title: lessonTitle,
-                        subject,
-                        habilidades_bncc: habilidadesBncc,
-                        adaptacao_metodologica: adaptationResult.adaptacao_metodologica,
-                        recursos_adaptados: adaptationResult.recursos_adaptados,
-                        objetivos_adaptados: adaptationResult.objetivos_adaptados,
-                        estrategias_ensino: adaptationResult.estrategias_ensino,
-                        tempo_estimado: adaptationResult.tempo_estimado
-                    };
-
-                    const saved = await this.addBlock9Adaptation(pdiDoc.id, newAdaptation);
-                    if (saved.data) adaptationsCreated++;
-                    else errors.push(`${studentContext.nome_completo}: Erro ao salvar`);
-                } catch (err) {
-                    errors.push(`${pdiDoc.school_students?.name || 'Estudante'}: ${getErrorMessage(err)}`);
-                }
-            }
-            return { success: true, adaptationsCreated, errors };
-        } catch (error) {
-            return {
-                success: false,
-                adaptationsCreated,
-                errors: [getErrorMessage(error) || 'Erro fatal ao gerar adaptações']
-            };
-        }
-    },
-
-    /**
-     * Update block 11 report
-     */
-    async updateBlock11ByProgument(pdiId: string, reportText: string): Promise<{ data: unknown; error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_documents')
-            .update({ final_report: reportText, updated_at: new Date().toISOString() })
-            .eq('id', pdiId)
-            .select()
-            .single();
-        return { data, error };
-    },
-
-    /**
-     * Approve block 11 report
-     */
-    async approveBlock11(pdiId: string, approvedBy: string): Promise<{ data: unknown; error: unknown }> {
-        const { data, error } = await supabase
-            .from('pdi_documents')
-            .update({
-                status: 'finalizado',
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', pdiId)
-            .select()
-            .single();
-        return { data, error };
-    },
-
-    /**
-     * Export PDI to official DOCX format
-     * Consolidated from PdiExportService.exportPdiToDocx()
-     * 
-     * NOTE: Requires docx and file-saver packages:
-     * npm install docx file-saver
-     * npm install --save-dev @types/file-saver
-     */
+    // ── pdiRecordRepository ──────────────────────────────────────────
+    logEvent: _logEvent,
+    getStudentTimeline: _getStudentTimeline,
+    logEventForClass: _logEventForClass,
+    updateRecordContent: _updateRecordContent,
+    getPdiLogs: _getPdiLogs,
+    getLogs: _getLogs,
+
+    // ── pdiTeacherEntryRepository ────────────────────────────────────
+    saveTeacherEntry: _saveTeacherEntry,
+    getTeacherEntries: _getTeacherEntries,
+    addBlock10Evaluation: _addBlock10Evaluation,
+    updateBlock10WithAI: _updateBlock10WithAI,
+
+    // ── pdiDocumentRepository ────────────────────────────────────────
+    getOrCreatePdi: _getOrCreatePdi,
+    createPdiDocument: _createPdiDocument,
+    getPdiDocument: _getPdiDocument,
+    updatePdiSection: _updatePdiSection,
+    updateBlock1to8: _updateBlock1to8,
+    getSchoolPdis: _getSchoolPdis,
+    updateBlock11ByProgument: _updateBlock11ByProgument,
+    approveBlock11: _approveBlock11,
+
+    // ── pdiBlock9Service ─────────────────────────────────────────────
+    addBlock9Adaptation: _addBlock9Adaptation,
+    getStudentAdaptations: _getStudentAdaptations,
+    getAdaptationStats: _getAdaptationStats,
+    generateAdaptationsForLesson: _generateAdaptationsForLesson,
+
+    // ── pdiUtils ─────────────────────────────────────────────────────
+    mapToCompatibility: _mapToCompatibility,
+    calculateCompleteness: _calculateCompleteness,
+
+    // ── exportPdiToDocx (permanece aqui — único método com lógica docx) ──
     async exportPdiToDocx(pdi: PdiDocument): Promise<{ success: boolean; error?: string }> {
         try {
             const docx = (await import('docx')) as unknown as DocxModule;
             const fileSaver = await import('file-saver');
             const saveAs = fileSaver.saveAs;
 
-            const { Document, Paragraph, HeadingLevel, AlignmentType, Packer, TextRun } = docx;
+            const { Document, Paragraph, HeadingLevel, AlignmentType, Packer } = docx;
 
             const studentName = pdi.student_name || 'Estudante';
             const formattedDate = new Date().toLocaleDateString('pt-BR');
             const fileName = `PDI_${studentName.replace(/ /g, '_')}_${pdi.year}_${formattedDate}.docx`;
 
-            // Create document
             const doc = new Document({
                 sections: [
                     {
@@ -856,8 +140,6 @@ export const PdiDocumentService = {
                                 alignment: AlignmentType.CENTER,
                                 spacing: { after: 800 },
                             }),
-
-                            // Additional Blocks
                             ...createBlock1Section(pdi, docx),
                             ...createBlock2Section(pdi, docx),
                             ...createBlock3Section(pdi, docx),
@@ -875,129 +157,32 @@ export const PdiDocumentService = {
                 ],
             });
 
-            // Generate and download
             const blob = await Packer.toBlob(doc);
             saveAs(blob, fileName);
 
             return { success: true };
         } catch (error: unknown) {
             console.error('Error exporting PDI to DOCX:', error);
-            return { 
-                success: false, 
-                error: 'Erro ao exportar PDI para DOCX. Verifique se bibliotecas "docx" e "file-saver" estão instaladas.' 
+            return {
+                success: false,
+                error: 'Erro ao exportar PDI para DOCX. Verifique se bibliotecas "docx" e "file-saver" estão instaladas.'
             };
         }
     }
 };
 
-
-export const generateBlock9Adaptation = async (
-    lessonContent: string,
-    lessonTitle: string,
-    subject: string,
-    gradeLevel: string,
-    habilidadesBncc: string[],
-    studentPdiContext: {
-        nome_completo: string;
-        diagnostico_clinico?: string;
-        necessidades_especificas?: string[];
-        potencialidades?: string[];
-        desafios?: string[];
-        objetivo_geral?: string;
-        recursos_tecnologicos?: string[];
-        materiais_adaptados?: string[];
-    },
-    userId?: string
-): Promise<{
-    adaptacao_metodologica: string;
-    recursos_adaptados: string[];
-    objetivos_adaptados: string[];
-    estrategias_ensino: string[];
-    tempo_estimado?: string;
-}> => {
-    if (userId) {
-        try {
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('allowed_features')
-                .eq('id', userId)
-                .maybeSingle();
-
-            const allowedFeatures = profile?.allowed_features || [];
-            if (allowedFeatures.includes('pdi_bff') || allowedFeatures.includes('all')) {
-                const authHeaders = await getAuthHeaders();
-                const response = await fetch("/api/pdiProxy", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...authHeaders
-                    },
-                    body: JSON.stringify({
-                        action: 'generateBlock9Adaptation',
-                        lessonContent,
-                        lessonTitle,
-                        subject,
-                        gradeLevel,
-                        habilidadesBncc,
-                        studentPdiContext
-                    }),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    return data;
-                }
-            }
-        } catch (bffError) {
-            console.warn('[PdiDocumentService] BFF generateBlock9Adaptation failed, falling back to local:', bffError);
-        }
-    }
-
-    if (userId) {
-        const quotaStatus = await checkUsageQuota(userId);
-        if (!quotaStatus.allowed) {
-            throw new Error(quotaStatus.message);
-        }
-    }
-
-    const prompt = `ATUE COMO UM ESPECIALISTA EM INCLUSÃO E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
-
-AULA: ${lessonTitle} (${subject} - ${gradeLevel})
-Conteúdo: ${lessonContent.substring(0, 2500)}
-Habilidades BNCC: ${habilidadesBncc.join(', ')}
-
-PERFIL DO ALUNO:
-Nome: ${studentPdiContext.nome_completo}
-Diagnóstico: ${studentPdiContext.diagnostico_clinico || 'Não especificado'}
-Necessidades: ${studentPdiContext.necessidades_especificas?.join(', ') || 'Não especificadas'}
-Objetivo geral: ${studentPdiContext.objetivo_geral || 'Não especificado'}
-
-Gere uma adaptação curricular desta aula para este aluno seguindo DUA. Retorne em Markdown com seções: Objetivos Adaptados, Estratégias de Acesso, Atividade Adaptada, Avaliação Diferenciada.`;
-
-    const adaptacao_metodologica = await createSimpleCompletion(
-        prompt,
-        "Você é um especialista em inclusão e DUA escrevendo adaptações de aula. Seja específico e aplicável na sala de aula."
-    );
-    return {
-        adaptacao_metodologica,
-        recursos_adaptados: [],
-        objetivos_adaptados: [],
-        estrategias_ensino: [],
-        tempo_estimado: undefined
-    };
-};
+// Standalone exports para backward-compatibility
+export const generateBlock9Adaptation = _generateBlock9Adaptation;
 
 export const exportPdiToDocx = async (pdi: PdiDocument): Promise<void> => {
-    // Implementation for exporting PDI to DOCX
     console.log('Exporting PDI to DOCX:', pdi);
 };
 
 export const generateBlock10Diagnosis = async (pdiId: string, diagnosis: string): Promise<void> => {
-    // Implementation for generating Block 10 diagnosis
     console.log('Generating Block 10 Diagnosis:', pdiId, diagnosis);
 };
 
-export const generateBlock11Report = async (pdiId: string, report: string): Promise<void> => {
-    // Implementation for generating Block 11 report
-    console.log('Generating Block 11 Report:', pdiId, report);
+export const generateBlock11Report = async (pdiId: string, context: unknown): Promise<string> => {
+    console.log('Generating Block 11 Report:', pdiId, context);
+    return '';
 };
