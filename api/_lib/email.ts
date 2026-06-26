@@ -12,7 +12,7 @@ import {
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || 'noreply@profeplan.com.br';
 const FROM_NAME = process.env.SMTP_FROM_NAME || 'PROFEPLAN';
-const APP_URL = process.env.APP_URL || 'https://profeplan.vercel.app';
+const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
 
 const log = {
   info: (msg: string, meta?: unknown) =>

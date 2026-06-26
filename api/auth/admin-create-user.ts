@@ -6,8 +6,18 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { supabaseAdmin } from '../_lib/supabaseAdmin';
 import { sendWelcomeEmail } from '../_lib/email';
 
-const APP_URL = process.env.APP_URL || 'https://profeplan.vercel.app';
-const ALLOWED_ORIGINS = [APP_URL, 'http://localhost:3000', 'http://localhost:5173'];
+const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
+
+const isAllowedOrigin = (origin: string): boolean => {
+  if (!origin) return false;
+  return (
+    origin === 'http://localhost:3000' ||
+    origin === 'http://localhost:5173' ||
+    origin.endsWith('.profeplan.com.br') ||
+    origin === 'https://profeplan.com.br' ||
+    origin.endsWith('.vercel.app')
+  );
+};
 
 const log = {
   info: (msg: string, meta?: unknown) =>
@@ -20,7 +30,7 @@ const log = {
 
 function setCors(req: VercelRequest, res: VercelResponse): void {
   const origin = String(req.headers.origin || '');
-  if (ALLOWED_ORIGINS.includes(origin)) {
+  if (isAllowedOrigin(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
