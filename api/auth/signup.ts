@@ -108,10 +108,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email,
         password,
         data: { full_name: fullName },
-        // Sempre aponta para o domínio de produção — APP_URL pode estar com URL antiga
-        redirect_to: APP_URL.includes('profeplan.com.br')
-          ? `${APP_URL}/login`
-          : 'https://profeplan.com.br/login',
+        // Supabase exige URL exata na lista de permitidas — usar raiz sem /login
+        // Após confirmação a SPA reencaminha para o login via onAuthStateChange
+        redirect_to: 'https://profeplan.com.br',
       }),
     });
 
