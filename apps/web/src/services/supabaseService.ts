@@ -1,6 +1,14 @@
 import { supabase } from './supabaseClient'; // Unified client import
 export { supabase }; // Re-export for backward compatibility
 
+// Resolve o auth.uid() real via sessão do Supabase (nunca usa userId prop diretamente em INSERTs).
+const resolveAuthUid = async (): Promise<string> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const uid = session?.user?.id;
+    if (!uid) throw new Error('Sessão expirada. Faça login novamente.');
+    return uid;
+};
+
 
 // Removed local createClient to ensure shared state with Auth
 // const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -17,10 +25,11 @@ export const saveLessonToMemory = async (
     canvaData: unknown,
     classId?: string
 ) => {
+    const authUid = await resolveAuthUid();
     const { data, error } = await supabase
         .from('lessons')
         .insert([{
-            user_id: userId,
+            user_id: authUid,
             topic,
             content,
             canva_json: canvaData,
@@ -92,11 +101,14 @@ export const saveClassStructure = async (
         schoolId?: string;
     }
 ) => {
+    // Usa auth.uid() real — ignora userId prop para evitar ghost UUID no RLS
+    const authUid = await resolveAuthUid();
+
     // 1. Criar a Turma
     const { data: classObj, error: classError } = await supabase
         .from('classes')
         .insert([{
-            user_id: userId,
+            user_id: authUid,
             school_id: classData.schoolId,
             name: classData.className,
             subject: classData.subject
