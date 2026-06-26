@@ -1,12 +1,15 @@
 // Endpoint server-side de cadastro público.
-// Usa supabase.auth.admin.generateLink() para criar o usuário e gerar o link de confirmação,
-// depois envia o link via Resend — eliminando completamente o rate limit de e-mail do Supabase.
+// Chama a Supabase Admin REST API via fetch nativo — sem dependência de @supabase/supabase-js.
+// Envia o link de confirmação via Resend, eliminando o rate limit de e-mail do Supabase.
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabaseAdmin } from '../_lib/supabaseAdmin';
 import { sendEmailConfirmation } from '../_lib/email';
 
+// APP_URL controla o redirectTo do link de confirmação.
+// Deve ser https://profeplan.com.br em produção.
 const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 const isAllowedOrigin = (origin: string): boolean => {
   if (!origin) return false;
@@ -61,7 +64,8 @@ function parseAndValidate(body: unknown): SignupInput | null {
 }
 
 // Mensagem genérica para evitar enumeração de usuários
-const GENERIC_SUCCESS = 'Se este e-mail não estiver cadastrado, você receberá um link de confirmação em breve. Verifique também o Spam.';
+const GENERIC_SUCCESS =
+  'Se este e-mail não estiver cadastrado, você receberá um link de confirmação em breve. Verifique também o Spam.';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setCors(req, res);
@@ -69,9 +73,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
-  // Checa env vars críticas — se ausentes, Supabase Admin não funciona
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    log.error('[Signup] Env vars SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não encontradas');
+  // Checa env vars críticas antes de qualquer operação
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    log.error('[Signup] SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes', {
+      hasUrl: !!SUPABASE_URL,
+      hasKey: !!SERVICE_KEY,
+    });
     return res.status(503).json({ error: 'Serviço temporariamente indisponível. Contate o suporte.' });
   }
 
@@ -87,39 +94,55 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     log.info('[Signup] Iniciando cadastro', { email });
 
-    // generateLink cria o usuário e retorna o link de confirmação.
-    // O Supabase NÃO envia nenhum e-mail — nós enviamos via Resend.
-    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'signup',
-      email,
-      password,
-      options: {
-        redirectTo: `${APP_URL}/login`,
-        data: { full_name: fullName },
+    // Chama Supabase Admin REST API diretamente (sem @supabase/supabase-js)
+    // generateLink cria o usuário e retorna o link de confirmação sem enviar e-mail.
+    const supabaseResp = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${SERVICE_KEY}`,
+        apikey: SERVICE_KEY,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        type: 'signup',
+        email,
+        password,
+        data: { full_name: fullName },
+        redirect_to: `${APP_URL}/login`,
+      }),
     });
 
-    if (linkError) {
-      const msg = (linkError.message ?? '').toLowerCase();
+    const linkData = (await supabaseResp.json().catch(() => ({}))) as Record<string, unknown>;
 
-      // E-mail já cadastrado — retornamos sucesso genérico (não revelamos se existe)
+    if (!supabaseResp.ok) {
+      const rawMsg = String(linkData?.msg ?? linkData?.message ?? linkData?.error_description ?? '').toLowerCase();
+      log.error('[Signup] Supabase Admin API erro', {
+        email,
+        status: supabaseResp.status,
+        body: linkData,
+      });
+
+      // E-mail já cadastrado — retorna sucesso genérico (não revelamos se existe)
       if (
-        msg.includes('already registered') ||
-        msg.includes('user already exists') ||
-        msg.includes('email address is already') ||
-        msg.includes('duplicate')
+        rawMsg.includes('already registered') ||
+        rawMsg.includes('user already exists') ||
+        rawMsg.includes('email address is already') ||
+        rawMsg.includes('duplicate') ||
+        supabaseResp.status === 422
       ) {
         log.info('[Signup] E-mail já existe, retornando mensagem genérica', { email });
         return res.status(200).json({ success: true, message: GENERIC_SUCCESS });
       }
 
-      log.error('[Signup] Falha ao gerar link de confirmação', { email, error: linkError.message });
-      return res.status(500).json({ error: 'Não foi possível criar sua conta. Tente novamente mais tarde.' });
+      return res.status(500).json({
+        error: 'Não foi possível criar sua conta. Tente novamente mais tarde.',
+      });
     }
 
-    const actionLink = linkData?.properties?.action_link;
+    // A resposta do Supabase Admin generate_link tem { action_link, ... }
+    const actionLink = String(linkData?.action_link ?? '');
     if (!actionLink) {
-      log.error('[Signup] action_link ausente na resposta do Supabase', { email });
+      log.error('[Signup] action_link ausente na resposta do Supabase', { email, body: linkData });
       return res.status(500).json({ error: 'Erro interno ao gerar confirmação. Tente novamente.' });
     }
 
@@ -128,12 +151,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     log.audit('SIGNUP_INITIATED', email, {
       emailSent: emailResult.success,
-      emailError: emailResult.error,
+      emailError: emailResult.error ?? null,
       platform: 'V4-Vite-App',
     });
 
     if (!emailResult.success) {
-      // Usuário foi criado mas o e-mail falhou — logar para ação manual
       log.error('[Signup] ATENÇÃO: usuário criado mas e-mail de confirmação não foi enviado', {
         email,
         error: emailResult.error,
