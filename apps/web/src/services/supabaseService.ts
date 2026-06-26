@@ -1,8 +1,11 @@
 import { supabase } from './supabaseClient'; // Unified client import
 export { supabase }; // Re-export for backward compatibility
 
-// Resolve o auth.uid() real via sessão do Supabase (nunca usa userId prop diretamente em INSERTs).
+// Resolve o auth.uid() real — getUser() valida server-side e renova o token automaticamente.
 const resolveAuthUid = async (): Promise<string> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.id) return user.id;
+    // Fallback: sessão local caso getUser() falhe por rede
     const { data: { session } } = await supabase.auth.getSession();
     const uid = session?.user?.id;
     if (!uid) throw new Error('Sessão expirada. Faça login novamente.');
