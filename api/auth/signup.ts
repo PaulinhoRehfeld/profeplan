@@ -136,10 +136,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).json({ success: true, message: GENERIC_SUCCESS });
       }
 
-      // Temporário: expõe erro do Supabase para diagnóstico
       return res.status(500).json({
         error: 'Não foi possível criar sua conta. Tente novamente mais tarde.',
-        _debug: { supabaseStatus: supabaseResp.status, supabaseBody: linkData },
       });
     }
 
