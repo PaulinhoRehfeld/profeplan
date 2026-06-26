@@ -69,6 +69,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
+  // Checa env vars críticas — se ausentes, Supabase Admin não funciona
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    log.error('[Signup] Env vars SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não encontradas');
+    return res.status(503).json({ error: 'Serviço temporariamente indisponível. Contate o suporte.' });
+  }
+
   const input = parseAndValidate(req.body);
   if (!input) {
     return res.status(400).json({

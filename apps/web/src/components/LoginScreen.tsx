@@ -137,9 +137,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         const signupData = await signupResp.json().catch(() => ({}));
 
         if (!signupResp.ok) {
-          throw Object.assign(new Error(signupData?.error || 'Erro ao criar conta.'), {
-            status: signupResp.status,
-          });
+          // Suporta erro como string ou objeto (formato Vercel internal error)
+          const errMsg =
+            typeof signupData?.error === 'string'
+              ? signupData.error
+              : signupData?.error?.message || signupData?.message || `Erro ${signupResp.status} ao criar conta.`;
+          throw Object.assign(new Error(errMsg), { status: signupResp.status });
         }
 
         if (isEducacao) {
