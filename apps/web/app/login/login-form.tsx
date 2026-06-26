@@ -26,7 +26,17 @@ export function LoginForm() {
     });
 
     if (signInError) {
-      setError(signInError.message);
+      const msg = signInError.message?.toLowerCase() ?? '';
+      if (msg.includes('invalid login credentials') || signInError.status === 400) {
+        setError('E-mail ou senha incorretos. Verifique suas credenciais.');
+      } else if (msg.includes('email not confirmed')) {
+        setError('E-mail não confirmado. Verifique sua caixa de entrada para ativar sua conta.');
+      } else if (signInError.status === 429 || msg.includes('rate limit') || msg.includes('for security purposes')) {
+        setError('Muitas tentativas. Aguarde alguns minutos e tente novamente.');
+      } else {
+        setError('Ocorreu um erro ao entrar. Tente novamente ou entre em contato com o suporte.');
+        console.error('[LoginForm] Erro de auth:', signInError);
+      }
       setIsLoading(false);
       return;
     }

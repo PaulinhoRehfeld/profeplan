@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../../../services/supabaseClient';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 interface CreateUserModalProps {
     isOpen: boolean;
@@ -30,87 +31,78 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
     const [schoolSearchText, setSchoolSearchText] = useState('');
     const [filteredSchools, setFilteredSchools] = useState<{ id: string, name: string }[]>([]);
 
+    // Feedback state
+    const [formError, setFormError] = useState('');
+    const [formSuccess, setFormSuccess] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     if (!isOpen) return null;
 
     const handleCreateUser = async () => {
-        if (!email || !password) return alert('Preencha E-mail e Senha');
+        if (!email || !password) {
+            setFormError('Preencha E-mail e Senha.');
+            return;
+        }
+
+        setFormError('');
+        setFormSuccess('');
+        setIsSubmitting(true);
 
         try {
-            // Map UI Role to Database Role Profile
-            // DB Roles: 'teacher', 'manager', 'admin'
-            let dbRole = 'teacher';
+            let dbRole: 'teacher' | 'manager' | 'admin' = 'teacher';
             if (role === 'SCHOOL_MANAGER') {
                 dbRole = 'manager';
-                if (!schoolId) return alert('Selecione uma Escola para o Gestor.');
+                if (!schoolId) {
+                    setFormError('Selecione uma Escola para o Gestor.');
+                    setIsSubmitting(false);
+                    return;
+                }
             }
             if (role === 'ADMIN') dbRole = 'admin';
 
-            // SOLUÇÃO DEFINITIVA: Criar no Supabase Auth com configurações corretas
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    emailRedirectTo: window.location.origin,
-                    data: {
-                        full_name: '',
-                        role: dbRole
-                    }
-                }
-            });
-
-            // Tratamento melhorado de erros
-            if (authError) {
-                console.error('Auth Error Details:', authError);
-
-                if (authError.message.includes('already registered')) {
-                    throw new Error('Este email já está cadastrado. Use outro email ou faça login.');
-                } else if (authError.message.includes('Database error')) {
-                    throw new Error('Erro no banco de dados. Verifique se o email já existe ou contate o suporte.');
-                } else {
-                    throw new Error('Erro ao criar usuário: ' + authError.message);
-                }
+            // Obtém token do usuário admin logado para autenticar o endpoint
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token;
+            if (!token) {
+                setFormError('Sessão expirada. Faça login novamente.');
+                setIsSubmitting(false);
+                return;
             }
-            if (!authData.user) throw new Error('Erro: usuário não foi criado.');
 
-            const userId = authData.user.id;
-
-            // 2. Atualizar/Criar perfil com role e school corretos
-            const { error: profileError } = await supabase.from('profiles')
-                .upsert({
-                    id: userId,
-                    email: email,
+            const resp = await fetch('/api/auth/admin-create-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
                     role: dbRole,
-                    tier: tier,
-                    credits: credits,
-                    is_unlimited: tier === 'GOLD',
-                    is_admin: role === 'ADMIN',
-                    school_id: (role === 'SCHOOL_MANAGER' || role === 'TEACHER') ? schoolId : null,
-                    allowed_features: ['all']
-                }, {
-                    onConflict: 'id'
-                });
-
-            if (profileError) {
-                console.error("Erro ao atualizar perfil:", profileError);
-                throw new Error('Usuário criado, mas perfil falhou: ' + profileError.message);
-            }
-
-            // 3. OPCIONAL: Também salvar em authorized_users para compatibilidade com login VIP
-            await supabase.from('authorized_users').upsert({
-                id: userId,
-                email: email,
-                access_key: password,
-                role: dbRole
-            }, {
-                onConflict: 'id'
+                    schoolId: schoolId || undefined,
+                    tier,
+                    credits,
+                    sendWelcome: false,
+                }),
             });
 
-            alert('Usuário criado com sucesso! Use a senha informada como Chave de Acesso.');
+            const data = await resp.json().catch(() => ({}));
+
+            if (!resp.ok) {
+                const msg = data?.error || 'Erro ao criar usuário. Tente novamente.';
+                setFormError(msg);
+                return;
+            }
+
+            setFormSuccess(`Usuário criado com sucesso! Senha inicial: ${password}`);
             resetForm();
             onUserCreated();
 
         } catch (e: any) {
-            alert('Erro: ' + e.message);
+            console.error('[CreateUserModal] Erro inesperado:', e);
+            setFormError('Erro inesperado. Verifique o console e contate o suporte.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -123,6 +115,8 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
         setSchoolSearchText('');
         setFilteredSchools([]);
         setCredits(10);
+        setFormError('');
+        setFormSuccess('');
     };
 
     return (
@@ -259,9 +253,27 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
                         <input type="number" disabled={tier === 'GOLD'} value={credits} onChange={e => setCredits(parseInt(e.target.value))} className="w-full px-4 py-2 border rounded-lg disabled:opacity-50" />
                     </div>
                 </div>
-                <div className="flex gap-3 mt-8">
+                {formError && (
+                    <div className="flex items-start gap-2 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                        <p className="text-sm text-red-700 font-medium">{formError}</p>
+                    </div>
+                )}
+                {formSuccess && (
+                    <div className="flex items-start gap-2 mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                        <p className="text-sm text-green-700 font-medium">{formSuccess}</p>
+                    </div>
+                )}
+                <div className="flex gap-3 mt-6">
                     <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200">Cancelar</button>
-                    <button onClick={handleCreateUser} className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700">Criar Usuário</button>
+                    <button
+                        onClick={handleCreateUser}
+                        disabled={isSubmitting}
+                        className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isSubmitting ? 'Criando...' : 'Criar Usuário'}
+                    </button>
                 </div>
             </div>
         </div>

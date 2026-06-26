@@ -29,6 +29,20 @@ const isRetryableAuthError = (err: any): boolean => {
   );
 };
 
+const isRateLimitError = (err: any): boolean => {
+  if (Number(err?.status) === 429) return true;
+  const message = String(err?.message || '').toLowerCase();
+  const code = String(err?.code || '').toLowerCase();
+  return (
+    code.includes('over_email_send_rate_limit') ||
+    message.includes('rate limit') ||
+    message.includes('email rate') ||
+    message.includes('over_email_send_rate_limit') ||
+    message.includes('for security purposes') ||
+    message.includes('request this after')
+  );
+};
+
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login' }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -113,33 +127,29 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
         const isEducacao = cleanEmail.toLowerCase().endsWith('@educacao.mg.gov.br');
 
-        const { error } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password,
-          options: {
-            data: { full_name: fullName }
-          }
+        // Cadastro via endpoint server-side — elimina rate limit do Supabase
+        const signupResp = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, password, fullName }),
         });
-        if (error) throw error;
+
+        const signupData = await signupResp.json().catch(() => ({}));
+
+        if (!signupResp.ok) {
+          throw Object.assign(new Error(signupData?.error || 'Erro ao criar conta.'), {
+            status: signupResp.status,
+          });
+        }
 
         if (isEducacao) {
-          setSuccessMsg('Conta educacional verificada! Entrando automaticamente...');
-
-          // Race Condition Fix: Wait for DB triggers to finish
-          await new Promise(resolve => setTimeout(resolve, 800));
-
-          const { error: loginError } = await supabase.auth.signInWithPassword({
-            email: cleanEmail,
-            password,
-          });
-
-          if (loginError) {
-            // Sign up success but login failed (maybe validation)
-            setSuccessMsg('Conta criada! Por favor realize o login.');
-            setIsSignUp(false);
-          }
+          setSuccessMsg('Conta criada! Verifique seu e-mail de confirmação e depois faça login.');
+          setIsSignUp(false);
         } else {
-          setSuccessMsg('Conta criada! Verifique seu e-mail para confirmar a conta (se necessário) ou faça login.');
+          setSuccessMsg(
+            signupData?.message ||
+            'Conta criada! Verifique seu e-mail (e o Spam) para confirmar o cadastro.'
+          );
           setIsSignUp(false);
         }
       } else {
@@ -174,10 +184,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           setError('E-mail ou senha incorretos. Verifique suas credenciais.');
         } else if (err.message?.toLowerCase().includes('email not confirmed')) {
           setError('E-mail ainda não confirmado. Verifique sua caixa de entrada (e o Spam) para ativar sua conta.');
+        } else if (err.code === 'user_already_exists' || err.message?.toLowerCase().includes('already registered')) {
+          setError('Este e-mail já possui uma conta cadastrada. Faça login.');
+        } else if (isRateLimitError(err)) {
+          setError('Estamos recebendo muitas solicitações de cadastro neste momento. Tente novamente em alguns minutos ou entre em contato com o suporte.');
         } else if (isRetryableAuthError(err)) {
           setError('Estamos com instabilidade momentânea no servidor de autenticação. Tente novamente em alguns segundos.');
         } else {
-          setError(err.message || 'Erro desconhecido na autenticação.');
+          setError('Ocorreu um erro ao processar sua solicitação. Tente novamente ou entre em contato com o suporte.');
+          console.error('[LoginScreen] Erro de auth não mapeado:', err);
         }
       }
     } finally {
