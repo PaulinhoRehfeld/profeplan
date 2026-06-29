@@ -84,6 +84,7 @@ export interface UserSettings {
 }
 
 export enum ToolMode {
+  HOME = 'home',
   PLANNING = 'planning',
   QUARTERLY_PLANNING = 'quarterly', // NOVO
   ACTIVITIES = 'activities',

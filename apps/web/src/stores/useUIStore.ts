@@ -22,7 +22,7 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  activeMode: ToolMode.CHAT,
+  activeMode: ToolMode.HOME,
   isMobileNavOpen: false,
   isLeftNavExpanded: true,
   isSettingsOpen: false,

@@ -4,6 +4,7 @@ import { ToolMode, UserSession, UserProfile, UserSettings } from '../types';
 import { isAdmin, isProfileCompleteForMainFlows } from '../services/ProfileService';
 
 // Lazy Load Features
+const HomePage = React.lazy(() => import('../features/Home/HomePage'));
 const DriveExplorer = React.lazy(() => import('../components/DriveExplorer'));
 const AdminPanel = React.lazy(() => import('../components/Admin/AdminPanel').then(module => ({ default: module.AdminPanel })));
 const HistoryList = React.lazy(() => import('../components/HistoryList'));
@@ -79,7 +80,13 @@ export const FeatureRenderer: React.FC<FeatureRendererProps> = ({
 
     return (
         <Suspense fallback={<PageLoader />}>
-            {activeMode === ToolMode.FILES ? (
+            {activeMode === ToolMode.HOME ? (
+                <HomePage
+                    setActiveMode={setActiveMode}
+                    userProfile={userProfile}
+                    session={session}
+                />
+            ) : activeMode === ToolMode.FILES ? (
                 <div className="flex-1 overflow-hidden h-full w-full bg-slate-50">
                     <DriveExplorer userId={session.id} userEmail={session.email} settings={settings} />
                 </div>

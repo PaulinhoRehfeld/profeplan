@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector, Clock, Users, ClipboardCheck } from 'lucide-react';
+import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector, Clock, Users, ClipboardCheck, MessageSquare } from 'lucide-react';
 import { ToolMode, UserRole, UserProfile } from '../types';
 import { supabase } from '../services/supabaseClient';
 import DonationWidget from './DonationWidget';
@@ -36,7 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout
 }) => {
   const menuItems = [
-    { id: ToolMode.CHAT, icon: Home, label: 'Início (Assistente)', feature: 'home', group: 'home' },
+    { id: ToolMode.HOME, icon: Home, label: 'Início', feature: 'home', group: 'home' },
+    { id: ToolMode.CHAT, icon: MessageSquare, label: 'Assistente', feature: 'home', group: 'home' },
     { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning', group: 'planning' },
     { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planos de Aula', feature: 'planning', group: 'planning' },
     { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptações PDI/DUA', feature: 'pdi', group: 'content' },
@@ -85,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-4 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-6">
             <button
-              onClick={() => handleModeSelection(ToolMode.CHAT)}
+              onClick={() => handleModeSelection(ToolMode.HOME)}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left group overflow-hidden"
             >
               <div className="p-1 rounded-lg group-hover:scale-110 transition-transform shrink-0">
