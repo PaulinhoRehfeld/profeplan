@@ -295,15 +295,12 @@ export const updateUserProfile = async (
     }
 ): Promise<{ success: boolean; message?: string; error?: string }> => {
     try {
-        // 1. Prepare updates for the profile table
-        const updates: Record<string, unknown> = {
+        // 1. Prepare updates for the profile table (only include defined, non-undefined values)
+        const rawUpdates: Record<string, unknown> = {
             full_name: profileData.userName?.trim(),
             email: profileData.institutionalEmail?.trim().toLowerCase(),
             masp: profileData.masp?.trim(),
             city: profileData.city?.trim(),
-            // NOTA: o nome da escola (institution) é texto livre e NÃO é coluna de
-            // `profiles` — fica apenas nas settings locais (documentos). O vínculo
-            // formal da escola é feito SOMENTE pelo código INEP via reconcileTeacherByInep.
             // Pedagogical settings
             favorite_methodology: profileData.favoriteMethodology,
             teaching_style: profileData.teachingStyle,
@@ -315,7 +312,18 @@ export const updateUserProfile = async (
             logo_base64: profileData.logoBase64
         };
 
-        let message = undefined;
+        // Remove undefined/null keys so we don't send garbage to the DB
+        const updates: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(rawUpdates)) {
+            if (value !== undefined && value !== null) {
+                updates[key] = value;
+            }
+        }
+
+        // NOTE: Do NOT set updated_at here — the RPC and the trigger handle it.
+        // Sending it explicitly can cause timezone/format conflicts.
+
+        let message: string | undefined = undefined;
 
         // 2. School Linking is now handled via teacher_schools table
         // DO NOT update profiles.school_id here - this is legacy behavior
@@ -331,20 +339,49 @@ export const updateUserProfile = async (
         // 2.5. Caminho preferencial: RPC SECURITY DEFINER update_my_profile.
         //      Usa auth.uid() no servidor e resolve Ghost ID por email, sem esbarrar
         //      em RLS nem mexer na PK (que quebraria foreign keys).
-        const { error: rpcError } = await supabase.rpc('update_my_profile', { p_updates: updates });
-        if (!rpcError) {
-            console.log('[userService] ✅ Perfil salvo via update_my_profile RPC.');
+        //      Se a RPC falhar com erro de auth, tenta refresh da sessão e retry.
+        let rpcResult = await supabase.rpc('update_my_profile', { p_updates: updates });
+        let rpcError = rpcResult.error;
+        let rpcData = rpcResult.data;
+
+        // Retry logic: se o erro for de autenticação, tenta refresh da sessão e retry
+        if (rpcError && /autenticado|auth|jwt|token|expir|session|bearer/i.test(rpcError.message || '')) {
+            console.warn('[userService] 🔄 RPC update_my_profile falhou com erro de auth, tentando refresh de sessão...');
+            try {
+                const { data: { session }, error: refreshErr } = await supabase.auth.refreshSession();
+                if (!refreshErr && session) {
+                    console.log('[userService] 🔄 Sessão renovada, retentando RPC...');
+                    rpcResult = await supabase.rpc('update_my_profile', { p_updates: updates });
+                    rpcError = rpcResult.error;
+                    rpcData = rpcResult.data;
+                }
+            } catch (refreshErr) {
+                console.error('[userService] ❌ Exceção no refresh de sessão:', refreshErr);
+            }
+        }
+
+        // RPC succeeded but returned NULL data — o UPDATE não afetou nenhuma linha
+        // (Ghost ID não resolvido, perfil não existe, ou FK quebrada)
+        if (!rpcError && !rpcData) {
+            console.error('[userService] ⚠️ RPC update_my_profile retornou NULL (0 linhas afetadas) — perfil pode não existir ou Ghost ID não resolvido.');
+            // Não retorna sucesso falso — cai no fallback para diagnóstico completo
+        }
+
+        if (!rpcError && rpcData) {
+            console.log('[userService] ✅ Perfil salvo via update_my_profile RPC. ID:', rpcData.id);
             return { success: true, message };
         }
+
+        // RPC falhou — loga o motivo em ERROR (não WARN) para visibilidade no console
         const fnMissing =
             (rpcError as any)?.code === 'PGRST202' ||
             /function .*update_my_profile.* does not exist/i.test(rpcError.message || '') ||
             /could not find the function/i.test(rpcError.message || '');
-        if (!fnMissing) {
-            console.error('[userService] update_my_profile RPC error:', rpcError);
-            return { success: false, error: rpcError.message };
+        if (fnMissing) {
+            console.error('[userService] ❌ RPC update_my_profile NÃO ENCONTRADA — execute a migration 20260709_fix_production_profile_save.sql no Supabase.');
+        } else {
+            console.error('[userService] ❌ RPC update_my_profile FALHOU:', rpcError.message || rpcError, '| code:', (rpcError as any)?.code, '| details:', (rpcError as any)?.details);
         }
-        console.warn('[userService] RPC update_my_profile ausente — usando update direto (rode a migration 20260624_update_my_profile_rpc.sql).');
 
         // 3. Fallback legado: resolve o id canônico do auth.uid(). O RLS de UPDATE exige
         //    auth.uid() = id; se o userId passado divergir (Ghost ID), afeta 0 linhas.
@@ -382,9 +419,43 @@ export const updateUserProfile = async (
             return { success: false, error: updateError.message };
         }
 
-        // 5. 0 linhas afetadas: a linha pode não existir → tenta upsert (criar/atualizar).
+        // 5. 0 linhas afetadas: Ghost ID ou perfil inexistente.
+        //    Em vez de upsert (que bate na RLS), usa get_my_profile RPC
+        //    (SECURITY DEFINER) para achar o perfil real e atualizar por ele.
         if (!updatedRows || updatedRows.length === 0) {
-            console.warn('[userService] Update afetou 0 linhas — tentando upsert de recuperação.');
+            console.warn('[userService] Update afetou 0 linhas (Ghost ID provável) — buscando perfil via get_my_profile RPC...');
+            
+            // Usa a RPC get_my_profile que bypassa RLS e resolve Ghost ID por email
+            const { data: realProfile, error: lookupErr } = await supabase.rpc('get_my_profile');
+            
+            if (!lookupErr && realProfile?.id) {
+                const realId = realProfile.id;
+                console.log('[userService] 🔍 Perfil real encontrado via RPC, id:', realId);
+                
+                // Tenta update com o ID real do perfil
+                const { error: retryErr } = await supabase
+                    .from('profiles')
+                    .update(updates)
+                    .eq('id', realId);
+                
+                if (!retryErr) {
+                    console.log('[userService] ✅ Perfil atualizado com ID real (Ghost ID resolvido).');
+                    return { success: true, message };
+                }
+                console.error('[userService] ❌ Update com ID real falhou:', retryErr.message);
+                
+                // Se o update falhou com RLS, o problema é outro — repassamos o erro
+                if (retryErr.message?.includes('row-level security')) {
+                    return {
+                        success: false,
+                        error: `Erro de segurança (RLS) ao salvar perfil: ${retryErr.message}. Verifique as políticas RLS no Supabase.`
+                    };
+                }
+                return { success: false, error: retryErr.message };
+            }
+            
+            // get_my_profile também falhou — último recurso: upsert
+            console.warn('[userService] get_my_profile RPC falhou ou retornou vazio — tentando upsert de recuperação.');
             const { data: upserted, error: upsertErr } = await supabase
                 .from('profiles')
                 .upsert({ id: targetId, ...updates }, { onConflict: 'id' })

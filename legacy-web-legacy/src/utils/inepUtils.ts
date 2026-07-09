@@ -4,7 +4,8 @@
  * INEP completo = 8 dígitos (ex: 31184381)
  * Documentos oficiais MG = 6 dígitos (ex: 184381)
  * 
- * Esta função adiciona automaticamente o prefixo "31" quando necessário
+ * Esta função normaliza SEMPRE para 8 dígitos (formato completo com prefixo "31")
+ * que é o formato usado na tabela schools do banco de dados.
  */
 
 export const normalizeInepCode = (input: string): {
@@ -20,31 +21,32 @@ export const normalizeInepCode = (input: string): {
         return { normalized: '', isValid: false, error: 'Código INEP vazio' };
     }
 
-    // 6 dígitos (formato padrão MG) → Usa como está
-    if (cleaned.length === 6) {
-        return { normalized: cleaned, isValid: true };
-    }
-
-    // 5 dígitos → Adiciona zero à esquerda
-    if (cleaned.length === 5) {
-        return { normalized: `0${cleaned}`, isValid: true };
-    }
-
-    // 8 dígitos (com prefixo 31) → Remove prefixo para compatibilidade
-    if (cleaned.length === 8 && cleaned.startsWith('31')) {
-        return { normalized: cleaned.slice(2), isValid: true }; // Remove "31"
-    }
-
-    // 8 dígitos (outro prefixo) → Mantém como está
+    // 8 dígitos → Já está no formato completo, usa como está
     if (cleaned.length === 8) {
         return { normalized: cleaned, isValid: true };
+    }
+
+    // 6 dígitos (formato MG sem prefixo) → Adiciona prefixo "31"
+    if (cleaned.length === 6) {
+        return { normalized: `31${cleaned}`, isValid: true };
+    }
+
+    // 5 dígitos → Adiciona zero à esquerda e prefixo "31"
+    if (cleaned.length === 5) {
+        return { normalized: `310${cleaned}`, isValid: true };
+    }
+
+    // 7 dígitos → Adiciona prefixo "31" (remove o primeiro dígito se for 1)
+    if (cleaned.length === 7) {
+        // Provavelmente é um código de 8 dígitos sem o primeiro "3"
+        return { normalized: `3${cleaned}`, isValid: true };
     }
 
     // Formato inválido
     return {
         normalized: cleaned,
         isValid: false,
-        error: `INEP deve ter 5, 6 ou 8 dígitos (recebido: ${cleaned.length})`
+        error: `INEP deve ter 5, 6, 7 ou 8 dígitos (recebido: ${cleaned.length})`
     };
 };
 
