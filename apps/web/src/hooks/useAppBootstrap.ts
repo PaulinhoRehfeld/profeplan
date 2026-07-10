@@ -161,27 +161,49 @@ export function useAppBootstrap({
     }
   }, [userProfile, loading]);
 
-  // 4. AUTO-RETRY Profile → força logout se sessão Supabase estiver morta
+  // 4. AUTO-RETRY Profile → só força logout se o token realmente estiver inválido.
+  // Perfil vazio após as tentativas rápidas NÃO significa necessariamente sessão
+  // morta (pode ser falha transitória de rede, RLS ou interferência do service
+  // worker) — confirma via supabase.auth.getUser() antes de destruir a sessão.
   useEffect(() => {
-    if (!loading && session?.isLoggedIn && !userProfile) {
-      if (retryCount < 3) {
-        const timer = setTimeout(() => {
-          console.warn(`[AppBootstrap] ⚠️ Session active but profile missing. Retrying sync (${retryCount + 1}/3)...`);
-          setRetryCount(prev => prev + 1);
-          refreshProfile();
-        }, 3000);
-        return () => clearTimeout(timer);
-      } else {
-        // Após 3 tentativas sem sucesso, a sessão do Supabase está morta.
-        // Limpa o estado local e redireciona para o login.
-        console.error('[AppBootstrap] ❌ Sessão Supabase inválida após 3 tentativas. Forçando logout.');
+    if (loading || !session?.isLoggedIn || userProfile) return;
+
+    if (retryCount < 3) {
+      const timer = setTimeout(() => {
+        console.warn(`[AppBootstrap] ⚠️ Session active but profile missing. Retrying sync (${retryCount + 1}/3)...`);
+        setRetryCount(prev => prev + 1);
+        refreshProfile();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (cancelled) return;
+
+      if (error || !data?.user) {
+        console.error('[AppBootstrap] ❌ Token realmente inválido após 3 tentativas. Forçando logout.');
         supabase.auth.signOut().finally(() => {
           localStorage.removeItem('profeplan_session');
           localStorage.removeItem('supabase_user_id');
           window.location.href = '/login';
         });
+        return;
       }
-    }
+
+      if (retryCount < 8) {
+        console.warn(`[AppBootstrap] ⚠️ Token válido mas perfil ainda ausente. Sessão preservada — tentativa lenta (${retryCount + 1}/8)...`);
+        setTimeout(() => {
+          if (!cancelled) {
+            setRetryCount(prev => prev + 1);
+            refreshProfile();
+          }
+        }, 8000);
+      } else {
+        console.error('[AppBootstrap] Perfil não carregou após várias tentativas, mas o token é válido — sessão preservada, sem forçar logout.');
+      }
+    });
+    return () => { cancelled = true; };
   }, [loading, session?.isLoggedIn, !!userProfile, retryCount]);
 
   return { showEmergencyReset };

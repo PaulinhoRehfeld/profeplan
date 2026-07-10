@@ -11,8 +11,16 @@
   <meta http-equiv="Expires" content="0" />
 
   <!-- SERVICE WORKER KILL-SWITCH -->
+  <!-- Antes rodava incondicionalmente em TODO carregamento de página, brigando
+       com o registro normal do service worker (ReloadPrompt.tsx / VitePWA
+       autoUpdate) a cada load — causava churn de unregister/register constante
+       (AbortError no console) e falhas transitórias de rede que disparavam
+       logout indevido (ver useAppBootstrap.ts). Agora só roda sob pedido
+       explícito, igual aos outros resets de emergência. -->
   <script>
     (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (!params.has('kill_sw') && !params.has('force_reset') && !params.has('reset')) return;
       console.log('SW Kill-Switch Active');
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function (registrations) {
