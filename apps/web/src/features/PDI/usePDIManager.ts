@@ -82,8 +82,12 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
     const loadInitialData = async (): Promise<Class[]> => {
         setLoading(true);
         try {
+            // Resolve real auth uid — evita ghost UUID vindo do prop userId (sessão local desatualizada)
+            const { data: { user } } = await supabase.auth.getUser();
+            const realUserId = user?.id || userId;
+
             // Fetch Lessons
-            const genContents = await getGeneratedContents(userId);
+            const genContents = await getGeneratedContents(realUserId);
             const mappedLessons = genContents ? genContents.map((item: any) => ({
                 id: item.id,
                 topic: item.title,
@@ -98,14 +102,55 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
             // 1) Tenta carregar as mesmas turmas usadas em "Minhas Turmas"
             if (schoolId) {
-                const { data } = await getUserClasses(userId, schoolId);
+                const { data, error: classesError } = await getUserClasses(realUserId, schoolId);
+                if (classesError) console.error('[PDI] getUserClasses(schoolId) falhou:', classesError);
                 sbClasses = data || [];
             }
 
             // 2) Se não achou nada (ou não há schoolId), carrega todas as turmas do usuário
             if (!sbClasses.length) {
-                const { data } = await getUserClasses(userId);
+                const { data, error: classesError } = await getUserClasses(realUserId);
+                if (classesError) console.error('[PDI] getUserClasses(fallback) falhou:', classesError);
                 sbClasses = data || [];
+            }
+
+            // 3) Se ainda não há turmas remotas, usa fallback local como backup.
+            // Isso garante que classes importadas/localmente criadas continuem disponíveis
+            // no menu de PDI mesmo quando não houver sincronização completa com o Supabase.
+            if (!sbClasses.length) {
+                // ClassManager sempre grava o backup local sob `userId` (session.id), mesmo
+                // quando esse é um Ghost ID desatualizado em relação ao auth.uid() atual. Se
+                // buscarmos só por `realUserId` aqui, turmas presas no fallback local (ex:
+                // salvas durante uma sessão expirada) ficam invisíveis no PDI/DUA mesmo
+                // aparecendo em "Minhas Turmas". Tenta os dois IDs.
+                let localClasses = getLocalClasses(realUserId);
+                if (!localClasses.length && userId !== realUserId) {
+                    localClasses = getLocalClasses(userId);
+                }
+                if (localClasses.length) {
+                    sbClasses = localClasses.map((localClass) => ({
+                        id: localClass.id,
+                        name: localClass.name,
+                        subject: localClass.subject,
+                        grade: undefined,
+                        shift: undefined,
+                        year: undefined,
+                        school_id: userProfile?.active_school_id || userProfile?.school_id || null,
+                        created_at: localClass.createdAt,
+                        students: localClass.students.map((s) => ({
+                            id: s.id,
+                            name: s.name,
+                            class_id: localClass.id,
+                            current_school_id: userProfile?.active_school_id || userProfile?.school_id || null,
+                            school_id: userProfile?.active_school_id || userProfile?.school_id || null,
+                            school_student_id: null,
+                            needs_adaptation: s.needs_adaptation || false,
+                            deficiencies: s.deficiencies || [],
+                            pdi_needs: [],
+                            pedagogical_observations: s.pedagogical_observations || ''
+                        }))
+                    }));
+                }
             }
 
             // Mapeia para o tipo Class com alunos (quando já vierem agregados)

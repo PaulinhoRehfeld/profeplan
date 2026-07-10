@@ -116,7 +116,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                 schoolId: userProfile?.active_school_id || userProfile?.school_id
             });
         } catch (err: any) {
-            const is401 = err?.status === 401 || err?.message?.includes('401') || err?.message?.includes('row-level security');
+            const is401 = err?.status === 401 || err?.message?.includes('401') || err?.message?.includes('row-level security') || err?.message?.includes('Sessão expirada');
             console.warn('[ClassManager] Supabase save failed on createClass. Saved locally.', err?.message);
             if (!is401) throw err;
         }
@@ -138,7 +138,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
                 schoolId: userProfile?.active_school_id || userProfile?.school_id
             });
         } catch (err: any) {
-            const is401 = err?.status === 401 || err?.message?.includes('401') || err?.message?.includes('row-level security');
+            const is401 = err?.status === 401 || err?.message?.includes('401') || err?.message?.includes('row-level security') || err?.message?.includes('Sessão expirada');
             console.warn('[ClassManager] Supabase save failed (session issue?). Saved locally.', err?.message);
             if (is401) {
                 // Sessão expirada: dado está no localStorage, será sincronizado após o login
