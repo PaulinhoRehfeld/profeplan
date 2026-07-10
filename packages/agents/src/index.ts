@@ -5,3 +5,5 @@ export * from './qualidade';
 export * from './feature-flags';
 export * from './freeday-integration';
 export * from './observability';
+export * from './llm/callLLM';
+export * from './registerAll';

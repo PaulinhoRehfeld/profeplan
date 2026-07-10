@@ -11,6 +11,9 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.110.0
         version: 0.110.0
+      '@profeplan/agents':
+        specifier: workspace:*
+        version: link:packages/agents
     devDependencies:
       '@supabase/supabase-js':
         specifier: ^2.45.4
@@ -242,6 +245,13 @@ importers:
         version: 3.2.6(@edge-runtime/vm@3.2.0)(@types/node@22.19.21)(jiti@2.7.0)(jsdom@29.1.1)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.21.0)
 
   packages/agents:
+    dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.110.0
+        version: 0.110.0
+      openai:
+        specifier: ^4.77.0
+        version: 4.104.0
     devDependencies:
       vitest:
         specifier: ^3.1.2

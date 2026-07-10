@@ -34,6 +34,10 @@ class DummyAgent extends BaseDisciplineAgent {
   public getHabilidadesPrioritarias(): string[] {
     return ['EF06MA01'];
   }
+
+  protected getPromptsMap(): Record<string, string> {
+    return {};
+  }
 }
 
 // ---------------------------------------------------------------------------

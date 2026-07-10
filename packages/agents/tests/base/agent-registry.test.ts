@@ -34,6 +34,10 @@ class DummyAgent extends BaseDisciplineAgent {
   public getHabilidadesPrioritarias(): string[] {
     return ['EF06MA01'];
   }
+
+  protected getPromptsMap(): Record<string, string> {
+    return {};
+  }
 }
 
 /** Outra classe dummy para testes de registro múltiplo. */
@@ -52,6 +56,10 @@ class DummyAgentPortugues extends BaseDisciplineAgent {
 
   public getHabilidadesPrioritarias(): string[] {
     return ['EF06LP01'];
+  }
+
+  protected getPromptsMap(): Record<string, string> {
+    return {};
   }
 }
 

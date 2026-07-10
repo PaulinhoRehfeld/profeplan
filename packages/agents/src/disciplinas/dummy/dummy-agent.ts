@@ -34,6 +34,10 @@ export class DummyAgent extends BaseDisciplineAgent {
     return ['EF06MA01', 'EF06MA02', 'EM13MAT101'];
   }
 
+  protected getPromptsMap(): Record<string, string> {
+    return {};
+  }
+
   // Sobrescreve os métodos protegidos para funcionar de verdade:
   protected async _buildRagContext(_tipo: TipoGeracao): Promise<string> {
     return 'Contexto RAG simulado para Matemática.';

@@ -56,6 +56,10 @@ class DummySuccessAgent extends BaseDisciplineAgent {
     return ['EF06MA01'];
   }
 
+  protected getPromptsMap(): Record<string, string> {
+    return {};
+  }
+
   protected async _buildRagContext(_t: TipoGeracao): Promise<string> {
     return '{}';
   }
@@ -120,6 +124,10 @@ class RetryAwareAgent extends BaseDisciplineAgent {
 
   public getHabilidadesPrioritarias(): string[] {
     return ['EF06MA01'];
+  }
+
+  protected getPromptsMap(): Record<string, string> {
+    return {};
   }
 
   protected async _buildRagContext(_t: TipoGeracao): Promise<string> {
@@ -204,6 +212,10 @@ class AlwaysBlockerAgent extends BaseDisciplineAgent {
     return ['EF06MA01'];
   }
 
+  protected getPromptsMap(): Record<string, string> {
+    return {};
+  }
+
   protected async _buildRagContext(_t: TipoGeracao): Promise<string> {
     return '{}';
   }
@@ -259,6 +271,10 @@ class PrivacyLeakAgent extends BaseDisciplineAgent {
 
   public getHabilidadesPrioritarias(): string[] {
     return ['EF06MA01'];
+  }
+
+  protected getPromptsMap(): Record<string, string> {
+    return {};
   }
 
   protected async _buildRagContext(_t: TipoGeracao): Promise<string> {
@@ -344,6 +360,10 @@ class BNCCLeakAgent extends BaseDisciplineAgent {
 
   public getHabilidadesPrioritarias(): string[] {
     return ['EF06MA01'];
+  }
+
+  protected getPromptsMap(): Record<string, string> {
+    return {};
   }
 
   protected async _buildRagContext(_t: TipoGeracao): Promise<string> {

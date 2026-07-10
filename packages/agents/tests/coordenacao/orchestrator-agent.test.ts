@@ -38,6 +38,10 @@ class DummySuccessAgent extends BaseDisciplineAgent {
     return ['EF06MA01'];
   }
 
+  protected getPromptsMap(): Record<string, string> {
+    return {};
+  }
+
   // Sobrescreve _postProcess para retornar sucesso (evita erro "Not implemented")
   protected async _postProcess(
     _raw: string,

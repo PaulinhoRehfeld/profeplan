@@ -4,7 +4,17 @@
 //        ContextBuilder, SessionAgent e QualityGatePipeline
 // ============================================================================
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+// _callLLM (BaseDisciplineAgent) agora chama o provider real (ver
+// src/llm/callLLM.ts). Estes testes validam orquestração/registry/quality
+// gates, não a qualidade de uma geração real — mocka o limite externo (LLM)
+// para não depender de API key/rede, igual já era feito para o RAG mock.
+vi.mock('../../src/llm/callLLM', () => ({
+  callLLM: vi.fn(async () =>
+    JSON.stringify({ conteudo_gerado: 'Conteúdo de teste (callLLM mockado).' }),
+  ),
+}));
 
 // --- Base & Registry ---
 import { AgentRegistry } from '../../src/base/agent-registry';

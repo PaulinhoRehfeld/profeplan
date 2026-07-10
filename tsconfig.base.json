@@ -19,7 +19,8 @@
       "@profeplan/auth": ["packages/auth/src"],
       "@profeplan/logger": ["packages/logger/src"],
       "@profeplan/db": ["packages/db/src"],
-      "@profeplan/ai": ["packages/ai/src"]
+      "@profeplan/ai": ["packages/ai/src"],
+      "@profeplan/agents": ["packages/agents/src"]
     }
   }
 }

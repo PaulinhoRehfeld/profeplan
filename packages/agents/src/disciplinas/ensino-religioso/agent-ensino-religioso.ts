@@ -11,6 +11,7 @@ import {
   type GeracaoResultado,
   AGENT_DISPLAY_NAMES,
 } from '../../base/discipline-agent-base';
+import { PROMPTS } from './prompts.generated';
 
 /**
  * Agente de Ensino Religioso — "Francisco".
@@ -145,6 +146,14 @@ export class AgentEnsinoReligioso extends BaseDisciplineAgent {
     ];
   }
 
+  /**
+   * Mapa de prompts desta disciplina, gerado a partir de `prompts/*.md`
+   * por `scripts/build-prompts.mjs`.
+   */
+  protected getPromptsMap(): Record<string, string> {
+    return PROMPTS;
+  }
+
   // --- Pipeline de geração (sobrescritas) ---
 
   /**
@@ -170,59 +179,5 @@ export class AgentEnsinoReligioso extends BaseDisciplineAgent {
       default:
         return this._loadPrompt('plano-aula.md'); // fallback seguro
     }
-  }
-
-  /**
-   * Invoca o modelo de linguagem (Azure OpenAI) com prompt, contexto RAG e parâmetros.
-   * TODO: Integrar com Azure OpenAI (Sprint 3).
-   */
-  protected async _callLLM(
-    prompt: string,
-    ragContext: string,
-    params: Record<string, unknown>,
-  ): Promise<string> {
-    // TODO: Integrar com Azure OpenAI
-    return JSON.stringify({
-      prompt_usado: prompt.substring(0, 80) + '...',
-      contexto_rag: ragContext,
-      params_recebidos: params,
-      resposta_mock: `[MOCK] Conteúdo gerado por Francisco (Ensino Religioso) para ${params.tema || 'tema não especificado'}.`,
-    });
-  }
-
-  /**
-   * Pós-processa a saída bruta do LLM no formato {@link GeracaoResultado}.
-   */
-  protected async _postProcess(raw: string, tipo: TipoGeracao): Promise<GeracaoResultado> {
-    let conteudo: Record<string, unknown>;
-    try {
-      conteudo = JSON.parse(raw) as Record<string, unknown>;
-    } catch {
-      conteudo = { raw, erro: 'Falha ao parsear JSON do LLM' };
-    }
-    return {
-      sucesso: true,
-      conteudo,
-      metadados: {
-        agente: this.displayName,
-        disciplina: this.getDisciplina(),
-        nivel: this.context.nivel,
-        tipo,
-        timestamp: new Date().toISOString(),
-      },
-    };
-  }
-
-  // --- Helpers privados ---
-
-  /**
-   * Carrega o conteúdo de um arquivo de prompt.
-   *
-   * No estágio atual (mock), retorna o nome do arquivo como placeholder.
-   * TODO: Carregar do sistema de arquivos ou Supabase (Sprint 3).
-   */
-  private _loadPrompt(filename: string): string {
-    // TODO: Carregar do sistema de arquivos ou Supabase
-    return `[PROMPT: ${filename}] Conteúdo do prompt para Ensino Religioso.`;
   }
 }
