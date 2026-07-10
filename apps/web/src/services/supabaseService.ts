@@ -2,14 +2,27 @@ import { supabase } from './supabaseClient'; // Unified client import
 export { supabase }; // Re-export for backward compatibility
 
 // Resolve o auth.uid() real — getUser() valida server-side e renova o token automaticamente.
+// Se a sessão estiver expirada, tenta refresh explícito antes de falhar.
 const resolveAuthUid = async (): Promise<string> => {
+    // 1. Tenta getUser (validação server-side com token atual)
     const { data: { user } } = await supabase.auth.getUser();
     if (user?.id) return user.id;
-    // Fallback: sessão local caso getUser() falhe por rede
+
+    // 2. Tenta getSession (sessão local, token pode estar stale)
     const { data: { session } } = await supabase.auth.getSession();
-    const uid = session?.user?.id;
-    if (!uid) throw new Error('Sessão expirada. Faça login novamente.');
-    return uid;
+    if (session?.user?.id) {
+        // 3. Tenta renovar sessão explicitamente antes de usar
+        try {
+            const { data: { session: refreshed } } = await supabase.auth.refreshSession();
+            if (refreshed?.user?.id) return refreshed.user.id;
+        } catch {
+            console.warn('[resolveAuthUid] Refresh da sessão falhou, usando sessão atual.');
+        }
+        // 4. Fallback: usa sessão atual mesmo se stale (melhor que nada)
+        return session.user.id;
+    }
+
+    throw new Error('Sessão expirada. Faça login novamente.');
 };
 
 
