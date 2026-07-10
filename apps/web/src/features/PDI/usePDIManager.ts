@@ -7,7 +7,7 @@ import { generateBlock9Adaptation } from '../../services/ai/AiPdiService';
 import { generatePdiReportDoc, exportToDocx } from '../../services/exportService';
 import { Class, Student, StudentAdaptation, Lesson, UserProfile } from '../../types';
 import {
-    getLocalClasses,
+    getLocalClassesForUser,
     getLocalClassDetails,
 } from '../../services/localStorageService';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
@@ -118,15 +118,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
             // Isso garante que classes importadas/localmente criadas continuem disponíveis
             // no menu de PDI mesmo quando não houver sincronização completa com o Supabase.
             if (!sbClasses.length) {
-                // ClassManager sempre grava o backup local sob `userId` (session.id), mesmo
-                // quando esse é um Ghost ID desatualizado em relação ao auth.uid() atual. Se
-                // buscarmos só por `realUserId` aqui, turmas presas no fallback local (ex:
-                // salvas durante uma sessão expirada) ficam invisíveis no PDI/DUA mesmo
-                // aparecendo em "Minhas Turmas". Tenta os dois IDs.
-                let localClasses = getLocalClasses(realUserId);
-                if (!localClasses.length && userId !== realUserId) {
-                    localClasses = getLocalClasses(userId);
-                }
+                const localClasses = await getLocalClassesForUser(userId);
                 if (localClasses.length) {
                     sbClasses = localClasses.map((localClass) => ({
                         id: localClass.id,

@@ -2,6 +2,7 @@
  * Serviço de Armazenamento Local para Turmas e Aulas
  * Usa LocalStorage como banco de dados principal
  */
+import { supabase } from './supabaseClient';
 
 // ===== CLASS STORAGE =====
 
@@ -36,6 +37,28 @@ export const getLocalClasses = (userId: string): LocalClass[] => {
 
     const allClasses: LocalClass[] = JSON.parse(stored);
     return allClasses.filter(c => c.userId === userId);
+};
+
+/**
+ * Busca turmas locais tentando tanto o auth.uid() atual quanto o `rawUserId` recebido
+ * (tipicamente `session.id`). Existe para cobrir o caso de Ghost ID: uma turma pode ter
+ * sido gravada sob um `session.id` desatualizado enquanto a sessão estava com problema, e
+ * depois de um novo login o `session.id`/auth.uid() resolvido passa a ser outro valor —
+ * sem esse fallback duplo a turma "some" mesmo sem ter sido apagada.
+ */
+export const getLocalClassesForUser = async (rawUserId: string): Promise<LocalClass[]> => {
+    let resolvedId = rawUserId;
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.id) resolvedId = user.id;
+    } catch {
+        // Mantém rawUserId se a resolução do auth uid falhar
+    }
+
+    const primary = getLocalClasses(resolvedId);
+    if (primary.length || resolvedId === rawUserId) return primary;
+
+    return getLocalClasses(rawUserId);
 };
 
 /**

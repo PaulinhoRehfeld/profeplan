@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Plus, Loader2, AlertCircle, X, Search, GraduationCap, Download, Upload
 } from 'lucide-react';
-import { saveClassToLocal, getLocalClasses, getLocalClassDetails, deleteLocalClass, exportClassesToJSON, updateLocalClass } from '../services/localStorageService';
+import { saveClassToLocal, getLocalClasses, getLocalClassesForUser, getLocalClassDetails, deleteLocalClass, exportClassesToJSON, updateLocalClass } from '../services/localStorageService';
 import { updateStudent, getClassDetails, deleteClass } from '../services/supabaseService';
 import { Student, Class } from '../types';
 
@@ -60,7 +60,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
             // Se Supabase retornou vazio (pode ser RLS bloqueando por sessão expirada),
             // usa o localStorage como fallback para não perder dados importados.
             if (remoteClasses.length === 0) {
-                const localData = getLocalClasses(userId);
+                const localData = await getLocalClassesForUser(userId);
                 if (localData.length > 0) {
                     console.warn('[ClassManager] Supabase returned 0 classes. Showing local backup.');
                     setClasses(localData.map(c => ({
@@ -82,7 +82,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         } catch (err) {
             console.warn("Supabase fetch failed, falling back to local:", err);
             // Fallback to local
-            const data = getLocalClasses(userId);
+            const data = await getLocalClassesForUser(userId);
             setClasses(data.map(c => ({
                 id: c.id,
                 name: c.name,

@@ -1,40 +1,65 @@
-import { describe, expect, it, beforeEach } from 'vitest';
-import { getLocalClasses, saveClassToLocal } from '../services/localStorageService';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-// Regressão: ClassManager sempre grava o backup local sob `userId` (session.id), que pode
-// ser um Ghost ID desatualizado em relação ao auth.uid() real (ver feedback_ghost_id_pattern).
-// usePDIManager buscava o fallback local só por `realUserId` (resolvido via getUser()),
-// então turmas presas no localStorage sob o Ghost ID ficavam invisíveis em Adaptações PDI/DUA
-// mesmo aparecendo em "Minhas Turmas". O fix tenta os dois IDs.
+// Regressão: tanto ClassManager quanto usePDIManager usam `session.id` como `userId` para o
+// fallback local. Esse `session.id` pode ser um Ghost ID desatualizado em relação ao
+// auth.uid() real (ver feedback_ghost_id_pattern). Depois de um logout/login que resolve um
+// `session.id` diferente do que estava ativo quando a turma foi salva só localmente (ex:
+// durante uma sessão expirada), a turma "some" da tela mesmo sem ter sido apagada, porque a
+// busca no localStorage passa a usar uma chave diferente da que foi usada para salvar.
+// getLocalClassesForUser tenta os dois IDs (o resolvido via auth.getUser() e o bruto
+// recebido) para cobrir esse caso.
 
-describe('fallback local do PDI/DUA sob Ghost ID', () => {
+const getUserMock = vi.fn();
+
+vi.mock('../services/supabaseClient', () => ({
+    supabase: {
+        auth: {
+            getUser: (...args: unknown[]) => getUserMock(...args),
+        },
+    },
+}));
+
+describe('getLocalClassesForUser (fallback local sob Ghost ID)', () => {
     beforeEach(() => {
+        vi.resetModules();
+        getUserMock.mockReset();
         localStorage.clear();
     });
 
-    it('turma salva sob o Ghost ID não é encontrada buscando só pelo realUserId', () => {
+    it('encontra a turma salva sob o Ghost ID mesmo quando o auth.uid() atual é outro', async () => {
         const ghostUserId = 'ghost-uuid-antigo';
         const realUserId = 'real-uuid-atual';
 
+        const { saveClassToLocal } = await import('../services/localStorageService');
         saveClassToLocal(ghostUserId, { className: '1º EM REG 7', subject: 'Filosofia', students: ['Aluno A'] });
 
-        expect(getLocalClasses(realUserId)).toEqual([]);
-        expect(getLocalClasses(ghostUserId)).toHaveLength(1);
+        getUserMock.mockResolvedValue({ data: { user: { id: realUserId } } });
+        const { getLocalClassesForUser } = await import('../services/localStorageService');
+
+        const result = await getLocalClassesForUser(ghostUserId);
+        expect(result).toHaveLength(1);
+        expect(result[0].name).toBe('1º EM REG 7');
     });
 
-    it('a lógica de fallback com dois IDs (a que o fix introduz) recupera a turma presa no Ghost ID', () => {
-        const ghostUserId = 'ghost-uuid-antigo';
+    it('prioriza o auth.uid() resolvido quando a turma já está salva sob o ID correto', async () => {
         const realUserId = 'real-uuid-atual';
 
-        saveClassToLocal(ghostUserId, { className: '1º EM REG 7', subject: 'Filosofia', students: ['Aluno A'] });
+        const { saveClassToLocal } = await import('../services/localStorageService');
+        saveClassToLocal(realUserId, { className: 'Turma Atual', subject: 'Sociologia', students: ['Aluno B'] });
 
-        // Réplica exata do trecho novo em usePDIManager.ts
-        let localClasses = getLocalClasses(realUserId);
-        if (!localClasses.length && ghostUserId !== realUserId) {
-            localClasses = getLocalClasses(ghostUserId);
-        }
+        getUserMock.mockResolvedValue({ data: { user: { id: realUserId } } });
+        const { getLocalClassesForUser } = await import('../services/localStorageService');
 
-        expect(localClasses).toHaveLength(1);
-        expect(localClasses[0].name).toBe('1º EM REG 7');
+        const result = await getLocalClassesForUser('qualquer-id-bruto-passado-como-prop');
+        expect(result).toHaveLength(1);
+        expect(result[0].name).toBe('Turma Atual');
+    });
+
+    it('retorna vazio quando não há dado sob nenhum dos dois IDs', async () => {
+        getUserMock.mockResolvedValue({ data: { user: { id: 'real-uuid-atual' } } });
+        const { getLocalClassesForUser } = await import('../services/localStorageService');
+
+        const result = await getLocalClassesForUser('outro-id-sem-dado');
+        expect(result).toEqual([]);
     });
 });
