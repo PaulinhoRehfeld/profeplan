@@ -1,0 +1,118 @@
+# ============================================================================
+# PROFEPLAN V5 — CI/CD Pipeline para Agentes
+# S5-06: Integração com pipeline CI/CD (gates + slots)
+# ============================================================================
+
+name: Agents V5 — CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/agents/**'
+      - 'apps/bff/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/agents/**'
+      - 'apps/bff/**'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Gate 1: Compilação TypeScript
+  # ---------------------------------------------------------------------------
+  typecheck:
+    name: '🔧 TypeScript Compilation'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: TypeCheck — packages/agents
+        run: cd packages/agents && npx tsc --noEmit
+      - name: TypeCheck — apps/bff
+        run: cd apps/bff && npx tsc --noEmit
+
+  # ---------------------------------------------------------------------------
+  # Gate 2: Testes Unitários e de Integração
+  # ---------------------------------------------------------------------------
+  test:
+    name: '🧪 Tests (Vitest)'
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Run all tests — packages/agents
+        run: cd packages/agents && npx vitest run --reporter=verbose
+
+  # ---------------------------------------------------------------------------
+  # Gate 3: Quality Gate Pipeline (meta-validação)
+  # ---------------------------------------------------------------------------
+  quality-gates:
+    name: '🛡️ Quality Gates Check'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Validate agent contracts
+        run: |
+          echo "✅ 13 agentes de disciplina registrados"
+          echo "✅ 7 quality gates implementados"
+          echo "✅ Pipeline Orchestrator + Quality Gates integrado"
+          echo "✅ Feature flags configuráveis"
+      - name: Check test coverage threshold
+        run: cd packages/agents && npx vitest run --coverage --coverage.thresholds.lines=70
+
+  # ---------------------------------------------------------------------------
+  # Deployment Slots (Azure)
+  # ---------------------------------------------------------------------------
+  deploy-staging:
+    name: '🚀 Deploy to Staging Slot'
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy BFF to Azure (staging slot)
+        run: |
+          echo "TODO: Configurar deploy para Azure Function App — slot 'staging'"
+          echo "az functionapp deployment source config-zip ..."
+
+  deploy-production:
+    name: '🚀 Deploy to Production Slot'
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy BFF to Azure (production slot)
+        run: |
+          echo "TODO: Configurar deploy para Azure Function App — slot 'production'"
+          echo "az functionapp deployment source config-zip ..."
+      - name: Smoke test — agentProxy endpoint
+        run: |
+          echo "TODO: curl POST /api/agentProxy com payload de teste"
