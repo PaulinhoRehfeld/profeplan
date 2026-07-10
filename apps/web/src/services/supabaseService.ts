@@ -174,17 +174,26 @@ export const addStudentToClass = async (classId: string, name: string, studentCo
 
 /**
  * Busca todas as turmas cadastradas do usuário.
- * @param userId - ID do usuário
+ * @param userId - ID do usuário (usado apenas como fallback para localStorage)
  * @param schoolId - (Opcional) ID da escola para filtrar turmas
  */
 export const getClasses = async (userId: string, schoolId?: string) => {
+    // Usa auth.uid() real para consistência com saveClassStructure
+    let authUid: string;
+    try {
+        authUid = await resolveAuthUid();
+    } catch {
+        // Fallback: usa userId do parâmetro se auth falhar
+        authUid = userId;
+    }
+
     let query = supabase
         .from('classes')
         .select(`
         *,
         students:students(count)
       `)
-        .eq('user_id', userId);
+        .eq('user_id', authUid);
 
     // Se school_id for fornecido, filtrar por escola
     if (schoolId) {
