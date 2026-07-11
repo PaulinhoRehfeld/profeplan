@@ -92,7 +92,7 @@ describe('GlobalPlanningContext - refreshTermPlans -> termPlans', () => {
     getSessionMock.mockResolvedValue({ data: { session: { user: { id: userId } } } });
     serviceFetchTermPlansMock.mockResolvedValue([]);
 
-    const seenRefs: Array<() => Promise<void>> = [];
+    const seenRefs: Array<(userId?: string) => Promise<void>> = [];
     const TestConsumer: React.FC = () => {
       const ctx = useGlobalPlanning();
       seenRefs.push(ctx.refreshTermPlans as any);
@@ -110,7 +110,7 @@ describe('GlobalPlanningContext - refreshTermPlans -> termPlans', () => {
     const stableRef = seenRefs[0];
     // Dispara refreshTermPlans manualmente (o que atualiza termPlans e força um
     // re-render do provider) e confirma que a referência exposta não muda.
-    await stableRef(undefined as any);
+    await stableRef();
     await waitFor(() => {
       expect(seenRefs[seenRefs.length - 1]).toBe(stableRef);
     });
