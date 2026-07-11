@@ -82,4 +82,37 @@ describe('GlobalPlanningContext - refreshTermPlans -> termPlans', () => {
       expect(ctx.termPlans[0].subject).toBe('Geografia');
     });
   });
+
+  it('regressão — refreshTermPlans mantém a mesma referência entre renders (evita loop infinito de useEffect)', async () => {
+    // TermPlanningList.tsx/PlanningManager.tsx colocam refreshTermPlans em deps de
+    // useEffect. Sem useCallback, cada chamada (que atualiza termPlans) recriava a
+    // função, o que disparava o efeito de novo, para sempre — reproduzido em
+    // produção como um loop de "Calling serviceFetchTermPlans" sem parar.
+    const userId = 'user-ctx-stability';
+    getSessionMock.mockResolvedValue({ data: { session: { user: { id: userId } } } });
+    serviceFetchTermPlansMock.mockResolvedValue([]);
+
+    const seenRefs: Array<() => Promise<void>> = [];
+    const TestConsumer: React.FC = () => {
+      const ctx = useGlobalPlanning();
+      seenRefs.push(ctx.refreshTermPlans as any);
+      return null;
+    };
+
+    render(
+      <GlobalPlanningProvider>
+        <TestConsumer />
+      </GlobalPlanningProvider>,
+    );
+
+    await waitFor(() => expect(serviceFetchTermPlansMock).toHaveBeenCalledWith(userId));
+
+    const stableRef = seenRefs[0];
+    // Dispara refreshTermPlans manualmente (o que atualiza termPlans e força um
+    // re-render do provider) e confirma que a referência exposta não muda.
+    await stableRef(undefined as any);
+    await waitFor(() => {
+      expect(seenRefs[seenRefs.length - 1]).toBe(stableRef);
+    });
+  });
 });

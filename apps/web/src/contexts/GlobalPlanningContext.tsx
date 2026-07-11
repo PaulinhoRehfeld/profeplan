@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { fetchTermPlans as serviceFetchTermPlans } from '../features/TermPlanning/TermPlanningService';
 
@@ -65,7 +65,12 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
     }, []);
 
 
-    const refreshTermPlans = async (userId?: string) => {
+    // useCallback com deps estáveis (setTermPlans nunca muda) — sem isso, esta função
+    // era recriada a cada render do provider. Consumidores que a colocam em deps de
+    // useEffect (TermPlanningList.tsx, PlanningManager.tsx) entravam em loop infinito:
+    // efeito chama refreshTermPlans → setTermPlans atualiza estado → provider
+    // re-renderiza → nova referência da função → efeito dispara de novo, para sempre.
+    const refreshTermPlans = useCallback(async (userId?: string) => {
         try {
             let targetUserId = userId;
 
@@ -91,15 +96,15 @@ export const GlobalPlanningProvider: React.FC<{ children: ReactNode }> = ({ chil
             console.error('Error fetching term plans:', error);
             console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
         }
-    };
+    }, []);
 
-    const updateCurrentPlan = (plan: TermPlan) => {
+    const updateCurrentPlan = useCallback((plan: TermPlan) => {
         setCurrentPlan(plan);
-    };
+    }, []);
 
-    const clearPlan = () => {
+    const clearPlan = useCallback(() => {
         setCurrentPlan(null);
-    };
+    }, []);
 
     return (
         <GlobalPlanningContext.Provider value={{ currentPlan, termPlans, updateCurrentPlan, refreshTermPlans, clearPlan }}>
