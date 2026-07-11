@@ -166,11 +166,11 @@ export class BNCCValidatorAgent extends BaseQualityGate {
       // Converte enum (LINGUA_PORTUGUESA → lingua portuguesa) e
       // nomes com acentos (Língua Portuguesa → lingua portuguesa)
       const discReq = this._normalize(req.disciplina.replace(/_/g, ' '));
+      // Comparação EXATA (não includes()): substring bidirecional deixava passar
+      // disciplina errada sempre que uma é substring da outra — ex: "Física" ⊂
+      // "Educação Física" e "Ciências" ⊂ "Ciências Humanas e Sociais Aplicadas".
       const matchDisciplina = registros.some(
-        (r) => {
-          const discIndex = this._normalize(r.disciplina);
-          return discIndex.includes(discReq) || discReq.includes(discIndex);
-        },
+        (r) => this._normalize(r.disciplina) === discReq,
       );
 
       if (!matchDisciplina) {

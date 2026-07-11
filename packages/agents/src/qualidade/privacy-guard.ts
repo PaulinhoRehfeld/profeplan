@@ -51,7 +51,10 @@ export class PrivacyGuardAgent extends BaseQualityGate {
   private static readonly PADROES_PII: RegExp[] = [
     /\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g,       // CPF
     /\b\d{2}\.?\d{3}\.?\d{3}\/\d{4}-?\d{2}\b/g, // CNPJ
-    /\b\d{2}\/\d{2}\/\d{4}\b/g,                 // Data de nascimento
+    // Data de nascimento — exige a palavra "nascimento" nas proximidades (até
+    // 20 caracteres antes da data) para não bloquear qualquer data dd/mm/aaaa
+    // válida em conteúdo pedagógico (datas históricas, prazos de entrega etc.).
+    /\bnascimento\b[^\d]{0,20}\d{2}\/\d{2}\/\d{4}\b/g,
   ];
 
   /** @inheritdoc */
