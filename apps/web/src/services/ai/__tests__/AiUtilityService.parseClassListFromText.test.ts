@@ -2,6 +2,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { parseClassListFromText } from '../AiUtilityService';
 import * as AiCore from '../AiCore';
 
+// supabaseClient.ts lança erro no import se as env vars não estiverem definidas
+// (CI não tem VITE_SUPABASE_URL/ANON_KEY configuradas para o step de testes) —
+// AiCore real (via vi.importActual abaixo) importa sessionService, que importa
+// o client. Mockado aqui para não depender de credenciais reais.
+vi.mock('../../supabaseClient', () => ({
+  supabase: { auth: { getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }) } },
+}));
+
 // Mock do cliente de IA para não fazer chamadas reais
 const mockChatCompletionsCreate = vi.fn();
 

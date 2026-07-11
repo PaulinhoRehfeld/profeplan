@@ -1,4 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+// supabaseClient.ts lança erro no import se as env vars não estiverem definidas
+// (CI não tem VITE_SUPABASE_URL/ANON_KEY configuradas para o step de testes) —
+// mockado aqui porque authUtils.ts importa resolveAuthUid, que depende do client,
+// embora este arquivo só teste isRetryableAuthError (função pura, sem I/O).
+vi.mock('../../services/supabaseClient', () => ({
+  supabase: { auth: { getUser: vi.fn(), getSession: vi.fn() } },
+}));
+
 import { isRetryableAuthError } from '../authUtils';
 
 describe('isRetryableAuthError', () => {
