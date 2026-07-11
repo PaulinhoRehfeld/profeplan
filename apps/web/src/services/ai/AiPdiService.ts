@@ -543,15 +543,17 @@ REGRAS TÉCNICAS:
 
     const text = extractMessageText(completion.choices[0]?.message?.content);
 
-    if (userId) {
-        await incrementUserUsage(userId, 'generate');
-    }
-
     const cleaned = extractJsonObjectFromText(text);
     const parsed = JSON.parse(cleaned);
 
     if (!parsed.adaptacao_metodologica || !parsed.recursos_adaptados || !parsed.objetivos_adaptados || !parsed.estrategias_ensino) {
         throw new Error("Resposta da IA incompleta");
+    }
+
+    // Deduz o crédito só depois de confirmar que a IA entregou um resultado válido —
+    // resposta malformada/truncada não deve consumir crédito (achado #11 da auditoria).
+    if (userId) {
+        await incrementUserUsage(userId, 'generate');
     }
 
     return parsed;
@@ -692,16 +694,18 @@ FORMATO DE SAÍDA (JSON PURO):
         temperature: 0.6,
     } as any);
 
-    if (userId) {
-        await incrementUserUsage(userId, 'generate');
-    }
-
     const text = extractMessageText(completion.choices[0]?.message?.content);
     const cleaned = extractJsonObjectFromText(text);
     const parsed = JSON.parse(cleaned);
 
     if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
         throw new Error("Resposta da IA incompleta");
+    }
+
+    // Deduz o crédito só depois de confirmar que a IA entregou um resultado válido —
+    // resposta malformada/truncada não deve consumir crédito (achado #11 da auditoria).
+    if (userId) {
+        await incrementUserUsage(userId, 'generate');
     }
 
     return {

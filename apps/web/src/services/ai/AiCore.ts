@@ -25,17 +25,36 @@ type CompletionResponse = {
     }>;
 };
 
+// Sem timeout, uma chamada travada ao backend prendia a fila (MAX_CONCURRENT=1 em
+// AiQueue.ts) para sempre — nenhuma outra ação de IA na aba rodava até recarregar a
+// página (achado #18 da auditoria). 90s é generoso o bastante para gerações longas.
+const AI_FETCH_TIMEOUT_MS = 90_000;
+
 const callAiBackend = (payload: CompletionRequest): Promise<CompletionResponse> => {
     return aiQueue.run(async () => {
         const authHeaders = await getAuthHeaders();
-        const response = await fetch("/api/ai", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...authHeaders,
-            },
-            body: JSON.stringify(payload),
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), AI_FETCH_TIMEOUT_MS);
+
+        let response: Response;
+        try {
+            response = await fetch("/api/ai", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...authHeaders,
+                },
+                body: JSON.stringify(payload),
+                signal: controller.signal,
+            });
+        } catch (err: any) {
+            if (err?.name === "AbortError") {
+                throw new Error("A geração demorou demais e foi cancelada. Tente novamente.");
+            }
+            throw err;
+        } finally {
+            clearTimeout(timeoutId);
+        }
 
         const data = await response.json().catch(() => ({}));
         if (!response.ok) {

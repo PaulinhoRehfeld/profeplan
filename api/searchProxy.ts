@@ -131,7 +131,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           if (ranked.length > 0) {
             results = ranked;
             logger.info('[searchProxy] Resultados rerankeado via DeepSeek.', { before: data.length, after: results.length });
+          } else {
+            // Rerank não produziu nenhum índice válido — cai pro fallback (respeita o limit)
+            results = results.slice(0, limit);
           }
+        } else {
+          // Resposta da IA não casou o regex esperado — sem isso, o slice abaixo nunca
+          // rodava e a busca retornava até 3x mais itens que o pedido (achado #17).
+          results = results.slice(0, limit);
         }
       } catch (rerankErr) {
         logger.error('[searchProxy] DeepSeek rerank failed, usando resultados originais:', rerankErr);
