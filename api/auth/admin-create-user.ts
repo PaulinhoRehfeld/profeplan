@@ -123,12 +123,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (authError) {
+      const code = (authError as { code?: string }).code ?? '';
       const msg = (authError.message ?? '').toLowerCase();
-      if (msg.includes('already registered') || msg.includes('already exists')) {
+      const isDuplicate =
+        code === 'email_exists' ||
+        code === 'user_already_exists' ||
+        code === 'identity_already_exists' ||
+        msg.includes('already registered') ||
+        msg.includes('already exists') ||
+        msg.includes('already been registered');
+      if (isDuplicate) {
         return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
       }
-      log.error('[AdminCreateUser] Falha ao criar usuário no Auth', { email, error: authError.message });
-      return res.status(500).json({ error: 'Erro ao criar usuário. Tente novamente.' });
+      log.error('[AdminCreateUser] Falha ao criar usuário no Auth', { email, code, error: authError.message });
+      // Devolve o erro real (endpoint só acessível por admin) — evita ter que
+      // vasculhar logs da Vercel pra descobrir a causa de um "Tente novamente".
+      return res.status(500).json({ error: `Erro ao criar usuário: ${authError.message || code || 'motivo desconhecido'}.` });
     }
 
     const userId = authData.user?.id;
