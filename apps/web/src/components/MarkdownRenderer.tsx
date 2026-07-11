@@ -5,8 +5,20 @@ interface MarkdownRendererProps {
   content: string;
 }
 
+const escapeHtml = (text: string) =>
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 export const formatMarkdownToHTML = (text: string, isForExport = false) => {
-  let html = text;
+  // Escapa HTML do texto livre (professor/aluno) ANTES de aplicar os regex de
+  // formatação abaixo — nenhuma sintaxe markdown usada aqui depende de & < > " ',
+  // então escapar primeiro não quebra os regex e evita XSS armazenado via
+  // dangerouslySetInnerHTML (ex: `<img src=x onerror=...>` numa observação PDI).
+  let html = escapeHtml(text);
 
   // Limpeza de metadados internos
   html = html.replace(/\[PROFESSOR:.*?\]/g, '');

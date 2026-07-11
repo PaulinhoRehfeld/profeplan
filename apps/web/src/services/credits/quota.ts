@@ -114,7 +114,7 @@ export const incrementUserUsage = async (userId: string, taskType: string = 'unk
     const { error } = await supabase
         .from('profiles')
         .update({ credits: Math.max(0, profile.credits - 1) })
-        .eq('id', userId);
+        .eq('id', profile.id);
 
     if (error) {
         console.error("Failed to deduct credit:", error);

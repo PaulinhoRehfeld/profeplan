@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { runDiagnostics } from '../services/diagnosticService';
 import { supabase } from '../services/supabaseClient';
 import { UserSettings, UserProfile } from '../types';
+import { isRetryableAuthError } from '../utils/authUtils';
 
 interface UseAppBootstrapProps {
   loading: boolean;
@@ -180,6 +181,19 @@ export function useAppBootstrap({
     let cancelled = false;
     supabase.auth.getUser().then(({ data, error }) => {
       if (cancelled) return;
+
+      if (error && isRetryableAuthError(error)) {
+        console.warn('[AppBootstrap] ⚠️ Falha transitória (rede/gateway) ao validar token. Sessão preservada — tentando novamente.', error);
+        if (retryCount < 8) {
+          setTimeout(() => {
+            if (!cancelled) {
+              setRetryCount(prev => prev + 1);
+              refreshProfile();
+            }
+          }, 8000);
+        }
+        return;
+      }
 
       if (error || !data?.user) {
         console.error('[AppBootstrap] ❌ Token realmente inválido após 3 tentativas. Forçando logout.');

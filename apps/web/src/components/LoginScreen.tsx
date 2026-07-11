@@ -2,32 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
+import { isRetryableAuthError } from '../utils/authUtils';
 
 interface LoginScreenProps {
   onLogin: (session: UserSession) => void;
   initialMode?: 'login' | 'signup';
 }
 
-const RETRYABLE_AUTH_STATUSES = new Set([502, 503, 504]);
 const RETRY_DELAYS_MS = [700, 1500];
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const isRetryableAuthError = (err: any): boolean => {
-  const status = Number(err?.status);
-  if (RETRYABLE_AUTH_STATUSES.has(status)) return true;
-
-  const name = String(err?.name || '');
-  if (name.includes('AuthRetryableFetchError')) return true;
-
-  const message = String(err?.message || '').toLowerCase();
-  return (
-    message.includes('gateway timeout') ||
-    message.includes('failed to fetch') ||
-    message.includes('network') ||
-    message.includes('timeout')
-  );
-};
 
 const isRateLimitError = (err: any): boolean => {
   if (Number(err?.status) === 429) return true;

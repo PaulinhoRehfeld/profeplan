@@ -191,6 +191,20 @@ describe('incrementUserUsage (caracterização)', () => {
 
     expect(q.update).toHaveBeenCalledWith({ credits: 4 });
   });
+
+  it('Ghost ID (profile.id difere do userId passado) → dedução usa profile.id, não o userId bruto', async () => {
+    // RPC resolve o Ghost ID e retorna a linha real, cujo id difere do userId requisitado
+    const profile = { id: 'real-profile-id', is_unlimited: false, tier: 'FREE', credits: 5 };
+    mocked.rpc.mockResolvedValue({ data: profile, error: null });
+    const q = createQuery({ data: profile, error: null });
+    mocked.from.mockReturnValue(q);
+
+    await incrementUserUsage('ghost-user-id', 'generate');
+
+    expect(q.update).toHaveBeenCalledWith({ credits: 4 });
+    expect(q.eq).toHaveBeenCalledWith('id', 'real-profile-id');
+    expect(q.eq).not.toHaveBeenCalledWith('id', 'ghost-user-id');
+  });
 });
 
 // ──────────────────────────────────────────────────────────────────
