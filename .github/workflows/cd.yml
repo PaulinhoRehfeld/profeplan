@@ -1,10 +1,17 @@
 name: CD Pipeline
 
+# Desativado (2026-07-11, achado #8 da auditoria — docs/handoff-2026-07-10-auditoria-e-plano.md):
+# - "Run Production Migrations" roda prisma migrate deploy do schema do Next.js
+#   morto (User/Organization/Membership/TermPlan, apps/web/app/ não é servido)
+#   contra secrets.DATABASE_URL. Confirmado no log do run 29158030441: falha na
+#   conexão ("FATAL: tenant/user ... not found" — o tenant do pooler Supabase
+#   não existe/resolve), então nunca migrou nada de verdade contra produção.
+# - "Deploy to Vercel" depende desse job e por isso nunca rodou — o deploy real
+#   acontece pela integração nativa do Vercel com o Git, não por esta Action.
+# Trocado pra workflow_dispatch: fica disponível pra rodar manualmente se
+# precisar, sem falhar sozinho (com X vermelho) em todo push pra main/develop.
 on:
-  push:
-    branches:
-      - main
-      - develop
+  workflow_dispatch:
 
 jobs:
   db-migrations:

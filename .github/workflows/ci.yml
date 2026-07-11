@@ -48,14 +48,21 @@ jobs:
       - name: Run Code Formatter Check (Prettier)
         run: pnpm prettier --check .
 
+      # apps/bff (stub de Azure Functions) e packages/db, packages/ai, packages/auth
+      # (stack Prisma/Next.js morto, nunca implantado — ver
+      # docs/handoff-2026-07-10-auditoria-e-plano.md) quebram lint/typecheck/build:
+      # apps/bff por dependência ausente (@google/generative-ai); packages/db por
+      # faltar `prisma generate` (Prisma Client não gerado no CI); packages/ai por
+      # importar o source (não builda) de packages/db. Nenhum é usado pelo app real
+      # (vercel.json builda só apps/web) — excluídos destes 3 steps.
       - name: Run Linter (ESLint)
-        run: pnpm lint
+        run: pnpm --filter '!./apps/bff' --filter '!./packages/db' --filter '!./packages/ai' --filter '!./packages/auth' -r lint
 
       - name: Run Typecheck (TypeScript)
-        run: pnpm typecheck
+        run: pnpm --filter '!./apps/bff' --filter '!./packages/db' --filter '!./packages/ai' --filter '!./packages/auth' -r typecheck
 
       - name: Run Build
-        run: pnpm build
+        run: pnpm --filter '!./apps/bff' --filter '!./packages/db' --filter '!./packages/ai' --filter '!./packages/auth' -r build
 
       - name: Run Tests
         run: pnpm test
