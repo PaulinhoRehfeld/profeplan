@@ -5,6 +5,7 @@ import { useUIStore } from '../stores/useUIStore';
 import { useProfeplanAuth } from '../hooks/useProfeplanAuth';
 import { useProfeplanSettings } from '../hooks/useProfeplanSettings';
 import { supabase } from '../services/supabaseClient';
+import { clearLocalSession } from '../utils/authUtils';
 
 export const AppLayout: React.FC = () => {
   const { session, userProfile, refreshProfile, setSession } = useProfeplanAuth();
@@ -26,8 +27,7 @@ export const AppLayout: React.FC = () => {
 
   const handleLogout = async () => {
     console.log("[AppLayout] 🚪 Initiating targeted logout...");
-    localStorage.removeItem('profeplan_session');
-    localStorage.removeItem('supabase_user_id');
+    clearLocalSession();
     setSession(null);
     await supabase.auth.signOut();
     window.location.href = '/';

@@ -6,6 +6,7 @@ import { AppErrorPage } from '../components/AppErrorPage';
 import { useProfeplanAuth } from '../hooks/useProfeplanAuth';
 import { supabase } from '../services/supabaseClient';
 import { isAdmin } from '../services/ProfileService';
+import { clearLocalSession } from '../utils/authUtils';
 
 // Lazy Pages
 const LandingPage = React.lazy(() => import('../pages/LandingPage'));
@@ -40,8 +41,7 @@ const VerifyEmailRoute: React.FC = () => {
   const { session, setSession, setUserProfile } = useProfeplanAuth();
 
   const handleLogout = async () => {
-    localStorage.removeItem('profeplan_session');
-    localStorage.removeItem('supabase_user_id');
+    clearLocalSession();
     setSession(null);
     setUserProfile(null);
     await supabase.auth.signOut();

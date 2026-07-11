@@ -33,6 +33,29 @@ export const useActiveSchool = (userId: string | undefined) => {
     const [availableSchools, setAvailableSchools] = useState<ActiveSchool[]>([]);
     const [loading, setLoading] = useState(false);
 
+    // Reseta a escola ativa em memória sempre que o userId muda (logout ou troca
+    // de usuário na mesma aba, sem reload de página). Sem isso, o state React
+    // deste hook (montado uma única vez em RootLayout) sobrevive à navegação SPA
+    // e um novo login herda a escola ativa do usuário anterior (achado #13 da
+    // auditoria de 2026-07-10) — o guard `parsed.userId === userId` do useState
+    // inicial só roda no mount, não quando userId muda depois.
+    useEffect(() => {
+        if (!userId) {
+            setActiveSchoolState(null);
+            return;
+        }
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (!stored) return;
+        try {
+            const parsed = JSON.parse(stored);
+            if (parsed.userId !== userId) {
+                setActiveSchoolState(null);
+            }
+        } catch {
+            setActiveSchoolState(null);
+        }
+    }, [userId]);
+
     // Carregar escolas vinculadas ao professor
     useEffect(() => {
         const loadSchools = async () => {

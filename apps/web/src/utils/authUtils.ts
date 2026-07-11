@@ -21,6 +21,34 @@ export const resolveAuthUid = async (): Promise<string> => {
     throw new Error('Sessão expirada. Faça login novamente.');
 };
 
+// Fonte única de verdade das chaves de sessão no localStorage. Antes, cada um dos
+// 4 pontos de logout (AppLayout, AppRouter/VerifyEmailRoute, useProfeplanAuth x2,
+// useAppBootstrap) limpava sua própria lista manualmente — o que já causou drift
+// real: 'profeplan_active_school' só era limpo no listener SIGNED_OUT, não nos
+// outros 3 caminhos (achado #19 da auditoria de 2026-07-10).
+const SESSION_STORAGE_KEYS = [
+    'profeplan_session',
+    'supabase_user_id',
+    'supabase.auth.token',
+    'profeplan_active_school',
+];
+
+/**
+ * Limpa todas as chaves de sessão do localStorage. Chamar em todo caminho de
+ * logout (clique manual, listener SIGNED_OUT, token inválido) para evitar que
+ * um novo caminho esqueça uma chave — mesma causa raiz do achado #13 (escola
+ * ativa herdada de um usuário anterior por falta de limpeza consistente).
+ */
+export const clearLocalSession = (): void => {
+    for (const key of SESSION_STORAGE_KEYS) {
+        try {
+            localStorage.removeItem(key);
+        } catch {
+            // noop — ex: storage indisponível (modo privado, quota excedida)
+        }
+    }
+};
+
 const RETRYABLE_AUTH_STATUSES = new Set([502, 503, 504]);
 
 /**

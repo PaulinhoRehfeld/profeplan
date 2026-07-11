@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { getUserProfile, checkAndRewardReferrer, getProfileByEmail } from '../services/ProfileService';
-import { getRoleByEmail } from '../utils/authUtils';
+import { getRoleByEmail, clearLocalSession } from '../utils/authUtils';
 import { UserSession, UserProfile } from '../types';
 import { isHardcodedAdmin } from '../constants';
 
@@ -175,10 +175,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                         // Supabase confirma sem sessão ativa — limpa sessão customizada stale
                         // Evita estado quebrado: UI mostra logado mas JWT morto bloqueia todas as queries
                         console.warn('[Auth] ⚠️ INITIAL_SESSION sem authSession — limpando sessão stale.');
-                        try {
-                            localStorage.removeItem('profeplan_session');
-                            localStorage.removeItem('supabase_user_id');
-                        } catch { /* noop */ }
+                        clearLocalSession();
                         if (!cancelled) {
                             setSession(null);
                             setUserProfile(null);
@@ -191,12 +188,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                 setSession(null);
                 setUserProfile(null);
                 // SAFE CLEANING: Do NOT use clear(), keep settings!
-                try {
-                    localStorage.removeItem('profeplan_session');
-                    localStorage.removeItem('supabase_user_id');
-                    localStorage.removeItem('supabase.auth.token'); // standard supabase key
-                    localStorage.removeItem('profeplan_active_school'); // M-1: clear school on logout
-                } catch (e) { }
+                clearLocalSession();
                 setLoading(false);
             } else {
                 setLoading(false);

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { runDiagnostics } from '../services/diagnosticService';
 import { supabase } from '../services/supabaseClient';
 import { UserSettings, UserProfile } from '../types';
-import { isRetryableAuthError } from '../utils/authUtils';
+import { isRetryableAuthError, clearLocalSession } from '../utils/authUtils';
 
 interface UseAppBootstrapProps {
   loading: boolean;
@@ -198,8 +198,7 @@ export function useAppBootstrap({
       if (error || !data?.user) {
         console.error('[AppBootstrap] ❌ Token realmente inválido após 3 tentativas. Forçando logout.');
         supabase.auth.signOut().finally(() => {
-          localStorage.removeItem('profeplan_session');
-          localStorage.removeItem('supabase_user_id');
+          clearLocalSession();
           window.location.href = '/login';
         });
         return;
