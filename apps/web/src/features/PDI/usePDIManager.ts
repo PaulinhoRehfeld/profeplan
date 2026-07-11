@@ -13,6 +13,7 @@ import {
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { createSchoolStudent, findSchoolStudentBySchoolAndName, getSchoolStudentById } from '../../services/schoolStudentService';
 import { ProfileService } from '../../services/ProfileService';
+import { resolveAuthUid } from '../../utils/authUtils';
 
 const BNCC_CODE_REGEX = /\b[A-Z]{2}\d{2}[A-Z]{2}\d{2}\b/g;
 
@@ -388,6 +389,17 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
 
         const finalContent = sanitizedContent.length > 0 ? sanitizedContent : content.substring(0, 5000);
 
+        // Usa auth.uid() real — o workaround de RLS abaixo (sync de school_id em
+        // profiles/teacher_schools) precisa do id real da linha, senão o UPDATE que
+        // deveria destravar a RLS afeta 0 linhas e anula a si mesmo (Ghost ID).
+        // Também usado no autosave do documento mais abaixo (evita insert rejeitado por RLS).
+        let authUid: string;
+        try {
+            authUid = await resolveAuthUid();
+        } catch {
+            authUid = userId;
+        }
+
         // Save PDI Log to Supabase using the correct service
         try {
             let schoolIdForSchoolStudent =
@@ -424,7 +436,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                         const { data: tsRow, error: tsErr } = await supabase
                             .from('teacher_schools')
                             .select('school_id')
-                            .eq('teacher_id', userId)
+                            .eq('teacher_id', authUid)
                             .is('ended_at', null)
                             .order('started_at', { ascending: false })
                             .limit(1)
@@ -438,7 +450,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                         } else {
                             // Sem erro, mas sem linha ativa encontrada.
                             console.warn('[PDI] teacher_schools lookup returned no active row:', {
-                                teacherId: userId,
+                                teacherId: authUid,
                                 endedAtIsNull: true
                             });
 
@@ -447,7 +459,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                                 const { data: tsLatest, error: tsLatestErr } = await supabase
                                     .from('teacher_schools')
                                     .select('school_id, ended_at, started_at')
-                                    .eq('teacher_id', userId)
+                                    .eq('teacher_id', authUid)
                                     .order('started_at', { ascending: false })
                                     .limit(1)
                                     .maybeSingle();
@@ -459,7 +471,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                                     console.warn('[PDI] teacher_schools latest lookup failed:', tsLatestErr);
                                 } else {
                                     console.warn('[PDI] teacher_schools latest lookup returned empty.', {
-                                        teacherId: userId
+                                        teacherId: authUid
                                     });
                                 }
                             } catch (e) {
@@ -479,7 +491,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                                     active_school_id: schoolIdForSchoolStudent,
                                     school_id: schoolIdForSchoolStudent
                                 })
-                                .eq('id', userId);
+                                .eq('id', authUid);
                         } catch (e) {
                             console.warn('[PDI] Failed to sync profiles.school_id after teacher_schools:', e);
                         }
@@ -527,7 +539,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
                             active_school_id: schoolIdForSchoolStudent,
                             school_id: schoolIdForSchoolStudent
                         })
-                        .eq('id', userId);
+                        .eq('id', authUid);
                 } catch (e) {
                     console.warn('[PDI] Failed to sync profiles.school_id for RLS:', e);
                 }
@@ -663,15 +675,22 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
         // Auto Save Document (Only if log saved)
         try {
             const fileName = `${studentName}_${dateStr}.md`;
-            await saveGeneratedContent(
-                userId,
+            const saved = await saveGeneratedContent(
+                authUid,
                 'documento',
                 'adaptacao_curricular',
                 fileName,
                 `# Adaptação: ${studentName}\nData: ${dateStr}\nAula: ${selectedLesson.topic}\n\n${finalContent}`
             );
+            // saveGeneratedContent nunca lança (captura erro internamente e retorna null) —
+            // sem checar o retorno, uma falha de insert (ex: RLS) era descartada em silêncio.
+            if (!saved) {
+                console.warn('[PDI] Auto-save do documento de adaptação falhou.');
+                setError('Adaptação validada, mas não foi possível salvar o documento automaticamente. Você pode exportar manualmente.');
+            }
         } catch (e) {
             console.warn("Auto-save failed", e);
+            setError('Adaptação validada, mas houve um erro ao salvar o documento automaticamente.');
         }
     };
 

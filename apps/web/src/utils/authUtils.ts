@@ -1,3 +1,25 @@
+import { supabase } from '../services/supabaseClient';
+
+// Resolve o auth.uid() real — getUser() valida server-side e renova o token automaticamente.
+// Compartilhado entre módulos que precisam gravar/ler no Supabase sem cair no Ghost ID
+// (userId local desatualizado ≠ id real da linha em profiles/RLS).
+export const resolveAuthUid = async (): Promise<string> => {
+    // 1. Tenta getUser (validação server-side com token atual)
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.id) return user.id;
+
+    // 2. Fallback: sessão local (getSession não valida server-side, mas o auto-refresh
+    // do client — persistSession + autoRefreshToken em supabaseClient.ts — já cuida da
+    // renovação em background com lock interno seguro para concorrência).
+    // NUNCA chamar supabase.auth.refreshSession() manualmente aqui: ver commit 66f38e96
+    // (2026-06-24) — chamadas concorrentes de refreshSession() rotacionam o refresh token,
+    // a 2ª chamada usa o token já rotacionado, falha com "refresh token already used" e o
+    // supabase-js limpa a sessão inteira (SIGNED_OUT em cascata).
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user?.id) return session.user.id;
+
+    throw new Error('Sessão expirada. Faça login novamente.');
+};
 
 const RETRYABLE_AUTH_STATUSES = new Set([502, 503, 504]);
 

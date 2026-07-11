@@ -65,26 +65,22 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
                     });
                 }
 
-                // 2. GHOST ID HEALING: If profile not found by ID but exists by Email
+                // 2. GHOST ID: If profile not found by ID but exists by Email, use it directly.
+                // NÃO tentamos mais fazer UPDATE profiles SET id=... aqui: a RLS
+                // (auth.uid() = id) bloqueia esse UPDATE vindo do cliente — afeta 0 linhas
+                // sem erro (por definição, é o caso Ghost ID), então o "healing" nunca
+                // funcionava de fato. Isso mascarava a falha e levava ao passo de Emergency
+                // Creation logo abaixo, criando um perfil DUPLICADO (órfão o registro real,
+                // com créditos/histórico) e deixando o usuário preso sem erro visível.
+                // Em vez disso, usamos a linha encontrada por email diretamente — mesmo
+                // padrão que getUserProfile()/getProfileByEmail() já aplicam.
                 if (!profile && userEmail) {
-                    console.warn(`[Auth] 🩹 Profile not found for ID ${userId}. Searching by email...`);
+                    console.warn(`[Auth] 🩹 Profile not found for ID ${userId}. Searching by email (Ghost ID)...`);
                     const { data: existing } = await getProfileByEmail(userEmail);
 
                     if (existing) {
-                        console.log(`[Auth] 🩹🩹 GHOST ID DETECTED. Healing Database...`);
-                        // Instead of patching the session JS object (which causes loops), 
-                        // we patch the Profiles table to point to the current session ID.
-                        const { error: healError } = await supabase
-                            .from('profiles')
-                            .update({ id: userId }) // Match DB to current Auth ID
-                            .eq('email', userEmail);
-
-                        if (!healError) {
-                            console.log('[Auth] ✅ Database healed successfully.');
-                            profile = await getUserProfile(userId, userEmail);
-                        } else {
-                            console.error('[Auth] ❌ Healing failed at DB level:', healError);
-                        }
+                        console.log('[Auth] 🩹 Ghost ID detectado — usando perfil encontrado por email (sem alterar a PK).');
+                        profile = existing as UserProfile;
                     }
                 }
 

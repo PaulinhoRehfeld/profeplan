@@ -1,4 +1,5 @@
 import { supabase } from '../supabaseClient';
+import { resolveAuthUid } from '../../utils/authUtils';
 
 /**
  * Módulo de indicações e recompensas (referrals).
@@ -7,12 +8,22 @@ import { supabase } from '../supabaseClient';
  */
 
 export const registerPhone = async (userId: string, phone: string) => {
+    // Usa auth.uid() real — evita ghost UUID no RLS (mesmo padrão de getClasses).
+    // Sem isso, com Ghost ID o SELECT de guarda retorna vazio e a função devolve
+    // "telefone já cadastrado" indevidamente, sem nunca conceder o bônus.
+    let authUid: string;
+    try {
+        authUid = await resolveAuthUid();
+    } catch {
+        authUid = userId;
+    }
+
     // M-3: Atomic update — only succeeds if phone IS NULL (no TOCTOU window).
     // If two requests race, the second will hit 0 rows updated and return a failure.
     const { data, error } = await supabase
         .from('profiles')
         .select('phone, credits')
-        .eq('id', userId)
+        .eq('id', authUid)
         .is('phone', null) // Only update if phone not yet set
         .maybeSingle();
 
@@ -26,7 +37,7 @@ export const registerPhone = async (userId: string, phone: string) => {
             phone: phone,
             credits: (data.credits || 0) + 10
         })
-        .eq('id', userId)
+        .eq('id', authUid)
         .is('phone', null); // Atomic guard: fail if phone was set by a racing request
 
     if (updateError) return { success: false, message: updateError.message };
