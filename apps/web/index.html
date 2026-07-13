@@ -35,6 +35,71 @@
       }
     })();
   </script>
+
+  <!-- CAPACITOR BRIDGE SAFETY + GLOBAL ERROR SILENCER: executa ANTES de qualquer script -->
+  <script>
+    (function () {
+      var win = window;
+
+      // 1. Stub do Capacitor — impede inicialização da ponte nativa
+      if (!win.Capacitor) {
+        win.Capacitor = {
+          isNative: false,
+          isPluginAvailable: function () { return false; },
+          getPlatform: function () { return 'web'; }
+        };
+      }
+
+      // 2. Silenciador global de erros de terceiros (extensões Chrome, Capacitor, etc.)
+      var SUPPRESS = [
+        'deviceAttributes',
+        'message channel closed',
+        'A listener indicated an asynchronous response',
+        'Extension context invalidated',
+        'Could not establish connection',
+        'Receiving end does not exist',
+        'The message port closed'
+      ];
+
+      var shouldSuppress = function (msg) {
+        msg = String(msg || '').toLowerCase();
+        for (var i = 0; i < SUPPRESS.length; i++) {
+          if (msg.indexOf(SUPPRESS[i].toLowerCase()) !== -1) return true;
+        }
+        return false;
+      };
+
+      // Intercepta erros síncronos (window.onerror)
+      var _oldOnerror = win.onerror;
+      win.onerror = function (message, source, lineno, colno, error) {
+        if (shouldSuppress(message || (error && error.message))) {
+          return true; // suprime o erro
+        }
+        if (_oldOnerror) return _oldOnerror.apply(this, arguments);
+        return false;
+      };
+
+      // Intercepta rejeições de promessa não tratadas
+      win.addEventListener('unhandledrejection', function (event) {
+        var reason = String((event.reason && event.reason.message) || event.reason || '');
+        if (shouldSuppress(reason)) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+        }
+      }, true); // useCapture=true para capturar antes de outros listeners
+
+      // Intercepta window.error para recursos
+      win.addEventListener('error', function (event) {
+        var msg = String(event.message || '');
+        if (shouldSuppress(msg)) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+    })();
+  </script>
   <!-- App Version -->
   <meta name="app-version" content="4.1.1" />
   <meta name="build-date" content="2026-06-20" />
@@ -42,8 +107,8 @@
   <title>PROFEPLAN v4.1.1</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="/logo-pProfeplan v3.9png" />
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/logo-blue.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
 
   <style>
     /* Styles moved to index.css */
