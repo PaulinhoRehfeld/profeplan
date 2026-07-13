@@ -39,28 +39,18 @@ export const AdminPanel: React.FC = () => {
   const loadSchools = async () => {
     setLoading(true);
     try {
-      let allRows: any[] = [];
-      let from = 0;
-      const step = 1000;
-      let more = true;
+      const { data, error } = await supabase
+        .from('schools')
+        .select('id, name, city')
+        .order('name')
+        .limit(5000);
 
-      while (more) {
-        const { data, error } = await supabase
-          .from('schools')
-          .select('id, name, city')
-          .order('name')
-          .range(from, from + step - 1);
+      if (error) throw error;
 
-        if (error) throw error;
-        if (data) {
-          allRows = [...allRows, ...data];
-          if (data.length < step) more = false;
-          else from += step;
-        } else more = false;
-      }
-
-      setAllSchools(allRows);
-      const uniqueCities = [...new Set(allRows.map((s) => s.city).filter(Boolean))] as string[];
+      setAllSchools(data || []);
+      const uniqueCities = [
+        ...new Set((data || []).map((s) => s.city).filter(Boolean)),
+      ] as string[];
       setCities(uniqueCities.sort());
     } catch (err) {
       console.error('[AdminPanel] Error loading schools:', err);

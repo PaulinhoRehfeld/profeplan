@@ -157,42 +157,4 @@ export const SchoolService = {
 
     return data;
   },
-
-  async getAllSchools() {
-    const { data, error } = await supabase
-      .from('schools')
-      .select('id, name, city, sre')
-      .order('name');
-
-    if (error) return { data: null, error };
-
-    // Deduplicate: Keep first occurrence of each name
-    // If same name appears multiple times, append city to differentiate
-    const seenNames = new Map<string, number>();
-    const deduplicated: Array<{ id: string; name: string }> = [];
-
-    data?.forEach((school) => {
-      const baseName = school.name;
-      const count = seenNames.get(baseName) || 0;
-      seenNames.set(baseName, count + 1);
-
-      // If it's a duplicate name, append city for clarity
-      let displayName = baseName;
-      if (count > 0 && school.city) {
-        displayName = `${baseName} (${school.city})`;
-      } else if (count > 0 && !school.city && school.sre) {
-        displayName = `${baseName} (${school.sre})`;
-      }
-
-      // Only add if we haven't seen this exact id yet
-      if (!deduplicated.some((s) => s.id === school.id)) {
-        deduplicated.push({
-          id: school.id,
-          name: displayName,
-        });
-      }
-    });
-
-    return { data: deduplicated, error: null };
-  },
 };

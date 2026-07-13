@@ -22,12 +22,7 @@ const SchoolSelector: React.FC<SchoolSelectorProps> = ({ onSelect }) => {
     console.log(`[SchoolSelector] Searching for: "${term}"`);
     setLoading(true);
     try {
-      // Using 'or' to search in name OR city
-      const { data, error } = await supabase
-        .from('schools')
-        .select('id, name, city, sre')
-        .or(`name.ilike.%${term}%,city.ilike.%${term}%`)
-        .limit(10);
+      const { data, error } = await supabase.rpc('search_schools_unaccent', { q: term });
 
       if (error) {
         console.error('[SchoolSelector] DB Error:', error);
