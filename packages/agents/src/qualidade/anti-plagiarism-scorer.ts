@@ -50,8 +50,18 @@ export class AntiPlagiarismScorerAgent extends BaseQualityGate {
    * @returns Valor entre 0 (totalmente diferente) e 1 (idêntico).
    */
   private _jaccardSimilarity(a: string, b: string): number {
-    const palavrasA = new Set(a.toLowerCase().split(/\s+/).filter((w) => w.length > 2));
-    const palavrasB = new Set(b.toLowerCase().split(/\s+/).filter((w) => w.length > 2));
+    const palavrasA = new Set(
+      a
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((w) => w.length > 2)
+    );
+    const palavrasB = new Set(
+      b
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((w) => w.length > 2)
+    );
 
     if (palavrasA.size === 0 || palavrasB.size === 0) return 0;
 
@@ -61,10 +71,7 @@ export class AntiPlagiarismScorerAgent extends BaseQualityGate {
     return intersecao.size / uniao.size;
   }
 
-  public async check(
-    resultado: GeracaoResultado,
-    req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, req: GeracaoRequest): Promise<GateResult> {
     const textoAtual = JSON.stringify(resultado.conteudo).toLowerCase();
 
     // Texto muito curto — não comparável
@@ -97,7 +104,7 @@ export class AntiPlagiarismScorerAgent extends BaseQualityGate {
 
     const maxSimilaridade = Math.max(...similaridades.map((s) => s.similaridade));
     const altaSimilaridade = similaridades.filter(
-      (s) => s.similaridade >= AntiPlagiarismScorerAgent.LIMIAR_SIMILARIDADE,
+      (s) => s.similaridade >= AntiPlagiarismScorerAgent.LIMIAR_SIMILARIDADE
     );
 
     if (altaSimilaridade.length > 0) {
@@ -108,7 +115,8 @@ export class AntiPlagiarismScorerAgent extends BaseQualityGate {
         severity: 'WARNING',
         score: originalityScore,
         message: `${altaSimilaridade.length} aula(s) com similaridade >= ${(AntiPlagiarismScorerAgent.LIMIAR_SIMILARIDADE * 100).toFixed(0)}%. Similaridade máxima: ${(maxSimilaridade * 100).toFixed(1)}%.`,
-        suggestion: 'O conteúdo está muito similar a aulas anteriores. Varie os exemplos e abordagens.',
+        suggestion:
+          'O conteúdo está muito similar a aulas anteriores. Varie os exemplos e abordagens.',
       };
     }
 

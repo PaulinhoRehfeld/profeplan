@@ -7,61 +7,61 @@ import { TeacherEntry } from '../../types';
  */
 
 type Block10EvaluationInput = {
-    data: string;
-    atividade_titulo: string;
-    disciplina: string;
-    professor_valor: number;
-    professor_nota_alcancada: number;
-    professor_id: string;
-    professor_grau_autonomia?: string;
-    ia_diagnostico?: string;
+  data: string;
+  atividade_titulo: string;
+  disciplina: string;
+  professor_valor: number;
+  professor_nota_alcancada: number;
+  professor_id: string;
+  professor_grau_autonomia?: string;
+  ia_diagnostico?: string;
 };
 
 export async function saveTeacherEntry(
-    entry: TeacherEntry
+  entry: TeacherEntry
 ): Promise<{ data: TeacherEntry | null; error: unknown }> {
-    const { data, error } = await supabase
-        .from('pdi_teacher_entries')
-        .upsert(entry, { onConflict: 'pdi_document_id, teacher_id, subject, bimester' })
-        .select()
-        .single();
+  const { data, error } = await supabase
+    .from('pdi_teacher_entries')
+    .upsert(entry, { onConflict: 'pdi_document_id, teacher_id, subject, bimester' })
+    .select()
+    .single();
 
-    return { data, error };
+  return { data, error };
 }
 
 export async function getTeacherEntries(
-    pdiId: string
+  pdiId: string
 ): Promise<{ data: TeacherEntry[] | null; error: unknown }> {
-    const { data, error } = await supabase
-        .from('pdi_teacher_entries')
-        .select('*')
-        .eq('pdi_document_id', pdiId);
+  const { data, error } = await supabase
+    .from('pdi_teacher_entries')
+    .select('*')
+    .eq('pdi_document_id', pdiId);
 
-    return { data, error };
+  return { data, error };
 }
 
 export async function addBlock10Evaluation(
-    pdiId: string,
-    evaluation: Block10EvaluationInput
+  pdiId: string,
+  evaluation: Block10EvaluationInput
 ): Promise<{ data: TeacherEntry | null; error: unknown }> {
-    return saveTeacherEntry({
-        pdi_document_id: pdiId,
-        teacher_id: evaluation.professor_id,
-        bimester: 1,
-        subject: evaluation.disciplina,
-        autonomy_level: evaluation.professor_grau_autonomia,
-        observations: evaluation.ia_diagnostico,
-    });
+  return saveTeacherEntry({
+    pdi_document_id: pdiId,
+    teacher_id: evaluation.professor_id,
+    bimester: 1,
+    subject: evaluation.disciplina,
+    autonomy_level: evaluation.professor_grau_autonomia,
+    observations: evaluation.ia_diagnostico,
+  });
 }
 
 export async function updateBlock10WithAI(
-    pdiId: string,
-    evaluationId: string,
-    aiDiagnosis: string
+  pdiId: string,
+  evaluationId: string,
+  aiDiagnosis: string
 ): Promise<{ data: unknown; error: unknown }> {
-    const { data, error } = await supabase
-        .from('pdi_teacher_entries')
-        .update({ observations: aiDiagnosis })
-        .eq('id', evaluationId);
-    return { data, error };
+  const { data, error } = await supabase
+    .from('pdi_teacher_entries')
+    .update({ observations: aiDiagnosis })
+    .eq('id', evaluationId);
+  return { data, error };
 }

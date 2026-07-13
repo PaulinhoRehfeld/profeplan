@@ -56,11 +56,16 @@ async function sendEmail(opts: SendEmailOptions): Promise<EmailResult> {
       }),
     });
 
-    const data = await resp.json().catch(() => ({})) as Record<string, unknown>;
+    const data = (await resp.json().catch(() => ({}))) as Record<string, unknown>;
 
     if (!resp.ok) {
       const errMsg = String(data?.message || `HTTP ${resp.status}`);
-      log.error('[Email] Resend retornou erro', { to: opts.to, subject: opts.subject, status: resp.status, error: errMsg });
+      log.error('[Email] Resend retornou erro', {
+        to: opts.to,
+        subject: opts.subject,
+        status: resp.status,
+        error: errMsg,
+      });
       return { success: false, error: errMsg };
     }
 

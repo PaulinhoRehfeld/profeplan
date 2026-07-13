@@ -50,7 +50,7 @@ export class DummyAgent extends BaseDisciplineAgent {
   protected async _callLLM(
     _prompt: string,
     _ragContext: string,
-    params: Record<string, unknown>,
+    params: Record<string, unknown>
   ): Promise<string> {
     // Simula resposta do LLM
     return JSON.stringify({
@@ -60,10 +60,7 @@ export class DummyAgent extends BaseDisciplineAgent {
     });
   }
 
-  protected async _postProcess(
-    raw: string,
-    tipo: TipoGeracao,
-  ): Promise<GeracaoResultado> {
+  protected async _postProcess(raw: string, tipo: TipoGeracao): Promise<GeracaoResultado> {
     let conteudo: Record<string, unknown>;
     try {
       conteudo = JSON.parse(raw) as Record<string, unknown>;

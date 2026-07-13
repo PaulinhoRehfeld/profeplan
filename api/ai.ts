@@ -5,9 +5,12 @@ import Anthropic from '@anthropic-ai/sdk';
 
 // ── Logger ──
 const logger = {
-  info: (msg: string, meta?: unknown) => console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
-  error: (msg: string, meta?: unknown) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
-  audit: (action: string, actor: string, details?: unknown) => console.log(JSON.stringify({ level: 'AUDIT', action, actor, ...(details ? { details } : {}) })),
+  info: (msg: string, meta?: unknown) =>
+    console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
+  error: (msg: string, meta?: unknown) =>
+    console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
+  audit: (action: string, actor: string, details?: unknown) =>
+    console.log(JSON.stringify({ level: 'AUDIT', action, actor, ...(details ? { details } : {}) })),
 };
 
 // ── Types ──
@@ -92,7 +95,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const provider = getAIProvider();
     if (!provider) {
-      const errMsg = 'Nenhum provedor de IA configurado. Defina ANTHROPIC_API_KEY, DEEPSEEK_API_KEY ou OPENAI_API_KEY nas variáveis de ambiente do Vercel.';
+      const errMsg =
+        'Nenhum provedor de IA configurado. Defina ANTHROPIC_API_KEY, DEEPSEEK_API_KEY ou OPENAI_API_KEY nas variáveis de ambiente do Vercel.';
       logger.error(`[API/AI] ${errMsg}`);
       return res.status(500).json({ error: errMsg });
     }
@@ -112,11 +116,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const anthropic = provider.client as Anthropic;
 
       // Separa system prompt das mensagens (Anthropic exige system no top-level)
-      const systemMessages = messages.filter(m => m.role === 'system').map(m => m.content);
-      const conversationMessages = messages.filter(m => m.role !== 'system').map(m => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content,
-      }));
+      const systemMessages = messages.filter((m) => m.role === 'system').map((m) => m.content);
+      const conversationMessages = messages
+        .filter((m) => m.role !== 'system')
+        .map((m) => ({
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+        }));
 
       const anthropicParams: any = {
         model: modelName,
@@ -140,11 +146,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           completion = await anthropic.messages.create(anthropicParams);
           break;
         } catch (err: any) {
-          const is429 = err?.status === 429 || String(err?.message).includes('429') || String(err?.message).includes('rate_limit');
+          const is429 =
+            err?.status === 429 ||
+            String(err?.message).includes('429') ||
+            String(err?.message).includes('rate_limit');
           if (is429 && attempt < MAX_ATTEMPTS - 1) {
             const delay = 5000 * Math.pow(2, attempt);
-            logger.info(`[API/AI] Claude rate limit — retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_ATTEMPTS})`);
-            await new Promise(r => setTimeout(r, delay));
+            logger.info(
+              `[API/AI] Claude rate limit — retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_ATTEMPTS})`
+            );
+            await new Promise((r) => setTimeout(r, delay));
             continue;
           }
           throw err;
@@ -156,9 +167,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Extrai texto da resposta do Claude
-      const textBlocks = completion.content.filter((block): block is Anthropic.Messages.TextBlock => block.type === 'text');
-      text = textBlocks.map(b => b.text).join('\n') || '';
-
+      const textBlocks = completion.content.filter(
+        (block): block is Anthropic.Messages.TextBlock => block.type === 'text'
+      );
+      text = textBlocks.map((b) => b.text).join('\n') || '';
     } else {
       // ═══════════════════════════════════════════
       // OPENAI / DEEPSEEK (OpenAI-compatible SDK)
@@ -188,8 +200,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const is429 = err?.status === 429 || String(err?.message).includes('429');
           if (is429 && attempt < MAX_ATTEMPTS - 1) {
             const delay = 3000 * Math.pow(2, attempt);
-            logger.info(`[API/AI] ${provider.type} rate limit — retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_ATTEMPTS})`);
-            await new Promise(r => setTimeout(r, delay));
+            logger.info(
+              `[API/AI] ${provider.type} rate limit — retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_ATTEMPTS})`
+            );
+            await new Promise((r) => setTimeout(r, delay));
             continue;
           }
           throw err;
@@ -202,7 +216,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       model: modelName,
       success: true,
       promptLength: JSON.stringify(messages).length,
-      responseLength: text.length
+      responseLength: text.length,
     });
 
     return res.status(200).json({ text });

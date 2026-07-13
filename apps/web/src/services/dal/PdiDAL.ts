@@ -21,7 +21,9 @@ export interface PdiDAL {
   ): Promise<unknown>;
   getStudentTimeline(studentId: string): Promise<unknown[]>;
   getStudentAdaptations(pdiId: string): Promise<unknown[]>;
-  getAdaptationStats(pdiId: string): Promise<{ total: number; last_generated?: string; subjects: string[] }>;
+  getAdaptationStats(
+    pdiId: string
+  ): Promise<{ total: number; last_generated?: string; subjects: string[] }>;
 }
 
 export const pdiDAL: PdiDAL = {
@@ -43,5 +45,5 @@ export const pdiDAL: PdiDAL = {
 
   async getAdaptationStats(pdiId) {
     return PdiDocumentService.getAdaptationStats(pdiId);
-  }
+  },
 };

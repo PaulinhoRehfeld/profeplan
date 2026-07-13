@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../supabaseClient', () => ({
   supabase: {
-    from: vi.fn()
-  }
+    from: vi.fn(),
+  },
 }));
 
 import { supabase } from '../supabaseClient';
@@ -15,7 +15,7 @@ const createQuery = (result: { data: unknown; error: unknown }) => {
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
     insert: vi.fn().mockReturnThis(),
-    single: vi.fn().mockResolvedValue(result)
+    single: vi.fn().mockResolvedValue(result),
   };
 
   return query;
@@ -49,7 +49,7 @@ describe('classService', () => {
     const response = await createClass({
       name: '3A',
       school_id: 'school-123',
-      year: 2025
+      year: 2025,
     });
 
     expect(response.success).toBe(true);

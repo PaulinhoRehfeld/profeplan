@@ -18,13 +18,13 @@ export const saveGeneratedContent = async (
         type: type,
         folder: folder,
         title: title,
-        content: content
-      }
+        content: content,
+      },
     ])
     .select();
 
   if (error) {
-    console.error("Erro ao salvar conteúdo gerado:", error.message);
+    console.error('Erro ao salvar conteúdo gerado:', error.message);
     return null;
   }
 
@@ -42,7 +42,7 @@ export const getGeneratedContents = async (userId: string) => {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error("Erro ao buscar conteúdos:", error.message);
+    console.error('Erro ao buscar conteúdos:', error.message);
     return [];
   }
 
@@ -52,7 +52,10 @@ export const getGeneratedContents = async (userId: string) => {
 /**
  * Atualiza um conteúdo existente.
  */
-export const updateGeneratedContent = async (id: string, updates: { title?: string, content?: string }) => {
+export const updateGeneratedContent = async (
+  id: string,
+  updates: { title?: string; content?: string }
+) => {
   const { data, error } = await supabase
     .from('generated_contents')
     .update(updates)
@@ -60,7 +63,7 @@ export const updateGeneratedContent = async (id: string, updates: { title?: stri
     .select();
 
   if (error) {
-    console.error("Erro ao atualizar conteúdo:", error.message);
+    console.error('Erro ao atualizar conteúdo:', error.message);
     throw error;
   }
 
@@ -71,13 +74,10 @@ export const updateGeneratedContent = async (id: string, updates: { title?: stri
  * Remove um conteúdo.
  */
 export const deleteGeneratedContent = async (id: string) => {
-  const { error } = await supabase
-    .from('generated_contents')
-    .delete()
-    .eq('id', id);
+  const { error } = await supabase.from('generated_contents').delete().eq('id', id);
 
   if (error) {
-    console.error("Erro ao deletar conteúdo:", error.message);
+    console.error('Erro ao deletar conteúdo:', error.message);
     throw error;
   }
 };
@@ -86,32 +86,22 @@ export const deleteGeneratedContent = async (id: string) => {
  * Atualiza as preferências e o perfil de aprendizado do professor.
  */
 export const updateLearningProfile = async (userId: string, preferences: object) => {
-  const { error } = await supabase
-    .from('user_learning_profile')
-    .upsert({
-      user_id: userId,
-      preferences: preferences,
-      last_updated: new Date().toISOString()
-    });
+  const { error } = await supabase.from('user_learning_profile').upsert({
+    user_id: userId,
+    preferences: preferences,
+    last_updated: new Date().toISOString(),
+  });
 
   if (error) {
-    console.error("Erro ao atualizar perfil de aprendizado:", error.message);
+    console.error('Erro ao atualizar perfil de aprendizado:', error.message);
   }
 };
 
 /**
  * Busca questões do ENEM filtrando por critérios.
  */
-export const fetchEnemQuestions = async (
-  area: string,
-  subject?: string,
-  limit: number = 5
-) => {
-  let query = supabase
-    .from('enem_questions')
-    .select('*')
-    .eq('area', area)
-    .limit(limit);
+export const fetchEnemQuestions = async (area: string, subject?: string, limit: number = 5) => {
+  let query = supabase.from('enem_questions').select('*').eq('area', area).limit(limit);
 
   if (subject) {
     query = query.eq('subject', subject);
@@ -120,7 +110,7 @@ export const fetchEnemQuestions = async (
   const { data, error } = await query;
 
   if (error) {
-    console.error("Erro ao buscar questões do ENEM:", error.message);
+    console.error('Erro ao buscar questões do ENEM:', error.message);
     return [];
   }
 

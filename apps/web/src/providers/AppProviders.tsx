@@ -7,9 +7,7 @@ export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <ErrorBoundary>
       <ToastProvider>
-        <GlobalPlanningProvider>
-          {children}
-        </GlobalPlanningProvider>
+        <GlobalPlanningProvider>{children}</GlobalPlanningProvider>
       </ToastProvider>
     </ErrorBoundary>
   );

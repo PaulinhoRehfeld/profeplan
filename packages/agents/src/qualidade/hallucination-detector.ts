@@ -43,7 +43,8 @@ const RE_DATA_FUTURA = /\b(?:em|no ano de|no século)\s+(\d{4,5})\b/gi;
  * Grupo 1: nome do autor citado (2 a 4 palavras iniciadas por maiúscula).
  * Grupo 2: ano da citação entre parênteses (opcional).
  */
-const RE_CITACAO = /\b(?:segundo|de acordo com|conforme)\s+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+){1,3})\s*(?:\((\d{4})\))?/g;
+const RE_CITACAO =
+  /\b(?:segundo|de acordo com|conforme)\s+([A-ZÀ-Ú][a-zà-ú]+(?:\s+[A-ZÀ-Ú][a-zà-ú]+){1,3})\s*(?:\((\d{4})\))?/g;
 
 /**
  * Detecta entidades nominais com títulos acadêmicos/profissionais:
@@ -128,10 +129,7 @@ export class HallucinationDetectorAgent extends BaseQualityGate {
    * @param _req      — Requisição original (não utilizado diretamente).
    * @returns Promise com o {@link GateResult} da auditoria.
    */
-  public async check(
-    resultado: GeracaoResultado,
-    _req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, _req: GeracaoRequest): Promise<GateResult> {
     // TODO: Integrar com Supabase RAG para cruzamento real de afirmações
     const texto = JSON.stringify(resultado.conteudo);
     const textoTamanho = texto.length;

@@ -63,14 +63,17 @@ export class AgentArtes extends BaseDisciplineAgent {
   public getHabilidadesPrioritarias(): string[] {
     if (this.context.nivel.startsWith('EF_')) {
       return [
-        'EF69AR01', 'EF69AR02', 'EF69AR03', 'EF69AR04',
-        'EF69AR05', 'EF69AR06', 'EF69AR07', 'EF69AR08',
+        'EF69AR01',
+        'EF69AR02',
+        'EF69AR03',
+        'EF69AR04',
+        'EF69AR05',
+        'EF69AR06',
+        'EF69AR07',
+        'EF69AR08',
       ];
     }
-    return [
-      'EM13LGG101', 'EM13LGG102', 'EM13LGG103',
-      'EM13LGG104', 'EM13LGG105',
-    ];
+    return ['EM13LGG101', 'EM13LGG102', 'EM13LGG103', 'EM13LGG104', 'EM13LGG105'];
   }
 
   /**

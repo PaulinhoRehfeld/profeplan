@@ -50,7 +50,9 @@ function parseAndValidate(body: unknown): SignupInput | null {
   if (!body || typeof body !== 'object') return null;
   const b = body as Record<string, unknown>;
 
-  const email = String(b.email ?? '').trim().toLowerCase();
+  const email = String(b.email ?? '')
+    .trim()
+    .toLowerCase();
   const password = String(b.password ?? '');
   const fullName = String(b.fullName ?? b.full_name ?? '').trim();
 
@@ -79,13 +81,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       hasUrl: !!SUPABASE_URL,
       hasKey: !!SERVICE_KEY,
     });
-    return res.status(503).json({ error: 'Serviço temporariamente indisponível. Contate o suporte.' });
+    return res
+      .status(503)
+      .json({ error: 'Serviço temporariamente indisponível. Contate o suporte.' });
   }
 
   const input = parseAndValidate(req.body);
   if (!input) {
     return res.status(400).json({
-      error: 'Dados inválidos. Verifique: e-mail válido, nome completo (mín. 2 caracteres), senha (mín. 6 caracteres).',
+      error:
+        'Dados inválidos. Verifique: e-mail válido, nome completo (mín. 2 caracteres), senha (mín. 6 caracteres).',
     });
   }
 
@@ -117,7 +122,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const linkData = (await supabaseResp.json().catch(() => ({}))) as Record<string, unknown>;
 
     if (!supabaseResp.ok) {
-      const rawMsg = String(linkData?.msg ?? linkData?.message ?? linkData?.error_description ?? '').toLowerCase();
+      const rawMsg = String(
+        linkData?.msg ?? linkData?.message ?? linkData?.error_description ?? ''
+      ).toLowerCase();
       log.error('[Signup] Supabase Admin API erro', {
         email,
         status: supabaseResp.status,
@@ -149,7 +156,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Envia e-mail de confirmação pelo nosso próprio serviço (Resend)
-    const emailResult = await sendEmailConfirmation({ to: email, fullName, confirmationUrl: actionLink });
+    const emailResult = await sendEmailConfirmation({
+      to: email,
+      fullName,
+      confirmationUrl: actionLink,
+    });
 
     log.audit('SIGNUP_INITIATED', email, {
       emailSent: emailResult.success,
@@ -168,6 +179,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Erro interno';
     log.error('[Signup] Erro inesperado', { email, error: message });
-    return res.status(500).json({ error: 'Ocorreu um erro inesperado. Tente novamente mais tarde.' });
+    return res
+      .status(500)
+      .json({ error: 'Ocorreu um erro inesperado. Tente novamente mais tarde.' });
   }
 }

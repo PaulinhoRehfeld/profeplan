@@ -37,14 +37,14 @@ export function useAppBootstrap({
 
     const confirmed = window.confirm(
       '⚠️ Resetar o aplicativo?\n\n' +
-      'Isso irá limpar todos os dados locais, cache e deslogar. ' +
-      'Use apenas se estiver com problemas técnicos.\n\n' +
-      'Confirmar?'
+        'Isso irá limpar todos os dados locais, cache e deslogar. ' +
+        'Use apenas se estiver com problemas técnicos.\n\n' +
+        'Confirmar?'
     );
     if (!confirmed) return;
 
     const runReset = async () => {
-      console.warn("[AppBootstrap] ☢️ EMERGENCY NUCLEAR RESET MANUAL (force_reset)");
+      console.warn('[AppBootstrap] ☢️ EMERGENCY NUCLEAR RESET MANUAL (force_reset)');
       try {
         if ('serviceWorker' in navigator) {
           const registrations = await navigator.serviceWorker.getRegistrations();
@@ -54,13 +54,14 @@ export function useAppBootstrap({
         }
         if ('caches' in window) {
           const cacheNames = await caches.keys();
-          await Promise.all(cacheNames.map(name => caches.delete(name)));
+          await Promise.all(cacheNames.map((name) => caches.delete(name)));
         }
         localStorage.clear();
         sessionStorage.clear();
-        window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+        window.location.href =
+          window.location.origin + window.location.pathname + '?v=' + Date.now();
       } catch (err) {
-        console.error("[AppBootstrap] Nuclear reset failed:", err);
+        console.error('[AppBootstrap] Nuclear reset failed:', err);
         window.location.reload();
       }
     };
@@ -73,7 +74,7 @@ export function useAppBootstrap({
       let cancelled = false;
       const timer = setTimeout(async () => {
         if (cancelled) return;
-        console.warn("[AppBootstrap] 🚨 Loader Timeout reached (10s). Running auto-diagnostics...");
+        console.warn('[AppBootstrap] 🚨 Loader Timeout reached (10s). Running auto-diagnostics...');
         try {
           const results = await runDiagnostics();
           if (cancelled) return;
@@ -85,7 +86,7 @@ export function useAppBootstrap({
               event_type: 'nuclear_reset_trigger',
               user_id: session?.user?.id || session?.userId || null,
               route: window.location.pathname,
-              details: { results, message: 'Loader timeout 10s' }
+              details: { results, message: 'Loader timeout 10s' },
             });
             if (error) {
               console.error(error);
@@ -96,7 +97,7 @@ export function useAppBootstrap({
 
           if (!cancelled) setShowEmergencyReset(true);
         } catch (err) {
-          console.error("[AppBootstrap] Auto-diagnostic failed:", err);
+          console.error('[AppBootstrap] Auto-diagnostic failed:', err);
           if (!cancelled) setShowEmergencyReset(true);
         }
       }, 10000);
@@ -110,10 +111,13 @@ export function useAppBootstrap({
   // 3. HYDRATION: Sync settings with userProfile
   useEffect(() => {
     if (userProfile && !loading) {
-      console.log("[AppBootstrap] 🔄 [HYDRATION] Initializing Sync from DB Profile...");
+      console.log('[AppBootstrap] 🔄 [HYDRATION] Initializing Sync from DB Profile...');
 
       const isDefault = (val: string | undefined | null) =>
-        !val || val === 'Professor(a)' || val === 'seu.nome@educacao.mg.gov.br' || val === '1234567-8';
+        !val ||
+        val === 'Professor(a)' ||
+        val === 'seu.nome@educacao.mg.gov.br' ||
+        val === '1234567-8';
 
       const updatedSettings = { ...settings };
       let changed = false;
@@ -124,7 +128,7 @@ export function useAppBootstrap({
         const dbIsReal = !isDefault(dbVal);
         const localIsDefault = isDefault(localVal);
 
-        if (dbIsReal && (localIsDefault || (dbVal !== localVal))) {
+        if (dbIsReal && (localIsDefault || dbVal !== localVal)) {
           console.log(`[AppBootstrap] 📥 [SYNC] Updating ${label}: '${localVal}' -> '${dbVal}'`);
           (updatedSettings as any)[localField] = dbVal;
           changed = true;
@@ -139,12 +143,19 @@ export function useAppBootstrap({
       syncField(userProfile.school_name, 'institution', 'Escola');
 
       const pedagogicalFields = [
-        'favorite_methodology', 'teaching_style', 'assessment_focus',
-        'tone_of_voice', 'header_text', 'footer_text', 'logo_base64'
+        'favorite_methodology',
+        'teaching_style',
+        'assessment_focus',
+        'tone_of_voice',
+        'header_text',
+        'footer_text',
+        'logo_base64',
       ];
 
-      pedagogicalFields.forEach(field => {
-        const camelField = field.replace(/_([a-z])/g, g => g[1].toUpperCase()) as keyof UserSettings;
+      pedagogicalFields.forEach((field) => {
+        const camelField = field.replace(/_([a-z])/g, (g) =>
+          g[1].toUpperCase()
+        ) as keyof UserSettings;
         const dbVal = userProfile[field as keyof UserProfile];
         if (dbVal && dbVal !== settings[camelField]) {
           (updatedSettings as any)[camelField] = dbVal;
@@ -153,11 +164,11 @@ export function useAppBootstrap({
       });
 
       if (changed) {
-        console.log("[AppBootstrap] ✅ [SYNC] Applying data to local state & storage.");
+        console.log('[AppBootstrap] ✅ [SYNC] Applying data to local state & storage.');
         setSettings(updatedSettings);
         localStorage.setItem('profeplan_settings', JSON.stringify(updatedSettings));
       } else {
-        console.log("[AppBootstrap] ℹ️ [SYNC] Local state is already optimized.");
+        console.log('[AppBootstrap] ℹ️ [SYNC] Local state is already optimized.');
       }
     }
   }, [userProfile, loading]);
@@ -171,8 +182,10 @@ export function useAppBootstrap({
 
     if (retryCount < 3) {
       const timer = setTimeout(() => {
-        console.warn(`[AppBootstrap] ⚠️ Session active but profile missing. Retrying sync (${retryCount + 1}/3)...`);
-        setRetryCount(prev => prev + 1);
+        console.warn(
+          `[AppBootstrap] ⚠️ Session active but profile missing. Retrying sync (${retryCount + 1}/3)...`
+        );
+        setRetryCount((prev) => prev + 1);
         refreshProfile();
       }, 3000);
       return () => clearTimeout(timer);
@@ -183,11 +196,14 @@ export function useAppBootstrap({
       if (cancelled) return;
 
       if (error && isRetryableAuthError(error)) {
-        console.warn('[AppBootstrap] ⚠️ Falha transitória (rede/gateway) ao validar token. Sessão preservada — tentando novamente.', error);
+        console.warn(
+          '[AppBootstrap] ⚠️ Falha transitória (rede/gateway) ao validar token. Sessão preservada — tentando novamente.',
+          error
+        );
         if (retryCount < 8) {
           setTimeout(() => {
             if (!cancelled) {
-              setRetryCount(prev => prev + 1);
+              setRetryCount((prev) => prev + 1);
               refreshProfile();
             }
           }, 8000);
@@ -196,7 +212,9 @@ export function useAppBootstrap({
       }
 
       if (error || !data?.user) {
-        console.error('[AppBootstrap] ❌ Token realmente inválido após 3 tentativas. Forçando logout.');
+        console.error(
+          '[AppBootstrap] ❌ Token realmente inválido após 3 tentativas. Forçando logout.'
+        );
         supabase.auth.signOut().finally(() => {
           clearLocalSession();
           window.location.href = '/login';
@@ -205,18 +223,24 @@ export function useAppBootstrap({
       }
 
       if (retryCount < 8) {
-        console.warn(`[AppBootstrap] ⚠️ Token válido mas perfil ainda ausente. Sessão preservada — tentativa lenta (${retryCount + 1}/8)...`);
+        console.warn(
+          `[AppBootstrap] ⚠️ Token válido mas perfil ainda ausente. Sessão preservada — tentativa lenta (${retryCount + 1}/8)...`
+        );
         setTimeout(() => {
           if (!cancelled) {
-            setRetryCount(prev => prev + 1);
+            setRetryCount((prev) => prev + 1);
             refreshProfile();
           }
         }, 8000);
       } else {
-        console.error('[AppBootstrap] Perfil não carregou após várias tentativas, mas o token é válido — sessão preservada, sem forçar logout.');
+        console.error(
+          '[AppBootstrap] Perfil não carregou após várias tentativas, mas o token é válido — sessão preservada, sem forçar logout.'
+        );
       }
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [loading, session?.isLoggedIn, !!userProfile, retryCount]);
 
   return { showEmergencyReset };

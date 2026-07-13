@@ -71,12 +71,8 @@ export const FirstRunTour: React.FC<FirstRunTourProps> = ({ activeModeLabel }) =
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-1">
               Passo {stepIndex + 1} de {steps.length}
             </p>
-            <h2 className="text-sm md:text-base font-black text-slate-900 mb-1">
-              {step.title}
-            </h2>
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
-              {step.body}
-            </p>
+            <h2 className="text-sm md:text-base font-black text-slate-900 mb-1">{step.title}</h2>
+            <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{step.body}</p>
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-3">
               Modo atual: {activeModeLabel}
             </p>
@@ -126,4 +122,3 @@ export const FirstRunTour: React.FC<FirstRunTourProps> = ({ activeModeLabel }) =
     </div>
   );
 };
-

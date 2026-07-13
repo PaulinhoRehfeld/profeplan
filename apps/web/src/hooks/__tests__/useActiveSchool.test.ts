@@ -31,7 +31,7 @@ const STORAGE_KEY = 'profeplan_active_school';
 const seedStorage = (userId: string) => {
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ userId, school: { id: 'school-1', name: 'Escola A', inep_code: '123' } }),
+    JSON.stringify({ userId, school: { id: 'school-1', name: 'Escola A', inep_code: '123' } })
   );
 };
 

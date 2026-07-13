@@ -19,12 +19,7 @@ import type { GeracaoRequest } from '../coordenacao/orchestrator-agent';
  */
 export class PDIGuardianAgent extends BaseQualityGate {
   /** Campos obrigatórios em uma adaptação PDI válida. */
-  private static readonly CAMPOS_OBRIGATORIOS_PDI = [
-    'aluno_id',
-    'pdi_id',
-    'aula_id',
-    'adaptacao',
-  ];
+  private static readonly CAMPOS_OBRIGATORIOS_PDI = ['aluno_id', 'pdi_id', 'aula_id', 'adaptacao'];
 
   /** Palavras-chave que indicam presença de adaptação PDI. */
   private static readonly INDICADORES_PDI = [
@@ -49,10 +44,7 @@ export class PDIGuardianAgent extends BaseQualityGate {
     return tipo === TipoGeracao.PDI_ADAPTACAO;
   }
 
-  public async check(
-    resultado: GeracaoResultado,
-    req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, req: GeracaoRequest): Promise<GateResult> {
     const conteudo = resultado.conteudo;
 
     // Se não for PDI_ADAPTACAO, o gate é pulado (isApplicable já filtra)
@@ -69,7 +61,7 @@ export class PDIGuardianAgent extends BaseQualityGate {
 
     // Verifica campos obrigatórios do PDI
     const camposFaltantes = PDIGuardianAgent.CAMPOS_OBRIGATORIOS_PDI.filter(
-      (campo) => !(campo in (conteudo ?? {})),
+      (campo) => !(campo in (conteudo ?? {}))
     );
 
     if (camposFaltantes.length > 0) {
@@ -99,7 +91,7 @@ export class PDIGuardianAgent extends BaseQualityGate {
     // Verifica presença de indicadores PDI/DUA no texto da adaptação
     const textoAdaptacao = adaptacao.toLowerCase();
     const indicadoresEncontrados = PDIGuardianAgent.INDICADORES_PDI.filter((ind) =>
-      textoAdaptacao.includes(ind),
+      textoAdaptacao.includes(ind)
     );
 
     if (indicadoresEncontrados.length === 0) {

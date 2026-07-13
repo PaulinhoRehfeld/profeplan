@@ -3,279 +3,317 @@ import { supabase } from '../../../services/supabaseClient';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 
 interface CreateUserModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onUserCreated: () => void;
-    // Data for dropdowns
-    allSchools: { id: string, name: string, city?: string }[];
-    cities: string[];
+  isOpen: boolean;
+  onClose: () => void;
+  onUserCreated: () => void;
+  // Data for dropdowns
+  allSchools: { id: string; name: string; city?: string }[];
+  cities: string[];
 }
 
 export const CreateUserModal: React.FC<CreateUserModalProps> = ({
-    isOpen,
-    onClose,
-    onUserCreated,
-    allSchools,
-    cities
+  isOpen,
+  onClose,
+  onUserCreated,
+  allSchools,
+  cities,
 }) => {
-    // Form State
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('123456');
-    const [role, setRole] = useState<'TEACHER' | 'SCHOOL_MANAGER' | 'ADMIN'>('TEACHER');
-    const [schoolId, setSchoolId] = useState('');
-    const [tier, setTier] = useState<'SILVER' | 'GOLD'>('SILVER');
-    const [credits, setCredits] = useState(10);
+  // Form State
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('123456');
+  const [role, setRole] = useState<'TEACHER' | 'SCHOOL_MANAGER' | 'ADMIN'>('TEACHER');
+  const [schoolId, setSchoolId] = useState('');
+  const [tier, setTier] = useState<'SILVER' | 'GOLD'>('SILVER');
+  const [credits, setCredits] = useState(10);
 
-    // Filter Logic
-    const [selectedCity, setSelectedCity] = useState('');
-    const [schoolSearchText, setSchoolSearchText] = useState('');
-    const [filteredSchools, setFilteredSchools] = useState<{ id: string, name: string }[]>([]);
+  // Filter Logic
+  const [selectedCity, setSelectedCity] = useState('');
+  const [schoolSearchText, setSchoolSearchText] = useState('');
+  const [filteredSchools, setFilteredSchools] = useState<{ id: string; name: string }[]>([]);
 
-    // Feedback state
-    const [formError, setFormError] = useState('');
-    const [formSuccess, setFormSuccess] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  // Feedback state
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    const handleCreateUser = async () => {
-        if (!email || !password) {
-            setFormError('Preencha E-mail e Senha.');
-            return;
+  const handleCreateUser = async () => {
+    if (!email || !password) {
+      setFormError('Preencha E-mail e Senha.');
+      return;
+    }
+
+    setFormError('');
+    setFormSuccess('');
+    setIsSubmitting(true);
+
+    try {
+      let dbRole: 'teacher' | 'manager' | 'admin' = 'teacher';
+      if (role === 'SCHOOL_MANAGER') {
+        dbRole = 'manager';
+        if (!schoolId) {
+          setFormError('Selecione uma Escola para o Gestor.');
+          setIsSubmitting(false);
+          return;
         }
+      }
+      if (role === 'ADMIN') dbRole = 'admin';
 
-        setFormError('');
-        setFormSuccess('');
-        setIsSubmitting(true);
+      // Obtém token do usuário admin logado para autenticar o endpoint
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) {
+        setFormError('Sessão expirada. Faça login novamente.');
+        setIsSubmitting(false);
+        return;
+      }
 
-        try {
-            let dbRole: 'teacher' | 'manager' | 'admin' = 'teacher';
-            if (role === 'SCHOOL_MANAGER') {
-                dbRole = 'manager';
-                if (!schoolId) {
-                    setFormError('Selecione uma Escola para o Gestor.');
-                    setIsSubmitting(false);
-                    return;
-                }
-            }
-            if (role === 'ADMIN') dbRole = 'admin';
+      const resp = await fetch('/api/auth/admin-create-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          role: dbRole,
+          schoolId: schoolId || undefined,
+          tier,
+          credits,
+          sendWelcome: false,
+        }),
+      });
 
-            // Obtém token do usuário admin logado para autenticar o endpoint
-            const { data: { session } } = await supabase.auth.getSession();
-            const token = session?.access_token;
-            if (!token) {
-                setFormError('Sessão expirada. Faça login novamente.');
-                setIsSubmitting(false);
-                return;
-            }
+      const data = await resp.json().catch(() => ({}));
 
-            const resp = await fetch('/api/auth/admin-create-user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    role: dbRole,
-                    schoolId: schoolId || undefined,
-                    tier,
-                    credits,
-                    sendWelcome: false,
-                }),
-            });
+      if (!resp.ok) {
+        const msg = data?.error || 'Erro ao criar usuário. Tente novamente.';
+        setFormError(msg);
+        return;
+      }
 
-            const data = await resp.json().catch(() => ({}));
+      setFormSuccess(`Usuário criado com sucesso! Senha inicial: ${password}`);
+      resetForm();
+      onUserCreated();
+    } catch (e: any) {
+      console.error('[CreateUserModal] Erro inesperado:', e);
+      setFormError('Erro inesperado. Verifique o console e contate o suporte.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-            if (!resp.ok) {
-                const msg = data?.error || 'Erro ao criar usuário. Tente novamente.';
-                setFormError(msg);
-                return;
-            }
+  const resetForm = () => {
+    setEmail('');
+    setPassword('123456');
+    setRole('TEACHER');
+    setSchoolId('');
+    setSelectedCity('');
+    setSchoolSearchText('');
+    setFilteredSchools([]);
+    setCredits(10);
+    setFormError('');
+    setFormSuccess('');
+  };
 
-            setFormSuccess(`Usuário criado com sucesso! Senha inicial: ${password}`);
-            resetForm();
-            onUserCreated();
-
-        } catch (e: any) {
-            console.error('[CreateUserModal] Erro inesperado:', e);
-            setFormError('Erro inesperado. Verifique o console e contate o suporte.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    const resetForm = () => {
-        setEmail('');
-        setPassword('123456');
-        setRole('TEACHER');
-        setSchoolId('');
-        setSelectedCity('');
-        setSchoolSearchText('');
-        setFilteredSchools([]);
-        setCredits(10);
-        setFormError('');
-        setFormSuccess('');
-    };
-
-    return (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Adicionar Novo Usuário</h2>
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">E-mail</label>
-                        <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-2 border rounded-lg" />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Senha Inicial</label>
-                        <input type="text" value={password} onChange={e => setPassword(e.target.value)} className="w-full px-4 py-2 border rounded-lg" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Função</label>
-                            <select value={role} onChange={(e: any) => setRole(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
-                                <option value="TEACHER">Professor</option>
-                                <option value="SCHOOL_MANAGER">Gestor Escolar</option>
-                                <option value="ADMIN">Admin Sistema</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nível</label>
-                            <select value={tier} onChange={(e: any) => setTier(e.target.value)} className="w-full px-4 py-2 border rounded-lg">
-                                <option value="SILVER">SILVER</option>
-                                <option value="GOLD">GOLD</option>
-                            </select>
-                        </div>
-                    </div>
-                    {(role === 'SCHOOL_MANAGER' || role === 'TEACHER') && (
-                        <>
-                            {/* Option 1: Filter by City */}
-                            <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
-                                    Opção 1: Filtrar por Cidade
-                                </label>
-                                <input
-                                    list="cities-list"
-                                    type="text"
-                                    placeholder="Digite ou selecione a cidade..."
-                                    value={selectedCity}
-                                    onChange={(e) => {
-                                        const city = e.target.value;
-                                        setSelectedCity(city);
-                                        setSchoolId('');
-                                        setSchoolSearchText(''); // Reset text search
-                                        if (city) {
-                                            const filtered = allSchools
-                                                .filter(s => s.city?.trim().toLowerCase() === city.trim().toLowerCase())
-                                                .map(s => ({ id: s.id, name: s.name }));
-                                            setFilteredSchools(filtered);
-                                        } else {
-                                            setFilteredSchools([]);
-                                        }
-                                    }}
-                                    className="w-full px-4 py-2 border rounded-lg bg-amber-50 border-amber-200"
-                                />
-                                <datalist id="cities-list">
-                                    {cities.map(city => (
-                                        <option key={city} value={city} />
-                                    ))}
-                                </datalist>
-                            </div>
-
-                            {/* OR Divider */}
-                            <div className="text-center text-sm font-bold text-slate-400 py-1">OU</div>
-
-                            {/* Option 2: Text Search */}
-                            <div>
-                                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
-                                    Opção 2: Buscar por Nome da Escola
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Digite o nome da escola..."
-                                    value={schoolSearchText}
-                                    onChange={(e) => {
-                                        const searchText = e.target.value;
-                                        setSchoolSearchText(searchText);
-                                        setSelectedCity(''); // Reset city filter
-                                        setSchoolId('');
-
-                                        if (searchText.length >= 3) {
-                                            const filtered = allSchools
-                                                .filter(s => s.name.toLowerCase().includes(searchText.toLowerCase()))
-                                                .map(s => ({ id: s.id, name: s.name }))
-                                                .slice(0, 100); // Limit to 100 results
-                                            setFilteredSchools(filtered);
-                                        } else {
-                                            setFilteredSchools([]);
-                                        }
-                                    }}
-                                    className="w-full px-4 py-2 border rounded-lg bg-green-50 border-green-200"
-                                />
-                                {schoolSearchText.length > 0 && schoolSearchText.length < 3 && (
-                                    <p className="text-xs text-amber-600 mt-1">Digite pelo menos 3 caracteres</p>
-                                )}
-                            </div>
-
-                            {/* School Dropdown (appears when filtered) */}
-                            {(selectedCity || schoolSearchText.length >= 3) && filteredSchools.length > 0 && (
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
-                                        {selectedCity ? `Escolas em ${selectedCity}` : `Resultados da Busca`}
-                                    </label>
-                                    <select
-                                        value={schoolId}
-                                        onChange={(e) => setSchoolId(e.target.value)}
-                                        className="w-full px-4 py-2 border rounded-lg bg-blue-50 border-blue-200"
-                                    >
-                                        <option value="">Selecione uma Escola...</option>
-                                        {filteredSchools.map(s => (
-                                            <option key={s.id} value={s.id}>{s.name}</option>
-                                        ))}
-                                    </select>
-                                    <p className="text-xs text-slate-500 mt-1">
-                                        {filteredSchools.length} escola(s) encontrada(s)
-                                    </p>
-                                </div>
-                            )}
-
-                            {(selectedCity || schoolSearchText.length >= 3) && filteredSchools.length === 0 && (
-                                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-                                    Nenhuma escola encontrada. Tente outro filtro.
-                                </div>
-                            )}
-                        </>
-                    )}
-                    <div>
-                        <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Créditos Iniciais</label>
-                        <input type="number" disabled={tier === 'GOLD'} value={credits} onChange={e => setCredits(parseInt(e.target.value))} className="w-full px-4 py-2 border rounded-lg disabled:opacity-50" />
-                    </div>
-                </div>
-                {formError && (
-                    <div className="flex items-start gap-2 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                        <p className="text-sm text-red-700 font-medium">{formError}</p>
-                    </div>
-                )}
-                {formSuccess && (
-                    <div className="flex items-start gap-2 mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
-                        <p className="text-sm text-green-700 font-medium">{formSuccess}</p>
-                    </div>
-                )}
-                <div className="flex gap-3 mt-6">
-                    <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200">Cancelar</button>
-                    <button
-                        onClick={handleCreateUser}
-                        disabled={isSubmitting}
-                        className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? 'Criando...' : 'Criar Usuário'}
-                    </button>
-                </div>
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-slate-800 mb-4">Adicionar Novo Usuário</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">E-mail</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+              Senha Inicial
+            </label>
+            <input
+              type="text"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                Função
+              </label>
+              <select
+                value={role}
+                onChange={(e: any) => setRole(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+              >
+                <option value="TEACHER">Professor</option>
+                <option value="SCHOOL_MANAGER">Gestor Escolar</option>
+                <option value="ADMIN">Admin Sistema</option>
+              </select>
             </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nível</label>
+              <select
+                value={tier}
+                onChange={(e: any) => setTier(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+              >
+                <option value="SILVER">SILVER</option>
+                <option value="GOLD">GOLD</option>
+              </select>
+            </div>
+          </div>
+          {(role === 'SCHOOL_MANAGER' || role === 'TEACHER') && (
+            <>
+              {/* Option 1: Filter by City */}
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                  Opção 1: Filtrar por Cidade
+                </label>
+                <input
+                  list="cities-list"
+                  type="text"
+                  placeholder="Digite ou selecione a cidade..."
+                  value={selectedCity}
+                  onChange={(e) => {
+                    const city = e.target.value;
+                    setSelectedCity(city);
+                    setSchoolId('');
+                    setSchoolSearchText(''); // Reset text search
+                    if (city) {
+                      const filtered = allSchools
+                        .filter((s) => s.city?.trim().toLowerCase() === city.trim().toLowerCase())
+                        .map((s) => ({ id: s.id, name: s.name }));
+                      setFilteredSchools(filtered);
+                    } else {
+                      setFilteredSchools([]);
+                    }
+                  }}
+                  className="w-full px-4 py-2 border rounded-lg bg-amber-50 border-amber-200"
+                />
+                <datalist id="cities-list">
+                  {cities.map((city) => (
+                    <option key={city} value={city} />
+                  ))}
+                </datalist>
+              </div>
+
+              {/* OR Divider */}
+              <div className="text-center text-sm font-bold text-slate-400 py-1">OU</div>
+
+              {/* Option 2: Text Search */}
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                  Opção 2: Buscar por Nome da Escola
+                </label>
+                <input
+                  type="text"
+                  placeholder="Digite o nome da escola..."
+                  value={schoolSearchText}
+                  onChange={(e) => {
+                    const searchText = e.target.value;
+                    setSchoolSearchText(searchText);
+                    setSelectedCity(''); // Reset city filter
+                    setSchoolId('');
+
+                    if (searchText.length >= 3) {
+                      const filtered = allSchools
+                        .filter((s) => s.name.toLowerCase().includes(searchText.toLowerCase()))
+                        .map((s) => ({ id: s.id, name: s.name }))
+                        .slice(0, 100); // Limit to 100 results
+                      setFilteredSchools(filtered);
+                    } else {
+                      setFilteredSchools([]);
+                    }
+                  }}
+                  className="w-full px-4 py-2 border rounded-lg bg-green-50 border-green-200"
+                />
+                {schoolSearchText.length > 0 && schoolSearchText.length < 3 && (
+                  <p className="text-xs text-amber-600 mt-1">Digite pelo menos 3 caracteres</p>
+                )}
+              </div>
+
+              {/* School Dropdown (appears when filtered) */}
+              {(selectedCity || schoolSearchText.length >= 3) && filteredSchools.length > 0 && (
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                    {selectedCity ? `Escolas em ${selectedCity}` : `Resultados da Busca`}
+                  </label>
+                  <select
+                    value={schoolId}
+                    onChange={(e) => setSchoolId(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-lg bg-blue-50 border-blue-200"
+                  >
+                    <option value="">Selecione uma Escola...</option>
+                    {filteredSchools.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {filteredSchools.length} escola(s) encontrada(s)
+                  </p>
+                </div>
+              )}
+
+              {(selectedCity || schoolSearchText.length >= 3) && filteredSchools.length === 0 && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                  Nenhuma escola encontrada. Tente outro filtro.
+                </div>
+              )}
+            </>
+          )}
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+              Créditos Iniciais
+            </label>
+            <input
+              type="number"
+              disabled={tier === 'GOLD'}
+              value={credits}
+              onChange={(e) => setCredits(parseInt(e.target.value))}
+              className="w-full px-4 py-2 border rounded-lg disabled:opacity-50"
+            />
+          </div>
         </div>
-    );
+        {formError && (
+          <div className="flex items-start gap-2 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700 font-medium">{formError}</p>
+          </div>
+        )}
+        {formSuccess && (
+          <div className="flex items-start gap-2 mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+            <p className="text-sm text-green-700 font-medium">{formSuccess}</p>
+          </div>
+        )}
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleCreateUser}
+            disabled={isSubmitting}
+            className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Criando...' : 'Criar Usuário'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };

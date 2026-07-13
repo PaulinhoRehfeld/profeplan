@@ -1,41 +1,41 @@
 import React, { useEffect } from 'react';
 
 interface A4PrintSheetProps {
-    children: React.ReactNode;
-    title?: string;
+  children: React.ReactNode;
+  title?: string;
 }
 
 const A4PrintSheet: React.FC<A4PrintSheetProps> = ({ children, title }) => {
-    const handlePrint = () => {
-        window.print();
+  const handlePrint = () => {
+    window.print();
+  };
+
+  useEffect(() => {
+    // Ao montar, garantir que o corpo permite scroll para que o navegador pegue todo o conteúdo
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'visible';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
     };
+  }, []);
 
-    useEffect(() => {
-        // Ao montar, garantir que o corpo permite scroll para que o navegador pegue todo o conteúdo
-        const originalOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'visible';
+  return (
+    <div className="print-overlay">
+      {/* Botões de Controle - Não aparecem na impressão */}
+      <div className="print-controls no-print">
+        <button onClick={handlePrint} className="btn-print">
+          🖨️ Confirmar e Imprimir PDF
+        </button>
+        <p className="print-hint">
+          Certifique-se de que o layout esteja como 'Retrato' e margens como 'Padrão'.
+        </p>
+      </div>
 
-        return () => {
-            document.body.style.overflow = originalOverflow;
-        };
-    }, []);
+      {/* A Folha A4 */}
+      <div className="a4-page">{children}</div>
 
-    return (
-        <div className="print-overlay">
-            {/* Botões de Controle - Não aparecem na impressão */}
-            <div className="print-controls no-print">
-                <button onClick={handlePrint} className="btn-print">
-                    🖨️ Confirmar e Imprimir PDF
-                </button>
-                <p className="print-hint">Certifique-se de que o layout esteja como 'Retrato' e margens como 'Padrão'.</p>
-            </div>
-
-            {/* A Folha A4 */}
-            <div className="a4-page">
-                {children}
-            </div>
-
-            <style>{`
+      <style>{`
         /* Estilo para Visualização no Navegador (Tela) */
         .print-overlay {
           background-color: #525659;
@@ -130,8 +130,8 @@ const A4PrintSheet: React.FC<A4PrintSheetProps> = ({ children, title }) => {
           }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default A4PrintSheet;

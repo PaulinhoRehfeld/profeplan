@@ -14,14 +14,12 @@ export const feedbackService = {
     // Log intent to console for debugging
     console.log('[FeedbackService] Saving feedback:', data);
 
-    const { error } = await supabase
-      .from('feedbacks')
-      .insert({
-        user_id: userId,
-        feature,
-        feedback_text: feedbackText,
-        original_content_summary: originalContentSummary
-      });
+    const { error } = await supabase.from('feedbacks').insert({
+      user_id: userId,
+      feature,
+      feedback_text: feedbackText,
+      original_content_summary: originalContentSummary,
+    });
 
     if (error) {
       console.error('[FeedbackService] Error saving feedback:', error);
@@ -37,5 +35,5 @@ export const feedbackService = {
 
     if (error) throw error;
     return data;
-  }
+  },
 };

@@ -10,7 +10,7 @@ import { clearLocalSession } from '../utils/authUtils';
 export const AppLayout: React.FC = () => {
   const { session, userProfile, refreshProfile, setSession } = useProfeplanAuth();
   const { settings, setSettings } = useProfeplanSettings();
-  
+
   // Zustand States
   const activeMode = useUIStore((s) => s.activeMode);
   const setActiveMode = useUIStore((s) => s.setActiveMode);
@@ -26,7 +26,7 @@ export const AppLayout: React.FC = () => {
   const setIsSubscriptionOpen = useUIStore((s) => s.setIsSubscriptionOpen);
 
   const handleLogout = async () => {
-    console.log("[AppLayout] 🚪 Initiating targeted logout...");
+    console.log('[AppLayout] 🚪 Initiating targeted logout...');
     clearLocalSession();
     setSession(null);
     await supabase.auth.signOut();
@@ -62,9 +62,9 @@ export const AppLayout: React.FC = () => {
         setCustomSidebar={setCustomSidebar}
         setIsSettingsOpen={setIsSettingsOpen}
         availableClasses={[]}
-        selectedClassId={""}
-        quarter={""}
-        enemArea={"Ciências Humanas"}
+        selectedClassId={''}
+        quarter={''}
+        enemArea={'Ciências Humanas'}
       />
     </MainLayout>
   );

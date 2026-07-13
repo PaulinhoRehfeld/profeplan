@@ -16,7 +16,9 @@ describe('isRetryableAuthError', () => {
   });
 
   it('retorna true para AuthRetryableFetchError', () => {
-    expect(isRetryableAuthError({ name: 'AuthRetryableFetchError', message: 'fetch failed' })).toBe(true);
+    expect(isRetryableAuthError({ name: 'AuthRetryableFetchError', message: 'fetch failed' })).toBe(
+      true
+    );
   });
 
   it.each(['Failed to fetch', 'Network error', 'Gateway Timeout', 'Request timeout'])(

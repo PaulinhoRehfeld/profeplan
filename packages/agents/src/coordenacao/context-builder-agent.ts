@@ -3,11 +3,7 @@
 // S2-01: Agente RAG hierárquico (Níveis 1–4) para montagem de contexto
 // ============================================================================
 
-import {
-  DisciplinaNome,
-  NivelEnsino,
-  type DisciplinaContext,
-} from '../base/discipline-agent-base';
+import { DisciplinaNome, NivelEnsino, type DisciplinaContext } from '../base/discipline-agent-base';
 import type { GeracaoRequest } from './orchestrator-agent';
 
 // ---------------------------------------------------------------------------
@@ -110,7 +106,7 @@ export class ContextBuilderAgent {
   async build(
     disciplina: DisciplinaNome,
     nivel: NivelEnsino,
-    req: GeracaoRequest,
+    req: GeracaoRequest
   ): Promise<RAGPackage> {
     const chunks: RAGChunk[] = [];
 
@@ -152,16 +148,18 @@ export class ContextBuilderAgent {
   private async _buscarPlanoCurso(
     _professorId: string,
     disciplina: DisciplinaNome,
-    nivel: NivelEnsino,
+    nivel: NivelEnsino
   ): Promise<RAGChunk[]> {
     // TODO: Integrar com Supabase para buscar plano de curso real
     const nomeDisciplina = disciplina.replace(/_/g, ' ').toLowerCase();
-    return [{
-      texto: `[MOCK N1] Plano de Curso de ${nomeDisciplina} para ${nivel}. Conteúdo programático com habilidades priorizadas pelo professor.`,
-      nivel: 1,
-      peso: ContextBuilderAgent.PESO_N1,
-      fonte: 'plano_curso',
-    }];
+    return [
+      {
+        texto: `[MOCK N1] Plano de Curso de ${nomeDisciplina} para ${nivel}. Conteúdo programático com habilidades priorizadas pelo professor.`,
+        nivel: 1,
+        peso: ContextBuilderAgent.PESO_N1,
+        fonte: 'plano_curso',
+      },
+    ];
   }
 
   /**
@@ -172,16 +170,18 @@ export class ContextBuilderAgent {
    */
   private async _buscarLivrosPNLD(
     disciplina: DisciplinaNome,
-    nivel: NivelEnsino,
+    nivel: NivelEnsino
   ): Promise<RAGChunk[]> {
     // TODO: Integrar com índice PNLD
     const nomeDisciplina = disciplina.replace(/_/g, ' ').toLowerCase();
-    return [{
-      texto: `[MOCK N2] Livro didático PNLD de ${nomeDisciplina} — ${nivel}. Capítulos e exercícios alinhados à BNCC.`,
-      nivel: 2,
-      peso: ContextBuilderAgent.PESO_N2,
-      fonte: 'pnld',
-    }];
+    return [
+      {
+        texto: `[MOCK N2] Livro didático PNLD de ${nomeDisciplina} — ${nivel}. Capítulos e exercícios alinhados à BNCC.`,
+        nivel: 2,
+        peso: ContextBuilderAgent.PESO_N2,
+        fonte: 'pnld',
+      },
+    ];
   }
 
   /**
@@ -193,16 +193,18 @@ export class ContextBuilderAgent {
    */
   private async _buscarMateriaisExtras(
     _professorId: string,
-    disciplina: DisciplinaNome,
+    disciplina: DisciplinaNome
   ): Promise<RAGChunk[]> {
     // TODO: Integrar com materiais do professor
     const nomeDisciplina = disciplina.replace(/_/g, ' ').toLowerCase();
-    return [{
-      texto: `[MOCK N3] Materiais complementares de ${nomeDisciplina}: slides, vídeos, listas de exercícios.`,
-      nivel: 3,
-      peso: ContextBuilderAgent.PESO_N3,
-      fonte: 'materiais_extras',
-    }];
+    return [
+      {
+        texto: `[MOCK N3] Materiais complementares de ${nomeDisciplina}: slides, vídeos, listas de exercícios.`,
+        nivel: 3,
+        peso: ContextBuilderAgent.PESO_N3,
+        fonte: 'materiais_extras',
+      },
+    ];
   }
 
   /**
@@ -213,15 +215,17 @@ export class ContextBuilderAgent {
    */
   private async _buscarBNCCGeral(
     disciplina: DisciplinaNome,
-    nivel: NivelEnsino,
+    nivel: NivelEnsino
   ): Promise<RAGChunk[]> {
     // TODO: Integrar com curriculo_mg.json
     const nomeDisciplina = disciplina.replace(/_/g, ' ').toLowerCase();
-    return [{
-      texto: `[MOCK N4] Base BNCC de ${nomeDisciplina} para ${nivel}. Habilidades e competências gerais da área.`,
-      nivel: 4,
-      peso: ContextBuilderAgent.PESO_N4,
-      fonte: 'bncc',
-    }];
+    return [
+      {
+        texto: `[MOCK N4] Base BNCC de ${nomeDisciplina} para ${nivel}. Habilidades e competências gerais da área.`,
+        nivel: 4,
+        peso: ContextBuilderAgent.PESO_N4,
+        fonte: 'bncc',
+      },
+    ];
   }
 }

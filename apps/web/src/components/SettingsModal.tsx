@@ -25,7 +25,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   setSettings,
   userEmail,
   userProfile,
-  onRefreshProfile
+  onRefreshProfile,
 }) => {
   const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'subscription'>('profile');
 
@@ -34,7 +34,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   // Handler to refresh parent and close
   const handleSaveSuccess = async () => {
     if (onRefreshProfile) await onRefreshProfile();
-    // We can close or just show success. 
+    // We can close or just show success.
     // Logic in ProfileTab calls onClose() after save, so we might just need to refresh here.
     // Actually ProfileTab calls onSaveSuccess THEN onClose.
     // So this function is just for refreshing.
@@ -43,7 +43,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex h-[85vh]">
-
         {/* Sidebar Navigation */}
         <aside className="w-64 bg-slate-50 border-r border-slate-100 flex flex-col">
           <div className="p-6 border-b border-slate-100/50">
@@ -56,10 +55,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'profile'
-                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
-                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                activeTab === 'profile'
+                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
+                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+              }`}
             >
               <User className="w-4 h-4" />
               Perfil e Preferências
@@ -67,10 +67,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <button
               onClick={() => setActiveTab('subscription')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'subscription'
-                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
-                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                activeTab === 'subscription'
+                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
+                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+              }`}
             >
               <CreditCard className="w-4 h-4" />
               Assinatura e Acesso
@@ -78,10 +79,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <button
               onClick={() => setActiveTab('security')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'security'
-                ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
-                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                activeTab === 'security'
+                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-100'
+                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+              }`}
             >
               <Shield className="w-4 h-4" />
               Segurança
@@ -149,10 +151,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               {activeTab === 'subscription' && (
                 <div className="animate-in slide-in-from-right-4 duration-300">
                   <h3 className="text-2xl font-bold text-slate-800 mb-6">Assinatura</h3>
-                  <SubscriptionTab
-                    userProfile={userProfile}
-                    onRefreshProfile={onRefreshProfile}
-                  />
+                  <SubscriptionTab userProfile={userProfile} onRefreshProfile={onRefreshProfile} />
                 </div>
               )}
             </div>

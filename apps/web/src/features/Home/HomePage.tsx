@@ -35,9 +35,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveMode, userProfile, session
   const firstName = (userProfile?.full_name || session.email || '').split(' ')[0] || 'Professor';
 
   const isAdminOrManager =
-    userProfile?.is_admin ||
-    userProfile?.role === 'admin' ||
-    userProfile?.role === 'manager';
+    userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager';
 
   const planningCards: NavCard[] = [
     {
@@ -153,7 +151,9 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveMode, userProfile, session
       onClick={() => setActiveMode(card.mode)}
       className={`flex flex-col gap-4 p-5 rounded-2xl bg-gradient-to-br ${card.gradient} border border-slate-100 hover:border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 text-left group w-full`}
     >
-      <div className={`w-11 h-11 rounded-xl ${card.iconBg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200`}>
+      <div
+        className={`w-11 h-11 rounded-xl ${card.iconBg} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200`}
+      >
         <card.icon className={`w-5 h-5 ${card.iconColor}`} />
       </div>
       <div>
@@ -166,19 +166,13 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveMode, userProfile, session
   return (
     <div className="flex-1 overflow-y-auto bg-slate-50 custom-scrollbar">
       <div className="max-w-3xl mx-auto px-4 md:px-8 pt-8 pb-14">
-
         {/* Cabeçalho */}
         <div className="mb-8">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            Olá, {firstName}!
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            O que vamos fazer hoje?
-          </p>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Olá, {firstName}!</h1>
+          <p className="text-sm text-slate-500 mt-1">O que vamos fazer hoje?</p>
         </div>
 
         <div className="space-y-9">
-
           {/* Hero — Assistente */}
           <div>
             <SectionLabel>Assistente</SectionLabel>
@@ -203,7 +197,9 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveMode, userProfile, session
           <div>
             <SectionLabel>Planejamento</SectionLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {planningCards.map(c => <Card key={c.mode} card={c} />)}
+              {planningCards.map((c) => (
+                <Card key={c.mode} card={c} />
+              ))}
             </div>
           </div>
 
@@ -211,7 +207,9 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveMode, userProfile, session
           <div>
             <SectionLabel>Conteúdo & Avaliação</SectionLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {contentCards.map(c => <Card key={c.mode} card={c} />)}
+              {contentCards.map((c) => (
+                <Card key={c.mode} card={c} />
+              ))}
             </div>
           </div>
 
@@ -219,10 +217,11 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveMode, userProfile, session
           <div>
             <SectionLabel>Gestão</SectionLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {managementCards.map(c => <Card key={c.mode} card={c} />)}
+              {managementCards.map((c) => (
+                <Card key={c.mode} card={c} />
+              ))}
             </div>
           </div>
-
         </div>
       </div>
     </div>

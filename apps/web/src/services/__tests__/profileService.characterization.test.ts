@@ -141,7 +141,10 @@ describe('checkUsageQuota (caracterização)', () => {
 
   it('perfil null + getSession sem sessão mas getUser confirma → allowed', async () => {
     mocked.auth.getSession.mockResolvedValue(session(null));
-    mocked.auth.getUser.mockResolvedValue({ data: { user: { id: 'u1', email: 'teacher@test.com' } }, error: null });
+    mocked.auth.getUser.mockResolvedValue({
+      data: { user: { id: 'u1', email: 'teacher@test.com' } },
+      error: null,
+    });
     mocked.from.mockReturnValue(createQuery({ data: null, error: null }));
 
     const r = await checkUsageQuota('u1');
@@ -175,7 +178,7 @@ describe('incrementUserUsage (caracterização)', () => {
     await incrementUserUsage('u1', 'generate');
 
     // Não deve ter havido chamada de update (apenas a leitura do perfil)
-    const calls = mocked.from.mock.results.map(r => r.value);
+    const calls = mocked.from.mock.results.map((r) => r.value);
     const anyUpdate = calls.some((q: any) => q.update.mock.calls.length > 0);
     expect(anyUpdate).toBe(false);
   });
@@ -224,7 +227,10 @@ describe('getUserProfile (caracterização)', () => {
 
   it('RPC indisponível + perfil inexistente + sem sessão → retorna null', async () => {
     // RPC ausente (PGRST202) → cai no caminho legado
-    mocked.rpc.mockResolvedValue({ data: null, error: { code: 'PGRST202', message: 'function not found' } });
+    mocked.rpc.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST202', message: 'function not found' },
+    });
     mocked.auth.getSession.mockResolvedValue(session(null));
     mocked.auth.getUser.mockResolvedValue({ data: { user: null }, error: null });
     mocked.from.mockReturnValue(createQuery({ data: null, error: null }));
@@ -248,7 +254,10 @@ describe('updateUserProfile (caracterização)', () => {
   });
 
   it('RPC ausente (PGRST202) → cai no caminho legado de update', async () => {
-    mocked.rpc.mockResolvedValue({ data: null, error: { code: 'PGRST202', message: 'Could not find the function' } });
+    mocked.rpc.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST202', message: 'Could not find the function' },
+    });
     mocked.auth.getUser.mockResolvedValue({ data: { user: { id: 'u1' } }, error: null });
     mocked.from.mockReturnValue(createQuery({ data: [{ id: 'u1' }], error: null }));
 

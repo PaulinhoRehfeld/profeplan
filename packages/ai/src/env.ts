@@ -11,4 +11,3 @@ export function getOpenAIApiKey() {
 export function getOpenAIModel() {
   return process.env.OPENAI_MODEL ?? 'deepseek-reasoner';
 }
-

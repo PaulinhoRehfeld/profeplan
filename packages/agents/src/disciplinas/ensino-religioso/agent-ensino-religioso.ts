@@ -132,17 +132,37 @@ export class AgentEnsinoReligioso extends BaseDisciplineAgent {
   public getHabilidadesPrioritarias(): string[] {
     return [
       // 6º ano
-      'EF06ER01', 'EF06ER02', 'EF06ER03', 'EF06ER04', 'EF06ER05',
+      'EF06ER01',
+      'EF06ER02',
+      'EF06ER03',
+      'EF06ER04',
+      'EF06ER05',
       'EF06ER06',
       // 7º ano
-      'EF07ER01', 'EF07ER02', 'EF07ER03', 'EF07ER04', 'EF07ER05',
-      'EF07ER06', 'EF07ER07',
+      'EF07ER01',
+      'EF07ER02',
+      'EF07ER03',
+      'EF07ER04',
+      'EF07ER05',
+      'EF07ER06',
+      'EF07ER07',
       // 8º ano
-      'EF08ER01', 'EF08ER02', 'EF08ER03', 'EF08ER04', 'EF08ER05',
-      'EF08ER06', 'EF08ER07',
+      'EF08ER01',
+      'EF08ER02',
+      'EF08ER03',
+      'EF08ER04',
+      'EF08ER05',
+      'EF08ER06',
+      'EF08ER07',
       // 9º ano
-      'EF09ER01', 'EF09ER02', 'EF09ER03', 'EF09ER04', 'EF09ER05',
-      'EF09ER06', 'EF09ER07', 'EF09ER08',
+      'EF09ER01',
+      'EF09ER02',
+      'EF09ER03',
+      'EF09ER04',
+      'EF09ER05',
+      'EF09ER06',
+      'EF09ER07',
+      'EF09ER08',
     ];
   }
 

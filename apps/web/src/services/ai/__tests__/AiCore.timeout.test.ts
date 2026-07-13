@@ -3,7 +3,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // supabaseClient.ts lança erro no import sem env vars (CI não define
 // VITE_SUPABASE_URL/ANON_KEY) — getAuthHeaders (via sessionService) depende dele.
 vi.mock('../../supabaseClient', () => ({
-  supabase: { auth: { getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }) } },
+  supabase: {
+    auth: { getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }) },
+  },
 }));
 
 import { getGenAIClient } from '../AiCore';
@@ -38,7 +40,9 @@ describe('AiCore callAiBackend (regressão #18 — timeout no fetch)', () => {
       messages: [{ role: 'user', content: 'oi' }],
     } as any);
 
-    const assertion = expect(resultPromise).rejects.toThrow('A geração demorou demais e foi cancelada. Tente novamente.');
+    const assertion = expect(resultPromise).rejects.toThrow(
+      'A geração demorou demais e foi cancelada. Tente novamente.'
+    );
 
     await vi.advanceTimersByTimeAsync(90_000);
 
@@ -58,7 +62,9 @@ describe('AiCore callAiBackend (regressão #18 — timeout no fetch)', () => {
     }) as any;
 
     const client = getGenAIClient();
-    const first = client.chat.completions.create({ messages: [] } as any).catch(() => 'first-failed');
+    const first = client.chat.completions
+      .create({ messages: [] } as any)
+      .catch(() => 'first-failed');
     await vi.advanceTimersByTimeAsync(90_000);
     expect(await first).toBe('first-failed');
 

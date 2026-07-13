@@ -72,7 +72,7 @@ describe('GlobalPlanningContext - refreshTermPlans -> termPlans', () => {
     render(
       <GlobalPlanningProvider>
         <TestConsumer />
-      </GlobalPlanningProvider>,
+      </GlobalPlanningProvider>
     );
 
     await waitFor(() => {
@@ -102,7 +102,7 @@ describe('GlobalPlanningContext - refreshTermPlans -> termPlans', () => {
     render(
       <GlobalPlanningProvider>
         <TestConsumer />
-      </GlobalPlanningProvider>,
+      </GlobalPlanningProvider>
     );
 
     await waitFor(() => expect(serviceFetchTermPlansMock).toHaveBeenCalledWith(userId));

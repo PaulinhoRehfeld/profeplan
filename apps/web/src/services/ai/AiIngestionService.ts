@@ -3,53 +3,56 @@ import { supabase } from '../supabaseClient';
 import { parseCurriculo } from './agents/CurriculoAgent';
 
 export interface DocumentMetadata {
-    subject: string;
-    year: string;
-    workload: number | null;
-    skills: string[];
-    objects_of_knowledge: string[];
+  subject: string;
+  year: string;
+  workload: number | null;
+  skills: string[];
+  objects_of_knowledge: string[];
 }
 
 export interface IngestionResult {
-    content_md: string;
-    metadata: DocumentMetadata;
-    extraction_score: number;
-    curation_report: string;
+  content_md: string;
+  metadata: DocumentMetadata;
+  extraction_score: number;
+  curation_report: string;
 }
 
 /**
  * Gera o vetor (embedding) de 768 dimensões usando DeepSeek via backend
  */
 export const generateChunkEmbedding = async (text: string): Promise<number[] | null> => {
-    try {
-        const response = await fetch("/api/ai/embeddings", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ text }),
-        });
-        if (!response.ok) {
-            throw new Error(`Embedding API error: ${response.status}`);
-        }
-        const data = await response.json();
-        return data.embedding || null;
-    } catch (error) {
-        console.error("[AiIngestionService] Erro ao gerar embedding no DeepSeek:", error);
-        return null;
+  try {
+    const response = await fetch('/api/ai/embeddings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text }),
+    });
+    if (!response.ok) {
+      throw new Error(`Embedding API error: ${response.status}`);
     }
+    const data = await response.json();
+    return data.embedding || null;
+  } catch (error) {
+    console.error('[AiIngestionService] Erro ao gerar embedding no DeepSeek:', error);
+    return null;
+  }
 };
 
 /**
  * Envia o texto extraído para a IA processar em Markdown estruturado, metadados e relatório de curadoria.
  */
-export const parseAndAuditPdfText = async (rawText: string, category: string): Promise<IngestionResult> => {
-    // Planos de Curso CRMG: agente especializado com 2 passes independentes
-    if (category === 'course_plan') {
-        return parseCurriculo(rawText);
-    }
+export const parseAndAuditPdfText = async (
+  rawText: string,
+  category: string
+): Promise<IngestionResult> => {
+  // Planos de Curso CRMG: agente especializado com 2 passes independentes
+  if (category === 'course_plan') {
+    return parseCurriculo(rawText);
+  }
 
-    const prompt = `
+  const prompt = `
 Você é um parser e auditor pedagógico especializado em processamento de documentos educacionais (Planos de Curso, Livros, Materiais Didáticos).
 Você receberá o texto bruto extraído de um arquivo PDF. Sua tarefa é processar e estruturar esse conteúdo em Markdown e extrair metadados e um relatório de curadoria.
 
@@ -75,85 +78,93 @@ Sua resposta DEVE ser um objeto JSON válido (e APENAS o JSON, sem blocos de có
 }
 `;
 
-    try {
-        const responseText = await createSimpleCompletion(prompt, "Você é uma API que responde estritamente em JSON válido.", 0.2);
-        
-        // Remove eventuais tags de markdown que o LLM possa incluir
-        const cleanJsonText = responseText.replace(/```json/i, '').replace(/```/g, '').trim();
-        const parsed: IngestionResult = JSON.parse(cleanJsonText);
-        return parsed;
-    } catch (error) {
-        console.error("[AiIngestionService] Erro no parsing de texto com a IA:", error);
-        // Fallback básico para não quebrar o fluxo
-        return {
-            content_md: `# Ingestão Automática\n\n${rawText.substring(0, 5000)}`,
-            metadata: {
-                subject: "Geral",
-                year: "Geral",
-                workload: null,
-                skills: [],
-                objects_of_knowledge: []
-            },
-            extraction_score: 50,
-            curation_report: "Erro durante o processamento de curadoria por IA. Verifique o documento manualmente."
-        };
-    }
+  try {
+    const responseText = await createSimpleCompletion(
+      prompt,
+      'Você é uma API que responde estritamente em JSON válido.',
+      0.2
+    );
+
+    // Remove eventuais tags de markdown que o LLM possa incluir
+    const cleanJsonText = responseText
+      .replace(/```json/i, '')
+      .replace(/```/g, '')
+      .trim();
+    const parsed: IngestionResult = JSON.parse(cleanJsonText);
+    return parsed;
+  } catch (error) {
+    console.error('[AiIngestionService] Erro no parsing de texto com a IA:', error);
+    // Fallback básico para não quebrar o fluxo
+    return {
+      content_md: `# Ingestão Automática\n\n${rawText.substring(0, 5000)}`,
+      metadata: {
+        subject: 'Geral',
+        year: 'Geral',
+        workload: null,
+        skills: [],
+        objects_of_knowledge: [],
+      },
+      extraction_score: 50,
+      curation_report:
+        'Erro durante o processamento de curadoria por IA. Verifique o documento manualmente.',
+    };
+  }
 };
 
 /**
  * Divide o texto do Markdown de forma lógica para buscas no RAG, preservando contexto de cabeçalhos.
  */
 export const chunkMarkdownContent = (markdown: string, maxCharacters: number = 800): string[] => {
-    const lines = markdown.split('\n');
-    const chunks: string[] = [];
-    
-    let activeH1 = '';
-    let activeH2 = '';
-    let activeH3 = '';
-    let currentBuffer: string[] = [];
-    let currentLength = 0;
+  const lines = markdown.split('\n');
+  const chunks: string[] = [];
 
-    const flush = () => {
-        if (currentBuffer.length > 0) {
-            const contextHeader = [activeH1, activeH2, activeH3].filter(Boolean).join(' > ');
-            const content = currentBuffer.join('\n').trim();
-            if (content) {
-                const chunkText = contextHeader ? `[Contexto: ${contextHeader}]\n${content}` : content;
-                chunks.push(chunkText);
-            }
-            currentBuffer = [];
-            currentLength = 0;
-        }
-    };
+  let activeH1 = '';
+  let activeH2 = '';
+  let activeH3 = '';
+  let currentBuffer: string[] = [];
+  let currentLength = 0;
 
-    for (const line of lines) {
-        const trimmed = line.trim();
-        
-        // Detecta cabeçalhos e limpa o buffer antes de atualizar o cabeçalho ativo
-        if (trimmed.startsWith('# ')) {
-            flush();
-            activeH1 = trimmed.replace('# ', '');
-            activeH2 = '';
-            activeH3 = '';
-        } else if (trimmed.startsWith('## ')) {
-            flush();
-            activeH2 = trimmed.replace('## ', '');
-            activeH3 = '';
-        } else if (trimmed.startsWith('### ')) {
-            flush();
-            activeH3 = trimmed.replace('### ', '');
-        }
+  const flush = () => {
+    if (currentBuffer.length > 0) {
+      const contextHeader = [activeH1, activeH2, activeH3].filter(Boolean).join(' > ');
+      const content = currentBuffer.join('\n').trim();
+      if (content) {
+        const chunkText = contextHeader ? `[Contexto: ${contextHeader}]\n${content}` : content;
+        chunks.push(chunkText);
+      }
+      currentBuffer = [];
+      currentLength = 0;
+    }
+  };
 
-        currentBuffer.push(line);
-        currentLength += line.length + 1;
+  for (const line of lines) {
+    const trimmed = line.trim();
 
-        if (currentLength >= maxCharacters) {
-            flush();
-        }
+    // Detecta cabeçalhos e limpa o buffer antes de atualizar o cabeçalho ativo
+    if (trimmed.startsWith('# ')) {
+      flush();
+      activeH1 = trimmed.replace('# ', '');
+      activeH2 = '';
+      activeH3 = '';
+    } else if (trimmed.startsWith('## ')) {
+      flush();
+      activeH2 = trimmed.replace('## ', '');
+      activeH3 = '';
+    } else if (trimmed.startsWith('### ')) {
+      flush();
+      activeH3 = trimmed.replace('### ', '');
     }
 
-    flush();
-    return chunks;
+    currentBuffer.push(line);
+    currentLength += line.length + 1;
+
+    if (currentLength >= maxCharacters) {
+      flush();
+    }
+  }
+
+  flush();
+  return chunks;
 };
 
 /**
@@ -164,161 +175,159 @@ export const chunkMarkdownContent = (markdown: string, maxCharacters: number = 8
  * um UUID errado que quebraria o RLS.
  */
 const resolveAuthUid = async (): Promise<string> => {
-    const { data: { session } } = await supabase.auth.getSession();
-    const uid = session?.user?.id;
-    if (!uid) throw new Error('Sessão expirada. Faça login novamente para continuar.');
-    return uid;
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const uid = session?.user?.id;
+  if (!uid) throw new Error('Sessão expirada. Faça login novamente para continuar.');
+  return uid;
 };
 
 /**
  * Cria uma nova versão ou o documento inicial no banco de dados.
  */
 export const savePendingDocument = async (
-    userId: string,
-    title: string,
-    filename: string,
-    category: 'course_plan' | 'book' | 'didactic_material',
-    parsedResult: IngestionResult
+  userId: string,
+  title: string,
+  filename: string,
+  category: 'course_plan' | 'book' | 'didactic_material',
+  parsedResult: IngestionResult
 ) => {
-    try {
-        const authUid = await resolveAuthUid();
+  try {
+    const authUid = await resolveAuthUid();
 
-        // 1. Resolve a versão
-        const { count, error: countError } = await supabase
-            .from('teacher_documents')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', authUid)
-            .eq('filename', filename);
+    // 1. Resolve a versão
+    const { count, error: countError } = await supabase
+      .from('teacher_documents')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', authUid)
+      .eq('filename', filename);
 
-        if (countError) throw countError;
-        const nextVersion = (count || 0) + 1;
+    if (countError) throw countError;
+    const nextVersion = (count || 0) + 1;
 
-        // 2. Salva o registro em status 'pending'
-        const { data, error } = await supabase
-            .from('teacher_documents')
-            .insert({
-                user_id: authUid,
-                category,
-                title: nextVersion > 1 ? `${title} (V${nextVersion})` : title,
-                filename,
-                version: nextVersion,
-                content_md: parsedResult.content_md,
-                metadata: parsedResult.metadata,
-                extraction_score: parsedResult.extraction_score,
-                curation_report: parsedResult.curation_report,
-                status: 'pending'
-            })
-            .select()
-            .single();
+    // 2. Salva o registro em status 'pending'
+    const { data, error } = await supabase
+      .from('teacher_documents')
+      .insert({
+        user_id: authUid,
+        category,
+        title: nextVersion > 1 ? `${title} (V${nextVersion})` : title,
+        filename,
+        version: nextVersion,
+        content_md: parsedResult.content_md,
+        metadata: parsedResult.metadata,
+        extraction_score: parsedResult.extraction_score,
+        curation_report: parsedResult.curation_report,
+        status: 'pending',
+      })
+      .select()
+      .single();
 
-        if (error) throw error;
-        return data;
-    } catch (e) {
-        console.error("[AiIngestionService] Erro ao salvar documento pendente:", e);
-        throw e;
-    }
+    if (error) throw error;
+    return data;
+  } catch (e) {
+    console.error('[AiIngestionService] Erro ao salvar documento pendente:', e);
+    throw e;
+  }
 };
 
 /**
  * Homologa o documento, rodando o chunking e salvando os embeddings no banco
  */
 export const approveDocumentAndIngest = async (
-    documentId: string,
-    userId: string,
-    onProgress?: (msg: string) => void
+  documentId: string,
+  userId: string,
+  onProgress?: (msg: string) => void
 ) => {
-    try {
-        const authUid = await resolveAuthUid();
+  try {
+    const authUid = await resolveAuthUid();
 
-        if (onProgress) onProgress("Recuperando documento...");
-        
-        // 1. Busca o documento
-        const { data: doc, error: fetchError } = await supabase
-            .from('teacher_documents')
-            .select('*')
-            .eq('id', documentId)
-            .single();
+    if (onProgress) onProgress('Recuperando documento...');
 
-        if (fetchError || !doc) throw fetchError || new Error("Documento não encontrado");
+    // 1. Busca o documento
+    const { data: doc, error: fetchError } = await supabase
+      .from('teacher_documents')
+      .select('*')
+      .eq('id', documentId)
+      .single();
 
-        if (onProgress) onProgress("Dividindo conteúdo em blocos...");
-        const chunks = chunkMarkdownContent(doc.content_md || '');
+    if (fetchError || !doc) throw fetchError || new Error('Documento não encontrado');
 
-        if (onProgress) onProgress(`Gerando embeddings para ${chunks.length} blocos...`);
-        
-        // 2. Cria cada chunk e salva
-        for (let i = 0; i < chunks.length; i++) {
-            const chunkText = chunks[i];
-            const embedding = await generateChunkEmbedding(chunkText);
+    if (onProgress) onProgress('Dividindo conteúdo em blocos...');
+    const chunks = chunkMarkdownContent(doc.content_md || '');
 
-            if (onProgress) {
-                onProgress(`Ingerindo bloco ${i + 1}/${chunks.length}...`);
-            }
+    if (onProgress) onProgress(`Gerando embeddings para ${chunks.length} blocos...`);
 
-            const { error: insertChunkError } = await supabase
-                .from('teacher_document_chunks')
-                .insert({
-                    document_id: documentId,
-                    user_id: authUid,
-                    content: chunkText,
-                    embedding: embedding
-                });
+    // 2. Cria cada chunk e salva
+    for (let i = 0; i < chunks.length; i++) {
+      const chunkText = chunks[i];
+      const embedding = await generateChunkEmbedding(chunkText);
 
-            if (insertChunkError) throw insertChunkError;
-        }
+      if (onProgress) {
+        onProgress(`Ingerindo bloco ${i + 1}/${chunks.length}...`);
+      }
 
-        // 3. Atualiza o status do documento para 'approved'
-        if (onProgress) onProgress("Homologando documento...");
-        const { error: updateError } = await supabase
-            .from('teacher_documents')
-            .update({ status: 'approved' })
-            .eq('id', documentId);
+      const { error: insertChunkError } = await supabase.from('teacher_document_chunks').insert({
+        document_id: documentId,
+        user_id: authUid,
+        content: chunkText,
+        embedding: embedding,
+      });
 
-        if (updateError) throw updateError;
-
-        // 4. Criação automática de Agente customizado se for Plano de Curso
-        if (doc.category === 'course_plan') {
-            if (onProgress) onProgress("Configurando Agente de Disciplina...");
-            const subject = doc.metadata?.subject || 'Geral';
-            const year = doc.metadata?.year || 'Geral';
-            const agentName = `Agente de ${subject} - ${year}`;
-            
-            const systemPrompt = `Você é o Agente Especializado em ${subject} para o ${year} do professor. Você DEVE seguir prioritariamente o Plano de Curso oficial homologado anexado a você. Se o professor fizer perguntas sobre temas fora do plano de curso oficial, use a regra de desvio pedagógico.`;
-
-            // Verifica se já existe agente cadastrado para evitar duplicados
-            const { data: existingAgent } = await supabase
-                .from('teacher_agents')
-                .select('id')
-                .eq('user_id', authUid)
-                .eq('subject', subject)
-                .eq('grade', year)
-                .maybeSingle();
-
-            if (existingAgent) {
-                await supabase
-                    .from('teacher_agents')
-                    .update({
-                        document_id: documentId,
-                        system_prompt: systemPrompt
-                    })
-                    .eq('id', existingAgent.id);
-            } else {
-                await supabase
-                    .from('teacher_agents')
-                    .insert({
-                        user_id: authUid,
-                        name: agentName,
-                        subject,
-                        grade: year,
-                        document_id: documentId,
-                        system_prompt: systemPrompt
-                    });
-            }
-        }
-
-        return true;
-    } catch (e) {
-        console.error("[AiIngestionService] Erro na homologação do documento:", e);
-        throw e;
+      if (insertChunkError) throw insertChunkError;
     }
+
+    // 3. Atualiza o status do documento para 'approved'
+    if (onProgress) onProgress('Homologando documento...');
+    const { error: updateError } = await supabase
+      .from('teacher_documents')
+      .update({ status: 'approved' })
+      .eq('id', documentId);
+
+    if (updateError) throw updateError;
+
+    // 4. Criação automática de Agente customizado se for Plano de Curso
+    if (doc.category === 'course_plan') {
+      if (onProgress) onProgress('Configurando Agente de Disciplina...');
+      const subject = doc.metadata?.subject || 'Geral';
+      const year = doc.metadata?.year || 'Geral';
+      const agentName = `Agente de ${subject} - ${year}`;
+
+      const systemPrompt = `Você é o Agente Especializado em ${subject} para o ${year} do professor. Você DEVE seguir prioritariamente o Plano de Curso oficial homologado anexado a você. Se o professor fizer perguntas sobre temas fora do plano de curso oficial, use a regra de desvio pedagógico.`;
+
+      // Verifica se já existe agente cadastrado para evitar duplicados
+      const { data: existingAgent } = await supabase
+        .from('teacher_agents')
+        .select('id')
+        .eq('user_id', authUid)
+        .eq('subject', subject)
+        .eq('grade', year)
+        .maybeSingle();
+
+      if (existingAgent) {
+        await supabase
+          .from('teacher_agents')
+          .update({
+            document_id: documentId,
+            system_prompt: systemPrompt,
+          })
+          .eq('id', existingAgent.id);
+      } else {
+        await supabase.from('teacher_agents').insert({
+          user_id: authUid,
+          name: agentName,
+          subject,
+          grade: year,
+          document_id: documentId,
+          system_prompt: systemPrompt,
+        });
+      }
+    }
+
+    return true;
+  } catch (e) {
+    console.error('[AiIngestionService] Erro na homologação do documento:', e);
+    throw e;
+  }
 };

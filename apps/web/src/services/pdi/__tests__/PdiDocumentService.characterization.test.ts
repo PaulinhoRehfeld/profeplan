@@ -24,7 +24,8 @@ import { ProfileService } from '../../ProfileService';
 import { PdiDocumentService } from '../PdiDocumentService';
 
 const mockedFrom = (supabase as unknown as { from: ReturnType<typeof vi.fn> }).from;
-const mockedGetProfile = (ProfileService as unknown as { getProfile: ReturnType<typeof vi.fn> }).getProfile;
+const mockedGetProfile = (ProfileService as unknown as { getProfile: ReturnType<typeof vi.fn> })
+  .getProfile;
 
 const createQuery = (result: { data: unknown; error: unknown }) => {
   const q: any = {};
@@ -68,10 +69,19 @@ describe('logEvent (caracterização)', () => {
   it('com schoolId e teacherId override: insere sem buscar profile', async () => {
     const record = { id: 'rec1', student_id: 's1' };
     const pdiQuery = createQuery({ data: record, error: null });
-    mockedFrom.mockImplementation((t: string) => (t === 'pdi_records' ? pdiQuery : createQuery({ data: null, error: null })));
+    mockedFrom.mockImplementation((t: string) =>
+      t === 'pdi_records' ? pdiQuery : createQuery({ data: null, error: null })
+    );
 
     const result = await PdiDocumentService.logEvent(
-      's1', 'EVALUATION', 'Prova', {}, undefined, 'school1', 'class1', 'teacher1'
+      's1',
+      'EVALUATION',
+      'Prova',
+      {},
+      undefined,
+      'school1',
+      'class1',
+      'teacher1'
     );
 
     expect(mockedGetProfile).not.toHaveBeenCalled();
@@ -144,7 +154,9 @@ describe('getOrCreatePdi (caracterização)', () => {
       q.maybeSingle = vi.fn().mockImplementation(() => {
         callCount++;
         // Primeira chamada (select existing) → null; segunda (after insert) → created
-        return Promise.resolve(callCount === 1 ? { data: null, error: null } : { data: created, error: null });
+        return Promise.resolve(
+          callCount === 1 ? { data: null, error: null } : { data: created, error: null }
+        );
       });
       q.single = vi.fn().mockResolvedValue({ data: created, error: null });
       return q;
@@ -194,7 +206,9 @@ describe('addBlock9Adaptation (caracterização)', () => {
   });
 
   it('substitui entrada existente com mesmo lesson_id (idempotente)', async () => {
-    const existing = [{ ...makeAdaptation('l1'), generated_at: '2025-01-01', generated_by_ai: true }];
+    const existing = [
+      { ...makeAdaptation('l1'), generated_at: '2025-01-01', generated_by_ai: true },
+    ];
     const q = createQuery({ data: { block_9_content: existing }, error: null });
     mockedFrom.mockReturnValue(q);
 

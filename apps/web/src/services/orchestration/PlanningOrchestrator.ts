@@ -44,7 +44,7 @@ export async function executeTermPlanning(intent: PlanningIntent): Promise<strin
           feedback: intent.feedback,
           pnld_book_id: intent.pnld_book_id,
           gradingGrid: intent.gradingGrid,
-          userSettings: intent.userSettings
+          userSettings: intent.userSettings,
         },
         { skipCredits: true }
       );
@@ -54,7 +54,7 @@ export async function executeTermPlanning(intent: PlanningIntent): Promise<strin
         text,
         subject: intent.subject,
         grade: intent.grade,
-        period: intent.period
+        period: intent.period,
       } as PlanningGeneratedPayload);
 
       return text;

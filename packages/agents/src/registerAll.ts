@@ -23,7 +23,12 @@ import { AgentQuimica } from './disciplinas/quimica';
 import { AgentFilosofia } from './disciplinas/filosofia';
 import { AgentSociologia } from './disciplinas/sociologia';
 
-const NIVEIS_EF: NivelEnsino[] = [NivelEnsino.EF_6, NivelEnsino.EF_7, NivelEnsino.EF_8, NivelEnsino.EF_9];
+const NIVEIS_EF: NivelEnsino[] = [
+  NivelEnsino.EF_6,
+  NivelEnsino.EF_7,
+  NivelEnsino.EF_8,
+  NivelEnsino.EF_9,
+];
 const NIVEIS_EM: NivelEnsino[] = [NivelEnsino.EM_1, NivelEnsino.EM_2, NivelEnsino.EM_3];
 const NIVEIS_EF_EM: NivelEnsino[] = [...NIVEIS_EF, ...NIVEIS_EM];
 
@@ -41,16 +46,32 @@ interface AgentDef {
  * runtime via `this.context.nivel`.
  */
 const AGENT_DEFS: AgentDef[] = [
-  { disciplina: DisciplinaNome.LINGUA_PORTUGUESA, construtor: AgentLinguaPortuguesa, niveis: NIVEIS_EF_EM },
+  {
+    disciplina: DisciplinaNome.LINGUA_PORTUGUESA,
+    construtor: AgentLinguaPortuguesa,
+    niveis: NIVEIS_EF_EM,
+  },
   { disciplina: DisciplinaNome.MATEMATICA, construtor: AgentMatematica, niveis: NIVEIS_EF_EM },
   { disciplina: DisciplinaNome.CIENCIAS, construtor: AgentCienciasBiologia, niveis: NIVEIS_EF },
   { disciplina: DisciplinaNome.BIOLOGIA, construtor: AgentCienciasBiologia, niveis: NIVEIS_EM },
   { disciplina: DisciplinaNome.GEOGRAFIA, construtor: AgentGeografia, niveis: NIVEIS_EF_EM },
   { disciplina: DisciplinaNome.HISTORIA, construtor: AgentHistoria, niveis: NIVEIS_EF_EM },
   { disciplina: DisciplinaNome.ARTES, construtor: AgentArtes, niveis: NIVEIS_EF_EM },
-  { disciplina: DisciplinaNome.EDUCACAO_FISICA, construtor: AgentEducacaoFisica, niveis: NIVEIS_EF_EM },
-  { disciplina: DisciplinaNome.ENSINO_RELIGIOSO, construtor: AgentEnsinoReligioso, niveis: NIVEIS_EF },
-  { disciplina: DisciplinaNome.LINGUA_INGLESA, construtor: AgentLinguaInglesa, niveis: NIVEIS_EF_EM },
+  {
+    disciplina: DisciplinaNome.EDUCACAO_FISICA,
+    construtor: AgentEducacaoFisica,
+    niveis: NIVEIS_EF_EM,
+  },
+  {
+    disciplina: DisciplinaNome.ENSINO_RELIGIOSO,
+    construtor: AgentEnsinoReligioso,
+    niveis: NIVEIS_EF,
+  },
+  {
+    disciplina: DisciplinaNome.LINGUA_INGLESA,
+    construtor: AgentLinguaInglesa,
+    niveis: NIVEIS_EF_EM,
+  },
   { disciplina: DisciplinaNome.FISICA, construtor: AgentFisica, niveis: NIVEIS_EM },
   { disciplina: DisciplinaNome.QUIMICA, construtor: AgentQuimica, niveis: NIVEIS_EM },
   { disciplina: DisciplinaNome.FILOSOFIA, construtor: AgentFilosofia, niveis: NIVEIS_EM },

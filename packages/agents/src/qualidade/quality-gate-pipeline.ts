@@ -91,10 +91,7 @@ export abstract class BaseQualityGate {
    * @param req       — Requisição original que originou a geração.
    * @returns Promise com o {@link GateResult} contendo score, passed, mensagem etc.
    */
-  public abstract check(
-    resultado: GeracaoResultado,
-    req: GeracaoRequest,
-  ): Promise<GateResult>;
+  public abstract check(resultado: GeracaoResultado, req: GeracaoRequest): Promise<GateResult>;
 }
 
 // ---------------------------------------------------------------------------
@@ -188,10 +185,7 @@ export class QualityGatePipeline {
    * @param req       — Requisição original que originou a geração.
    * @returns Promise com o {@link PipelineResult} agregado.
    */
-  public async validate(
-    resultado: GeracaoResultado,
-    req: GeracaoRequest,
-  ): Promise<PipelineResult> {
+  public async validate(resultado: GeracaoResultado, req: GeracaoRequest): Promise<PipelineResult> {
     const gateResults: GateResult[] = [];
     let score = 1.0;
 
@@ -230,7 +224,7 @@ export class QualityGatePipeline {
   private _buildPipelineResult(
     aprovado: boolean,
     score: number,
-    gateResults: readonly GateResult[],
+    gateResults: readonly GateResult[]
   ): PipelineResult {
     const failures = gateResults.filter((r) => !r.passed);
     const blockers = gateResults.filter((r) => r.severity === 'BLOCKER');

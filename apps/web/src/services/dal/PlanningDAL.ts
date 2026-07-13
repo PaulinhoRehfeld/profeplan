@@ -5,7 +5,7 @@
 import {
   searchCurriculum,
   getDeterministicCurriculum,
-  searchPnldBookContent
+  searchPnldBookContent,
 } from '../searchService';
 import { searchQuestions } from '../questionService';
 import { getGeneratedContents } from '../databaseService';
@@ -37,5 +37,5 @@ export const planningDAL: IPlanningDAL = {
 
   async saveTermPlan(plan, userId) {
     return saveTermPlan(plan as TermPlan, userId);
-  }
+  },
 };

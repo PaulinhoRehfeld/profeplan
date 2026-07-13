@@ -70,10 +70,7 @@ export function confirmationEmailTemplate(opts: {
   `);
 }
 
-export function welcomeEmailTemplate(opts: {
-  fullName: string;
-  appUrl: string;
-}): string {
+export function welcomeEmailTemplate(opts: { fullName: string; appUrl: string }): string {
   const name = opts.fullName.split(' ')[0];
   return layout(`
     <p class="greeting">Bem-vindo ao PROFEPLAN, ${name}! 🎉</p>
@@ -131,9 +128,11 @@ export function invitationTemplate(opts: {
   appUrl: string;
 }): string {
   const roleLabel =
-    opts.role === 'admin' ? 'Administrador'
-    : opts.role === 'manager' ? 'Gestor Escolar'
-    : 'Professor';
+    opts.role === 'admin'
+      ? 'Administrador'
+      : opts.role === 'manager'
+        ? 'Gestor Escolar'
+        : 'Professor';
 
   return layout(`
     <p class="greeting">Você foi convidado para o PROFEPLAN</p>

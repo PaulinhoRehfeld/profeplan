@@ -12,54 +12,62 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 const getUserMock = vi.fn();
 
 vi.mock('../services/supabaseClient', () => ({
-    supabase: {
-        auth: {
-            getUser: (...args: unknown[]) => getUserMock(...args),
-        },
+  supabase: {
+    auth: {
+      getUser: (...args: unknown[]) => getUserMock(...args),
     },
+  },
 }));
 
 describe('getLocalClassesForUser (fallback local sob Ghost ID)', () => {
-    beforeEach(() => {
-        vi.resetModules();
-        getUserMock.mockReset();
-        localStorage.clear();
+  beforeEach(() => {
+    vi.resetModules();
+    getUserMock.mockReset();
+    localStorage.clear();
+  });
+
+  it('encontra a turma salva sob o Ghost ID mesmo quando o auth.uid() atual é outro', async () => {
+    const ghostUserId = 'ghost-uuid-antigo';
+    const realUserId = 'real-uuid-atual';
+
+    const { saveClassToLocal } = await import('../services/localStorageService');
+    saveClassToLocal(ghostUserId, {
+      className: '1º EM REG 7',
+      subject: 'Filosofia',
+      students: ['Aluno A'],
     });
 
-    it('encontra a turma salva sob o Ghost ID mesmo quando o auth.uid() atual é outro', async () => {
-        const ghostUserId = 'ghost-uuid-antigo';
-        const realUserId = 'real-uuid-atual';
+    getUserMock.mockResolvedValue({ data: { user: { id: realUserId } } });
+    const { getLocalClassesForUser } = await import('../services/localStorageService');
 
-        const { saveClassToLocal } = await import('../services/localStorageService');
-        saveClassToLocal(ghostUserId, { className: '1º EM REG 7', subject: 'Filosofia', students: ['Aluno A'] });
+    const result = await getLocalClassesForUser(ghostUserId);
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe('1º EM REG 7');
+  });
 
-        getUserMock.mockResolvedValue({ data: { user: { id: realUserId } } });
-        const { getLocalClassesForUser } = await import('../services/localStorageService');
+  it('prioriza o auth.uid() resolvido quando a turma já está salva sob o ID correto', async () => {
+    const realUserId = 'real-uuid-atual';
 
-        const result = await getLocalClassesForUser(ghostUserId);
-        expect(result).toHaveLength(1);
-        expect(result[0].name).toBe('1º EM REG 7');
+    const { saveClassToLocal } = await import('../services/localStorageService');
+    saveClassToLocal(realUserId, {
+      className: 'Turma Atual',
+      subject: 'Sociologia',
+      students: ['Aluno B'],
     });
 
-    it('prioriza o auth.uid() resolvido quando a turma já está salva sob o ID correto', async () => {
-        const realUserId = 'real-uuid-atual';
+    getUserMock.mockResolvedValue({ data: { user: { id: realUserId } } });
+    const { getLocalClassesForUser } = await import('../services/localStorageService');
 
-        const { saveClassToLocal } = await import('../services/localStorageService');
-        saveClassToLocal(realUserId, { className: 'Turma Atual', subject: 'Sociologia', students: ['Aluno B'] });
+    const result = await getLocalClassesForUser('qualquer-id-bruto-passado-como-prop');
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe('Turma Atual');
+  });
 
-        getUserMock.mockResolvedValue({ data: { user: { id: realUserId } } });
-        const { getLocalClassesForUser } = await import('../services/localStorageService');
+  it('retorna vazio quando não há dado sob nenhum dos dois IDs', async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: 'real-uuid-atual' } } });
+    const { getLocalClassesForUser } = await import('../services/localStorageService');
 
-        const result = await getLocalClassesForUser('qualquer-id-bruto-passado-como-prop');
-        expect(result).toHaveLength(1);
-        expect(result[0].name).toBe('Turma Atual');
-    });
-
-    it('retorna vazio quando não há dado sob nenhum dos dois IDs', async () => {
-        getUserMock.mockResolvedValue({ data: { user: { id: 'real-uuid-atual' } } });
-        const { getLocalClassesForUser } = await import('../services/localStorageService');
-
-        const result = await getLocalClassesForUser('outro-id-sem-dado');
-        expect(result).toEqual([]);
-    });
+    const result = await getLocalClassesForUser('outro-id-sem-dado');
+    expect(result).toEqual([]);
+  });
 });

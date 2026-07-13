@@ -52,7 +52,9 @@ function validate(body: unknown): AdminCreateUserBody | null {
   if (!body || typeof body !== 'object') return null;
   const b = body as Record<string, unknown>;
 
-  const email = String(b.email ?? '').trim().toLowerCase();
+  const email = String(b.email ?? '')
+    .trim()
+    .toLowerCase();
   const password = String(b.password ?? '');
   const role = String(b.role ?? 'teacher') as AdminCreateUserBody['role'];
 
@@ -77,7 +79,10 @@ async function verifyAdminToken(req: VercelRequest): Promise<{ id: string; email
   const token = authHeader.replace('Bearer ', '').trim();
   if (!token) return null;
 
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  const {
+    data: { user },
+    error,
+  } = await supabaseAdmin.auth.getUser(token);
   if (error || !user) return null;
 
   // Verifica se o usuário é admin no perfil
@@ -101,15 +106,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Verifica autenticação do admin
   const adminUser = await verifyAdminToken(req);
   if (!adminUser) {
-    return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem criar usuários.' });
+    return res
+      .status(403)
+      .json({ error: 'Acesso negado. Apenas administradores podem criar usuários.' });
   }
 
   const body = validate(req.body);
   if (!body) {
-    return res.status(400).json({ error: 'Dados inválidos. Verifique e-mail, senha (mín. 6 caracteres) e função.' });
+    return res
+      .status(400)
+      .json({ error: 'Dados inválidos. Verifique e-mail, senha (mín. 6 caracteres) e função.' });
   }
 
-  const { email, password, fullName = '', role, schoolId, tier = 'SILVER', credits = 10, sendWelcome } = body;
+  const {
+    email,
+    password,
+    fullName = '',
+    role,
+    schoolId,
+    tier = 'SILVER',
+    credits = 10,
+    sendWelcome,
+  } = body;
 
   try {
     log.info('[AdminCreateUser] Criando usuário', { email, role, createdBy: adminUser.email });
@@ -135,10 +153,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (isDuplicate) {
         return res.status(409).json({ error: 'Este e-mail já está cadastrado.' });
       }
-      log.error('[AdminCreateUser] Falha ao criar usuário no Auth', { email, code, error: authError.message });
+      log.error('[AdminCreateUser] Falha ao criar usuário no Auth', {
+        email,
+        code,
+        error: authError.message,
+      });
       // Devolve o erro real (endpoint só acessível por admin) — evita ter que
       // vasculhar logs da Vercel pra descobrir a causa de um "Tente novamente".
-      return res.status(500).json({ error: `Erro ao criar usuário: ${authError.message || code || 'motivo desconhecido'}.` });
+      return res.status(500).json({
+        error: `Erro ao criar usuário: ${authError.message || code || 'motivo desconhecido'}.`,
+      });
     }
 
     const userId = authData.user?.id;
@@ -168,10 +192,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // authorized_users para compatibilidade
-    await supabaseAdmin.from('authorized_users').upsert(
-      { id: userId, email, access_key: password, role },
-      { onConflict: 'id' }
-    );
+    await supabaseAdmin
+      .from('authorized_users')
+      .upsert({ id: userId, email, access_key: password, role }, { onConflict: 'id' });
 
     // E-mail de boas-vindas opcional
     if (sendWelcome && fullName) {

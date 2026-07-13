@@ -67,10 +67,7 @@ export class FormatValidatorAgent extends BaseQualityGate {
    * @param req       — Requisição original que originou a geração.
    * @returns Promise com o {@link GateResult} contendo score, passed, mensagem etc.
    */
-  public async check(
-    resultado: GeracaoResultado,
-    req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, req: GeracaoRequest): Promise<GateResult> {
     const conteudo = resultado.conteudo;
 
     // --- BLOCKER: conteúdo ausente ou não é um objeto ---
@@ -81,8 +78,7 @@ export class FormatValidatorAgent extends BaseQualityGate {
         severity: 'BLOCKER',
         score: 0,
         message: 'Conteúdo ausente ou não é um objeto.',
-        suggestion:
-          'O agente deve retornar um Record<string, unknown> no campo conteudo.',
+        suggestion: 'O agente deve retornar um Record<string, unknown> no campo conteudo.',
       };
     }
 
@@ -94,25 +90,21 @@ export class FormatValidatorAgent extends BaseQualityGate {
         warnings.push('Campo "tema" ausente (recomendado para PLANO_AULA).');
       }
       if (!conteudo.duracao) {
-        warnings.push(
-          'Campo "duracao" ausente (recomendado para PLANO_AULA).',
-        );
+        warnings.push('Campo "duracao" ausente (recomendado para PLANO_AULA).');
       }
     }
 
     if (req.tipo === TipoGeracao.PLANEJAMENTO_TRIMESTRAL) {
       if (!conteudo.eixos_tematicos && !conteudo.eixosTematicos) {
         warnings.push(
-          'Campo "eixos_tematicos" ausente (recomendado para PLANEJAMENTO_TRIMESTRAL).',
+          'Campo "eixos_tematicos" ausente (recomendado para PLANEJAMENTO_TRIMESTRAL).'
         );
       }
     }
 
     if (req.tipo === TipoGeracao.AVALIACAO) {
       if (!conteudo.questoes) {
-        warnings.push(
-          'Campo "questoes" ausente (recomendado para AVALIACAO).',
-        );
+        warnings.push('Campo "questoes" ausente (recomendado para AVALIACAO).');
       }
     }
 

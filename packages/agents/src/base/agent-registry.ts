@@ -23,9 +23,7 @@ import {
  * const ctor: AgentConstructor = AgentMatematicaEF;
  * ```
  */
-export type AgentConstructor = new (
-  context: DisciplinaContext,
-) => BaseDisciplineAgent;
+export type AgentConstructor = new (context: DisciplinaContext) => BaseDisciplineAgent;
 
 /**
  * Entrada no registro de agentes.
@@ -87,7 +85,7 @@ export class AgentRegistry {
     if (this.agents.has(key)) {
       console.warn(
         `[AgentRegistry] Sobrescrevendo agente '${key}': ` +
-          `'${this.agents.get(key)!.displayName}' → '${entry.displayName}'`,
+          `'${this.agents.get(key)!.displayName}' → '${entry.displayName}'`
       );
     }
 
@@ -109,10 +107,7 @@ export class AgentRegistry {
    * @param nivel      — Nível de ensino desejado.
    * @returns A {@link AgentEntry} correspondente, ou `undefined`.
    */
-  public getAgent(
-    disciplina: DisciplinaNome,
-    nivel: NivelEnsino,
-  ): AgentEntry | undefined {
+  public getAgent(disciplina: DisciplinaNome, nivel: NivelEnsino): AgentEntry | undefined {
     const key = this.buildKey(disciplina, nivel);
     const exact = this.agents.get(key);
 
@@ -202,10 +197,7 @@ export class AgentRegistry {
    * @param nivel      — Nível de ensino do agente a remover.
    * @returns `true` se o agente existia e foi removido, `false` caso contrário.
    */
-  public unregister(
-    disciplina: DisciplinaNome,
-    nivel: NivelEnsino,
-  ): boolean {
+  public unregister(disciplina: DisciplinaNome, nivel: NivelEnsino): boolean {
     return this.agents.delete(this.buildKey(disciplina, nivel));
   }
 

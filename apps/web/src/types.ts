@@ -1,7 +1,7 @@
 export enum MessageRole {
   USER = 'user',
   ASSISTANT = 'assistant',
-  SYSTEM = 'system'
+  SYSTEM = 'system',
 }
 
 import type { Block9AdaptationEntry } from './types/pdi';
@@ -24,13 +24,14 @@ export interface UserProfile {
   role?: 'teacher' | 'manager' | 'admin'; // Database role
   school_id?: string;
   school_name?: string; // Fetched via join
-  school?: {            // Joined school object
+  school?: {
+    // Joined school object
     id: string;
     name: string;
     city?: string;
     sre?: string;
   };
-  city?: string;        // Specific city field
+  city?: string; // Specific city field
   tier: 'SILVER' | 'GOLD';
   credits: number;
   is_unlimited: boolean;
@@ -64,10 +65,10 @@ export interface UserSession {
 export interface UserSettings {
   userName: string;
   institution: string;
-  schoolCode?: string;           // Novo: Código INEP da escola
-  city?: string;                 // Novo: Cidade onde atua
-  institutionalEmail?: string;   // Novo: Email institucional
-  masp?: string;                 // Novo: MASP formatado
+  schoolCode?: string; // Novo: Código INEP da escola
+  city?: string; // Novo: Cidade onde atua
+  institutionalEmail?: string; // Novo: Email institucional
+  masp?: string; // Novo: MASP formatado
   network: 'Estadual' | 'Municipal' | 'Privada' | '';
   stateUF: string;
   favoriteMethodology: string;
@@ -101,7 +102,7 @@ export enum ToolMode {
   ASSESSMENT = 'assessment',
   SPECIALIST = 'specialist', // Action 5
   SCHOOL_MANAGER = 'school_manager', // NOVO: Painel de Gestão Escolar (Renomeado)
-  MY_DOCUMENTS = 'my_documents'
+  MY_DOCUMENTS = 'my_documents',
 }
 
 // Assessment Types (Ciclo de Feedback Fechado)
@@ -192,13 +193,13 @@ export interface Class {
 }
 
 export interface ClassItem {
-    id: string;
-    name: string;
-    year: number;
-    grade?: string;
-    shift?: string;
-    room?: string;
-    student_count?: number;
+  id: string;
+  name: string;
+  year: number;
+  grade?: string;
+  shift?: string;
+  room?: string;
+  student_count?: number;
 }
 
 export interface PdiLog {
@@ -241,7 +242,7 @@ export interface EnemQuestion {
     // Array de alternativas
     alternatives: Array<{
       letter: string; // "A", "B", "C"...
-      text: string;   // O texto da resposta
+      text: string; // O texto da resposta
       isCorrect: boolean; // Se é a correta
     }>;
 

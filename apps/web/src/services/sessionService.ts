@@ -30,6 +30,6 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
     return {};
   }
   return {
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 }

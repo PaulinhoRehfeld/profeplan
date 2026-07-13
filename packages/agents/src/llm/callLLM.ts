@@ -64,7 +64,7 @@ const callClaude = async (
   anthropic: Anthropic,
   modelName: string,
   messages: ChatMessage[],
-  opts: CallLLMOptions,
+  opts: CallLLMOptions
 ): Promise<string> => {
   const systemMessages = messages.filter((m) => m.role === 'system').map((m) => m.content);
   const conversationMessages = messages
@@ -86,7 +86,10 @@ const callClaude = async (
       completion = await anthropic.messages.create(params);
       break;
     } catch (err: any) {
-      const is429 = err?.status === 429 || String(err?.message).includes('429') || String(err?.message).includes('rate_limit');
+      const is429 =
+        err?.status === 429 ||
+        String(err?.message).includes('429') ||
+        String(err?.message).includes('rate_limit');
       if (is429 && attempt < MAX_ATTEMPTS - 1) {
         await new Promise((r) => setTimeout(r, 5000 * Math.pow(2, attempt)));
         continue;
@@ -97,7 +100,7 @@ const callClaude = async (
   if (!completion) throw new Error('Claude retornou resposta vazia após todas as tentativas.');
 
   const textBlocks = completion.content.filter(
-    (block): block is Anthropic.Messages.TextBlock => block.type === 'text',
+    (block): block is Anthropic.Messages.TextBlock => block.type === 'text'
   );
   return textBlocks.map((b) => b.text).join('\n') || '';
 };
@@ -107,7 +110,7 @@ const callOpenAICompatible = async (
   providerType: 'openai' | 'deepseek',
   modelName: string,
   messages: ChatMessage[],
-  opts: CallLLMOptions,
+  opts: CallLLMOptions
 ): Promise<string> => {
   const requestOptions: any = { model: modelName, messages };
   const isReasoner = modelName === 'deepseek-reasoner';
@@ -139,16 +142,18 @@ const callOpenAICompatible = async (
  */
 export const callLLM = async (
   messages: ChatMessage[],
-  opts: CallLLMOptions = {},
+  opts: CallLLMOptions = {}
 ): Promise<string> => {
   const provider = getAIProvider();
   if (!provider) {
     throw new Error(
-      'Nenhum provedor de IA configurado. Defina ANTHROPIC_API_KEY, DEEPSEEK_API_KEY ou OPENAI_API_KEY.',
+      'Nenhum provedor de IA configurado. Defina ANTHROPIC_API_KEY, DEEPSEEK_API_KEY ou OPENAI_API_KEY.'
     );
   }
 
-  const modelName = (opts.model && opts.model !== 'backend-ai-proxy' ? opts.model : undefined) || provider.defaultModel;
+  const modelName =
+    (opts.model && opts.model !== 'backend-ai-proxy' ? opts.model : undefined) ||
+    provider.defaultModel;
 
   if (provider.type === 'claude') {
     return callClaude(provider.client as Anthropic, modelName, messages, opts);

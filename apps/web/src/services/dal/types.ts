@@ -31,7 +31,11 @@ export interface PlanningDAL {
     query: string,
     filters?: { disciplina?: string; ano?: string; periodo?: string }
   ): Promise<CurriculumSearchResult[]>;
-  getDeterministicCurriculum(disciplina: string, periodo: string, ano?: string): Promise<string | null>;
+  getDeterministicCurriculum(
+    disciplina: string,
+    periodo: string,
+    ano?: string
+  ): Promise<string | null>;
   searchPnldBookContent(
     query: string,
     filters?: { livro_titulo?: string; disciplina?: string }

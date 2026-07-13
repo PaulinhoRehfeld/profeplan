@@ -18,10 +18,7 @@ const getEnv = (key: string): string | undefined => {
 };
 
 const supabaseUrl =
-  getEnv('VITE_SUPABASE_URL') ||
-  getEnv('NEXT_PUBLIC_SUPABASE_URL') ||
-  getEnv('SUPABASE_URL') ||
-  '';
+  getEnv('VITE_SUPABASE_URL') || getEnv('NEXT_PUBLIC_SUPABASE_URL') || getEnv('SUPABASE_URL') || '';
 
 const supabaseAnonKey =
   getEnv('VITE_SUPABASE_ANON_KEY') ||
@@ -35,7 +32,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
     hasKey: !!supabaseAnonKey,
     mode: isDev ? 'DEVELOPMENT' : 'PRODUCTION',
   });
-  throw new Error('Supabase configuration is missing. Define VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+  throw new Error(
+    'Supabase configuration is missing. Define VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.'
+  );
 }
 
 if (isDev) {

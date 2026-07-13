@@ -35,9 +35,20 @@ export const LessonPlanWizard: React.FC<LessonPlanWizardProps> = ({
     const normalizedGrade = (defaultGrade || '').toLowerCase();
 
     let etapa: 'EFI' | 'EFII' | 'EM' | 'OUTRO' = 'OUTRO';
-    if (normalizedGrade.includes('1º') || normalizedGrade.includes('2º') || normalizedGrade.includes('3º') || normalizedGrade.includes('4º') || normalizedGrade.includes('5º')) {
+    if (
+      normalizedGrade.includes('1º') ||
+      normalizedGrade.includes('2º') ||
+      normalizedGrade.includes('3º') ||
+      normalizedGrade.includes('4º') ||
+      normalizedGrade.includes('5º')
+    ) {
       etapa = 'EFI';
-    } else if (normalizedGrade.includes('6º') || normalizedGrade.includes('7º') || normalizedGrade.includes('8º') || normalizedGrade.includes('9º')) {
+    } else if (
+      normalizedGrade.includes('6º') ||
+      normalizedGrade.includes('7º') ||
+      normalizedGrade.includes('8º') ||
+      normalizedGrade.includes('9º')
+    ) {
       etapa = 'EFII';
     } else if (normalizedGrade.includes('em') || normalizedGrade.includes('ensino médio')) {
       etapa = 'EM';
@@ -59,76 +70,76 @@ export const LessonPlanWizard: React.FC<LessonPlanWizardProps> = ({
       if (area === 'MATEMATICA') {
         setObjectives(
           '- Desenvolver o raciocínio lógico dos estudantes.\n' +
-          '- Relacionar o conteúdo com situações do cotidiano (problemas contextualizados).\n' +
-          (etapa === 'EFI'
-            ? '- Explorar a compreensão de quantidades, operações básicas e noção de grandezas.'
-            : etapa === 'EFII'
-              ? '- Consolidar procedimentos de resolução de problemas com diferentes representações (tabelas, gráficos, equações).'
-              : '- Preparar para avaliações externas (ENEM/SAEB) com foco em interpretação de problemas e argumentação matemática.')
+            '- Relacionar o conteúdo com situações do cotidiano (problemas contextualizados).\n' +
+            (etapa === 'EFI'
+              ? '- Explorar a compreensão de quantidades, operações básicas e noção de grandezas.'
+              : etapa === 'EFII'
+                ? '- Consolidar procedimentos de resolução de problemas com diferentes representações (tabelas, gráficos, equações).'
+                : '- Preparar para avaliações externas (ENEM/SAEB) com foco em interpretação de problemas e argumentação matemática.')
         );
         setActivities(
           '- Resolução guiada de problemas em dupla ou grupo pequeno.\n' +
-          '- Uso de exemplos próximos da realidade dos estudantes (preços, medidas, tempo, trajetos).\n' +
-          (etapa === 'EFI'
-            ? '- Atividades manipulativas (cartas numéricas, material dourado, jogos simples).'
-            : '- Discussão coletiva de diferentes estratégias de resolução, com registro no quadro.')
+            '- Uso de exemplos próximos da realidade dos estudantes (preços, medidas, tempo, trajetos).\n' +
+            (etapa === 'EFI'
+              ? '- Atividades manipulativas (cartas numéricas, material dourado, jogos simples).'
+              : '- Discussão coletiva de diferentes estratégias de resolução, com registro no quadro.')
         );
         setAssessment(
           '- Observação da participação durante a resolução de problemas.\n' +
-          '- 2–3 questões escritas de dificuldade progressiva, com espaço para explicar o raciocínio.\n' +
-          '- Registro rápido pelo professor sobre quais alunos precisam de reforço no conteúdo.'
+            '- 2–3 questões escritas de dificuldade progressiva, com espaço para explicar o raciocínio.\n' +
+            '- Registro rápido pelo professor sobre quais alunos precisam de reforço no conteúdo.'
         );
       } else if (area === 'LINGUAGENS') {
         setObjectives(
           '- Desenvolver a compreensão leitora a partir de textos significativos para a turma.\n' +
-          '- Ampliar o repertório de gêneros textuais trabalhados em sala.\n' +
-          (etapa === 'EM'
-            ? '- Estimular a produção de textos autorais com foco em argumentação.'
-            : '- Incentivar a oralidade e a escuta ativa em momentos de partilha.')
+            '- Ampliar o repertório de gêneros textuais trabalhados em sala.\n' +
+            (etapa === 'EM'
+              ? '- Estimular a produção de textos autorais com foco em argumentação.'
+              : '- Incentivar a oralidade e a escuta ativa em momentos de partilha.')
         );
         setActivities(
           '- Leitura compartilhada ou em grupos de um texto (literário ou não literário) conectado ao tema da unidade.\n' +
-          '- Roda de conversa para ativar conhecimentos prévios sobre o tema.\n' +
-          '- Atividade de registro (escrito ou multimodal) em que os estudantes expressem compreensão e opinião sobre o texto.'
+            '- Roda de conversa para ativar conhecimentos prévios sobre o tema.\n' +
+            '- Atividade de registro (escrito ou multimodal) em que os estudantes expressem compreensão e opinião sobre o texto.'
         );
         setAssessment(
           '- Avaliação formativa por meio da participação na leitura e discussão.\n' +
-          '- Coleta de alguns registros escritos para feedback qualitativo (não apenas nota).\n' +
-          '- Anotações do professor sobre avanços em fluência, compreensão e produção.'
+            '- Coleta de alguns registros escritos para feedback qualitativo (não apenas nota).\n' +
+            '- Anotações do professor sobre avanços em fluência, compreensão e produção.'
         );
       } else if (area === 'HUMANAS') {
         setObjectives(
           '- Contextualizar o conteúdo histórico/geográfico com a realidade dos estudantes.\n' +
-          '- Desenvolver habilidades de análise crítica de fontes e pontos de vista.\n' +
-          '- Relacionar o tema a questões atuais (cidadania, direitos, diversidade).'
+            '- Desenvolver habilidades de análise crítica de fontes e pontos de vista.\n' +
+            '- Relacionar o tema a questões atuais (cidadania, direitos, diversidade).'
         );
         setActivities(
           '- Exploração de imagens, mapas, documentos ou relatos relacionados ao tema da aula.\n' +
-          '- Perguntas-problema para orientar a investigação em grupo.\n' +
-          '- Socialização das conclusões em forma de cartazes, mapas mentais ou apresentações curtas.'
+            '- Perguntas-problema para orientar a investigação em grupo.\n' +
+            '- Socialização das conclusões em forma de cartazes, mapas mentais ou apresentações curtas.'
         );
         setAssessment(
           '- Observação das contribuições nas discussões em grupo.\n' +
-          '- Pequeno registro escrito ou gráfico (linha do tempo, esquema, mapa mental) para sintetizar o que foi aprendido.\n' +
-          '- Comentários do professor destacando avanços na argumentação e respeito à diversidade de opiniões.'
+            '- Pequeno registro escrito ou gráfico (linha do tempo, esquema, mapa mental) para sintetizar o que foi aprendido.\n' +
+            '- Comentários do professor destacando avanços na argumentação e respeito à diversidade de opiniões.'
         );
       } else if (area === 'NATUREZA') {
         setObjectives(
           '- Estimular a curiosidade científica dos estudantes a partir de situações do cotidiano.\n' +
-          '- Desenvolver habilidades de observação, registro e explicação de fenômenos naturais.\n' +
-          (etapa === 'EM'
-            ? '- Articular conceitos de Física/Química/Biologia com resolução de problemas e experimentos guiados.'
-            : '- Introduzir vocabulário científico de forma gradual e significativa.')
+            '- Desenvolver habilidades de observação, registro e explicação de fenômenos naturais.\n' +
+            (etapa === 'EM'
+              ? '- Articular conceitos de Física/Química/Biologia com resolução de problemas e experimentos guiados.'
+              : '- Introduzir vocabulário científico de forma gradual e significativa.')
         );
         setActivities(
           '- Proposição de uma pergunta disparadora sobre um fenômeno (ex.: estados físicos da água, fontes de energia, corpo humano).\n' +
-          '- Experimento simples, demonstração ou observação guiada, com registro em tabela ou desenho.\n' +
-          '- Discussão coletiva relacionando a experiência aos conceitos científicos da aula.'
+            '- Experimento simples, demonstração ou observação guiada, com registro em tabela ou desenho.\n' +
+            '- Discussão coletiva relacionando a experiência aos conceitos científicos da aula.'
         );
         setAssessment(
           '- Verificação dos registros (desenhos, tabelas, frases) produzidos durante o experimento.\n' +
-          '- Perguntas orais ou escritas de checagem de compreensão dos conceitos-chave.\n' +
-          '- Anotações do professor sobre dificuldades comuns para planejar retomadas.'
+            '- Perguntas orais ou escritas de checagem de compreensão dos conceitos-chave.\n' +
+            '- Anotações do professor sobre dificuldades comuns para planejar retomadas.'
         );
       }
     }
@@ -365,4 +376,3 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
     </div>
   );
 };
-

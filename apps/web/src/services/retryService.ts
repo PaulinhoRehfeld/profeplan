@@ -15,16 +15,14 @@ export async function withRetry<T>(
       }
 
       const status = err?.status || err?.statusCode || err?.code;
-      const isNetworkish =
-        typeof status === 'number' ? status >= 500 && status < 600 : true;
+      const isNetworkish = typeof status === 'number' ? status >= 500 && status < 600 : true;
 
       if (!isNetworkish) {
         throw err;
       }
 
       attempt += 1;
-      await new Promise(res => setTimeout(res, delayMs));
+      await new Promise((res) => setTimeout(res, delayMs));
     }
   }
 }
-

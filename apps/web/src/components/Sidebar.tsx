@@ -1,6 +1,26 @@
-
 import React from 'react';
-import { LayoutDashboard, BookOpen, PenTool, Accessibility, FileText, Settings, ShieldCheck, X, Crown, FolderClosed, Home, ChevronLeft, ChevronRight, CalendarRange, LibraryBig, Projector, Clock, Users, ClipboardCheck, MessageSquare } from 'lucide-react';
+import {
+  LayoutDashboard,
+  BookOpen,
+  PenTool,
+  Accessibility,
+  FileText,
+  Settings,
+  ShieldCheck,
+  X,
+  Crown,
+  FolderClosed,
+  Home,
+  ChevronLeft,
+  ChevronRight,
+  CalendarRange,
+  LibraryBig,
+  Projector,
+  Clock,
+  Users,
+  ClipboardCheck,
+  MessageSquare,
+} from 'lucide-react';
 import { ToolMode, UserRole, UserProfile } from '../types';
 import { supabase } from '../services/supabaseClient';
 import DonationWidget from './DonationWidget';
@@ -33,34 +53,103 @@ const Sidebar: React.FC<SidebarProps> = ({
   onToggleDesktopExpand,
   userProfile,
   onOpenSubscription,
-  onLogout
+  onLogout,
 }) => {
   const menuItems = [
     { id: ToolMode.HOME, icon: Home, label: 'Início', feature: 'home', group: 'home' },
     { id: ToolMode.CHAT, icon: MessageSquare, label: 'Assistente', feature: 'home', group: 'home' },
-    { id: ToolMode.QUARTERLY_PLANNING, icon: CalendarRange, label: 'Planejamento Trimestral', feature: 'planning', group: 'planning' },
-    { id: ToolMode.PLANNING, icon: LayoutDashboard, label: 'Planos de Aula', feature: 'planning', group: 'planning' },
-    { id: ToolMode.INCLUSION, icon: Accessibility, label: 'Adaptações PDI/DUA', feature: 'pdi', group: 'content' },
-    { id: ToolMode.SIMULATION, icon: FileText, label: 'Simulados ENEM/Saeb', feature: 'enem', group: 'content' },
-    { id: ToolMode.PRESENTATIONS, icon: Projector, label: 'Apresentações & Slides', feature: 'content', group: 'content' },
-    { id: ToolMode.ASSESSMENT, icon: ClipboardCheck, label: 'Avaliações Contextualizadas', feature: 'content', group: 'content' },
-    { id: ToolMode.FILES, icon: FolderClosed, label: 'Meus Arquivos', feature: 'management', group: 'management' },
-    { id: ToolMode.CLASSES, icon: BookOpen, label: 'Minhas Turmas', feature: 'management', group: 'management' },
-    { id: ToolMode.MY_DOCUMENTS, icon: LibraryBig, label: 'Meus Documentos', feature: 'management', group: 'management' }
+    {
+      id: ToolMode.QUARTERLY_PLANNING,
+      icon: CalendarRange,
+      label: 'Planejamento Trimestral',
+      feature: 'planning',
+      group: 'planning',
+    },
+    {
+      id: ToolMode.PLANNING,
+      icon: LayoutDashboard,
+      label: 'Planos de Aula',
+      feature: 'planning',
+      group: 'planning',
+    },
+    {
+      id: ToolMode.INCLUSION,
+      icon: Accessibility,
+      label: 'Adaptações PDI/DUA',
+      feature: 'pdi',
+      group: 'content',
+    },
+    {
+      id: ToolMode.SIMULATION,
+      icon: FileText,
+      label: 'Simulados ENEM/Saeb',
+      feature: 'enem',
+      group: 'content',
+    },
+    {
+      id: ToolMode.PRESENTATIONS,
+      icon: Projector,
+      label: 'Apresentações & Slides',
+      feature: 'content',
+      group: 'content',
+    },
+    {
+      id: ToolMode.ASSESSMENT,
+      icon: ClipboardCheck,
+      label: 'Avaliações Contextualizadas',
+      feature: 'content',
+      group: 'content',
+    },
+    {
+      id: ToolMode.FILES,
+      icon: FolderClosed,
+      label: 'Meus Arquivos',
+      feature: 'management',
+      group: 'management',
+    },
+    {
+      id: ToolMode.CLASSES,
+      icon: BookOpen,
+      label: 'Minhas Turmas',
+      feature: 'management',
+      group: 'management',
+    },
+    {
+      id: ToolMode.MY_DOCUMENTS,
+      icon: LibraryBig,
+      label: 'Meus Documentos',
+      feature: 'management',
+      group: 'management',
+    },
   ];
 
   // Add School Management for admins and managers
-  const isAdminOrManager = isHardcodedAdmin(userProfile?.email) || userProfile?.is_admin || userProfile?.role === 'admin' || userProfile?.role === 'manager' || userRole === 'SCHOOL_MANAGER' || activeMode === ToolMode.SCHOOL_MANAGER;
+  const isAdminOrManager =
+    isHardcodedAdmin(userProfile?.email) ||
+    userProfile?.is_admin ||
+    userProfile?.role === 'admin' ||
+    userProfile?.role === 'manager' ||
+    userRole === 'SCHOOL_MANAGER' ||
+    activeMode === ToolMode.SCHOOL_MANAGER;
   const allMenuItems = isAdminOrManager
-    ? [...menuItems, { id: ToolMode.SCHOOL_MANAGER, icon: Users, label: 'Gestão Escolar', feature: 'management', group: 'management' }]
+    ? [
+        ...menuItems,
+        {
+          id: ToolMode.SCHOOL_MANAGER,
+          icon: Users,
+          label: 'Gestão Escolar',
+          feature: 'management',
+          group: 'management',
+        },
+      ]
     : menuItems;
 
   const filteredItems = allMenuItems;
   const groupedItems = {
-    home: filteredItems.filter(i => i.group === 'home'),
-    planning: filteredItems.filter(i => i.group === 'planning'),
-    content: filteredItems.filter(i => i.group === 'content'),
-    management: filteredItems.filter(i => i.group === 'management'),
+    home: filteredItems.filter((i) => i.group === 'home'),
+    planning: filteredItems.filter((i) => i.group === 'planning'),
+    content: filteredItems.filter((i) => i.group === 'content'),
+    management: filteredItems.filter((i) => i.group === 'management'),
   };
 
   const handleModeSelection = (mode: ToolMode) => {
@@ -78,11 +167,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* Adjusted width based on expansion state */}
-      <div className={`
+      <div
+        className={`
         fixed top-0 left-0 h-screen bg-slate-900 text-slate-300 flex flex-col z-[9999] transition-transform duration-300
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         w-[85vw] lg:w-auto ${isDesktopExpanded ? 'lg:w-56' : 'lg:w-16'}
-      `}>
+      `}
+      >
         <div className="p-4 flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between mb-6">
             <button
@@ -94,7 +185,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
               {/* Only show title when expanded */}
               {isDesktopExpanded && (
-                <h1 className="text-lg font-bold text-white tracking-tight whitespace-nowrap">PROFEPLAN</h1>
+                <h1 className="text-lg font-bold text-white tracking-tight whitespace-nowrap">
+                  PROFEPLAN
+                </h1>
               )}
             </button>
             <div className="flex items-center">
@@ -105,9 +198,13 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 onClick={onToggleDesktopExpand}
                 className="hidden lg:flex p-1 text-slate-500 hover:text-white transition-colors"
-                title={isDesktopExpanded ? "Recolher menu" : "Expandir menu"}
+                title={isDesktopExpanded ? 'Recolher menu' : 'Expandir menu'}
               >
-                {isDesktopExpanded ? <ChevronLeft className="w-6 h-6" /> : <ChevronRight className="w-6 h-6" />}
+                {isDesktopExpanded ? (
+                  <ChevronLeft className="w-6 h-6" />
+                ) : (
+                  <ChevronRight className="w-6 h-6" />
+                )}
               </button>
             </div>
           </div>
@@ -117,14 +214,21 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
-                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
-                  }`}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${
+                  activeMode === item.id
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                    : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
-                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+                <item.icon
+                  className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}
+                />
+                {isDesktopExpanded && (
+                  <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">
+                    {item.label}
+                  </span>
+                )}
               </button>
             ))}
 
@@ -137,14 +241,21 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
-                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
-                  }`}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${
+                  activeMode === item.id
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                    : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
-                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+                <item.icon
+                  className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}
+                />
+                {isDesktopExpanded && (
+                  <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">
+                    {item.label}
+                  </span>
+                )}
               </button>
             ))}
 
@@ -157,14 +268,21 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
-                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
-                  }`}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${
+                  activeMode === item.id
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                    : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
-                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+                <item.icon
+                  className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}
+                />
+                {isDesktopExpanded && (
+                  <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">
+                    {item.label}
+                  </span>
+                )}
               </button>
             ))}
 
@@ -177,14 +295,21 @@ const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleModeSelection(item.id)}
-                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${activeMode === item.id
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
-                  : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
-                  }`}
+                className={`w-full flex lg:flex-row flex-col items-center justify-center lg:justify-start gap-2 lg:gap-3 px-2 lg:px-3 py-3 lg:py-2 rounded-xl transition-all duration-200 group ${
+                  activeMode === item.id
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 font-bold'
+                    : 'bg-slate-800/50 lg:bg-transparent hover:bg-slate-800 hover:text-white'
+                }`}
                 title={!isDesktopExpanded ? item.label : undefined}
               >
-                <item.icon className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                {isDesktopExpanded && <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">{item.label}</span>}
+                <item.icon
+                  className={`w-5 h-5 lg:w-4 lg:h-4 shrink-0 ${activeMode === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}
+                />
+                {isDesktopExpanded && (
+                  <span className="text-xs lg:text-xs text-center lg:text-left leading-tight">
+                    {item.label}
+                  </span>
+                )}
               </button>
             ))}
 
@@ -192,18 +317,25 @@ const Sidebar: React.FC<SidebarProps> = ({
             {(isAdmin(userProfile) || userRole === 'ADMIN') && (
               <div className="pt-2">
                 {isDesktopExpanded && (
-                  <p className="text-[10px] font-bold text-slate-500 uppercase px-4 mb-2 tracking-widest whitespace-nowrap">Admin Sistema</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase px-4 mb-2 tracking-widest whitespace-nowrap">
+                    Admin Sistema
+                  </p>
                 )}
                 <button
                   onClick={() => handleModeSelection(ToolMode.ADMIN)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeMode === ToolMode.ADMIN
-                    ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20 font-bold'
-                    : 'hover:bg-slate-800 hover:text-white'
-                    }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                    activeMode === ToolMode.ADMIN
+                      ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20 font-bold'
+                      : 'hover:bg-slate-800 hover:text-white'
+                  }`}
                   title={!isDesktopExpanded ? 'Painel de Controle' : undefined}
                 >
-                  <ShieldCheck className={`w-5 h-5 shrink-0 ${activeMode === ToolMode.ADMIN ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                  {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Painel Administrativo</span>}
+                  <ShieldCheck
+                    className={`w-5 h-5 shrink-0 ${activeMode === ToolMode.ADMIN ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}
+                  />
+                  {isDesktopExpanded && (
+                    <span className="text-sm whitespace-nowrap">Painel Administrativo</span>
+                  )}
                 </button>
               </div>
             )}
@@ -216,7 +348,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                   <div className="bg-amber-500/10 border border-amber-500/20 p-2 rounded-lg text-amber-500 font-bold text-xs flex items-center gap-2 justify-center">
                     <Crown size={14} /> GOLD (Ilimitado)
                   </div>
-                ) : <Crown size={20} className="text-amber-500 mx-auto" />
+                ) : (
+                  <Crown size={20} className="text-amber-500 mx-auto" />
+                )
               ) : (
                 <div
                   onClick={onOpenSubscription}
@@ -227,7 +361,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <div className="bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-blue-400 font-bold text-xs flex items-center gap-2 justify-center">
                       <FolderClosed size={14} /> {userProfile?.credits || 0} Créditos
                     </div>
-                  ) : <div className="text-xs font-bold text-blue-400 text-center">{userProfile?.credits || 0}</div>}
+                  ) : (
+                    <div className="text-xs font-bold text-blue-400 text-center">
+                      {userProfile?.credits || 0}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -243,12 +381,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             <div className="space-y-2">
               <button
-                onClick={() => { onOpenSettings(); onClose(); }}
+                onClick={() => {
+                  onOpenSettings();
+                  onClose();
+                }}
                 className="flex items-center gap-3 px-3 py-2 w-full rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
                 title={!isDesktopExpanded ? 'Configurações' : undefined}
               >
                 <Settings className="w-5 h-5 shrink-0" />
-                {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Configurações</span>}
+                {isDesktopExpanded && (
+                  <span className="text-sm whitespace-nowrap">Configurações</span>
+                )}
               </button>
               <button
                 onClick={async () => {
@@ -258,7 +401,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 title={!isDesktopExpanded ? 'Sair do Sistema' : undefined}
               >
                 <X className="w-5 h-5 shrink-0" />
-                {isDesktopExpanded && <span className="text-sm whitespace-nowrap">Sair do Sistema</span>}
+                {isDesktopExpanded && (
+                  <span className="text-sm whitespace-nowrap">Sair do Sistema</span>
+                )}
               </button>
             </div>
           </div>

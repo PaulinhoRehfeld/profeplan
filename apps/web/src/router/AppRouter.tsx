@@ -15,12 +15,20 @@ const TermsOfService = React.lazy(() => import('../pages/TermsOfService'));
 const VerifyEmail = React.lazy(() => import('../pages/VerifyEmail'));
 const UserProfileSetup = React.lazy(() => import('../pages/UserProfileSetup'));
 const LoginScreen = React.lazy(() => import('../components/LoginScreen'));
-const SchoolSelectorScreenWrapper = React.lazy(() => import('../components/SchoolSelectorScreenWrapper'));
+const SchoolSelectorScreenWrapper = React.lazy(
+  () => import('../components/SchoolSelectorScreenWrapper')
+);
 const ComparativoPage = React.lazy(() => import('../pages/ComparativoPage'));
 
 // Features
-const PdiOfficialLayout = React.lazy(() => import('../features/PDI/Official/PdiOfficialLayout').then(m => ({ default: m.PdiOfficialLayout })));
-const SimulationAdminPanel = React.lazy(() => import('../features/SimulationFactory').then(m => ({ default: m.AdminPanel })));
+const PdiOfficialLayout = React.lazy(() =>
+  import('../features/PDI/Official/PdiOfficialLayout').then((m) => ({
+    default: m.PdiOfficialLayout,
+  }))
+);
+const SimulationAdminPanel = React.lazy(() =>
+  import('../features/SimulationFactory').then((m) => ({ default: m.AdminPanel }))
+);
 
 const PageLoader: React.FC = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -78,34 +86,90 @@ export const router = createBrowserRouter([
     errorElement: <AppErrorPage />, // Global Error Boundary
     children: [
       // Public / Auth Routes
-      { path: 'landing', element: <Suspense fallback={<PageLoader />}><LandingPage /></Suspense> },
-      { path: 'privacy', element: <Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense> },
-      { path: 'terms', element: <Suspense fallback={<PageLoader />}><TermsOfService /></Suspense> },
+      {
+        path: 'landing',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <LandingPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'privacy',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PrivacyPolicy />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'terms',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <TermsOfService />
+          </Suspense>
+        ),
+      },
       { path: 'verify-email', element: <VerifyEmailRoute /> },
       { path: 'login', element: <LoginRoute /> },
       { path: 'signup', element: <LoginRoute initialMode="signup" /> },
-      { path: 'road', element: <Suspense fallback={<PageLoader />}><ComparativoPage /></Suspense> },
+      {
+        path: 'road',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ComparativoPage />
+          </Suspense>
+        ),
+      },
 
       // Protected Core Routes
-      { path: 'profile-setup', element: <Suspense fallback={<PageLoader />}><UserProfileSetup /></Suspense> },
-      { path: 'select-school', element: <Suspense fallback={<PageLoader />}><SchoolSelectorScreenWrapper /></Suspense> },
+      {
+        path: 'profile-setup',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <UserProfileSetup />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'select-school',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <SchoolSelectorScreenWrapper />
+          </Suspense>
+        ),
+      },
 
       // PDI Routes
-      { path: 'pdi/official/:studentId', element: <Suspense fallback={<PageLoader />}><PdiOfficialLayout /></Suspense> },
+      {
+        path: 'pdi/official/:studentId',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PdiOfficialLayout />
+          </Suspense>
+        ),
+      },
 
       // Admin Routes (all protected by AdminGuard)
       {
         path: 'admin',
         children: [
-          { path: 'simulations', element: <AdminGuard><SimulationAdminRoute /></AdminGuard> },
-        ]
+          {
+            path: 'simulations',
+            element: (
+              <AdminGuard>
+                <SimulationAdminRoute />
+              </AdminGuard>
+            ),
+          },
+        ],
       },
 
       // The Main App Dashboard
       {
         path: 'app',
         element: <AppLayout />,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ]);

@@ -130,10 +130,7 @@ export class BNCCValidatorAgent extends BaseQualityGate {
    * @param req       — Requisição original que originou a geração.
    * @returns Promise com o {@link GateResult} contendo score, passed, mensagem etc.
    */
-  public async check(
-    resultado: GeracaoResultado,
-    req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, req: GeracaoRequest): Promise<GateResult> {
     const conteudo = resultado.conteudo;
     const codigosCitados = this._extractBNCCCodes(conteudo);
 
@@ -169,9 +166,7 @@ export class BNCCValidatorAgent extends BaseQualityGate {
       // Comparação EXATA (não includes()): substring bidirecional deixava passar
       // disciplina errada sempre que uma é substring da outra — ex: "Física" ⊂
       // "Educação Física" e "Ciências" ⊂ "Ciências Humanas e Sociais Aplicadas".
-      const matchDisciplina = registros.some(
-        (r) => this._normalize(r.disciplina) === discReq,
-      );
+      const matchDisciplina = registros.some((r) => this._normalize(r.disciplina) === discReq);
 
       if (!matchDisciplina) {
         disciplinaErrada.push(codigo);
@@ -258,9 +253,7 @@ export class BNCCValidatorAgent extends BaseQualityGate {
     }
 
     // Fallback: regex em todos os campos string
-    const allValues = Object.values(conteudo).filter(
-      (v): v is string => typeof v === 'string',
-    );
+    const allValues = Object.values(conteudo).filter((v): v is string => typeof v === 'string');
     const codes: string[] = [];
     for (const val of allValues) {
       const matches = val.match(BNCC_CODE_REGEX);
@@ -288,18 +281,18 @@ export class BNCCValidatorAgent extends BaseQualityGate {
   private _initMockIndex(): void {
     // --- Ensino Fundamental ---
     const lpEF = [
-      'EF06LP01', 'EF06LP02',
-      'EF07LP01', 'EF07LP02',
-      'EF08LP01', 'EF08LP02',
-      'EF09LP01', 'EF09LP02',
+      'EF06LP01',
+      'EF06LP02',
+      'EF07LP01',
+      'EF07LP02',
+      'EF08LP01',
+      'EF08LP02',
+      'EF09LP01',
+      'EF09LP02',
     ];
     for (const c of lpEF) this._addMock(c, 'Língua Portuguesa');
 
-    const matEF = [
-      'EF06MA01', 'EF06MA02',
-      'EF07MA01', 'EF08MA01',
-      'EF09MA01', 'EF09MA05',
-    ];
+    const matEF = ['EF06MA01', 'EF06MA02', 'EF07MA01', 'EF08MA01', 'EF09MA01', 'EF09MA05'];
     for (const c of matEF) this._addMock(c, 'Matemática');
 
     const histEF = ['EF06HI01', 'EF07HI01', 'EF08HI01', 'EF09HI01'];
@@ -313,10 +306,14 @@ export class BNCCValidatorAgent extends BaseQualityGate {
 
     // --- Ensino Médio ---
     const emCodes = [
-      'EM13LP01', 'EM13LP02',
-      'EM13MAT101', 'EM13MAT102',
-      'EM13CHS101', 'EM13CHS102',
-      'EM13CNT101', 'EM13CNT102',
+      'EM13LP01',
+      'EM13LP02',
+      'EM13MAT101',
+      'EM13MAT102',
+      'EM13CHS101',
+      'EM13CHS102',
+      'EM13CNT101',
+      'EM13CNT102',
     ];
     for (const c of emCodes) this._addMock(c, 'Geral');
   }

@@ -6,7 +6,7 @@ export const AppErrorPage: React.FC = () => {
   const error = useRouteError() as any;
   const navigate = useNavigate();
 
-  console.error("🚨 [AppErrorPage] Caught an error:", error);
+  console.error('🚨 [AppErrorPage] Caught an error:', error);
 
   const handleReset = () => {
     localStorage.removeItem('profeplan_settings');
@@ -19,18 +19,18 @@ export const AppErrorPage: React.FC = () => {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 mb-6">
           <ShieldAlert className="h-8 w-8 text-red-600 dark:text-red-400" />
         </div>
-        
+
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           Oops! Algo deu errado.
         </h1>
-        
+
         <p className="text-gray-500 dark:text-gray-400 mb-6">
           A aplicação encontrou um erro inesperado ao tentar renderizar esta tela.
         </p>
 
         {error && (
           <div className="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg text-left overflow-auto mb-6 text-sm font-mono text-red-800 dark:text-red-300 max-h-32">
-            {error.statusText || error.message || "Erro desconhecido"}
+            {error.statusText || error.message || 'Erro desconhecido'}
           </div>
         )}
 
@@ -42,7 +42,7 @@ export const AppErrorPage: React.FC = () => {
             <RefreshCw className="w-5 h-5" />
             Tentar Novamente
           </button>
-          
+
           <button
             onClick={() => navigate('/')}
             className="w-full flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-xl font-medium transition-colors"
@@ -50,7 +50,7 @@ export const AppErrorPage: React.FC = () => {
             <Home className="w-5 h-5" />
             Voltar para Início
           </button>
-          
+
           <button
             onClick={handleReset}
             className="w-full mt-4 text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"

@@ -11,7 +11,7 @@ interface PrintableEvaluationProps {
 const PrintableEvaluation: React.FC<PrintableEvaluationProps> = ({
   assessment,
   schoolName,
-  logoBase64
+  logoBase64,
 }) => {
   return (
     <A4PrintSheet title={assessment.title}>
@@ -28,7 +28,8 @@ const PrintableEvaluation: React.FC<PrintableEvaluationProps> = ({
 
           <div className="header-grid">
             <div className="header-item full">
-              <strong>Aluno(a):</strong> ____________________________________________________________________
+              <strong>Aluno(a):</strong>{' '}
+              ____________________________________________________________________
             </div>
             <div className="header-item">
               <strong>Turma:</strong> {assessment.className || '_________'}
@@ -47,8 +48,8 @@ const PrintableEvaluation: React.FC<PrintableEvaluationProps> = ({
 
         {/* INSTRUÇÕES */}
         <div className="assessment-instructions">
-          <strong>INSTRUÇÕES:</strong> Leia cada questão com atenção antes de responder.
-          Use caneta azul ou preta. Não é permitido o uso de corretivos ou consultas não autorizadas.
+          <strong>INSTRUÇÕES:</strong> Leia cada questão com atenção antes de responder. Use caneta
+          azul ou preta. Não é permitido o uso de corretivos ou consultas não autorizadas.
         </div>
 
         {/* QUESTÕES */}
@@ -56,7 +57,10 @@ const PrintableEvaluation: React.FC<PrintableEvaluationProps> = ({
           {assessment.questions.map((question, index) => (
             <div key={question.id} className="assessment-question question-block">
               <p className="q-text">
-                <strong>Questão {index + 1}</strong> {question.difficulty && <span className="difficulty-tag">[{question.difficulty}]</span>}
+                <strong>Questão {index + 1}</strong>{' '}
+                {question.difficulty && (
+                  <span className="difficulty-tag">[{question.difficulty}]</span>
+                )}
                 <br />
                 {question.question}
               </p>
@@ -64,7 +68,9 @@ const PrintableEvaluation: React.FC<PrintableEvaluationProps> = ({
               {question.type === 'objective' && question.options && (
                 <div className="q-options">
                   {question.options.map((opt, i) => (
-                    <div key={i} className="opt-item">{opt}</div>
+                    <div key={i} className="opt-item">
+                      {opt}
+                    </div>
                   ))}
                 </div>
               )}
@@ -207,4 +213,3 @@ const PrintableEvaluation: React.FC<PrintableEvaluationProps> = ({
 };
 
 export default PrintableEvaluation;
-

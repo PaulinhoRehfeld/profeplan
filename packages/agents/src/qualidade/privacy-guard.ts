@@ -49,7 +49,7 @@ export class PrivacyGuardAgent extends BaseQualityGate {
    * Qualquer match nesta categoria resulta em bloqueio imediato (BLOCKER).
    */
   private static readonly PADROES_PII: RegExp[] = [
-    /\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g,       // CPF
+    /\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, // CPF
     /\b\d{2}\.?\d{3}\.?\d{3}\/\d{4}-?\d{2}\b/g, // CNPJ
     // Data de nascimento — exige a palavra "nascimento" nas proximidades (até
     // 20 caracteres antes da data) para não bloquear qualquer data dd/mm/aaaa
@@ -86,10 +86,7 @@ export class PrivacyGuardAgent extends BaseQualityGate {
    * @param _req      — Requisição original (não utilizado diretamente).
    * @returns Promise com o {@link GateResult} da auditoria.
    */
-  public async check(
-    resultado: GeracaoResultado,
-    _req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, _req: GeracaoRequest): Promise<GateResult> {
     const texto = JSON.stringify(resultado.conteudo).toLowerCase();
     const violacoes: string[] = [];
     const bloqueios: string[] = [];

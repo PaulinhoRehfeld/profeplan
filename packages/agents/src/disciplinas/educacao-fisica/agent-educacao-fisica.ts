@@ -66,17 +66,26 @@ export class AgentEducacaoFisica extends BaseDisciplineAgent {
     if (this.context.nivel.startsWith('EF_')) {
       return [
         // 6º e 7º ano — Unidades Temáticas
-        'EF67EF01', 'EF67EF02', 'EF67EF03', 'EF67EF04',
-        'EF67EF05', 'EF67EF06', 'EF67EF07', 'EF67EF08',
+        'EF67EF01',
+        'EF67EF02',
+        'EF67EF03',
+        'EF67EF04',
+        'EF67EF05',
+        'EF67EF06',
+        'EF67EF07',
+        'EF67EF08',
         // 8º e 9º ano — Unidades Temáticas
-        'EF89EF01', 'EF89EF02', 'EF89EF03', 'EF89EF04',
-        'EF89EF05', 'EF89EF06', 'EF89EF07', 'EF89EF08',
+        'EF89EF01',
+        'EF89EF02',
+        'EF89EF03',
+        'EF89EF04',
+        'EF89EF05',
+        'EF89EF06',
+        'EF89EF07',
+        'EF89EF08',
       ];
     }
-    return [
-      'EM13LGG101', 'EM13LGG102', 'EM13LGG103',
-      'EM13LGG104', 'EM13LGG105',
-    ];
+    return ['EM13LGG101', 'EM13LGG102', 'EM13LGG103', 'EM13LGG104', 'EM13LGG105'];
   }
 
   /**

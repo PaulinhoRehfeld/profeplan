@@ -1,10 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  BookOpen, Users, Brain, Clock, FileCheck, Target,
-  BarChart, ArrowRight, Sparkles, Check, ChevronDown,
-  Menu, X, Star, Zap, Shield, Award, GraduationCap,
-  FileText, Calendar, Mic, Building2
+  BookOpen,
+  Users,
+  Brain,
+  Clock,
+  FileCheck,
+  Target,
+  BarChart,
+  ArrowRight,
+  Sparkles,
+  Check,
+  ChevronDown,
+  Menu,
+  X,
+  Star,
+  Zap,
+  Shield,
+  Award,
+  GraduationCap,
+  FileText,
+  Calendar,
+  Mic,
+  Building2,
 } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────────
@@ -439,7 +457,6 @@ const LandingPage: React.FC = () => {
       <style>{inlineStyles}</style>
 
       <div className="lp-root min-h-screen relative">
-
         {/* ══════════════════════════════════════════
             NAVBAR
         ══════════════════════════════════════════ */}
@@ -451,12 +468,21 @@ const LandingPage: React.FC = () => {
           <nav className="max-w-7xl mx-auto px-4 md:px-6 h-18 flex items-center justify-between py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-xl overflow-hidden lp-animate-glow" style={{ flexShrink: 0 }}>
-                <img src="/logo-blue.png" alt="PROFEPLAN" className="w-full h-full object-contain" />
+              <div
+                className="w-9 h-9 rounded-xl overflow-hidden lp-animate-glow"
+                style={{ flexShrink: 0 }}
+              >
+                <img
+                  src="/logo-blue.png"
+                  alt="PROFEPLAN"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-base font-black tracking-tight text-white">PROFEPLAN</span>
-                <span className="text-[10px] font-medium text-blue-400 tracking-widest uppercase">by WR Tech AI</span>
+                <span className="text-[10px] font-medium text-blue-400 tracking-widest uppercase">
+                  by WR Tech AI
+                </span>
               </div>
             </Link>
 
@@ -467,7 +493,7 @@ const LandingPage: React.FC = () => {
                 { label: 'Planos', href: '#planos' },
                 { label: 'Depoimentos', href: '#depoimentos' },
                 { label: 'FAQ', href: '#faq' },
-              ].map(link => (
+              ].map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
@@ -517,7 +543,10 @@ const LandingPage: React.FC = () => {
                   {['Funcionalidades', 'Planos', 'Depoimentos', 'FAQ'][i]}
                 </a>
               ))}
-              <Link to="/signup" className="lp-btn-primary mt-2 px-6 py-3 rounded-xl text-center font-bold text-white">
+              <Link
+                to="/signup"
+                className="lp-btn-primary mt-2 px-6 py-3 rounded-xl text-center font-bold text-white"
+              >
                 Começar Grátis
               </Link>
             </div>
@@ -527,8 +556,10 @@ const LandingPage: React.FC = () => {
         {/* ══════════════════════════════════════════
             HERO SECTION
         ══════════════════════════════════════════ */}
-        <section ref={heroRef} className="relative pt-28 pb-20 md:pt-40 md:pb-32 px-4 overflow-hidden lp-noise">
-
+        <section
+          ref={heroRef}
+          className="relative pt-28 pb-20 md:pt-40 md:pb-32 px-4 overflow-hidden lp-noise"
+        >
           {/* Background orbs */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="lp-orb-blue absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[700px] opacity-60 lp-animate-blob" />
@@ -538,14 +569,14 @@ const LandingPage: React.FC = () => {
             <div
               className="absolute inset-0 opacity-[0.03]"
               style={{
-                backgroundImage: 'linear-gradient(rgba(59,130,246,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.5) 1px, transparent 1px)',
+                backgroundImage:
+                  'linear-gradient(rgba(59,130,246,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.5) 1px, transparent 1px)',
                 backgroundSize: '80px 80px',
               }}
             />
           </div>
 
           <div className="relative max-w-5xl mx-auto text-center">
-
             {/* Badge */}
             <div className="lp-animate-fade-up lp-delay-100 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-8 lp-badge">
               <Sparkles size={12} className="text-blue-400" />
@@ -557,9 +588,9 @@ const LandingPage: React.FC = () => {
               className="lp-animate-fade-up lp-delay-200 lp-hero-title font-black leading-none tracking-tight mb-6"
               style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', textWrap: 'balance' }}
             >
-              Acabou o{' '}
-              <span className="lp-shimmer-text">domingo perdido</span>
-              <br />preparando aula.
+              Acabou o <span className="lp-shimmer-text">domingo perdido</span>
+              <br />
+              preparando aula.
             </h1>
 
             {/* Subheadline */}
@@ -568,8 +599,8 @@ const LandingPage: React.FC = () => {
               style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', textWrap: 'pretty' }}
             >
               O PROFEPLAN gera Planejamentos, Avaliações e PDIs personalizados em minutos —
-              alinhados à <strong className="text-slate-300">BNCC oficial</strong>, sem inventar nada.
-              A IA que trabalha <em>por você</em>.
+              alinhados à <strong className="text-slate-300">BNCC oficial</strong>, sem inventar
+              nada. A IA que trabalha <em>por você</em>.
             </p>
 
             {/* CTAs */}
@@ -610,7 +641,8 @@ const LandingPage: React.FC = () => {
               <div
                 className="rounded-2xl overflow-hidden border border-white/10"
                 style={{
-                  boxShadow: '0 40px 100px -20px rgba(0,0,0,0.8), 0 0 60px rgba(59,130,246,0.15), 0 0 0 1px rgba(59,130,246,0.1)',
+                  boxShadow:
+                    '0 40px 100px -20px rgba(0,0,0,0.8), 0 0 60px rgba(59,130,246,0.15), 0 0 0 1px rgba(59,130,246,0.1)',
                 }}
               >
                 <img
@@ -618,70 +650,196 @@ const LandingPage: React.FC = () => {
                   alt="Interface do PROFEPLAN"
                   className="w-full"
                   style={{ display: 'none' }}
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
                 />
                 {/* Fallback: browser chrome + mock UI */}
-                <div style={{ background: '#0d1117', padding: '12px 16px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div
+                  style={{
+                    background: '#0d1117',
+                    padding: '12px 16px 0',
+                    borderBottom: '1px solid rgba(255,255,255,0.06)',
+                  }}
+                >
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-3 h-3 rounded-full" style={{ background: '#ff5f57' }} />
                     <div className="w-3 h-3 rounded-full" style={{ background: '#ffbd2e' }} />
                     <div className="w-3 h-3 rounded-full" style={{ background: '#28ca41' }} />
-                    <div className="flex-1 mx-4 h-6 rounded-md flex items-center px-3" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '11px', color: '#64748b' }}>
+                    <div
+                      className="flex-1 mx-4 h-6 rounded-md flex items-center px-3"
+                      style={{
+                        background: 'rgba(255,255,255,0.05)',
+                        fontSize: '11px',
+                        color: '#64748b',
+                      }}
+                    >
                       profeplan.com.br/app
                     </div>
                   </div>
                 </div>
                 <div style={{ background: '#0a0e1a', minHeight: '340px', display: 'flex' }}>
                   {/* Sidebar mock */}
-                  <div style={{ width: '60px', background: '#070b14', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '20px', gap: '20px' }}>
+                  <div
+                    style={{
+                      width: '60px',
+                      background: '#070b14',
+                      borderRight: '1px solid rgba(255,255,255,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      paddingTop: '20px',
+                      gap: '20px',
+                    }}
+                  >
                     {[BookOpen, Calendar, FileCheck, Target, FileText, Mic].map((Icon, i) => (
-                      <div key={i} style={{ width: '36px', height: '36px', borderRadius: '10px', background: i === 0 ? 'rgba(59,130,246,0.25)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', color: i === 0 ? '#60a5fa' : '#475569' }}>
+                      <div
+                        key={i}
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '10px',
+                          background: i === 0 ? 'rgba(59,130,246,0.25)' : 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: i === 0 ? '#60a5fa' : '#475569',
+                        }}
+                      >
                         <Icon size={16} />
                       </div>
                     ))}
                   </div>
                   {/* Main content mock */}
-                  <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div
+                    style={{
+                      flex: 1,
+                      padding: '20px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px',
+                    }}
+                  >
                     {/* Top bar */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '4px',
+                      }}
+                    >
                       <div>
-                        <div style={{ fontSize: '13px', fontWeight: 800, color: '#f1f5f9' }}>Planejamento Trimestral</div>
-                        <div style={{ fontSize: '10px', color: '#64748b' }}>3º Trimestre — História — 9º Ano</div>
+                        <div style={{ fontSize: '13px', fontWeight: 800, color: '#f1f5f9' }}>
+                          Planejamento Trimestral
+                        </div>
+                        <div style={{ fontSize: '10px', color: '#64748b' }}>
+                          3º Trimestre — História — 9º Ano
+                        </div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: '#3b82f6', background: 'rgba(59,130,246,0.1)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(59,130,246,0.2)' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          fontSize: '10px',
+                          color: '#3b82f6',
+                          background: 'rgba(59,130,246,0.1)',
+                          padding: '4px 10px',
+                          borderRadius: '20px',
+                          border: '1px solid rgba(59,130,246,0.2)',
+                        }}
+                      >
                         <Sparkles size={10} />
                         IA Gerando...
                       </div>
                     </div>
                     {/* AI generating card */}
-                    <div style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '12px', padding: '16px' }}>
-                      <div style={{ fontSize: '11px', color: '#93c5fd', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div
+                      style={{
+                        background: 'rgba(59,130,246,0.08)',
+                        border: '1px solid rgba(59,130,246,0.2)',
+                        borderRadius: '12px',
+                        padding: '16px',
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: '11px',
+                          color: '#93c5fd',
+                          fontWeight: 700,
+                          marginBottom: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                        }}
+                      >
                         <Brain size={12} />
                         Agente RAG — Consultando BNCC...
                       </div>
-                      <div style={{ height: '4px', borderRadius: '2px', background: 'rgba(59,130,246,0.15)', overflow: 'hidden', marginBottom: '10px' }}>
-                        <div style={{ height: '100%', width: '72%', background: 'linear-gradient(90deg, #3b82f6, #6366f1)', borderRadius: '2px', transition: 'width 2s ease' }} />
+                      <div
+                        style={{
+                          height: '4px',
+                          borderRadius: '2px',
+                          background: 'rgba(59,130,246,0.15)',
+                          overflow: 'hidden',
+                          marginBottom: '10px',
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: '100%',
+                            width: '72%',
+                            background: 'linear-gradient(90deg, #3b82f6, #6366f1)',
+                            borderRadius: '2px',
+                            transition: 'width 2s ease',
+                          }}
+                        />
                       </div>
                       {[
                         '✓ Habilidade EF09HI12 verificada na base',
                         '✓ Competências Gerais 1, 2 e 9 mapeadas',
                         '⟳ Gerando Sequência Didática...',
                       ].map((line, i) => (
-                        <div key={i} style={{ fontSize: '10px', color: i === 2 ? '#6366f1' : '#475569', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <div
+                          key={i}
+                          style={{
+                            fontSize: '10px',
+                            color: i === 2 ? '#6366f1' : '#475569',
+                            marginBottom: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}
+                        >
                           <span>{line}</span>
                         </div>
                       ))}
                     </div>
                     {/* Stats row */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                    <div
+                      style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}
+                    >
                       {[
                         { label: 'Planos Gerados', value: '24' },
                         { label: 'Avaliações', value: '8' },
                         { label: 'PDIs Ativos', value: '3' },
                       ].map((stat) => (
-                        <div key={stat.label} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '10px' }}>
-                          <div style={{ fontSize: '18px', fontWeight: 900, color: '#f1f5f9' }}>{stat.value}</div>
-                          <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px' }}>{stat.label}</div>
+                        <div
+                          key={stat.label}
+                          style={{
+                            background: 'rgba(255,255,255,0.03)',
+                            border: '1px solid rgba(255,255,255,0.06)',
+                            borderRadius: '10px',
+                            padding: '10px',
+                          }}
+                        >
+                          <div style={{ fontSize: '18px', fontWeight: 900, color: '#f1f5f9' }}>
+                            {stat.value}
+                          </div>
+                          <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px' }}>
+                            {stat.label}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -689,7 +847,13 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
               {/* Glow under card */}
-              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-20 opacity-30" style={{ background: 'radial-gradient(ellipse, rgba(59,130,246,0.5) 0%, transparent 70%)', filter: 'blur(20px)' }} />
+              <div
+                className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-3/4 h-20 opacity-30"
+                style={{
+                  background: 'radial-gradient(ellipse, rgba(59,130,246,0.5) 0%, transparent 70%)',
+                  filter: 'blur(20px)',
+                }}
+              />
             </div>
 
             {/* Scroll hint */}
@@ -708,7 +872,8 @@ const LandingPage: React.FC = () => {
             {STATS.map((stat) => (
               <div key={stat.label} className="lp-stat-card">
                 <div className="text-3xl font-black text-white mb-1">
-                  {stat.value}<span className="text-blue-400 text-lg ml-1">{stat.suffix}</span>
+                  {stat.value}
+                  <span className="text-blue-400 text-lg ml-1">{stat.suffix}</span>
                 </div>
                 <div className="text-xs text-slate-500 leading-tight">{stat.label}</div>
               </div>
@@ -725,13 +890,22 @@ const LandingPage: React.FC = () => {
           <div className="lp-orb-indigo absolute right-0 top-0 w-96 h-96 opacity-30" />
           <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-2 gap-16 items-center">
-
               {/* Left — Problema */}
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
+                <div
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6"
+                  style={{
+                    background: 'rgba(239,68,68,0.1)',
+                    border: '1px solid rgba(239,68,68,0.2)',
+                    color: '#f87171',
+                  }}
+                >
                   😩 A Realidade do Professor Público
                 </div>
-                <h2 className="font-black mb-6 leading-tight" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
+                <h2
+                  className="font-black mb-6 leading-tight"
+                  style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
+                >
                   Você virou <span style={{ color: '#f87171' }}>secretário(a)</span>,<br />
                   não professor(a).
                 </h2>
@@ -744,7 +918,13 @@ const LandingPage: React.FC = () => {
                     'IA genérica que inventa habilidades inexistentes',
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full shrink-0 mt-0.5 flex items-center justify-center" style={{ background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                      <div
+                        className="w-5 h-5 rounded-full shrink-0 mt-0.5 flex items-center justify-center"
+                        style={{
+                          background: 'rgba(239,68,68,0.15)',
+                          border: '1px solid rgba(239,68,68,0.2)',
+                        }}
+                      >
                         <X size={10} className="text-red-400" />
                       </div>
                       <span className="text-slate-400 text-sm">{item}</span>
@@ -758,8 +938,12 @@ const LandingPage: React.FC = () => {
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 lp-badge">
                   ✨ Com o PROFEPLAN
                 </div>
-                <h2 className="font-black mb-6 leading-tight" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
-                  Você volta a ser<br />
+                <h2
+                  className="font-black mb-6 leading-tight"
+                  style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
+                >
+                  Você volta a ser
+                  <br />
                   <span className="lp-grad-text">educador(a)</span>.
                 </h2>
                 <div className="space-y-4">
@@ -771,7 +955,13 @@ const LandingPage: React.FC = () => {
                     'IA que consulta a BNCC real antes de gerar',
                   ].map((item) => (
                     <div key={item} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full shrink-0 mt-0.5 flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <div
+                        className="w-5 h-5 rounded-full shrink-0 mt-0.5 flex items-center justify-center"
+                        style={{
+                          background: 'rgba(16,185,129,0.15)',
+                          border: '1px solid rgba(16,185,129,0.2)',
+                        }}
+                      >
                         <Check size={10} className="text-emerald-400" />
                       </div>
                       <span className="text-slate-300 text-sm font-medium">{item}</span>
@@ -785,7 +975,6 @@ const LandingPage: React.FC = () => {
                   Experimentar agora <ArrowRight size={16} />
                 </Link>
               </div>
-
             </div>
           </div>
         </section>
@@ -803,12 +992,17 @@ const LandingPage: React.FC = () => {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-5 lp-badge">
                 <Zap size={12} /> Funcionalidades
               </div>
-              <h2 className="lp-section-title font-black mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
-                Tudo que você precisa.<br />
+              <h2
+                className="lp-section-title font-black mb-4"
+                style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
+              >
+                Tudo que você precisa.
+                <br />
                 <span className="lp-grad-text">Nada que você não usa.</span>
               </h2>
               <p className="text-slate-400 max-w-xl mx-auto">
-                Cada módulo foi desenhado com professores da rede pública. Sem distrações, sem complexidade desnecessária.
+                Cada módulo foi desenhado com professores da rede pública. Sem distrações, sem
+                complexidade desnecessária.
               </p>
             </div>
 
@@ -826,7 +1020,14 @@ const LandingPage: React.FC = () => {
                     <div className="flex items-center gap-2 flex-wrap mb-2">
                       <h3 className="font-bold text-white text-base">{feat.title}</h3>
                       {feat.badge && (
-                        <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style={{ background: `${feat.badgeColor}20`, color: feat.badgeColor!, border: `1px solid ${feat.badgeColor}40` }}>
+                        <span
+                          className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
+                          style={{
+                            background: `${feat.badgeColor}20`,
+                            color: feat.badgeColor!,
+                            border: `1px solid ${feat.badgeColor}40`,
+                          }}
+                        >
                           {feat.badge}
                         </span>
                       )}
@@ -838,10 +1039,29 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* RLM differentiator */}
-            <div className="mt-10 rounded-2xl p-8 md:p-10 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(99,102,241,0.06) 100%)', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent)' }} />
+            <div
+              className="mt-10 rounded-2xl p-8 md:p-10 relative overflow-hidden"
+              style={{
+                background:
+                  'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(99,102,241,0.06) 100%)',
+                border: '1px solid rgba(59,130,246,0.2)',
+              }}
+            >
+              <div
+                className="absolute top-0 left-0 right-0 h-px"
+                style={{
+                  background:
+                    'linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent)',
+                }}
+              />
               <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)' }}>
+                <div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: 'rgba(59,130,246,0.15)',
+                    border: '1px solid rgba(59,130,246,0.3)',
+                  }}
+                >
                   <Brain size={28} className="text-blue-400" />
                 </div>
                 <div>
@@ -852,9 +1072,12 @@ const LandingPage: React.FC = () => {
                     Por que o PROFEPLAN <span className="lp-grad-text">não alucina</span>?
                   </h3>
                   <p className="text-slate-400 text-sm leading-relaxed max-w-2xl">
-                    Usamos <strong className="text-slate-300">Recursive Language Models (RLM)</strong> — a IA planeja, audita e corrige o próprio trabalho antes de entregar.
-                    Enquanto outras IAs "completam frases" e inventam códigos BNCC falsos, nosso sistema consulta os documentos oficiais indexados.
-                    É a diferença entre um <em className="text-slate-400">estagiário criativo</em> e um{' '}
+                    Usamos{' '}
+                    <strong className="text-slate-300">Recursive Language Models (RLM)</strong> — a
+                    IA planeja, audita e corrige o próprio trabalho antes de entregar. Enquanto
+                    outras IAs "completam frases" e inventam códigos BNCC falsos, nosso sistema
+                    consulta os documentos oficiais indexados. É a diferença entre um{' '}
+                    <em className="text-slate-400">estagiário criativo</em> e um{' '}
                     <strong className="text-blue-400">Coordenador Pedagógico rigoroso</strong>.
                   </p>
                 </div>
@@ -874,11 +1097,13 @@ const LandingPage: React.FC = () => {
               <BarChart size={12} /> Veja em Ação
             </div>
             <h2 className="font-black mb-4" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}>
-              De zero a plano completo<br />
+              De zero a plano completo
+              <br />
               <span className="lp-grad-text">em 3 minutos</span>
             </h2>
             <p className="text-slate-400 mb-10 max-w-xl mx-auto">
-              Assista como o PROFEPLAN gera um Planejamento Trimestral completo, alinhado à BNCC, com referências ao livro didático.
+              Assista como o PROFEPLAN gera um Planejamento Trimestral completo, alinhado à BNCC,
+              com referências ao livro didático.
             </p>
 
             {/* Video / mockup container */}
@@ -903,7 +1128,12 @@ const LandingPage: React.FC = () => {
                   <source src="/videos/hero-animation.mp4" type="video/mp4" />
                 </video>
                 {/* Overlay gradient */}
-                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(7,11,20,0.6) 0%, transparent 40%)' }} />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(to top, rgba(7,11,20,0.6) 0%, transparent 40%)',
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -923,8 +1153,8 @@ const LandingPage: React.FC = () => {
                 <Star size={12} /> Depoimentos
               </div>
               <h2 className="font-black mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
-                Professores que <span className="lp-grad-text">recuperaram</span><br />
-                o tempo deles
+                Professores que <span className="lp-grad-text">recuperaram</span>
+                <br />o tempo deles
               </h2>
             </div>
 
@@ -987,7 +1217,8 @@ const LandingPage: React.FC = () => {
                 <Sparkles size={12} /> Planos
               </div>
               <h2 className="font-black mb-4" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
-                Comece grátis.<br />
+                Comece grátis.
+                <br />
                 <span className="lp-grad-text">Evolua conforme sua demanda.</span>
               </h2>
               <p className="text-slate-400 max-w-lg mx-auto">
@@ -996,14 +1227,22 @@ const LandingPage: React.FC = () => {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
-
               {/* FREE */}
               <div className="lp-glass lp-plan-free rounded-2xl p-6 flex flex-col gap-5">
                 <div>
-                  <div className="w-12 h-12 rounded-xl overflow-hidden mb-4" style={{ background: 'rgba(59,130,246,0.1)' }}>
-                    <img src="/logo-blue.png" alt="PROFEPLAN FREE" className="w-full h-full object-contain p-2" />
+                  <div
+                    className="w-12 h-12 rounded-xl overflow-hidden mb-4"
+                    style={{ background: 'rgba(59,130,246,0.1)' }}
+                  >
+                    <img
+                      src="/logo-blue.png"
+                      alt="PROFEPLAN FREE"
+                      className="w-full h-full object-contain p-2"
+                    />
                   </div>
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-1">Gratuito</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-1">
+                    Gratuito
+                  </div>
                   <div className="text-3xl font-black text-white mb-1">R$ 0</div>
                   <div className="text-xs text-slate-500">Para sempre — sem cartão</div>
                 </div>
@@ -1021,7 +1260,10 @@ const LandingPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                <Link to="/signup" className="lp-btn-ghost block text-center py-3 rounded-xl text-sm font-bold text-slate-300">
+                <Link
+                  to="/signup"
+                  className="lp-btn-ghost block text-center py-3 rounded-xl text-sm font-bold text-slate-300"
+                >
                   Começar Grátis
                 </Link>
               </div>
@@ -1030,10 +1272,21 @@ const LandingPage: React.FC = () => {
               <div className="lp-glass lp-plan-silver rounded-2xl p-6 flex flex-col gap-5">
                 <div>
                   <div className="w-12 h-12 rounded-xl overflow-hidden mb-4">
-                    <img src="/PROFEPLAN SILVER.jpg" alt="PROFEPLAN SILVER" className="w-full h-full object-cover" />
+                    <img
+                      src="/PROFEPLAN SILVER.jpg"
+                      alt="PROFEPLAN SILVER"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: '#94a3b8' }}>Silver — Pré-pago</div>
-                  <div className="text-3xl font-black text-white mb-1">R$ 30<span className="text-base font-medium text-slate-400">,00</span></div>
+                  <div
+                    className="text-xs font-black uppercase tracking-widest mb-1"
+                    style={{ color: '#94a3b8' }}
+                  >
+                    Silver — Pré-pago
+                  </div>
+                  <div className="text-3xl font-black text-white mb-1">
+                    R$ 30<span className="text-base font-medium text-slate-400">,00</span>
+                  </div>
                   <div className="text-xs text-slate-500">Pacote único · 50 créditos</div>
                 </div>
                 <div className="space-y-2.5 flex-1">
@@ -1051,22 +1304,44 @@ const LandingPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                <Link to="/signup?plan=silver" className="block text-center py-3 rounded-xl text-sm font-bold text-white transition-all" style={{ background: 'rgba(148,163,184,0.15)', border: '1px solid rgba(148,163,184,0.3)' }}>
+                <Link
+                  to="/signup?plan=silver"
+                  className="block text-center py-3 rounded-xl text-sm font-bold text-white transition-all"
+                  style={{
+                    background: 'rgba(148,163,184,0.15)',
+                    border: '1px solid rgba(148,163,184,0.3)',
+                  }}
+                >
                   Comprar Silver
                 </Link>
               </div>
 
               {/* GOLD — FEATURED */}
               <div className="lp-pricing-featured rounded-2xl p-6 flex flex-col gap-5 relative overflow-hidden">
-                <div className="absolute top-4 right-4 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#fbbf24' }}>
+                <div
+                  className="absolute top-4 right-4 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full"
+                  style={{
+                    background: 'rgba(245,158,11,0.15)',
+                    border: '1px solid rgba(245,158,11,0.4)',
+                    color: '#fbbf24',
+                  }}
+                >
                   ⭐ Mais Popular
                 </div>
                 <div>
                   <div className="w-12 h-12 rounded-xl overflow-hidden mb-4 lp-animate-glow">
-                    <img src="/PROFEPLAN GOLD.jpg" alt="PROFEPLAN GOLD" className="w-full h-full object-cover" />
+                    <img
+                      src="/PROFEPLAN GOLD.jpg"
+                      alt="PROFEPLAN GOLD"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="text-xs font-black uppercase tracking-widest mb-1 lp-grad-text-gold">Gold — Assinatura</div>
-                  <div className="text-3xl font-black text-white mb-1">R$ 50<span className="text-base font-medium text-slate-400">/mês</span></div>
+                  <div className="text-xs font-black uppercase tracking-widest mb-1 lp-grad-text-gold">
+                    Gold — Assinatura
+                  </div>
+                  <div className="text-3xl font-black text-white mb-1">
+                    R$ 50<span className="text-base font-medium text-slate-400">/mês</span>
+                  </div>
                   <div className="text-xs text-slate-500">120 créditos mensais renovados</div>
                 </div>
                 <div className="space-y-2.5 flex-1">
@@ -1096,10 +1371,18 @@ const LandingPage: React.FC = () => {
               {/* B2B / B2G */}
               <div className="lp-glass lp-plan-b2b rounded-2xl p-6 flex flex-col gap-5">
                 <div>
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.3)' }}>
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                    style={{
+                      background: 'rgba(139,92,246,0.15)',
+                      border: '1px solid rgba(139,92,246,0.3)',
+                    }}
+                  >
                     <Building2 size={22} className="text-violet-400" />
                   </div>
-                  <div className="text-xs font-black uppercase tracking-widest mb-1 text-violet-400">Escola / Governo</div>
+                  <div className="text-xs font-black uppercase tracking-widest mb-1 text-violet-400">
+                    Escola / Governo
+                  </div>
                   <div className="text-3xl font-black text-white mb-1">Sob consulta</div>
                   <div className="text-xs text-slate-500">B2B · B2G · ODS/ONU</div>
                 </div>
@@ -1121,18 +1404,22 @@ const LandingPage: React.FC = () => {
                 <a
                   href="#contato"
                   className="block text-center py-3 rounded-xl text-sm font-bold transition-all"
-                  style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.3)', color: '#a78bfa' }}
+                  style={{
+                    background: 'rgba(139,92,246,0.12)',
+                    border: '1px solid rgba(139,92,246,0.3)',
+                    color: '#a78bfa',
+                  }}
                 >
                   Falar com Comercial
                 </a>
               </div>
-
             </div>
 
             {/* Guarantee note */}
             <p className="text-center text-xs text-slate-600 mt-8 flex items-center justify-center gap-2">
               <Shield size={12} className="text-slate-500" />
-              Pagamentos seguros · Silver é compra única sem prazo de validade · Gold cancelável a qualquer momento
+              Pagamentos seguros · Silver é compra única sem prazo de validade · Gold cancelável a
+              qualquer momento
             </p>
           </div>
         </section>
@@ -1171,12 +1458,17 @@ const LandingPage: React.FC = () => {
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 lp-badge">
               <Sparkles size={12} /> Comece Hoje
             </div>
-            <h2 className="font-black mb-6 leading-tight" style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)' }}>
-              Pronto para transformar<br />
+            <h2
+              className="font-black mb-6 leading-tight"
+              style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)' }}
+            >
+              Pronto para transformar
+              <br />
               sua <span className="lp-shimmer-text">prática pedagógica</span>?
             </h2>
             <p className="text-slate-400 mb-10 text-lg max-w-xl mx-auto">
-              Junte-se a professores que estão recuperando horas da vida — e entregando planejamentos melhores.
+              Junte-se a professores que estão recuperando horas da vida — e entregando
+              planejamentos melhores.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -1202,80 +1494,115 @@ const LandingPage: React.FC = () => {
         {/* ══════════════════════════════════════════
             FOOTER
         ══════════════════════════════════════════ */}
-        <footer id="contato" style={{ background: '#040710', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <footer
+          id="contato"
+          style={{ background: '#040710', borderTop: '1px solid rgba(255,255,255,0.05)' }}
+        >
           <div className="max-w-7xl mx-auto px-4 py-16">
             <div className="grid md:grid-cols-4 gap-10 mb-12">
               {/* Brand */}
               <div className="md:col-span-1">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 rounded-xl overflow-hidden">
-                    <img src="/logo-blue.png" alt="PROFEPLAN" className="w-full h-full object-contain" />
+                    <img
+                      src="/logo-blue.png"
+                      alt="PROFEPLAN"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <div>
                     <div className="text-sm font-black text-white">PROFEPLAN</div>
-                    <div className="text-[9px] font-medium text-blue-400 tracking-widest uppercase">by WR Tech AI</div>
+                    <div className="text-[9px] font-medium text-blue-400 tracking-widest uppercase">
+                      by WR Tech AI
+                    </div>
                   </div>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                  A plataforma de Engenharia Pedagógica com IA para professores e gestores da educação básica brasileira.
+                  A plataforma de Engenharia Pedagógica com IA para professores e gestores da
+                  educação básica brasileira.
                 </p>
                 <div className="flex items-center gap-2">
                   <img
                     src="/LOGO WR.jpeg"
                     alt="WR Tech AI"
                     className="h-6 opacity-50 hover:opacity-80 transition-opacity rounded"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
                   />
                 </div>
               </div>
 
               {/* Links */}
               <div>
-                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Produto</h4>
+                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">
+                  Produto
+                </h4>
                 <ul className="space-y-2.5">
                   {[
                     { label: 'Funcionalidades', href: '#funcionalidades' },
                     { label: 'Planos & Preços', href: '#planos' },
                     { label: 'Depoimentos', href: '#depoimentos' },
                     { label: 'FAQ', href: '#faq' },
-                  ].map(l => (
+                  ].map((l) => (
                     <li key={l.href}>
-                      <a href={l.href} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">{l.label}</a>
+                      <a
+                        href={l.href}
+                        className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        {l.label}
+                      </a>
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div>
-                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Acesso</h4>
+                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">
+                  Acesso
+                </h4>
                 <ul className="space-y-2.5">
                   {[
                     { label: 'Entrar', href: '/login' },
                     { label: 'Criar Conta', href: '/signup' },
                     { label: 'Plano Silver', href: '/signup?plan=silver' },
                     { label: 'Plano Gold', href: '/signup?plan=gold' },
-                  ].map(l => (
+                  ].map((l) => (
                     <li key={l.href}>
-                      <Link to={l.href} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">{l.label}</Link>
+                      <Link
+                        to={l.href}
+                        className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        {l.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div>
-                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">Legal & Contato</h4>
+                <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-4">
+                  Legal & Contato
+                </h4>
                 <ul className="space-y-2.5">
                   {[
                     { label: 'Política de Privacidade', href: '/privacy' },
                     { label: 'Termos de Uso', href: '/terms' },
-                  ].map(l => (
+                  ].map((l) => (
                     <li key={l.href}>
-                      <Link to={l.href} className="text-sm text-slate-500 hover:text-slate-300 transition-colors">{l.label}</Link>
+                      <Link
+                        to={l.href}
+                        className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        {l.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
                 <div className="mt-6">
-                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Comercial B2B/B2G</h4>
+                  <h4 className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
+                    Comercial B2B/B2G
+                  </h4>
                   <a
                     href="mailto:contato@wrtech-ai.com"
                     className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
@@ -1306,7 +1633,6 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </footer>
-
       </div>
     </>
   );

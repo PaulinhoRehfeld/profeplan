@@ -1,9 +1,13 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useProfeplanAuth } from '../../hooks/useProfeplanAuth';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
 import { generateGeminiContent } from '../../services/ai/AiPlanningService';
-import { searchCurriculum, getDeterministicCurriculum, searchPnldBookContent, searchHierarchicalRag } from '../../services/searchService';
+import {
+  searchCurriculum,
+  getDeterministicCurriculum,
+  searchPnldBookContent,
+  searchHierarchicalRag,
+} from '../../services/searchService';
 import { searchQuestions } from '../../services/questionService';
 import { Message, MessageRole, ToolMode } from '../../types';
 import { PlanFolder, savePlan, GeneratedPlan } from './PlanningService';
@@ -28,340 +32,373 @@ import { withRetry } from '../../services/retryService';
 
 // Updated Props Interface to match App.tsx
 interface PlanningManagerProps {
-    onBack?: () => void; // Optional in App.tsx usage? No, passed as no-op or specific? Actually App.tsx doesn't pass onBack in the else block.
-    // App.tsx passes: userId, activeMode, availableClasses, settings, selectedClassId, quarter, enemArea, setSidebarContent
-    userId: string;
-    activeMode: ToolMode;
-    settings: any;
-    availableClasses?: any[];
-    selectedClassId?: string;
-    quarter?: string;
-    enemArea?: string;
-    setSidebarContent?: (content: React.ReactNode) => void;
-    setActiveMode?: (mode: ToolMode) => void;
+  onBack?: () => void; // Optional in App.tsx usage? No, passed as no-op or specific? Actually App.tsx doesn't pass onBack in the else block.
+  // App.tsx passes: userId, activeMode, availableClasses, settings, selectedClassId, quarter, enemArea, setSidebarContent
+  userId: string;
+  activeMode: ToolMode;
+  settings: any;
+  availableClasses?: any[];
+  selectedClassId?: string;
+  quarter?: string;
+  enemArea?: string;
+  setSidebarContent?: (content: React.ReactNode) => void;
+  setActiveMode?: (mode: ToolMode) => void;
 }
 
 interface Lesson {
-    number: number;
-    title: string;
-    description: string;
-    objectives: string[];
-    bncc: string[];
-    content?: string;
+  number: number;
+  title: string;
+  description: string;
+  objectives: string[];
+  bncc: string[];
+  content?: string;
 }
 
 const PlanningManager: React.FC<PlanningManagerProps> = ({
-    activeMode,
-    userId,
-    settings: appSettings,
-    setSidebarContent,
-    availableClasses,
-    selectedClassId,
-    setActiveMode,
+  activeMode,
+  userId,
+  settings: appSettings,
+  setSidebarContent,
+  availableClasses,
+  selectedClassId,
+  setActiveMode,
 }) => {
-    // --- Global State ---
-    const { userProfile } = useProfeplanAuth();
-    const { termPlans, refreshTermPlans } = useGlobalPlanning();
-    const [localSettings, setLocalSettings] = useState<any>(appSettings || {});
+  // --- Global State ---
+  const { userProfile } = useProfeplanAuth();
+  const { termPlans, refreshTermPlans } = useGlobalPlanning();
+  const [localSettings, setLocalSettings] = useState<any>(appSettings || {});
 
-    // --- Local State ---
-    const [selectedTermPlanId, setSelectedTermPlanId] = useState<string>('');
-    const [parsedLessons, setParsedLessons] = useState<Lesson[]>([]);
-    const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-    const [lessonTracking, setLessonTracking] = useState<Record<number, string>>({});
+  // --- Local State ---
+  const [selectedTermPlanId, setSelectedTermPlanId] = useState<string>('');
+  const [parsedLessons, setParsedLessons] = useState<Lesson[]>([]);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [lessonTracking, setLessonTracking] = useState<Record<number, string>>({});
 
-    // Feedback Logic
-    const [feedbackContext, setFeedbackContext] = useState<string | null>(null);
+  // Feedback Logic
+  const [feedbackContext, setFeedbackContext] = useState<string | null>(null);
 
-    // --- Chat State ---
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [input, setInput] = useState('');
-    const [isThinking, setIsThinking] = useState(false);
-    const [selectedPnldBookId, setSelectedPnldBookId] = useState<string>('');
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-    const { showToast } = useToast();
-    const [lastDraftSavedAt, setLastDraftSavedAt] = useState<Date | null>(null);
+  // --- Chat State ---
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
+  const [selectedPnldBookId, setSelectedPnldBookId] = useState<string>('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
+  const [lastDraftSavedAt, setLastDraftSavedAt] = useState<Date | null>(null);
 
-    // --- Derived Props ---
-    const isSimulationMode = activeMode === ToolMode.SIMULATION || activeMode === ToolMode.ENEM_BANK;
+  // --- Derived Props ---
+  const isSimulationMode = activeMode === ToolMode.SIMULATION || activeMode === ToolMode.ENEM_BANK;
 
-    // Logic for Cockpit: Planning or Default Chat?
-    // If we are in specific planning modes, show cockpit.
-    const isPlanningCockpit = activeMode === ToolMode.PLANNING || activeMode === ToolMode.QUARTERLY_PLANNING;
+  // Logic for Cockpit: Planning or Default Chat?
+  // If we are in specific planning modes, show cockpit.
+  const isPlanningCockpit =
+    activeMode === ToolMode.PLANNING || activeMode === ToolMode.QUARTERLY_PLANNING;
 
-    // --- Effects ---
-    useEffect(() => {
-        if (userId) {
-            refreshTermPlans(userId);
+  // --- Effects ---
+  useEffect(() => {
+    if (userId) {
+      refreshTermPlans(userId);
+    } else {
+      refreshTermPlans();
+    }
+
+    if (appSettings) setLocalSettings(appSettings);
+  }, [appSettings, userId, refreshTermPlans]);
+
+  useEffect(() => {
+    if (selectedTermPlanId) {
+      const plan = termPlans.find((p) => p.id === selectedTermPlanId);
+      if (plan) {
+        // STRATEGY: Hybrid Cache + Source of Truth
+        // 1. Try Structured Cache (Fastest) from DB
+        if (plan.lessons && plan.lessons.length > 0) {
+          console.log('[PlanningManager] Using cached lessons from DB');
+          setParsedLessons(plan.lessons);
+          loadLessonTracking(plan.id, plan.lessons);
+        }
+        // 2. Fallback / Source of Truth: Parse the Text
+        else if (plan.generatedText) {
+          console.log('[PlanningManager] Hydrating from Markdown Source');
+          const lessons = parseMarkdownToLessons(plan.generatedText);
+          setParsedLessons(lessons);
+          loadLessonTracking(plan.id, lessons);
         } else {
-            refreshTermPlans();
+          setParsedLessons([]);
         }
+      }
+    } else {
+      setParsedLessons([]);
+      setLessonTracking({});
+    }
+  }, [selectedTermPlanId, termPlans]);
 
-        if (appSettings) setLocalSettings(appSettings);
-    }, [appSettings, userId, refreshTermPlans]);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
-    useEffect(() => {
-        if (selectedTermPlanId) {
-            const plan = termPlans.find(p => p.id === selectedTermPlanId);
-            if (plan) {
-                // STRATEGY: Hybrid Cache + Source of Truth
-                // 1. Try Structured Cache (Fastest) from DB
-                if (plan.lessons && plan.lessons.length > 0) {
-                    console.log("[PlanningManager] Using cached lessons from DB");
-                    setParsedLessons(plan.lessons);
-                    loadLessonTracking(plan.id, plan.lessons);
-                }
-                // 2. Fallback / Source of Truth: Parse the Text
-                else if (plan.generatedText) {
-                    console.log("[PlanningManager] Hydrating from Markdown Source");
-                    const lessons = parseMarkdownToLessons(plan.generatedText);
-                    setParsedLessons(lessons);
-                    loadLessonTracking(plan.id, lessons);
-                } else {
-                    setParsedLessons([]);
-                }
-            }
-        } else {
-            setParsedLessons([]);
-            setLessonTracking({});
-        }
-    }, [selectedTermPlanId, termPlans]);
+  // --- Logic: Parse Term Plan Text into Lessons ---
+  // Old parseTermPlan removed in favor of utils/markdownParser
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+  const loadLessonTracking = async (planId: string, currentLessons?: Lesson[]) => {
+    if (!userId) return;
+    const lessonsToCheck = currentLessons || parsedLessons;
 
-    // --- Logic: Parse Term Plan Text into Lessons ---
-    // Old parseTermPlan removed in favor of utils/markdownParser
+    try {
+      const contents = await getGeneratedContents(userId);
+      const tracking: Record<number, string> = {};
 
-    const loadLessonTracking = async (planId: string, currentLessons?: Lesson[]) => {
-        if (!userId) return;
-        const lessonsToCheck = currentLessons || parsedLessons;
+      if (lessonsToCheck && lessonsToCheck.length > 0) {
+        lessonsToCheck.forEach((lesson) => {
+          // Check for Planos de Aula (type 'plano') matching the lesson number
+          const hasPlan = contents.some(
+            (c: any) =>
+              c.type === 'plano' &&
+              (c.title.startsWith(`${lesson.number} -`) ||
+                c.title.includes(`Aula ${lesson.number}`))
+          );
 
-        try {
-            const contents = await getGeneratedContents(userId);
-            const tracking: Record<number, string> = {};
+          if (hasPlan) {
+            tracking[lesson.number] = 'prepared';
+          }
+        });
+      }
 
-            if (lessonsToCheck && lessonsToCheck.length > 0) {
-                lessonsToCheck.forEach(lesson => {
-                    // Check for Planos de Aula (type 'plano') matching the lesson number
-                    const hasPlan = contents.some((c: any) =>
-                        c.type === 'plano' &&
-                        (c.title.startsWith(`${lesson.number} -`) || c.title.includes(`Aula ${lesson.number}`))
-                    );
+      setLessonTracking(tracking);
+    } catch (error) {
+      console.error('Error loading lesson tracking:', error);
+    }
+  };
 
-                    if (hasPlan) {
-                        tracking[lesson.number] = 'prepared';
-                    }
-                });
-            }
+  // --- Handlers ---
+  const handleSendMessage = async (e: React.FormEvent, overrideInput?: string) => {
+    e.preventDefault();
+    // Resolve input priority: Direct Argument > State
+    let activeInput = overrideInput || input;
 
-            setLessonTracking(tracking);
-        } catch (error) {
-            console.error("Error loading lesson tracking:", error);
-        }
-    };
+    if (!activeInput.trim()) return;
 
-    // --- Handlers ---
-    const handleSendMessage = async (e: React.FormEvent, overrideInput?: string) => {
-        e.preventDefault();
-        // Resolve input priority: Direct Argument > State
-        let activeInput = overrideInput || input;
+    // --- FEEDBACK LOOP INTERCEPTION ---
+    // Se existe um contexto de feedback pendente, tratamos como solicitação de ajuste
+    if (feedbackContext) {
+      try {
+        // 1. Save Feedback
+        await feedbackService.saveFeedback({
+          userId,
+          feature: 'lesson_planning',
+          feedbackText: activeInput,
+          originalContentSummary: feedbackContext.substring(0, 100) + '...',
+        });
 
-        if (!activeInput.trim()) return;
-
-        // --- FEEDBACK LOOP INTERCEPTION ---
-        // Se existe um contexto de feedback pendente, tratamos como solicitação de ajuste
-        if (feedbackContext) {
-            try {
-                // 1. Save Feedback
-                await feedbackService.saveFeedback({
-                    userId,
-                    feature: 'lesson_planning',
-                    feedbackText: activeInput,
-                    originalContentSummary: feedbackContext.substring(0, 100) + '...'
-                });
-
-                // 2. Modify Prompt for Regeneration
-                const originalInstruction = activeInput;
-                activeInput = `[ATENÇÃO: FEEDBACK DO PROFESSOR (PRIORIDADE CRÍTICA)]
+        // 2. Modify Prompt for Regeneration
+        const originalInstruction = activeInput;
+        activeInput = `[ATENÇÃO: FEEDBACK DO PROFESSOR (PRIORIDADE CRÍTICA)]
 O professor solicitou o seguinte ajuste no plano anterior:
 "${originalInstruction}"
 
 INSTRUÇÃO DE REGENERAÇÃO:
 Ignore qualquer regra anterior que conflite com este pedido. O feedback do professor é soberano. Recrie o plano incorporando esta mudança imediatamente.`;
 
-                // Reset context loop (so next msg is normal unless we re-trigger)
-                setFeedbackContext(null);
-            } catch (e) {
-                console.error("Feedback error", e);
-            }
-        }
+        // Reset context loop (so next msg is normal unless we re-trigger)
+        setFeedbackContext(null);
+      } catch (e) {
+        console.error('Feedback error', e);
+      }
+    }
 
-        const userMsg: Message = { id: Date.now().toString(), role: MessageRole.USER, content: activeInput, timestamp: new Date() };
-        setMessages(prev => [...prev, userMsg]);
-        setInput('');
-        setIsThinking(true);
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      role: MessageRole.USER,
+      content: activeInput,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput('');
+    setIsThinking(true);
+
+    try {
+      // GOVERNANCE: PEDAGOGICAL SPECIALIST MODE
+      if (activeMode === ToolMode.SPECIALIST) {
+        const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
+        const response = await PlanningAuthority.askSpecialist(activeInput, { history: [] });
+        const aiMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: MessageRole.ASSISTANT,
+          content: response,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, aiMsg]);
+        setIsThinking(false);
+        return;
+      }
+
+      // --- AUTO-ROUTING TO PLANNING AUTHORITY (APENAS PLANEJAMENTO TRIMESTRAL) ---
+      const lowerInputText = activeInput.toLowerCase();
+      const isQuarterlyMode = activeMode === ToolMode.QUARTERLY_PLANNING;
+      const mentionsQuarter =
+        lowerInputText.includes('trimestre') || lowerInputText.includes('trimestral');
+      const isQuarterlyPlanningTask = isQuarterlyMode && mentionsQuarter;
+
+      if (isQuarterlyPlanningTask) {
+        console.log(
+          '👮 RLM ROUTING: Redirecting quarterly planning request to PlanningAuthority...'
+        );
+        const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
+
+        // Construct intent from current state
+        const selectedPlanForIntent = termPlans.find((p) => p.id === selectedTermPlanId);
+        const currentIntent: any = {
+          subject: selectedPlanForIntent?.subject || localSettings.subject || 'História',
+          grade: selectedPlanForIntent?.grade || localSettings.grade || '6º Ano',
+          level: localSettings.level || 'Ensino Fundamental',
+          period:
+            selectedPlanForIntent?.period ||
+            (localSettings.quarter ? parseInt(localSettings.quarter) : 1),
+          regime: 'Trimestre',
+          teacherName: localSettings.userName || 'Professor(a)',
+          totalClasses: (localSettings.workloadWeekly || 2) * 12,
+          reserves: localSettings.reserves || { monthlyExam: true, termExam: true, recovery: true },
+          userId: userId,
+          feedback: activeInput, // Prompt becomes the feedback/instruction
+          gradingGrid: localSettings.grading || {},
+          userSettings: appSettings,
+        };
 
         try {
-            // GOVERNANCE: PEDAGOGICAL SPECIALIST MODE
-            if (activeMode === ToolMode.SPECIALIST) {
-                const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
-                const response = await PlanningAuthority.askSpecialist(activeInput, { history: [] });
-                const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
-                setMessages(prev => [...prev, aiMsg]);
-                setIsThinking(false);
-                return;
-            }
+          const response = await PlanningAuthority.executePlanning(currentIntent);
+          const aiMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            role: MessageRole.ASSISTANT,
+            content: response,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, aiMsg]);
+          setIsThinking(false);
+          return;
+        } catch (rlmError: any) {
+          console.warn('RLM Block/Error:', rlmError.message);
+        }
+      }
 
-            // --- AUTO-ROUTING TO PLANNING AUTHORITY (APENAS PLANEJAMENTO TRIMESTRAL) ---
-            const lowerInputText = activeInput.toLowerCase();
-            const isQuarterlyMode = activeMode === ToolMode.QUARTERLY_PLANNING;
-            const mentionsQuarter = lowerInputText.includes('trimestre') || lowerInputText.includes('trimestral');
-            const isQuarterlyPlanningTask = isQuarterlyMode && mentionsQuarter;
+      // Context Builder
+      const selectedPlan = termPlans.find((p) => p.id === selectedTermPlanId);
+      let context = `Você é um assistente pedagógico especialista.`;
 
-            if (isQuarterlyPlanningTask) {
-                console.log("👮 RLM ROUTING: Redirecting quarterly planning request to PlanningAuthority...");
-                const { PlanningAuthority } = await import('../../services/PlanningAuthorityService');
+      // --- Contexto de Memória do Professor (Learning) ---
+      try {
+        const memories = await getRelevantMemories(userId, activeInput);
+        if (memories.length > 0) {
+          const memoryText = memories.map((m) => `- ${m.content}`).join('\n');
+          context += `\n\n[MEMÓRIA DE PREFERÊNCIAS DO USUÁRIO]:\n${memoryText}\n(Respeite essas preferências em TODAS as respostas.)`;
+        }
+      } catch (err) {
+        console.warn('Failed to fetch memories', err);
+      }
 
-                // Construct intent from current state
-                const selectedPlanForIntent = termPlans.find(p => p.id === selectedTermPlanId);
-                const currentIntent: any = {
-                    subject: selectedPlanForIntent?.subject || localSettings.subject || 'História',
-                    grade: selectedPlanForIntent?.grade || localSettings.grade || '6º Ano',
-                    level: localSettings.level || 'Ensino Fundamental',
-                    period: selectedPlanForIntent?.period || (localSettings.quarter ? parseInt(localSettings.quarter) : 1),
-                    regime: 'Trimestre',
-                    teacherName: localSettings.userName || 'Professor(a)',
-                    totalClasses: (localSettings.workloadWeekly || 2) * 12,
-                    reserves: localSettings.reserves || { monthlyExam: true, termExam: true, recovery: true },
-                    userId: userId,
-                    feedback: activeInput, // Prompt becomes the feedback/instruction
-                    gradingGrid: localSettings.grading || {},
-                    userSettings: appSettings
-                };
+      // --- PREFERÊNCIAS PEDAGÓGICAS DO PROFESSOR (UserSettings) ---
+      if (appSettings) {
+        const { favoriteMethodology, toneOfVoice, detailLevel, teachingStyle, assessmentFocus } =
+          appSettings as any;
 
-                try {
-                    const response = await PlanningAuthority.executePlanning(currentIntent);
-                    const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
-                    setMessages(prev => [...prev, aiMsg]);
-                    setIsThinking(false);
-                    return;
-                } catch (rlmError: any) {
-                    console.warn("RLM Block/Error:", rlmError.message);
-                }
-            }
+        const pedagogicalPrefs: string[] = [];
+        if (favoriteMethodology) {
+          pedagogicalPrefs.push(
+            `- Metodologia favorita do professor: ${favoriteMethodology}. Dê preferência a propostas alinhadas a isso.`
+          );
+        }
+        if (teachingStyle) {
+          pedagogicalPrefs.push(
+            `- Estilo de ensino: ${teachingStyle}. Adapte o tipo de linguagem e exemplos a esse estilo.`
+          );
+        }
+        if (assessmentFocus) {
+          pedagogicalPrefs.push(
+            `- Foco avaliativo: ${assessmentFocus}. Ao sugerir avaliações, priorize esse foco.`
+          );
+        }
+        if (toneOfVoice) {
+          pedagogicalPrefs.push(
+            `- Tom de voz desejado: ${toneOfVoice}. Use este tom ao falar com o professor.`
+          );
+        }
+        if (detailLevel) {
+          pedagogicalPrefs.push(
+            `- Nível de detalhe preferido: ${detailLevel}. Ajuste o volume de informação de acordo.`
+          );
+        }
 
-            // Context Builder
-            const selectedPlan = termPlans.find(p => p.id === selectedTermPlanId);
-            let context = `Você é um assistente pedagógico especialista.`;
+        if (pedagogicalPrefs.length > 0) {
+          context += `\n\n[PERFIL PEDAGÓGICO DO PROFESSOR - USE COMO REGRA DE ESTILO]\n${pedagogicalPrefs.join('\n')}`;
+        }
+      }
 
-            // --- Contexto de Memória do Professor (Learning) ---
-            try {
-                const memories = await getRelevantMemories(userId, activeInput);
-                if (memories.length > 0) {
-                    const memoryText = memories.map(m => `- ${m.content}`).join('\n');
-                    context += `\n\n[MEMÓRIA DE PREFERÊNCIAS DO USUÁRIO]:\n${memoryText}\n(Respeite essas preferências em TODAS as respostas.)`;
-                }
-            } catch (err) {
-                console.warn("Failed to fetch memories", err);
-            }
+      // --- DETERMINISTIC vs RAG ---
+      // Se for Planejamento Trimestral, usamos a busca EXATA (Anti-Alucinação)
+      const isQuarterlyPlanning =
+        activeMode === ToolMode.QUARTERLY_PLANNING ||
+        (activeMode === ToolMode.PLANNING && activeInput.toLowerCase().includes('trimestral'));
 
-            // --- PREFERÊNCIAS PEDAGÓGICAS DO PROFESSOR (UserSettings) ---
-            if (appSettings) {
-                const {
-                    favoriteMethodology,
-                    toneOfVoice,
-                    detailLevel,
-                    teachingStyle,
-                    assessmentFocus,
-                } = appSettings as any;
+      // Tenta resolver Disciplina e Ano a partir do Plano Selecionado OU da Seleção Atual (Navigation)
+      let targetSubject = selectedPlan?.subject;
+      let targetGrade = selectedPlan?.grade;
 
-                const pedagogicalPrefs: string[] = [];
-                if (favoriteMethodology) {
-                    pedagogicalPrefs.push(`- Metodologia favorita do professor: ${favoriteMethodology}. Dê preferência a propostas alinhadas a isso.`);
-                }
-                if (teachingStyle) {
-                    pedagogicalPrefs.push(`- Estilo de ensino: ${teachingStyle}. Adapte o tipo de linguagem e exemplos a esse estilo.`);
-                }
-                if (assessmentFocus) {
-                    pedagogicalPrefs.push(`- Foco avaliativo: ${assessmentFocus}. Ao sugerir avaliações, priorize esse foco.`);
-                }
-                if (toneOfVoice) {
-                    pedagogicalPrefs.push(`- Tom de voz desejado: ${toneOfVoice}. Use este tom ao falar com o professor.`);
-                }
-                if (detailLevel) {
-                    pedagogicalPrefs.push(`- Nível de detalhe preferido: ${detailLevel}. Ajuste o volume de informação de acordo.`);
-                }
+      // Se não estivermos editando um plano (selectedPlan é null), pegamos da navegação atual
+      if (!targetSubject && availableClasses && selectedClassId) {
+        const currentClass = availableClasses.find((c) => c.id === selectedClassId);
+        if (currentClass) {
+          if (currentClass.subject) targetSubject = currentClass.subject;
+          if (currentClass.grade) targetGrade = currentClass.grade;
+        }
+      }
 
-                if (pedagogicalPrefs.length > 0) {
-                    context += `\n\n[PERFIL PEDAGÓGICO DO PROFESSOR - USE COMO REGRA DE ESTILO]\n${pedagogicalPrefs.join('\n')}`;
-                }
-            }
+      // Fallbacks (evitar default "História" que causava troca de disciplina)
+      targetSubject = targetSubject || selectedPlan?.subject || 'História';
 
-            // --- DETERMINISTIC vs RAG ---
-            // Se for Planejamento Trimestral, usamos a busca EXATA (Anti-Alucinação)
-            const isQuarterlyPlanning = activeMode === ToolMode.QUARTERLY_PLANNING || (activeMode === ToolMode.PLANNING && activeInput.toLowerCase().includes('trimestral'));
+      // Normalização da Série para bater com o Banco de Dados ("2º Ano EM" vs "2º Ano - Ensino Médio")
+      if (targetGrade) {
+        const yearMatch = targetGrade.match(/\d+/);
+        const yearNum = yearMatch ? yearMatch[0] : '';
 
-            // Tenta resolver Disciplina e Ano a partir do Plano Selecionado OU da Seleção Atual (Navigation)
-            let targetSubject = selectedPlan?.subject;
-            let targetGrade = selectedPlan?.grade;
+        if (
+          targetGrade.toLowerCase().includes('médio') ||
+          targetGrade.toLowerCase().includes('em')
+        ) {
+          targetGrade = `${yearNum}º Ano EM`;
+        } else if (yearNum) {
+          targetGrade = `${yearNum}º Ano`;
+        }
+      } else {
+        targetGrade = '6º Ano';
+      }
 
-            // Se não estivermos editando um plano (selectedPlan é null), pegamos da navegação atual
-            if (!targetSubject && availableClasses && selectedClassId) {
-                const currentClass = availableClasses.find(c => c.id === selectedClassId);
-                if (currentClass) {
-                    if (currentClass.subject) targetSubject = currentClass.subject;
-                    if (currentClass.grade) targetGrade = currentClass.grade;
-                }
-            }
+      let curriculumContext = '';
+      let isPedagogicalDeviation = false;
 
-            // Fallbacks (evitar default "História" que causava troca de disciplina)
-            targetSubject = targetSubject || selectedPlan?.subject || 'História';
+      if (isQuarterlyPlanning && targetSubject && targetGrade) {
+        const targetPeriod = appSettings?.quarter || '1º Trimestre';
+        const fullText = await getDeterministicCurriculum(targetSubject, targetPeriod, targetGrade);
 
-            // Normalização da Série para bater com o Banco de Dados ("2º Ano EM" vs "2º Ano - Ensino Médio")
-            if (targetGrade) {
-                const yearMatch = targetGrade.match(/\d+/);
-                const yearNum = yearMatch ? yearMatch[0] : '';
+        // Busca se existe plano de curso do professor para mesclar
+        let teacherPlanText = '';
+        try {
+          const { data: teacherDocs } = await supabase
+            .from('teacher_documents')
+            .select('content_md')
+            .eq('user_id', userId)
+            .eq('category', 'course_plan')
+            .eq('status', 'approved')
+            .eq('metadata->>subject', targetSubject)
+            .eq('metadata->>year', targetGrade)
+            .limit(1);
 
-                if (targetGrade.toLowerCase().includes('médio') || targetGrade.toLowerCase().includes('em')) {
-                    targetGrade = `${yearNum}º Ano EM`;
-                } else if (yearNum) {
-                    targetGrade = `${yearNum}º Ano`;
-                }
-            } else {
-                targetGrade = '6º Ano';
-            }
+          if (teacherDocs && teacherDocs.length > 0) {
+            teacherPlanText = `\n\n[PLANO DE CURSO OFICIAL DO PROFESSOR (NÍVEL 1)]:\n${teacherDocs[0].content_md}`;
+          }
+        } catch (e) {
+          console.error('Erro ao carregar plano de curso do professor no Planejamento:', e);
+        }
 
-            let curriculumContext = '';
-            let isPedagogicalDeviation = false;
-
-            if (isQuarterlyPlanning && targetSubject && targetGrade) {
-                const targetPeriod = appSettings?.quarter || '1º Trimestre';
-                const fullText = await getDeterministicCurriculum(targetSubject, targetPeriod, targetGrade);
-
-                // Busca se existe plano de curso do professor para mesclar
-                let teacherPlanText = '';
-                try {
-                    const { data: teacherDocs } = await supabase
-                        .from('teacher_documents')
-                        .select('content_md')
-                        .eq('user_id', userId)
-                        .eq('category', 'course_plan')
-                        .eq('status', 'approved')
-                        .eq('metadata->>subject', targetSubject)
-                        .eq('metadata->>year', targetGrade)
-                        .limit(1);
-
-                    if (teacherDocs && teacherDocs.length > 0) {
-                        teacherPlanText = `\n\n[PLANO DE CURSO OFICIAL DO PROFESSOR (NÍVEL 1)]:\n${teacherDocs[0].content_md}`;
-                    }
-                } catch (e) {
-                    console.error("Erro ao carregar plano de curso do professor no Planejamento:", e);
-                }
-
-                if (fullText || teacherPlanText) {
-                    curriculumContext = `
+        if (fullText || teacherPlanText) {
+          curriculumContext = `
 ---CONTEXTO OFICIAL (FONTE DA VERDADE - NÃO INVENTE NADA)---
 ${fullText}
 ${teacherPlanText}
@@ -371,436 +408,528 @@ REGRAS DE OURO (ANTI-ALUCINAÇÃO):
 2. NÃO CRIE CÓDIGOS BNCC QUE NÃO EXISTEM NO TEXTO.
 3. SE O CONTEXTO ESTIVER VAZIO, AVISE O USUÁRIO.
 `;
-                } else {
-                    curriculumContext = `[AVISO CRÍTICO]: Não foi encontrado o currículo oficial para ${targetSubject} - ${targetGrade} - ${targetPeriod}. Avise o usuário.`;
-                }
+        } else {
+          curriculumContext = `[AVISO CRÍTICO]: Não foi encontrado o currículo oficial para ${targetSubject} - ${targetGrade} - ${targetPeriod}. Avise o usuário.`;
+        }
+      } else {
+        // RAG Padrão usando RAG Hierárquico
+        try {
+          const filters = {
+            disciplina: targetSubject,
+            ano: targetGrade,
+            periodo: appSettings?.quarter || '1º Trimestre',
+          };
+          const retrievalResults = await searchHierarchicalRag(activeInput, userId, filters, 6);
 
-            } else {
-                // RAG Padrão usando RAG Hierárquico
-                try {
-                    const filters = {
-                        disciplina: targetSubject,
-                        ano: targetGrade,
-                        periodo: appSettings?.quarter || '1º Trimestre'
-                    };
-                    const retrievalResults = await searchHierarchicalRag(activeInput, userId, filters, 6);
-                    
-                    if (retrievalResults.length > 0) {
-                        const formattedContext = retrievalResults.map((r: any) =>
-                            `- [Nível ${r.weight === 100 ? '1 - Plano de Curso' : r.weight === 50 ? '2 - Livro' : r.weight === 30 ? '3 - Material' : '4 - Geral'}] [Fonte: ${r.source}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
-                        ).join('\n\n');
-                        curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG HIERÁRQUICO)]:\n${formattedContext}`;
+          if (retrievalResults.length > 0) {
+            const formattedContext = retrievalResults
+              .map(
+                (r: any) =>
+                  `- [Nível ${r.weight === 100 ? '1 - Plano de Curso' : r.weight === 50 ? '2 - Livro' : r.weight === 30 ? '3 - Material' : '4 - Geral'}] [Fonte: ${r.source}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
+              )
+              .join('\n\n');
+            curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG HIERÁRQUICO)]:\n${formattedContext}`;
 
-                        // Validação de Desvio Pedagógico (Fase 3):
-                        // Se houver plano de curso aprovado para este professor, mas nenhuma correspondência com similaridade >= 0.35 nos chunks desse plano
-                        const { data: hasCoursePlan } = await supabase
-                            .from('teacher_documents')
-                            .select('id')
-                            .eq('user_id', userId)
-                            .eq('category', 'course_plan')
-                            .eq('status', 'approved')
-                            .limit(1);
+            // Validação de Desvio Pedagógico (Fase 3):
+            // Se houver plano de curso aprovado para este professor, mas nenhuma correspondência com similaridade >= 0.35 nos chunks desse plano
+            const { data: hasCoursePlan } = await supabase
+              .from('teacher_documents')
+              .select('id')
+              .eq('user_id', userId)
+              .eq('category', 'course_plan')
+              .eq('status', 'approved')
+              .limit(1);
 
-                        if (hasCoursePlan && hasCoursePlan.length > 0) {
-                            const coursePlanMatches = retrievalResults.filter(r => r.category === 'course_plan' && r.similarity >= 0.35);
-                            if (coursePlanMatches.length === 0) {
-                                isPedagogicalDeviation = true;
-                            }
-                        }
-                    }
-                } catch (err) {
-                    console.error("Erro na busca de RAG Hierárquico:", err);
-                    // Fallback
-                    const retrievalResults = await searchCurriculum(activeInput, {
-                        disciplina: targetSubject,
-                        ano: targetGrade
-                    }) as any[];
-
-                    if (retrievalResults.length > 0) {
-                        const formattedContext = retrievalResults.map((r: any) =>
-                            `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
-                        ).join('\n\n');
-                        curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG)]:\n${formattedContext}`;
-                    }
-                }
+            if (hasCoursePlan && hasCoursePlan.length > 0) {
+              const coursePlanMatches = retrievalResults.filter(
+                (r) => r.category === 'course_plan' && r.similarity >= 0.35
+              );
+              if (coursePlanMatches.length === 0) {
+                isPedagogicalDeviation = true;
+              }
             }
+          }
+        } catch (err) {
+          console.error('Erro na busca de RAG Hierárquico:', err);
+          // Fallback
+          const retrievalResults = (await searchCurriculum(activeInput, {
+            disciplina: targetSubject,
+            ano: targetGrade,
+          })) as any[];
 
-            // Injeta System Prompt do Agente Especializado (Fase 1) se houver
-            if (userId && targetSubject) {
-                try {
-                    const { data: customAgent } = await supabase
-                        .from('teacher_agents')
-                        .select('system_prompt')
-                        .eq('user_id', userId)
-                        .eq('subject', targetSubject)
-                        .eq('grade', targetGrade || '')
-                        .maybeSingle();
+          if (retrievalResults.length > 0) {
+            const formattedContext = retrievalResults
+              .map(
+                (r: any) =>
+                  `- [Fonte: ${r.metadata?.source || 'Oficial'}] [Ref: ${r.metadata?.periodo || ''}] (Sim: ${r.similarity.toFixed(2)}): ${r.content}`
+              )
+              .join('\n\n');
+            curriculumContext = `\n\n[CONTEXTO DO CURRÍCULO OFICIAL RECUPERADO (RAG)]:\n${formattedContext}`;
+          }
+        }
+      }
 
-                    if (customAgent) {
-                        context += `\n\n[PROMPT DO AGENTE ESPECIALIZADO DA DISCIPLINA]:\n${customAgent.system_prompt}`;
-                    }
-                } catch (err) {
-                    console.error("Erro ao carregar Agente Customizado:", err);
-                }
-            }
+      // Injeta System Prompt do Agente Especializado (Fase 1) se houver
+      if (userId && targetSubject) {
+        try {
+          const { data: customAgent } = await supabase
+            .from('teacher_agents')
+            .select('system_prompt')
+            .eq('user_id', userId)
+            .eq('subject', targetSubject)
+            .eq('grade', targetGrade || '')
+            .maybeSingle();
 
-            context += curriculumContext;
+          if (customAgent) {
+            context += `\n\n[PROMPT DO AGENTE ESPECIALIZADO DA DISCIPLINA]:\n${customAgent.system_prompt}`;
+          }
+        } catch (err) {
+          console.error('Erro ao carregar Agente Customizado:', err);
+        }
+      }
 
-            if (isPedagogicalDeviation) {
-                context += `\n\n⚠️ REGRA MANDATÓRIA DE DESVIO PEDAGÓGICO: O tema solicitado pelo professor NÃO foi localizado no Plano de Curso Oficial homologado. Você DEVE iniciar sua resposta com exatamente esta mensagem estruturada em destaque Markdown no início do texto (e pular qualquer introdução tagarela):\n⚠️ **[ALERTA DE DESVIO PEDAGÓGICO]**: Este tema não foi localizado no plano de curso oficial homologado. Deseja continuar com este planejamento?\n\nApós esta linha de alerta, gere o conteúdo normalmente de forma profissional.`;
-            }
+      context += curriculumContext;
 
-            if (selectedPlan) {
-                context += `\nContexto do Plano Trimestral: ${selectedPlan.grade} - ${selectedPlan.subject}.`;
-                // Regra crítica: garantir que a disciplina seja respeitada ao gerar plano/material/exercícios
-                const isContentFromPlan = activeInput.includes('[AÇÃO: PLANO DE AULA') || activeInput.includes('PLANO DE AULA')
-                    || activeInput.includes('[AÇÃO: MATERIAL DIDÁTICO') || activeInput.includes('[AÇÃO: LISTA DE EXERCÍCIOS');
-                if (isContentFromPlan && selectedPlan.subject) {
-                    context += `\n\n⚠️ REGRA CRÍTICA - DISCIPLINA: O conteúdo solicitado pertence ao planejamento de ${selectedPlan.subject}. O material DEVE ser gerado EXCLUSIVAMENTE para a disciplina ${selectedPlan.subject}. Para planos de aula, o cabeçalho obrigatório é "PLANEJAMENTO DE ENSINO - ${selectedPlan.subject.toUpperCase()}". NÃO use História, Geografia ou outra disciplina.`;
-                }
-            }
-            if (selectedLesson) {
-                context += `\nFoco Atual: Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição: ${selectedLesson.description}`;
-            }
+      if (isPedagogicalDeviation) {
+        context += `\n\n⚠️ REGRA MANDATÓRIA DE DESVIO PEDAGÓGICO: O tema solicitado pelo professor NÃO foi localizado no Plano de Curso Oficial homologado. Você DEVE iniciar sua resposta com exatamente esta mensagem estruturada em destaque Markdown no início do texto (e pular qualquer introdução tagarela):\n⚠️ **[ALERTA DE DESVIO PEDAGÓGICO]**: Este tema não foi localizado no plano de curso oficial homologado. Deseja continuar com este planejamento?\n\nApós esta linha de alerta, gere o conteúdo normalmente de forma profissional.`;
+      }
 
-            // --- RAG: QUESTÕES DO BANCO DE DADOS (ENEM/SAEB) ---
-            if (activeInput.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') && selectedLesson) {
-                try {
-                    // Determinar Área do Conhecimento com base na disciplina do plano
-                    const subject = termPlans.find(p => p.id === selectedTermPlanId)?.subject || '';
-                    let area = '';
+      if (selectedPlan) {
+        context += `\nContexto do Plano Trimestral: ${selectedPlan.grade} - ${selectedPlan.subject}.`;
+        // Regra crítica: garantir que a disciplina seja respeitada ao gerar plano/material/exercícios
+        const isContentFromPlan =
+          activeInput.includes('[AÇÃO: PLANO DE AULA') ||
+          activeInput.includes('PLANO DE AULA') ||
+          activeInput.includes('[AÇÃO: MATERIAL DIDÁTICO') ||
+          activeInput.includes('[AÇÃO: LISTA DE EXERCÍCIOS');
+        if (isContentFromPlan && selectedPlan.subject) {
+          context += `\n\n⚠️ REGRA CRÍTICA - DISCIPLINA: O conteúdo solicitado pertence ao planejamento de ${selectedPlan.subject}. O material DEVE ser gerado EXCLUSIVAMENTE para a disciplina ${selectedPlan.subject}. Para planos de aula, o cabeçalho obrigatório é "PLANEJAMENTO DE ENSINO - ${selectedPlan.subject.toUpperCase()}". NÃO use História, Geografia ou outra disciplina.`;
+        }
+      }
+      if (selectedLesson) {
+        context += `\nFoco Atual: Aula ${selectedLesson.number}: ${selectedLesson.title}.\nDescrição: ${selectedLesson.description}`;
+      }
 
-                    const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    const s = normalize(subject);
+      // --- RAG: QUESTÕES DO BANCO DE DADOS (ENEM/SAEB) ---
+      if (activeInput.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') && selectedLesson) {
+        try {
+          // Determinar Área do Conhecimento com base na disciplina do plano
+          const subject = termPlans.find((p) => p.id === selectedTermPlanId)?.subject || '';
+          let area = '';
 
-                    if (s.match(/historia|geografia|filosofia|sociologia|humanas/)) area = 'Humanas';
-                    else if (s.match(/fisica|quimica|biologia|natureza|ciencias/)) area = 'Natureza';
-                    else if (s.match(/portugues|ingles|espanhol|artes|educacao fisica|linguagens/)) area = 'Linguagens';
-                    else if (s.match(/matematica/)) area = 'Matemática';
+          const normalize = (s: string) =>
+            s
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '');
+          const s = normalize(subject);
 
-                    console.log(`[RAG] Buscando questões sobre: ${selectedLesson.title} [Disciplina: ${subject} -> Área: ${area}]`);
+          if (s.match(/historia|geografia|filosofia|sociologia|humanas/)) area = 'Humanas';
+          else if (s.match(/fisica|quimica|biologia|natureza|ciencias/)) area = 'Natureza';
+          else if (s.match(/portugues|ingles|espanhol|artes|educacao fisica|linguagens/))
+            area = 'Linguagens';
+          else if (s.match(/matematica/)) area = 'Matemática';
 
-                    const dbQuestions = await searchQuestions(selectedLesson.title, [area]);
+          console.log(
+            `[RAG] Buscando questões sobre: ${selectedLesson.title} [Disciplina: ${subject} -> Área: ${area}]`
+          );
 
-                    if (dbQuestions && dbQuestions.length > 0) {
-                        const questionsText = dbQuestions.slice(0, 3).map((q, idx) => {
-                            const enunciado = [q.metadata?.context, q.metadata?.alternativesIntroduction]
-                                .filter(Boolean)
-                                .join('\n\n');
+          const dbQuestions = await searchQuestions(selectedLesson.title, [area]);
 
-                            return `
+          if (dbQuestions && dbQuestions.length > 0) {
+            const questionsText = dbQuestions
+              .slice(0, 3)
+              .map((q, idx) => {
+                const enunciado = [q.metadata?.context, q.metadata?.alternativesIntroduction]
+                  .filter(Boolean)
+                  .join('\n\n');
+
+                return `
                         ----- QUESTÃO BANCO DE DADOS ${idx + 1} -----
                         ENUNCIADO: ${enunciado || 'Sem enunciado'}
                         ALTERNATIVAS:
                         ${q.metadata?.alternatives?.map((alt: any) => `- ${alt.text} ${alt.isCorrect ? '(CORRETA)' : ''}`).join('\n') || 'Sem alternativas'}
                         ---------------------------------------------
                         `;
-                        }).join('\n');
+              })
+              .join('\n');
 
-                        context += `\n\n[BANCO DE QUESTÕES VIA RAG - USE ESTAS QUESTÕES]:\n${questionsText}\n\n[INSTRUÇÃO RAG]: Encontrei ${dbQuestions.length} questões no banco de dados. Use OBRIGATORIAMENTE essas questões. Somente se o usuário solicitou mais do que ${dbQuestions.length}, crie questões inéditas para completar.`;
-                    } else {
-                        context += `\n\n[BANCO DE QUESTÕES]: Nenhuma questão exata encontrada no banco para este tema. Crie questões inéditas baseadas no currículo.`;
-                    }
-                } catch (ragError) {
-                    console.error('[RAG] Falha ao buscar questões:', ragError);
-                }
-            }
-
-            // --- RAG: PROJETO CODEX (PNLD BOOKS) ---
-            if (selectedPnldBookId) {
-                try {
-                    const bookResults = await searchPnldBookContent(activeInput, {
-                        livro_titulo: selectedPnldBookId // We use ID as title for now or match properly
-                    });
-
-                    if (bookResults && bookResults.length > 0) {
-                        const bookContext = bookResults.map((r: any) =>
-                            `[Livro PNLD: ${r.metadata?.livro_titulo}] [Pág: ${r.metadata?.pagina}] [Cap: ${r.metadata?.capitulo}]: ${r.content}`
-                        ).join('\n\n');
-
-                        context += `\n\n--- CONTEÚDO DO LIVRO PNLD (PROJETO CODEX) ---\n${bookContext}\n\n[INSTRUÇÃO PNLD]: O professor está usando o livro oficial. Use os fragmentos acima para basear suas explicações, exercícios e referências de página. SEJA PRECISO.`;
-                    }
-                } catch (codexError) {
-                    console.error('[Codex] Falha ao buscar conteúdo do livro:', codexError);
-                }
-            }
-
-            // --- Dynamic Temperature Control ---
-            // User Request: "PRÁTICAS DE LINGUAGEM HABILIDADE... temperatura precisa ser zero"
-            // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
-            // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
-            const keywordsStrict = ['habilidade', 'bncc', 'objeto de conhecimento', 'práticas de linguagem', 'descritor', 'saeb', 'código', 'planejamento trimestral'];
-            const isStrictQuery = keywordsStrict.some(k => activeInput.toLowerCase().includes(k.toLowerCase())) || isQuarterlyPlanning;
-
-            const dynamicTemp = isStrictQuery ? 0.1 : 0.7;
-
-            const response = await generateGeminiContent(activeInput, [], context, userId, dynamicTemp);
-
-
-            // --- AUTO-PERSISTENCE & MEMORY ---
-            // Detect if response looks like a plan, material, or exam
-            const upperResponse = response.toUpperCase();
-            let type: GeneratedPlan['type'] = 'documento';
-            let folder = PlanFolder.MATERIAL_ALUNO; // Default fallback
-            let title = `Conteúdo Gerado ${new Date().toLocaleTimeString()}`;
-
-            if (upperResponse.includes('[AÇÃO: PLANO DE AULA DETALHADO]') || upperResponse.includes('PLANO DE AULA')) {
-                type = 'plano'; folder = PlanFolder.PLANO_AULA;
-                title = selectedLesson ? `Plano - Aula ${selectedLesson.number}` : 'Plano de Aula';
-            }
-            else if (upperResponse.includes('[AÇÃO: MATERIAL DIDÁTICO]') || upperResponse.includes('ROTEIRO DE ESTUDO') || upperResponse.includes('MATERIAL DO ALUNO')) {
-                type = 'material'; folder = PlanFolder.MATERIAL_ALUNO;
-                title = selectedLesson ? `Material - Aula ${selectedLesson.number}` : 'Material Didático';
-            }
-            else if (upperResponse.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') || upperResponse.includes('QUESTÕES') || upperResponse.includes('EXERCÍCIOS') || upperResponse.includes('ATIVIDADE')) {
-                type = 'exercicio'; folder = PlanFolder.ATIVIDADES;
-                title = selectedLesson ? `Exercícios - Aula ${selectedLesson.number}` : 'Lista de Exercícios';
-            }
-
-            if (type !== 'documento' || upperResponse.includes('# ')) {
-                // Support quick action [TYPE:] tags in input for better accuracy
-                if (type === 'documento' && activeInput.includes('[TYPE:')) {
-                    if (activeInput.includes('MATERIAL')) { type = 'material'; folder = PlanFolder.MATERIAL_ALUNO; }
-                    if (activeInput.includes('EXERCISES')) { type = 'exercicio'; folder = PlanFolder.ATIVIDADES; }
-                }
-
-                // 2. Save to Drive (Async) with tracking
-                console.log(`[Drive] Iniciando salvamento automático: ${title} (${type})`);
-                savePlan(userId, {
-                    type,
-                    title,
-                    content: response,
-                    createdAt: new Date().toISOString()
-                }, folder, userProfile)
-                    .then(() => {
-                        console.log('✅ Conteúdo salvo no Drive com sucesso!');
-                        showToast('success', 'Conteúdo salvo em “Meus Arquivos”.');
-                    })
-                    .catch(e => {
-                        console.error('❌ Falha no salvamento automático:', e);
-                        showToast('error', 'Falha ao salvar automaticamente em “Meus Arquivos”.');
-                    });
-
-                // 3. Save to Memory (Async) - Context for AI
-                addMemory(userId, `Gerou ${title}: ${activeInput.substring(0, 100)}...`, [type, 'auto-generated'])
-                    .then(() => console.log('🧠 Memória pedagógica atualizada.'))
-                    .catch(e => console.error('Memory failed', e));
-            }
-
-            const aiMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: response, timestamp: new Date() };
-            setMessages(prev => [...prev, aiMsg]);
-
-            // --- AUTO PROMPT FOR FEEDBACK ---
-            // If response is substantial (Plan/Content), trigger the feedback loop
-            if (response.length > 200 && !feedbackContext) {
-                setTimeout(() => {
-                    const followUp: Message = {
-                        id: (Date.now() + 2).toString(),
-                        role: MessageRole.ASSISTANT,
-                        content: "Existem ajustes a serem feitos, professor?",
-                        timestamp: new Date()
-                    };
-                    setMessages(prev => [...prev, followUp]);
-                    setFeedbackContext(response); // Mark context for next user input
-                }, 1000);
-            }
-        } catch (error) {
-            console.error('[PlanningManager] Erro no fluxo AI:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-            const errorMsg: Message = { id: (Date.now() + 1).toString(), role: MessageRole.ASSISTANT, content: `❌ Falha ao gerar: ${errorMessage}`, timestamp: new Date() };
-            setMessages(prev => [...prev, errorMsg]);
-        } finally {
-            setIsThinking(false);
+            context += `\n\n[BANCO DE QUESTÕES VIA RAG - USE ESTAS QUESTÕES]:\n${questionsText}\n\n[INSTRUÇÃO RAG]: Encontrei ${dbQuestions.length} questões no banco de dados. Use OBRIGATORIAMENTE essas questões. Somente se o usuário solicitou mais do que ${dbQuestions.length}, crie questões inéditas para completar.`;
+          } else {
+            context += `\n\n[BANCO DE QUESTÕES]: Nenhuma questão exata encontrada no banco para este tema. Crie questões inéditas baseadas no currículo.`;
+          }
+        } catch (ragError) {
+          console.error('[RAG] Falha ao buscar questões:', ragError);
         }
-    };
+      }
 
-
-    const handleClearChat = () => setMessages([]);
-
-    const handleQuickAction = async (action: 'plan' | 'material' | 'enem') => {
-        if (!selectedLesson) return alert('Selecione uma aula primeiro!');
-
-        let prompt = '';
-        if (action === 'plan') prompt = `Crie um plano de aula detalhado para a Aula ${selectedLesson.number}: ${selectedLesson.title} (${selectedLesson.description}). Inclua objetivos, metodologia, recursos e avaliação.`;
-        if (action === 'material') prompt = `[TYPE: MATERIAL]\nCrie um roteiro de material didático (resumo para alunos) sobre o tema: ${selectedLesson.title}.`;
-        if (action === 'enem') prompt = `[TYPE: EXERCISES]\nCrie uma lista de exercícios de fixação sobre o tema: ${selectedLesson.title}.`;
-
-        setInput(prompt);
-    };
-
-    const handleSavePlan = async (content: string) => {
+      // --- RAG: PROJETO CODEX (PNLD BOOKS) ---
+      if (selectedPnldBookId) {
         try {
-            if (!userId) throw new Error("ID do usuário não encontrado.");
+          const bookResults = await searchPnldBookContent(activeInput, {
+            livro_titulo: selectedPnldBookId, // We use ID as title for now or match properly
+          });
 
-            const title = selectedLesson
-                ? `${selectedLesson.number} - ${selectedLesson.title}`
-                : `Plano Gerado ${new Date().toLocaleDateString()}`;
+          if (bookResults && bookResults.length > 0) {
+            const bookContext = bookResults
+              .map(
+                (r: any) =>
+                  `[Livro PNLD: ${r.metadata?.livro_titulo}] [Pág: ${r.metadata?.pagina}] [Cap: ${r.metadata?.capitulo}]: ${r.content}`
+              )
+              .join('\n\n');
 
-            let folder = PlanFolder.PLANO_AULA;
-            let type: GeneratedPlan['type'] = 'plano'; // Default to 'plano' (Planos de Aula)
-
-            const upperContent = content.toUpperCase();
-
-            // 1. Explicit Tag Detection (Highest Priority)
-            if (upperContent.includes('[TYPE: EXERCISES]')) {
-                folder = PlanFolder.ATIVIDADES;
-                type = 'exercicio';
-            } else if (upperContent.includes('[TYPE: MATERIAL]')) {
-                folder = PlanFolder.MATERIAL_ALUNO;
-                type = 'material';
-            }
-            // 2. Keyword Fallback (Case Insensitive)
-            else if (upperContent.includes('QUESTÕES') || upperContent.includes('GABARITO') || upperContent.includes('EXERCÍCIOS') || upperContent.includes('LISTA')) {
-                folder = PlanFolder.ATIVIDADES;
-                type = 'exercicio';
-            } else if (upperContent.includes('ROTEIRO') || upperContent.includes('MATERIAL') || upperContent.includes('RESUMO')) {
-                folder = PlanFolder.MATERIAL_ALUNO;
-                type = 'material';
-            }
-
-            await withRetry(() =>
-                savePlan(userId, {
-                    type: type,
-                    title: title,
-                    content: content,
-                    createdAt: new Date().toISOString()
-                }, folder, userProfile)
-            );
-
-            showToast('success', 'Plano salvo em “Meus Arquivos”.');
-            // Refresh tracking to update UI (strikethrough and count)
-            if (selectedTermPlanId) {
-                await loadLessonTracking(selectedTermPlanId);
-            }
-
-            setLastDraftSavedAt(new Date());
-
-            return true;
-        } catch (e: any) {
-            console.error(e);
-            if (e.message) showToast('error', `Erro ao salvar: ${e.message}`);
-            else showToast('error', 'Erro ao salvar: Ocorreu um problema desconhecido.');
-            return false;
+            context += `\n\n--- CONTEÚDO DO LIVRO PNLD (PROJETO CODEX) ---\n${bookContext}\n\n[INSTRUÇÃO PNLD]: O professor está usando o livro oficial. Use os fragmentos acima para basear suas explicações, exercícios e referências de página. SEJA PRECISO.`;
+          }
+        } catch (codexError) {
+          console.error('[Codex] Falha ao buscar conteúdo do livro:', codexError);
         }
-    };
+      }
 
-    const handleExportDocx = async (content: string) => {
-        console.log('[DEBUG] Export clicked by user:', userId);
-        try {
-            if (!userId) throw new Error("ID do usuário não encontrado.");
+      // --- Dynamic Temperature Control ---
+      // User Request: "PRÁTICAS DE LINGUAGEM HABILIDADE... temperatura precisa ser zero"
+      // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
+      // Heuristic: If prompt contains keywords indicating factual curriculum retrieval, drop temp to 0.
+      const keywordsStrict = [
+        'habilidade',
+        'bncc',
+        'objeto de conhecimento',
+        'práticas de linguagem',
+        'descritor',
+        'saeb',
+        'código',
+        'planejamento trimestral',
+      ];
+      const isStrictQuery =
+        keywordsStrict.some((k) => activeInput.toLowerCase().includes(k.toLowerCase())) ||
+        isQuarterlyPlanning;
 
-            const title = selectedLesson
-                ? `${selectedLesson.number} - ${selectedLesson.title}`
-                : `Plano Gerado ${new Date().toLocaleDateString()}`;
+      const dynamicTemp = isStrictQuery ? 0.1 : 0.7;
 
-            await exportToDocx(content, title.replace(/[^a-z0-9]/gi, '_'), {
-                schoolName: localSettings?.schoolName || 'Escola Profeplan',
-                teacherName: localSettings?.teacherName || 'Professor(a)',
-                userName: localSettings?.userName
-            });
+      const response = await generateGeminiContent(activeInput, [], context, userId, dynamicTemp);
 
-            // alert('Download iniciado!');
-        } catch (e: any) {
-            console.error(e);
-            alert(`Erro ao exportar: ${e.message || 'Erro desconhecido'}`);
+      // --- AUTO-PERSISTENCE & MEMORY ---
+      // Detect if response looks like a plan, material, or exam
+      const upperResponse = response.toUpperCase();
+      let type: GeneratedPlan['type'] = 'documento';
+      let folder = PlanFolder.MATERIAL_ALUNO; // Default fallback
+      let title = `Conteúdo Gerado ${new Date().toLocaleTimeString()}`;
+
+      if (
+        upperResponse.includes('[AÇÃO: PLANO DE AULA DETALHADO]') ||
+        upperResponse.includes('PLANO DE AULA')
+      ) {
+        type = 'plano';
+        folder = PlanFolder.PLANO_AULA;
+        title = selectedLesson ? `Plano - Aula ${selectedLesson.number}` : 'Plano de Aula';
+      } else if (
+        upperResponse.includes('[AÇÃO: MATERIAL DIDÁTICO]') ||
+        upperResponse.includes('ROTEIRO DE ESTUDO') ||
+        upperResponse.includes('MATERIAL DO ALUNO')
+      ) {
+        type = 'material';
+        folder = PlanFolder.MATERIAL_ALUNO;
+        title = selectedLesson ? `Material - Aula ${selectedLesson.number}` : 'Material Didático';
+      } else if (
+        upperResponse.includes('[AÇÃO: LISTA DE EXERCÍCIOS]') ||
+        upperResponse.includes('QUESTÕES') ||
+        upperResponse.includes('EXERCÍCIOS') ||
+        upperResponse.includes('ATIVIDADE')
+      ) {
+        type = 'exercicio';
+        folder = PlanFolder.ATIVIDADES;
+        title = selectedLesson
+          ? `Exercícios - Aula ${selectedLesson.number}`
+          : 'Lista de Exercícios';
+      }
+
+      if (type !== 'documento' || upperResponse.includes('# ')) {
+        // Support quick action [TYPE:] tags in input for better accuracy
+        if (type === 'documento' && activeInput.includes('[TYPE:')) {
+          if (activeInput.includes('MATERIAL')) {
+            type = 'material';
+            folder = PlanFolder.MATERIAL_ALUNO;
+          }
+          if (activeInput.includes('EXERCISES')) {
+            type = 'exercicio';
+            folder = PlanFolder.ATIVIDADES;
+          }
         }
-    };
 
-    // --- RENDER ---
+        // 2. Save to Drive (Async) with tracking
+        console.log(`[Drive] Iniciando salvamento automático: ${title} (${type})`);
+        savePlan(
+          userId,
+          {
+            type,
+            title,
+            content: response,
+            createdAt: new Date().toISOString(),
+          },
+          folder,
+          userProfile
+        )
+          .then(() => {
+            console.log('✅ Conteúdo salvo no Drive com sucesso!');
+            showToast('success', 'Conteúdo salvo em “Meus Arquivos”.');
+          })
+          .catch((e) => {
+            console.error('❌ Falha no salvamento automático:', e);
+            showToast('error', 'Falha ao salvar automaticamente em “Meus Arquivos”.');
+          });
 
-    if (isSimulationMode) {
-        return (
-            <SimulationWorkspace
-                userId={userId}
-                termPlans={termPlans}
-                selectedTermPlanId={selectedTermPlanId}
-                settings={localSettings}
-            />
-        );
+        // 3. Save to Memory (Async) - Context for AI
+        addMemory(userId, `Gerou ${title}: ${activeInput.substring(0, 100)}...`, [
+          type,
+          'auto-generated',
+        ])
+          .then(() => console.log('🧠 Memória pedagógica atualizada.'))
+          .catch((e) => console.error('Memory failed', e));
+      }
+
+      const aiMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: MessageRole.ASSISTANT,
+        content: response,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiMsg]);
+
+      // --- AUTO PROMPT FOR FEEDBACK ---
+      // If response is substantial (Plan/Content), trigger the feedback loop
+      if (response.length > 200 && !feedbackContext) {
+        setTimeout(() => {
+          const followUp: Message = {
+            id: (Date.now() + 2).toString(),
+            role: MessageRole.ASSISTANT,
+            content: 'Existem ajustes a serem feitos, professor?',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, followUp]);
+          setFeedbackContext(response); // Mark context for next user input
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('[PlanningManager] Erro no fluxo AI:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      const errorMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: MessageRole.ASSISTANT,
+        content: `❌ Falha ao gerar: ${errorMessage}`,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsThinking(false);
     }
+  };
 
-    // Explicitly check for Cockpit Mode.
-    // However, since we cleaned up the previous "Clean Chat" logic which was "if (!sim && !cockpit)", 
-    // now we should decide what is the DEFAULT.
-    // Usually ToolMode.CHAT (default) falls to CleanChat.
-    // ToolMode.PLANNING falls to Cockpit.
+  const handleClearChat = () => setMessages([]);
 
-    if (isPlanningCockpit) {
-        if (!termPlans || termPlans.length === 0) {
-            return (
-                <div className="flex-1 flex items-center justify-center bg-slate-50">
-                    <div className="text-center max-w-md px-6 py-10 bg-white rounded-[2.5rem] border border-dashed border-slate-200 shadow-sm">
-                        <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-3">
-                            Planejamento Trimestral
-                        </p>
-                        <h2 className="text-xl font-black text-slate-900 mb-2">
-                            Nenhum planejamento encontrado
-                        </h2>
-                        <p className="text-sm text-slate-500 mb-4">
-                            Comece criando seu primeiro planejamento trimestral para organizar suas aulas.
-                        </p>
-                        <p className="text-[11px] text-slate-400">
-                            Use o menu &ldquo;Planejamento Trimestral&rdquo; na barra lateral para iniciar.
-                        </p>
-                    </div>
-                </div>
-            );
-        }
+  const handleQuickAction = async (action: 'plan' | 'material' | 'enem') => {
+    if (!selectedLesson) return alert('Selecione uma aula primeiro!');
 
-        return (
-            <PlanningCockpit
-                termPlans={termPlans}
-                selectedTermPlanId={selectedTermPlanId}
-                setSelectedTermPlanId={setSelectedTermPlanId}
-                parsedLessons={parsedLessons}
-                lessonTracking={lessonTracking}
-                selectedLesson={selectedLesson}
-                setSelectedLesson={setSelectedLesson}
-                handleQuickAction={handleQuickAction}
-                messages={messages}
-                userId={userId}
-                handleExportDocx={handleExportDocx}
-                handleSavePlan={handleSavePlan}
-                isThinking={isThinking}
-                input={input}
-                setInput={setInput}
-                handleSendMessage={handleSendMessage}
-                messagesEndRef={messagesEndRef}
-                selectedPnldBookId={selectedPnldBookId}
-                setSelectedPnldBookId={setSelectedPnldBookId}
-                lastDraftSavedAt={lastDraftSavedAt}
-                setActiveMode={setActiveMode}
-            />
-        );
+    let prompt = '';
+    if (action === 'plan')
+      prompt = `Crie um plano de aula detalhado para a Aula ${selectedLesson.number}: ${selectedLesson.title} (${selectedLesson.description}). Inclua objetivos, metodologia, recursos e avaliação.`;
+    if (action === 'material')
+      prompt = `[TYPE: MATERIAL]\nCrie um roteiro de material didático (resumo para alunos) sobre o tema: ${selectedLesson.title}.`;
+    if (action === 'enem')
+      prompt = `[TYPE: EXERCISES]\nCrie uma lista de exercícios de fixação sobre o tema: ${selectedLesson.title}.`;
+
+    setInput(prompt);
+  };
+
+  const handleSavePlan = async (content: string) => {
+    try {
+      if (!userId) throw new Error('ID do usuário não encontrado.');
+
+      const title = selectedLesson
+        ? `${selectedLesson.number} - ${selectedLesson.title}`
+        : `Plano Gerado ${new Date().toLocaleDateString()}`;
+
+      let folder = PlanFolder.PLANO_AULA;
+      let type: GeneratedPlan['type'] = 'plano'; // Default to 'plano' (Planos de Aula)
+
+      const upperContent = content.toUpperCase();
+
+      // 1. Explicit Tag Detection (Highest Priority)
+      if (upperContent.includes('[TYPE: EXERCISES]')) {
+        folder = PlanFolder.ATIVIDADES;
+        type = 'exercicio';
+      } else if (upperContent.includes('[TYPE: MATERIAL]')) {
+        folder = PlanFolder.MATERIAL_ALUNO;
+        type = 'material';
+      }
+      // 2. Keyword Fallback (Case Insensitive)
+      else if (
+        upperContent.includes('QUESTÕES') ||
+        upperContent.includes('GABARITO') ||
+        upperContent.includes('EXERCÍCIOS') ||
+        upperContent.includes('LISTA')
+      ) {
+        folder = PlanFolder.ATIVIDADES;
+        type = 'exercicio';
+      } else if (
+        upperContent.includes('ROTEIRO') ||
+        upperContent.includes('MATERIAL') ||
+        upperContent.includes('RESUMO')
+      ) {
+        folder = PlanFolder.MATERIAL_ALUNO;
+        type = 'material';
+      }
+
+      await withRetry(() =>
+        savePlan(
+          userId,
+          {
+            type: type,
+            title: title,
+            content: content,
+            createdAt: new Date().toISOString(),
+          },
+          folder,
+          userProfile
+        )
+      );
+
+      showToast('success', 'Plano salvo em “Meus Arquivos”.');
+      // Refresh tracking to update UI (strikethrough and count)
+      if (selectedTermPlanId) {
+        await loadLessonTracking(selectedTermPlanId);
+      }
+
+      setLastDraftSavedAt(new Date());
+
+      return true;
+    } catch (e: any) {
+      console.error(e);
+      if (e.message) showToast('error', `Erro ao salvar: ${e.message}`);
+      else showToast('error', 'Erro ao salvar: Ocorreu um problema desconhecido.');
+      return false;
     }
+  };
 
-    // Default Fallback (Clean Chat) OR Specialist Chat
+  const handleExportDocx = async (content: string) => {
+    console.log('[DEBUG] Export clicked by user:', userId);
+    try {
+      if (!userId) throw new Error('ID do usuário não encontrado.');
+
+      const title = selectedLesson
+        ? `${selectedLesson.number} - ${selectedLesson.title}`
+        : `Plano Gerado ${new Date().toLocaleDateString()}`;
+
+      await exportToDocx(content, title.replace(/[^a-z0-9]/gi, '_'), {
+        schoolName: localSettings?.schoolName || 'Escola Profeplan',
+        teacherName: localSettings?.teacherName || 'Professor(a)',
+        userName: localSettings?.userName,
+      });
+
+      // alert('Download iniciado!');
+    } catch (e: any) {
+      console.error(e);
+      alert(`Erro ao exportar: ${e.message || 'Erro desconhecido'}`);
+    }
+  };
+
+  // --- RENDER ---
+
+  if (isSimulationMode) {
     return (
-        <div className="flex-1 flex flex-col h-full bg-slate-50 relative">
-            {activeMode === ToolMode.SPECIALIST && (
-                <div className="bg-amber-100 border-b border-amber-200 px-6 py-3 flex items-center gap-3 shadow-sm z-10">
-                    <div className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-amber-200">
-                        <ShieldCheck size={20} />
-                    </div>
-                    <div>
-                        <h2 className="text-sm font-black text-amber-900 uppercase tracking-widest">Especialista Pedagógico</h2>
-                        <p className="text-[10px] text-amber-900/60 font-bold">Modo de Auditoria e Governança Ativo</p>
-                    </div>
-                </div>
-            )}
-            <CleanChat
-                messages={messages}
-                isThinking={isThinking}
-                input={input}
-                setInput={setInput}
-                handleSendMessage={handleSendMessage}
-                handleClearChat={handleClearChat}
-                messagesEndRef={messagesEndRef}
-                onSave={handleSavePlan}
-                onExport={handleExportDocx}
-            />
-        </div>
+      <SimulationWorkspace
+        userId={userId}
+        termPlans={termPlans}
+        selectedTermPlanId={selectedTermPlanId}
+        settings={localSettings}
+      />
     );
+  }
+
+  // Explicitly check for Cockpit Mode.
+  // However, since we cleaned up the previous "Clean Chat" logic which was "if (!sim && !cockpit)",
+  // now we should decide what is the DEFAULT.
+  // Usually ToolMode.CHAT (default) falls to CleanChat.
+  // ToolMode.PLANNING falls to Cockpit.
+
+  if (isPlanningCockpit) {
+    if (!termPlans || termPlans.length === 0) {
+      return (
+        <div className="flex-1 flex items-center justify-center bg-slate-50">
+          <div className="text-center max-w-md px-6 py-10 bg-white rounded-[2.5rem] border border-dashed border-slate-200 shadow-sm">
+            <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] mb-3">
+              Planejamento Trimestral
+            </p>
+            <h2 className="text-xl font-black text-slate-900 mb-2">
+              Nenhum planejamento encontrado
+            </h2>
+            <p className="text-sm text-slate-500 mb-4">
+              Comece criando seu primeiro planejamento trimestral para organizar suas aulas.
+            </p>
+            <p className="text-[11px] text-slate-400">
+              Use o menu &ldquo;Planejamento Trimestral&rdquo; na barra lateral para iniciar.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <PlanningCockpit
+        termPlans={termPlans}
+        selectedTermPlanId={selectedTermPlanId}
+        setSelectedTermPlanId={setSelectedTermPlanId}
+        parsedLessons={parsedLessons}
+        lessonTracking={lessonTracking}
+        selectedLesson={selectedLesson}
+        setSelectedLesson={setSelectedLesson}
+        handleQuickAction={handleQuickAction}
+        messages={messages}
+        userId={userId}
+        handleExportDocx={handleExportDocx}
+        handleSavePlan={handleSavePlan}
+        isThinking={isThinking}
+        input={input}
+        setInput={setInput}
+        handleSendMessage={handleSendMessage}
+        messagesEndRef={messagesEndRef}
+        selectedPnldBookId={selectedPnldBookId}
+        setSelectedPnldBookId={setSelectedPnldBookId}
+        lastDraftSavedAt={lastDraftSavedAt}
+        setActiveMode={setActiveMode}
+      />
+    );
+  }
+
+  // Default Fallback (Clean Chat) OR Specialist Chat
+  return (
+    <div className="flex-1 flex flex-col h-full bg-slate-50 relative">
+      {activeMode === ToolMode.SPECIALIST && (
+        <div className="bg-amber-100 border-b border-amber-200 px-6 py-3 flex items-center gap-3 shadow-sm z-10">
+          <div className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-amber-200">
+            <ShieldCheck size={20} />
+          </div>
+          <div>
+            <h2 className="text-sm font-black text-amber-900 uppercase tracking-widest">
+              Especialista Pedagógico
+            </h2>
+            <p className="text-[10px] text-amber-900/60 font-bold">
+              Modo de Auditoria e Governança Ativo
+            </p>
+          </div>
+        </div>
+      )}
+      <CleanChat
+        messages={messages}
+        isThinking={isThinking}
+        input={input}
+        setInput={setInput}
+        handleSendMessage={handleSendMessage}
+        handleClearChat={handleClearChat}
+        messagesEndRef={messagesEndRef}
+        onSave={handleSavePlan}
+        onExport={handleExportDocx}
+      />
+    </div>
+  );
 };
 
 export default PlanningManager;

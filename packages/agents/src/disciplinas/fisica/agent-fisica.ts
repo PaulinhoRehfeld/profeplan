@@ -61,14 +61,33 @@ export class AgentFisica extends BaseDisciplineAgent {
   public getHabilidadesPrioritarias(): string[] {
     return [
       // Matéria e Energia — foco principal em Física
-      'EM13CNT101', 'EM13CNT102', 'EM13CNT103', 'EM13CNT104', 'EM13CNT105',
-      'EM13CNT106', 'EM13CNT107',
+      'EM13CNT101',
+      'EM13CNT102',
+      'EM13CNT103',
+      'EM13CNT104',
+      'EM13CNT105',
+      'EM13CNT106',
+      'EM13CNT107',
       // Vida e Evolução — interfaces Física-Biologia
-      'EM13CNT201', 'EM13CNT202', 'EM13CNT203', 'EM13CNT204', 'EM13CNT205',
-      'EM13CNT206', 'EM13CNT207', 'EM13CNT208',
+      'EM13CNT201',
+      'EM13CNT202',
+      'EM13CNT203',
+      'EM13CNT204',
+      'EM13CNT205',
+      'EM13CNT206',
+      'EM13CNT207',
+      'EM13CNT208',
       // Terra e Universo — foco principal em Física (Astronomia, Cosmologia)
-      'EM13CNT301', 'EM13CNT302', 'EM13CNT303', 'EM13CNT304', 'EM13CNT305',
-      'EM13CNT306', 'EM13CNT307', 'EM13CNT308', 'EM13CNT309', 'EM13CNT310',
+      'EM13CNT301',
+      'EM13CNT302',
+      'EM13CNT303',
+      'EM13CNT304',
+      'EM13CNT305',
+      'EM13CNT306',
+      'EM13CNT307',
+      'EM13CNT308',
+      'EM13CNT309',
+      'EM13CNT310',
     ];
   }
 

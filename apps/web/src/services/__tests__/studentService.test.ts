@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../supabaseClient', () => ({
   supabase: {
-    from: vi.fn()
-  }
+    from: vi.fn(),
+  },
 }));
 
 import { supabase } from '../supabaseClient';
@@ -15,7 +15,7 @@ const createQuery = (result: { data: unknown; error: unknown }) => {
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue(result),
     insert: vi.fn().mockReturnThis(),
-    single: vi.fn().mockResolvedValue(result)
+    single: vi.fn().mockResolvedValue(result),
   };
 
   return query;
@@ -49,7 +49,7 @@ describe('studentService', () => {
     const response = await createStudent({
       name: 'Ana',
       school_id: 'school-123',
-      current_school_id: ''
+      current_school_id: '',
     });
 
     expect(response.success).toBe(true);
@@ -66,7 +66,7 @@ describe('studentService', () => {
       deficiencies: ['TDAH'],
       pdi_needs: ['Dislexia'],
       pedagogical_observations: 'Precisa de tempo estendido nas avaliações.',
-      observations: 'Observação antiga.'
+      observations: 'Observação antiga.',
     } as any;
 
     const snapshot = getStudentInclusionSnapshot(student);

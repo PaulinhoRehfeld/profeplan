@@ -4,15 +4,18 @@ import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 
 const logger = {
-  info: (msg: string, meta?: unknown) => console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
-  error: (msg: string, meta?: unknown) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
+  info: (msg: string, meta?: unknown) =>
+    console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
+  error: (msg: string, meta?: unknown) =>
+    console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
 };
 
 const getSupabaseClient = () => {
   const url = process.env.SUPABASE_URL?.trim() || process.env.VITE_SUPABASE_URL?.trim();
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
-    || process.env.SUPABASE_ANON_KEY?.trim()
-    || process.env.VITE_SUPABASE_ANON_KEY?.trim();
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    process.env.SUPABASE_ANON_KEY?.trim() ||
+    process.env.VITE_SUPABASE_ANON_KEY?.trim();
   if (!url || !key) return null;
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -23,11 +26,13 @@ const getDeepSeekClient = (): { client: OpenAI; model: string } | null => {
   const apiKey = process.env.DEEPSEEK_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) return null;
   const isDeepSeek = apiKey.startsWith('sk-f2a4') || !!process.env.DEEPSEEK_API_KEY;
-  const model = isDeepSeek ? 'deepseek-chat' : (process.env.OPENAI_MODEL || 'gpt-4o-mini');
+  const model = isDeepSeek ? 'deepseek-chat' : process.env.OPENAI_MODEL || 'gpt-4o-mini';
   return {
     client: new OpenAI({
       apiKey,
-      baseURL: isDeepSeek ? (process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com') : undefined,
+      baseURL: isDeepSeek
+        ? process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com'
+        : undefined,
     }),
     model,
   };
@@ -100,9 +105,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const deepseek = getDeepSeekClient();
     if (deepseek && results.length > limit) {
       try {
-        const candidates = results.map((r: any, i: number) =>
-          `[${i}] ${r.disciplina || ''} - ${r.ano_escolar || ''} - ${r.periodo || ''}: ${(r.content || '').slice(0, 500)}`
-        ).join('\n\n');
+        const candidates = results
+          .map(
+            (r: any, i: number) =>
+              `[${i}] ${r.disciplina || ''} - ${r.ano_escolar || ''} - ${r.periodo || ''}: ${(r.content || '').slice(0, 500)}`
+          )
+          .join('\n\n');
 
         const response = await deepseek.client.chat.completions.create({
           model: deepseek.model,
@@ -130,7 +138,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .slice(0, limit);
           if (ranked.length > 0) {
             results = ranked;
-            logger.info('[searchProxy] Resultados rerankeado via DeepSeek.', { before: data.length, after: results.length });
+            logger.info('[searchProxy] Resultados rerankeado via DeepSeek.', {
+              before: data.length,
+              after: results.length,
+            });
           } else {
             // Rerank não produziu nenhum índice válido — cai pro fallback (respeita o limit)
             results = results.slice(0, limit);
@@ -141,7 +152,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           results = results.slice(0, limit);
         }
       } catch (rerankErr) {
-        logger.error('[searchProxy] DeepSeek rerank failed, usando resultados originais:', rerankErr);
+        logger.error(
+          '[searchProxy] DeepSeek rerank failed, usando resultados originais:',
+          rerankErr
+        );
         results = results.slice(0, limit);
       }
     } else {

@@ -38,7 +38,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
   const isMounted = React.useRef(true);
   useEffect(() => {
-    return () => { isMounted.current = false; };
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   const signInWithRetry = async (cleanEmail: string, rawPassword: string) => {
@@ -65,12 +67,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     }
   };
 
-  const sendAuthEvent = async (event: 'login' | 'logout', email: string, success: boolean, errorMsg?: string) => {
+  const sendAuthEvent = async (
+    event: 'login' | 'logout',
+    email: string,
+    success: boolean,
+    errorMsg?: string
+  ) => {
     try {
-      await fetch("/api/auth/event", {
-        method: "POST",
+      await fetch('/api/auth/event', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           event,
@@ -80,7 +87,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         }),
       });
     } catch (e) {
-      console.error("[LoginScreen] Erro ao enviar evento de auth para o backend:", e);
+      console.error('[LoginScreen] Erro ao enviar evento de auth para o backend:', e);
     }
   };
 
@@ -125,7 +132,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           const errMsg =
             typeof signupData?.error === 'string'
               ? signupData.error
-              : signupData?.error?.message || signupData?.message || `Erro ${signupResp.status} ao criar conta.`;
+              : signupData?.error?.message ||
+                signupData?.message ||
+                `Erro ${signupResp.status} ao criar conta.`;
           throw Object.assign(new Error(errMsg), { status: signupResp.status });
         }
 
@@ -135,7 +144,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         } else {
           setSuccessMsg(
             signupData?.message ||
-            'Conta criada! Verifique seu e-mail (e o Spam) para confirmar o cadastro.'
+              'Conta criada! Verifique seu e-mail (e o Spam) para confirmar o cadastro.'
           );
           setIsSignUp(false);
         }
@@ -160,7 +169,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         // If we set loading=false, the user sees the form again before redirect.
       }
     } catch (err: any) {
-      console.error("Auth Error:", err);
+      console.error('Auth Error:', err);
       if (!isSignUp) {
         // Notify backend of failed login (fire-and-forget to avoid blocking the UI)
         sendAuthEvent('login', cleanEmail, false, err.message || 'Erro desconhecido');
@@ -170,20 +179,31 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
         if (err.message === 'Invalid login credentials' || err.status === 400) {
           setError('E-mail ou senha incorretos. Verifique suas credenciais.');
         } else if (err.message?.toLowerCase().includes('email not confirmed')) {
-          setError('E-mail ainda não confirmado. Verifique sua caixa de entrada (e o Spam) para ativar sua conta.');
-        } else if (err.code === 'user_already_exists' || err.message?.toLowerCase().includes('already registered')) {
+          setError(
+            'E-mail ainda não confirmado. Verifique sua caixa de entrada (e o Spam) para ativar sua conta.'
+          );
+        } else if (
+          err.code === 'user_already_exists' ||
+          err.message?.toLowerCase().includes('already registered')
+        ) {
           setError('Este e-mail já possui uma conta cadastrada. Faça login.');
         } else if (isRateLimitError(err)) {
-          setError('Estamos recebendo muitas solicitações de cadastro neste momento. Tente novamente em alguns minutos ou entre em contato com o suporte.');
+          setError(
+            'Estamos recebendo muitas solicitações de cadastro neste momento. Tente novamente em alguns minutos ou entre em contato com o suporte.'
+          );
         } else if (isRetryableAuthError(err)) {
-          setError('Estamos com instabilidade momentânea no servidor de autenticação. Tente novamente em alguns segundos.');
+          setError(
+            'Estamos com instabilidade momentânea no servidor de autenticação. Tente novamente em alguns segundos.'
+          );
         } else {
-          setError('Ocorreu um erro ao processar sua solicitação. Tente novamente ou entre em contato com o suporte.');
+          setError(
+            'Ocorreu um erro ao processar sua solicitação. Tente novamente ou entre em contato com o suporte.'
+          );
           console.error('[LoginScreen] Erro de auth não mapeado:', err);
         }
       }
     } finally {
-      // Do NOT clear timeout or set loading false if success, 
+      // Do NOT clear timeout or set loading false if success,
       // because we want to stay in "loading" state until App unmounts us (redirects).
       // But if we are Sign Up (and not auto-login), we should stop loading.
       if (isSignUp && !successMsg.includes('Entrando')) {
@@ -197,15 +217,24 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 md:px-20 py-4 relative overflow-hidden">
       {/* Background Decorativo */}
       <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div
+        className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse"
+        style={{ animationDelay: '2s' }}
+      ></div>
 
       <div className="w-full max-w-lg z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center mb-4 transform hover:scale-105 transition-transform">
-            <img src="/logo-profeplan.png" alt="PROFEPLAN" className="w-14 h-14 object-contain drop-shadow-2xl" />
+            <img
+              src="/logo-profeplan.png"
+              alt="PROFEPLAN"
+              className="w-14 h-14 object-contain drop-shadow-2xl"
+            />
           </div>
           <h1 className="text-4xl font-black text-white tracking-tighter mb-2 italic">PROFEPLAN</h1>
-          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-[9px]">Ecossistema de Inteligência Pedagógica</p>
+          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-[9px]">
+            Ecossistema de Inteligência Pedagógica
+          </p>
         </div>
 
         <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 md:p-8 rounded-[32px] shadow-3xl">
@@ -214,12 +243,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           </h2>
 
           <form onSubmit={handleEmailAuth} className="space-y-6">
-
             {isSignUp && (
               <div className="space-y-2 animate-in slide-in-from-top-4 fade-in duration-300">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nome Completo</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  Nome Completo
+                </label>
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 flex items-center justify-center font-bold text-xs pointer-events-none group-focus-within:text-blue-500 transition-colors">Aa</div>
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 flex items-center justify-center font-bold text-xs pointer-events-none group-focus-within:text-blue-500 transition-colors">
+                    Aa
+                  </div>
                   <input
                     type="text"
                     required={isSignUp}
@@ -234,7 +266,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
             )}
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">E-mail</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                E-mail
+              </label>
               <div className="relative group">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
                 <input
@@ -250,7 +284,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Senha</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                Senha
+              </label>
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
                 <input
@@ -287,14 +323,21 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
               {loading ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
-                <>{isSignUp ? 'Criar Conta Grátis' : 'Acessar Workspace'} <ArrowRight className="w-5 h-5" /></>
+                <>
+                  {isSignUp ? 'Criar Conta Grátis' : 'Acessar Workspace'}{' '}
+                  <ArrowRight className="w-5 h-5" />
+                </>
               )}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <button
-              onClick={() => { setIsSignUp(!isSignUp); setError(''); setSuccessMsg(''); }}
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError('');
+                setSuccessMsg('');
+              }}
               className="text-slate-400 hover:text-white text-xs font-bold transition-colors"
             >
               {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
@@ -303,14 +346,20 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
           <div className="mt-8 flex justify-center gap-6 opacity-40">
             <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-              <div className={`w-2 h-2 rounded-full ${supabase.auth ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-red-500'}`}></div>
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Auth Engine Ready</span>
+              <div
+                className={`w-2 h-2 rounded-full ${supabase.auth ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-red-500'}`}
+              ></div>
+              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">
+                Auth Engine Ready
+              </span>
             </div>
           </div>
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">Acesso Seguro • PROFEPLAN IA v4.3.7</p>
+          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">
+            Acesso Seguro • PROFEPLAN IA v4.3.7
+          </p>
         </div>
       </div>
     </div>

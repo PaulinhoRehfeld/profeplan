@@ -22,7 +22,9 @@ const EmergencyResetScreen = () => (
   <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-950 text-white p-6 text-center">
     <Loader2 className="animate-spin w-12 h-12 text-blue-500 mb-6" />
     <h2 className="text-2xl font-black mb-2 tracking-tighter italic">PROFEPLAN v5</h2>
-    <p className="text-slate-400 text-sm mb-8 max-w-md">O carregamento está demorando mais que o esperado.</p>
+    <p className="text-slate-400 text-sm mb-8 max-w-md">
+      O carregamento está demorando mais que o esperado.
+    </p>
     <button
       onClick={async () => {
         localStorage.clear();
@@ -54,13 +56,21 @@ export const RootLayout: React.FC = () => {
     userProfile,
     settings,
     setSettings,
-    refreshProfile
+    refreshProfile,
   });
 
   if (loading && !showEmergencyReset) return <PageLoader />;
   if (showEmergencyReset && loading) return <EmergencyResetScreen />;
 
-  const isPublicRoute = ['/landing', '/login', '/signup', '/privacy', '/terms', '/verify-email', '/road'].includes(location.pathname);
+  const isPublicRoute = [
+    '/landing',
+    '/login',
+    '/signup',
+    '/privacy',
+    '/terms',
+    '/verify-email',
+    '/road',
+  ].includes(location.pathname);
   const isRootRoute = location.pathname === '/';
 
   if (isRootRoute) {
@@ -81,7 +91,11 @@ export const RootLayout: React.FC = () => {
   }
 
   // School Guard
-  if (session?.isLoggedIn && needsSelection && !['/select-school', '/profile-setup'].includes(location.pathname)) {
+  if (
+    session?.isLoggedIn &&
+    needsSelection &&
+    !['/select-school', '/profile-setup'].includes(location.pathname)
+  ) {
     return <Navigate to="/select-school" replace />;
   }
 

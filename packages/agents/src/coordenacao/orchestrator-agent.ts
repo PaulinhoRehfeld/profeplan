@@ -118,7 +118,7 @@ export class OrchestratorAgent {
    */
   public constructor(
     registry: AgentRegistry,
-    options?: { maxRetries?: number; qualityPipeline?: QualityGatePipeline },
+    options?: { maxRetries?: number; qualityPipeline?: QualityGatePipeline }
   ) {
     this.registry = registry;
     this.maxRetries = options?.maxRetries ?? 3;
@@ -147,9 +147,7 @@ export class OrchestratorAgent {
    * @param req — Requisição de geração.
    * @returns Resposta padronizada com conteúdo ou erro.
    */
-  public async processarRequisicao(
-    req: GeracaoRequest,
-  ): Promise<GeracaoResponse> {
+  public async processarRequisicao(req: GeracaoRequest): Promise<GeracaoResponse> {
     const { disciplina, nivel } = this._parseDisciplina(req);
 
     // Localizar agente
@@ -157,7 +155,8 @@ export class OrchestratorAgent {
     if (!entry) {
       return {
         sucesso: false,
-        erro: `Nenhum agente registrado para disciplina='${disciplina}', nivel='${nivel}'. ` +
+        erro:
+          `Nenhum agente registrado para disciplina='${disciplina}', nivel='${nivel}'. ` +
           `Certifique-se de que o agente foi registrado no AgentRegistry.`,
         metadados: {
           agente: 'N/A',
@@ -188,10 +187,7 @@ export class OrchestratorAgent {
         paramsComFeedback['_feedback'] = feedbackAcumulado;
       }
 
-      const resultado: GeracaoResultado = await agent.gerar(
-        req.tipo,
-        paramsComFeedback,
-      );
+      const resultado: GeracaoResultado = await agent.gerar(req.tipo, paramsComFeedback);
 
       if (resultado.sucesso) {
         // Se houver pipeline de qualidade, validar antes de retornar
@@ -213,9 +209,7 @@ export class OrchestratorAgent {
           }
 
           // Pipeline rejeitou — acumular feedback e tentar novamente
-          const blockerMessages = pipelineResult.blockers
-            .map((b) => b.message)
-            .join('; ');
+          const blockerMessages = pipelineResult.blockers.map((b) => b.message).join('; ');
           feedbackAcumulado = feedbackAcumulado
             ? `${feedbackAcumulado} | [QualityGate] ${blockerMessages}`
             : `[QualityGate] ${blockerMessages}`;
@@ -248,7 +242,8 @@ export class OrchestratorAgent {
     // Esgotaram-se as tentativas
     return {
       sucesso: false,
-      erro: `Falha após ${tentativas} tentativa(s) para disciplina='${disciplina}', ` +
+      erro:
+        `Falha após ${tentativas} tentativa(s) para disciplina='${disciplina}', ` +
         `nivel='${nivel}', tipo='${req.tipo}'. Último feedback: ${feedbackAcumulado}`,
       metadados: {
         agente: entry.displayName,
@@ -274,9 +269,7 @@ export class OrchestratorAgent {
    * @param req — Requisição de geração.
    * @returns Objeto com `disciplina` e `nivel` extraídos.
    */
-  public _parseDisciplina(
-    req: GeracaoRequest,
-  ): { disciplina: DisciplinaNome; nivel: NivelEnsino } {
+  public _parseDisciplina(req: GeracaoRequest): { disciplina: DisciplinaNome; nivel: NivelEnsino } {
     return {
       disciplina: req.disciplina,
       nivel: req.nivel,

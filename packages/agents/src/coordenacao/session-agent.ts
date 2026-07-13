@@ -3,10 +3,7 @@
 // S2-02: Varredura de contexto trimestral e histórico de gerações
 // ============================================================================
 
-import {
-  DisciplinaNome,
-  NivelEnsino,
-} from '../base/discipline-agent-base';
+import { DisciplinaNome, NivelEnsino } from '../base/discipline-agent-base';
 
 // ---------------------------------------------------------------------------
 // Interfaces públicas
@@ -103,7 +100,7 @@ export class SessionAgent {
    */
   async getTrimestralContext(
     turmaId: string,
-    disciplina: DisciplinaNome,
+    disciplina: DisciplinaNome
   ): Promise<TrimestralContext> {
     // TODO: Integrar com Supabase — buscar planejamento trimestral real
     return {
@@ -115,10 +112,7 @@ export class SessionAgent {
         'Revisão de conceitos básicos',
         'Aprofundamento — tópico 1',
       ],
-      aulasFuturas: [
-        'Tópico 2 — continuação',
-        'Preparação para avaliação trimestral',
-      ],
+      aulasFuturas: ['Tópico 2 — continuação', 'Preparação para avaliação trimestral'],
       trimestreAtual: 2,
     };
   }
@@ -138,7 +132,7 @@ export class SessionAgent {
    */
   async registrarGeracao(
     resultado: Record<string, unknown>,
-    metadata: { turmaId: string; disciplina: DisciplinaNome; tipo: string },
+    metadata: { turmaId: string; disciplina: DisciplinaNome; tipo: string }
   ): Promise<void> {
     // TODO: Integrar com Supabase — persistir registro de geração
     const resumo = this.extrairResumo(resultado);
@@ -173,7 +167,7 @@ export class SessionAgent {
    */
   async verificarContinuidade(
     _novoPlano: Record<string, unknown>,
-    turmaId: string,
+    turmaId: string
   ): Promise<{ continuo: boolean; alertas: string[] }> {
     // TODO: Integrar com Supabase — verificação real de sobreposição temática
     const geracoesTurma = this.historico.filter((r) => r.turmaId === turmaId);
@@ -184,11 +178,11 @@ export class SessionAgent {
 
     if (geracoesTurma.length === 0) {
       alertas.push(
-        `[SessionAgent] Nenhum registro anterior encontrado para a turma ${turmaId}. Esta é a primeira geração.`,
+        `[SessionAgent] Nenhum registro anterior encontrado para a turma ${turmaId}. Esta é a primeira geração.`
       );
     } else {
       alertas.push(
-        `[SessionAgent] ${geracoesTurma.length} registro(s) anterior(es) encontrado(s) para a turma ${turmaId}. Continuidade presumida.`,
+        `[SessionAgent] ${geracoesTurma.length} registro(s) anterior(es) encontrado(s) para a turma ${turmaId}. Continuidade presumida.`
       );
     }
 
@@ -207,10 +201,7 @@ export class SessionAgent {
    * @param disciplina - Disciplina para filtrar (opcional).
    * @returns Array de registros de geração que atendem aos filtros.
    */
-  getHistorico(
-    turmaId: string,
-    disciplina?: DisciplinaNome,
-  ): RegistroGeracao[] {
+  getHistorico(turmaId: string, disciplina?: DisciplinaNome): RegistroGeracao[] {
     return this.historico.filter((registro) => {
       const matchTurma = registro.turmaId === turmaId;
       const matchDisciplina = disciplina === undefined || registro.disciplina === disciplina;

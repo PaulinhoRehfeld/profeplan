@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../supabaseClient', () => ({
   supabase: {
-    from: vi.fn()
-  }
+    from: vi.fn(),
+  },
 }));
 
 import { supabase } from '../supabaseClient';
@@ -13,7 +13,7 @@ const createQuery = (result: { data: unknown; error: unknown }) => {
   const query = {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
-    order: vi.fn().mockResolvedValue(result)
+    order: vi.fn().mockResolvedValue(result),
   };
 
   return query;

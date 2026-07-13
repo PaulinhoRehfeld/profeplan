@@ -5,8 +5,8 @@ import type { Assessment, EnemQuestion } from '../types';
 // which is native and works without heavy dependencies for this specific task.
 
 export const buildInclusionDocHtml = (
-  originalLesson: { title: string, content: string },
-  adaptations: { studentName: string, content: string }[],
+  originalLesson: { title: string; content: string },
+  adaptations: { studentName: string; content: string }[],
   includeOriginal: boolean = true
 ) => {
   // Create Semantic HTML structure for the Word Doc
@@ -46,8 +46,8 @@ export const buildInclusionDocHtml = (
 
   // Append each student's adaptation with a page break
   adaptations.forEach((adapt, index) => {
-    // If it's the first item and we skipped original, we don't strictly need a page break before it, 
-    // but usually consistency is good. 
+    // If it's the first item and we skipped original, we don't strictly need a page break before it,
+    // but usually consistency is good.
     // If includeOriginal is FALSE, the first item is at the top (after header).
     if (includeOriginal || index > 0) {
       htmlContent += `<div class="page-break"></div>`;
@@ -67,15 +67,15 @@ export const buildInclusionDocHtml = (
 };
 
 export const generateInclusionDoc = async (
-  originalLesson: { title: string, content: string },
-  adaptations: { studentName: string, content: string }[],
+  originalLesson: { title: string; content: string },
+  adaptations: { studentName: string; content: string }[],
   includeOriginal: boolean = true
 ) => {
   const htmlContent = buildInclusionDocHtml(originalLesson, adaptations, includeOriginal);
 
   // Create Blob
   const blob = new Blob(['\ufeff', htmlContent], {
-    type: 'application/msword'
+    type: 'application/msword',
   });
 
   // Save
@@ -91,7 +91,11 @@ export const generateInclusionDoc = async (
   document.body.removeChild(link);
 };
 
-export const generatePdiReportDoc = (studentName: string, period: string, reportContent: string): string => {
+export const generatePdiReportDoc = (
+  studentName: string,
+  period: string,
+  reportContent: string
+): string => {
   const htmlContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
@@ -192,8 +196,8 @@ export const exportToDocx = async (content: string, title: string, settings: Exp
 };
 
 export const exportToPptx = async (data: unknown) => {
-  console.warn("PPTX export requires a specialized library (pptxgenjs). Placeholder for now.");
-  alert("Exportação PPTX não implementada nesta versão sem dependências externas.");
+  console.warn('PPTX export requires a specialized library (pptxgenjs). Placeholder for now.');
+  alert('Exportação PPTX não implementada nesta versão sem dependências externas.');
 };
 
 // --- Assessment Export (Restored) ---
@@ -228,7 +232,9 @@ export const exportAssessmentToDocx = async (assessment: Assessment, settings: E
   contentHtml += `</div>`;
 
   // Reuse the HTML export logic
-  const blob = new Blob(['\ufeff', htmlWrapper(assessment.title, contentHtml)], { type: 'application/msword' });
+  const blob = new Blob(['\ufeff', htmlWrapper(assessment.title, contentHtml)], {
+    type: 'application/msword',
+  });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
@@ -277,10 +283,12 @@ export const exportSimuladoToDocx = async (
     const context = metadata?.context || '';
     const command = metadata?.alternativesIntroduction || ''; // Some questions might call it 'text' or 'question', adjusting based on types.ts
     // Fallback if metadata is missing (legacy questions)
-    const questionText = (context || command) ?
-      `${context ? `<div class="context">${context.replace(/\n/g, '<br/>')}</div>` : ''} 
+    const questionText =
+      context || command
+        ? `${context ? `<div class="context">${context.replace(/\n/g, '<br/>')}</div>` : ''} 
          ${command ? `<div class="command" style="margin-top: 10px; font-weight: bold;">${command.replace(/\n/g, '<br/>')}</div>` : ''}`
-      : ((q as { content?: string }).content || '').replace(/\n/g, '<br/>') || 'Texto da questão indisponível.';
+        : ((q as { content?: string }).content || '').replace(/\n/g, '<br/>') ||
+          'Texto da questão indisponível.';
 
     // Construct Alternatives
     let alternativesHtml = '';
@@ -338,7 +346,9 @@ export const exportSimuladoToDocx = async (
     `;
 
   // 4. Save
-  const blob = new Blob(['\ufeff', htmlWrapper(`Simulado - ${versionTitle}`, contentHtml)], { type: 'application/msword' });
+  const blob = new Blob(['\ufeff', htmlWrapper(`Simulado - ${versionTitle}`, contentHtml)], {
+    type: 'application/msword',
+  });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;

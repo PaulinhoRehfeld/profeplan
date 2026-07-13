@@ -7,7 +7,9 @@ import * as AiCore from '../AiCore';
 // AiCore real (via vi.importActual abaixo) importa sessionService, que importa
 // o client. Mockado aqui para não depender de credenciais reais.
 vi.mock('../../supabaseClient', () => ({
-  supabase: { auth: { getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }) } },
+  supabase: {
+    auth: { getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }) },
+  },
 }));
 
 // Mock do cliente de IA para não fazer chamadas reais
@@ -111,7 +113,12 @@ NENHUMA LINHA COM "N CODIGO NOME"
 
     expect(result.className).toBe('1 EM REG 5');
     // Normalizamos acentos tornando a asserção imune a variação da IA.
-    expect(result.subject.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()).toContain('HISTORIA');
+    expect(
+      result.subject
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+    ).toContain('HISTORIA');
     expect(result.students).toHaveLength(2);
 
     const [first, second] = result.students as any[];
@@ -140,8 +147,7 @@ TEXTO SEM PADRÃO E COM FALHA DE IA
     });
 
     await expect(parseClassListFromText(rawText)).rejects.toThrow(
-      'Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis.',
+      'Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis.'
     );
   });
 });
-

@@ -1,55 +1,55 @@
 /**
  * Serviço de Geração de Apresentações via DeepSeek
- * 
+ *
  * Agente especializado que gera roteiros de slides em JSON estruturado,
  * com infográficos descritivos e imagens sugeridas.
  * Saída 100% em português brasileiro, sem erros ortográficos.
  */
-import { GENERATION_MODELS, getGenAIClient } from "./AiCore";
+import { GENERATION_MODELS, getGenAIClient } from './AiCore';
 
 export interface InfographicSlide {
-    order: number;
-    type: "infografico";
+  order: number;
+  type: 'infografico';
+  title: string;
+  infographicDescription: string;
+  chartData?: {
+    chartType: 'barra' | 'pizza' | 'linha' | 'comparacao' | 'processo' | 'hierarquia';
     title: string;
-    infographicDescription: string;
-    chartData?: {
-        chartType: "barra" | "pizza" | "linha" | "comparacao" | "processo" | "hierarquia";
-        title: string;
-        labels: string[];
-        values: number[];
-    };
-    imageSearchQuery: string;
-    speakerNotes: string;
+    labels: string[];
+    values: number[];
+  };
+  imageSearchQuery: string;
+  speakerNotes: string;
 }
 
 export interface ContentSlide {
-    order: number;
-    type: "capa" | "conteudo" | "interacao" | "conclusao" | "topico";
-    title: string;
-    contentBulletPoints: string[];
-    imageSearchQuery: string;
-    speakerNotes: string;
+  order: number;
+  type: 'capa' | 'conteudo' | 'interacao' | 'conclusao' | 'topico';
+  title: string;
+  contentBulletPoints: string[];
+  imageSearchQuery: string;
+  speakerNotes: string;
 }
 
 export type PresentationSlide = ContentSlide | InfographicSlide;
 
 export interface PresentationScript {
-    title: string;
-    subtitle: string;
-    theme: string;
-    slides: PresentationSlide[];
+  title: string;
+  subtitle: string;
+  theme: string;
+  slides: PresentationSlide[];
 }
 
 export const generatePresentationJSON = async (
-    topic: string,
-    context: string,
-    slideCount: number,
-    style: string,
-    includeInteractions: boolean
+  topic: string,
+  context: string,
+  slideCount: number,
+  style: string,
+  includeInteractions: boolean
 ): Promise<PresentationScript> => {
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    const systemPrompt = `VOCÊ É UM DESIGNER INSTRUCIONAL BRASILEIRO ESPECIALISTA EM APRESENTAÇÕES PEDAGÓGICAS DE ALTO IMPACTO.
+  const systemPrompt = `VOCÊ É UM DESIGNER INSTRUCIONAL BRASILEIRO ESPECIALISTA EM APRESENTAÇÕES PEDAGÓGICAS DE ALTO IMPACTO.
 
 REGRAS ABSOLUTAS (NÃO NEGOCIÁVEIS):
 
@@ -78,7 +78,7 @@ REGRAS ABSOLUTAS (NÃO NEGOCIÁVEIS):
 
 7. 🎤 NOTAS DO APRESENTADOR: Cada slide deve ter "speakerNotes" com o roteiro do que o professor deve FALAR, em linguagem natural e coloquial brasileira.`;
 
-    const userPrompt = `CRIE UMA APRESENTAÇÃO PEDAGÓGICA COMPLETA EM PORTUGUÊS BRASILEIRO COM OS SEGUINTES PARÂMETROS:
+  const userPrompt = `CRIE UMA APRESENTAÇÃO PEDAGÓGICA COMPLETA EM PORTUGUÊS BRASILEIRO COM OS SEGUINTES PARÂMETROS:
 
 TEMA: ${topic}
 CONTEXTO DA AULA: ${context || 'Criar apresentação introdutória sobre o tema'}
@@ -112,50 +112,57 @@ RETORNE APENAS UM JSON VÁLIDO (sem markdown, sem comentários) com esta estrutu
 - [ ] As imageSearchQuery estão em português e são descritivas?
 - [ ] As speakerNotes estão em linguagem natural brasileira?`;
 
-    const messages = [
-        { role: "system" as const, content: systemPrompt },
-        { role: "user" as const, content: userPrompt },
-    ];
+  const messages = [
+    { role: 'system' as const, content: systemPrompt },
+    { role: 'user' as const, content: userPrompt },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: GENERATION_MODELS[0],
-        messages,
-        temperature: 0.3,
-        max_tokens: 4096,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: GENERATION_MODELS[0],
+    messages,
+    temperature: 0.3,
+    max_tokens: 4096,
+  } as any);
 
-    const content = completion.choices[0]?.message?.content as any;
-    const text =
-        typeof content === "string"
-            ? content
-            : (content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
+  const content = completion.choices[0]?.message?.content as any;
+  const text =
+    typeof content === 'string'
+      ? content
+      : ((content as any[] | undefined)
+          ?.map((c) => (typeof c === 'string' ? c : c.text || ''))
+          .join('') ?? '');
 
-    // Limpa possíveis cercas markdown
-    const jsonText = text
-        .replace(/^\s*```(?:json)?\s*/i, '')
-        .replace(/\s*```\s*$/i, '')
-        .trim();
+  // Limpa possíveis cercas markdown
+  const jsonText = text
+    .replace(/^\s*```(?:json)?\s*/i, '')
+    .replace(/\s*```\s*$/i, '')
+    .trim();
 
-    try {
-        const parsed = JSON.parse(jsonText) as PresentationScript;
+  try {
+    const parsed = JSON.parse(jsonText) as PresentationScript;
 
-        if (!parsed.slides || !Array.isArray(parsed.slides)) {
-            throw new Error('JSON inválido: campo "slides" ausente ou não é array');
-        }
-
-        // Validação de idioma — detecta excesso de palavras em inglês
-        const englishWords = /\b(the|and|for|with|this|that|have|from|are|not|but|you|all|can|had|her|was|one|our|out|has|been|some|them|who|will|more|about|into|than|just)\b/gi;
-        const allText = JSON.stringify(parsed);
-        const matches = allText.match(englishWords);
-        if (matches && matches.length > 5) {
-            console.warn(`[PresentationAgent] ⚠️ ${matches.length} palavras em inglês detectadas.`);
-        }
-
-        console.log(`[PresentationAgent] ✅ ${parsed.slides.length} slides gerados: "${parsed.title}"`);
-        return parsed;
-    } catch (e) {
-        console.error("[PresentationAgent] Erro ao parsear JSON:", e, "\nTexto:", text.substring(0, 300));
-        throw new Error("Falha ao gerar o roteiro da apresentação. A IA retornou um formato inválido.");
+    if (!parsed.slides || !Array.isArray(parsed.slides)) {
+      throw new Error('JSON inválido: campo "slides" ausente ou não é array');
     }
-};
 
+    // Validação de idioma — detecta excesso de palavras em inglês
+    const englishWords =
+      /\b(the|and|for|with|this|that|have|from|are|not|but|you|all|can|had|her|was|one|our|out|has|been|some|them|who|will|more|about|into|than|just)\b/gi;
+    const allText = JSON.stringify(parsed);
+    const matches = allText.match(englishWords);
+    if (matches && matches.length > 5) {
+      console.warn(`[PresentationAgent] ⚠️ ${matches.length} palavras em inglês detectadas.`);
+    }
+
+    console.log(`[PresentationAgent] ✅ ${parsed.slides.length} slides gerados: "${parsed.title}"`);
+    return parsed;
+  } catch (e) {
+    console.error(
+      '[PresentationAgent] Erro ao parsear JSON:',
+      e,
+      '\nTexto:',
+      text.substring(0, 300)
+    );
+    throw new Error('Falha ao gerar o roteiro da apresentação. A IA retornou um formato inválido.');
+  }
+};

@@ -185,7 +185,7 @@ export abstract class BaseDisciplineAgent {
    */
   public async gerar(
     tipo: TipoGeracao,
-    parametros: Record<string, unknown>,
+    parametros: Record<string, unknown>
   ): Promise<GeracaoResultado> {
     // Etapa 1: Construir contexto RAG
     const ragContext = await this._buildRagContext(tipo);
@@ -227,7 +227,7 @@ export abstract class BaseDisciplineAgent {
   protected async _callLLM(
     prompt: string,
     ragContext: string,
-    params: Record<string, unknown>,
+    params: Record<string, unknown>
   ): Promise<string> {
     const userPrompt = [
       prompt,
@@ -255,7 +255,7 @@ export abstract class BaseDisciplineAgent {
     if (!prompt) {
       throw new Error(
         `Prompt não encontrado: "${filename}" (disciplina: ${this.getDisciplina()}). ` +
-        `Rode scripts/build-prompts.mjs se o .md foi adicionado recentemente.`,
+          `Rode scripts/build-prompts.mjs se o .md foi adicionado recentemente.`
       );
     }
     return prompt;
@@ -269,8 +269,14 @@ export abstract class BaseDisciplineAgent {
    */
   private _extractJsonFromText(raw: string): string {
     const text = (raw || '').trim();
-    const unfenced = text.replace(/^\s*```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-    if ((unfenced.startsWith('{') && unfenced.endsWith('}')) || (unfenced.startsWith('[') && unfenced.endsWith(']'))) {
+    const unfenced = text
+      .replace(/^\s*```(?:json)?\s*/i, '')
+      .replace(/\s*```\s*$/i, '')
+      .trim();
+    if (
+      (unfenced.startsWith('{') && unfenced.endsWith('}')) ||
+      (unfenced.startsWith('[') && unfenced.endsWith(']'))
+    ) {
       return unfenced;
     }
     const objMatch = unfenced.match(/\{[\s\S]*\}/);
@@ -285,10 +291,7 @@ export abstract class BaseDisciplineAgent {
    * Implementação compartilhada por todos os agentes de disciplina — não
    * precisa (nem deve) ser sobrescrita.
    */
-  protected async _postProcess(
-    raw: string,
-    tipo: TipoGeracao,
-  ): Promise<GeracaoResultado> {
+  protected async _postProcess(raw: string, tipo: TipoGeracao): Promise<GeracaoResultado> {
     let conteudo: Record<string, unknown>;
     try {
       conteudo = JSON.parse(this._extractJsonFromText(raw)) as Record<string, unknown>;

@@ -1,128 +1,135 @@
-import { checkUsageQuota, incrementUserUsage } from "../ProfileService";
-import { executeWithFallback, getGenAIClient } from "./AiCore";
-import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from "./AiGuardrailsService";
-import { UserSettings } from "../../types";
-import { getAuthHeaders } from "../sessionService";
-import { supabase } from "../supabaseClient";
+import { checkUsageQuota, incrementUserUsage } from '../ProfileService';
+import { executeWithFallback, getGenAIClient } from './AiCore';
+import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from './AiGuardrailsService';
+import { UserSettings } from '../../types';
+import { getAuthHeaders } from '../sessionService';
+import { supabase } from '../supabaseClient';
 
 async function shouldUseBff(userId?: string): Promise<boolean> {
-    try {
-        let currentUserId = userId;
-        if (!currentUserId) {
-            const { data: { user } } = await supabase.auth.getUser();
-            currentUserId = user?.id;
-        }
-        if (!currentUserId) return false;
-
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('allowed_features')
-            .eq('id', currentUserId)
-            .maybeSingle();
-
-        const allowedFeatures = profile?.allowed_features || [];
-        return allowedFeatures.includes('pdi_bff') || allowedFeatures.includes('all');
-    } catch (e) {
-        console.warn('[AiPdiService] Failed to check feature flag, defaulting to legacy local flow:', e);
-        return false;
+  try {
+    let currentUserId = userId;
+    if (!currentUserId) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      currentUserId = user?.id;
     }
+    if (!currentUserId) return false;
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('allowed_features')
+      .eq('id', currentUserId)
+      .maybeSingle();
+
+    const allowedFeatures = profile?.allowed_features || [];
+    return allowedFeatures.includes('pdi_bff') || allowedFeatures.includes('all');
+  } catch (e) {
+    console.warn(
+      '[AiPdiService] Failed to check feature flag, defaulting to legacy local flow:',
+      e
+    );
+    return false;
+  }
 }
 
 async function callPdiBff(action: string, payload: Record<string, any>): Promise<any> {
-    const authHeaders = await getAuthHeaders();
-    const response = await fetch("/api/pdiProxy", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            ...authHeaders
-        },
-        body: JSON.stringify({ action, ...payload }),
-    });
+  const authHeaders = await getAuthHeaders();
+  const response = await fetch('/api/pdiProxy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders,
+    },
+    body: JSON.stringify({ action, ...payload }),
+  });
 
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-        throw new Error(data?.error || `Falha no proxy de PDI (HTTP ${response.status})`);
-    }
-    return data;
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data?.error || `Falha no proxy de PDI (HTTP ${response.status})`);
+  }
+  return data;
 }
 
-
 type PdiLogEntry = {
-    created_at?: string;
-    content?: string;
+  created_at?: string;
+  content?: string;
 };
 
 type PdiEvaluationEntry = {
-    subject?: string;
-    period?: number;
-    autonomy_level?: string;
-    comprehension_level?: string;
-    pedagogical_diagnosis?: string;
+  subject?: string;
+  period?: number;
+  autonomy_level?: string;
+  comprehension_level?: string;
+  pedagogical_diagnosis?: string;
 };
 
 type PdiBlock9Entry = {
-    lesson_title?: string;
-    adaptacao_metodologica?: string;
+  lesson_title?: string;
+  adaptacao_metodologica?: string;
 };
 
 type PdiBlock10Entry = {
-    atividade_titulo?: string;
-    professor_valor?: number;
-    professor_nota_alcancada?: number;
-    professor_grau_autonomia?: string;
-    ia_diagnostico?: string;
+  atividade_titulo?: string;
+  professor_valor?: number;
+  professor_nota_alcancada?: number;
+  professor_grau_autonomia?: string;
+  ia_diagnostico?: string;
 };
 
 type FullPdiContext = {
-    student_name: string;
-    content_data?: Record<string, unknown>;
-    block_1_8?: Record<string, unknown>;
-    block_9_history?: PdiBlock9Entry[];
-    block_10_history?: PdiBlock10Entry[];
+  student_name: string;
+  content_data?: Record<string, unknown>;
+  block_1_8?: Record<string, unknown>;
+  block_9_history?: PdiBlock9Entry[];
+  block_10_history?: PdiBlock10Entry[];
 };
 
 type PdiBlock11Document = {
-    student_name: string;
-    period: string;
-    school_name?: string;
-    content_data?: Record<string, unknown>;
-    block_1_8?: Record<string, unknown>;
-    block_9_content?: Array<PdiBlock9Entry & { subject?: string }>;
-    block_10_entries?: PdiBlock10Entry[];
+  student_name: string;
+  period: string;
+  school_name?: string;
+  content_data?: Record<string, unknown>;
+  block_1_8?: Record<string, unknown>;
+  block_9_content?: Array<PdiBlock9Entry & { subject?: string }>;
+  block_10_entries?: PdiBlock10Entry[];
 };
 
 const extractMessageText = (content: unknown): string => {
-    if (typeof content === "string") return content;
-    if (Array.isArray(content)) {
-        return content.map((c: any) => (typeof c === "string" ? c : c.text || "")).join("");
-    }
-    if (content && typeof content === "object" && "text" in content) {
-        return (content as any).text ?? "";
-    }
-    return "";
+  if (typeof content === 'string') return content;
+  if (Array.isArray(content)) {
+    return content.map((c: any) => (typeof c === 'string' ? c : c.text || '')).join('');
+  }
+  if (content && typeof content === 'object' && 'text' in content) {
+    return (content as any).text ?? '';
+  }
+  return '';
 };
 
 const extractJsonObjectFromText = (raw: string): string => {
-    const text = (raw || '').trim();
+  const text = (raw || '').trim();
 
-    // Remove cercas de markdown comuns: ```json ... ``` ou ``` ... ```
-    const unfenced = text
-        .replace(/^\s*```(?:json)?\s*/i, '')
-        .replace(/\s*```\s*$/i, '')
-        .trim();
+  // Remove cercas de markdown comuns: ```json ... ``` ou ``` ... ```
+  const unfenced = text
+    .replace(/^\s*```(?:json)?\s*/i, '')
+    .replace(/\s*```\s*$/i, '')
+    .trim();
 
-    // Se já parece JSON puro, ótimo.
-    if ((unfenced.startsWith('{') && unfenced.endsWith('}')) || (unfenced.startsWith('[') && unfenced.endsWith(']'))) {
-        return unfenced;
-    }
-
-    // Fallback: extrair o primeiro bloco JSON (objeto ou array) contido no texto.
-    const objMatch = unfenced.match(/\{[\s\S]*\}/);
-    if (objMatch?.[0]) return objMatch[0];
-    const arrMatch = unfenced.match(/\[[\s\S]*\]/);
-    if (arrMatch?.[0]) return arrMatch[0];
-
+  // Se já parece JSON puro, ótimo.
+  if (
+    (unfenced.startsWith('{') && unfenced.endsWith('}')) ||
+    (unfenced.startsWith('[') && unfenced.endsWith(']'))
+  ) {
     return unfenced;
+  }
+
+  // Fallback: extrair o primeiro bloco JSON (objeto ou array) contido no texto.
+  const objMatch = unfenced.match(/\{[\s\S]*\}/);
+  if (objMatch?.[0]) return objMatch[0];
+  const arrMatch = unfenced.match(/\[[\s\S]*\]/);
+  if (arrMatch?.[0]) return arrMatch[0];
+
+  return unfenced;
 };
 
 /**
@@ -130,59 +137,67 @@ const extractJsonObjectFromText = (raw: string): string => {
  * Gera uma adaptação PDI/DUA para um aluno específico baseada em uma aula original.
  */
 export const generateStudentAdaptation = async (
-    originalContent: string,
-    studentName: string,
-    deficiencies: string[],
-    observations: string,
-    gradeLevel: string,
-    context?: { stateBase?: string; educationSphere?: string; userId?: string; userSettings?: UserSettings }
+  originalContent: string,
+  studentName: string,
+  deficiencies: string[],
+  observations: string,
+  gradeLevel: string,
+  context?: {
+    stateBase?: string;
+    educationSphere?: string;
+    userId?: string;
+    userSettings?: UserSettings;
+  }
 ) => {
-    if (await shouldUseBff(context?.userId)) {
-        try {
-            const guardrailsConfig = context?.userSettings
-                ? extractGuardrailsFromSettings(context.userSettings)
-                : undefined;
-            if (guardrailsConfig) {
-                guardrailsConfig.context = `Adaptação PDI - ${gradeLevel}`;
-            }
-            const result = await callPdiBff('generateStudentAdaptation', {
-                originalContent,
-                studentName,
-                deficiencies,
-                observations,
-                gradeLevel,
-                stateBase: context?.stateBase,
-                educationSphere: context?.educationSphere,
-                guardrailsConfig
-            });
-            if (context?.userId) {
-                await incrementUserUsage(context.userId, 'generate');
-            }
-            return result.text;
-        } catch (bffError) {
-            console.warn('[AiPdiService] BFF generateStudentAdaptation failed, falling back to local client completion:', bffError);
-        }
-    }
-
-    // Check Quota
-    if (context?.userId) {
-        const quotaStatus = await checkUsageQuota(context.userId);
-        if (!quotaStatus.allowed) {
-            throw new Error(quotaStatus.message);
-        }
-    }
-
-    const client = getGenAIClient();
-
-    // 🛡️ GUARDRAILS: Apply user preferences to PDI adaptations
-    let guardrailsPrompt = "";
-    if (context?.userSettings) {
-        const guardrailsConfig = extractGuardrailsFromSettings(context.userSettings);
+  if (await shouldUseBff(context?.userId)) {
+    try {
+      const guardrailsConfig = context?.userSettings
+        ? extractGuardrailsFromSettings(context.userSettings)
+        : undefined;
+      if (guardrailsConfig) {
         guardrailsConfig.context = `Adaptação PDI - ${gradeLevel}`;
-        guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
+      }
+      const result = await callPdiBff('generateStudentAdaptation', {
+        originalContent,
+        studentName,
+        deficiencies,
+        observations,
+        gradeLevel,
+        stateBase: context?.stateBase,
+        educationSphere: context?.educationSphere,
+        guardrailsConfig,
+      });
+      if (context?.userId) {
+        await incrementUserUsage(context.userId, 'generate');
+      }
+      return result.text;
+    } catch (bffError) {
+      console.warn(
+        '[AiPdiService] BFF generateStudentAdaptation failed, falling back to local client completion:',
+        bffError
+      );
     }
+  }
 
-    const prompt = `
+  // Check Quota
+  if (context?.userId) {
+    const quotaStatus = await checkUsageQuota(context.userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  const client = getGenAIClient();
+
+  // 🛡️ GUARDRAILS: Apply user preferences to PDI adaptations
+  let guardrailsPrompt = '';
+  if (context?.userSettings) {
+    const guardrailsConfig = extractGuardrailsFromSettings(context.userSettings);
+    guardrailsConfig.context = `Adaptação PDI - ${gradeLevel}`;
+    guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
+  }
+
+  const prompt = `
     ATUE COMO UM ESPECIALISTA EM INCLUSÃO E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
     
     ${guardrailsPrompt}
@@ -215,65 +230,74 @@ export const generateStudentAdaptation = async (
     (Como verificar o aprendizado dele nesta aula)
     `;
 
-    return executeWithFallback('StudentAdaptation', async (modelName) => {
-        const messages = [
-            {
-                role: "system" as const,
-                content: "Você é um especialista em inclusão e DUA escrevendo adaptações de aula.",
-            },
-            {
-                role: "user" as const,
-                content: prompt,
-            },
-        ];
+  return executeWithFallback('StudentAdaptation', async (modelName) => {
+    const messages = [
+      {
+        role: 'system' as const,
+        content: 'Você é um especialista em inclusão e DUA escrevendo adaptações de aula.',
+      },
+      {
+        role: 'user' as const,
+        content: prompt,
+      },
+    ];
 
-        const completion = await client.chat.completions.create({
-            model: modelName,
-            messages,
-            temperature: 0.7,
-        } as any);
+    const completion = await client.chat.completions.create({
+      model: modelName,
+      messages,
+      temperature: 0.7,
+    } as any);
 
-        const text = extractMessageText(completion.choices[0]?.message?.content);
+    const text = extractMessageText(completion.choices[0]?.message?.content);
 
-        // Increment Usage only on success
-        if (context?.userId) {
-            await incrementUserUsage(context.userId, 'generate');
-        }
+    // Increment Usage only on success
+    if (context?.userId) {
+      await incrementUserUsage(context.userId, 'generate');
+    }
 
-        return text;
-    });
+    return text;
+  });
 };
 
 /**
  * [PDI_REPORT_MODE]
  * Gera um Relatório Bimestral de PDI baseado nos logs de adaptação.
  */
-export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string, period: string, userId?: string) => {
-    if (await shouldUseBff(userId)) {
-        try {
-            const result = await callPdiBff('generatePdiReport', {
-                logs,
-                studentName,
-                period
-            });
-            if (userId) {
-                await incrementUserUsage(userId, 'generate');
-            }
-            return result.text;
-        } catch (bffError) {
-            console.warn('[AiPdiService] BFF generatePdiReport failed, falling back to local:', bffError);
-        }
+export const generatePdiReport = async (
+  logs: PdiLogEntry[],
+  studentName: string,
+  period: string,
+  userId?: string
+) => {
+  if (await shouldUseBff(userId)) {
+    try {
+      const result = await callPdiBff('generatePdiReport', {
+        logs,
+        studentName,
+        period,
+      });
+      if (userId) {
+        await incrementUserUsage(userId, 'generate');
+      }
+      return result.text;
+    } catch (bffError) {
+      console.warn('[AiPdiService] BFF generatePdiReport failed, falling back to local:', bffError);
     }
+  }
 
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    // Sintetiza os logs para não estourar o contexto
-    const logsSummary = logs.map(l => {
-        const dateLabel = l.created_at ? new Date(l.created_at).toLocaleDateString() : 'Data desconhecida';
-        return `- Em ${dateLabel}: Adaptação focada em ${l.content?.substring(0, 100) || 'Conteúdo adaptado'}...`;
-    }).join('\n');
+  // Sintetiza os logs para não estourar o contexto
+  const logsSummary = logs
+    .map((l) => {
+      const dateLabel = l.created_at
+        ? new Date(l.created_at).toLocaleDateString()
+        : 'Data desconhecida';
+      return `- Em ${dateLabel}: Adaptação focada em ${l.content?.substring(0, 100) || 'Conteúdo adaptado'}...`;
+    })
+    .join('\n');
 
-    const prompt = `
+  const prompt = `
     ATUE COMO UM ESPECIALISTA EM EDUCAÇÃO ESPECIAL E INCLUSIVA COM 20 ANOS DE EXPERIÊNCIA EM ESCRITA DE LAUDOS E RELATÓRIOS DE PDI.
     
     DADOS DO ALUNO: ${studentName}
@@ -296,65 +320,74 @@ export const generatePdiReport = async (logs: PdiLogEntry[], studentName: string
     - Sem cabeçalhos Markdown (##), use apenas negrito para dar ênfase se necessário.
     `;
 
-    const messages = [
-        {
-            role: "system" as const,
-            content: "Você é um especialista em educação especial redigindo relatórios oficiais de PDI.",
-        },
-        {
-            role: "user" as const,
-            content: prompt,
-        },
-    ];
+  const messages = [
+    {
+      role: 'system' as const,
+      content: 'Você é um especialista em educação especial redigindo relatórios oficiais de PDI.',
+    },
+    {
+      role: 'user' as const,
+      content: prompt,
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.6,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages,
+    temperature: 0.6,
+  } as any);
 
-    return extractMessageText(completion.choices[0]?.message?.content);
+  return extractMessageText(completion.choices[0]?.message?.content);
 };
 
 /**
  * [PDI_CONSOLIDATOR_MODE]
  * Gera o Relatório Final (Item XI) consolidando Perfil + Avaliações.
  */
-export const generateFinalPDIReport = async (data: {
+export const generateFinalPDIReport = async (
+  data: {
     studentName: string;
     profileData: Record<string, unknown>;
     evaluations: PdiEvaluationEntry[];
     adaptationCount: number;
-}, userId?: string) => {
-    if (await shouldUseBff(userId)) {
-        try {
-            const result = await callPdiBff('generateFinalPDIReport', {
-                studentName: data.studentName,
-                profileData: data.profileData,
-                evaluations: data.evaluations,
-                adaptationCount: data.adaptationCount
-            });
-            if (userId) {
-                await incrementUserUsage(userId, 'generate');
-            }
-            return result.text;
-        } catch (bffError) {
-            console.warn('[AiPdiService] BFF generateFinalPDIReport failed, falling back to local:', bffError);
-        }
+  },
+  userId?: string
+) => {
+  if (await shouldUseBff(userId)) {
+    try {
+      const result = await callPdiBff('generateFinalPDIReport', {
+        studentName: data.studentName,
+        profileData: data.profileData,
+        evaluations: data.evaluations,
+        adaptationCount: data.adaptationCount,
+      });
+      if (userId) {
+        await incrementUserUsage(userId, 'generate');
+      }
+      return result.text;
+    } catch (bffError) {
+      console.warn(
+        '[AiPdiService] BFF generateFinalPDIReport failed, falling back to local:',
+        bffError
+      );
     }
+  }
 
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    // Formata Avaliações Docentes
-    const evaluationsText = data.evaluations.map(e =>
+  // Formata Avaliações Docentes
+  const evaluationsText = data.evaluations
+    .map(
+      (e) =>
         `- ${e.subject} (${e.period}º Tri): Autonomia ${e.autonomy_level}, Compreensão ${e.comprehension_level}. Obs: "${e.pedagogical_diagnosis}"`
-    ).join('\n');
+    )
+    .join('\n');
 
-    // Formata Perfil (Resumo dos Checkboxes marcados como APRESENTA ou NAO_APRESENTA)
-    // Simplificando o JSON para o prompt
-    const profileSummary = JSON.stringify(data.profileData, null, 2);
+  // Formata Perfil (Resumo dos Checkboxes marcados como APRESENTA ou NAO_APRESENTA)
+  // Simplificando o JSON para o prompt
+  const profileSummary = JSON.stringify(data.profileData, null, 2);
 
-    const prompt = `
+  const prompt = `
       ATUE COMO UM GESTOR EDUCACIONAL ESPECIALISTA EM INCLUSÃO.
       ESCREVA O RELATÓRIO FINAL (ITEM XI) DO PLANO DE DESENVOLVIMENTO INDIVIDUAL (PDI).
 
@@ -365,7 +398,7 @@ export const generateFinalPDIReport = async (data: {
       ${profileSummary}
 
       AVALIAÇÕES DOS PROFESSORES:
-      ${evaluationsText || "Nenhuma avaliação docente registrada no sistema ainda."}
+      ${evaluationsText || 'Nenhuma avaliação docente registrada no sistema ainda.'}
 
       TAREFA:
       Redija um texto consolidado de 3 a 5 parágrafos.
@@ -378,24 +411,24 @@ export const generateFinalPDIReport = async (data: {
       FORMATO: Texto corrido (sem markdown, sem tópicos), pronto para impressão oficial.
     `;
 
-    const messages = [
-        {
-            role: "system" as const,
-            content: "Você é um gestor educacional especialista em inclusão.",
-        },
-        {
-            role: "user" as const,
-            content: prompt,
-        },
-    ];
+  const messages = [
+    {
+      role: 'system' as const,
+      content: 'Você é um gestor educacional especialista em inclusão.',
+    },
+    {
+      role: 'user' as const,
+      content: prompt,
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.7,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages,
+    temperature: 0.7,
+  } as any);
 
-    return extractMessageText(completion.choices[0]?.message?.content);
+  return extractMessageText(completion.choices[0]?.message?.content);
 };
 
 /**
@@ -404,73 +437,76 @@ export const generateFinalPDIReport = async (data: {
  * Usa o contexto dos Blocos 1-8 do PDI como base de conhecimento.
  */
 export const generateBlock9Adaptation = async (
-    lessonContent: string,
-    lessonTitle: string,
-    subject: string,
-    gradeLevel: string,
-    habilidadesBncc: string[],
-    studentPdiContext: {
-        nome_completo: string;
-        diagnostico_clinico?: string;
-        necessidades_especificas?: string[];
-        potencialidades?: string[];
-        desafios?: string[];
-        objetivo_geral?: string;
-        recursos_tecnologicos?: string[];
-        materiais_adaptados?: string[];
-    },
-    userId?: string,
-    userSettings?: UserSettings
+  lessonContent: string,
+  lessonTitle: string,
+  subject: string,
+  gradeLevel: string,
+  habilidadesBncc: string[],
+  studentPdiContext: {
+    nome_completo: string;
+    diagnostico_clinico?: string;
+    necessidades_especificas?: string[];
+    potencialidades?: string[];
+    desafios?: string[];
+    objetivo_geral?: string;
+    recursos_tecnologicos?: string[];
+    materiais_adaptados?: string[];
+  },
+  userId?: string,
+  userSettings?: UserSettings
 ): Promise<{
-    adaptacao_metodologica: string;
-    recursos_adaptados: string[];
-    objetivos_adaptados: string[];
-    estrategias_ensino: string[];
-    tempo_estimado?: string;
+  adaptacao_metodologica: string;
+  recursos_adaptados: string[];
+  objetivos_adaptados: string[];
+  estrategias_ensino: string[];
+  tempo_estimado?: string;
 }> => {
-    if (await shouldUseBff(userId)) {
-        try {
-            const guardrailsConfig = userSettings
-                ? extractGuardrailsFromSettings(userSettings)
-                : undefined;
-            if (guardrailsConfig) {
-                guardrailsConfig.context = `PDI Bloco 9 - ${gradeLevel}`;
-            }
-            const result = await callPdiBff('generateBlock9Adaptation', {
-                lessonContent,
-                lessonTitle,
-                subject,
-                gradeLevel,
-                habilidadesBncc,
-                studentPdiContext,
-                guardrailsConfig
-            });
-            if (userId) {
-                await incrementUserUsage(userId, 'generate');
-            }
-            return result;
-        } catch (bffError) {
-            console.warn('[AiPdiService] BFF generateBlock9Adaptation failed, falling back to local:', bffError);
-        }
-    }
-
-    const client = getGenAIClient();
-
-    if (userId) {
-        const quotaStatus = await checkUsageQuota(userId);
-        if (!quotaStatus.allowed) {
-            throw new Error(quotaStatus.message);
-        }
-    }
-
-    let guardrailsPrompt = "";
-    if (userSettings) {
-        const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
+  if (await shouldUseBff(userId)) {
+    try {
+      const guardrailsConfig = userSettings
+        ? extractGuardrailsFromSettings(userSettings)
+        : undefined;
+      if (guardrailsConfig) {
         guardrailsConfig.context = `PDI Bloco 9 - ${gradeLevel}`;
-        guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
+      }
+      const result = await callPdiBff('generateBlock9Adaptation', {
+        lessonContent,
+        lessonTitle,
+        subject,
+        gradeLevel,
+        habilidadesBncc,
+        studentPdiContext,
+        guardrailsConfig,
+      });
+      if (userId) {
+        await incrementUserUsage(userId, 'generate');
+      }
+      return result;
+    } catch (bffError) {
+      console.warn(
+        '[AiPdiService] BFF generateBlock9Adaptation failed, falling back to local:',
+        bffError
+      );
     }
+  }
 
-    const prompt = `
+  const client = getGenAIClient();
+
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
+  let guardrailsPrompt = '';
+  if (userSettings) {
+    const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
+    guardrailsConfig.context = `PDI Bloco 9 - ${gradeLevel}`;
+    guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
+  }
+
+  const prompt = `
 ATUE COMO UM ESPECIALISTA EM INCLUSÃO ESCOLAR E DESENHO UNIVERSAL PARA APRENDIZAGEM (DUA).
 
 ${guardrailsPrompt}
@@ -524,39 +560,45 @@ REGRAS TÉCNICAS:
 - As estrategias_ensino devem ser ações concretas do professor
   `;
 
-    const messages = [
-        {
-            role: "system" as const,
-            content: "Você é especialista em inclusão escolar e DUA gerando adaptações curriculares (JSON).",
-        },
-        {
-            role: "user" as const,
-            content: prompt,
-        },
-    ];
+  const messages = [
+    {
+      role: 'system' as const,
+      content:
+        'Você é especialista em inclusão escolar e DUA gerando adaptações curriculares (JSON).',
+    },
+    {
+      role: 'user' as const,
+      content: prompt,
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.7,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages,
+    temperature: 0.7,
+  } as any);
 
-    const text = extractMessageText(completion.choices[0]?.message?.content);
+  const text = extractMessageText(completion.choices[0]?.message?.content);
 
-    const cleaned = extractJsonObjectFromText(text);
-    const parsed = JSON.parse(cleaned);
+  const cleaned = extractJsonObjectFromText(text);
+  const parsed = JSON.parse(cleaned);
 
-    if (!parsed.adaptacao_metodologica || !parsed.recursos_adaptados || !parsed.objetivos_adaptados || !parsed.estrategias_ensino) {
-        throw new Error("Resposta da IA incompleta");
-    }
+  if (
+    !parsed.adaptacao_metodologica ||
+    !parsed.recursos_adaptados ||
+    !parsed.objetivos_adaptados ||
+    !parsed.estrategias_ensino
+  ) {
+    throw new Error('Resposta da IA incompleta');
+  }
 
-    // Deduz o crédito só depois de confirmar que a IA entregou um resultado válido —
-    // resposta malformada/truncada não deve consumir crédito (achado #11 da auditoria).
-    if (userId) {
-        await incrementUserUsage(userId, 'generate');
-    }
+  // Deduz o crédito só depois de confirmar que a IA entregou um resultado válido —
+  // resposta malformada/truncada não deve consumir crédito (achado #11 da auditoria).
+  if (userId) {
+    await incrementUserUsage(userId, 'generate');
+  }
 
-    return parsed;
+  return parsed;
 };
 
 /**
@@ -566,65 +608,78 @@ REGRAS TÉCNICAS:
  * IA completa: metodologia utilizada e diagnóstico pedagógico.
  */
 export const generateBlock10Diagnosis = async (
-    evaluationData: {
-        atividade_titulo: string;
-        disciplina: string;
-        professor_valor: number;
-        professor_nota_alcancada: number;
-        professor_grau_autonomia: 'total' | 'parcial' | 'dependente';
-    },
-    fullPdiContext: FullPdiContext,
-    userId?: string
+  evaluationData: {
+    atividade_titulo: string;
+    disciplina: string;
+    professor_valor: number;
+    professor_nota_alcancada: number;
+    professor_grau_autonomia: 'total' | 'parcial' | 'dependente';
+  },
+  fullPdiContext: FullPdiContext,
+  userId?: string
 ): Promise<{
-    ia_metodologia: string;
-    ia_diagnostico: string;
+  ia_metodologia: string;
+  ia_diagnostico: string;
 }> => {
-    if (await shouldUseBff(userId)) {
-        try {
-            const result = await callPdiBff('generateBlock10Diagnosis', {
-                evaluationData,
-                fullPdiContext
-            });
-            if (userId) {
-                await incrementUserUsage(userId, 'generate');
-            }
-            return result;
-        } catch (bffError) {
-            console.warn('[AiPdiService] BFF generateBlock10Diagnosis failed, falling back to local:', bffError);
-        }
+  if (await shouldUseBff(userId)) {
+    try {
+      const result = await callPdiBff('generateBlock10Diagnosis', {
+        evaluationData,
+        fullPdiContext,
+      });
+      if (userId) {
+        await incrementUserUsage(userId, 'generate');
+      }
+      return result;
+    } catch (bffError) {
+      console.warn(
+        '[AiPdiService] BFF generateBlock10Diagnosis failed, falling back to local:',
+        bffError
+      );
     }
+  }
 
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    if (userId) {
-        const quotaStatus = await checkUsageQuota(userId);
-        if (!quotaStatus.allowed) {
-            throw new Error(quotaStatus.message);
-        }
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
     }
+  }
 
-    const diagnostico_inicial = (fullPdiContext.block_1_8?.bloco_1_identificacao as any)?.diagnostico_clinico || 'Não especificado';
-    const necessidades = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.necessidades_especificas || [];
-    const potencialidades = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.potencialidades || [];
-    const desafios = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.desafios || [];
-    const objetivo_geral = (fullPdiContext.block_1_8?.bloco_3_objetivos as any)?.objetivo_geral || '';
+  const diagnostico_inicial =
+    (fullPdiContext.block_1_8?.bloco_1_identificacao as any)?.diagnostico_clinico ||
+    'Não especificado';
+  const necessidades =
+    (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.necessidades_especificas || [];
+  const potencialidades =
+    (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.potencialidades || [];
+  const desafios = (fullPdiContext.block_1_8?.bloco_2_diagnostico as any)?.desafios || [];
+  const objetivo_geral = (fullPdiContext.block_1_8?.bloco_3_objetivos as any)?.objetivo_geral || '';
 
-    const adaptacoesRecentes = (fullPdiContext.block_9_history || [])
-        .slice(-3)
-        .map((a) => `- ${a.lesson_title}: ${a.adaptacao_metodologica?.substring(0, 150)}...`)
-        .join('\n');
+  const adaptacoesRecentes = (fullPdiContext.block_9_history || [])
+    .slice(-3)
+    .map((a) => `- ${a.lesson_title}: ${a.adaptacao_metodologica?.substring(0, 150)}...`)
+    .join('\n');
 
-    const avaliacoesAnteriores = (fullPdiContext.block_10_history || [])
-        .slice(-3)
-        .map((av) => {
-            const percentual = ((av.professor_nota_alcancada as number) / (av.professor_valor as number) * 100).toFixed(0);
-            return `- ${av.atividade_titulo}: ${percentual}% (Autonomia: ${av.professor_grau_autonomia})`;
-        })
-        .join('\n');
+  const avaliacoesAnteriores = (fullPdiContext.block_10_history || [])
+    .slice(-3)
+    .map((av) => {
+      const percentual = (
+        ((av.professor_nota_alcancada as number) / (av.professor_valor as number)) *
+        100
+      ).toFixed(0);
+      return `- ${av.atividade_titulo}: ${percentual}% (Autonomia: ${av.professor_grau_autonomia})`;
+    })
+    .join('\n');
 
-    const percentualAtual = ((evaluationData.professor_nota_alcancada / evaluationData.professor_valor) * 100).toFixed(1);
+  const percentualAtual = (
+    (evaluationData.professor_nota_alcancada / evaluationData.professor_valor) *
+    100
+  ).toFixed(1);
 
-    const prompt = `
+  const prompt = `
 ATUE COMO UM ESPECIALISTA EM AVALIAÇÃO PEDAGÓGICA E EDUCAÇÃO INCLUSIVA.
 
 CONTEXTO:
@@ -677,41 +732,41 @@ FORMATO DE SAÍDA (JSON PURO):
 }
   `;
 
-    const messages = [
-        {
-            role: "system" as const,
-            content: "Você é especialista em avaliação pedagógica e educação inclusiva.",
-        },
-        {
-            role: "user" as const,
-            content: prompt,
-        },
-    ];
+  const messages = [
+    {
+      role: 'system' as const,
+      content: 'Você é especialista em avaliação pedagógica e educação inclusiva.',
+    },
+    {
+      role: 'user' as const,
+      content: prompt,
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.6,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages,
+    temperature: 0.6,
+  } as any);
 
-    const text = extractMessageText(completion.choices[0]?.message?.content);
-    const cleaned = extractJsonObjectFromText(text);
-    const parsed = JSON.parse(cleaned);
+  const text = extractMessageText(completion.choices[0]?.message?.content);
+  const cleaned = extractJsonObjectFromText(text);
+  const parsed = JSON.parse(cleaned);
 
-    if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
-        throw new Error("Resposta da IA incompleta");
-    }
+  if (!parsed.ia_metodologia || !parsed.ia_diagnostico) {
+    throw new Error('Resposta da IA incompleta');
+  }
 
-    // Deduz o crédito só depois de confirmar que a IA entregou um resultado válido —
-    // resposta malformada/truncada não deve consumir crédito (achado #11 da auditoria).
-    if (userId) {
-        await incrementUserUsage(userId, 'generate');
-    }
+  // Deduz o crédito só depois de confirmar que a IA entregou um resultado válido —
+  // resposta malformada/truncada não deve consumir crédito (achado #11 da auditoria).
+  if (userId) {
+    await incrementUserUsage(userId, 'generate');
+  }
 
-    return {
-        ia_metodologia: parsed.ia_metodologia,
-        ia_diagnostico: parsed.ia_diagnostico,
-    };
+  return {
+    ia_metodologia: parsed.ia_metodologia,
+    ia_diagnostico: parsed.ia_diagnostico,
+  };
 };
 
 /**
@@ -720,58 +775,73 @@ FORMATO DE SAÍDA (JSON PURO):
  * Usado ao fim do período letivo para documentação oficial.
  */
 export const generateBlock11Report = async (
-    pdiDocument: PdiBlock11Document,
-    userId?: string
+  pdiDocument: PdiBlock11Document,
+  userId?: string
 ): Promise<string> => {
-    if (await shouldUseBff(userId)) {
-        try {
-            const result = await callPdiBff('generateBlock11Report', {
-                pdiDocument
-            });
-            if (userId) {
-                await incrementUserUsage(userId, 'generate');
-            }
-            return result.text;
-        } catch (bffError) {
-            console.warn('[AiPdiService] BFF generateBlock11Report failed, falling back to local:', bffError);
-        }
+  if (await shouldUseBff(userId)) {
+    try {
+      const result = await callPdiBff('generateBlock11Report', {
+        pdiDocument,
+      });
+      if (userId) {
+        await incrementUserUsage(userId, 'generate');
+      }
+      return result.text;
+    } catch (bffError) {
+      console.warn(
+        '[AiPdiService] BFF generateBlock11Report failed, falling back to local:',
+        bffError
+      );
     }
+  }
 
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    if (userId) {
-        const quotaStatus = await checkUsageQuota(userId);
-        if (!quotaStatus.allowed) {
-            throw new Error(quotaStatus.message);
-        }
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
     }
+  }
 
-    const identificacao = (pdiDocument.block_1_8?.bloco_1_identificacao as any) || {};
-    const diagnostico = (pdiDocument.block_1_8?.bloco_2_diagnostico as any) || {};
-    const objetivos = (pdiDocument.block_1_8?.bloco_3_objetivos as any) || {};
+  const identificacao = (pdiDocument.block_1_8?.bloco_1_identificacao as any) || {};
+  const diagnostico = (pdiDocument.block_1_8?.bloco_2_diagnostico as any) || {};
+  const objetivos = (pdiDocument.block_1_8?.bloco_3_objetivos as any) || {};
 
-    const totalAdaptacoes = pdiDocument.block_9_content?.length || 0;
-    const disciplinasAdaptadas = [...new Set(pdiDocument.block_9_content?.map((a) => a.subject) || [])];
+  const totalAdaptacoes = pdiDocument.block_9_content?.length || 0;
+  const disciplinasAdaptadas = [
+    ...new Set(pdiDocument.block_9_content?.map((a) => a.subject) || []),
+  ];
 
-    const avaliacoes = pdiDocument.block_10_entries || [];
-    const mediaGeral = avaliacoes.length > 0
-        ? (avaliacoes.reduce((sum: number, av) =>
-            sum + ((av.professor_nota_alcancada as number) / (av.professor_valor as number)) * 100, 0
-        ) / avaliacoes.length).toFixed(1)
-        : 'N/A';
+  const avaliacoes = pdiDocument.block_10_entries || [];
+  const mediaGeral =
+    avaliacoes.length > 0
+      ? (
+          avaliacoes.reduce(
+            (sum: number, av) =>
+              sum +
+              ((av.professor_nota_alcancada as number) / (av.professor_valor as number)) * 100,
+            0
+          ) / avaliacoes.length
+        ).toFixed(1)
+      : 'N/A';
 
-    const autonomiaTotal = avaliacoes.filter((av) => av.professor_grau_autonomia === 'total').length;
-    const autonomiaParcial = avaliacoes.filter((av) => av.professor_grau_autonomia === 'parcial').length;
-    const autonomiaDependente = avaliacoes.filter((av) => av.professor_grau_autonomia === 'dependente').length;
+  const autonomiaTotal = avaliacoes.filter((av) => av.professor_grau_autonomia === 'total').length;
+  const autonomiaParcial = avaliacoes.filter(
+    (av) => av.professor_grau_autonomia === 'parcial'
+  ).length;
+  const autonomiaDependente = avaliacoes.filter(
+    (av) => av.professor_grau_autonomia === 'dependente'
+  ).length;
 
-    const ultimasAvaliacoes = avaliacoes.slice(-3).map((av) => ({
-        atividade: av.atividade_titulo,
-        percentual: ((av.professor_nota_alcancada / av.professor_valor) * 100).toFixed(0),
-        autonomia: av.professor_grau_autonomia,
-        diagnostico: av.ia_diagnostico?.substring(0, 200) + '...',
-    }));
+  const ultimasAvaliacoes = avaliacoes.slice(-3).map((av) => ({
+    atividade: av.atividade_titulo,
+    percentual: ((av.professor_nota_alcancada / av.professor_valor) * 100).toFixed(0),
+    autonomia: av.professor_grau_autonomia,
+    diagnostico: av.ia_diagnostico?.substring(0, 200) + '...',
+  }));
 
-    const prompt = `
+  const prompt = `
 ATUE COMO UM COORDENADOR PEDAGÓGICO SÊNIOR E ESPECIALISTA EM EDUCAÇÃO INCLUSIVA.
 
 CONTEXTO:
@@ -793,7 +863,7 @@ Média Geral: ${mediaGeral}%
 Distribuição Autonomia: Total(${autonomiaTotal}), Parcial(${autonomiaParcial}), Dependente(${autonomiaDependente})
 
 ÚLTIMAS AVALIAÇÕES:
-${ultimasAvaliacoes.map(a => `- ${a.atividade}: ${a.percentual}% (${a.autonomia})`).join('\n') || 'Sem avaliações recentes'}
+${ultimasAvaliacoes.map((a) => `- ${a.atividade}: ${a.percentual}% (${a.autonomia})`).join('\n') || 'Sem avaliações recentes'}
 
 TAREFA: GERAR RELATÓRIO FINAL (BLOCO 11)
 Crie um RELATÓRIO TÉCNICO-PEDAGÓGICO NARRATIVO e OFICIAL (900-1300 palavras).
@@ -806,29 +876,28 @@ Crie um RELATÓRIO TÉCNICO-PEDAGÓGICO NARRATIVO e OFICIAL (900-1300 palavras).
 Use linguagem TÉCNICA mas ACESSÍVEL. Mantenha formato NARRATIVO.
   `;
 
-    const messages = [
-        {
-            role: "system" as const,
-            content: "Você é um coordenador pedagógico sênior especialista em educação inclusiva.",
-        },
-        {
-            role: "user" as const,
-            content: prompt,
-        },
-    ];
+  const messages = [
+    {
+      role: 'system' as const,
+      content: 'Você é um coordenador pedagógico sênior especialista em educação inclusiva.',
+    },
+    {
+      role: 'user' as const,
+      content: prompt,
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.7,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages,
+    temperature: 0.7,
+  } as any);
 
-    const text = extractMessageText(completion.choices[0]?.message?.content);
+  const text = extractMessageText(completion.choices[0]?.message?.content);
 
-    if (userId) {
-        await incrementUserUsage(userId, 'generate');
-    }
+  if (userId) {
+    await incrementUserUsage(userId, 'generate');
+  }
 
-    return text;
+  return text;
 };
-

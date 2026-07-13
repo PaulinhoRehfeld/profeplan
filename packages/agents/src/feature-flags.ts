@@ -60,11 +60,7 @@ export const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
  * @param professorId — ID do professor.
  * @returns true se deve usar agentes V5, false para fallback V4.
  */
-export function shouldUseV5(
-  flags: FeatureFlags,
-  professorId: string,
-  schoolId?: string,
-): boolean {
+export function shouldUseV5(flags: FeatureFlags, professorId: string, schoolId?: string): boolean {
   // Força V4 para escolas na lista de desabilitadas
   if (schoolId && flags.disabledSchools.includes(schoolId)) {
     return false;

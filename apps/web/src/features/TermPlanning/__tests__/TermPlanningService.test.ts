@@ -116,7 +116,7 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     expect(result.userId).toBe(userId);
 
     const stored = JSON.parse(
-      localStorage.getItem(`profeplan_term_plans:${userId}`) || '[]',
+      localStorage.getItem(`profeplan_term_plans:${userId}`) || '[]'
     ) as TermPlan[];
     expect(stored).toHaveLength(1);
     expect(stored[0].id).toBe('plan-1');

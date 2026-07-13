@@ -1,14 +1,13 @@
-
 // ─── Security: Admin identity source of truth ───────────────────────────────
 // Change only here. Never duplicate these values elsewhere.
 export const ADMIN_EMAILS: readonly string[] = [
-    'prehfeld@hotmail.com',
-    'suporte@profeplan.com.br',
-    'suporte@wrtech-ai.com',
+  'prehfeld@hotmail.com',
+  'suporte@profeplan.com.br',
+  'suporte@wrtech-ai.com',
 ];
 
 export const isHardcodedAdmin = (email: string | null | undefined): boolean =>
-    !!email && ADMIN_EMAILS.includes(email.toLowerCase());
+  !!email && ADMIN_EMAILS.includes(email.toLowerCase());
 
 export const MAX_CREDITS_ADD = 1000; // Guard for addUserCredits
 // ─────────────────────────────────────────────────────────────────────────────
@@ -68,10 +67,9 @@ Avaliação:
 - ...
 `;
 
-
 export const SYSTEM_PROMPT_CHAT = SYSTEM_PROMPT.replace(
-   `2. ** Sem Invenções **: Se uma habilidade, código(ex: EF09MA01) ou conteúdo não estiver explicitamente listado no contexto, NÃO INVENTE.Responda: "Não encontrei essa informação específica no Currículo Oficial de MG para o período (Trimestre) solicitado."`,
-   `2. ** Fallback Inteligente **: Se uma habilidade ou conteúdo não estiver no contexto recuperado, ** USE SEU CONHECIMENTO GERAL ** sobre a BNCC e educação para auxiliar o professor.Porém, ** OBRIGATORIAMENTE ** inicie a resposta com o alerta: "ℹ️ *Nota: Não localizei este tópico específico no Currículo de Referência de MG (CRMG), mas aqui está uma sugestão baseada em práticas gerais:*".`
+  `2. ** Sem Invenções **: Se uma habilidade, código(ex: EF09MA01) ou conteúdo não estiver explicitamente listado no contexto, NÃO INVENTE.Responda: "Não encontrei essa informação específica no Currículo Oficial de MG para o período (Trimestre) solicitado."`,
+  `2. ** Fallback Inteligente **: Se uma habilidade ou conteúdo não estiver no contexto recuperado, ** USE SEU CONHECIMENTO GERAL ** sobre a BNCC e educação para auxiliar o professor.Porém, ** OBRIGATORIAMENTE ** inicie a resposta com o alerta: "ℹ️ *Nota: Não localizei este tópico específico no Currículo de Referência de MG (CRMG), mas aqui está uma sugestão baseada em práticas gerais:*".`
 );
 
 export const CHAT_GUARD_PROMPT = `# SYSTEM INSTRUCTION: GUARDIÃO DE CONTEXTO(NAVEGADOR INTELIGENTE)
@@ -101,4 +99,5 @@ Persona: Você é o Navegador Inteligente do Profeplan.Sua missão é agir como 
    - Seja direto. O usuário está no celular. Evite textos longos antes da confirmação.
 `;
 
-export const INITIAL_GREETING = "Olá, colega professor! Sou seu Especialista Pedagógico Sênior do PROFEPLAN. \n\nEstou pronto para planejar aulas para **Fundamental II** ou **Ensino Médio** (com foco no ENEM). Por onde começamos?";
+export const INITIAL_GREETING =
+  'Olá, colega professor! Sou seu Especialista Pedagógico Sênior do PROFEPLAN. \n\nEstou pronto para planejar aulas para **Fundamental II** ou **Ensino Médio** (com foco no ENEM). Por onde começamos?';

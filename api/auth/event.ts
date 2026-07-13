@@ -2,9 +2,12 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // Inline logger — @profeplan/logger não é disponível no ambiente Vercel serverless
 const logger = {
-  info: (msg: string, meta?: unknown) => console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
-  error: (msg: string, meta?: unknown) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
-  audit: (action: string, actor: string, details?: unknown) => console.log(JSON.stringify({ level: 'AUDIT', action, actor, ...(details ? { details } : {}) })),
+  info: (msg: string, meta?: unknown) =>
+    console.log(JSON.stringify({ level: 'INFO', message: msg, ...(meta ? { meta } : {}) })),
+  error: (msg: string, meta?: unknown) =>
+    console.error(JSON.stringify({ level: 'ERROR', message: msg, ...(meta ? { meta } : {}) })),
+  audit: (action: string, actor: string, details?: unknown) =>
+    console.log(JSON.stringify({ level: 'AUDIT', action, actor, ...(details ? { details } : {}) })),
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -35,7 +38,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           platform: 'V4-Vite-App',
         });
       } else {
-        logger.error(`[AUTH] Falha de login para ${cleanEmail || 'desconhecido'}: ${error || 'Erro desconhecido'}`);
+        logger.error(
+          `[AUTH] Falha de login para ${cleanEmail || 'desconhecido'}: ${error || 'Erro desconhecido'}`
+        );
       }
       return res.status(200).json({ success: true });
     }

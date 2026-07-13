@@ -56,22 +56,44 @@ export class AgentLinguaInglesa extends BaseDisciplineAgent {
     if (this.context.nivel.startsWith('EF_')) {
       return [
         // 6º ano
-        'EF06LI01', 'EF06LI02', 'EF06LI03', 'EF06LI04', 'EF06LI05',
-        'EF06LI06', 'EF06LI07', 'EF06LI08',
+        'EF06LI01',
+        'EF06LI02',
+        'EF06LI03',
+        'EF06LI04',
+        'EF06LI05',
+        'EF06LI06',
+        'EF06LI07',
+        'EF06LI08',
         // 7º ano
-        'EF07LI01', 'EF07LI02', 'EF07LI03', 'EF07LI04', 'EF07LI05',
-        'EF07LI06', 'EF07LI07', 'EF07LI08',
+        'EF07LI01',
+        'EF07LI02',
+        'EF07LI03',
+        'EF07LI04',
+        'EF07LI05',
+        'EF07LI06',
+        'EF07LI07',
+        'EF07LI08',
         // 8º ano
-        'EF08LI01', 'EF08LI02', 'EF08LI03', 'EF08LI04', 'EF08LI05',
-        'EF08LI06', 'EF08LI07', 'EF08LI08',
+        'EF08LI01',
+        'EF08LI02',
+        'EF08LI03',
+        'EF08LI04',
+        'EF08LI05',
+        'EF08LI06',
+        'EF08LI07',
+        'EF08LI08',
         // 9º ano
-        'EF09LI01', 'EF09LI02', 'EF09LI03', 'EF09LI04', 'EF09LI05',
-        'EF09LI06', 'EF09LI07', 'EF09LI08',
+        'EF09LI01',
+        'EF09LI02',
+        'EF09LI03',
+        'EF09LI04',
+        'EF09LI05',
+        'EF09LI06',
+        'EF09LI07',
+        'EF09LI08',
       ];
     }
-    return [
-      'EM13LGG101', 'EM13LGG102', 'EM13LGG103', 'EM13LGG104', 'EM13LGG105',
-    ];
+    return ['EM13LGG101', 'EM13LGG102', 'EM13LGG103', 'EM13LGG104', 'EM13LGG105'];
   }
 
   /**

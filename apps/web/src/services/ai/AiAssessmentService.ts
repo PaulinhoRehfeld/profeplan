@@ -1,10 +1,10 @@
-import { GENERATION_MODELS, getGenAIClient } from "./AiCore";
-import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from "./AiGuardrailsService";
-import { UserSettings } from "../../types";
+import { GENERATION_MODELS, getGenAIClient } from './AiCore';
+import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from './AiGuardrailsService';
+import { UserSettings } from '../../types';
 
 type LessonContext = {
-    topic?: string;
-    content?: string;
+  topic?: string;
+  content?: string;
 };
 
 /**
@@ -12,33 +12,36 @@ type LessonContext = {
  * Gera avaliações baseadas no histórico de aulas dadas (Ciclo de Feedback Fechado)
  */
 export const generateAssessmentWithContext = async (
-    className: string,
-    subject: string,
-    lessonsContext: LessonContext[],
-    additionalTopic: string = '',
-    academicPeriod: string = '',
-    objectiveCount: number = 10,
-    dissertativeCount: number = 2,
-    numEnem: number = 0,
-    difficulty: string = 'Médio',
-    userSettings?: UserSettings, // 🛡️ GUARDRAILS
-    userId?: string
+  className: string,
+  subject: string,
+  lessonsContext: LessonContext[],
+  additionalTopic: string = '',
+  academicPeriod: string = '',
+  objectiveCount: number = 10,
+  dissertativeCount: number = 2,
+  numEnem: number = 0,
+  difficulty: string = 'Médio',
+  userSettings?: UserSettings, // 🛡️ GUARDRAILS
+  userId?: string
 ) => {
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    const lessonsToReference = lessonsContext.map((lesson, i) =>
+  const lessonsToReference = lessonsContext
+    .map(
+      (lesson, i) =>
         `Aula ${i + 1}: ${lesson.topic}\nConteúdo: ${lesson.content?.substring(0, 500)}...`
-    ).join('\n\n');
+    )
+    .join('\n\n');
 
-    // 🛡️ GUARDRAILS: Apply user preferences to assessments
-    let guardrailsPrompt = "";
-    if (userSettings) {
-        const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
-        guardrailsConfig.context = `Avaliação - ${subject} - ${academicPeriod}`;
-        guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
-    }
+  // 🛡️ GUARDRAILS: Apply user preferences to assessments
+  let guardrailsPrompt = '';
+  if (userSettings) {
+    const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
+    guardrailsConfig.context = `Avaliação - ${subject} - ${academicPeriod}`;
+    guardrailsPrompt = generateGuardrailsPrompt(guardrailsConfig, true);
+  }
 
-    const instruction = `Age como um Professor Avaliador Pedagógico do PROFEPLAN.
+  const instruction = `Age como um Professor Avaliador Pedagógico do PROFEPLAN.
   
   ${guardrailsPrompt}
   
@@ -91,39 +94,41 @@ export const generateAssessmentWithContext = async (
     ]
   }`;
 
-    const messages = [
-        {
-            role: "system" as const,
-            content: instruction,
-        },
-        {
-            role: "user" as const,
-            content: `Crie uma avaliação de ${subject} para a turma ${className}, referente ao ${academicPeriod}.`,
-        },
-    ];
+  const messages = [
+    {
+      role: 'system' as const,
+      content: instruction,
+    },
+    {
+      role: 'user' as const,
+      content: `Crie uma avaliação de ${subject} para a turma ${className}, referente ao ${academicPeriod}.`,
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: GENERATION_MODELS[0],
-        messages,
-        temperature: 0.4,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: GENERATION_MODELS[0],
+    messages,
+    temperature: 0.4,
+  } as any);
 
-    const content = completion.choices[0]?.message?.content as any;
-    const responseText =
-        typeof content === "string"
-            ? content
-            : (content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
+  const content = completion.choices[0]?.message?.content as any;
+  const responseText =
+    typeof content === 'string'
+      ? content
+      : ((content as any[] | undefined)
+          ?.map((c) => (typeof c === 'string' ? c : c.text || ''))
+          .join('') ?? '');
 
-    try {
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
-        }
-        return JSON.parse(responseText);
-    } catch (e) {
-        console.error("Erro ao parsear JSON da avaliação:", responseText);
-        throw new Error("Não foi possível gerar a avaliação. Tente novamente.");
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
     }
+    return JSON.parse(responseText);
+  } catch (e) {
+    console.error('Erro ao parsear JSON da avaliação:', responseText);
+    throw new Error('Não foi possível gerar a avaliação. Tente novamente.');
+  }
 };
 
 /**
@@ -131,13 +136,13 @@ export const generateAssessmentWithContext = async (
  * Corrige questões dissertativas via OCR + Análise Pedagógica
  */
 export const gradeWrittenAnswer = async (
-    questionText: string,
-    rubric: string,
-    imageBase64: string // Foto da resposta escrita
+  questionText: string,
+  rubric: string,
+  imageBase64: string // Foto da resposta escrita
 ) => {
-    const client = getGenAIClient();
+  const client = getGenAIClient();
 
-    const instruction = `Age como um Professor Corretor Pedagógico.
+  const instruction = `Age como um Professor Corretor Pedagógico.
   
   TAREFA: Corrigir uma questão dissertativa escrita à mão.
   
@@ -155,50 +160,51 @@ export const gradeWrittenAnswer = async (
     "feedback": "Você demonstrou compreensão de X, mas faltou mencionar Y..."
   }`;
 
-    const imageData = imageBase64.split(',')[1] || imageBase64;
-    const dataUrl = `data:image/jpeg;base64,${imageData}`;
+  const imageData = imageBase64.split(',')[1] || imageBase64;
+  const dataUrl = `data:image/jpeg;base64,${imageData}`;
 
-    const messages: any[] = [
+  const messages: any[] = [
+    {
+      role: 'system',
+      content: instruction,
+    },
+    {
+      role: 'user',
+      content: [
         {
-            role: "system",
-            content: instruction,
+          type: 'text',
+          text: `QUESTÃO: ${questionText}\n\nRUBRICA DE CORREÇÃO:\n${rubric}\n\nAgora analise a resposta escrita do aluno na imagem.`,
         },
         {
-            role: "user",
-            content: [
-                {
-                    type: "text",
-                    text: `QUESTÃO: ${questionText}\n\nRUBRICA DE CORREÇÃO:\n${rubric}\n\nAgora analise a resposta escrita do aluno na imagem.`,
-                },
-                {
-                    type: "input_image",
-                    image_url: { url: dataUrl },
-                },
-            ],
+          type: 'input_image',
+          image_url: { url: dataUrl },
         },
-    ];
+      ],
+    },
+  ];
 
-    const completion = await client.chat.completions.create({
-        model: GENERATION_MODELS[0],
-        messages,
-        temperature: 0.2,
-    } as any);
+  const completion = await client.chat.completions.create({
+    model: GENERATION_MODELS[0],
+    messages,
+    temperature: 0.2,
+  } as any);
 
-    const content = completion.choices[0]?.message?.content as any;
-    const responseText =
-        typeof content === "string"
-            ? content
-            : (content as any[] | undefined)?.map((c) => (typeof c === "string" ? c : c.text || "")).join("") ?? "";
+  const content = completion.choices[0]?.message?.content as any;
+  const responseText =
+    typeof content === 'string'
+      ? content
+      : ((content as any[] | undefined)
+          ?.map((c) => (typeof c === 'string' ? c : c.text || ''))
+          .join('') ?? '');
 
-    try {
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-            return JSON.parse(jsonMatch[0]);
-        }
-        return JSON.parse(responseText);
-    } catch (e) {
-        console.error("Erro ao parsear resultado de correção:", responseText);
-        throw new Error("Não foi possível processar a correção. Tente novamente.");
+  try {
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
     }
+    return JSON.parse(responseText);
+  } catch (e) {
+    console.error('Erro ao parsear resultado de correção:', responseText);
+    throw new Error('Não foi possível processar a correção. Tente novamente.');
+  }
 };
-

@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -13,22 +12,22 @@ const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error("Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY env vars.");
-    process.exit(1);
+  console.error('Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY env vars.');
+  process.exit(1);
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function debug_db() {
-    console.log("Fetching from 'questions'...");
-    const { data: qData, error: qError } = await supabase.from('questions').select('*').limit(1);
-    if (qError) console.error("Error 'questions':", qError);
-    else console.log("'questions' sample:", JSON.stringify(qData, null, 2));
+  console.log("Fetching from 'questions'...");
+  const { data: qData, error: qError } = await supabase.from('questions').select('*').limit(1);
+  if (qError) console.error("Error 'questions':", qError);
+  else console.log("'questions' sample:", JSON.stringify(qData, null, 2));
 
-    console.log("Fetching from 'enem_questions'...");
-    const { data: eData, error: eError } = await supabase.from('enem_questions').select('*').limit(1);
-    if (eError) console.error("Error 'enem_questions':", eError);
-    else console.log("'enem_questions' sample:", JSON.stringify(eData, null, 2));
+  console.log("Fetching from 'enem_questions'...");
+  const { data: eData, error: eError } = await supabase.from('enem_questions').select('*').limit(1);
+  if (eError) console.error("Error 'enem_questions':", eError);
+  else console.log("'enem_questions' sample:", JSON.stringify(eData, null, 2));
 }
 
 debug_db();

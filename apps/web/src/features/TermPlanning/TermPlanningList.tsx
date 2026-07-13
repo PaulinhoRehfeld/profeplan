@@ -38,7 +38,9 @@ const TermPlanningList: React.FC<TermPlanningListProps> = ({ userId, onOpenPlan 
         <div className="flex items-center gap-3 text-blue-600">
           <BookOpen className="w-5 h-5" />
           <div>
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">Meus Planejamentos Trimestrais</h2>
+            <h2 className="text-xs font-black uppercase tracking-[0.2em]">
+              Meus Planejamentos Trimestrais
+            </h2>
             <p className="text-[11px] text-slate-500 font-medium">
               Reabra e edite planejamentos já salvos com um clique.
             </p>
@@ -99,4 +101,3 @@ const TermPlanningList: React.FC<TermPlanningListProps> = ({ userId, onOpenPlan 
 };
 
 export default TermPlanningList;
-

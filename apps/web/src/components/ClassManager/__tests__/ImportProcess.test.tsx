@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
@@ -43,26 +42,19 @@ describe('ImportProcess', () => {
 
     render(<ImportProcess file={file} onCancel={onCancel} onComplete={onComplete} />);
 
-    expect(
-      screen.getByText(/Lendo PDF da Lista/i),
-    ).toBeTruthy();
+    expect(screen.getByText(/Lendo PDF da Lista/i)).toBeTruthy();
 
-    await waitFor(() =>
-      expect(
-        screen.getByText(/Turma Encontrada!/i),
-      ).toBeTruthy(),
-    );
+    await waitFor(() => expect(screen.getByText(/Turma Encontrada!/i)).toBeTruthy());
 
     expect(
-      screen.getByText((_, element) =>
-        element?.tagName.toLowerCase() === 'p' &&
-        /Encontramos\s+2\s+alunos/i.test(element.textContent || ''),
+      screen.getByText(
+        (_, element) =>
+          element?.tagName.toLowerCase() === 'p' &&
+          /Encontramos\s+2\s+alunos/i.test(element.textContent || '')
       )
     ).toBeTruthy();
 
-    fireEvent.click(
-      screen.getByRole('button', { name: /Confirmar e Salvar/i }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: /Confirmar e Salvar/i }));
 
     await waitFor(() => expect(onComplete).toHaveBeenCalledTimes(1));
 
@@ -80,9 +72,7 @@ describe('ImportProcess', () => {
     render(<ImportProcess file={file} onCancel={onCancel} onComplete={onComplete} />);
 
     await waitFor(() =>
-      expect(
-        screen.getByText(/Por favor, selecione um arquivo PDF./i),
-      ).toBeTruthy(),
+      expect(screen.getByText(/Por favor, selecione um arquivo PDF./i)).toBeTruthy()
     );
   });
 
@@ -93,15 +83,19 @@ describe('ImportProcess', () => {
 
     mockExtractTextFromPdf.mockResolvedValueOnce('RAW_TEXT');
     mockParseClassListFromText.mockRejectedValueOnce(
-      new Error('Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis.'),
+      new Error(
+        'Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis.'
+      )
     );
 
     render(<ImportProcess file={file} onCancel={onCancel} onComplete={onComplete} />);
 
     await waitFor(() =>
       expect(
-        screen.getByText(/Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis./i),
-      ).toBeTruthy(),
+        screen.getByText(
+          /Não foi possível processar a lista escolar. Verifique se o PDF contém nomes de alunos legíveis./i
+        )
+      ).toBeTruthy()
     );
   });
 });

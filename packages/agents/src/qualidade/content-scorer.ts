@@ -22,8 +22,7 @@ const REGEX_CODIGO_BNCC = /\bEF\d{2}[A-Z]{2}\d{2}\b|\bEM\d{2}[A-Z]{3}\d{3}\b/gi;
  * Termos discriminatórios básicos a serem verificados.
  * Match case-insensitive, palavra inteira.
  */
-const REGEX_TERMOS_DISCRIMINATORIOS =
-  /\b(?:burro|idiota|incapaz|retardado|anormal|defeituoso)\b/gi;
+const REGEX_TERMOS_DISCRIMINATORIOS = /\b(?:burro|idiota|incapaz|retardado|anormal|defeituoso)\b/gi;
 
 /** Campos considerados indicadores de boa estrutura pedagógica. */
 const CAMPOS_ESTRUTURA = new Set([
@@ -103,10 +102,7 @@ export class ContentScorerAgent extends BaseQualityGate {
    * @param _req      — Requisição original (não utilizado diretamente).
    * @returns Promise com {@link GateResult} contendo score e severidade.
    */
-  public async check(
-    resultado: GeracaoResultado,
-    _req: GeracaoRequest,
-  ): Promise<GateResult> {
+  public async check(resultado: GeracaoResultado, _req: GeracaoRequest): Promise<GateResult> {
     let score = 0;
     const detalhes: string[] = [];
     const falhas: string[] = [];
@@ -119,8 +115,7 @@ export class ContentScorerAgent extends BaseQualityGate {
         severity: 'BLOCKER',
         score: 0,
         message: 'Conteúdo ausente ou inválido — impossível avaliar qualidade pedagógica.',
-        suggestion:
-          'O agente deve retornar um Record<string, unknown> no campo conteudo.',
+        suggestion: 'O agente deve retornar um Record<string, unknown> no campo conteudo.',
       };
     }
 
@@ -132,11 +127,11 @@ export class ContentScorerAgent extends BaseQualityGate {
     if (tamanhoOk) {
       score += 0.3;
       detalhes.push(
-        `Tamanho adequado: ${texto.length} caracteres (mínimo ${TAMANHO_MINIMO_CHARS}).`,
+        `Tamanho adequado: ${texto.length} caracteres (mínimo ${TAMANHO_MINIMO_CHARS}).`
       );
     } else {
       falhas.push(
-        `Conteúdo muito curto: ${texto.length} caracteres (mínimo esperado: ${TAMANHO_MINIMO_CHARS}).`,
+        `Conteúdo muito curto: ${texto.length} caracteres (mínimo esperado: ${TAMANHO_MINIMO_CHARS}).`
       );
     }
 
@@ -145,13 +140,11 @@ export class ContentScorerAgent extends BaseQualityGate {
     if (temEstrutura) {
       score += 0.3;
       const camposEncontrados = chaves.filter((k) => CAMPOS_ESTRUTURA.has(k));
-      detalhes.push(
-        `Estrutura pedagógica presente: campos [${camposEncontrados.join(', ')}].`,
-      );
+      detalhes.push(`Estrutura pedagógica presente: campos [${camposEncontrados.join(', ')}].`);
     } else {
       falhas.push(
         'Estrutura pedagógica ausente — nenhum campo esperado encontrado ' +
-          `(ex: ${[...CAMPOS_ESTRUTURA].slice(0, 5).join(', ')}, ...).`,
+          `(ex: ${[...CAMPOS_ESTRUTURA].slice(0, 5).join(', ')}, ...).`
       );
     }
 
@@ -161,24 +154,21 @@ export class ContentScorerAgent extends BaseQualityGate {
     if (temBncc) {
       score += 0.2;
       detalhes.push(
-        `BNCC presente: ${codigosBncc!.length} código(s) detectado(s) — [${codigosBncc!.join(', ')}].`,
+        `BNCC presente: ${codigosBncc!.length} código(s) detectado(s) — [${codigosBncc!.join(', ')}].`
       );
     } else {
-      falhas.push(
-        'BNCC ausente — nenhum código no formato EF/EM detectado no conteúdo.',
-      );
+      falhas.push('BNCC ausente — nenhum código no formato EF/EM detectado no conteúdo.');
     }
 
     // ----- Critério 4: Linguagem inclusiva (+0.20) -----
     const matchDiscriminatorio = texto.match(REGEX_TERMOS_DISCRIMINATORIOS);
-    const linguagemInclusiva =
-      matchDiscriminatorio === null || matchDiscriminatorio.length === 0;
+    const linguagemInclusiva = matchDiscriminatorio === null || matchDiscriminatorio.length === 0;
     if (linguagemInclusiva) {
       score += 0.2;
       detalhes.push('Linguagem inclusiva: sem termos discriminatórios detectados.');
     } else {
       falhas.push(
-        `Linguagem não inclusiva — ${matchDiscriminatorio!.length} termo(s) discriminatório(s) detectado(s): [${matchDiscriminatorio!.join(', ')}].`,
+        `Linguagem não inclusiva — ${matchDiscriminatorio!.length} termo(s) discriminatório(s) detectado(s): [${matchDiscriminatorio!.join(', ')}].`
       );
     }
 
@@ -208,9 +198,11 @@ export class ContentScorerAgent extends BaseQualityGate {
       partes.push(...falhas);
     }
     const qualificador =
-      scoreFinal >= 0.7 ? ' [boa qualidade]' :
-      scoreFinal < 0.3 ? ' [conteúdo muito pobre — BLOCKER]' :
-      '';
+      scoreFinal >= 0.7
+        ? ' [boa qualidade]'
+        : scoreFinal < 0.3
+          ? ' [conteúdo muito pobre — BLOCKER]'
+          : '';
     const mensagem =
       `Score de qualidade pedagógica: ${scoreFinal.toFixed(2)}/1.00${qualificador}. ` +
       partes.join(' ');

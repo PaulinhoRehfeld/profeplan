@@ -45,8 +45,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      # Escopo restrito ao código ativo (apps/web/src, api/, packages/*/src) —
+      # `pnpm prettier --check .` no repo inteiro resolvia pro script
+      # "prettier --write ." do package.json (pnpm agrega --check como
+      # argumento extra em vez de invocar o binário puro) e nunca checava
+      # nada de verdade. `pnpm exec` invoca o binário direto.
       - name: Run Code Formatter Check (Prettier)
-        run: pnpm prettier --check .
+        run: pnpm exec prettier --check "apps/web/src/**/*.{ts,tsx}" "api/**/*.ts" "packages/*/src/**/*.ts"
 
       # apps/bff (stub de Azure Functions) e packages/db, packages/ai, packages/auth
       # (stack Prisma/Next.js morto, nunca implantado — ver
