@@ -126,8 +126,11 @@ CREATE TABLE IF NOT EXISTS referrals (
 
 
 -- 3. SEED INITIAL DATA
-INSERT INTO schools (id, name, city, sre) VALUES 
-('31023299', 'Escola Estadual Professor Antônio Lago', 'Capelinha', 'Diamantina'),
+-- id = código INEP de 6 dígitos, sem prefixo estadual "31" (ver
+-- normalizeInepCode() em apps/web/src/utils/inepUtils.ts e
+-- scripts/sql/README_SCHOOLS_SCHEMA.md).
+INSERT INTO schools (id, name, city, sre) VALUES
+('023299', 'EE Professor Antônio Lago', 'Capelinha', 'Diamantina'),
 ('11111111', 'Escola Estadual Tancredo Neves', 'Capelinha', 'Diamantina')
 ON CONFLICT (id) DO NOTHING;
 

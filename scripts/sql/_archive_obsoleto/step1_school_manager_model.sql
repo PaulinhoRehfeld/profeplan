@@ -1,6 +1,19 @@
 -- ==============================================================================
--- STEP 1: SCHOOL MANAGER DATA MODEL
+-- ⚠️ OBSOLETO — NÃO RODAR CONTRA PRODUÇÃO ⚠️
+-- Arquivado em 2026-07-13. Protótipo abandonado de um modelo "school manager"
+-- que nunca foi adotado: usa id UUID + inep_code separado + coluna
+-- "municipality", incompatível com o schema real de produção
+-- (public.schools.id = TEXT = código INEP de 6 dígitos, coluna "city", não
+-- "municipality" — ver infra/supabase/migrations/20260124_ensure_schools_structure.sql
+-- e 20260124_import_schools_mg_PROD.sql, que são a fonte de verdade real).
+--
+-- O DROP TABLE ... CASCADE abaixo apagaria a tabela schools de produção e
+-- tudo que referencia ela por FK (teacher_schools, school_students,
+-- pdi_records, term_plans). Mantido só para histórico — ver
+-- scripts/sql/README_SCHOOLS_SCHEMA.md.
 -- ==============================================================================
+
+-- STEP 1: SCHOOL MANAGER DATA MODEL
 
 -- 1. Reset Schools Table (To ensure correct types)
 DROP TABLE IF EXISTS public.schools CASCADE;
