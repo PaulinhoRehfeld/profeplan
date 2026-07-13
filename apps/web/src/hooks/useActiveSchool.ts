@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TeacherSchoolLink } from '../types';
 import { supabase } from '../services/supabaseClient';
+import { resolveAuthUid } from '../utils/authUtils';
 
 export interface ActiveSchool {
     id: string;
@@ -66,6 +67,17 @@ export const useActiveSchool = (userId: string | undefined) => {
 
             setLoading(true);
             try {
+                // Usa auth.uid() real — evita ghost UUID no RLS (mesmo padrão de getClasses).
+                // Sem isso, um userId local desatualizado faz esta query retornar 0 vínculos
+                // mesmo quando o professor tem escola vinculada de verdade, deixando
+                // availableSchools vazio e a escola ativa nunca sendo resolvida.
+                let authUid: string;
+                try {
+                    authUid = await resolveAuthUid();
+                } catch {
+                    authUid = userId;
+                }
+
                 const { data, error } = await supabase
                     .from('teacher_schools')
                     .select(`
@@ -80,7 +92,7 @@ export const useActiveSchool = (userId: string | undefined) => {
                             city
                         )
                     `)
-                    .eq('teacher_id', userId)
+                    .eq('teacher_id', authUid)
                     .is('ended_at', null) // Apenas vínculos ativos
                     .order('started_at', { ascending: false });
 
@@ -127,6 +139,17 @@ export const useActiveSchool = (userId: string | undefined) => {
                 userId,
                 school
             }));
+
+            // Persistir no perfil (profiles.active_school_id) — antes esta função só
+            // gravava estado local/localStorage, então a escolha feita aqui (tela
+            // /select-school, ou o auto-select de escola única abaixo) nunca chegava
+            // ao campo que ClassManager e outras telas realmente leem, deixando
+            // "school: null" mesmo depois do professor "escolher" a escola.
+            supabase.rpc('set_my_active_school', { p_school_id: school.id }).then(({ error }) => {
+                if (error) {
+                    console.error('[useActiveSchool] Failed to persist active_school_id:', error);
+                }
+            });
         } else {
             localStorage.removeItem(STORAGE_KEY);
         }

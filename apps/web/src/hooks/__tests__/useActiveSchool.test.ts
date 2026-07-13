@@ -6,6 +6,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 // resetar no logout/troca de usuário, um novo login herdava a escola ativa do
 // usuário anterior na mesma aba.
 
+const rpcMock = vi.fn().mockResolvedValue({ data: null, error: null });
+
 vi.mock('../../services/supabaseClient', () => ({
   supabase: {
     from: vi.fn(() => ({
@@ -14,6 +16,11 @@ vi.mock('../../services/supabaseClient', () => ({
       is: vi.fn().mockReturnThis(),
       order: vi.fn().mockResolvedValue({ data: [], error: null }),
     })),
+    auth: {
+      getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'user-a' } }, error: null }),
+      getSession: vi.fn().mockResolvedValue({ data: { session: null }, error: null }),
+    },
+    rpc: (...args: unknown[]) => rpcMock(...args),
   },
 }));
 
@@ -31,6 +38,7 @@ const seedStorage = (userId: string) => {
 describe('useActiveSchool (regressão #13)', () => {
   beforeEach(() => {
     localStorage.clear();
+    rpcMock.mockClear();
   });
 
   it('carrega a escola ativa salva quando o userId bate com o armazenado', async () => {
@@ -66,5 +74,20 @@ describe('useActiveSchool (regressão #13)', () => {
     rerender({ userId: undefined });
 
     await waitFor(() => expect(result.current.activeSchool).toBeNull());
+  });
+
+  it('regressão — setActiveSchool persiste active_school_id no banco (não só localStorage)', async () => {
+    // Antes desta correção, escolher uma escola na tela /select-school só gravava
+    // em localStorage/estado React — profiles.active_school_id nunca era
+    // atualizado, e ClassManager continuava vendo "school: null" para sempre.
+    const { result } = renderHook(() => useActiveSchool('user-a'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    const school = { id: 'school-42', name: 'Escola Nova', inep_code: '999' };
+    result.current.setActiveSchool(school);
+
+    await waitFor(() => {
+      expect(rpcMock).toHaveBeenCalledWith('set_my_active_school', { p_school_id: 'school-42' });
+    });
   });
 });

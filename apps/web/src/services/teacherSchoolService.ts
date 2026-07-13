@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 import { TeacherSchoolLink } from '../types';
 import { normalizeInepCode } from '../utils/inepUtils';
+import { resolveAuthUid } from '../utils/authUtils';
 
 const getErrorMessage = (error: unknown): string =>
     error instanceof Error ? error.message : 'Unknown error';
@@ -267,7 +268,19 @@ export const reconcileTeacherByInep = async (
     inepCode: string
 ): Promise<{ success: boolean; schoolId?: string; schoolName?: string; error?: string }> => {
     try {
-        console.log('[teacherSchoolService] 🔍 Reconciling teacher:', teacherId, 'with INEP:', inepCode);
+        // Usa auth.uid() real — evita ghost UUID no RLS (mesmo padrão de getClasses).
+        // Sem isso, o UPDATE de active_school_id abaixo podia afetar 0 linhas em
+        // silêncio (RLS bloqueia sem erro) quando teacherId (prop vinda da sessão
+        // local) não batia com o auth.uid() atual — a escola nunca era vinculada
+        // de fato, mesmo com a função retornando { success: true }.
+        let authUid: string;
+        try {
+            authUid = await resolveAuthUid();
+        } catch {
+            authUid = teacherId;
+        }
+
+        console.log('[teacherSchoolService] 🔍 Reconciling teacher:', authUid, 'with INEP:', inepCode);
 
         // NOVO: Normalizar INEP (adiciona prefixo 31 se necessário)
         const normalizationResult = normalizeInepCode(inepCode);
@@ -318,7 +331,7 @@ export const reconcileTeacherByInep = async (
         console.log('[teacherSchoolService] ✅ School found:', school.name, 'ID:', school.id);
 
         // 2. Criar vínculo na tabela teacher_schools
-        const linkResult = await createTeacherSchoolLink(teacherId, school.id);
+        const linkResult = await createTeacherSchoolLink(authUid, school.id);
 
         if (!linkResult.success) {
             return { success: false, error: linkResult.error };
@@ -329,18 +342,27 @@ export const reconcileTeacherByInep = async (
         const { data: currentProfile } = await supabase
             .from('profiles')
             .select('active_school_id')
-            .eq('id', teacherId)
+            .eq('id', authUid)
             .single();
 
-        // Só atualiza active_school_id se ainda não tiver (primeira escola)
+        // Só atualiza active_school_id se ainda não tiver (primeira escola).
+        // Usa a RPC set_my_active_school (SECURITY DEFINER, resolve auth.uid() no
+        // servidor) em vez de UPDATE direto — evita o mesmo problema de Ghost ID e
+        // mantém profiles.school_id (campo legado, lido por get_my_school_id_safe)
+        // em sincronia.
         if (!currentProfile?.active_school_id) {
             console.log('[teacherSchoolService] 🏫 Setting first active school:', school.name);
-            const { error: updateError } = await supabase
-                .from('profiles')
-                .update({ active_school_id: school.id })
-                .eq('id', teacherId);
+            const { error: updateError } = await supabase.rpc('set_my_active_school', { p_school_id: school.id });
 
-            if (updateError) console.warn('[teacherSchoolService] Failed to set active_school_id:', updateError);
+            if (updateError) {
+                // Antes só um console.warn — a falha ficava invisível e a função
+                // retornava success:true mesmo sem o vínculo ativo ter sido criado.
+                console.error('[teacherSchoolService] Failed to set active_school_id:', updateError);
+                return {
+                    success: false,
+                    error: `Escola vinculada em teacher_schools, mas falhou ao definir como escola ativa: ${updateError.message}`
+                };
+            }
         } else {
             console.log('[teacherSchoolService] ℹ️ active_school_id already set, not overwriting:', currentProfile.active_school_id);
         }
