@@ -107,7 +107,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
               email: userEmail,
               full_name: authSession.user.user_metadata?.full_name || '',
               role: isAdminEmail ? 'admin' : getRoleByEmail(userEmail || ''),
-              tier: isAdminEmail ? 'GOLD' : 'SILVER',
+              tier: isAdminEmail ? 'GOLD' : 'FREE',
               credits: isAdminEmail ? 9999 : 10,
               is_unlimited: isAdminEmail,
               is_admin: isAdminEmail,
