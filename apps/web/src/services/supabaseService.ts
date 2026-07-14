@@ -117,17 +117,16 @@ export const saveClassStructure = async (
     schoolId?: string;
   }
 ) => {
-  // Usa auth.uid() real (evita ghost UUID no RLS), com fallback pro userId recebido
-  // se resolveAuthUid() falhar — mesmo padrão de getClasses(). Sem o fallback, uma
-  // corrida de tempo logo após SIGNED_IN (sessão ainda propagando no cliente) fazia
-  // "Criar Turma"/importação de PDF falhar inteiro ("Sessão expirada") mesmo com o
-  // userId correto já disponível, mandando a turma só pro localStorage à toa.
-  let authUid: string;
-  try {
-    authUid = await resolveAuthUid();
-  } catch {
-    authUid = userId;
-  }
+  // Confia direto no userId da sessão, sem chamar resolveAuthUid()/getUser() de
+  // novo antes de gravar. Investigação em produção (2026-07-14): o INSERT abaixo
+  // era rejeitado por RLS ("new row violates row-level security policy") mesmo
+  // usando o userId de fallback correto — ou seja, o problema nunca foi "qual
+  // valor de user_id usar", e sim a própria requisição de escrita chegando sem
+  // sessão válida. Isso só acontecia em telas que chamavam getUser()/getSession()
+  // de novo antes de gravar (resolveAuthUid) — outras telas que gravam usando
+  // direto o userId da sessão (sem essa checagem extra) nunca reproduziram o
+  // bug. userId aqui vem de session.id, já validado no SIGNED_IN.
+  const authUid = userId;
 
   // 1. Criar a Turma
   const { data: classObj, error: classError } = await supabase
@@ -212,15 +211,12 @@ export const addStudentToClass = async (
  * @param schoolId - (Opcional) ID da escola para filtrar turmas
  */
 export const getClasses = async (userId: string, schoolId?: string) => {
-  // Usa auth.uid() real para consistência com saveClassStructure
-  let authUid: string;
-  try {
-    authUid = await resolveAuthUid();
-  } catch {
-    // Fallback: usa userId do parâmetro se auth falhar
-    authUid = userId;
-  }
-
+  // Confia direto no userId da sessão (já confirmado por auth.uid() no login),
+  // sem checar de novo via resolveAuthUid()/getUser(). Esse re-check ao vivo
+  // era a única diferença entre esta função e outras leituras (ex:
+  // TermPlanningService.fetchTermPlans) que nunca reproduziram o bug de
+  // "sessão sumida" — outras telas confiam no userId da sessão sem perguntar
+  // de novo. userId aqui vem de session.id, já validado no SIGNED_IN.
   let query = supabase
     .from('classes')
     .select(
@@ -229,7 +225,7 @@ export const getClasses = async (userId: string, schoolId?: string) => {
         students:students(count)
       `
     )
-    .eq('user_id', authUid);
+    .eq('user_id', userId);
 
   // Se school_id for fornecido, filtrar por escola
   if (schoolId) {

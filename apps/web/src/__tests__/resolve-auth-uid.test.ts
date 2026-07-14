@@ -9,6 +9,7 @@ const getUserMock = vi.fn();
 const getSessionMock = vi.fn();
 const refreshSessionMock = vi.fn();
 const insertedClassRows: any[] = [];
+const insertedLessonRows: any[] = [];
 
 vi.mock('../services/supabaseClient', () => ({
   supabase: {
@@ -30,59 +31,87 @@ vi.mock('../services/supabaseClient', () => ({
           },
         };
       }
+      if (table === 'lessons') {
+        return {
+          insert: (rows: any[]) => {
+            insertedLessonRows.push(...rows);
+            return Promise.resolve({ data: rows, error: null });
+          },
+        };
+      }
       // students (ou qualquer outra tabela usada em saveClassStructure)
       return { insert: () => Promise.resolve({ error: null }) };
     },
   },
 }));
 
-describe('resolveAuthUid (via saveClassStructure)', () => {
+describe('resolveAuthUid (via saveLessonToMemory)', () => {
   beforeEach(() => {
     vi.resetModules();
     getUserMock.mockReset();
     getSessionMock.mockReset();
     refreshSessionMock.mockReset();
     insertedClassRows.length = 0;
+    insertedLessonRows.length = 0;
   });
 
   it('usa getSession quando getUser não retorna usuário, sem chamar refreshSession manualmente', async () => {
     getUserMock.mockResolvedValue({ data: { user: null } });
     getSessionMock.mockResolvedValue({ data: { session: { user: { id: 'user-123' } } } });
 
-    const { saveClassStructure } = await import('../services/supabaseService');
+    const { saveLessonToMemory } = await import('../services/supabaseService');
 
-    // Não nos importa o resultado do insert em si (sem mock da tabela), só que
-    // resolveAuthUid resolveu o uid via getSession sem tocar refreshSession.
-    await saveClassStructure('fallback-id', {
-      className: 'Turma X',
-      subject: 'Matemática',
-      students: [],
-    }).catch(() => {});
+    await saveLessonToMemory('fallback-id', 'Tópico', 'Conteúdo', {});
 
     expect(refreshSessionMock).not.toHaveBeenCalled();
     expect(getSessionMock).toHaveBeenCalled();
+    expect(insertedLessonRows[0]).toMatchObject({ user_id: 'user-123' });
   });
 
-  it('cai pro userId recebido (não lança "Sessão expirada") quando não há usuário nem sessão', async () => {
-    // Regressão 2026-07-14: resolveAuthUid() sem fallback fazia "Criar Turma"/importação
-    // de PDF falhar inteiro ("Sessão expirada") mesmo com o userId correto já disponível,
-    // numa corrida de tempo logo após SIGNED_IN. saveClassStructure agora cai pro userId
-    // recebido nesse caso, igual getClasses() já fazia.
+  it('cai pro userId recebido (não lança) quando não há usuário nem sessão', async () => {
     getUserMock.mockResolvedValue({ data: { user: null } });
     getSessionMock.mockResolvedValue({ data: { session: null } });
 
-    const { saveClassStructure } = await import('../services/supabaseService');
+    const { saveLessonToMemory } = await import('../services/supabaseService');
 
     await expect(
-      saveClassStructure('fallback-id', {
-        className: 'Turma X',
-        subject: 'Matemática',
-        students: [],
-      })
-    ).resolves.toMatchObject({ id: 'class-1' });
+      saveLessonToMemory('fallback-id', 'Tópico', 'Conteúdo', {})
+    ).resolves.toMatchObject({ error: null });
 
-    expect(insertedClassRows[0]).toMatchObject({ user_id: 'fallback-id' });
+    expect(insertedLessonRows[0]).toMatchObject({ user_id: 'fallback-id' });
     expect(refreshSessionMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('saveClassStructure (regressão 2026-07-14 — não re-checa sessão antes de gravar)', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    getUserMock.mockReset();
+    getSessionMock.mockReset();
+    refreshSessionMock.mockReset();
+    insertedClassRows.length = 0;
+    insertedLessonRows.length = 0;
+  });
+
+  // Produção (2026-07-14): o INSERT em classes era rejeitado por RLS ("new row
+  // violates row-level security policy") mesmo com resolveAuthUid() caindo pro
+  // userId de fallback correto — a causa nunca foi "qual user_id usar", e sim a
+  // própria chamada extra a getUser()/getSession() antes de gravar, que só essa
+  // tela fazia (outras telas gravam usando direto o userId da sessão e nunca
+  // reproduziram o bug). saveClassStructure agora não chama getUser()/getSession()
+  // em nenhum caminho — usa userId diretamente.
+  it('grava usando o userId recebido sem chamar getUser()/getSession()', async () => {
+    const { saveClassStructure } = await import('../services/supabaseService');
+
+    await saveClassStructure('session-user-id', {
+      className: 'Turma X',
+      subject: 'Matemática',
+      students: [],
+    });
+
+    expect(getUserMock).not.toHaveBeenCalled();
+    expect(getSessionMock).not.toHaveBeenCalled();
+    expect(insertedClassRows[0]).toMatchObject({ user_id: 'session-user-id' });
   });
 });
 
