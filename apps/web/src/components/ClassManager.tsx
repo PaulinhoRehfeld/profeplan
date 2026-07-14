@@ -155,7 +155,6 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         className: data.name,
         subject: data.subject,
         students: data.students,
-        schoolId: userProfile?.active_school_id || userProfile?.school_id,
       });
     } catch (err: any) {
       const is401 =
@@ -188,7 +187,6 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
         className: parsedData.className,
         subject: parsedData.subject,
         students: parsedData.students,
-        schoolId: userProfile?.active_school_id || userProfile?.school_id,
       });
     } catch (err: any) {
       const is401 =
