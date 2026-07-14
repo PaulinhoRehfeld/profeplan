@@ -6,6 +6,7 @@
  * Saída 100% em português brasileiro, sem erros ortográficos.
  */
 import { GENERATION_MODELS, getGenAIClient } from './AiCore';
+import { checkUsageQuota, incrementUserUsage } from '../ProfileService';
 
 export interface InfographicSlide {
   order: number;
@@ -45,8 +46,16 @@ export const generatePresentationJSON = async (
   context: string,
   slideCount: number,
   style: string,
-  includeInteractions: boolean
+  includeInteractions: boolean,
+  userId?: string
 ): Promise<PresentationScript> => {
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
   const client = getGenAIClient();
 
   const systemPrompt = `VOCÊ É UM DESIGNER INSTRUCIONAL BRASILEIRO ESPECIALISTA EM APRESENTAÇÕES PEDAGÓGICAS DE ALTO IMPACTO.
@@ -155,6 +164,11 @@ RETORNE APENAS UM JSON VÁLIDO (sem markdown, sem comentários) com esta estrutu
     }
 
     console.log(`[PresentationAgent] ✅ ${parsed.slides.length} slides gerados: "${parsed.title}"`);
+
+    if (userId) {
+      await incrementUserUsage(userId, 'generate');
+    }
+
     return parsed;
   } catch (e) {
     console.error(

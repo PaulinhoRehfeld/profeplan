@@ -1,6 +1,7 @@
 import { GENERATION_MODELS, getGenAIClient } from './AiCore';
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from './AiGuardrailsService';
 import { UserSettings } from '../../types';
+import { checkUsageQuota, incrementUserUsage } from '../ProfileService';
 
 type LessonContext = {
   topic?: string;
@@ -24,6 +25,13 @@ export const generateAssessmentWithContext = async (
   userSettings?: UserSettings, // 🛡️ GUARDRAILS
   userId?: string
 ) => {
+  if (userId) {
+    const quotaStatus = await checkUsageQuota(userId);
+    if (!quotaStatus.allowed) {
+      throw new Error(quotaStatus.message);
+    }
+  }
+
   const client = getGenAIClient();
 
   const lessonsToReference = lessonsContext
@@ -119,16 +127,20 @@ export const generateAssessmentWithContext = async (
           ?.map((c) => (typeof c === 'string' ? c : c.text || ''))
           .join('') ?? '');
 
+  let parsed: any;
   try {
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-    return JSON.parse(responseText);
+    parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(responseText);
   } catch (e) {
     console.error('Erro ao parsear JSON da avaliação:', responseText);
     throw new Error('Não foi possível gerar a avaliação. Tente novamente.');
   }
+
+  if (userId) {
+    await incrementUserUsage(userId, 'generate');
+  }
+
+  return parsed;
 };
 
 /**

@@ -172,7 +172,9 @@ const AssessmentSetup: React.FC<AssessmentSetupProps> = ({ userId, onAssessmentG
         objectiveCount,
         dissertativeCount,
         0, // 0 ENEM via IA
-        difficulty
+        difficulty,
+        undefined,
+        userId
       );
 
       let finalQuestions = [...result.questions];

@@ -175,7 +175,8 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
         '', // Contexto (pode vir de select no futuro)
         slideCount,
         visualStyle,
-        includeInteractions
+        includeInteractions,
+        userId
       );
       setGeneratedPresentation(result);
     } catch (e: any) {
