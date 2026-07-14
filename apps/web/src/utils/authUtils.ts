@@ -30,18 +30,28 @@ const tryResolveAuthUid = async (): Promise<string | null> => {
   return null;
 };
 
+// Backoff entre tentativas (ms) após a primeira falhar. Um relato real em produção
+// (2026-07-13) mostrou getUser() E getSession() retornando "sem sessão" mesmo 400ms
+// após um SIGNED_IN confirmado e uma RPC autenticada ter funcionado segundos antes —
+// um único retry de 400ms não é suficiente sempre. 3 tentativas extras com backoff
+// crescente cobrem uma janela bem maior (até ~2.1s) sem travar a UI por muito tempo
+// nos casos (mais comuns) em que a sessão já está pronta na 1ª ou 2ª tentativa.
+const RETRY_DELAYS_MS = [300, 600, 1200];
+
 // Resolve o auth.uid() real. Compartilhado entre módulos que precisam gravar/ler no
 // Supabase sem cair no Ghost ID (userId local desatualizado ≠ id real da linha em
-// profiles/RLS). Tenta uma vez, e se ambas as chamadas vierem vazias, espera 400ms e
-// tenta de novo antes de desistir — cobre uma possível corrida de tempo logo após o
-// evento SIGNED_IN (sessão ainda propagando para o storage/cliente).
+// profiles/RLS). Tenta uma vez e, se vier vazia, tenta mais algumas vezes com backoff
+// crescente antes de desistir — cobre a corrida de tempo logo após o evento SIGNED_IN
+// (sessão ainda propagando para o storage/cliente).
 export const resolveAuthUid = async (): Promise<string> => {
   const firstAttempt = await tryResolveAuthUid();
   if (firstAttempt) return firstAttempt;
 
-  await delay(400);
-  const secondAttempt = await tryResolveAuthUid();
-  if (secondAttempt) return secondAttempt;
+  for (const ms of RETRY_DELAYS_MS) {
+    await delay(ms);
+    const attempt = await tryResolveAuthUid();
+    if (attempt) return attempt;
+  }
 
   throw new Error('Sessão expirada. Faça login novamente.');
 };
