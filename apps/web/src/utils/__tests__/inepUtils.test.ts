@@ -1,17 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeInepCode } from '../inepUtils';
 
-// Regressão (2026-07-13): normalizeInepCode normalizava para 8 dígitos com
-// prefixo estadual "31", mas a tabela `schools` real armazena o código sem
-// esse prefixo (6 dígitos) — confirmado com dados reais de produção
-// (id/inep_code = '374709', nunca '31374709'). O vínculo de escola por INEP
-// nunca encontrava nenhuma escola por causa desse descompasso de formato.
+// Regressão (2026-07-14): normalizeInepCode tentava converter todo código pra
+// um único formato (6 dígitos, removendo prefixo estadual "31"), assumindo
+// uma tabela `schools` pré-populada de referência. Mudança de arquitetura:
+// schools agora começa vazia e cresce sob demanda (find-or-create) — sem uma
+// tabela fixa pra normalizar contra, converter formato só arrisca buscar/criar
+// pelo código errado. Agora só limpa e valida o tamanho (6 ou 8 dígitos), sem
+// transformar um no outro.
 
-describe('normalizeInepCode (regressão — formato real da tabela schools)', () => {
-  it('remove o prefixo "31" de um código federal de 8 dígitos', () => {
+describe('normalizeInepCode (aceita 6 ou 8 dígitos, sem transformar formato)', () => {
+  it('mantém um código de 8 dígitos como está (não remove mais o prefixo "31")', () => {
     const result = normalizeInepCode('31023299');
     expect(result.isValid).toBe(true);
-    expect(result.normalized).toBe('023299');
+    expect(result.normalized).toBe('31023299');
   });
 
   it('mantém um código de 6 dígitos como está', () => {
@@ -20,16 +22,10 @@ describe('normalizeInepCode (regressão — formato real da tabela schools)', ()
     expect(result.normalized).toBe('374709');
   });
 
-  it('completa um código de 5 dígitos com zero à esquerda', () => {
-    const result = normalizeInepCode('23299');
-    expect(result.isValid).toBe(true);
-    expect(result.normalized).toBe('023299');
-  });
-
-  it('aceita separadores/espaços e limpa antes de normalizar', () => {
+  it('aceita separadores/espaços e limpa antes de validar', () => {
     const result = normalizeInepCode(' 31.023.299 ');
     expect(result.isValid).toBe(true);
-    expect(result.normalized).toBe('023299');
+    expect(result.normalized).toBe('31023299');
   });
 
   it('rejeita string vazia', () => {
@@ -37,8 +33,8 @@ describe('normalizeInepCode (regressão — formato real da tabela schools)', ()
     expect(result.isValid).toBe(false);
   });
 
-  it('rejeita 8 dígitos sem o prefixo "31" (sem interpretação segura)', () => {
-    const result = normalizeInepCode('12345678');
+  it('rejeita 5 dígitos (não completa mais com zero à esquerda)', () => {
+    const result = normalizeInepCode('23299');
     expect(result.isValid).toBe(false);
   });
 

@@ -18,7 +18,16 @@ export const saveLessonToMemory = async (
   canvaData: unknown,
   classId?: string
 ) => {
-  const authUid = await resolveAuthUid();
+  // Usa auth.uid() real (evita ghost UUID no RLS), com fallback pro userId recebido
+  // se resolveAuthUid() falhar — mesmo padrão de getClasses(). Sem o fallback, uma
+  // corrida de tempo logo após SIGNED_IN (sessão ainda propagando no cliente) fazia
+  // o salvamento falhar inteiro mesmo com o userId correto já disponível.
+  let authUid: string;
+  try {
+    authUid = await resolveAuthUid();
+  } catch {
+    authUid = userId;
+  }
   const { data, error } = await supabase.from('lessons').insert([
     {
       user_id: authUid,
@@ -108,8 +117,17 @@ export const saveClassStructure = async (
     schoolId?: string;
   }
 ) => {
-  // Usa auth.uid() real — ignora userId prop para evitar ghost UUID no RLS
-  const authUid = await resolveAuthUid();
+  // Usa auth.uid() real (evita ghost UUID no RLS), com fallback pro userId recebido
+  // se resolveAuthUid() falhar — mesmo padrão de getClasses(). Sem o fallback, uma
+  // corrida de tempo logo após SIGNED_IN (sessão ainda propagando no cliente) fazia
+  // "Criar Turma"/importação de PDF falhar inteiro ("Sessão expirada") mesmo com o
+  // userId correto já disponível, mandando a turma só pro localStorage à toa.
+  let authUid: string;
+  try {
+    authUid = await resolveAuthUid();
+  } catch {
+    authUid = userId;
+  }
 
   // 1. Criar a Turma
   const { data: classObj, error: classError } = await supabase

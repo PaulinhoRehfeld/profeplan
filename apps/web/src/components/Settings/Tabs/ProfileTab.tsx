@@ -107,7 +107,12 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       let schoolMsg = '';
       const inep = (localSettings.schoolCode || '').trim();
       if (inep) {
-        const link = await reconcileTeacherByInep(userId, inep);
+        const link = await reconcileTeacherByInep(
+          userId,
+          inep,
+          localSettings.institution,
+          localSettings.city
+        );
         if (link.success) {
           schoolMsg = `\n🏫 Escola vinculada por INEP: ${link.schoolName || inep}`;
         } else {

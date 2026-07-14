@@ -8,6 +8,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 const getUserMock = vi.fn();
 const getSessionMock = vi.fn();
 const refreshSessionMock = vi.fn();
+const insertedClassRows: any[] = [];
 
 vi.mock('../services/supabaseClient', () => ({
   supabase: {
@@ -15,6 +16,22 @@ vi.mock('../services/supabaseClient', () => ({
       getUser: (...args: unknown[]) => getUserMock(...args),
       getSession: (...args: unknown[]) => getSessionMock(...args),
       refreshSession: (...args: unknown[]) => refreshSessionMock(...args),
+    },
+    from: (table: string) => {
+      if (table === 'classes') {
+        return {
+          insert: (rows: any[]) => {
+            insertedClassRows.push(...rows);
+            return {
+              select: () => ({
+                single: () => Promise.resolve({ data: { id: 'class-1' }, error: null }),
+              }),
+            };
+          },
+        };
+      }
+      // students (ou qualquer outra tabela usada em saveClassStructure)
+      return { insert: () => Promise.resolve({ error: null }) };
     },
   },
 }));
@@ -25,6 +42,7 @@ describe('resolveAuthUid (via saveClassStructure)', () => {
     getUserMock.mockReset();
     getSessionMock.mockReset();
     refreshSessionMock.mockReset();
+    insertedClassRows.length = 0;
   });
 
   it('usa getSession quando getUser não retorna usuário, sem chamar refreshSession manualmente', async () => {
@@ -45,7 +63,11 @@ describe('resolveAuthUid (via saveClassStructure)', () => {
     expect(getSessionMock).toHaveBeenCalled();
   });
 
-  it('lança "Sessão expirada. Faça login novamente." quando não há usuário nem sessão', async () => {
+  it('cai pro userId recebido (não lança "Sessão expirada") quando não há usuário nem sessão', async () => {
+    // Regressão 2026-07-14: resolveAuthUid() sem fallback fazia "Criar Turma"/importação
+    // de PDF falhar inteiro ("Sessão expirada") mesmo com o userId correto já disponível,
+    // numa corrida de tempo logo após SIGNED_IN. saveClassStructure agora cai pro userId
+    // recebido nesse caso, igual getClasses() já fazia.
     getUserMock.mockResolvedValue({ data: { user: null } });
     getSessionMock.mockResolvedValue({ data: { session: null } });
 
@@ -57,8 +79,9 @@ describe('resolveAuthUid (via saveClassStructure)', () => {
         subject: 'Matemática',
         students: [],
       })
-    ).rejects.toThrow('Sessão expirada. Faça login novamente.');
+    ).resolves.toMatchObject({ id: 'class-1' });
 
+    expect(insertedClassRows[0]).toMatchObject({ user_id: 'fallback-id' });
     expect(refreshSessionMock).not.toHaveBeenCalled();
   });
 });

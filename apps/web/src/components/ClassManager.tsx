@@ -45,7 +45,7 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
 
   useEffect(() => {
     fetchClasses();
-  }, [userId, userProfile?.active_school_id]);
+  }, [userId]);
 
   const fetchClasses = async () => {
     setLoading(true);
@@ -53,11 +53,15 @@ const ClassManager: React.FC<{ userId: string; userProfile?: any }> = ({ userId,
       // 1. Try fetching from Supabase
       const { getClasses } = await import('../services/supabaseService');
 
-      // Para professores com múltiplas escolas, filtrar por escola ativa
-      const schoolId = userProfile?.active_school_id;
-      console.log('[ClassManager] Fetching classes for school:', schoolId);
+      // PROFEPLAN nesta fase é uma ferramenta de uso individual: mostra todas
+      // as turmas do professor, sem filtrar por escola ativa. Turmas não
+      // precisam bater com uma escola cadastrada (schools agora começa vazia
+      // e cresce sob demanda) — filtrar por school_id aqui escondia turmas
+      // reais sempre que active_school_id não batia com o valor gravado nas
+      // turmas (ou estava ausente).
+      console.log('[ClassManager] Fetching all classes for user:', userId);
 
-      const { data, error } = await getClasses(userId, schoolId);
+      const { data, error } = await getClasses(userId);
 
       if (error) throw error;
 

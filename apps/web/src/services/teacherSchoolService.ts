@@ -267,10 +267,18 @@ export const clearTeacherSchoolLinks = async (
 /**
  * RECONCILIAÇÃO: Busca e vincula professor por INEP
  * Chamado quando professor preenche código INEP no perfil
+ *
+ * Find-or-create (2026-07-14): `schools` não é mais pré-populada — se o INEP
+ * informado não existir ainda, e o professor tiver preenchido o nome da
+ * escola, pergunta (window.confirm) se quer cadastrar essa escola agora em
+ * vez de simplesmente falhar. schoolName/schoolCity só são usados nesse
+ * caminho de criação; se a escola já existe, são ignorados.
  */
 export const reconcileTeacherByInep = async (
   teacherId: string,
-  inepCode: string
+  inepCode: string,
+  schoolName?: string,
+  schoolCity?: string
 ): Promise<{ success: boolean; schoolId?: string; schoolName?: string; error?: string }> => {
   try {
     // Usa auth.uid() real — evita ghost UUID no RLS (mesmo padrão de getClasses).
@@ -312,7 +320,7 @@ export const reconcileTeacherByInep = async (
       normalizedInep.length
     );
 
-    const { data: school, error: schoolError } = await supabase
+    let { data: school, error: schoolError } = await supabase
       .from('schools')
       .select('id, name, inep_code')
       .eq('inep_code', normalizedInep)
@@ -328,17 +336,43 @@ export const reconcileTeacherByInep = async (
     if (!school) {
       console.warn('[teacherSchoolService] ⚠️ School not found. INEP searched:', normalizedInep);
 
-      // DEBUG: Buscar todas as escolas para comparar
-      const { data: allSchools } = await supabase.from('schools').select('inep_code').limit(5);
-      console.log(
-        '[teacherSchoolService] Sample of existing INEPs in database:',
-        allSchools?.map((s) => `"${s.inep_code}"`)
-      );
+      if (!schoolName?.trim()) {
+        return {
+          success: false,
+          error: `Escola com INEP ${normalizedInep} não encontrada. Preencha o nome da escola pra cadastrá-la.`,
+        };
+      }
 
-      return {
-        success: false,
-        error: `Escola com INEP ${normalizedInep} (original: ${inepCode}) não encontrada no sistema.`,
-      };
+      const wantsToCreate = window.confirm(
+        `Não encontramos essa escola no sistema.\n\nCadastrar "${schoolName.trim()}" (INEP ${normalizedInep}) agora?`
+      );
+      if (!wantsToCreate) {
+        return { success: false, error: 'Cadastro da escola cancelado.' };
+      }
+
+      const { data: createdSchool, error: createError } = await supabase
+        .from('schools')
+        .insert({
+          id: normalizedInep,
+          inep_code: normalizedInep,
+          name: schoolName.trim(),
+          city: schoolCity?.trim() || null,
+        })
+        .select('id, name, inep_code')
+        .single();
+
+      if (createError) {
+        console.error('[teacherSchoolService] Failed to create school:', createError);
+        return { success: false, error: `Falha ao cadastrar escola: ${createError.message}` };
+      }
+
+      console.log(
+        '[teacherSchoolService] 🆕 School created:',
+        createdSchool.name,
+        'ID:',
+        createdSchool.id
+      );
+      school = createdSchool;
     }
 
     console.log('[teacherSchoolService] ✅ School found:', school.name, 'ID:', school.id);
