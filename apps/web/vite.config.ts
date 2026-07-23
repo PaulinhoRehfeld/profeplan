@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: 'Profeplan',
           short_name: 'Profeplan',
-          description: 'Planejamento Pedagógico Inteligente com IA',
+          description: 'Plataforma pedagógica para planejamento, aulas e avaliações com apoio de IA',
           theme_color: '#ffffff', // User requested Blue and White theme, assuming white background is safer for general UI, but header is blue.
           background_color: '#ffffff',
           display: 'standalone',

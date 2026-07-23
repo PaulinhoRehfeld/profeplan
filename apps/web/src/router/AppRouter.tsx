@@ -8,8 +8,21 @@ import { supabase } from '../services/supabaseClient';
 import { isAdmin } from '../services/ProfileService';
 import { clearLocalSession } from '../utils/authUtils';
 
-// Lazy Pages
-const LandingPage = React.lazy(() => import('../pages/LandingPage'));
+const SITE_URL = 'https://www.profeplan.com.br';
+
+const ExternalSiteRedirect: React.FC = () => {
+  React.useEffect(() => {
+    window.location.replace(SITE_URL);
+  }, []);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-600 p-6 text-center">
+      Redirecionando para o site público do ProfePlan...
+    </div>
+  );
+};
+
+
 const PrivacyPolicy = React.lazy(() => import('../pages/PrivacyPolicy'));
 const TermsOfService = React.lazy(() => import('../pages/TermsOfService'));
 const VerifyEmail = React.lazy(() => import('../pages/VerifyEmail'));
@@ -88,11 +101,7 @@ export const router = createBrowserRouter([
       // Public / Auth Routes
       {
         path: 'landing',
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <LandingPage />
-          </Suspense>
-        ),
+        element: <ExternalSiteRedirect />,
       },
       {
         path: 'privacy',

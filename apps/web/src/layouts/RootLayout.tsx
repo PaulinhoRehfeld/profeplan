@@ -74,7 +74,7 @@ export const RootLayout: React.FC = () => {
   const isRootRoute = location.pathname === '/';
 
   if (isRootRoute) {
-    if (!session?.isLoggedIn) return <Navigate to="/landing" replace />;
+    if (!session?.isLoggedIn) return <Navigate to="/login" replace />;
     if (needsSelection) return <Navigate to="/select-school" replace />;
     return <Navigate to="/app" replace />;
   }
