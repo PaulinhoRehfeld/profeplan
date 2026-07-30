@@ -5,11 +5,12 @@ import type { UserProfile } from '../types';
 
 // Replace these with your actual Stripe Price IDs (starting with price_...)
 // You can find these inside the Products:
-// SILVER (Credits): prod_TkuQ7BqvkRoU3N
-// GOLD (Subscription): prod_TkuTMOoQHPPY6V
+// Conta PJ oficial WR TECH AI
+// SILVER (pagamento único): prod_UyXrOejWaOHI4j
+// GOLD (assinatura mensal): prod_UtI9NVcQK04CrP
 const PAYMENT_LINKS = {
-  SILVER_LINK: 'https://buy.stripe.com/7sY5kD88Gb5z3aA4qLfbq05',
-  GOLD_LINK: 'https://buy.stripe.com/00w00j3Sq7TnaD25uPfbq04',
+  SILVER_LINK: 'https://buy.stripe.com/28E3cudNyajg3UHbAm2VG00',
+  GOLD_LINK: 'https://buy.stripe.com/8x2bJ010Mdvs76T0VI2VG01',
 };
 
 interface SubscriptionModalProps {

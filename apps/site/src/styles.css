@@ -2,6 +2,119 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.promotion-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(0.5rem, 2vw, 2rem);
+  background: rgba(4, 13, 39, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.promotion-dialog {
+  position: relative;
+  width: min(96vw, 1500px);
+  max-height: 96vh;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: clamp(0.75rem, 2.2vw, 2.25rem);
+  box-shadow: 0 2rem 6rem rgba(3, 7, 33, 0.55);
+  outline: none;
+}
+
+.promotion-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.promotion-close,
+.promotion-plan {
+  position: absolute;
+  border: 0;
+  border-radius: 1rem;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.promotion-close {
+  top: 3.4%;
+  right: 3.2%;
+  width: 4.2%;
+  aspect-ratio: 1;
+  padding: 0;
+}
+
+.promotion-plan {
+  top: 27.2%;
+  height: 39.5%;
+}
+
+.promotion-plan-silver {
+  left: 26.3%;
+  width: 22.6%;
+}
+
+.promotion-plan-gold {
+  left: 51%;
+  width: 22.6%;
+}
+
+.promotion-close:hover,
+.promotion-plan:hover {
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.78);
+}
+
+.promotion-close:focus-visible,
+.promotion-plan:focus-visible {
+  outline: 4px solid #22d3ee;
+  outline-offset: -4px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 720px) {
+  .promotion-backdrop {
+    padding: 0.35rem;
+  }
+
+  .promotion-dialog {
+    width: 100%;
+    max-height: calc(100vh - 0.7rem);
+    border-radius: 0.75rem;
+  }
+
+  .promotion-close {
+    width: 8%;
+    min-width: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promotion-close,
+  .promotion-plan {
+    transition: none;
+  }
+}
+
 :root {
   color: #102033;
   background: #f7fbff;

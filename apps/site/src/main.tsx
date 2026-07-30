@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowRight,
@@ -22,6 +22,8 @@ import './styles.css';
 
 const APP_URL = 'https://app.profeplan.com.br';
 const CONTACT_EMAIL = 'suporte@profeplan.com.br';
+const SILVER_CHECKOUT_URL = 'https://buy.stripe.com/28E3cudNyajg3UHbAm2VG00';
+const GOLD_CHECKOUT_URL = 'https://buy.stripe.com/8x2bJ010Mdvs76T0VI2VG01';
 
 const legalLinks = [
   { label: 'Política de Privacidade', href: `${APP_URL}/politica-de-privacidade` },
@@ -82,9 +84,91 @@ const safety = [
   'Dados de estudantes, diagnósticos e laudos exigem cuidado máximo.',
 ];
 
+function PromotionModal() {
+  const [isOpen, setIsOpen] = useState(true);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    dialogRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="promotion-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) setIsOpen(false);
+      }}
+    >
+      <div
+        ref={dialogRef}
+        className="promotion-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="promotion-title"
+        tabIndex={-1}
+      >
+        <h2 id="promotion-title" className="sr-only">
+          Oferta especial de agosto do ProfePlan
+        </h2>
+        <p className="sr-only">
+          Escolha o Plano Silver por quarenta reais ao mês ou o Plano Gold por trinta e sete
+          reais e cinquenta centavos ao mês.
+        </p>
+
+        <img
+          className="promotion-art"
+          src="/branding/oferta-agosto-profeplan.png"
+          alt="Oferta especial de agosto: Plano Silver por R$ 40,00 ao mês e Plano Gold por R$ 37,50 ao mês, ambos com desconto válido por seis meses."
+        />
+
+        <button
+          type="button"
+          className="promotion-close"
+          aria-label="Fechar oferta"
+          onClick={() => setIsOpen(false)}
+        />
+
+        <a
+          className="promotion-plan promotion-plan-silver"
+          href={SILVER_CHECKOUT_URL}
+          aria-label="Assinar o Plano Silver por R$ 40,00 ao mês no Stripe"
+        >
+          <span className="sr-only">Assinar Plano Silver</span>
+        </a>
+
+        <a
+          className="promotion-plan promotion-plan-gold"
+          href={GOLD_CHECKOUT_URL}
+          aria-label="Assinar o Plano Gold por R$ 37,50 ao mês no Stripe"
+        >
+          <span className="sr-only">Assinar Plano Gold</span>
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   return (
     <main>
+      <PromotionModal />
       <header className="nav">
         <a className="brand" href="#top" aria-label="ProfePlan">
           <img className="brand-logo" src="/branding/LOGO%20PROFEPLAN%20SEM%20FUNDO.png" alt="" />
