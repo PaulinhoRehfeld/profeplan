@@ -8,6 +8,7 @@ import { useAppBootstrap } from '../hooks/useAppBootstrap';
 import { ReloadPrompt } from '../components/ReloadPrompt';
 import { OfflineIndicator } from '../features/SimulationFactory';
 import { AppProviders } from '../providers/AppProviders';
+import { isPublicPath } from '../router/publicRoutes';
 
 const PageLoader = () => (
   <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-50 text-slate-400 p-6">
@@ -21,7 +22,7 @@ const PageLoader = () => (
 const EmergencyResetScreen = () => (
   <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-950 text-white p-6 text-center">
     <Loader2 className="animate-spin w-12 h-12 text-blue-500 mb-6" />
-    <h2 className="text-2xl font-black mb-2 tracking-tighter italic">PROFEPLAN v5</h2>
+    <h2 className="text-2xl font-black mb-2 tracking-tighter italic">PROFEPLAN v1.0.0</h2>
     <p className="text-slate-400 text-sm mb-8 max-w-md">
       O carregamento está demorando mais que o esperado.
     </p>
@@ -62,15 +63,7 @@ export const RootLayout: React.FC = () => {
   if (loading && !showEmergencyReset) return <PageLoader />;
   if (showEmergencyReset && loading) return <EmergencyResetScreen />;
 
-  const isPublicRoute = [
-    '/landing',
-    '/login',
-    '/signup',
-    '/privacy',
-    '/terms',
-    '/verify-email',
-    '/road',
-  ].includes(location.pathname);
+  const isPublicRoute = isPublicPath(location.pathname);
   const isRootRoute = location.pathname === '/';
 
   if (isRootRoute) {

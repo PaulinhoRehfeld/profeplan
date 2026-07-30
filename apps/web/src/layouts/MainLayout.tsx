@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
-import { Menu, Crown } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import SettingsModal from '../components/SettingsModal';
 import SubscriptionModal from '../components/SubscriptionModal';
 import { SchoolSwitcher } from '../components/SchoolSwitcher';
 import { UserSession, UserProfile, ToolMode, UserSettings } from '../types';
-import DonationWidget from '../components/DonationWidget';
 import { FirstRunTour } from '../components/FirstRunTour';
+import { IconButton } from '../components/ui';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -29,6 +29,23 @@ interface MainLayoutProps {
   setSettings: (settings: UserSettings) => void;
 }
 
+const modeLabels: Partial<Record<ToolMode, { group: string; title: string }>> = {
+  [ToolMode.HOME]: { group: 'Início', title: 'Visão geral' },
+  [ToolMode.CHAT]: { group: 'Início', title: 'Assistente pedagógico' },
+  [ToolMode.QUARTERLY_PLANNING]: { group: 'Planejamento', title: 'Planejamento trimestral' },
+  [ToolMode.PLANNING]: { group: 'Planejamento', title: 'Planos de aula' },
+  [ToolMode.INCLUSION]: { group: 'Inclusão', title: 'Adaptações PDI e DUA' },
+  [ToolMode.SIMULATION]: { group: 'Avaliações', title: 'Simulados ENEM e Saeb' },
+  [ToolMode.PRESENTATIONS]: { group: 'Conteúdo', title: 'Apresentações e slides' },
+  [ToolMode.ASSESSMENT]: { group: 'Avaliações', title: 'Avaliações contextualizadas' },
+  [ToolMode.FILES]: { group: 'Organização', title: 'Meus arquivos' },
+  [ToolMode.CLASSES]: { group: 'Organização', title: 'Minhas turmas' },
+  [ToolMode.MY_DOCUMENTS]: { group: 'Organização', title: 'Meus documentos' },
+  [ToolMode.HISTORY]: { group: 'Organização', title: 'Histórico' },
+  [ToolMode.SCHOOL_MANAGER]: { group: 'Gestão', title: 'Gestão escolar' },
+  [ToolMode.ADMIN]: { group: 'Administração', title: 'Painel administrativo' },
+};
+
 export const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   session,
@@ -40,7 +57,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   setIsMobileNavOpen,
   isLeftNavExpanded,
   setIsLeftNavExpanded,
-  customSidebar,
   isSettingsOpen,
   setIsSettingsOpen,
   isSubscriptionOpen,
@@ -49,37 +65,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   onRefreshProfile,
   setSettings,
 }) => {
-  const getModeLabel = (mode: ToolMode): string => {
-    switch (mode) {
-      case ToolMode.CHAT:
-        return 'Início · Assistente pedagógico';
-      case ToolMode.QUARTERLY_PLANNING:
-        return 'Planejamento · Trimestral';
-      case ToolMode.PLANNING:
-        return 'Planejamento · Planos de Aula';
-      case ToolMode.INCLUSION:
-        return 'Inclusão · Adaptações PDI/DUA';
-      case ToolMode.SIMULATION:
-        return 'Avaliação · Simulados ENEM/SAEB';
-      case ToolMode.PRESENTATIONS:
-        return 'Conteúdo · Apresentações & Slides';
-      case ToolMode.ASSESSMENT:
-        return 'Avaliação · Provas Contextualizadas';
-      case ToolMode.FILES:
-        return 'Gestão · Meus Arquivos';
-      case ToolMode.CLASSES:
-        return 'Gestão · Minhas Turmas';
-      case ToolMode.SCHOOL_MANAGER:
-        return 'Gestão Escolar';
-      case ToolMode.ADMIN:
-        return 'Administração do Sistema';
-      default:
-        return String(mode);
-    }
-  };
+  const mode = modeLabels[activeMode] || { group: 'ProfePlan', title: String(activeMode) };
+  const userInitial = (settings.userName || session.email || 'P').trim().charAt(0).toUpperCase();
 
   return (
-    <div className="app-container flex h-screen bg-slate-50 overflow-hidden font-sans">
+    <div className="app-container flex h-screen overflow-hidden bg-slate-50 font-sans">
       <Sidebar
         activeMode={activeMode}
         setActiveMode={setActiveMode}
@@ -88,66 +78,62 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         onClose={() => setIsMobileNavOpen(false)}
         userRole={session.role}
         isDesktopExpanded={isLeftNavExpanded}
-        onToggleDesktopExpand={() => setIsLeftNavExpanded((prev) => !prev)}
+        onToggleDesktopExpand={() => setIsLeftNavExpanded((previous) => !previous)}
         userProfile={userProfile}
         onOpenSubscription={() => setIsSubscriptionOpen(true)}
         onLogout={onLogout}
       />
 
       <main
-        className={`main-content flex-1 flex flex-col relative h-full transition-all duration-300 ${isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}
+        className={`main-content relative flex h-full min-w-0 flex-1 flex-col transition-[margin] duration-200 ui-reduce-motion ${
+          isLeftNavExpanded ? 'lg:ml-64' : 'lg:ml-20'
+        }`}
       >
-        {/* HEADER */}
-        <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-4 md:px-6 z-50 sticky top-0 shadow-sm">
-          <div className="flex items-center gap-4">
-            <button
+        <header className="sticky top-0 z-50 flex min-h-16 items-center justify-between gap-3 border-b border-slate-200 bg-white px-3 py-2 sm:px-5 lg:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <IconButton
+              label="Abrir menu principal"
+              icon={<Menu aria-hidden="true" className="h-6 w-6" />}
               onClick={() => setIsMobileNavOpen(true)}
-              className="lg:hidden p-2 text-slate-500"
-            >
-              <Menu size={24} />
-            </button>
-            <div className="flex flex-col">
-              <h2 className="font-black text-slate-900 tracking-tighter uppercase italic text-lg leading-none">
-                PROFEPLAN V4.3.7
-              </h2>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                    {getModeLabel(activeMode)}
-                  </span>
-                </div>
-              </div>
+              className="lg:hidden"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-slate-500">{mode.group}</p>
+              <h1 className="truncate text-lg font-semibold leading-6 text-slate-950 sm:text-xl">
+                {mode.title}
+              </h1>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            {/* School Switcher (apenas para professores com múltiplas escolas) */}
-            <SchoolSwitcher userProfile={userProfile} onSchoolChange={onRefreshProfile} />
 
-            <div className="h-8 w-px bg-slate-100 mx-2"></div>
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Workspace de
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <div className="min-w-0">
+              <SchoolSwitcher userProfile={userProfile} onSchoolChange={onRefreshProfile} />
+            </div>
+            <div className="hidden h-8 w-px bg-slate-200 sm:block" aria-hidden="true" />
+            <div className="flex items-center gap-2.5">
+              <div className="hidden max-w-40 text-right sm:block">
+                <p className="truncate text-sm font-semibold text-slate-900">{settings.userName}</p>
+                <p className="truncate text-xs text-slate-500">
+                  {userProfile?.school_name || session.email}
                 </p>
-                <p className="text-xs font-black text-slate-900">{settings.userName}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black text-sm shadow-xl shadow-slate-200">
-                {settings.userName.charAt(0)}
+              <div
+                className="hidden h-10 w-10 items-center justify-center rounded-full bg-blue-700 text-base font-semibold text-white sm:flex"
+                aria-label={`Usuário: ${settings.userName || session.email}`}
+                title={settings.userName || session.email}
+              >
+                {userInitial}
               </div>
             </div>
           </div>
         </header>
 
-        {/* CONTENT AREA */}
-        <div className="layout-wrapper flex-1 overflow-hidden relative flex flex-col bg-white">
+        <div className="layout-wrapper relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
           {children}
-          {/* Tour de primeiro uso (só aparece uma vez por usuário) */}
-          <FirstRunTour activeModeLabel={getModeLabel(activeMode)} />
+          <FirstRunTour activeModeLabel={`${mode.group} · ${mode.title}`} />
         </div>
       </main>
 
-      {/* MODALS */}
       {isSettingsOpen && (
         <SettingsModal
           isOpen={isSettingsOpen}

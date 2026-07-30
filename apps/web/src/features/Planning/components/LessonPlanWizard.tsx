@@ -201,19 +201,22 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
           </h2>
           <div className="space-y-3">
             <input
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-100 outline-none"
+              aria-label="Disciplina"
+              className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-base"
               placeholder="Disciplina (ex.: Matemática, História...)"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             />
             <input
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-100 outline-none"
+              aria-label="Série ou ano"
+              className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-base"
               placeholder="Série / Ano (ex.: 8º ano EF, 1ª série EM...)"
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
             />
             <input
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-100 outline-none"
+              aria-label="Tema da aula"
+              className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-base"
               placeholder="Tema da aula (ex.: Equações do 1º grau, Revolução Francesa...)"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
@@ -230,7 +233,8 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
             Passo 2 · Objetivos
           </h2>
           <textarea
-            className="w-full h-32 px-4 py-3 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-100 outline-none resize-none"
+            aria-label="Objetivos de aprendizagem"
+            className="ui-focus-ring h-32 w-full resize-none rounded-lg border border-slate-300 px-4 py-3 text-base"
             placeholder="Liste os principais objetivos de aprendizagem para esta aula..."
             value={objectives}
             onChange={(e) => setObjectives(e.target.value)}
@@ -246,7 +250,8 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
             Passo 3 · Atividades & Metodologias
           </h2>
           <textarea
-            className="w-full h-32 px-4 py-3 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-100 outline-none resize-none"
+            aria-label="Atividades e metodologias"
+            className="ui-focus-ring h-32 w-full resize-none rounded-lg border border-slate-300 px-4 py-3 text-base"
             placeholder="Descreva atividades, metodologias ativas, momentos da aula..."
             value={activities}
             onChange={(e) => setActivities(e.target.value)}
@@ -261,7 +266,8 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
           Passo 4 · Avaliação
         </h2>
         <textarea
-          className="w-full h-32 px-4 py-3 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-100 outline-none resize-none"
+          aria-label="Forma de avaliação"
+          className="ui-focus-ring h-32 w-full resize-none rounded-lg border border-slate-300 px-4 py-3 text-base"
           placeholder="Como você pretende avaliar a aprendizagem nesta aula?"
           value={assessment}
           onChange={(e) => setAssessment(e.target.value)}
@@ -276,19 +282,19 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
       role="dialog"
       aria-modal="true"
       aria-labelledby="lesson-plan-wizard-title"
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') onClose();
+      }}
     >
-      <div className="w-full max-w-xl bg-white rounded-[2rem] shadow-2xl border border-slate-100 flex flex-col">
+      <div className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl">
         <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-          <span
-            id="lesson-plan-wizard-title"
-            className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400"
-          >
+          <span id="lesson-plan-wizard-title" className="text-lg font-semibold text-slate-950">
             Wizard · Novo Plano de Aula
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 text-xs font-bold uppercase tracking-wide"
+            className="ui-focus-ring min-h-11 rounded-lg px-3 text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900"
             aria-label="Fechar wizard de plano de aula"
           >
             Fechar
@@ -335,7 +341,7 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
             type="button"
             onClick={handlePrev}
             disabled={step === 1}
-            className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 disabled:opacity-40"
+            className="ui-focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-slate-600 hover:bg-slate-100 disabled:opacity-40"
           >
             <ArrowLeft size={14} />
             Voltar
@@ -346,7 +352,7 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
               type="button"
               onClick={handleNext}
               disabled={!canNext}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600 text-white text-[11px] font-black uppercase tracking-[0.2em] disabled:opacity-40"
+              className="ui-focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg bg-indigo-700 px-4 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-40"
             >
               Próximo
               <ArrowRight size={14} />
@@ -356,7 +362,8 @@ Respeite o formato padrão de planos do PROFEPLAN.`;
               type="button"
               onClick={handleFinish}
               disabled={isGenerating}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 text-white text-[11px] font-black uppercase tracking-[0.2em] disabled:opacity-40"
+              aria-busy={isGenerating || undefined}
+              className="ui-focus-ring inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-40"
             >
               {isGenerating ? (
                 <>

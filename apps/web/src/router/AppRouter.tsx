@@ -9,9 +9,17 @@ import { isAdmin } from '../services/ProfileService';
 import { clearLocalSession } from '../utils/authUtils';
 
 // Lazy Pages
-const LandingPage = React.lazy(() => import('../pages/LandingPage'));
 const PrivacyPolicy = React.lazy(() => import('../pages/PrivacyPolicy'));
 const TermsOfService = React.lazy(() => import('../pages/TermsOfService'));
+const PoliticaPrivacidade = React.lazy(() => import('../pages/PoliticaPrivacidade'));
+const TermosDeUso = React.lazy(() => import('../pages/TermosDeUso'));
+const PoliticaCookies = React.lazy(() => import('../pages/PoliticaCookies'));
+const DireitosTitular = React.lazy(() => import('../pages/DireitosTitular'));
+const DadosEducacionais = React.lazy(() => import('../pages/DadosEducacionais'));
+const CancelamentoReembolso = React.lazy(() => import('../pages/CancelamentoReembolso'));
+const CancelamentoFormulario = React.lazy(() => import('../pages/CancelamentoFormulario'));
+const TransparenciaIA = React.lazy(() => import('../pages/TransparenciaIA'));
+const SegurancaLGPD = React.lazy(() => import('../pages/SegurancaLGPD'));
 const VerifyEmail = React.lazy(() => import('../pages/VerifyEmail'));
 const UserProfileSetup = React.lazy(() => import('../pages/UserProfileSetup'));
 const LoginScreen = React.lazy(() => import('../components/LoginScreen'));
@@ -35,6 +43,14 @@ const PageLoader: React.FC = () => (
     <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
   </div>
 );
+
+const PublicSiteRedirect: React.FC = () => {
+  React.useEffect(() => {
+    window.location.replace('https://www.profeplan.com.br');
+  }, []);
+
+  return <PageLoader />;
+};
 
 const LoginRoute: React.FC<{ initialMode?: 'login' | 'signup' }> = ({ initialMode }) => {
   const { setSession } = useProfeplanAuth();
@@ -88,27 +104,115 @@ export const router = createBrowserRouter([
       // Public / Auth Routes
       {
         path: 'landing',
+        element: <PublicSiteRedirect />,
+      },
+
+      // ── Legal Pages (new comprehensive versions) ──
+      {
+        path: 'politica-de-privacidade',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <LandingPage />
+            <PoliticaPrivacidade />
           </Suspense>
         ),
       },
       {
-        path: 'privacy',
+        path: 'termos-de-uso',
         element: (
           <Suspense fallback={<PageLoader />}>
-            <PrivacyPolicy />
+            <TermosDeUso />
           </Suspense>
         ),
+      },
+      {
+        path: 'politica-de-cookies',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <PoliticaCookies />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'direitos-do-titular',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <DireitosTitular />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'dados-educacionais',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <DadosEducacionais />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'cancelamento-e-reembolso',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <CancelamentoReembolso />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'cancelamento/formulario',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <CancelamentoFormulario />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'transparencia-em-ia',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <TransparenciaIA />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'seguranca-e-lgpd',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <SegurancaLGPD />
+          </Suspense>
+        ),
+      },
+
+      // ── Legacy redirects (preserva links antigos) ──
+      {
+        path: 'privacy',
+        element: <Navigate to="/politica-de-privacidade" replace />,
       },
       {
         path: 'terms',
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <TermsOfService />
-          </Suspense>
-        ),
+        element: <Navigate to="/termos-de-uso" replace />,
+      },
+      {
+        path: 'privacidade',
+        element: <Navigate to="/politica-de-privacidade" replace />,
+      },
+      {
+        path: 'termos',
+        element: <Navigate to="/termos-de-uso" replace />,
+      },
+      {
+        path: 'cookies',
+        element: <Navigate to="/politica-de-cookies" replace />,
+      },
+      {
+        path: 'lgpd',
+        element: <Navigate to="/seguranca-e-lgpd" replace />,
+      },
+      {
+        path: 'politica-privacidade',
+        element: <Navigate to="/politica-de-privacidade" replace />,
+      },
+      {
+        path: 'termos-uso',
+        element: <Navigate to="/termos-de-uso" replace />,
       },
       { path: 'verify-email', element: <VerifyEmailRoute /> },
       { path: 'login', element: <LoginRoute /> },

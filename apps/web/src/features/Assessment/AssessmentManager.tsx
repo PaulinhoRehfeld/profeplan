@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, FileText, Save, Loader2, Target, HelpCircle } from 'lucide-react';
+import { Printer, FileText, Save, Loader2, Target } from 'lucide-react';
 import { exportAssessmentToDocx } from '../../services/exportService';
 import PrintableEvaluation from '../../components/PrintableEvaluation';
 import type { Assessment } from '../../types';
@@ -32,16 +32,14 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({
 
     if (generatedAssessment && !showPrintView) {
       setSidebarContent(
-        <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-          <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-[2.5rem] p-6 shadow-lg">
-            <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-6 italic">
-              Centro de Comando
-            </h3>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold text-slate-900">Ações da avaliação</h3>
 
             <div className="space-y-3">
               <button
                 onClick={() => setShowPrintView(true)}
-                className="w-full bg-indigo-600 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 active:scale-95 group"
+                className="ui-focus-ring flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
               >
                 <Printer size={18} className="group-hover:rotate-12 transition-transform" />
                 Imprimir Prova
@@ -49,7 +47,7 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({
 
               <button
                 onClick={handleExportWord}
-                className="w-full bg-white text-indigo-700 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-indigo-50 border border-indigo-100 transition-all shadow-sm active:scale-95 group"
+                className="ui-focus-ring flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
               >
                 <FileText size={18} className="group-hover:-translate-y-0.5 transition-transform" />
                 Exportar Word
@@ -58,7 +56,8 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full bg-purple-600 text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-200 active:scale-95 group disabled:opacity-50"
+                aria-busy={isSaving}
+                className="ui-focus-ring flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSaving ? (
                   <Loader2 className="animate-spin" />
@@ -70,37 +69,33 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({
             </div>
           </div>
 
-          <div className="bg-slate-900 rounded-[2.5rem] p-6 shadow-xl text-white relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl group-hover:bg-purple-500/20 transition-all"></div>
-
-            <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-              <Target size={12} className="text-purple-400" /> Métricas
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-900">
+              <Target size={16} className="text-blue-600" /> Resumo
             </h3>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/5 p-3 rounded-2xl border border-white/10">
-                <p className="text-[9px] text-slate-400 uppercase tracking-widest mb-1">Questões</p>
-                <p className="text-xl font-black">{generatedAssessment.questions.length}</p>
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <p className="mb-1 text-xs text-slate-500">Questões</p>
+                <p className="text-xl font-bold text-slate-900">
+                  {generatedAssessment.questions.length}
+                </p>
               </div>
-              <div className="bg-white/5 p-3 rounded-2xl border border-white/10">
-                <p className="text-[9px] text-slate-400 uppercase tracking-widest mb-1">Pontos</p>
-                <p className="text-xl font-black text-purple-400">
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <p className="mb-1 text-xs text-slate-500">Pontos</p>
+                <p className="text-xl font-bold text-slate-900">
                   {generatedAssessment.totalPoints}
                 </p>
               </div>
-              <div className="bg-white/5 p-3 rounded-2xl border border-white/10 col-span-2 flex justify-between items-center px-4">
-                <span className="text-[9px] text-slate-400 uppercase tracking-widest">
-                  Objetivas
-                </span>
-                <span className="font-bold text-green-400">
+              <div className="col-span-2 flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3">
+                <span className="text-xs text-slate-600">Objetivas</span>
+                <span className="font-semibold text-emerald-700">
                   {generatedAssessment.questions.filter((q) => q.type === 'objective').length}
                 </span>
               </div>
-              <div className="bg-white/5 p-3 rounded-2xl border border-white/10 col-span-2 flex justify-between items-center px-4">
-                <span className="text-[9px] text-slate-400 uppercase tracking-widest">
-                  Dissertativas
-                </span>
-                <span className="font-bold text-purple-400">
+              <div className="col-span-2 flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3">
+                <span className="text-xs text-slate-600">Dissertativas</span>
+                <span className="font-semibold text-blue-700">
                   {generatedAssessment.questions.filter((q) => q.type === 'dissertative').length}
                 </span>
               </div>
@@ -184,13 +179,11 @@ const AssessmentManager: React.FC<AssessmentManagerProps> = ({
 
   // 3. Setup (Form) View
   return (
-    <div className="flex flex-col h-full bg-slate-50">
-      <div className="flex items-center justify-between px-4 md:px-8 py-3 bg-white border-b border-slate-200">
+    <div className="flex h-full flex-col bg-slate-50">
+      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-4 md:px-8">
         <div className="flex items-center gap-2 text-slate-700">
           <Target size={18} className="text-purple-500" />
-          <span className="text-xs font-black uppercase tracking-widest">
-            Montagem de Avaliações Contextualizadas
-          </span>
+          <span className="text-sm font-semibold">Criar avaliação</span>
         </div>
       </div>
       <div className="flex-1">

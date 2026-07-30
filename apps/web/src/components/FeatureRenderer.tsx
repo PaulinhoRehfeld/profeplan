@@ -22,9 +22,13 @@ const SchoolDashboard = React.lazy(() => import('../pages/SchoolDashboard'));
 const MyDocumentsManager = React.lazy(() => import('../features/MyDocuments/MyDocumentsManager'));
 
 const PageLoader = () => (
-  <div className="flex items-center justify-center h-full w-full bg-slate-50 text-slate-400">
-    <Loader2 className="animate-spin mr-2" />
-    <span className="text-sm font-medium">Carregando...</span>
+  <div
+    className="flex h-full w-full items-center justify-center bg-slate-50 px-4 text-slate-600"
+    role="status"
+    aria-live="polite"
+  >
+    <Loader2 aria-hidden="true" className="mr-3 h-5 w-5 animate-spin ui-reduce-motion" />
+    <span className="text-base font-medium">Carregando esta área...</span>
   </div>
 );
 

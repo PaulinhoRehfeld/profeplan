@@ -17,12 +17,9 @@ import {
   Lock,
   Menu,
   X,
-  Accessibility,
   HelpCircle,
   Plus,
 } from 'lucide-react';
-import { PdiAdaptationWidget } from './PdiAdaptationWidget';
-import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { Message, MessageRole, ToolMode } from '../../../types';
 import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
@@ -79,7 +76,6 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
   selectedPnldBookId,
   setSelectedPnldBookId,
   lastDraftSavedAt,
-  setActiveMode,
 }) => {
   const [observations, setObservations] = useState('');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -189,18 +185,6 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
 
   // Mobile Menu State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
-
-  // PDI Integration State
-  const [pdiStudents, setPdiStudents] = useState<any[]>([]);
-  const [showPdi, setShowPdi] = useState(false);
-
-  useEffect(() => {
-    if (userId) loadPdiStudents();
-  }, [userId]);
-
-  const loadPdiStudents = async () => {
-    // Fetch students with PDIs
-  };
 
   const handleActionClick = (action: 'plan' | 'material' | 'enem') => {
     if (!selectedLesson) {
@@ -336,7 +320,9 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
         {/* A. Plan Selector (Dropdown) */}
         <div className="p-4 lg:p-6 border-b border-slate-100 space-y-3 bg-slate-50/50 relative">
           <button
+            type="button"
             onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Fechar painel de aulas"
             className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 lg:hidden"
           >
             <X size={20} />
@@ -350,6 +336,7 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
           </div>
 
           <select
+            aria-label="Selecionar planejamento trimestral"
             value={selectedTermPlanId}
             onChange={(e) => setSelectedTermPlanId(e.target.value)}
             className="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-100 outline-none shadow-sm cursor-pointer hover:border-indigo-300 transition-all"
@@ -391,21 +378,22 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
               return (
                 <div
                   key={lesson.number}
-                  className={`w-full p-3 rounded-xl text-xs transition-all border group relative flex flex-col gap-2 ${
+                  className={`w-full rounded-lg text-xs transition-colors border ${
                     selectedLesson?.number === lesson.number
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200 scale-[1.02]'
-                      : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:shadow-sm'
+                      ? 'bg-indigo-50 border-indigo-400 text-indigo-950'
+                      : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-indigo-50/40'
                   }`}
                 >
                   <button
                     type="button"
                     onClick={() => setSelectedLesson(lesson)}
-                    className="flex items-start gap-3 w-full text-left"
+                    aria-pressed={selectedLesson?.number === lesson.number}
+                    className="flex min-h-11 items-start gap-3 w-full p-2.5 text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1"
                   >
                     <div
                       className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 ${
                         selectedLesson?.number === lesson.number
-                          ? 'bg-white/20 text-white'
+                          ? 'bg-indigo-600 text-white'
                           : 'bg-slate-100 text-slate-400'
                       }`}
                     >
@@ -418,7 +406,7 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
                         {lesson.title}
                       </p>
                       {selectedLesson?.number === lesson.number && (
-                        <p className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed font-medium">
+                        <p className="text-[10px] text-indigo-700 mt-1 line-clamp-1 leading-relaxed font-medium">
                           {lesson.description}
                         </p>
                       )}
@@ -428,37 +416,12 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
                         size={14}
                         className={
                           selectedLesson?.number === lesson.number
-                            ? 'text-white'
+                            ? 'text-emerald-600'
                             : 'text-emerald-500'
                         }
                       />
                     )}
                   </button>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedLesson(lesson);
-                        if (setActiveMode) {
-                          const selectedPlan = termPlans.find((p) => p.id === selectedTermPlanId);
-                          const url = new URL(window.location.href);
-                          url.searchParams.set('source', 'planning');
-                          url.searchParams.set('lessonNumber', String(lesson.number));
-                          url.searchParams.set('lessonTitle', lesson.title);
-                          if (selectedPlan?.subject)
-                            url.searchParams.set('subject', selectedPlan.subject);
-                          if (selectedPlan?.grade)
-                            url.searchParams.set('grade', selectedPlan.grade);
-                          window.history.replaceState(null, '', url.toString());
-                          setActiveMode(ToolMode.INCLUSION);
-                        }
-                      }}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black uppercase tracking-[0.18em]"
-                    >
-                      Adaptar com PDI
-                    </button>
-                  </div>
                 </div>
               );
             })
@@ -466,233 +429,214 @@ REGENERE o plano incorporando esta mudança imediatamente. Ignore qualquer regra
         </div>
 
         {/* C. Action Buttons or Material Wizard */}
-        <div className="p-4 border-t border-slate-200 bg-white space-y-3">
-          <button
-            onClick={() => setShowPdi(!showPdi)}
-            className="w-full flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 p-2 rounded-lg transition-colors"
-          >
-            <span className="flex items-center gap-2">
-              <Accessibility size={14} /> Integração PDI / Inclusão
-            </span>
-            <span>{showPdi ? '▲' : '▼'}</span>
-          </button>
-
-          {showPdi && selectedLesson && (
-            <div className="animate-in slide-in-from-bottom-2">
-              <PdiAdaptationWidget
-                userId={userId}
-                studentId="sample-student-uuid"
-                pdiId="sample-pdi-uuid"
-                studentName="João Silva"
-                lessonTopic={selectedLesson.title}
-                lessonObjective={selectedLesson.description || 'Objetivo Geral'}
-              />
-            </div>
-          )}
-
-          {showMaterialOptions ? (
-            <div className="animate-in slide-in-from-right-4 duration-300">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600">
-                  Configurar Material
-                </p>
-                <button
-                  onClick={() => setShowMaterialOptions(false)}
-                  className="text-slate-400 hover:text-red-500 text-[10px] font-bold"
-                >
-                  CANCELAR
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 gap-2 mb-3">
-                {[
-                  { id: 'resumo', label: 'Resumo em Tópicos' },
-                  { id: 'teorico', label: 'Texto Teórico' },
-                  { id: 'exercicios', label: 'Exercícios' },
-                ].map((opt) => (
+        {selectedLesson && (
+          <div className="p-4 border-t border-slate-200 bg-white space-y-3">
+            {showMaterialOptions ? (
+              <div className="animate-in slide-in-from-right-4 duration-300">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600">
+                    Configurar Material
+                  </p>
                   <button
-                    key={opt.id}
-                    onClick={() => setMaterialType(opt.id as any)}
-                    className={`p-3 rounded-lg border text-xs font-bold text-left transition-all ${
-                      materialType === opt.id
-                        ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}
+                    onClick={() => setShowMaterialOptions(false)}
+                    className="text-slate-400 hover:text-red-500 text-[10px] font-bold"
                   >
-                    {opt.label}
+                    CANCELAR
                   </button>
-                ))}
-              </div>
+                </div>
 
-              <div className="mb-3">
-                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">
-                  Detalhes da Opção Selecionada
+                <div className="grid grid-cols-1 gap-2 mb-3">
+                  {[
+                    { id: 'resumo', label: 'Resumo em Tópicos' },
+                    { id: 'teorico', label: 'Texto Teórico' },
+                    { id: 'exercicios', label: 'Exercícios' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setMaterialType(opt.id as any)}
+                      className={`p-3 rounded-lg border text-xs font-bold text-left transition-all ${
+                        materialType === opt.id
+                          ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mb-3">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">
+                    Detalhes da Opção Selecionada
+                  </p>
+                  <textarea
+                    value={materialInstructions}
+                    onChange={(e) => setMaterialInstructions(e.target.value)}
+                    placeholder="Ex: Incluir analogias simples..."
+                    className="w-full p-2 rounded-lg border border-slate-200 bg-slate-50 text-xs h-16 resize-none focus:bg-white focus:ring-2 ring-indigo-100 outline-none"
+                  />
+                </div>
+
+                <button
+                  onClick={handleMaterialGenerate}
+                  disabled={!materialType}
+                  className="w-full py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 transition-all"
+                >
+                  Gerar Material
+                </button>
+              </div>
+            ) : showAssessmentOptions ? (
+              <div className="animate-in slide-in-from-right-4 duration-300">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">
+                    Configurar Exercícios
+                  </p>
+                  <button
+                    onClick={() => setShowAssessmentOptions(false)}
+                    className="text-slate-400 hover:text-red-500 text-[10px] font-bold"
+                  >
+                    CANCELAR
+                  </button>
+                </div>
+
+                <div className="space-y-4 mb-4">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                      Questões ENEM ({enemCount})
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value={enemCount}
+                      onChange={(e) => setEnemCount(Number(e.target.value))}
+                      className="w-full accent-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                      Questões Objetivas ({objectiveCount})
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value={objectiveCount}
+                      onChange={(e) => setObjectiveCount(Number(e.target.value))}
+                      className="w-full accent-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                      Questões Discursivas ({dissertativeCount})
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="5"
+                      step="1"
+                      value={dissertativeCount}
+                      onChange={(e) => setDissertativeCount(Number(e.target.value))}
+                      className="w-full accent-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-2">
+                      Dificuldade
+                    </label>
+                    <div className="flex gap-2">
+                      {['Fácil', 'Médio', 'Difícil'].map((d) => (
+                        <button
+                          key={d}
+                          onClick={() => setDifficulty(d as any)}
+                          className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${
+                            difficulty === d
+                              ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                              : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-white'
+                          }`}
+                        >
+                          {d}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleAssessmentGenerate}
+                  className="w-full py-3 bg-amber-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-all shadow-sm shadow-amber-200"
+                >
+                  Gerar Exercícios
+                </button>
+              </div>
+            ) : (
+              <>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">
+                  O que deseja criar?
                 </p>
-                <textarea
-                  value={materialInstructions}
-                  onChange={(e) => setMaterialInstructions(e.target.value)}
-                  placeholder="Ex: Incluir analogias simples..."
-                  className="w-full p-2 rounded-lg border border-slate-200 bg-slate-50 text-xs h-16 resize-none focus:bg-white focus:ring-2 ring-indigo-100 outline-none"
-                />
-              </div>
+                <div className="grid grid-cols-1 gap-2">
+                  <button
+                    onClick={() => handleActionClick('plan')}
+                    disabled={!selectedLesson || isThinking}
+                    className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                      <Book size={16} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <span className="block text-xs font-black uppercase tracking-wide">
+                        Plano de Aula
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Metodologia e objetivos
+                      </span>
+                    </div>
+                  </button>
 
-              <button
-                onClick={handleMaterialGenerate}
-                disabled={!materialType}
-                className="w-full py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 transition-all"
-              >
-                Gerar Material
-              </button>
-            </div>
-          ) : showAssessmentOptions ? (
-            <div className="animate-in slide-in-from-right-4 duration-300">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-amber-600">
-                  Configurar Exercícios
-                </p>
-                <button
-                  onClick={() => setShowAssessmentOptions(false)}
-                  className="text-slate-400 hover:text-red-500 text-[10px] font-bold"
-                >
-                  CANCELAR
-                </button>
-              </div>
+                  <button
+                    onClick={() => handleActionClick('material')}
+                    disabled={!selectedLesson || isThinking}
+                    className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                      <FileText size={16} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <span className="block text-xs font-black uppercase tracking-wide">
+                        Material do Aluno
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Resumos e fixação
+                      </span>
+                    </div>
+                  </button>
 
-              <div className="space-y-4 mb-4">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
-                    Questões ENEM ({enemCount})
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="10"
-                    step="1"
-                    value={enemCount}
-                    onChange={(e) => setEnemCount(Number(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
+                  <button
+                    onClick={() => handleActionClick('enem')}
+                    disabled={!selectedLesson || isThinking}
+                    className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                      <CheckCircle2 size={16} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <span className="block text-xs font-black uppercase tracking-wide">
+                        Exercícios
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Lista de fixação
+                      </span>
+                    </div>
+                  </button>
                 </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
-                    Questões Objetivas ({objectiveCount})
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="10"
-                    step="1"
-                    value={objectiveCount}
-                    onChange={(e) => setObjectiveCount(Number(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
-                    Questões Discursivas ({dissertativeCount})
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="5"
-                    step="1"
-                    value={dissertativeCount}
-                    onChange={(e) => setDissertativeCount(Number(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-2">
-                    Dificuldade
-                  </label>
-                  <div className="flex gap-2">
-                    {['Fácil', 'Médio', 'Difícil'].map((d) => (
-                      <button
-                        key={d}
-                        onClick={() => setDifficulty(d as any)}
-                        className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${
-                          difficulty === d
-                            ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                            : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-white'
-                        }`}
-                      >
-                        {d}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              </>
+            )}
+          </div>
+        )}
 
-              <button
-                onClick={handleAssessmentGenerate}
-                className="w-full py-3 bg-amber-500 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition-all shadow-sm shadow-amber-200"
-              >
-                Gerar Exercícios
-              </button>
-            </div>
-          ) : (
-            <>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">
-                O que deseja criar?
-              </p>
-              <div className="grid grid-cols-1 gap-2">
-                <button
-                  onClick={() => handleActionClick('plan')}
-                  disabled={!selectedLesson || isThinking}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                    <Book size={16} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <span className="block text-xs font-black uppercase tracking-wide">
-                      Plano de Aula
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      Metodologia e objetivos
-                    </span>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => handleActionClick('material')}
-                  disabled={!selectedLesson || isThinking}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                    <FileText size={16} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <span className="block text-xs font-black uppercase tracking-wide">
-                      Material do Aluno
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      Resumos e fixação
-                    </span>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => handleActionClick('enem')}
-                  disabled={!selectedLesson || isThinking}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-200 hover:text-amber-700 transition-all group disabled:opacity-50 disabled:cursor-not-allowed justify-start text-left"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                    <CheckCircle2 size={16} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <span className="block text-xs font-black uppercase tracking-wide">
-                      Exercícios
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium">Lista de fixação</span>
-                  </div>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-
-        {!showMaterialOptions && !showAssessmentOptions && (
+        {selectedLesson && !showMaterialOptions && !showAssessmentOptions && (
           <div className="p-4 border-t border-slate-200 bg-slate-50 hidden lg:block">
             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-2">
               <MessageSquare size={10} /> Observações Específicas

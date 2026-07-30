@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
+import { ArrowRight, BookOpen, Calendar, Clock } from 'lucide-react';
 import { useGlobalPlanning } from '../../contexts/GlobalPlanningContext';
-import { Calendar, BookOpen, Clock, ArrowRight } from 'lucide-react';
+import { Card, Feedback } from '../../components/ui';
 import type { TermPlan } from '../../types';
 
 interface TermPlanningListProps {
@@ -12,91 +13,96 @@ const TermPlanningList: React.FC<TermPlanningListProps> = ({ userId, onOpenPlan 
   const { termPlans, updateCurrentPlan, refreshTermPlans } = useGlobalPlanning();
 
   useEffect(() => {
-    refreshTermPlans(userId).catch((err) => {
-      console.error('Erro ao carregar planejamentos:', err);
+    refreshTermPlans(userId).catch((error) => {
+      console.error('Erro ao carregar planejamentos:', error);
     });
   }, [userId, refreshTermPlans]);
 
   const handleOpenPlan = (plan: TermPlan) => {
     updateCurrentPlan(plan);
-    if (onOpenPlan) {
-      onOpenPlan(plan);
-    }
+    onOpenPlan?.(plan);
   };
 
   if (!termPlans.length) {
     return (
-      <div className="bg-white rounded-3xl border border-slate-100 p-6 text-center text-slate-400 text-sm">
-        Nenhum planejamento trimestral encontrado ainda. Salve um plano para vê-lo aqui.
-      </div>
+      <Feedback
+        variant="empty"
+        title="Nenhum planejamento trimestral salvo"
+        description="Preencha os dados abaixo, gere seu primeiro planejamento e salve para encontrá-lo aqui."
+      />
     );
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 p-4 md:p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 text-blue-600">
-          <BookOpen className="w-5 h-5" />
+    <Card as="section" aria-labelledby="saved-term-plans-title" className="p-5 sm:p-6">
+      <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+            <BookOpen aria-hidden="true" className="h-5 w-5" />
+          </span>
           <div>
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">
-              Meus Planejamentos Trimestrais
+            <h2 id="saved-term-plans-title" className="text-lg font-semibold text-slate-950">
+              Planejamentos salvos
             </h2>
-            <p className="text-[11px] text-slate-500 font-medium">
-              Reabra e edite planejamentos já salvos com um clique.
+            <p className="mt-1 text-sm leading-5 text-slate-600">
+              Abra um planejamento para revisar, editar ou gerar uma nova versão.
             </p>
           </div>
         </div>
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+        <span className="w-fit rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
           {termPlans.length} plano{termPlans.length > 1 ? 's' : ''}
         </span>
       </div>
 
-      <div className="divide-y divide-slate-100">
+      <ul className="mt-2 divide-y divide-slate-200" aria-label="Planejamentos trimestrais salvos">
         {termPlans.map((plan) => {
           const periodLabel = `${plan.period}º ${plan.regime}`;
           const lessonsCount = plan.lessons?.length ?? 0;
           const createdAt = plan.created_at
             ? new Date(plan.created_at).toLocaleDateString('pt-BR')
             : '';
+          const accessibleName = `Abrir ${periodLabel} de ${plan.subject}, ${plan.grade}`;
 
           return (
-            <button
-              key={plan.id}
-              onClick={() => handleOpenPlan(plan)}
-              className="w-full text-left py-3 px-3 rounded-2xl hover:bg-slate-50 flex items-center justify-between gap-4 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                  <Calendar className="w-5 h-5" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-sm font-black text-slate-800 truncate">
-                    {periodLabel} · {plan.subject} ({plan.grade})
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 font-semibold uppercase tracking-[0.12em]">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {lessonsCount
-                        ? `${lessonsCount} aula${lessonsCount > 1 ? 's' : ''}`
-                        : '0 aulas definidas'}
+            <li key={plan.id}>
+              <button
+                type="button"
+                onClick={() => handleOpenPlan(plan)}
+                className="ui-focus-ring ui-reduce-motion group flex min-h-16 w-full items-center justify-between gap-4 rounded-lg px-2 py-4 text-left transition-colors hover:bg-blue-50/60 sm:px-3"
+                aria-label={accessibleName}
+              >
+                <span className="flex min-w-0 items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                    <Calendar aria-hidden="true" className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-base font-semibold text-slate-900">
+                      {periodLabel} · {plan.subject} ({plan.grade})
                     </span>
-                    {createdAt && (
-                      <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
-                        Atualizado em {createdAt}
+                    <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Clock aria-hidden="true" className="h-4 w-4" />
+                        {lessonsCount
+                          ? `${lessonsCount} aula${lessonsCount > 1 ? 's' : ''}`
+                          : 'Nenhuma aula definida'}
                       </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-[11px] font-black text-blue-600 uppercase tracking-[0.18em]">
-                Abrir
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </button>
+                      {createdAt && <span>Atualizado em {createdAt}</span>}
+                    </span>
+                  </span>
+                </span>
+                <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-blue-700">
+                  <span className="hidden sm:inline">Abrir</span>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-5 w-5 transition-transform group-hover:translate-x-0.5 ui-reduce-motion"
+                  />
+                </span>
+              </button>
+            </li>
           );
         })}
-      </div>
-    </div>
+      </ul>
+    </Card>
   );
 };
 

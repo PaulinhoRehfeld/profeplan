@@ -1,7 +1,7 @@
 {
   "name": "profeplan-engenharia-pedagogica-v4.0",
   "private": true,
-  "version": "4.3.8",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

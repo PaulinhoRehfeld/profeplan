@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Message, MessageRole } from '../../../types';
 import { QuestionSearchWidget } from '../../../components/QuestionFinder/QuestionSearchWidget';
+import { IconButton } from '../../../components/ui';
 
 interface CleanChatProps {
   messages: Message[];
@@ -27,6 +28,38 @@ interface CleanChatProps {
   onExport?: (content: string) => void;
 }
 
+const suggestions = [
+  {
+    title: 'Organizar o trimestre',
+    description: 'Quero planejar uma sequência de aulas.',
+    prompt: 'Quero planejar uma sequência de aulas para este trimestre. Por onde começo?',
+    icon: CalendarRange,
+    iconStyle: 'bg-indigo-50 text-indigo-700',
+  },
+  {
+    title: 'Criar plano de aula',
+    description: 'Quero montar um plano completo agora.',
+    prompt:
+      'Quero criar um plano de aula completo para a próxima aula. O que você precisa saber de mim?',
+    icon: LayoutDashboard,
+    iconStyle: 'bg-blue-50 text-blue-700',
+  },
+  {
+    title: 'Alinhar à BNCC e ao CRMG',
+    description: 'Preciso localizar habilidades curriculares.',
+    prompt: 'Tenho dúvidas sobre como alinhar minhas aulas à BNCC/CRMG. Pode me orientar?',
+    icon: BookOpen,
+    iconStyle: 'bg-emerald-50 text-emerald-700',
+  },
+  {
+    title: 'Organizar minhas turmas',
+    description: 'Quero estruturar estudantes e turmas.',
+    prompt: 'Quero organizar melhor minhas turmas e alunos no ProfePlan. Por onde começo?',
+    icon: Users,
+    iconStyle: 'bg-sky-50 text-sky-700',
+  },
+];
+
 export const CleanChat: React.FC<CleanChatProps> = ({
   messages,
   isThinking,
@@ -37,198 +70,172 @@ export const CleanChat: React.FC<CleanChatProps> = ({
   messagesEndRef,
   onSave,
   onExport,
-}) => {
-  return (
-    <div className="flex-1 flex flex-col h-full relative bg-slate-50/50">
-      <div className="flex-1 overflow-y-auto px-4 md:px-10 py-4 custom-scrollbar space-y-4 scroll-smooth">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full opacity-30 select-none pointer-events-none">
-            <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-6 animate-in zoom-in duration-500">
-              <Bot size={40} className="text-indigo-500" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-700 mb-2">Olá, Professor(a)</h2>
-            <p className="text-sm font-medium text-slate-400 text-center max-w-md leading-relaxed mb-6">
-              Sou seu assistente pedagógico. Posso ajudar com dúvidas rápidas, ideias de projetos ou
-              correções.
-              <br />
-              <span className="text-xs uppercase tracking-wide opacity-70 mt-2 block">
-                Para planos completos, use o menu "Plano de Aula".
-              </span>
-            </p>
+}) => (
+  <div className="relative flex h-full flex-1 flex-col bg-slate-50">
+    <div
+      className="custom-scrollbar flex-1 space-y-5 overflow-y-auto px-4 py-6 sm:px-6 lg:px-10"
+      role="log"
+      aria-live="polite"
+      aria-label="Conversa com o assistente pedagógico"
+    >
+      {messages.length === 0 && (
+        <section className="mx-auto flex min-h-full w-full max-w-4xl flex-col items-center justify-center py-8 text-center">
+          <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700">
+            <Bot aria-hidden="true" className="h-8 w-8" />
+          </span>
+          <h2 className="text-2xl font-semibold text-slate-950 sm:text-3xl">Como posso ajudar?</h2>
+          <p className="mt-2 max-w-2xl text-base leading-6 text-slate-600">
+            Peça ideias, tire dúvidas ou comece com uma das sugestões abaixo. Você poderá revisar
+            todo o conteúdo gerado.
+          </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-xl w-full pointer-events-auto">
-              <button
-                type="button"
-                onClick={() =>
-                  setInput(
-                    'Quero planejar uma sequência de aulas para este trimestre. Por onde começo?'
-                  )
-                }
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white shadow-sm border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all text-left"
-              >
-                <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                  <CalendarRange size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
-                    Planejamento Trimestral
-                  </p>
-                  <p className="text-xs text-slate-500">Me ajude a organizar o trimestre.</p>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setInput(
-                    'Quero criar um plano de aula completo para a próxima aula. O que você precisa saber de mim?'
-                  )
-                }
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white shadow-sm border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all text-left"
-              >
-                <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white">
-                  <LayoutDashboard size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
-                    Plano de Aula
-                  </p>
-                  <p className="text-xs text-slate-500">Quero montar um plano de aula agora.</p>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setInput(
-                    'Tenho dúvidas sobre como alinhar minhas aulas à BNCC/CRMG. Pode me orientar?'
-                  )
-                }
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white shadow-sm border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all text-left"
-              >
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                  <BookOpen size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
-                    BNCC / CRMG
-                  </p>
-                  <p className="text-xs text-slate-500">Dúvidas sobre currículo e habilidades.</p>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setInput(
-                    'Quero organizar melhor minhas turmas e alunos no PROFEPLAN. Por onde começo?'
-                  )
-                }
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white shadow-sm border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all text-left"
-              >
-                <div className="w-9 h-9 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600">
-                  <Users size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">
-                    Minhas Turmas
-                  </p>
-                  <p className="text-xs text-slate-500">Me ajude a organizar turmas e alunos.</p>
-                </div>
-              </button>
-            </div>
+          <div className="mt-8 grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+            {suggestions.map((suggestion) => {
+              const SuggestionIcon = suggestion.icon;
+              return (
+                <button
+                  key={suggestion.title}
+                  type="button"
+                  onClick={() => setInput(suggestion.prompt)}
+                  className="ui-focus-ring ui-reduce-motion flex min-h-24 items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 text-left transition-colors hover:border-indigo-300 hover:bg-indigo-50/40"
+                >
+                  <span
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${suggestion.iconStyle}`}
+                  >
+                    <SuggestionIcon aria-hidden="true" className="h-5 w-5" />
+                  </span>
+                  <span>
+                    <span className="block text-base font-semibold text-slate-900">
+                      {suggestion.title}
+                    </span>
+                    <span className="mt-1 block text-sm leading-5 text-slate-600">
+                      {suggestion.description}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        )}
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex gap-4 ${msg.role === MessageRole.USER ? 'flex-row-reverse' : ''} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+        </section>
+      )}
+
+      {messages.map((message) => {
+        const isUser = message.role === MessageRole.USER;
+        return (
+          <article
+            key={message.id}
+            className={`mx-auto flex max-w-4xl gap-3 ${isUser ? 'flex-row-reverse' : ''}`}
           >
-            <div
-              className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white' : 'bg-white text-emerald-600 border border-emerald-100'}`}
+            <span
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                isUser
+                  ? 'bg-indigo-700 text-white'
+                  : 'border border-slate-200 bg-white text-emerald-700'
+              }`}
+              aria-hidden="true"
             >
-              {msg.role === MessageRole.USER ? <User size={18} /> : <Bot size={18} />}
-            </div>
+              {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+            </span>
             <div
-              className={`max-w-[85%] p-4 rounded-[2rem] shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${msg.role === MessageRole.USER ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'}`}
+              className={`max-w-[88%] rounded-2xl px-4 py-3 text-base leading-6 shadow-sm sm:max-w-[80%] ${
+                isUser
+                  ? 'rounded-tr-sm bg-indigo-700 text-white'
+                  : 'rounded-tl-sm border border-slate-200 bg-white text-slate-800'
+              }`}
             >
-              {msg.content}
-              {msg.role === MessageRole.ASSISTANT && msg.content.length > 80 && (
-                <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
+              <p className="whitespace-pre-wrap">{message.content}</p>
+              {!isUser && message.content.length > 80 && (onSave || onExport) && (
+                <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
                   {onSave && (
                     <button
-                      onClick={() => onSave(msg.content)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors"
+                      type="button"
+                      onClick={() => onSave(message.content)}
+                      className="ui-focus-ring inline-flex min-h-9 items-center gap-2 rounded-lg bg-emerald-50 px-3 text-sm font-semibold text-emerald-800 hover:bg-emerald-100"
                     >
-                      <Save size={12} /> Salvar
+                      <Save aria-hidden="true" className="h-4 w-4" /> Salvar
                     </button>
                   )}
                   {onExport && (
                     <button
-                      onClick={() => onExport(msg.content)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors"
+                      type="button"
+                      onClick={() => onExport(message.content)}
+                      className="ui-focus-ring inline-flex min-h-9 items-center gap-2 rounded-lg bg-indigo-50 px-3 text-sm font-semibold text-indigo-800 hover:bg-indigo-100"
                     >
-                      <Download size={12} /> Baixar DOCX
+                      <Download aria-hidden="true" className="h-4 w-4" /> Baixar DOCX
                     </button>
                   )}
                 </div>
               )}
             </div>
-          </div>
-        ))}
-        {isThinking && (
-          <div className="flex gap-4 animate-pulse">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-emerald-100 flex items-center justify-center shrink-0 shadow-sm">
-              <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
-            </div>
-            <div className="p-4 rounded-[2rem] bg-white/50 border border-slate-100 text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-              Gemini está pensando...
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          </article>
+        );
+      })}
 
-      {/* Clean Input Area */}
-      <div className="p-3 md:p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-white/80 backdrop-blur-md border-t border-slate-100 z-10 sticky bottom-0">
-        <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto relative group">
-          <div className="relative flex items-end gap-2 bg-white rounded-[2rem] p-2 shadow-lg border border-slate-100 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage(e);
-                }
-              }}
-              placeholder="Digite sua dúvida ou solicitação pedagógica..."
-              className="flex-1 bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 font-medium py-3 max-h-32 resize-none custom-scrollbar text-base md:text-sm"
-              rows={1}
+      {isThinking && (
+        <div className="mx-auto flex max-w-4xl items-center gap-3" role="status">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white">
+            <Loader2
+              aria-hidden="true"
+              className="h-5 w-5 animate-spin text-emerald-700 ui-reduce-motion"
             />
-            <button
-              type="submit"
-              disabled={!input.trim() || isThinking}
-              className="p-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95"
-            >
-              {isThinking ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
-            </button>
-          </div>
-        </form>
-        {messages.length > 0 && (
-          <button
-            onClick={handleClearChat}
-            className="absolute top-4 right-4 text-[9px] font-bold text-slate-300 hover:text-red-400 uppercase tracking-widest flex items-center gap-1"
-          >
-            <Trash2 size={12} /> Limpar
-          </button>
-        )}
-      </div>
-
-      {/* --- WIDGET DE BUSCA (BETA) --- */}
-      <div className="px-4 pb-10">
-        <QuestionSearchWidget />
-      </div>
+          </span>
+          <span className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600">
+            Preparando uma resposta pedagógica...
+          </span>
+        </div>
+      )}
+      <div ref={messagesEndRef} />
     </div>
-  );
-};
+
+    <div className="sticky bottom-0 z-10 border-t border-slate-200 bg-white p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:p-4">
+      <form onSubmit={handleSendMessage} className="mx-auto flex max-w-4xl items-end gap-2">
+        <label htmlFor="pedagogical-assistant-input" className="sr-only">
+          Mensagem para o assistente pedagógico
+        </label>
+        <textarea
+          id="pedagogical-assistant-input"
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault();
+              handleSendMessage(event);
+            }
+          }}
+          placeholder="Digite sua dúvida ou solicitação pedagógica..."
+          className="ui-focus-ring custom-scrollbar max-h-32 min-h-12 flex-1 resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-500"
+          rows={1}
+        />
+        <IconButton
+          type="submit"
+          label={isThinking ? 'Aguarde a resposta' : 'Enviar mensagem'}
+          disabled={!input.trim() || isThinking}
+          icon={
+            isThinking ? (
+              <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin ui-reduce-motion" />
+            ) : (
+              <Send aria-hidden="true" className="h-5 w-5" />
+            )
+          }
+          variant="primary"
+          className="h-12 w-12 shrink-0"
+        />
+      </form>
+      {messages.length > 0 && (
+        <div className="mx-auto mt-2 flex max-w-4xl justify-end">
+          <button
+            type="button"
+            onClick={handleClearChat}
+            className="ui-focus-ring inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-700"
+          >
+            <Trash2 aria-hidden="true" className="h-4 w-4" /> Limpar conversa
+          </button>
+        </div>
+      )}
+    </div>
+
+    <div className="px-4 pb-8 pt-4">
+      <QuestionSearchWidget />
+    </div>
+  </div>
+);

@@ -164,6 +164,7 @@ export const CurriculumMatcher: React.FC<CurriculumMatcherProps> = ({ onAddConte
               Disciplina
             </label>
             <select
+              aria-label="Disciplina do currículo"
               className="w-full text-sm p-2 rounded-lg border border-slate-200 bg-slate-50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
               value={selectedDiscipline}
               onChange={(e) => setSelectedDiscipline(e.target.value)}
@@ -182,6 +183,7 @@ export const CurriculumMatcher: React.FC<CurriculumMatcherProps> = ({ onAddConte
               Período
             </label>
             <select
+              aria-label="Período do currículo"
               className="w-full text-sm p-2 rounded-lg border border-slate-200 bg-slate-50 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
@@ -230,7 +232,9 @@ export const CurriculumMatcher: React.FC<CurriculumMatcherProps> = ({ onAddConte
                 <div className="flex items-center justify-between mt-3">
                   {matchingQuestions[item.id] ? (
                     <button
+                      type="button"
                       onClick={() => toggleExpand(item.id)}
+                      aria-expanded={expandedItemId === item.id}
                       className="text-xs font-bold text-indigo-600 flex items-center gap-1 hover:underline"
                     >
                       {expandedItemId === item.id ? 'Ocultar Questões' : 'Ver Questões Encontradas'}
@@ -242,6 +246,7 @@ export const CurriculumMatcher: React.FC<CurriculumMatcherProps> = ({ onAddConte
                     </button>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => handleMatch(item.id)}
                       disabled={isLoadingMatch === item.id}
                       className="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 hover:bg-indigo-100 transition-colors disabled:opacity-50"
@@ -275,9 +280,11 @@ export const CurriculumMatcher: React.FC<CurriculumMatcherProps> = ({ onAddConte
                             Match: {Math.round(q.similarity * 100)}%
                           </span>
                           <button
+                            type="button"
                             onClick={() => onAddContent(`Questão ENEM (${q.id}): ${q.content}`)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-600 text-white p-1 rounded hover:bg-indigo-700"
+                            className="ui-focus-ring rounded bg-indigo-600 p-2 text-white transition-colors hover:bg-indigo-700"
                             title="Adicionar ao Planejamento"
+                            aria-label={`Adicionar questão ${q.id} ao planejamento`}
                           >
                             <Plus size={14} />
                           </button>

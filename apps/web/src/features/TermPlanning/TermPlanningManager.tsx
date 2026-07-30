@@ -15,7 +15,6 @@ import {
 import { aiQueue } from '../../services/ai/AiQueue';
 import { useGlobalPlanning, TermPlan } from '../../contexts/GlobalPlanningContext';
 import { PlanningAuthority } from '../../services/PlanningAuthorityService';
-import { KnowledgeManifest } from '../../components/Governance/KnowledgeManifest';
 import { saveGeneratedContent } from '../../services/databaseService';
 import { saveTermPlan } from './TermPlanningService';
 import { exportToDocx } from '../../services/exportService';
@@ -24,6 +23,7 @@ import { FeedbackWidget } from '../../components/Feedback/FeedbackWidget';
 import { feedbackService } from '../../services/feedbackService';
 import { PnldService } from '../../services/PnldService';
 import { PnldBook } from '../../types';
+import { Card } from '../../components/ui';
 
 interface TermPlanningManagerProps {
   userId: string;
@@ -267,24 +267,21 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
   };
 
   return (
-    <div className="w-full space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-24">
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-black text-slate-800 tracking-tight uppercase italic relative inline-block">
-          Agente Coordenador
-          <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+    <div className="w-full space-y-6 pb-24 md:space-y-8">
+      <div className="space-y-2 border-b border-slate-200 pb-5">
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+          Planejamento trimestral
         </h1>
-        <p className="text-slate-500 font-medium">
+        <p className="max-w-3xl text-base leading-6 text-slate-600">
           Defina o contexto global para o período letivo.
         </p>
       </div>
 
-      <KnowledgeManifest />
-
-      <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 relative overflow-hidden">
+      <Card className="grid grid-cols-1 gap-8 p-5 sm:p-6 lg:grid-cols-2">
         {/* Left Col */}
         <div className="space-y-8">
-          <div className="flex items-center gap-3 text-blue-600 mb-2">
-            <BookOpen className="w-6 h-6" />
+          <div className="mb-2 flex items-center gap-3 text-blue-700">
+            <BookOpen aria-hidden="true" className="h-6 w-6" />
             <h2 className="font-black uppercase tracking-widest text-sm">Contexto do Período</h2>
           </div>
 
@@ -292,7 +289,11 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-400 uppercase">Regime</label>
               <div className="flex bg-slate-100 p-1 rounded-xl">
-                <button className="flex-1 py-2 text-xs font-bold uppercase rounded-lg bg-white shadow text-blue-600">
+                <button
+                  type="button"
+                  disabled
+                  className="flex-1 rounded-lg bg-white py-2 text-sm font-semibold text-blue-700 disabled:opacity-100"
+                >
                   Trimestre
                 </button>
               </div>
@@ -302,9 +303,11 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
               <div className="flex gap-2">
                 {[1, 2, 3].map((p) => (
                   <button
+                    type="button"
                     key={p}
                     onClick={() => setPeriod(p)}
-                    className={`w-10 h-10 rounded-xl font-black text-sm transition-all ${period === p ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                    aria-pressed={period === p}
+                    className={`ui-focus-ring min-h-11 min-w-11 rounded-lg text-base font-semibold transition-colors ${period === p ? 'bg-blue-600 text-white' : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50'}`}
                   >
                     {p}º
                   </button>
@@ -317,9 +320,10 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
             <label className="text-xs font-bold text-slate-400 uppercase">Disciplina</label>
             <input
               type="text"
+              aria-label="Disciplina"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-blue-100"
+              className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-base text-slate-900"
               placeholder="Ex: Filosofia"
             />
           </div>
@@ -329,18 +333,20 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
               <label className="text-xs font-bold text-slate-400 uppercase">Série</label>
               <input
                 type="text"
+                aria-label="Série ou ano"
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
-                className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold text-slate-700 focus:ring-2 focus:ring-blue-100"
+                className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-base text-slate-900"
                 placeholder="Ex: 3º Ano"
               />
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-400 uppercase">Nível</label>
               <select
+                aria-label="Etapa de ensino"
                 value={level}
                 onChange={(e) => setLevel(e.target.value as any)}
-                className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold text-slate-700 outline-none"
+                className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-base text-slate-900"
               >
                 <option>Ensino Médio</option>
                 <option>Ensino Fundamental</option>
@@ -358,6 +364,10 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
                 </h3>
               </div>
               <button
+                type="button"
+                role="switch"
+                aria-checked={usePnld}
+                aria-label="Usar livro do PNLD como referência"
                 onClick={() => {
                   setUsePnld(!usePnld);
                   if (usePnld) setSelectedPnldBookId('');
@@ -389,8 +399,10 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
                   <div className="flex flex-col gap-2">
                     {filteredBooks.map((book) => (
                       <button
+                        type="button"
                         key={book.id}
                         onClick={() => setSelectedPnldBookId(book.title)}
+                        aria-pressed={selectedPnldBookId === book.title}
                         className={`w-full p-3 rounded-xl border transition-all flex items-center gap-4 text-left ${selectedPnldBookId === book.title ? 'bg-white border-indigo-500 shadow-md ring-1 ring-indigo-200' : 'bg-white/50 border-slate-200 hover:border-indigo-300 hover:bg-white'}`}
                       >
                         <div className="w-10 h-12 bg-slate-100 rounded-md flex items-center justify-center shrink-0 border border-slate-200 overflow-hidden">
@@ -428,8 +440,8 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
 
         {/* Right Col */}
         <div className="space-y-8">
-          <div className="flex items-center gap-3 text-purple-600 mb-2">
-            <Target className="w-6 h-6" />
+          <div className="mb-2 flex items-center gap-3 text-purple-700">
+            <Target aria-hidden="true" className="h-6 w-6" />
             <h2 className="font-black uppercase tracking-widest text-sm">Metas e Avaliação</h2>
           </div>
 
@@ -438,9 +450,10 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
               <label className="text-xs font-bold text-slate-400 uppercase">Aulas Semanais</label>
               <input
                 type="number"
+                aria-label="Aulas semanais"
                 value={workloadWeekly}
                 onChange={(e) => setWorkloadWeekly(Number(e.target.value))}
-                className="w-full p-3 bg-slate-50 border-none rounded-xl font-bold"
+                className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-base text-slate-900"
               />
             </div>
             <div className="space-y-2 opacity-70">
@@ -471,7 +484,7 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
                   </div>
                   <input
                     type="checkbox"
-                    className="hidden"
+                    className="sr-only"
                     checked={reserves[k as keyof typeof reserves]}
                     onChange={() =>
                       setReserves((prev) => ({ ...prev, [k]: !prev[k as keyof typeof reserves] }))
@@ -504,11 +517,12 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
                     </span>
                     <input
                       type="number"
+                      aria-label={`Pontos para ${labelMap[key] || key}`}
                       value={val}
                       onChange={(e) =>
                         setGrading((prev) => ({ ...prev, [key]: Number(e.target.value) }))
                       }
-                      className="w-full p-2 rounded-lg bg-white border border-slate-200 text-center font-bold text-sm"
+                      className="ui-focus-ring min-h-11 w-full rounded-lg border border-slate-300 bg-white p-2 text-center text-base font-semibold"
                     />
                   </div>
                 );
@@ -516,19 +530,21 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* AI Generation */}
-      <div className="bg-white rounded-[2rem] shadow-xl border border-indigo-100 p-4 md:p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3 text-indigo-600">
-            <Sparkles className="w-6 h-6 animate-pulse" />
+      <Card className="p-5 sm:p-6">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3 text-indigo-700">
+            <Sparkles aria-hidden="true" className="h-6 w-6" />
             <h2 className="font-black uppercase tracking-widest text-sm">IA de Planejamento</h2>
           </div>
           <button
+            type="button"
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-xs uppercase hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
+            aria-busy={isGenerating || undefined}
+            className="ui-focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-indigo-700 px-5 text-base font-semibold text-white hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-55"
           >
             {isGenerating ? <Clock className="animate-spin" size={16} /> : <Sparkles size={16} />}
             {isGenerating && queuePosition > 0
@@ -541,32 +557,36 @@ const TermPlanningManager: React.FC<TermPlanningManagerProps> = ({
         <div className="relative">
           {generatedText ? (
             <textarea
+              aria-label="Conteúdo do planejamento gerado"
               value={generatedText}
               onChange={(e) => setGeneratedText(e.target.value)}
-              className="w-full h-96 p-6 bg-slate-50 border rounded-2xl text-sm"
+              className="ui-focus-ring h-96 w-full rounded-lg border border-slate-300 bg-white p-4 text-base leading-6 text-slate-900"
             />
           ) : (
-            <div className="w-full h-32 border border-dashed rounded-2xl flex items-center justify-center text-slate-400 italic">
+            <div className="flex min-h-32 w-full items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-base text-slate-600">
               Preencha os dados e gere o plano.
             </div>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Actions */}
-      <div className="flex gap-4 justify-end">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button
+          type="button"
           onClick={handleExport}
-          className="px-8 py-4 border rounded-2xl font-black text-xs uppercase"
+          className="ui-focus-ring min-h-11 rounded-lg border border-slate-300 bg-white px-5 text-base font-semibold text-slate-800 hover:bg-slate-50"
         >
           Word
         </button>
         <button
+          type="button"
           onClick={handleSave}
           disabled={isSaving}
-          className="px-10 py-4 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl"
+          aria-busy={isSaving || undefined}
+          className="ui-focus-ring min-h-11 rounded-lg bg-indigo-700 px-6 text-base font-semibold text-white hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-55"
         >
-          Salvar
+          {isSaving ? 'Salvando...' : 'Salvar planejamento'}
         </button>
       </div>
 

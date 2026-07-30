@@ -126,7 +126,7 @@ export default function ComparativoPage() {
     {
       phase: 3,
       title: 'Fase 5: Estabilização de Rotas',
-      status: 'Fase Atual (V4.3.6)',
+      status: 'Versão oficial (V1.0.0)',
       color: 'bg-amber-500 animate-pulse',
       description:
         'Consolidação das rotas de PDI, importador de turmas do SIMADE e testes automatizados de ponta a ponta.',
@@ -548,7 +548,7 @@ export default function ComparativoPage() {
                 ⚙️ <strong>Serviço:</strong> Vite Dev Server
               </p>
               <p>
-                🛡️ <strong>Ambiente:</strong> Monorepo V4.3.6 Rodando Localmente
+                🛡️ <strong>Ambiente:</strong> ProfePlan V1.0.0 Rodando Localmente
               </p>
               <p className="text-blue-400">
                 🔗 <strong>Próximo Passo:</strong> Utilize este painel interativo durante a reunião
