@@ -106,8 +106,8 @@ function App() {
           <a href={`${APP_URL}/login`} className="nav-login">
             Acessar plataforma
           </a>
-          <a href={`mailto:${CONTACT_EMAIL}`} className="nav-cta">
-            Solicitar demonstração
+          <a href={`${APP_URL}/signup`} className="nav-cta">
+            Teste grátis
           </a>
         </nav>
       </header>
@@ -126,9 +126,9 @@ function App() {
           <div className="hero-actions">
             <a
               className="button primary"
-              href={`mailto:${CONTACT_EMAIL}?subject=Demonstração%20ProfePlan`}
+              href={`${APP_URL}/signup`}
             >
-              Solicitar demonstração <ArrowRight size={18} />
+              Teste grátis <ArrowRight size={18} />
             </a>
           </div>
           <div className="trust-row" aria-label="Princípios do ProfePlan">
@@ -301,16 +301,16 @@ function App() {
       </section>
 
       <section className="final-cta section-shell">
-        <h2>Quer conhecer o ProfePlan?</h2>
+        <h2>Pronto para testar o ProfePlan?</h2>
         <p>
-          Solicite uma demonstração e veja como a plataforma pode apoiar a organização do trabalho
-          pedagógico com IA responsável.
+          Crie sua conta gratuitamente e veja como a plataforma pode apoiar a organização do
+          trabalho pedagógico com IA responsável.
         </p>
         <a
           className="button primary"
-          href={`mailto:${CONTACT_EMAIL}?subject=Demonstração%20ProfePlan`}
+          href={`${APP_URL}/signup`}
         >
-          Solicitar demonstração <ArrowRight size={18} />
+          Teste grátis <ArrowRight size={18} />
         </a>
       </section>
 
