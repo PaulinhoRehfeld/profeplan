@@ -34,18 +34,9 @@ type AIProvider = {
 
 // ── Provider Detection ──
 const getAIProvider = (): AIProvider | null => {
-  const anthropicKey = process.env.ANTHROPIC_API_KEY?.trim();
-
-  // 1. CLAUDE (Anthropic) — prioridade máxima quando a chave existe
-  if (anthropicKey) {
-    return {
-      type: 'claude',
-      client: new Anthropic({ apiKey: anthropicKey }),
-      defaultModel: process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514',
-    };
-  }
-
-  // 2. DEEPSEEK (OpenAI-compatible)
+  // O ProfePlan usa DeepSeek como provedor oficial. Não faça fallback silencioso
+  // para outro provedor: uma variável ausente deve gerar erro de configuração,
+  // não consumir outra conta ou enviar dados ao destino errado.
   const deepseekKey = process.env.DEEPSEEK_API_KEY?.trim();
   if (deepseekKey) {
     return {
@@ -54,17 +45,7 @@ const getAIProvider = (): AIProvider | null => {
         apiKey: deepseekKey,
         baseURL: process.env.DEEPSEEK_API_BASE?.trim() || 'https://api.deepseek.com',
       }),
-      defaultModel: process.env.OPENAI_MODEL || 'deepseek-chat',
-    };
-  }
-
-  // 3. OPENAI
-  const openaiKey = process.env.OPENAI_API_KEY?.trim() || process.env.VITE_OPENAI_API_KEY?.trim();
-  if (openaiKey) {
-    return {
-      type: 'openai',
-      client: new OpenAI({ apiKey: openaiKey }),
-      defaultModel: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+      defaultModel: process.env.DEEPSEEK_MODEL?.trim() || 'deepseek-chat',
     };
   }
 
@@ -95,14 +76,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const provider = getAIProvider();
     if (!provider) {
-      const errMsg =
-        'Nenhum provedor de IA configurado. Defina ANTHROPIC_API_KEY, DEEPSEEK_API_KEY ou OPENAI_API_KEY nas variáveis de ambiente do Vercel.';
+      const errMsg = 'DeepSeek não está configurado no servidor. Contate o suporte.';
       logger.error(`[API/AI] ${errMsg}`);
       return res.status(500).json({ error: errMsg });
     }
 
-    // Resolve model: usa o do body se for válido, senão o default do provider
-    const requestedModel = body.model && body.model !== 'backend-ai-proxy' ? body.model : undefined;
+    // Aceita somente modelos DeepSeek conhecidos. "backend-ai-proxy" é apenas
+    // um marcador interno do frontend e nunca deve ser enviado ao provedor.
+    const requestedModel =
+      body.model === 'deepseek-chat' || body.model === 'deepseek-reasoner'
+        ? body.model
+        : undefined;
     const modelName = requestedModel || provider.defaultModel;
 
     logger.info(`[API/AI] Provider: ${provider.type} | Model: ${modelName}`);
@@ -221,8 +205,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({ text });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Internal error';
-    logger.error(`[API/AI] Falha na geração de completion: ${message}`, error);
-    return res.status(500).json({ error: message });
+    const status =
+      typeof error === 'object' && error !== null && 'status' in error
+        ? Number((error as { status?: unknown }).status)
+        : 500;
+    const internalMessage = error instanceof Error ? error.message : 'Internal error';
+    logger.error(`[API/AI] Falha na geração via DeepSeek: ${internalMessage}`, {
+      status,
+      provider: 'deepseek',
+    });
+
+    const publicMessage =
+      status === 401
+        ? 'A autenticação do DeepSeek falhou. A configuração do servidor precisa ser atualizada.'
+        : status === 429
+          ? 'O DeepSeek está temporariamente sobrecarregado. Tente novamente em instantes.'
+          : 'Não foi possível gerar o conteúdo com o DeepSeek. Tente novamente.';
+
+    return res.status(status >= 400 && status < 600 ? status : 500).json({
+      error: publicMessage,
+    });
   }
 }

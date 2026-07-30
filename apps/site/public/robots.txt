@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Amazon public crawler
+User-agent: Amazonbot
+Allow: /
+
+# AWS verification crawler identifier requested during the Activate review
+User-agent: AWSBot
+Allow: /
+
+Sitemap: https://www.wrtech-ai.com/sitemap.xml
