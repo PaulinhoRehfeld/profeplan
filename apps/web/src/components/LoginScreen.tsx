@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Lock, ArrowRight, ShieldCheck, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
+  Loader2,
+  AlertCircle,
+  Accessibility,
+} from 'lucide-react';
 import { UserSession } from '../types';
 import { supabase } from '../services/supabaseClient';
 import { isRetryableAuthError } from '../utils/authUtils';
@@ -246,24 +255,40 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           </span>
         </a>
         <div className="relative max-w-xl">
-          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.14em] text-sky-300">
-            Inteligência pedagógica para professores
-          </p>
+          <div className="mb-6 flex items-center gap-5">
+            <img
+              src="/juju-assistente.png"
+              alt="Juju, assistente virtual do ProfePlan"
+              className="h-28 w-28 shrink-0 rounded-3xl border border-white/15 object-cover shadow-2xl shadow-blue-950/40"
+            />
+            <div>
+              <p className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-sky-300">
+                Conheça a Juju
+              </p>
+              <p className="text-sm leading-6 text-slate-300">
+                Sua assistente para planejar, adaptar e revisar com mais contexto.
+              </p>
+            </div>
+          </div>
           <h1 className="max-w-lg text-4xl font-bold leading-tight tracking-tight xl:text-5xl">
-            Menos tempo com burocracia. Mais tempo para ensinar.
+            Uma parceria que evolui com o seu jeito de ensinar.
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-8 text-slate-300">
-            Organize planejamentos, planos de aula e avaliações em um ambiente seguro, claro e
-            pensado para a rotina docente.
+            Conforme você planeja e ajusta os conteúdos, o ProfePlan usa esse contexto para oferecer
+            respostas cada vez mais alinhadas à sua prática e às necessidades da turma.
           </p>
-          <ul className="mt-9 space-y-4 text-sm text-slate-200">
+          <ul className="mt-8 space-y-4 text-sm text-slate-200">
             <li className="flex items-center gap-3">
-              <ShieldCheck aria-hidden="true" className="h-5 w-5 text-sky-300" />
-              Seus dados e materiais permanecem protegidos.
+              <Sparkles aria-hidden="true" className="h-5 w-5 shrink-0 text-sky-300" />
+              Seus ajustes ajudam a tornar as próximas entregas mais relevantes.
             </li>
             <li className="flex items-center gap-3">
-              <Sparkles aria-hidden="true" className="h-5 w-5 text-sky-300" />
-              Você sempre revisa e decide antes de finalizar.
+              <Accessibility aria-hidden="true" className="h-5 w-5 shrink-0 text-sky-300" />
+              Recursos de PDI e DUA apoiam uma educação mais inclusiva.
+            </li>
+            <li className="flex items-center gap-3">
+              <ShieldCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-sky-300" />
+              O professor mantém a revisão e a decisão final.
             </li>
           </ul>
         </div>
@@ -481,7 +506,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
 
         <div className="mt-6 text-center">
           <p className="text-xs text-slate-500">
-            ProfePlan v1.0.2
+            ProfePlan v1.0.3
           </p>
         </div>
       </div>
