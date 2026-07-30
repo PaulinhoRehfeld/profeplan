@@ -35,6 +35,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
 
   const isMounted = React.useRef(true);
   useEffect(() => {
@@ -116,13 +118,28 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
           return;
         }
 
+        if (!termsAccepted) {
+          setError('Você precisa aceitar os Termos de Uso para criar sua conta.');
+          setLoading(false);
+          clearTimeout(safetyTimeout);
+          return;
+        }
+
         const isEducacao = cleanEmail.toLowerCase().endsWith('@educacao.mg.gov.br');
 
         // Cadastro via endpoint server-side — elimina rate limit do Supabase
         const signupResp = await fetch('/api/auth/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: cleanEmail, password, fullName }),
+          body: JSON.stringify({
+            email: cleanEmail,
+            password,
+            fullName,
+            termsAccepted: true,
+            termsVersion: '2026-07-27',
+            privacyNoticeVersion: '2026-07-27',
+            marketingConsent,
+          }),
         });
 
         const signupData = await signupResp.json().catch(() => ({}));
@@ -214,114 +231,221 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 md:px-20 py-4 relative overflow-hidden">
+    <main className="min-h-screen bg-slate-50 lg:grid lg:grid-cols-[minmax(360px,0.85fr)_minmax(560px,1.15fr)]">
+      <section className="relative hidden overflow-hidden bg-[#071a2d] px-12 py-10 text-white lg:flex lg:flex-col lg:justify-between xl:px-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(37,99,235,0.32),transparent_34%),radial-gradient(circle_at_90%_85%,rgba(14,165,233,0.18),transparent_30%)]" />
+        <a href="https://www.profeplan.com.br" className="relative flex items-center gap-3">
+          <img
+            src="/logo-profeplan.png"
+            alt=""
+            className="h-12 w-12 rounded-xl bg-white object-contain p-1 shadow-sm"
+          />
+          <span>
+            <strong className="block text-xl font-bold tracking-tight">ProfePlan</strong>
+            <span className="block text-sm text-blue-100">uma solução WRTech AI</span>
+          </span>
+        </a>
+        <div className="relative max-w-xl">
+          <p className="mb-5 text-sm font-semibold uppercase tracking-[0.14em] text-sky-300">
+            Inteligência pedagógica para professores
+          </p>
+          <h1 className="max-w-lg text-4xl font-bold leading-tight tracking-tight xl:text-5xl">
+            Menos tempo com burocracia. Mais tempo para ensinar.
+          </h1>
+          <p className="mt-6 max-w-lg text-lg leading-8 text-slate-300">
+            Organize planejamentos, planos de aula e avaliações em um ambiente seguro, claro e
+            pensado para a rotina docente.
+          </p>
+          <ul className="mt-9 space-y-4 text-sm text-slate-200">
+            <li className="flex items-center gap-3">
+              <ShieldCheck aria-hidden="true" className="h-5 w-5 text-sky-300" />
+              Seus dados e materiais permanecem protegidos.
+            </li>
+            <li className="flex items-center gap-3">
+              <Sparkles aria-hidden="true" className="h-5 w-5 text-sky-300" />
+              Você sempre revisa e decide antes de finalizar.
+            </li>
+          </ul>
+        </div>
+        <p className="relative text-xs text-slate-400">© 2026 ProfePlan — WR TECH INOVA SIMPLES</p>
+      </section>
+
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-8 lg:px-12">
       {/* Background Decorativo */}
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-100/70 rounded-full blur-[120px]"></div>
       <div
-        className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[120px] animate-pulse"
-        style={{ animationDelay: '2s' }}
+        className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-sky-100/70 rounded-full blur-[120px]"
       ></div>
 
-      <div className="w-full max-w-lg z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center mb-4 transform hover:scale-105 transition-transform">
+      <div className="w-full max-w-lg z-10">
+        <div className="mb-8 text-center lg:hidden">
+          <div className="mb-3 inline-flex items-center justify-center">
             <img
               src="/logo-profeplan.png"
               alt="PROFEPLAN"
-              className="w-14 h-14 object-contain drop-shadow-2xl"
+              className="h-12 w-12 rounded-xl bg-white object-contain p-1 shadow-sm"
             />
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tighter mb-2 italic">PROFEPLAN</h1>
-          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-[9px]">
+          <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-950">ProfePlan</h1>
+          <p className="text-xs font-medium text-slate-500">
             Ecossistema de Inteligência Pedagógica
           </p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-6 md:p-8 rounded-[32px] shadow-3xl">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center tracking-tight">
-            {isSignUp ? 'Criar Nova Conta' : 'Acesse seu Workspace'}
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-9">
+          <p className="mb-2 text-sm font-semibold text-blue-700">
+            {isSignUp ? 'Comece gratuitamente' : 'Bem-vindo(a) de volta'}
+          </p>
+          <h2 className="mb-2 text-3xl font-bold tracking-tight text-slate-950">
+            {isSignUp ? 'Criar nova conta' : 'Acessar plataforma'}
           </h2>
+          <p className="mb-7 text-sm leading-6 text-slate-600">
+            {isSignUp
+              ? 'Crie seu acesso e comece a organizar sua rotina pedagógica.'
+              : 'Entre com seu e-mail e senha para continuar seu trabalho.'}
+          </p>
 
-          <form onSubmit={handleEmailAuth} className="space-y-6">
+          <form onSubmit={handleEmailAuth} className="space-y-5">
             {isSignUp && (
-              <div className="space-y-2 animate-in slide-in-from-top-4 fade-in duration-300">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+              <div className="space-y-1.5">
+                <label htmlFor="full-name" className="block text-sm font-semibold text-slate-800">
                   Nome Completo
                 </label>
-                <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 flex items-center justify-center font-bold text-xs pointer-events-none group-focus-within:text-blue-500 transition-colors">
+                <div className="relative">
+                  <div className="pointer-events-none absolute left-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-xs font-bold text-slate-400">
                     Aa
                   </div>
                   <input
+                    id="full-name"
                     type="text"
                     required={isSignUp}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Ex: Maria Silva"
                     autoComplete="name"
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-sm"
+                    className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                   />
                 </div>
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-sm font-semibold text-slate-800">
                 E-mail
               </label>
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                 <input
+                  id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Seu melhor e-mail"
                   autoComplete="email"
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-sm"
+                  className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-800">
                 Senha
               </label>
-              <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+              <div className="relative">
+                <Lock className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                 <input
+                  id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white placeholder:text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-sm"
+                  className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="flex items-start gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in slide-in-from-top-2">
-                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-red-400 text-xs font-bold leading-tight">{error}</p>
+              <div role="alert" className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-700" />
+                <p className="text-sm font-medium leading-5 text-red-800">{error}</p>
               </div>
             )}
 
             {successMsg && (
-              <div className="flex items-start gap-3 p-4 bg-green-500/10 border border-green-500/20 rounded-2xl animate-in slide-in-from-top-2">
-                <Sparkles className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                <p className="text-green-400 text-xs font-bold leading-tight">{successMsg}</p>
+              <div role="status" className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
+                <p className="text-sm font-medium leading-5 text-emerald-800">{successMsg}</p>
               </div>
+            )}
+
+            {/* ── Termos de Uso & Privacidade (apenas no cadastro) ── */}
+            {isSignUp && (
+              <>
+                <div className="space-y-3 border-t border-slate-200 pt-4">
+                  {/* Aceite dos Termos de Uso (obrigatório) */}
+                  <label className="flex cursor-pointer items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="text-sm leading-5 text-slate-600">
+                      Li e concordo com os{' '}
+                      <a
+                        href="/termos-de-uso"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Termos de Uso
+                      </a>
+                      .
+                    </span>
+                  </label>
+
+                  {/* Aviso de Privacidade (informativo, não é consentimento) */}
+                  <p className="pl-7 text-xs leading-5 text-slate-500">
+                    Seus dados pessoais serão tratados conforme nossa{' '}
+                    <a
+                      href="/politica-de-privacidade"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-800"
+                    >
+                      Política de Privacidade
+                    </a>
+                    .
+                  </p>
+
+                  {/* Comunicações de marketing (opcional, desmarcado) */}
+                  <label className="flex cursor-pointer items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={marketingConsent}
+                      onChange={(e) => setMarketingConsent(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="text-sm leading-5 text-slate-500">
+                      Desejo receber novidades, conteúdos e comunicações comerciais do ProfePlan.
+                    </span>
+                  </label>
+                </div>
+              </>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-xl shadow-xl shadow-blue-600/20 flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-50"
+              aria-busy={loading || undefined}
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
               ) : (
                 <>
                   {isSignUp ? 'Criar Conta Grátis' : 'Acessar Workspace'}{' '}
@@ -331,38 +455,38 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 border-t border-slate-200 pt-5 text-center">
             <button
+              type="button"
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError('');
                 setSuccessMsg('');
               }}
-              className="text-slate-400 hover:text-white text-xs font-bold transition-colors"
+              className="rounded-md text-sm font-semibold text-blue-700 underline-offset-4 hover:text-blue-800 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
             </button>
           </div>
 
-          <div className="mt-8 flex justify-center gap-6 opacity-40">
-            <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
+          <div className="mt-6 flex justify-center">
+            <div className="flex items-center gap-2 text-xs text-slate-500">
               <div
-                className={`w-2 h-2 rounded-full ${supabase.auth ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-red-500'}`}
+                className={`h-2 w-2 rounded-full ${supabase.auth ? 'bg-emerald-500' : 'bg-red-600'}`}
               ></div>
-              <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">
-                Auth Engine Ready
-              </span>
+              <span>Conexão segura</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">
-            Acesso Seguro • PROFEPLAN IA v4.3.7
+        <div className="mt-6 text-center">
+          <p className="text-xs text-slate-500">
+            ProfePlan v1.0.2
           </p>
         </div>
       </div>
-    </div>
+      </section>
+    </main>
   );
 };
 
