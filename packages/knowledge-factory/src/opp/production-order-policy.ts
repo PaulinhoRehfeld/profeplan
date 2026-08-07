@@ -68,7 +68,9 @@ export function evaluateOppTransition(input: OppTransitionInput): DomainDecision
     }
 
     if (hasBlockingFinding(findings)) {
-      reasons.push(reason('OPP_BLOCKING_FINDING', 'Open Must findings block OPP approval.', order.id));
+      reasons.push(
+        reason('OPP_BLOCKING_FINDING', 'Open Must findings block OPP approval.', order.id)
+      );
     }
 
     if (findings === undefined) {
