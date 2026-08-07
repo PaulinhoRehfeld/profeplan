@@ -74,13 +74,13 @@ export function hasMandatoryQueryFilters(plan: QueryPlan): boolean {
 
   return Boolean(
     filters.schoolComponent.trim() &&
-      filters.stage &&
-      filters.grade &&
-      filters.curriculumState &&
-      filters.curriculumPackageId.trim() &&
-      filters.sourceStatus === 'approved' &&
-      filters.sourceUse === 'retrieval' &&
-      filters.componentStatus === 'approved'
+    filters.stage &&
+    filters.grade &&
+    filters.curriculumState &&
+    filters.curriculumPackageId.trim() &&
+    filters.sourceStatus === 'approved' &&
+    filters.sourceUse === 'retrieval' &&
+    filters.componentStatus === 'approved'
   );
 }
 
