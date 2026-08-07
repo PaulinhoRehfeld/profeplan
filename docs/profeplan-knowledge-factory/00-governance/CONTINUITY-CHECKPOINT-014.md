@@ -24,9 +24,9 @@ Base validada:
 
 `21344128723661451f527376c3484c46dff3ee68`
 
-Head técnico validado antes deste checkpoint:
+Head técnico pós-revisão validado antes desta atualização documental:
 
-`288983fbdf72a802c87e31da208d7dbd53e27048`
+`1b4809ff9f11a4896ca16469867f31dbaf9fd84d`
 
 ## Escopo implementado
 
@@ -39,18 +39,30 @@ Head técnico validado antes deste checkpoint:
 - `listByAggregate()` com filtro obrigatório por `aggregate_id`;
 - ordenação determinística por `occurred_at` e desempate por `id`;
 - mapper explícito SQL ↔ `DomainEvent`;
+- validação de `ISODateTime` com data, hora e timezone explícitos;
+- rejeição de números não finitos em metadata antes do acesso ao provider;
 - taxonomia de erros provider-neutral;
 - observabilidade mínima injetada, allowlisted e sanitizada;
 - testes unitários sem rede;
 - testes de integração no Supabase descartável do Lote 3A;
 - ajuste mínimo do workflow `Knowledge Factory DB CI` para executar a integração no mesmo stack.
 
+## Correções pós-revisão
+
+A revisão humana do primeiro head identificou e corrigiu três pontos sem expansão de escopo:
+
+- `NaN`, `Infinity` e `-Infinity` não são mais aceitos como metadata; a rejeição ocorre antes de qualquer chamada ao Supabase;
+- timestamps ambíguos, incompletos ou impossíveis são rejeitados; permanecem aceitos os formatos ISO de data e hora com `Z` ou offset explícito, incluindo o formato `+00:00` devolvido pelo PostgREST;
+- o caminho de falha de `supabase start` não imprime mais o log bruto potencialmente portador de credenciais descartáveis.
+
+Não houve alteração em porta pública, contrato, migration, RPC ou GAP por causa dessas correções.
+
 ## Validação concluída
 
 ### Local
 
 - typecheck do pacote: **verde**;
-- testes unitários: **22/22 verdes**;
+- testes unitários: **25/25 verdes**;
 - Prettier canônico do repositório: **verde**;
 - verificação estática: sem `any` generalizado, `createClient`, `process.env`, import de `api/`, UPSERT, UPDATE ou DELETE no código-fonte do pacote.
 
@@ -59,16 +71,16 @@ Head técnico validado antes deste checkpoint:
 CI geral:
 
 - workflow: `CI Pipeline`;
-- run: `31217403907`;
-- número: `215`;
+- run: `31222407715`;
+- número: `217`;
 - resultado: **SUCCESS**;
 - passaram: instalação, Prettier, ESLint, typecheck, build e testes.
 
 DB CI:
 
 - workflow: `Knowledge Factory DB CI`;
-- run: `31217403119`;
-- número: `6`;
+- run: `31222408328`;
+- número: `8`;
 - resultado: **SUCCESS**;
 - passaram: criação do Supabase descartável, schema, constraints, RLS, rollback, reaplicação, integração TypeScript, DB lint, evidência e destruição do ambiente.
 
@@ -87,6 +99,7 @@ Integração do adapter:
 
 - nenhum secret real foi versionado;
 - somente chave local descartável, capturada e mascarada durante o workflow;
+- log bruto de inicialização do Supabase descartável suprimido no caminho de falha;
 - nenhum project ref de produção;
 - nenhuma URL hospedada real;
 - nenhum usuário ou dado real;
