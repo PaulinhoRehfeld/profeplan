@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposta documental — aguardando aprovação humana.**
+**Aprovado integralmente em 7 de agosto de 2026.**
 
 ## Problema
 
@@ -12,7 +12,7 @@ Supabase JS/PostgREST executa chamadas HTTP independentes. Uma sequência de dua
 
 Não foi identificada no monorepo uma abstração canônica de Unit of Work que forneça transação PostgreSQL real para essas chamadas.
 
-## Regra central
+## Regra central aprovada
 
 > O Lote 3B não criará uma abstração que prometa atomicidade sem poder garanti-la fisicamente.
 
@@ -58,7 +58,7 @@ Exemplos:
 
 Essas operações exigem transação PostgreSQL real.
 
-## Estratégia aprovada proposta
+## Estratégia aprovada
 
 Para Categoria C:
 
@@ -72,6 +72,8 @@ Para Categoria C:
 8. adapter chama `supabase.rpc()` como operação única;
 9. traduzir erros sem vazar SQL para camadas superiores;
 10. registrar telemetria sem conteúdo sensível.
+
+Qualquer RPC/migration futura continua exigindo gate humano próprio. A aprovação deste documento não autoriza criar RPC no primeiro PR.
 
 ## O que não será criado
 
@@ -101,7 +103,7 @@ Retry de leitura pode ser permitido futuramente; retry de escrita só quando a o
 
 O schema 3A permite INSERT autenticado de OPP própria em status `requested`.
 
-Essa criação isolada pode ocorrer com requester-scoped client.
+Essa criação isolada pode ocorrer com requester-scoped client em fase futura.
 
 ### Transição de estado
 
@@ -138,7 +140,7 @@ Isso reforça que a criação completa deve ser um comando PostgreSQL transacion
 
 A porta atual somente salva `KnowledgeSource` em `kf_sources`.
 
-Isso é Categoria A e pode ser implementado sem nova RPC.
+Isso é Categoria A e pode ser implementado sem nova RPC em fase posterior.
 
 O fluxo completo de ingestão — fonte + versão + segmentos + permissão — não está contratado pela porta atual e permanece fora do 3B inicial.
 
@@ -146,7 +148,7 @@ O fluxo completo de ingestão — fonte + versão + segmentos + permissão — n
 
 `append(event)` é uma única inserção em tabela append-only.
 
-Não requer transação multi-tabela e é o primeiro corte recomendado.
+Não requer transação multi-tabela e é o primeiro corte aprovado.
 
 ## Gate para nova migration transacional
 
