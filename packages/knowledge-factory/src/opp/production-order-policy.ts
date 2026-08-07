@@ -75,7 +75,11 @@ export function evaluateOppTransition(input: OppTransitionInput): DomainDecision
 
     if (findings === undefined) {
       reasons.push(
-        reason('OPP_GATE_NOT_MET', 'Validation findings must be supplied before approval.', order.id)
+        reason(
+          'OPP_GATE_NOT_MET',
+          'Validation findings must be supplied before approval.',
+          order.id
+        )
       );
     }
   }
