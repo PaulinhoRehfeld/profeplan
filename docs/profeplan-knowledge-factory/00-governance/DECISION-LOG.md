@@ -181,7 +181,6 @@ As Stories US-001.1, US-001.2, US-002.1, US-002.2, US-004.1, US-004.2, US-010.1,
 
 ## Pendências após o Lote 0
 
-- merge humano do Pull Request documental nº 2;
 - execução e revisão do primeiro PR contract-first;
 - decisão explícita caso o primeiro PR necessite de nova dependência;
 - saneamento futuro do CI de agentes;
