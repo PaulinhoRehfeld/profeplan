@@ -117,6 +117,14 @@ async function assertPersistenceCode(promise, code) {
   });
 }
 
+function assertSynchronousPersistenceCode(action, code) {
+  assert.throws(action, (error) => {
+    assert.ok(error instanceof KnowledgeFactoryPersistenceError);
+    assert.equal(error.code, code);
+    return true;
+  });
+}
+
 test("mapper converts DomainEvent to the explicit SQL row", () => {
   assert.deepEqual(domainEventToAuditRow(EVENT), rowFromEvent());
 });
@@ -134,6 +142,64 @@ test("mapper converts an SQL row to exactly DomainEvent", () => {
     }),
     EVENT,
   );
+});
+
+test("mapper accepts ISO date-times with Z or an explicit offset", () => {
+  for (const occurredAt of [
+    "2026-08-07T12:00:00Z",
+    "2026-08-07T12:00:00.123456Z",
+    "2026-08-07T12:00:00+00:00",
+    "2026-08-07T09:00:00-03:00",
+  ]) {
+    assert.equal(
+      domainEventToAuditRow({ ...EVENT, occurredAt }).occurred_at,
+      occurredAt,
+    );
+    assert.equal(
+      auditRowToDomainEvent({ ...rowFromEvent(), occurred_at: occurredAt })
+        .occurredAt,
+      occurredAt,
+    );
+  }
+});
+
+test("mapper rejects ambiguous, incomplete or impossible date-times", () => {
+  for (const occurredAt of [
+    "2026-08-07",
+    "08/07/2026",
+    "123",
+    "2026-02-30T12:00:00Z",
+    "2026-08-07T24:00:00Z",
+    "2026-08-07T12:00:00+14:01",
+  ]) {
+    assertSynchronousPersistenceCode(
+      () => domainEventToAuditRow({ ...EVENT, occurredAt }),
+      "INVALID_RESPONSE",
+    );
+    assertSynchronousPersistenceCode(
+      () =>
+        auditRowToDomainEvent({ ...rowFromEvent(), occurred_at: occurredAt }),
+      "INVALID_RESPONSE",
+    );
+  }
+});
+
+test("append rejects non-finite metadata before calling Supabase", async () => {
+  for (const value of [
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
+    Number.NEGATIVE_INFINITY,
+  ]) {
+    const { client, calls } = createClientDouble();
+    await assertPersistenceCode(
+      createRepository(client).append({
+        ...EVENT,
+        metadata: { value },
+      }),
+      "INVALID_RESPONSE",
+    );
+    assert.deepEqual(calls, []);
+  }
 });
 
 test("append uses INSERT and never UPSERT", async () => {
@@ -239,6 +305,8 @@ test("rejects malformed provider response and {data:null,error:null}", async () 
 test("rejects malformed rows and an unexpected multi-row single response", async () => {
   for (const data of [
     { ...rowFromEvent(), metadata: { nested: { forbidden: true } } },
+    { ...rowFromEvent(), metadata: { score: Number.NaN } },
+    { ...rowFromEvent(), metadata: { score: Number.POSITIVE_INFINITY } },
     [rowFromEvent(), rowFromEvent()],
   ]) {
     const { client } = createClientDouble({

@@ -90,8 +90,11 @@ jobs:
             supabase start \
               -x studio,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor
           ) >"$START_LOG" 2>&1; then
-            echo "Supabase disposable stack failed to start. Diagnostic output follows:"
-            cat "$START_LOG"
+            DIAGNOSTIC_LINE_COUNT="$(wc -l < "$START_LOG")"
+            rm -f "$START_LOG"
+            echo "Supabase disposable stack failed to start."
+            echo "Raw startup output was suppressed because it may contain disposable credentials."
+            echo "Captured diagnostic lines: $DIAGNOSTIC_LINE_COUNT"
             exit 1
           fi
 
@@ -234,4 +237,3 @@ jobs:
               supabase stop --no-backup || true
             )
           fi
-

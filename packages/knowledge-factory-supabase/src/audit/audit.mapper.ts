@@ -18,6 +18,8 @@ export interface AuditEventRow {
 }
 
 const AGGREGATE_TYPES = ['source', 'component', 'curriculum', 'agent', 'opp'] as const;
+const ISO_DATE_TIME_PATTERN =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|([+-])(\d{2}):(\d{2}))$/;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -34,7 +36,11 @@ function isAggregateType(value: unknown): value is DomainEvent['aggregateType'] 
 }
 
 function isMetadataValue(value: unknown): value is DomainMetadataValue {
-  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+  return (
+    typeof value === 'string' ||
+    (typeof value === 'number' && Number.isFinite(value)) ||
+    typeof value === 'boolean'
+  );
 }
 
 function parseMetadata(
@@ -56,7 +62,39 @@ function parseMetadata(
 }
 
 function isDateTime(value: unknown): value is string {
-  return typeof value === 'string' && value.length > 0 && Number.isFinite(Date.parse(value));
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  const match = ISO_DATE_TIME_PATTERN.exec(value);
+  if (match === null) {
+    return false;
+  }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  const offsetHour = match[8] === undefined ? 0 : Number(match[8]);
+  const offsetMinute = match[9] === undefined ? 0 : Number(match[9]);
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  return (
+    month >= 1 &&
+    month <= 12 &&
+    day >= 1 &&
+    day <= daysInMonth[month - 1] &&
+    hour <= 23 &&
+    minute <= 59 &&
+    second <= 59 &&
+    offsetHour <= 14 &&
+    offsetMinute <= 59 &&
+    (offsetHour < 14 || offsetMinute === 0) &&
+    Number.isFinite(Date.parse(value))
+  );
 }
 
 export function domainEventToAuditRow(
