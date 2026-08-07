@@ -1,12 +1,12 @@
-# ADRs propostas — Lote 3
+# ADRs aprovadas — Lote 3
 
 ## Status
 
-Todas as decisões abaixo estão **propostas** e aguardam aprovação humana. Após aprovação serão incorporadas ao `DECISION-LOG.md` e ao checkpoint do Lote 3.
+Todas as decisões abaixo foram **aprovadas integralmente por Paulo/Paulinho em 7 de agosto de 2026**, antes de qualquer migration ou alteração de banco.
 
 ## ADR-033 — SQL Supabase como persistência canônica da Knowledge Factory
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -29,7 +29,7 @@ A decisão não remove Prisma do monorepo e não decide seu futuro para outros d
 
 ## ADR-034 — Tabelas `public.kf_*` com deny-by-default
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -54,7 +54,7 @@ A adoção futura de schema dedicado continua possível.
 
 ## ADR-035 — Adapter Supabase em pacote separado
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -77,7 +77,7 @@ O PR 3B só inicia após validação do 3A em ambiente não produtivo.
 
 ## ADR-036 — Isolamento do MVP por requester, sem inventar tenant novo
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -101,7 +101,7 @@ Futuro B2B/B2G poderá adicionar organização/tenant sem quebrar a identidade d
 
 ## ADR-037 — Vetores e retrieval permanecem fora do schema do Lote 3
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -127,7 +127,7 @@ A migration legada `curriculum_rag` não é schema canônico da Knowledge Factor
 
 ## ADR-038 — Merge de migration não autoriza aplicação em produção
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -152,7 +152,7 @@ Nenhuma automação poderá interpretar merge como deploy de banco autorizado.
 
 ## ADR-039 — Proveniência e auditoria append-only
 
-**Status:** proposto
+**Status:** aprovado para o Lote 3
 
 ### Decisão
 
@@ -166,6 +166,6 @@ Correção de histórico ocorrerá por novo evento, bloqueio, suspensão ou supe
 
 Rollback destrutivo só é aceitável antes de uso real ou com preservação/exportação explicitamente aprovada.
 
-## Aprovação recomendada
+## Gate atual
 
-Recomenda-se aprovar ADR-033 a ADR-039 em conjunto, pois formam a fronteira arquitetônica necessária para iniciar o PR 3A sem misturar banco, retrieval, IA e aplicação produtiva.
+A aprovação destas ADRs autoriza apenas a preparação documental e posterior implementação controlada do Lote 3A. Não autoriza aplicação de migration em produção. O Lote 3B permanece bloqueado até validação do 3A em ambiente não produtivo.
