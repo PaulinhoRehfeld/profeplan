@@ -24,17 +24,15 @@ Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem
 
 ## Documentos canônicos desta definição
 
-- `12-delivery/LOT-3B-DEFINITION.md`;
-- `09-data/LOT-3B-ADAPTER-MAP.md`;
-- `09-data/LOT-3B-TRANSACTION-STRATEGY.md`;
-- `11-testing/LOT-3B-TEST-STRATEGY.md`;
-- `12-delivery/LOT-3B-ERROR-OBSERVABILITY-STRATEGY.md`;
-- `12-delivery/LOT-3B-FIRST-PR.md`;
-- `12-delivery/LOT-3B-RISK-REGISTER.md`;
-- `12-delivery/LOT-3B-PRODUCTION-BOUNDARY.md`;
-- `00-governance/LOT-3B-ARCHITECTURE-DECISIONS.md`.
+- `12-delivery/LOT-3B-DEFINITION.md` — arquitetura geral, dependências, contextos, gaps, ordem e primeiro PR;
+- `09-data/LOT-3B-ADAPTER-MAP.md` — porta → tabela → operação → client;
+- `09-data/LOT-3B-TRANSACTION-STRATEGY.md` — atomicidade e futuras RPCs;
+- `11-testing/LOT-3B-TEST-STRATEGY.md` — unitários, integração descartável e isolamento;
+- `12-delivery/LOT-3B-RISK-REGISTER.md` — riscos e gates;
+- `12-delivery/LOT-3B-PRODUCTION-BOUNDARY.md` — separação entre 3B e produção;
+- `00-governance/LOT-3B-ARCHITECTURE-DECISIONS.md` — ADRs 040–047, taxonomia de erros e observabilidade sanitizada.
 
-Duplicatas documentais encontradas durante a revisão foram removidas antes da abertura do PR para preservar uma única fonte de verdade por tema.
+A especificação do primeiro PR está consolidada em `LOT-3B-DEFINITION.md`; a taxonomia de erros e a estratégia de observabilidade estão consolidadas em `LOT-3B-ARCHITECTURE-DECISIONS.md`. Duplicatas documentais foram removidas para preservar uma única fonte de verdade por tema.
 
 ## Inspeção concluída
 
