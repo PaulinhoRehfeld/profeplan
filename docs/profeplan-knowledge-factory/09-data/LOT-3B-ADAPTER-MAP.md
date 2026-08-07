@@ -2,9 +2,9 @@
 
 ## Status
 
-**Proposta documental — aguardando aprovação humana.**
+**Aprovado integralmente em 7 de agosto de 2026.**
 
-Este documento não implementa código nem autoriza produção.
+Este documento define o mapa técnico aprovado; não implementa código nem autoriza produção.
 
 ## Princípios
 
@@ -81,7 +81,7 @@ Antes deste adapter, a porta deverá ser revisada para:
 
 ou contrato equivalente aprovado.
 
-Não alterar nesta definição.
+Não alterar no primeiro PR.
 
 ## 4. ProductionOrderRepository
 
@@ -111,7 +111,7 @@ O adapter de OPP é deliberadamente o último do 3B.
 | `append(event)` | `kf_audit_events` | INSERT | SYSTEM | Append-only; nunca upsert. |
 | `listByAggregate(aggregateId)` | `kf_audit_events` | SELECT por `aggregate_id`, ordenado por `occurred_at` | SYSTEM | Leitura interna/admin; não professor. |
 
-### Primeiro adapter recomendado
+### Primeiro adapter aprovado
 
 `AuditRepository` é o menor corte vertical porque:
 
@@ -124,6 +124,8 @@ O adapter de OPP é deliberadamente o último do 3B.
 - valida observabilidade;
 - valida client injection;
 - integra naturalmente com o Supabase descartável já existente.
+
+O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física possui campos adicionais de auditoria. O primeiro adapter é uma fatia de infraestrutura, não auditoria enriquecida completa.
 
 ## Mapeamento de campos — princípios
 
@@ -154,7 +156,7 @@ O adapter de OPP é deliberadamente o último do 3B.
 - queries sem filtro em corpus global por conveniência;
 - bypass de regra de domínio para tornar teste verde.
 
-## Ordem de implementação proposta
+## Ordem de implementação aprovada
 
 1. `AuditRepository`;
 2. `KnowledgeSourceRepository`;
@@ -163,4 +165,4 @@ O adapter de OPP é deliberadamente o último do 3B.
 5. escrita do componente após fronteira transacional;
 6. `ProductionOrderRepository` após requester client + RPC de transição.
 
-Essa ordem pode ser reavaliada por evidência, mas não deverá ser ampliada dentro de um PR sem nova aprovação.
+A primeira implementação está restrita ao item 1. Avançar para item 2 ou além exige novo gate humano.
