@@ -68,11 +68,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          (
+          START_LOG="$(mktemp)"
+
+          if ! (
             cd "$KF_WORKDIR"
             supabase start \
               -x studio,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor
-          ) 2>&1 | tee -a "$KF_EVIDENCE"
+          ) >"$START_LOG" 2>&1; then
+            echo "Supabase disposable stack failed to start. Diagnostic output follows:"
+            cat "$START_LOG"
+            exit 1
+          fi
+
+          echo "Disposable Supabase stack started successfully; generated local keys intentionally omitted from evidence." \
+            | tee -a "$KF_EVIDENCE"
+          rm -f "$START_LOG"
 
       - name: First pass - schema and constraints
         shell: bash
