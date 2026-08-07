@@ -47,7 +47,7 @@ export interface CurriculumLink extends VersionedEntity {
 }
 
 export function getActiveCurriculumPackages(
-  packages: readonly CurriculumPackage[],
+  packages: readonly CurriculumPackage[]
 ): readonly CurriculumPackage[] {
   return packages.filter((item) => item.status === 'active');
 }
