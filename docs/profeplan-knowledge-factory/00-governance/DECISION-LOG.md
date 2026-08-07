@@ -213,11 +213,11 @@ Decisões de elegibilidade, ciclo de vida, escopo e OPP deverão ser testáveis 
 
 ## ADR-032 — Dependência de contratos somente em tempo de compilação no Lote 2
 
-**Status:** proposto — aguardando aprovação humana antes do merge do PR nº 5
+**Status:** aprovado em 7 de agosto de 2026, antes do merge do PR nº 5
 
 Durante a implementação do Lote 2 verificou-se que todos os usos de `@profeplan/types` no novo pacote são exclusivamente `import type`. A declaração inicial `@profeplan/types: workspace:*` no `package.json` exigia atualizar o importer do novo workspace no `pnpm-lock.yaml`, embora nenhum símbolo de runtime fosse consumido.
 
-Decisão proposta:
+Decisão aprovada:
 
 - `@profeplan/knowledge-factory` não declarará dependência de runtime/package-manager em `@profeplan/types` no Lote 2;
 - os contratos serão resolvidos em tempo de compilação pelo alias `@profeplan/types` já definido no `tsconfig.base.json` do monorepo;
@@ -236,8 +236,7 @@ Consequências:
 
 ## Pendências após a implementação do Lote 2
 
-- aprovar ou rejeitar a ADR-032 antes do merge do PR nº 5;
-- aprovar explicitamente o PR nº 5 antes do merge;
+- merge do PR nº 5 autorizado pela aprovação humana explícita de 7 de agosto de 2026;
 - manter banco, migrations, RLS e adapters concretos bloqueados até o Lote 3;
 - manter fontes reais, currículo MG real, retrieval, IA e runtime do Sócrates 2 fora do Lote 2;
 - saneamento futuro do CI de agentes permanece fora do escopo;
@@ -245,4 +244,4 @@ Consequências:
 
 ## Procedência
 
-Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004, pelo merge do primeiro PR contract-first, pela aprovação humana da definição do Lote 2 e pela implementação controlada do Lote 2 em 7 de agosto de 2026.
+Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004, pelo merge do primeiro PR contract-first, pela aprovação humana da definição do Lote 2, pela implementação controlada do Lote 2 e pela aprovação explícita da ADR-032 e do PR nº 5 em 7 de agosto de 2026.
