@@ -8,7 +8,10 @@ import type {
 
 export interface PedagogicalComponentRepository {
   findById(id: EntityId): Promise<PedagogicalComponent | null>;
-  findVersion(componentId: EntityId, version: VersionTag): Promise<PedagogicalComponentVersion | null>;
+  findVersion(
+    componentId: EntityId,
+    version: VersionTag
+  ): Promise<PedagogicalComponentVersion | null>;
   listEvidenceOrigins(componentVersionId: EntityId): Promise<readonly EvidenceOrigin[]>;
   saveComponent(component: PedagogicalComponent): Promise<void>;
   saveVersion(version: PedagogicalComponentVersion): Promise<void>;
