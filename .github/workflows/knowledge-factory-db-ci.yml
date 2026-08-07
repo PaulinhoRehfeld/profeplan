@@ -8,6 +8,8 @@ on:
       - '.github/workflows/knowledge-factory-db-ci.yml'
       - 'supabase/migrations/202608071120_knowledge_factory_schema.sql'
       - 'supabase/tests/**'
+      - 'packages/knowledge-factory-supabase/**'
+      - 'pnpm-lock.yaml'
   workflow_dispatch:
 
 permissions:
@@ -32,6 +34,19 @@ jobs:
         uses: supabase/setup-cli@v1
         with:
           version: 2.109.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Install PostgreSQL client
         run: |
@@ -83,6 +98,37 @@ jobs:
           echo "Disposable Supabase stack started successfully; generated local keys intentionally omitted from evidence." \
             | tee -a "$KF_EVIDENCE"
           rm -f "$START_LOG"
+
+      - name: Capture disposable Supabase credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_ENV="$(mktemp)"
+          (
+            cd "$KF_WORKDIR"
+            supabase status -o env
+          ) > "$STATUS_ENV"
+
+          read_local_value() {
+            local name="$1"
+            sed -n "s/^${name}=//p" "$STATUS_ENV" | head -n 1 | sed 's/^"//;s/"$//'
+          }
+
+          KF_SUPABASE_URL="$(read_local_value API_URL)"
+          KF_SUPABASE_SERVICE_ROLE_KEY="$(read_local_value SERVICE_ROLE_KEY)"
+
+          if [ -z "$KF_SUPABASE_URL" ] || [ -z "$KF_SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Disposable Supabase credentials could not be resolved."
+            rm -f "$STATUS_ENV"
+            exit 1
+          fi
+
+          echo "::add-mask::$KF_SUPABASE_SERVICE_ROLE_KEY"
+          {
+            echo "KF_SUPABASE_URL=$KF_SUPABASE_URL"
+            echo "KF_SUPABASE_SERVICE_ROLE_KEY=$KF_SUPABASE_SERVICE_ROLE_KEY"
+          } >> "$GITHUB_ENV"
+          rm -f "$STATUS_ENV"
 
       - name: First pass - schema and constraints
         shell: bash
@@ -147,6 +193,9 @@ jobs:
             -f supabase/tests/knowledge_factory_rls.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
 
+      - name: Audit adapter integration
+        run: pnpm --filter @profeplan/knowledge-factory-supabase test:integration
+
       - name: Lint local database
         shell: bash
         run: |
@@ -185,3 +234,4 @@ jobs:
               supabase stop --no-backup || true
             )
           fi
+
