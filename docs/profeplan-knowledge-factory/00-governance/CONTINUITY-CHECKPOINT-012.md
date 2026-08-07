@@ -22,18 +22,19 @@ Lote 3A já integrado e validado em Supabase descartável.
 
 Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem contaminar `@profeplan/knowledge-factory` com infraestrutura.
 
-## Documentos criados nesta definição
+## Documentos canônicos desta definição
 
 - `12-delivery/LOT-3B-DEFINITION.md`;
 - `09-data/LOT-3B-ADAPTER-MAP.md`;
 - `09-data/LOT-3B-TRANSACTION-STRATEGY.md`;
-- `12-delivery/LOT-3B-ERROR-STRATEGY.md`;
-- `12-delivery/LOT-3B-OBSERVABILITY-STRATEGY.md`;
+- `12-delivery/LOT-3B-ERROR-OBSERVABILITY-STRATEGY.md`;
 - `11-testing/LOT-3B-TEST-STRATEGY.md`;
-- `12-delivery/FIRST-LOT-3B-PR.md`;
+- `12-delivery/LOT-3B-FIRST-PR.md`;
 - `12-delivery/LOT-3B-RISK-REGISTER.md`;
 - `12-delivery/LOT-3B-PRODUCTION-BOUNDARY.md`;
-- `00-governance/ADR-040-046-LOT-3B.md`.
+- `00-governance/LOT-3B-ADR-PROPOSALS.md`.
+
+Duplicatas documentais encontradas durante a revisão foram removidas antes da abertura do PR para preservar uma única fonte de verdade por tema.
 
 ## Inspeção concluída
 
@@ -48,7 +49,7 @@ Foi confirmado:
 7. o Lote 3A oferece Supabase descartável real no GitHub Actions;
 8. `@profeplan/logger` possui JSON/correlation, mas também filesystem síncrono e acoplamento Node;
 9. `@supabase/supabase-js` já existe no monorepo;
-10. produção continua não necessária para desenvolver/testar 3B.
+10. produção continua desnecessária para desenvolver e testar o 3B.
 
 ## Arquitetura proposta
 
@@ -72,41 +73,42 @@ Para operações privadas sujeitas a RLS, sobretudo OPP.
 
 ## Gaps encontrados
 
-### GAP-3B-01
+### GAP-3B-01 — CurriculumRepository
 
-`CurriculumRepository.findActivePackageByState(state)` é ambíguo porque o banco define unicidade por `(state, stage)`.
+`findActivePackageByState(state)` é ambíguo porque o banco define unicidade por `(state, stage)`.
 
-Adapter curricular fica bloqueado até decisão de contrato.
+Adapter curricular fica bloqueado até alteração de contrato aprovada que inclua etapa.
 
-### GAP-3B-02
+### GAP-3B-02 — componente + versão
 
 Componente + primeira versão/current version exige atomicidade multi-tabela.
 
-Escrita de componente fica bloqueada até RPC/função transacional ou fronteira equivalente aprovada.
+Escrita fica bloqueada até RPC/função transacional ou fronteira equivalente aprovada.
 
-### GAP-3B-03
+### GAP-3B-03 — OPP + evento
 
-OPP + evento de transição exige atomicidade.
+Transições de OPP e seus eventos exigem atomicidade.
 
 Transições via adapter ficam bloqueadas até fronteira transacional e requester client aprovados.
 
-### GAP-3B-04
+### GAP-3B-04 — lifecycle de fonte
 
-KnowledgeSourceRepository não expõe gravação de SourceVersion/Segment/PermissionEvent.
+`KnowledgeSourceRepository` não expõe gravação de `SourceVersion`, `SourceSegment` ou `SourcePermissionEvent`.
 
 O adapter não inventará ingestão fora da porta.
 
 ## ADRs propostas
 
-- ADR-040 — client injection no pacote de adapters;
-- ADR-041 — separação system/requester;
-- ADR-042 — sem pseudo-transações;
-- ADR-043 — tradução de erros;
-- ADR-044 — observabilidade injetada;
-- ADR-045 — primeiro PR somente AuditRepository;
-- ADR-046 — currículo ativo deve incluir `stage` antes do adapter.
+- ADR-040 — pacote concreto isolado para adapters Supabase;
+- ADR-041 — SupabaseClient por injeção; pacote não lê segredos; SYSTEM e REQUESTER separados;
+- ADR-042 — `api/` permanece composition root server-side do runtime atual;
+- ADR-043 — atomicidade multi-tabela somente por transação real/RPC específica;
+- ADR-044 — erros de persistência provider-neutral;
+- ADR-045 — observabilidade injetada e sanitizada;
+- ADR-046 — testes do 3B reutilizam Supabase descartável do Lote 3A;
+- ADR-047 — implementação incremental por porta; AuditRepository primeiro.
 
-Ainda não estão aprovadas nem consolidadas no Decision Log.
+Ainda não estão aprovadas nem consolidadas no `DECISION-LOG.md`.
 
 ## Primeiro PR proposto
 
@@ -121,11 +123,11 @@ Título:
 Escopo:
 
 - criar o pacote de adapters;
-- implementar somente AuditRepository;
-- mapper;
-- erro sanitizado;
-- logger injetado;
-- system context injetado;
+- implementar somente `AuditRepository`;
+- mapper explícito;
+- erro provider-neutral sanitizado;
+- telemetria injetada;
+- system client injetado;
 - unit tests;
 - integração no Supabase descartável;
 - ajuste mínimo no CI se necessário.
@@ -159,7 +161,7 @@ Permanece deliberadamente adiado para etapa final.
 ## Próximo passo
 
 1. revisão humana desta definição;
-2. aprovação/rejeição das ADRs 040–046;
+2. aprovação/rejeição das ADRs 040–047;
 3. se aprovado, consolidar ADRs no Decision Log;
 4. integrar PR documental;
 5. somente depois autorizar o primeiro PR 3B.
