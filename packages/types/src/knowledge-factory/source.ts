@@ -1,6 +1,12 @@
 import type { EntityId, ISODateTime, VersionTag, VersionedEntity } from './common.ts';
 
-export const SOURCE_TYPES = ['curriculum', 'pnld', 'open_content', 'wrtech_owned', 'legal_reference'] as const;
+export const SOURCE_TYPES = [
+  'curriculum',
+  'pnld',
+  'open_content',
+  'wrtech_owned',
+  'legal_reference',
+] as const;
 export type SourceType = (typeof SOURCE_TYPES)[number];
 
 export const SOURCE_STATUSES = ['draft', 'approved', 'blocked', 'archived'] as const;
@@ -51,7 +57,7 @@ export interface SourceSegment extends VersionedEntity {
 
 export function isLicenseCompatibleWithUse(
   licenseCategory: LicenseCategory,
-  use: SourceUse,
+  use: SourceUse
 ): boolean {
   if (licenseCategory === 'restricted' || licenseCategory === 'unknown') {
     return use === 'internal_review';
