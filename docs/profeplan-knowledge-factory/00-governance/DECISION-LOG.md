@@ -276,15 +276,87 @@ Aprovação/merge do código da migration e autorização para executá-la no Su
 
 Eventos de permissão, OPP e auditoria serão append-only em uso normal. Correção histórica ocorrerá por novo evento, bloqueio, suspensão ou supersessão, não por edição silenciosa.
 
-## Pendências após aprovação do Lote 3
+## ADR-040 — Pacote concreto isolado para adapters Supabase
 
-- integrar o PR documental nº 6 após CI verde;
-- iniciar Lote 3A apenas em nova branch a partir da `main` integrada;
-- criar migration somente após nova inspeção do schema/migrations no ciclo 3A;
-- validar 3A em ambiente não produtivo antes do Lote 3B;
-- não aplicar migration em produção sem autorização humana específica;
-- manter retrieval, embeddings, IA, fontes reais, currículo real, Sócrates 2 executável e EPIC-018 bloqueados.
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Os adapters concretos da Knowledge Factory serão implementados em `packages/knowledge-factory-supabase/`, workspace `@profeplan/knowledge-factory-supabase`. O pacote mapeará contratos ↔ Supabase e não conterá regras pedagógicas, HTTP, leitura de env ou credenciais.
+
+## ADR-041 — SupabaseClient por injeção e separação SYSTEM/REQUESTER
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+O pacote receberá clients já configurados por injeção e não chamará `createClient()`, não lerá `process.env` nem importará `api/_lib/supabaseAdmin.ts`. SYSTEM será usado para corpus/auditoria interna; REQUESTER será usado nas operações privadas sujeitas a RLS. `service_role` não simulará professor.
+
+## ADR-042 — `api/` permanece composition root server-side do runtime atual
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Enquanto o deploy real permanecer Vite/Vercel, `api/` continuará como composition root server-side para wiring futuro. `packages/*` não importarão `api/*`. O Lote 3B não migra backend nem cria API da Knowledge Factory.
+
+## ADR-043 — Atomicidade multi-tabela somente por transação real/RPC específica
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Múltiplas chamadas Supabase/PostgREST independentes não serão tratadas como transação. Comandos multi-tabela com invariantes — como componente + versão e OPP + evento — ficam bloqueados até função PostgreSQL/RPC estreita ou fronteira transacional equivalente, versionada, testada e aprovada.
+
+## ADR-044 — Erros de persistência provider-neutral
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Adapters traduzirão erros Supabase/PostgreSQL para taxonomia estável (`NOT_FOUND`, `CONFLICT`, `CONSTRAINT_VIOLATION`, `UNAUTHORIZED`, `FORBIDDEN`, `UNAVAILABLE`, `INVALID_RESPONSE`, `UNKNOWN`). SQLSTATE e detalhes brutos do provider não atravessarão para domínio/API/UX.
+
+## ADR-045 — Observabilidade injetada e sanitizada
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Adapters receberão telemetria mínima por injeção e não dependerão diretamente de `@profeplan/logger` no primeiro PR. Logs podem registrar operação, duração, outcome, aggregate/correlation IDs e erro sanitizado; nunca tokens, service role, Authorization, `extracted_text`, conteúdo pedagógico integral ou metadata arbitrária completa.
+
+## ADR-046 — Testes do 3B reutilizam Supabase descartável do Lote 3A
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Adapters terão unitários sem rede, integração com o stack descartável já usado pelo `Knowledge Factory DB CI` e testes RLS quando houver REQUESTER context. Nenhuma suíte dependerá de project ref, token, service role ou dados de produção.
+
+## ADR-047 — Implementação incremental por porta; AuditRepository primeiro
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+A implementação será incremental. O primeiro PR de código do Lote 3B será exclusivamente para `AuditRepository`, como prova de infraestrutura do pacote, mapper, client injection, erros, telemetria e CI. Não representa conclusão integral da auditoria funcional nem da US-013.2.
+
+## Restrições aprovadas do Lote 3B
+
+A aprovação humana reconhece os GAPs 3B-01 a 3B-05 como restrições arquitetônicas ainda abertas:
+
+- GAP-3B-01: lookup curricular deve incluir `stage` antes do adapter curricular;
+- GAP-3B-02: escrita de componente exige atomicidade real;
+- GAP-3B-03: transição de OPP + evento exige RPC/fronteira transacional e requester context;
+- GAP-3B-04: porta de fontes não cobre ingestão completa e o adapter não inventará métodos;
+- GAP-3B-05: contrato de auditoria é mais estreito que a tabela física; US-013.2 permanece fatia parcial.
+
+## Gate vigente após aprovação do Lote 3B
+
+Após integração do PR documental do Lote 3B à `main`, recebe `Ready for Code` somente:
+
+`US-013.2 — persistence/audit adapter infrastructure slice`
+
+O primeiro PR de código deverá usar branch `feat/knowledge-factory-supabase-audit-adapter` e permanecer restrito ao `AuditRepository`.
+
+Continuam bloqueados sem nova aprovação:
+
+- segunda porta no mesmo PR;
+- mudança de contrato público;
+- RPC/migration nova;
+- Supabase de produção;
+- API pública;
+- frontend;
+- retrieval/embeddings;
+- agentes/Sócrates 2 executável;
+- PNLD/currículo real;
+- Gráfica;
+- Nexus;
+- EPIC-018.
 
 ## Procedência
 
-Snapshot controlado dos Marcos 001–003, complementado pelos Marcos 004, Lotes 1 e 2 e pelas aprovações humanas registradas até o Lote 3 em 7 de agosto de 2026.
+Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
