@@ -179,16 +179,48 @@ Nova dependência, alteração fora do escopo autorizado, persistência, API, IA
 
 As Stories US-001.1, US-001.2, US-002.1, US-002.2, US-004.1, US-004.2, US-010.1, US-014.1, US-015.1 e US-016.1 recebem `Ready for Code — contract slice`.
 
-## Pendências após o Lote 0
+## ADR-029 — Pacote dedicado ao domínio da Knowledge Factory
 
-- execução e revisão do primeiro PR contract-first;
-- decisão explícita caso o primeiro PR necessite de nova dependência;
+**Status:** proposto para o Lote 2
+
+As regras de negócio da Knowledge Factory serão implementadas em um pacote dedicado `@profeplan/knowledge-factory`, separado de `@profeplan/types`.
+
+O novo pacote dependerá de `@profeplan/types` e não dependerá de DB, IA, agents, API, frontend ou providers externos.
+
+Consequências esperadas:
+
+- `@profeplan/types` permanece como contrato compartilhado;
+- políticas e ciclo de vida ficam coesos em uma camada de domínio própria;
+- banco, agentes e APIs poderão reutilizar o domínio sem dependência circular;
+- criação de novo workspace exige CI e scripts próprios mínimos;
+- nenhuma dependência externa nova será adicionada sem autorização humana.
+
+## ADR-030 — Repositórios como portas, não adapters concretos
+
+**Status:** proposto para o Lote 2
+
+O Lote 2 criará interfaces abstratas de repositório orientadas ao domínio. Implementações Supabase, PostgreSQL, Prisma ou outras serão proibidas até o Lote 3.
+
+As portas não poderão expor SQL, nomes de tabela, clients de provider, vetores ou HTTP.
+
+## ADR-031 — Domínio puro, determinístico e sem I/O
+
+**Status:** proposto para o Lote 2
+
+Políticas do Lote 2 serão puras, determinísticas, sem estado global e sem acesso a rede, filesystem, banco ou provider.
+
+Decisões de elegibilidade, ciclo de vida, escopo e OPP deverão ser testáveis apenas com contratos e fixtures sintéticas.
+
+## Pendências após o Lote 1
+
+- aprovação formal da definição do Lote 2;
+- implementação da camada de domínio somente após autorização;
 - saneamento futuro do CI de agentes;
-- decisão física de persistência e RLS;
-- experimentos de retrieval;
+- decisão física de persistência e RLS no Lote 3;
+- experimentos de retrieval nos lotes posteriores;
 - fontes autorizadas e recorte curricular MG;
 - ativação futura do Sócrates 2 somente no lote correspondente.
 
 ## Procedência
 
-Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas no Marco 004 — Lote 0.
+Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004 e pelo merge do primeiro PR contract-first.
