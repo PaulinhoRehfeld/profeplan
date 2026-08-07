@@ -94,7 +94,7 @@ Gate: teste não pode exigir project ref, access token ou service role hospedado
 
 Risco: row incompleta ser convertida em contrato aparentemente válido.
 
-Mitigação: mapper explícito + `MAPPING_ERROR`.
+Mitigação: mapper explícito + `MAPPING_ERROR`/`INVALID_RESPONSE` provider-neutral.
 
 Gate: testes negativos de row incompatível.
 
@@ -110,9 +110,9 @@ Gate: não usar leitura composta para decisão que exige snapshot forte sem ADR.
 
 Risco: depender de hoisting implícito do root.
 
-Mitigação: declarar dependência direta no pacote no primeiro PR.
+Mitigação: declarar dependência direta no pacote no primeiro PR, reutilizando a linha de versão já presente no monorepo.
 
-Gate: typecheck/install com lockfile atualizado e CI verde.
+Gate: install/typecheck com lockfile atualizado e CI verde.
 
 ## R-3B-15 — Crescimento prematuro do primeiro PR
 
@@ -126,7 +126,7 @@ Gate: segunda porta no mesmo PR bloqueia merge.
 
 Risco: duplicar eventos, armazenar PII ou transformar logs em fonte de verdade.
 
-Mitigação: `kf_audit_events` e logger têm finalidades distintas.
+Mitigação: `kf_audit_events` e telemetria operacional têm finalidades distintas.
 
 Gate: não escrever todo log automaticamente em audit table.
 
@@ -145,3 +145,16 @@ Risco: desviar o foco para integração externa antes da fundação interna.
 Mitigação: Nexus permanece explicitamente bloqueado.
 
 Gate: nenhuma referência operacional ou integração Nexus no Lote 3B.
+
+## R-3B-19 — Contrato de auditoria não expõe todos os campos físicos
+
+Risco: `AuditRepository.listByAggregate()` devolve `DomainEvent`, mas a tabela `kf_audit_events` contém também ator, papel, correlation id, outcome e reason. Um adapter pode persistir contexto adicional e depois descartá-lo na leitura, criando percepção incorreta de auditoria completa.
+
+Mitigação:
+
+- primeiro adapter trata auditoria como fatia de infraestrutura;
+- mapper retorna exatamente o contrato atual, sem inventar campos;
+- contexto técnico adicional pode ser persistido por contexto injetado, mas não é prometido no retorno da porta;
+- necessidade de auditoria enriquecida será resolvida por alteração contratual explícita posterior.
+
+Gate: US-013.2 não recebe `Done` integral no primeiro PR do 3B.
