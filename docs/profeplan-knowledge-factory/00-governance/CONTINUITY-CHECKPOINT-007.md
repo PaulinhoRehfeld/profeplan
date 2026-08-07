@@ -2,7 +2,7 @@
 
 ## Status
 
-**Lote 2 tecnicamente concluído, CI verde e aguardando aprovação humana do Pull Request nº 5 e da ADR-032. Lote 3 permanece bloqueado.**
+**Lote 2 tecnicamente concluído, ADR-032 e Pull Request nº 5 aprovados humanamente para merge. Lote 3 permanece bloqueado.**
 
 Data: 7 de agosto de 2026.
 
@@ -12,7 +12,7 @@ Data: 7 de agosto de 2026.
 - base: `main` no commit `b57f2330f6f7b119cff202d8ecda0789746e10b1`;
 - branch: `feat/knowledge-factory-domain-core`;
 - Pull Request nº 5: `feat(knowledge-factory): add domain policies and repository ports`;
-- PR permanece em rascunho e sem merge automático.
+- merge autorizado após CI final verde.
 
 ## Extensão contratual autorizada
 
@@ -42,6 +42,8 @@ A definição documental previa declarar `@profeplan/types: workspace:*` no mani
 
 A implementação revelou que todos os usos de contratos são exclusivamente `import type`. Por isso, a versão final do PR não declara dependência de runtime/package-manager em `@profeplan/types` e utiliza o alias TypeScript já existente no monorepo para resolução em tempo de compilação.
 
+A ADR-032 foi aprovada humanamente em 7 de agosto de 2026.
+
 Consequências:
 
 - nenhuma biblioteca externa foi adicionada;
@@ -49,7 +51,7 @@ Consequências:
 - não há acoplamento de runtime entre os pacotes;
 - o typecheck valida os contratos diretamente;
 - os imports são apagados na emissão/strip de tipos;
-- a decisão está registrada como ADR-032 proposta e depende de aprovação humana antes do merge.
+- uso futuro de símbolos de runtime exigirá nova decisão arquitetônica explícita.
 
 ## Capacidades implementadas
 
@@ -115,9 +117,9 @@ Cobertura funcional:
 - finding Must impedindo aprovação;
 - conjunto exato das cinco portas abstratas.
 
-## CI final
+## CI validado antes da aprovação final
 
-Execução final do CI Pipeline: run nº 147.
+Execução do CI Pipeline nº 149 integralmente verde.
 
 Passaram:
 
@@ -192,15 +194,16 @@ Concluídos:
 - typecheck específico: aprovado;
 - testes específicos: 20/20;
 - CI geral aplicável: verde;
-- escopo: preservado.
+- escopo: preservado;
+- ADR-032: aprovada humanamente;
+- Pull Request nº 5: aprovado humanamente para merge.
 
-Pendentes antes do merge:
+Gate restante:
 
-1. aprovação humana explícita da ADR-032;
-2. aprovação humana explícita do Pull Request nº 5.
+- CI do commit documental de aprovação deve permanecer verde antes do merge.
 
 ## Próximo lote
 
 Lote 3 — persistência, proveniência e RLS permanece bloqueado.
 
-Nenhum trabalho do Lote 3 poderá iniciar sem nova definição documental, novo checkpoint e aprovação humana explícita.
+Após o merge do Lote 2, nenhum trabalho de implementação do Lote 3 poderá iniciar sem nova definição documental, novo checkpoint e aprovação humana explícita.
