@@ -2,6 +2,7 @@
   "name": "@profeplan/knowledge-factory",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
@@ -10,8 +11,5 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --experimental-strip-types --test test/*.test.mjs"
-  },
-  "dependencies": {
-    "@profeplan/types": "workspace:*"
   }
 }
