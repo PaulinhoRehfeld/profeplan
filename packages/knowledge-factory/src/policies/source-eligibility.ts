@@ -37,7 +37,9 @@ export function evaluateSourceEligibility(
   const reasons: DomainReason[] = [];
 
   if (source.status !== 'approved') {
-    reasons.push(reason('SOURCE_NOT_APPROVED', 'Source must be approved for productive use.', source.id));
+    reasons.push(
+      reason('SOURCE_NOT_APPROVED', 'Source must be approved for productive use.', source.id)
+    );
   }
 
   if (!source.allowedUses.includes(use)) {
