@@ -2,11 +2,11 @@
 
 ## Status
 
-Lote 0 concluído documentalmente em 6 de agosto de 2026.
+**Marco 004 — Lote 0 aprovado integralmente em 6 de agosto de 2026, sem ressalvas.**
 
-**Aguardando aprovação humana.**
+A aprovação humana confirmou o baseline, as falhas preexistentes, a sincronização documental, os módulos de destino, a branch e o escopo do primeiro PR contract-first.
 
-Nenhum código de produto foi escrito. Nenhuma migration, tabela, RLS, dependência, embedding, modelo ou configuração de produção foi alterada.
+Nenhum código de produto foi escrito durante o Lote 0. Nenhuma migration, tabela, RLS, dependência, embedding, modelo ou configuração de produção foi alterada.
 
 ## Repositório e branches
 
@@ -14,11 +14,13 @@ Nenhum código de produto foi escrito. Nenhuma migration, tabela, RLS, dependên
 - branch base confirmada: `main`;
 - commit base auditado: `a6e105ac4260adf7c314ff0338a9f7bbd13610b5`;
 - branch documental do Lote 0: `docs/knowledge-factory-lot0`;
-- branch proposta para o primeiro PR de código: `feat/knowledge-factory-contracts`.
+- Pull Request documental: `#2 — docs(knowledge-factory): complete Marco 004 Lot 0 baseline`;
+- branch autorizada para o primeiro PR de código: `feat/knowledge-factory-contracts`;
+- título autorizado: `feat(knowledge-factory): add versioned domain contracts and fixtures`.
 
-A branch de código ainda não foi criada.
+A branch de código ainda não foi criada neste marco.
 
-## Baseline técnico
+## Baseline técnico aprovado
 
 ### Stack
 
@@ -34,7 +36,7 @@ A branch de código ainda não foi criada.
 
 ### CI geral
 
-O último CI do commit base passou:
+O CI do commit base e o CI do Pull Request documental passaram no escopo ativo:
 
 - instalação;
 - Prettier;
@@ -47,9 +49,9 @@ O verde é parcial porque exclui `apps/bff`, `packages/db`, `packages/ai` e `pac
 
 ### CI de agentes
 
-Está preexistente e vermelho. O workflow fixa pnpm 9 e o monorepo fixa pnpm 11.5.2. A falha ocorre antes de instalar dependências e executar testes.
+Permanece como falha preexistente. O workflow fixa pnpm 9 e o monorepo fixa pnpm 11.5.2. A falha ocorre antes de instalar dependências e executar testes.
 
-## Falhas preexistentes principais
+## Falhas preexistentes aprovadas como baseline
 
 1. conflito de versão do pnpm no workflow de agentes;
 2. referência residual a `docs/blueprint` sem `.gitmodules` válido;
@@ -66,7 +68,7 @@ Está preexistente e vermelho. O workflow fixa pnpm 9 e o monorepo fixa pnpm 11.
 13. acoplamento IA → DB legado;
 14. coexistência de API Vercel e BFF Azure.
 
-A lista detalhada está em `12-delivery/PREEXISTING-FAILURES.md`.
+Essas falhas não deverão ser corrigidas silenciosamente nem atribuídas à Knowledge Factory.
 
 ## Documentação sincronizada
 
@@ -92,13 +94,13 @@ Foram materializados no repositório canônico:
 
 O conteúdo integral não materializado byte a byte continua normativo no commit de origem, conforme `SYNC-MANIFEST.md`.
 
-## Módulos de destino confirmados
+## Módulos de destino aprovados
 
 ### Primeiro PR
 
 - `packages/types/src/knowledge-factory/`;
 - export aditivo em `packages/types/src/index.ts`;
-- tooling mínimo e isolado em `packages/types`, somente se autorizado.
+- tooling mínimo e isolado em `packages/types`, apenas dentro das regras autorizadas.
 
 ### Lotes posteriores
 
@@ -112,37 +114,24 @@ O conteúdo integral não materializado byte a byte continua normativo no commit
 - observabilidade: `packages/logger` e infraestrutura existente;
 - acabamento: `packages/graphics-profeplan`.
 
-`apps/bff` não foi confirmado como destino operacional da Knowledge Factory.
+`apps/bff` não é destino inicial da Knowledge Factory.
 
-## Conflitos arquitetônicos identificados
+## Primeiro PR autorizado
 
-- contratos da Knowledge Factory ainda inexistentes;
-- Zod está no frontend, não no pacote de tipos;
-- pacote de tipos não possui tooling;
-- duas superfícies de backend coexistem;
-- Prisma legado e Supabase coexistem sem decisão física para a Knowledge Factory;
-- agentes acessam SDKs diretamente, contrariando a ModelPolicy futura;
-- quality gates existem, mas não estão calibrados e seu CI está quebrado;
-- pipelines Python não estão integrados ao CI;
-- não existe OPP canônica;
-- não existe estado de insuficiência canônico;
-- não existe contrato canônico de entrega e rastreabilidade.
+Objetivo único:
 
-## Primeiro PR proposto
+Adicionar contratos puros, versionados, fixtures sintéticas e testes de invariantes da ProfePlan Knowledge Factory em `packages/types`, sem implementar persistência, APIs, IA, agentes ou mudanças de comportamento.
 
-Título:
-
-`feat(knowledge-factory): add versioned domain contracts and fixtures`
-
-Escopo:
+### Conteúdo permitido
 
 - contratos e enums;
 - fixtures sintéticas;
 - testes de invariantes;
 - exports aditivos;
-- tooling mínimo do pacote, se aprovado.
+- scripts mínimos e configuração local de teste;
+- documentação diretamente relacionada.
 
-Proibições:
+### Restrições absolutas
 
 - banco, migrations e RLS;
 - APIs e jobs;
@@ -151,12 +140,16 @@ Proibições:
 - fontes reais e PNLD;
 - frontend;
 - Gráfica;
-- RS, novos agentes e disciplinas;
-- refatoração ampla do monorepo.
+- Rio Grande do Sul;
+- novos agentes e disciplinas;
+- refatoração ampla do monorepo;
+- correção silenciosa das falhas preexistentes.
 
-## Stories com prontidão
+Qualquer necessidade de nova dependência exige interrupção e nova autorização humana.
 
-Após aprovação deste Lote 0, as seguintes Stories poderão receber:
+## Stories autorizadas
+
+As seguintes Stories recebem o status:
 
 `Ready for Code — contract slice`
 
@@ -171,9 +164,9 @@ Após aprovação deste Lote 0, as seguintes Stories poderão receber:
 - US-015.1;
 - US-016.1.
 
-O status se aplica somente aos contratos e invariantes. As Stories de negócio continuarão parciais ou bloqueadas até seus lotes próprios.
+O status se aplica somente aos contratos e invariantes. As Stories de negócio continuam parciais ou bloqueadas até seus lotes próprios.
 
-## Critérios de aceite do primeiro PR
+## Critérios de aceite preservados
 
 - alterações concentradas em `packages/types`;
 - contratos versionados e API pública explícita;
@@ -194,28 +187,74 @@ O status se aplica somente aos contratos e invariantes. As Stories de negócio c
 - excluir a branch `docs/knowledge-factory-lot0`;
 - nenhuma alteração permanece em `main`.
 
-### Primeiro PR de código futuro
+### Primeiro PR de código
 
 - revert simples;
 - remoção de exports aditivos;
 - nenhum dado, migration ou feature flag a restaurar.
 
-## Decisão necessária
+## Decisão formal
 
-Aprovar ou rejeitar:
+A aprovação total autoriza a abertura e execução do primeiro PR contract-first no próximo ciclo, usando a tarefa de `12-delivery/FIRST-PR-CODEX-TASK.md`.
 
-1. o baseline do Lote 0;
-2. a sincronização documental controlada;
-3. `packages/types` como destino do primeiro PR;
-4. `api/` como superfície operacional provável para lotes posteriores;
-5. não usar `apps/bff` como destino inicial;
-6. a branch `feat/knowledge-factory-contracts`;
-7. o escopo e os critérios do primeiro PR;
-8. as dez Stories em `Ready for Code — contract slice`;
-9. a tarefa restrita em `FIRST-PR-CODEX-TASK.md`.
+Não autoriza lotes posteriores, banco, retrieval, embeddings, agentes executáveis, Sócrates 2 ativo ou expansão de escopo.
 
 ## Fork
 
-**Ainda não fazer o próximo fork.**
+**Este é o momento oficial do próximo fork.**
 
-Primeiro é necessária aprovação humana deste Lote 0. Após aprovação, este checkpoint deverá ser atualizado para `aprovado`, e então será entregue a mensagem de continuidade e a autorização — ou não — para iniciar o primeiro PR contract-first.
+A próxima conversa deverá iniciar o primeiro PR de código, mantendo o escopo contract-first e parando imediatamente caso seja necessária nova dependência ou alteração fora de `packages/types`.
+
+## Mensagem de continuidade
+
+```text
+Estamos continuando a ProfePlan Knowledge Factory no repositório `PaulinhoRehfeld/profeplan`.
+
+Os Marcos 001, 002, 003 e o Marco 004 — Lote 0 foram aprovados integralmente.
+
+Leia primeiro:
+
+`docs/profeplan-knowledge-factory/00-governance/CONTINUITY-CHECKPOINT-004.md`
+
+Leia também:
+
+- `docs/profeplan-knowledge-factory/README.md`
+- `docs/profeplan-knowledge-factory/SYNC-MANIFEST.md`
+- `docs/profeplan-knowledge-factory/00-governance/DECISION-LOG.md`
+- `docs/profeplan-knowledge-factory/12-delivery/LOT-0-BASELINE-REPORT.md`
+- `docs/profeplan-knowledge-factory/12-delivery/PREEXISTING-FAILURES.md`
+- `docs/profeplan-knowledge-factory/12-delivery/MODULE-DESTINATION-MAP.md`
+- `docs/profeplan-knowledge-factory/12-delivery/ARCHITECTURE-CODE-GAP-REPORT.md`
+- `docs/profeplan-knowledge-factory/12-delivery/FIRST-CODE-PR.md`
+- `docs/profeplan-knowledge-factory/12-delivery/FIRST-PR-CODEX-TASK.md`
+
+Branch base: `main`.
+
+Crie a branch autorizada:
+
+`feat/knowledge-factory-contracts`
+
+Execute somente o primeiro PR contract-first autorizado.
+
+Objetivo único: adicionar contratos puros, versionados, fixtures sintéticas e testes de invariantes da ProfePlan Knowledge Factory em `packages/types`, sem persistência, APIs, IA, agentes ou mudanças de comportamento.
+
+Utilize esforço alto.
+
+Antes de editar:
+
+1. inspecione `packages/types`;
+2. liste os arquivos que pretende criar ou alterar;
+3. confirme o escopo do diff;
+4. identifique qualquer necessidade de nova dependência;
+5. pare e solicite autorização se nova dependência for necessária.
+
+Não altere banco, migrations, RLS, `packages/db`, `packages/ai`, `packages/agents`, `apps/bff`, `apps/web`, `api/`, PNLD, currículo, embeddings, providers, prompts, agentes executáveis ou Gráfica.
+
+Não corrija falhas preexistentes fora do escopo.
+
+Execute e registre typecheck e testes específicos de `packages/types`, além do CI geral aplicável.
+
+Não faça merge automático.
+
+Ao final, apresente o diff, os contratos, as invariantes, os comandos executados, as falhas preexistentes observadas, o rollback e o resumo do Pull Request.
+```
