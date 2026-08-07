@@ -4,13 +4,13 @@ Data: 7 de agosto de 2026.
 
 ## Status
 
-**Definição documental — aguardando aprovação humana. Nenhum adapter foi implementado por este documento. Produção permanece bloqueada.**
+**Definição documental aprovada integralmente por decisão humana em 7 de agosto de 2026. Nenhum adapter foi implementado por este documento. Produção permanece bloqueada.**
 
 Base: `main` no commit `82b5dce90d2cb7437922dfc27062b1f16aa0c0a6`, após integração e checkpoint do Lote 3A.
 
 ## Objetivo
 
-Implementar, em etapas posteriores e somente após aprovação desta definição, adapters Supabase para as portas de persistência existentes em `@profeplan/knowledge-factory`, preservando:
+Implementar, em etapas posteriores e somente dentro dos gates aprovados, adapters Supabase para as portas de persistência existentes em `@profeplan/knowledge-factory`, preservando:
 
 - domínio puro;
 - separação entre contratos, domínio e infraestrutura;
@@ -44,7 +44,7 @@ O deploy Vercel constrói `apps/web` e expõe funções em `api/` por rewrite `/
 
 O CI atual registra `apps/bff` como stub/stack não implantada no produto real e o exclui de lint/typecheck/build junto com outros pacotes legados.
 
-Conclusão proposta:
+Decisão aprovada:
 
 > `api/` permanece o composition root server-side do produto atual. O pacote de adapters não dependerá de `api/`; `api/` injetará dependências no pacote em lote futuro de wiring.
 
@@ -67,7 +67,7 @@ Existe `@profeplan/logger` com JSON estruturado, `correlationId` via `AsyncLocal
 
 Entretanto, o pacote também usa filesystem síncrono. O próprio runtime Vercel atual possui handlers que usam logger JSON inline porque o logger de pacote não é considerado adequado/disponível nesse contexto serverless.
 
-Conclusão proposta:
+Decisão aprovada:
 
 > O pacote de adapters não dependerá diretamente de `@profeplan/logger` no primeiro PR. Ele receberá uma interface mínima de telemetria por injeção.
 
@@ -75,7 +75,7 @@ Conclusão proposta:
 
 Não foi identificada abstração canônica de Unit of Work nem suporte geral a transação multi-call por Supabase JS no monorepo.
 
-Consequência:
+Consequência aprovada:
 
 > Nenhum adapter poderá fingir atomicidade por sequência de `.from(...).insert/update(...)` independentes.
 
@@ -87,13 +87,13 @@ O Lote 3A já fornece `Knowledge Factory DB CI`, que sobe Supabase descartável 
 
 Também existe no frontend um padrão de query builder Supabase controlado em testes de caracterização. Esse padrão pode servir apenas como referência de test double; o novo pacote deverá possuir helpers próprios e não importar testes do frontend.
 
-Conclusão proposta:
+Decisão aprovada:
 
 > O Lote 3B reutilizará o stack descartável do Lote 3A e criará testes unitários locais do próprio pacote; não criará um segundo stack de banco.
 
 ---
 
-## 2. Pacote proposto
+## 2. Pacote aprovado
 
 `packages/knowledge-factory-supabase/`
 
@@ -126,7 +126,7 @@ Não será responsabilidade do pacote:
 
 ---
 
-## 3. Dependências propostas
+## 3. Dependências aprovadas para o primeiro PR
 
 ### Runtime
 
@@ -194,31 +194,33 @@ A estratégia de criação do requester-scoped client deverá ser definida antes
 
 ---
 
-## 5. Lacunas encontradas nas portas atuais
+## 5. Gaps aprovados como restrições arquitetônicas
+
+A aprovação integral desta definição reconhece os gaps abaixo e aprova suas medidas de contenção. Os gaps permanecem bloqueios onde indicado.
 
 ### GAP-3B-01 — lookup curricular sem `stage`
 
 `CurriculumRepository.findActivePackageByState(state)` recebe apenas Estado, enquanto o schema 3A admite um pacote ativo por `(state, stage)`.
 
-**Decisão proposta:** antes do adapter curricular, revisar a porta para receber também `stage`. Nenhuma alteração de contrato será feita nesta definição.
+**Decisão:** antes do adapter curricular, revisar a porta para receber também `stage`. Nenhuma alteração de contrato ocorre no primeiro PR.
 
 ### GAP-3B-02 — componente + versão exige atomicidade
 
 `PedagogicalComponentRepository` expõe `saveComponent` e `saveVersion` separadamente. Criar componente + primeira versão/current version como chamadas HTTP independentes não fornece atomicidade.
 
-**Decisão proposta:** escrita de componente fica bloqueada até comando/RPC transacional aprovado.
+**Decisão:** escrita de componente fica bloqueada até comando/RPC transacional aprovado.
 
 ### GAP-3B-03 — OPP + evento exige atomicidade
 
 `ProductionOrderRepository` expõe `save(order)` e `appendEvent(event)` separadamente. Uma mudança de estado da OPP e o evento correspondente não devem divergir.
 
-**Decisão proposta:** transições OPP ficam bloqueadas até fronteira transacional e requester context aprovados.
+**Decisão:** transições OPP ficam bloqueadas até fronteira transacional e requester context aprovados.
 
 ### GAP-3B-04 — lifecycle de fonte incompleto para ingestão
 
 `KnowledgeSourceRepository` permite `save(source)`, mas não grava `SourceVersion`, `SourceSegment` nem `SourcePermissionEvent`.
 
-**Decisão proposta:** implementar somente métodos existentes; ingestão/versionamento completo fica para lote próprio.
+**Decisão:** implementar somente métodos existentes; ingestão/versionamento completo fica para lote próprio.
 
 ### GAP-3B-05 — AuditRepository não round-tripa todo o registro físico
 
@@ -230,15 +232,15 @@ Consequências:
 - `listByAggregate()` não pode devolver esses campos extras sem mudança da porta/contrato;
 - o primeiro adapter prova persistência, mapeamento, append-only, erro e observabilidade, mas **não conclui uma visão de auditoria enriquecida**.
 
-**Decisão proposta:** não ampliar a porta no primeiro PR. Registrar a necessidade antes de declarar US-013.2 integralmente concluída.
+**Decisão:** não ampliar a porta no primeiro PR. US-013.2 não será declarada integralmente concluída.
 
 ---
 
-## 6. Ordem proposta de implementação
+## 6. Ordem aprovada de implementação
 
 ### 3B.1 — AuditRepository
 
-Primeira fatia recomendada porque usa uma tabela, não exige transação multi-tabela e prova package boundary, client injection, mapper, error translation, telemetria e CI.
+Primeira fatia porque usa uma tabela, não exige transação multi-tabela e prova package boundary, client injection, mapper, error translation, telemetria e CI.
 
 ### 3B.2 — KnowledgeSourceRepository
 
@@ -258,7 +260,7 @@ Somente depois de requester-scoped client e atomicidade OPP+evento aprovados.
 
 ---
 
-## 7. Primeiro menor PR do Lote 3B
+## 7. Primeiro menor PR do Lote 3B — autorizado após merge deste documento
 
 Branch futura:
 
@@ -298,7 +300,7 @@ Não incluir outras portas, API, wiring de produção ou migration nova.
 
 ## 8. Stories afetadas
 
-### Primeiro PR — fatia parcial
+### Primeiro PR — fatia parcial autorizada
 
 `US-013.2 — persistence/audit adapter infrastructure slice`
 
@@ -316,7 +318,7 @@ O primeiro PR **não** recebe `Done` para US-013.2. Ele prova persistência e na
 - US-010.1 — OPP válida;
 - US-010.2 — timeline da OPP.
 
-### Ready for Code proposto após aprovação documental
+### Ready for Code após merge documental
 
 Somente:
 
@@ -352,13 +354,13 @@ Lote 3B não é pre-flight de produção.
 
 Antes de aplicar migration 3A ao Supabase real continuam obrigatórios: identificação formal do projeto alvo, snapshot/schema, drift analysis, backup/pre-flight, ausência de objetos `kf_*`, executor/comando definidos, plano de falha e autorização humana específica.
 
-Adapters podem ser definidos, implementados e testados em ambiente descartável sem tocar produção.
+Adapters podem ser implementados e testados em ambiente descartável sem tocar produção.
 
 ---
 
-## 11. Critérios de aceite desta definição documental
+## 11. Registro da aprovação
 
-A definição é aprovada quando houver concordância explícita sobre:
+A aprovação humana integral de 7 de agosto de 2026 confirma:
 
 - pacote `@profeplan/knowledge-factory-supabase`;
 - injeção de client;
@@ -370,8 +372,8 @@ A definição é aprovada quando houver concordância explícita sobre:
 - telemetria injetada e sanitizada;
 - reutilização do Supabase descartável;
 - AuditRepository como primeiro adapter;
-- gaps GAP-3B-01 a GAP-3B-05;
+- gaps GAP-3B-01 a GAP-3B-05 e suas contenções;
 - US-013.2 tratada apenas como fatia parcial no primeiro PR;
 - manutenção do gate separado de produção.
 
-Nenhum item deste documento autoriza código antes da aprovação humana.
+A implementação do primeiro PR só poderá começar após este PR documental ser integrado à `main` e em nova branch criada a partir da `main` integrada.
