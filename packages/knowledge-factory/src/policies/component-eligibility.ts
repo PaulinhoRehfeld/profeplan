@@ -61,7 +61,9 @@ export function evaluateComponentEligibility(
   }
 
   if (!version.version.trim()) {
-    reasons.push(reason('COMPONENT_VERSION_MISSING', 'Component version is required.', component.id));
+    reasons.push(
+      reason('COMPONENT_VERSION_MISSING', 'Component version is required.', component.id)
+    );
   }
 
   if (component.currentVersionId !== version.id || version.componentId !== component.id) {
@@ -86,7 +88,11 @@ export function evaluateComponentEligibility(
 
   if (version.sourceEvidenceIds.length === 0) {
     reasons.push(
-      reason('COMPONENT_EVIDENCE_MISSING', 'Approved component requires source evidence.', component.id)
+      reason(
+        'COMPONENT_EVIDENCE_MISSING',
+        'Approved component requires source evidence.',
+        component.id
+      )
     );
   }
 
@@ -163,7 +169,10 @@ export function evaluateComponentEligibility(
   for (const nodeId of version.curriculumNodeIds) {
     const node = curriculumNodes.find((item) => item.id === nodeId);
 
-    if (!node || !isCurriculumNodeAligned(node, curriculumPackage, scope.schoolComponent, scope.grade)) {
+    if (
+      !node ||
+      !isCurriculumNodeAligned(node, curriculumPackage, scope.schoolComponent, scope.grade)
+    ) {
       reasons.push(
         reason(
           'CURRICULUM_NODE_MISMATCH',
