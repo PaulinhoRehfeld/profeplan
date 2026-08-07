@@ -27,12 +27,12 @@ Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem
 - `12-delivery/LOT-3B-DEFINITION.md`;
 - `09-data/LOT-3B-ADAPTER-MAP.md`;
 - `09-data/LOT-3B-TRANSACTION-STRATEGY.md`;
-- `12-delivery/LOT-3B-ERROR-OBSERVABILITY-STRATEGY.md`;
 - `11-testing/LOT-3B-TEST-STRATEGY.md`;
+- `12-delivery/LOT-3B-ERROR-OBSERVABILITY-STRATEGY.md`;
 - `12-delivery/LOT-3B-FIRST-PR.md`;
 - `12-delivery/LOT-3B-RISK-REGISTER.md`;
 - `12-delivery/LOT-3B-PRODUCTION-BOUNDARY.md`;
-- `00-governance/LOT-3B-ADR-PROPOSALS.md`.
+- `00-governance/LOT-3B-ARCHITECTURE-DECISIONS.md`.
 
 Duplicatas documentais encontradas durante a revisão foram removidas antes da abertura do PR para preservar uma única fonte de verdade por tema.
 
