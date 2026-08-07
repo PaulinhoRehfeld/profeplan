@@ -1,18 +1,18 @@
-# Lote 3B — Decisões arquiteturais propostas
+# Lote 3B — Decisões arquiteturais aprovadas
 
 Data: 7 de agosto de 2026.
 
 ## Status
 
-**Propostas — aguardando aprovação humana.**
+**Aprovado integralmente por decisão humana em 7 de agosto de 2026.**
 
-Nenhuma decisão deste documento autoriza implementação, produção ou mudança das portas atuais.
+A aprovação destas decisões autoriza somente a preparação do primeiro PR de código do Lote 3B dentro do escopo explicitamente aprovado. Não autoriza produção, migration nova, ampliação das portas bloqueadas, retrieval, agentes, PNLD real, currículo real, Gráfica, Nexus ou EPIC-018.
 
 ## ADR-040 — Pacote concreto isolado para adapters Supabase
 
-**Status:** proposto
+**Status:** aprovado
 
-Criar, após aprovação documental:
+Criar:
 
 `packages/knowledge-factory-supabase/`
 
@@ -24,7 +24,7 @@ O pacote implementará portas do domínio e mapeará contratos ↔ Supabase, sem
 
 ## ADR-041 — SupabaseClient por injeção e separação SYSTEM/REQUESTER
 
-**Status:** proposto
+**Status:** aprovado
 
 Adapters recebem `SupabaseClient` já configurado. O pacote não chama `createClient()`, não lê `process.env`, não importa `api/_lib/supabaseAdmin.ts` e não armazena secrets.
 
@@ -37,7 +37,7 @@ Contextos:
 
 ## ADR-042 — `api/` permanece composition root server-side do runtime atual
 
-**Status:** proposto
+**Status:** aprovado
 
 Enquanto o deploy atual permanecer Vite/Vercel:
 
@@ -47,7 +47,7 @@ Enquanto o deploy atual permanecer Vite/Vercel:
 
 ## ADR-043 — Atomicidade multi-tabela somente por transação real/RPC específica
 
-**Status:** proposto
+**Status:** aprovado
 
 Chamadas Supabase independentes não serão tratadas como uma transação.
 
@@ -57,7 +57,7 @@ Não criar Unit of Work genérico fictício.
 
 ## ADR-044 — Erros de persistência provider-neutral
 
-**Status:** proposto
+**Status:** aprovado
 
 Taxonomia estável inicial:
 
@@ -90,7 +90,7 @@ Retry genérico não será implementado no primeiro PR. Escritas append-only nã
 
 ## ADR-045 — Observabilidade injetada e sanitizada
 
-**Status:** proposto
+**Status:** aprovado
 
 Adapters não dependerão diretamente de `@profeplan/logger` no primeiro PR.
 
@@ -120,7 +120,7 @@ Nunca registrar:
 
 ## ADR-046 — Testes do 3B reutilizam Supabase descartável do Lote 3A
 
-**Status:** proposto
+**Status:** aprovado
 
 Cada adapter terá:
 
@@ -132,7 +132,7 @@ Nenhum teste usa project ref, token, service role ou dado de produção.
 
 ## ADR-047 — Implementação incremental por porta; AuditRepository primeiro
 
-**Status:** proposto
+**Status:** aprovado
 
 Ordem inicial:
 
@@ -144,7 +144,9 @@ Ordem inicial:
 
 O primeiro PR implementará somente `AuditRepository` e será tratado como prova da infraestrutura de adapter, não como conclusão integral da auditoria funcional.
 
-## Gaps associados
+## Gaps associados — aceitos como restrições do Lote 3B
+
+A aprovação humana reconhece formalmente estes gaps e suas medidas de contenção. Nenhum deles é considerado resolvido apenas pela aprovação documental.
 
 ### GAP-3B-01 — currículo ativo
 
@@ -180,7 +182,7 @@ US-013.2 permanece apenas em fatia parcial até eventual extensão contratual ex
 
 ## Relação com decisões anteriores
 
-Estas propostas complementam, sem substituir:
+Estas decisões complementam, sem substituir:
 
 - ADR-019 contract-first;
 - ADR-022 corpus sem leitura pública direta;
@@ -193,6 +195,8 @@ Estas propostas complementam, sem substituir:
 - ADR-038 produção com gate separado;
 - ADR-039 append-only.
 
-## Gate
+## Gate após aprovação
 
-ADR-040 a ADR-047 somente poderão ser promovidas a **aprovado** após manifestação humana explícita. Depois deverão ser consolidadas no `DECISION-LOG.md` antes do primeiro PR de código 3B.
+Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a primeira fatia de código definida para `AuditRepository`, após integração deste PR documental à `main` e em nova branch a partir da `main` integrada.
+
+Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
