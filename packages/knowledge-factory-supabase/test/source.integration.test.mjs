@@ -50,12 +50,25 @@ const SOURCE_B = {
   updatedAt: '2026-08-07T12:00:00.000Z',
 };
 
+function assertEquivalentSource(actual, expected) {
+  const { createdAt: actualCreatedAt, updatedAt: actualUpdatedAt, ...actualFields } = actual;
+  const {
+    createdAt: expectedCreatedAt,
+    updatedAt: expectedUpdatedAt,
+    ...expectedFields
+  } = expected;
+
+  assert.deepEqual(actualFields, expectedFields);
+  assert.equal(Date.parse(actualCreatedAt), Date.parse(expectedCreatedAt));
+  assert.equal(Date.parse(actualUpdatedAt), Date.parse(expectedUpdatedAt));
+}
+
 test('KnowledgeSourceRepository saves, updates and finds synthetic sources', async () => {
   await repository.save(SOURCE_A);
   await repository.save(SOURCE_B);
 
-  assert.deepEqual(await repository.findById(SOURCE_A_ID), SOURCE_A);
-  assert.deepEqual(await repository.findById(SOURCE_B_ID), SOURCE_B);
+  assertEquivalentSource(await repository.findById(SOURCE_A_ID), SOURCE_A);
+  assertEquivalentSource(await repository.findById(SOURCE_B_ID), SOURCE_B);
   assert.equal(await repository.findById('89000000-0000-4000-8000-000000000009'), null);
 
   const updated = {
@@ -66,7 +79,7 @@ test('KnowledgeSourceRepository saves, updates and finds synthetic sources', asy
     updatedAt: '2026-08-07T13:00:00.000Z',
   };
   await repository.save(updated);
-  assert.deepEqual(await repository.findById(SOURCE_A_ID), updated);
+  assertEquivalentSource(await repository.findById(SOURCE_A_ID), updated);
 });
 
 test('KnowledgeSourceRepository reads one version and ordered isolated permission history', async () => {
