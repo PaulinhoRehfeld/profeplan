@@ -80,7 +80,7 @@ export function hasMandatoryQueryFilters(plan: QueryPlan): boolean {
       filters.curriculumPackageId.trim() &&
       filters.sourceStatus === 'approved' &&
       filters.sourceUse === 'retrieval' &&
-      filters.componentStatus === 'approved',
+      filters.componentStatus === 'approved'
   );
 }
 
