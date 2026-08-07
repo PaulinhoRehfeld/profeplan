@@ -1,6 +1,6 @@
 # Lote 3B — Fronteira com produção
 
-Status: proposta documental.
+Status: **aprovado integralmente em 7 de agosto de 2026.**
 
 ## Regra principal
 
@@ -72,12 +72,12 @@ Mesmo após adapters mergeados, eles permanecerão sem wiring de endpoint/servi�
 - health check seja definido;
 - rollback/roll-forward seja aprovado.
 
-## Ordem recomendada
+## Ordem aprovada
 
 ```text
-Definição 3B
+Definição 3B aprovada
 → primeiro adapter em CI descartável
-→ adapters subsequentes
+→ adapters subsequentes mediante gates próprios
 → definição separada de pre-flight
 → autorização de conexão ao alvo
 → snapshot/drift/backup
@@ -87,4 +87,4 @@ Definição 3B
 → somente depois wiring operacional
 ```
 
-A ordem poderá ser ajustada para reduzir risco, mas nenhum passo implícito substitui autorização humana de produção.
+A ordem só poderá ser alterada por decisão explícita que preserve o gate independente de produção.
