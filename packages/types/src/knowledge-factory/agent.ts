@@ -35,9 +35,6 @@ export interface AgentProfile extends VersionedEntity {
   active: boolean;
 }
 
-export function isAgentAuthorizedForState(
-  scope: AgentScope,
-  state: CurriculumState,
-): boolean {
+export function isAgentAuthorizedForState(scope: AgentScope, state: CurriculumState): boolean {
   return scope.curriculumStates.includes(state);
 }
