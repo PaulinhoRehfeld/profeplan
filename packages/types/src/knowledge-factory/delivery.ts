@@ -67,10 +67,10 @@ export function hasDeliveryTraceability(delivery: DeliveryContract): boolean {
 
   return Boolean(
     trace.oppId.trim() &&
-      trace.agentProfileId.trim() &&
-      trace.curriculumPackageId.trim() &&
-      trace.componentVersionIds.length > 0 &&
-      trace.sourceVersionIds.length > 0 &&
-      trace.validationReportId.trim()
+    trace.agentProfileId.trim() &&
+    trace.curriculumPackageId.trim() &&
+    trace.componentVersionIds.length > 0 &&
+    trace.sourceVersionIds.length > 0 &&
+    trace.validationReportId.trim()
   );
 }
