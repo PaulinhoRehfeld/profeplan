@@ -24,7 +24,7 @@ Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem
 
 ## Documentos canônicos desta definição
 
-- `12-delivery/LOT-3B-DEFINITION.md` — arquitetura geral, dependências, contextos, gaps, ordem e primeiro PR;
+- `12-delivery/LOT-3B-DEFINITION.md` — arquitetura geral, dependências, contexts, gaps, ordem e primeiro PR;
 - `09-data/LOT-3B-ADAPTER-MAP.md` — porta → tabela → operação → client;
 - `09-data/LOT-3B-TRANSACTION-STRATEGY.md` — atomicidade e futuras RPCs;
 - `11-testing/LOT-3B-TEST-STRATEGY.md` — unitários, integração descartável e isolamento;
@@ -32,7 +32,7 @@ Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem
 - `12-delivery/LOT-3B-PRODUCTION-BOUNDARY.md` — separação entre 3B e produção;
 - `00-governance/LOT-3B-ARCHITECTURE-DECISIONS.md` — ADRs 040–047, taxonomia de erros e observabilidade sanitizada.
 
-A especificação do primeiro PR está consolidada em `LOT-3B-DEFINITION.md`; a taxonomia de erros e a estratégia de observabilidade estão consolidadas em `LOT-3B-ARCHITECTURE-DECISIONS.md`. Duplicatas documentais foram removidas para preservar uma única fonte de verdade por tema.
+A especificação do primeiro PR está consolidada em `LOT-3B-DEFINITION.md`; erros e observabilidade ficam centralizados nas ADRs para evitar fontes duplicadas.
 
 ## Inspeção concluída
 
@@ -43,7 +43,7 @@ Foi confirmado:
 3. existe `api/_lib/supabaseAdmin.ts` com client privilegiado server-side;
 4. o novo pacote não deve importar `api/`;
 5. não foi encontrada Unit of Work canônica;
-6. testes web existentes usam mocks de client Supabase;
+6. há padrão de test double Supabase em testes de caracterização do frontend, utilizável apenas como referência; o novo pacote terá helpers próprios;
 7. o Lote 3A oferece Supabase descartável real no GitHub Actions;
 8. `@profeplan/logger` possui JSON/correlation, mas também filesystem síncrono e acoplamento Node;
 9. `@supabase/supabase-js` já existe no monorepo;
@@ -61,11 +61,11 @@ Workspace:
 
 O pacote receberá clients por injeção e não lerá env.
 
-### System context
+### SYSTEM context
 
 Para corpus global e auditoria, com client privilegiado criado server-side no composition root.
 
-### Requester context
+### REQUESTER context
 
 Para operações privadas sujeitas a RLS, sobretudo OPP.
 
@@ -94,6 +94,12 @@ Transições via adapter ficam bloqueadas até fronteira transacional e requeste
 `KnowledgeSourceRepository` não expõe gravação de `SourceVersion`, `SourceSegment` ou `SourcePermissionEvent`.
 
 O adapter não inventará ingestão fora da porta.
+
+### GAP-3B-05 — auditoria física mais rica que o contrato
+
+`AuditRepository.listByAggregate()` retorna `DomainEvent`, enquanto `kf_audit_events` também persiste ator, papel, correlation id, outcome e reason.
+
+O primeiro adapter poderá provar append/list, mapper, erros e telemetria, mas não conclui uma visão de auditoria enriquecida. Qualquer ampliação da porta exigirá decisão contract-first posterior.
 
 ## ADRs propostas
 
@@ -136,9 +142,9 @@ Não inclui API, produção, migration nova ou segunda porta.
 
 Somente:
 
-`US-013.2 — persistence adapter slice`
+`US-013.2 — persistence/audit adapter infrastructure slice`
 
-Esse status só entra em vigor após aprovação humana deste marco documental.
+Esse status só entra em vigor após aprovação humana desta definição e representa **fatia parcial**, não `Done` integral da Story.
 
 ## Produção
 
@@ -159,7 +165,7 @@ Permanece deliberadamente adiado para etapa final.
 ## Próximo passo
 
 1. revisão humana desta definição;
-2. aprovação/rejeição das ADRs 040–047;
+2. aprovação/rejeição das ADRs 040–047 e reconhecimento dos gaps 3B-01 a 3B-05;
 3. se aprovado, consolidar ADRs no Decision Log;
 4. integrar PR documental;
 5. somente depois autorizar o primeiro PR 3B.
