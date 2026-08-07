@@ -345,4 +345,32 @@ $$;
 
 RESET ROLE;
 
+-- ---------------------------------------------------------------------------
+-- Privileged executor: append-only must still block OPP-event mutation
+-- ---------------------------------------------------------------------------
+DO $$
+BEGIN
+  BEGIN
+    UPDATE public.kf_production_order_events
+    SET reason = 'mutated by privileged executor'
+    WHERE id = '77777777-7777-4777-8777-777777777771';
+    RAISE EXCEPTION 'Expected privileged OPP-event UPDATE to fail';
+  EXCEPTION WHEN sqlstate '55000' THEN
+    NULL;
+  END;
+END;
+$$;
+
+DO $$
+BEGIN
+  BEGIN
+    DELETE FROM public.kf_production_order_events
+    WHERE id = '77777777-7777-4777-8777-777777777771';
+    RAISE EXCEPTION 'Expected privileged OPP-event DELETE to fail';
+  EXCEPTION WHEN sqlstate '55000' THEN
+    NULL;
+  END;
+END;
+$$;
+
 ROLLBACK;
