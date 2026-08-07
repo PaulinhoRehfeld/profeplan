@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposta documental. Nenhuma migration, alteração de banco ou adapter está autorizado antes de aprovação humana explícita deste lote.**
+**Aprovado integralmente em 7 de agosto de 2026. A implementação foi dividida em Lote 3A (schema/RLS) e Lote 3B (adapters). Nenhuma migration foi criada por esta definição.**
 
 Base: `main` no commit `738255844d95abbb698ee3621707dbbeb228ec58`.
 
@@ -43,9 +43,9 @@ PostgreSQL / Supabase
 
 A camada de domínio continuará sem I/O. A infraestrutura será isolada em pacote próprio.
 
-## Decisão de plataforma
+## Decisão de plataforma aprovada
 
-Para este lote, a persistência canônica proposta é **SQL Supabase/PostgreSQL por migrations em `supabase/migrations/`**.
+Para este lote, a persistência canônica é **SQL Supabase/PostgreSQL por migrations em `supabase/migrations/`**.
 
 `packages/db`/Prisma não será usado pela Knowledge Factory neste lote porque:
 
@@ -147,13 +147,17 @@ Objetivo único:
 
 Criar a fundação física sem conectar a aplicação.
 
+Definição operacional completa:
+
+`docs/profeplan-knowledge-factory/12-delivery/LOT-3A-DEFINITION.md`
+
 Inclui:
 
 - migration incremental;
 - tabelas `kf_*`;
 - constraints e índices determinísticos;
 - RLS;
-- helper administrativo mínimo;
+- helper administrativo mínimo somente se comprovadamente seguro;
 - proteção append-only de eventos;
 - fixtures exclusivamente sintéticas para testes;
 - testes de isolamento e constraints;
@@ -296,17 +300,17 @@ Interromper a implementação se ocorrer qualquer um:
 - migration não puder ser revertida em ambiente descartável;
 - tentativa de incluir Lote 4 ou EPIC-018.
 
-## Branches propostas
+## Branches aprovadas/propostas
 
 Documentação:
 
 `docs/knowledge-factory-lot3-definition`
 
-Futuro Lote 3A:
+Lote 3A:
 
 `feat/knowledge-factory-persistence-schema`
 
-Futuro Lote 3B:
+Lote 3B futuro:
 
 `feat/knowledge-factory-supabase-adapters`
 
@@ -314,7 +318,7 @@ Futuro Lote 3B:
 
 PR 3A:
 
-`feat(knowledge-factory): add persistence schema and RLS`
+`feat(knowledge-factory): add persistence schema and RLS foundation`
 
 PR 3B:
 
@@ -322,9 +326,11 @@ PR 3B:
 
 ## Estado de saída desta definição
 
-Após aprovação humana:
+ADR-033 a ADR-039 foram aprovadas integralmente em 7 de agosto de 2026.
 
-- ADRs propostas deste lote poderão ser marcadas como aprovadas;
-- será criado checkpoint de continuidade;
-- somente o PR 3A ficará autorizado para implementação;
-- PR 3B continuará bloqueado até validação do schema em ambiente não produtivo.
+Após integração do PR documental nº 6:
+
+- somente o Lote 3A ficará autorizado para implementação em nova conversa/fork;
+- PR 3B continuará bloqueado até validação do schema em ambiente não produtivo;
+- execução em produção continuará exigindo autorização humana separada;
+- o ponto oficial de continuidade será `CONTINUITY-CHECKPOINT-008.md`.
