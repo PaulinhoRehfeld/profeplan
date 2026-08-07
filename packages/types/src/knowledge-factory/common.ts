@@ -16,7 +16,7 @@ export type SchoolGrade = (typeof SCHOOL_GRADES)[number];
 export const CURRICULUM_STATES = ['MG', 'RS'] as const;
 export type CurriculumState = (typeof CURRICULUM_STATES)[number];
 
-export const KNOWLEDGE_FACTORY_CONTRACT_VERSION = '1.0.0' as const;
+export const KNOWLEDGE_FACTORY_CONTRACT_VERSION = '1.1.0' as const;
 export const MVP_CURRICULUM_STATE: CurriculumState = 'MG';
 export const EPIC_018_ENABLED = false as const;
 

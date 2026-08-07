@@ -15,6 +15,9 @@ export const PEDAGOGICAL_COMPONENT_STATUSES = [
   'draft',
   'in_review',
   'approved',
+  'rejected',
+  'superseded',
+  'suspended',
   'blocked',
   'archived',
 ] as const;

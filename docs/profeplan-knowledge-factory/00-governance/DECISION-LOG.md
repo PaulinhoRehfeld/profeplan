@@ -185,7 +185,7 @@ As Stories US-001.1, US-001.2, US-002.1, US-002.2, US-004.1, US-004.2, US-010.1,
 
 As regras de negócio da Knowledge Factory serão implementadas em um pacote dedicado `@profeplan/knowledge-factory`, separado de `@profeplan/types`.
 
-O novo pacote dependerá de `@profeplan/types` e não dependerá de DB, IA, agents, API, frontend ou providers externos.
+O novo pacote dependerá dos contratos de `@profeplan/types` e não dependerá de DB, IA, agents, API, frontend ou providers externos.
 
 Consequências:
 
@@ -211,15 +211,37 @@ Políticas do Lote 2 serão puras, determinísticas, sem estado global e sem ace
 
 Decisões de elegibilidade, ciclo de vida, escopo e OPP deverão ser testáveis apenas com contratos e fixtures sintéticas.
 
-## Pendências após a aprovação da definição do Lote 2
+## ADR-032 — Dependência de contratos somente em tempo de compilação no Lote 2
 
-- implementar `@profeplan/knowledge-factory` somente na branch autorizada do próximo ciclo;
+**Status:** aprovado em 7 de agosto de 2026, antes do merge do PR nº 5
+
+Durante a implementação do Lote 2 verificou-se que todos os usos de `@profeplan/types` no novo pacote são exclusivamente `import type`. A declaração inicial `@profeplan/types: workspace:*` no `package.json` exigia atualizar o importer do novo workspace no `pnpm-lock.yaml`, embora nenhum símbolo de runtime fosse consumido.
+
+Decisão aprovada:
+
+- `@profeplan/knowledge-factory` não declarará dependência de runtime/package-manager em `@profeplan/types` no Lote 2;
+- os contratos serão resolvidos em tempo de compilação pelo alias `@profeplan/types` já definido no `tsconfig.base.json` do monorepo;
+- todos os imports de contratos permanecerão `import type`;
+- `pnpm-lock.yaml` permanecerá inalterado;
+- se lote posterior exigir símbolo de runtime de `@profeplan/types`, a dependência explícita deverá ser reavaliada e documentada.
+
+Consequências:
+
+- domínio permanece sem dependências de runtime;
+- lockfile não recebe alteração sem necessidade funcional;
+- typecheck continua validando integralmente os contratos;
+- reduz-se acoplamento entre pacotes no Lote 2;
+- existe dependência arquitetônica de compilação, embora não exista dependência de runtime;
+- a decisão deve ser revista caso a política de build/package publication do monorepo mude.
+
+## Pendências após a implementação do Lote 2
+
+- merge do PR nº 5 autorizado pela aprovação humana explícita de 7 de agosto de 2026;
 - manter banco, migrations, RLS e adapters concretos bloqueados até o Lote 3;
-- interromper a implementação caso seja necessária nova dependência externa ou alteração incompatível nos contratos do Lote 1;
 - manter fontes reais, currículo MG real, retrieval, IA e runtime do Sócrates 2 fora do Lote 2;
 - saneamento futuro do CI de agentes permanece fora do escopo;
 - EPIC-018 permanece bloqueado.
 
 ## Procedência
 
-Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004, pelo merge do primeiro PR contract-first e pela aprovação humana da definição do Lote 2 em 7 de agosto de 2026.
+Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004, pelo merge do primeiro PR contract-first, pela aprovação humana da definição do Lote 2, pela implementação controlada do Lote 2 e pela aprovação explícita da ADR-032 e do PR nº 5 em 7 de agosto de 2026.
