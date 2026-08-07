@@ -43,11 +43,17 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Falhas preexistentes](12-delivery/PREEXISTING-FAILURES.md)
 - [Mapa de módulos de destino](12-delivery/MODULE-DESTINATION-MAP.md)
 - [Diferenças entre arquitetura e código](12-delivery/ARCHITECTURE-CODE-GAP-REPORT.md)
-- [Escopo do primeiro PR de código](12-delivery/FIRST-CODE-PR.md)
-- [Tarefa restrita para o Codex](12-delivery/FIRST-PR-CODEX-TASK.md)
+- [Escopo autorizado do primeiro PR de código](12-delivery/FIRST-CODE-PR.md)
+- [Tarefa autorizada para o Codex](12-delivery/FIRST-PR-CODEX-TASK.md)
 
 ## Estado
 
-Fase atual: Marco 004 — Lote 0 concluído documentalmente e aguardando aprovação humana.
+Marcos 001, 002 e 003 aprovados.
 
-Nenhum código de produto foi autorizado. O primeiro PR contract-first permanece bloqueado.
+Marco 004 — Lote 0 aprovado integralmente em 6 de agosto de 2026.
+
+O primeiro PR contract-first está autorizado para execução em ciclo próprio, na branch `feat/knowledge-factory-contracts`, restrito a contratos, enums, fixtures sintéticas, testes de invariantes e exports aditivos em `packages/types`.
+
+Nenhum lote posterior, banco, migration, API, IA, agente executável, embedding, PNLD real, currículo RS, frontend ou Gráfica foi autorizado.
+
+O próximo passo oficial é o fork indicado em `CONTINUITY-CHECKPOINT-004.md`.
