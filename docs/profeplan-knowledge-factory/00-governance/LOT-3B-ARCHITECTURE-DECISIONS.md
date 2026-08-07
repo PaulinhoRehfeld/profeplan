@@ -142,7 +142,7 @@ Ordem inicial:
 4. PedagogicalComponentRepository em leitura antes de escrita transacional;
 5. ProductionOrderRepository após requester client e RPC de transição.
 
-O primeiro PR implementará somente `AuditRepository`.
+O primeiro PR implementará somente `AuditRepository` e será tratado como prova da infraestrutura de adapter, não como conclusão integral da auditoria funcional.
 
 ## Gaps associados
 
@@ -169,6 +169,14 @@ Bloqueada até RPC/comando aprovado.
 A porta de fontes não cobre criação de versão, segmento ou evento de permissão.
 
 Adapter não inventará operações de ingestão.
+
+### GAP-3B-05 — auditoria física mais rica que a porta
+
+`AuditRepository` devolve `DomainEvent`, enquanto `kf_audit_events` também possui `actor_id`, `actor_role`, `correlation_id`, `outcome` e `reason`.
+
+O primeiro adapter deverá mapear somente o contrato existente. Contexto adicional poderá ser persistido por dependência/contexto injetado quando aprovado, mas não será prometido em `listByAggregate()`.
+
+US-013.2 permanece apenas em fatia parcial até eventual extensão contratual explícita.
 
 ## Relação com decisões anteriores
 
