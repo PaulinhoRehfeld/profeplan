@@ -181,13 +181,13 @@ As Stories US-001.1, US-001.2, US-002.1, US-002.2, US-004.1, US-004.2, US-010.1,
 
 ## ADR-029 — Pacote dedicado ao domínio da Knowledge Factory
 
-**Status:** proposto para o Lote 2
+**Status:** aprovado para o Lote 2
 
 As regras de negócio da Knowledge Factory serão implementadas em um pacote dedicado `@profeplan/knowledge-factory`, separado de `@profeplan/types`.
 
 O novo pacote dependerá de `@profeplan/types` e não dependerá de DB, IA, agents, API, frontend ou providers externos.
 
-Consequências esperadas:
+Consequências:
 
 - `@profeplan/types` permanece como contrato compartilhado;
 - políticas e ciclo de vida ficam coesos em uma camada de domínio própria;
@@ -197,7 +197,7 @@ Consequências esperadas:
 
 ## ADR-030 — Repositórios como portas, não adapters concretos
 
-**Status:** proposto para o Lote 2
+**Status:** aprovado para o Lote 2
 
 O Lote 2 criará interfaces abstratas de repositório orientadas ao domínio. Implementações Supabase, PostgreSQL, Prisma ou outras serão proibidas até o Lote 3.
 
@@ -205,22 +205,21 @@ As portas não poderão expor SQL, nomes de tabela, clients de provider, vetores
 
 ## ADR-031 — Domínio puro, determinístico e sem I/O
 
-**Status:** proposto para o Lote 2
+**Status:** aprovado para o Lote 2
 
 Políticas do Lote 2 serão puras, determinísticas, sem estado global e sem acesso a rede, filesystem, banco ou provider.
 
 Decisões de elegibilidade, ciclo de vida, escopo e OPP deverão ser testáveis apenas com contratos e fixtures sintéticas.
 
-## Pendências após o Lote 1
+## Pendências após a aprovação da definição do Lote 2
 
-- aprovação formal da definição do Lote 2;
-- implementação da camada de domínio somente após autorização;
-- saneamento futuro do CI de agentes;
-- decisão física de persistência e RLS no Lote 3;
-- experimentos de retrieval nos lotes posteriores;
-- fontes autorizadas e recorte curricular MG;
-- ativação futura do Sócrates 2 somente no lote correspondente.
+- implementar `@profeplan/knowledge-factory` somente na branch autorizada do próximo ciclo;
+- manter banco, migrations, RLS e adapters concretos bloqueados até o Lote 3;
+- interromper a implementação caso seja necessária nova dependência externa ou alteração incompatível nos contratos do Lote 1;
+- manter fontes reais, currículo MG real, retrieval, IA e runtime do Sócrates 2 fora do Lote 2;
+- saneamento futuro do CI de agentes permanece fora do escopo;
+- EPIC-018 permanece bloqueado.
 
 ## Procedência
 
-Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004 e pelo merge do primeiro PR contract-first.
+Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004, pelo merge do primeiro PR contract-first e pela aprovação humana da definição do Lote 2 em 7 de agosto de 2026.
