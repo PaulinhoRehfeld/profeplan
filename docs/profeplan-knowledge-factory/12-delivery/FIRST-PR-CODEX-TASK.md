@@ -2,15 +2,17 @@
 
 ## Status
 
-Rascunho pronto para autorização humana. Não executar ainda.
+**Autorizada no Marco 004 — Lote 0.**
 
-## Prompt autorizado após aprovação
+Executar somente no próximo ciclo, sem merge automático e dentro dos limites abaixo.
+
+## Prompt autorizado
 
 Você está trabalhando no repositório `PaulinhoRehfeld/profeplan`.
 
 Branch base: `main`.
 
-Crie somente após autorização a branch:
+Crie a branch:
 
 `feat/knowledge-factory-contracts`
 
@@ -25,6 +27,7 @@ Leia antes de propor alterações:
 - `docs/profeplan-knowledge-factory/README.md`;
 - `docs/profeplan-knowledge-factory/SYNC-MANIFEST.md`;
 - `docs/profeplan-knowledge-factory/00-governance/DECISION-LOG.md`;
+- `docs/profeplan-knowledge-factory/00-governance/CONTINUITY-CHECKPOINT-004.md`;
 - `docs/profeplan-knowledge-factory/12-delivery/LOT-0-BASELINE-REPORT.md`;
 - `docs/profeplan-knowledge-factory/12-delivery/PREEXISTING-FAILURES.md`;
 - `docs/profeplan-knowledge-factory/12-delivery/MODULE-DESTINATION-MAP.md`;
@@ -128,4 +131,6 @@ Não faça merge automático.
 
 ## Gate de execução
 
-Esta tarefa somente poderá ser enviada ao Codex após aprovação humana explícita do Marco 004 — Lote 0.
+A aprovação humana explícita foi concedida em 6 de agosto de 2026.
+
+Qualquer nova dependência, alteração fora de `packages/types`, ampliação de escopo ou necessidade de tocar banco, API, IA, agentes ou frontend exige nova autorização antes de continuar.
