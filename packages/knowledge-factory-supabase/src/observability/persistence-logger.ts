@@ -1,6 +1,6 @@
-import type { EntityId } from "@profeplan/types";
+import type { EntityId } from '@profeplan/types';
 
-export type PersistenceLogOutcome = "success" | "failure";
+export type PersistenceLogOutcome = 'success' | 'failure';
 
 export interface PersistenceLogEntry {
   readonly operation: string;
@@ -22,10 +22,7 @@ export const NOOP_PERSISTENCE_LOGGER: PersistenceLogger = Object.freeze({
   record(): void {},
 });
 
-export function recordPersistenceLog(
-  logger: PersistenceLogger,
-  entry: PersistenceLogEntry,
-): void {
+export function recordPersistenceLog(logger: PersistenceLogger, entry: PersistenceLogEntry): void {
   try {
     logger.record(entry);
   } catch {

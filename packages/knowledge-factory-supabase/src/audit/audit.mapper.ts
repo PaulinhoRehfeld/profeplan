@@ -3,11 +3,11 @@ import {
   type DomainEvent,
   type DomainEventType,
   type DomainMetadataValue,
-} from "@profeplan/knowledge-factory";
-import { invalidPersistenceResponse } from "../errors/persistence-error.ts";
+} from '@profeplan/knowledge-factory';
+import { invalidPersistenceResponse } from '../errors/persistence-error.ts';
 
 export const AUDIT_EVENT_COLUMNS =
-  "event_type,aggregate_type,aggregate_id,occurred_at,metadata" as const;
+  'event_type,aggregate_type,aggregate_id,occurred_at,metadata' as const;
 
 export interface AuditEventRow {
   readonly event_type: string;
@@ -17,45 +17,29 @@ export interface AuditEventRow {
   readonly metadata: Readonly<Record<string, DomainMetadataValue>>;
 }
 
-const AGGREGATE_TYPES = [
-  "source",
-  "component",
-  "curriculum",
-  "agent",
-  "opp",
-] as const;
+const AGGREGATE_TYPES = ['source', 'component', 'curriculum', 'agent', 'opp'] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function isEventType(value: unknown): value is DomainEventType {
-  return (
-    typeof value === "string" &&
-    DOMAIN_EVENT_TYPES.some((eventType) => eventType === value)
-  );
+  return typeof value === 'string' && DOMAIN_EVENT_TYPES.some((eventType) => eventType === value);
 }
 
-function isAggregateType(
-  value: unknown,
-): value is DomainEvent["aggregateType"] {
+function isAggregateType(value: unknown): value is DomainEvent['aggregateType'] {
   return (
-    typeof value === "string" &&
-    AGGREGATE_TYPES.some((aggregateType) => aggregateType === value)
+    typeof value === 'string' && AGGREGATE_TYPES.some((aggregateType) => aggregateType === value)
   );
 }
 
 function isMetadataValue(value: unknown): value is DomainMetadataValue {
-  return (
-    typeof value === "string" ||
-    typeof value === "number" ||
-    typeof value === "boolean"
-  );
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
 }
 
 function parseMetadata(
   value: unknown,
-  operation: string,
+  operation: string
 ): Readonly<Record<string, DomainMetadataValue>> {
   if (!isRecord(value)) {
     throw invalidPersistenceResponse(operation);
@@ -72,21 +56,17 @@ function parseMetadata(
 }
 
 function isDateTime(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    value.length > 0 &&
-    Number.isFinite(Date.parse(value))
-  );
+  return typeof value === 'string' && value.length > 0 && Number.isFinite(Date.parse(value));
 }
 
 export function domainEventToAuditRow(
   event: DomainEvent,
-  operation = "audit.mapper.toRow",
+  operation = 'audit.mapper.toRow'
 ): AuditEventRow {
   if (
     !isEventType(event.eventType) ||
     !isAggregateType(event.aggregateType) ||
-    typeof event.aggregateId !== "string" ||
+    typeof event.aggregateId !== 'string' ||
     event.aggregateId.length === 0 ||
     !isDateTime(event.occurredAt)
   ) {
@@ -104,7 +84,7 @@ export function domainEventToAuditRow(
 
 export function auditRowToDomainEvent(
   row: unknown,
-  operation = "audit.mapper.fromRow",
+  operation = 'audit.mapper.fromRow'
 ): DomainEvent {
   if (!isRecord(row)) {
     throw invalidPersistenceResponse(operation);
@@ -113,7 +93,7 @@ export function auditRowToDomainEvent(
   if (
     !isEventType(row.event_type) ||
     !isAggregateType(row.aggregate_type) ||
-    typeof row.aggregate_id !== "string" ||
+    typeof row.aggregate_id !== 'string' ||
     row.aggregate_id.length === 0 ||
     !isDateTime(row.occurred_at)
   ) {
