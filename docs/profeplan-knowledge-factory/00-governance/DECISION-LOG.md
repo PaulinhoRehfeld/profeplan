@@ -234,14 +234,57 @@ Consequências:
 - existe dependência arquitetônica de compilação, embora não exista dependência de runtime;
 - a decisão deve ser revista caso a política de build/package publication do monorepo mude.
 
-## Pendências após a implementação do Lote 2
+## ADR-033 — SQL Supabase como persistência canônica da Knowledge Factory
 
-- merge do PR nº 5 autorizado pela aprovação humana explícita de 7 de agosto de 2026;
-- manter banco, migrations, RLS e adapters concretos bloqueados até o Lote 3;
-- manter fontes reais, currículo MG real, retrieval, IA e runtime do Sócrates 2 fora do Lote 2;
-- saneamento futuro do CI de agentes permanece fora do escopo;
-- EPIC-018 permanece bloqueado.
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+A Knowledge Factory usará migrations SQL em `supabase/migrations/` como fonte física de verdade. As tabelas `kf_*` não serão duplicadas em Prisma neste lote.
+
+## ADR-034 — Tabelas `public.kf_*` com deny-by-default
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+O schema físico inicial usará `public.kf_*`, grants explícitos, RLS e corpus global sem leitura direta de professor.
+
+## ADR-035 — Adapter Supabase em pacote separado
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Adapters concretos serão implementados posteriormente em `@profeplan/knowledge-factory-supabase`. O Lote 3 fica dividido em 3A (schema/RLS) e 3B (adapters).
+
+## ADR-036 — Isolamento do MVP por requester, sem inventar tenant novo
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+No MVP individual, OPPs serão isoladas por `requester_id = auth.uid()`. Não será criada tabela tenant nem `school_id` será promovido a tenant universal.
+
+## ADR-037 — Vetores e retrieval permanecem fora do schema do Lote 3
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Nenhuma tabela, coluna ou índice do Lote 3 escolherá embedding, dimensão, `vector`, IVFFlat, HNSW, full-text retrieval ou reranking. `curriculum_rag` permanece legado e não é schema canônico da Knowledge Factory.
+
+## ADR-038 — Merge de migration não autoriza aplicação em produção
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Aprovação/merge do código da migration e autorização para executá-la no Supabase de produção são gates humanos independentes. Produção exige teste não produtivo, matriz RLS, ensaio de rollback e pre-flight do banco alvo.
+
+## ADR-039 — Proveniência e auditoria append-only
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Eventos de permissão, OPP e auditoria serão append-only em uso normal. Correção histórica ocorrerá por novo evento, bloqueio, suspensão ou supersessão, não por edição silenciosa.
+
+## Pendências após aprovação do Lote 3
+
+- integrar o PR documental nº 6 após CI verde;
+- iniciar Lote 3A apenas em nova branch a partir da `main` integrada;
+- criar migration somente após nova inspeção do schema/migrations no ciclo 3A;
+- validar 3A em ambiente não produtivo antes do Lote 3B;
+- não aplicar migration em produção sem autorização humana específica;
+- manter retrieval, embeddings, IA, fontes reais, currículo real, Sócrates 2 executável e EPIC-018 bloqueados.
 
 ## Procedência
 
-Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas nos Marcos 004, pelo merge do primeiro PR contract-first, pela aprovação humana da definição do Lote 2, pela implementação controlada do Lote 2 e pela aprovação explícita da ADR-032 e do PR nº 5 em 7 de agosto de 2026.
+Snapshot controlado dos Marcos 001–003, complementado pelos Marcos 004, Lotes 1 e 2 e pelas aprovações humanas registradas até o Lote 3 em 7 de agosto de 2026.
