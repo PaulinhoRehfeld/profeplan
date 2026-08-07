@@ -167,15 +167,29 @@ Sócrates 2 será um perfil versionado, não um agente duplicado por Estado ou a
 
 O primeiro PR de código conterá somente contratos, enums, fixtures e testes, sem banco, migrations, IA, API ou mudança de comportamento.
 
-## Pendências transferidas ao Lote 0
+## ADR-028 — Aprovação do Lote 0 e autorização da fatia contratual
 
-- baseline real dos comandos e do CI;
-- falhas preexistentes;
-- sincronização documental;
-- módulos exatos de destino;
-- branch e escopo do primeiro PR;
-- autorização humana específica antes do código.
+**Status:** aprovado no Marco 004
+
+O baseline técnico, a sincronização documental controlada, o mapa de módulos, as falhas preexistentes, a branch `feat/knowledge-factory-contracts`, o escopo do primeiro PR e a tarefa restrita para o Codex foram aprovados integralmente.
+
+O primeiro PR será implementado em `packages/types`, com contratos versionados, enums, fixtures sintéticas, testes de invariantes e exports aditivos.
+
+Nova dependência, alteração fora do escopo autorizado, persistência, API, IA, agentes, embeddings, PNLD real, currículo RS ou mudança de comportamento exigem nova autorização humana.
+
+As Stories US-001.1, US-001.2, US-002.1, US-002.2, US-004.1, US-004.2, US-010.1, US-014.1, US-015.1 e US-016.1 recebem `Ready for Code — contract slice`.
+
+## Pendências após o Lote 0
+
+- merge humano do Pull Request documental nº 2;
+- execução e revisão do primeiro PR contract-first;
+- decisão explícita caso o primeiro PR necessite de nova dependência;
+- saneamento futuro do CI de agentes;
+- decisão física de persistência e RLS;
+- experimentos de retrieval;
+- fontes autorizadas e recorte curricular MG;
+- ativação futura do Sócrates 2 somente no lote correspondente.
 
 ## Procedência
 
-Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`.
+Snapshot controlado do documento aprovado no commit `cb36d71b1533fe7fa022c1aedca2c8790ab69692` de `PaulinhoRehfeld/profeplan_v5`, complementado pelas decisões aprovadas no Marco 004 — Lote 0.
