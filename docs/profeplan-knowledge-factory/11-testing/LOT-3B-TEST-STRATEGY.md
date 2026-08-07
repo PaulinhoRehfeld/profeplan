@@ -2,7 +2,7 @@
 
 ## Status
 
-**Proposta documental — aguardando aprovação humana.**
+**Aprovado integralmente em 7 de agosto de 2026.**
 
 ## Objetivo
 
@@ -37,7 +37,7 @@ Executados sem rede e sem banco.
 
 ### Test double
 
-Pode reutilizar o padrão já existente no monorepo de query builder Supabase controlado, porém o novo pacote deve possuir seus próprios helpers mínimos e não importar testes do frontend.
+Pode reutilizar como referência o padrão já existente no monorepo de query builder Supabase controlado, porém o novo pacote deve possuir seus próprios helpers mínimos e não importar testes do frontend.
 
 ### Regra
 
@@ -51,7 +51,7 @@ Reutilizar o stack criado por:
 
 Não criar um segundo ambiente paralelo de banco.
 
-### Fluxo proposto
+### Fluxo aprovado
 
 ```text
 checkout
@@ -97,7 +97,7 @@ A matriz SQL do Lote 3A continua provando negação direta ao professor.
 
 ### OPP/requester
 
-Quando o `ProductionOrderRepository` for implementado:
+Quando o `ProductionOrderRepository` for implementado futuramente:
 
 - usuário A lê OPP A;
 - usuário A não lê OPP B;
@@ -125,7 +125,9 @@ Até esse momento, o adapter de OPP fica bloqueado.
 9. erro desconhecido → `UNKNOWN`;
 10. logger recebe operação/duração/outcome, não payload integral;
 11. nenhum token/chave é logado;
-12. adapter não expõe update/delete.
+12. adapter não expõe update/delete;
+13. campos físicos adicionais de auditoria não são inventados no retorno `DomainEvent`;
+14. US-013.2 permanece fatia parcial conforme GAP-3B-05.
 
 ### Testes de integração obrigatórios
 
