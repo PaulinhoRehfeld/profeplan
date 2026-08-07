@@ -34,7 +34,9 @@ function isSufficient(result: SufficiencyResult | undefined): boolean {
 }
 
 function hasBlockingFinding(findings: readonly ValidationFinding[] | undefined): boolean {
-  return Boolean(findings?.some((finding) => finding.priority === 'must' && finding.status === 'open'));
+  return Boolean(
+    findings?.some((finding) => finding.priority === 'must' && finding.status === 'open')
+  );
 }
 
 export function evaluateOppTransition(input: OppTransitionInput): DomainDecision<OppStatus> {
@@ -60,7 +62,9 @@ export function evaluateOppTransition(input: OppTransitionInput): DomainDecision
 
   if (toStatus === 'ready') {
     if (!isSufficient(sufficiency)) {
-      reasons.push(reason('OPP_INSUFFICIENT', 'Insufficient context cannot become ready.', order.id));
+      reasons.push(
+        reason('OPP_INSUFFICIENT', 'Insufficient context cannot become ready.', order.id)
+      );
     }
 
     if (hasBlockingFinding(findings)) {
