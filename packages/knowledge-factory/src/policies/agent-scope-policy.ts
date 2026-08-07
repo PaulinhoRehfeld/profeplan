@@ -43,7 +43,11 @@ export function evaluateSocrates2Scope(input: AgentScopeInput): DomainDecision<A
 
   if (profile.scopeId !== scope.id) {
     reasons.push(
-      reason('AGENT_SCOPE_ID_MISMATCH', 'Agent profile does not reference the supplied scope.', profile.id)
+      reason(
+        'AGENT_SCOPE_ID_MISMATCH',
+        'Agent profile does not reference the supplied scope.',
+        profile.id
+      )
     );
   }
 
@@ -68,9 +72,12 @@ export function evaluateSocrates2Scope(input: AgentScopeInput): DomainDecision<A
 
   if (!scope.grades.includes(MVP_GRADE) || request.grade !== MVP_GRADE) {
     reasons.push(
-      reason('AGENT_GRADE_MISMATCH', 'Sócrates 2 only accepts 2º ano do Ensino Médio.', profile.id, {
-        grade: request.grade,
-      })
+      reason(
+        'AGENT_GRADE_MISMATCH',
+        'Sócrates 2 only accepts 2º ano do Ensino Médio.',
+        profile.id,
+        { grade: request.grade }
+      )
     );
   }
 
