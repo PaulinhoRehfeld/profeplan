@@ -1,10 +1,10 @@
-# CONTINUITY CHECKPOINT 012 — Definição documental do Lote 3B
+# CONTINUITY CHECKPOINT 012 — Definição documental do Lote 3B aprovada
 
 Data: 7 de agosto de 2026.
 
 ## Status
 
-**Definição documental do Lote 3B concluída — aguardando aprovação humana. Nenhum adapter foi implementado. Produção não foi acessada.**
+**Definição documental do Lote 3B aprovada integralmente por decisão humana. ADR-040 a ADR-047 aprovadas. GAP-3B-01 a GAP-3B-05 reconhecidos e mantidos como restrições arquitetônicas. Nenhum adapter foi implementado. Produção não foi acessada.**
 
 ## Base
 
@@ -12,17 +12,17 @@ Repositório:
 
 `PaulinhoRehfeld/profeplan`
 
-Base da definição:
+Base original da definição:
 
 `main` em `82b5dce90d2cb7437922dfc27062b1f16aa0c0a6`
 
 Lote 3A já integrado e validado em Supabase descartável.
 
-## Objetivo do Lote 3B
+## Objetivo aprovado do Lote 3B
 
-Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem contaminar `@profeplan/knowledge-factory` com infraestrutura.
+Criar adapters Supabase em pacote próprio para as portas do domínio, sem contaminar `@profeplan/knowledge-factory` com infraestrutura e sem ampliar escopo por conveniência técnica.
 
-## Documentos canônicos desta definição
+## Documentos canônicos
 
 - `12-delivery/LOT-3B-DEFINITION.md` — arquitetura geral, dependências, contexts, gaps, ordem e primeiro PR;
 - `09-data/LOT-3B-ADAPTER-MAP.md` — porta → tabela → operação → client;
@@ -30,26 +30,23 @@ Criar adapters Supabase em pacote próprio para as cinco portas do domínio, sem
 - `11-testing/LOT-3B-TEST-STRATEGY.md` — unitários, integração descartável e isolamento;
 - `12-delivery/LOT-3B-RISK-REGISTER.md` — riscos e gates;
 - `12-delivery/LOT-3B-PRODUCTION-BOUNDARY.md` — separação entre 3B e produção;
-- `00-governance/LOT-3B-ARCHITECTURE-DECISIONS.md` — ADRs 040–047, taxonomia de erros e observabilidade sanitizada.
+- `00-governance/LOT-3B-ARCHITECTURE-DECISIONS.md` — ADRs 040–047 aprovadas;
+- `00-governance/DECISION-LOG.md` — decisões consolidadas.
 
-A especificação do primeiro PR está consolidada em `LOT-3B-DEFINITION.md`; erros e observabilidade ficam centralizados nas ADRs para evitar fontes duplicadas.
-
-## Inspeção concluída
-
-Foi confirmado:
+## Inspeção confirmada
 
 1. as cinco portas abstratas do Lote 2 continuam intactas;
 2. `api/` é a superfície server-side efetivamente publicada pelo Vercel no produto atual;
 3. existe `api/_lib/supabaseAdmin.ts` com client privilegiado server-side;
 4. o novo pacote não deve importar `api/`;
 5. não foi encontrada Unit of Work canônica;
-6. há padrão de test double Supabase em testes de caracterização do frontend, utilizável apenas como referência; o novo pacote terá helpers próprios;
+6. há padrão de test double Supabase em testes de caracterização do frontend, utilizável apenas como referência;
 7. o Lote 3A oferece Supabase descartável real no GitHub Actions;
 8. `@profeplan/logger` possui JSON/correlation, mas também filesystem síncrono e acoplamento Node;
 9. `@supabase/supabase-js` já existe no monorepo;
 10. produção continua desnecessária para desenvolver e testar o 3B.
 
-## Arquitetura proposta
+## Arquitetura aprovada
 
 Novo pacote:
 
@@ -69,25 +66,25 @@ Para corpus global e auditoria, com client privilegiado criado server-side no co
 
 Para operações privadas sujeitas a RLS, sobretudo OPP.
 
-## Gaps encontrados
+## GAPs reconhecidos e ainda abertos
 
 ### GAP-3B-01 — CurriculumRepository
 
 `findActivePackageByState(state)` é ambíguo porque o banco define unicidade por `(state, stage)`.
 
-Adapter curricular fica bloqueado até alteração de contrato aprovada que inclua etapa.
+Adapter curricular permanece bloqueado até alteração de contrato aprovada que inclua etapa.
 
 ### GAP-3B-02 — componente + versão
 
 Componente + primeira versão/current version exige atomicidade multi-tabela.
 
-Escrita fica bloqueada até RPC/função transacional ou fronteira equivalente aprovada.
+Escrita permanece bloqueada até RPC/função transacional ou fronteira equivalente aprovada.
 
 ### GAP-3B-03 — OPP + evento
 
 Transições de OPP e seus eventos exigem atomicidade.
 
-Transições via adapter ficam bloqueadas até fronteira transacional e requester client aprovados.
+Transições via adapter permanecem bloqueadas até fronteira transacional e requester client aprovados.
 
 ### GAP-3B-04 — lifecycle de fonte
 
@@ -99,24 +96,24 @@ O adapter não inventará ingestão fora da porta.
 
 `AuditRepository.listByAggregate()` retorna `DomainEvent`, enquanto `kf_audit_events` também persiste ator, papel, correlation id, outcome e reason.
 
-O primeiro adapter poderá provar append/list, mapper, erros e telemetria, mas não conclui uma visão de auditoria enriquecida. Qualquer ampliação da porta exigirá decisão contract-first posterior.
+O primeiro adapter prova a infraestrutura de persistência/auditoria dentro do contrato atual, mas não conclui uma visão enriquecida de auditoria. US-013.2 continua parcial.
 
-## ADRs propostas
+## ADRs aprovadas
 
 - ADR-040 — pacote concreto isolado para adapters Supabase;
-- ADR-041 — SupabaseClient por injeção; pacote não lê segredos; SYSTEM e REQUESTER separados;
-- ADR-042 — `api/` permanece composition root server-side do runtime atual;
+- ADR-041 — SupabaseClient por injeção; SYSTEM e REQUESTER separados;
+- ADR-042 — `api/` permanece composition root server-side;
 - ADR-043 — atomicidade multi-tabela somente por transação real/RPC específica;
 - ADR-044 — erros de persistência provider-neutral;
 - ADR-045 — observabilidade injetada e sanitizada;
-- ADR-046 — testes do 3B reutilizam Supabase descartável do Lote 3A;
+- ADR-046 — testes reutilizam Supabase descartável do Lote 3A;
 - ADR-047 — implementação incremental por porta; AuditRepository primeiro.
 
-Ainda não estão aprovadas nem consolidadas no `DECISION-LOG.md`.
+As ADRs estão consolidadas no `DECISION-LOG.md`.
 
-## Primeiro PR proposto
+## Primeiro PR de código autorizado após merge documental
 
-Branch futura:
+Branch:
 
 `feat/knowledge-factory-supabase-audit-adapter`
 
@@ -124,27 +121,27 @@ Título:
 
 `feat(knowledge-factory): add Supabase audit repository adapter`
 
-Escopo:
+Escopo estrito:
 
-- criar o pacote de adapters;
+- criar `@profeplan/knowledge-factory-supabase`;
 - implementar somente `AuditRepository`;
 - mapper explícito;
 - erro provider-neutral sanitizado;
 - telemetria injetada;
-- system client injetado;
-- unit tests;
+- SYSTEM client injetado;
+- testes unitários;
 - integração no Supabase descartável;
-- ajuste mínimo no CI se necessário.
+- ajuste mínimo de CI se necessário.
 
-Não inclui API, produção, migration nova ou segunda porta.
+Não inclui API, produção, migration/RPC nova, mudança de contrato público ou segunda porta.
 
-## Ready for Code proposto
+## Ready for Code após integração deste PR documental
 
 Somente:
 
 `US-013.2 — persistence/audit adapter infrastructure slice`
 
-Esse status só entra em vigor após aprovação humana desta definição e representa **fatia parcial**, não `Done` integral da Story.
+Esse status representa fatia parcial e não `Done` integral da Story.
 
 ## Produção
 
@@ -164,14 +161,11 @@ Permanece deliberadamente adiado para etapa final.
 
 ## Próximo passo
 
-1. revisão humana desta definição;
-2. aprovação/rejeição das ADRs 040–047 e reconhecimento dos gaps 3B-01 a 3B-05;
-3. se aprovado, consolidar ADRs no Decision Log;
-4. integrar PR documental;
-5. somente depois autorizar o primeiro PR 3B.
+1. integrar este PR documental à `main` após CI verde;
+2. registrar o commit efetivo de merge;
+3. criar checkpoint pós-merge antes do próximo fork;
+4. iniciar em nova conversa somente a primeira fatia `AuditRepository`.
 
 ## Próximo fork
 
-**Ainda não realizar fork.**
-
-O momento recomendado será após aprovação e merge da definição documental do Lote 3B, antes de iniciar `feat/knowledge-factory-supabase-audit-adapter`.
+**Ainda não realizar fork até o merge documental e o checkpoint pós-merge.**
