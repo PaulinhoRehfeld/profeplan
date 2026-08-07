@@ -42,11 +42,11 @@ Elas continuam agnósticas de SQL, Supabase, HTTP e providers.
 
 O deploy Vercel constrói `apps/web` e expõe funções em `api/` por rewrite `/api/(.*) -> /api/$1`.
 
-Não foi encontrada, na inspeção do Lote 3B, uma composição Supabase server-side equivalente e consolidada em `apps/bff` que justifique promover o BFF como raiz canônica nesta fase.
+O CI atual registra `apps/bff` como stub/stack não implantada no produto real e o exclui de lint/typecheck/build junto com outros pacotes legados.
 
 Conclusão proposta:
 
-> `api/` permanece o composition root server-side do produto atual. O pacote de adapters não dependerá de `api/`; `api/` injetará dependências no pacote.
+> `api/` permanece o composition root server-side do produto atual. O pacote de adapters não dependerá de `api/`; `api/` injetará dependências no pacote em lote futuro de wiring.
 
 ### 1.3 Cliente privilegiado existente
 
@@ -63,22 +63,13 @@ A reutilização correta é por **injeção de cliente no composition root**.
 
 ### 1.4 Logging existente
 
-Existe `@profeplan/logger` com:
+Existe `@profeplan/logger` com JSON estruturado, `correlationId` via `AsyncLocalStorage` e níveis info/warn/error/audit.
 
-- JSON estruturado;
-- `correlationId` via `AsyncLocalStorage`;
-- níveis info/warn/error/audit.
-
-Entretanto, o pacote também:
-
-- usa `fs`;
-- escreve sincronamente em `logs/app.log`;
-- é Node-specific;
-- permite contexto com `userEmail`.
+Entretanto, o pacote também usa filesystem síncrono. O próprio runtime Vercel atual possui handlers que usam logger JSON inline porque o logger de pacote não é considerado adequado/disponível nesse contexto serverless.
 
 Conclusão proposta:
 
-> O pacote de adapters não dependerá diretamente de `@profeplan/logger`. Ele receberá um logger mínimo injetado. O composition root poderá adaptar `@profeplan/logger` quando adequado.
+> O pacote de adapters não dependerá diretamente de `@profeplan/logger` no primeiro PR. Ele receberá uma interface mínima de telemetria por injeção.
 
 ### 1.5 Transações / Unit of Work
 
@@ -88,21 +79,21 @@ Consequência:
 
 > Nenhum adapter poderá fingir atomicidade por sequência de `.from(...).insert/update(...)` independentes.
 
-Operações multi-tabela que precisam ser atômicas exigirão RPC/função SQL transacional ou uma nova abstração explicitamente aprovada.
+Operações multi-tabela que precisam ser atômicas exigirão RPC/função SQL transacional ou nova fronteira explicitamente aprovada.
 
 ### 1.6 Testes Supabase
 
 O Lote 3A já fornece `Knowledge Factory DB CI`, que sobe Supabase descartável sem credenciais hospedadas, aplica a migration, testa schema/RLS/rollback e destrói o ambiente.
 
+Também existe no frontend um padrão de query builder Supabase controlado em testes de caracterização. Esse padrão pode servir apenas como referência de test double; o novo pacote deverá possuir helpers próprios e não importar testes do frontend.
+
 Conclusão proposta:
 
-> O Lote 3B reutilizará esse ambiente descartável; não criará um segundo stack de banco.
+> O Lote 3B reutilizará o stack descartável do Lote 3A e criará testes unitários locais do próprio pacote; não criará um segundo stack de banco.
 
 ---
 
 ## 2. Pacote proposto
-
-Pacote aprovado arquiteturalmente desde ADR-035:
 
 `packages/knowledge-factory-supabase/`
 
@@ -114,7 +105,7 @@ Responsabilidades:
 
 - implementar portas aprovadas;
 - mapear snake_case SQL ↔ camelCase dos contratos;
-- receber clientes Supabase por injeção;
+- receber clients Supabase por injeção;
 - traduzir erros de provider;
 - emitir observabilidade sanitizada;
 - manter testes unitários e de integração;
@@ -141,16 +132,14 @@ Não será responsabilidade do pacote:
 
 `@supabase/supabase-js`
 
-Motivo: é a dependência concreta inevitável do adapter e já existe no monorepo na versão `^2.45.4`.
+Motivo: dependência concreta do adapter, já presente no monorepo em `^2.45.4`. No PR de implementação deverá ser declarada diretamente no pacote; não depender de hoisting implícito.
 
-No PR de implementação deverá ser declarada diretamente no pacote; não depender de hoisting implícito.
-
-### Compilação / contratos
+### Internas / contratos
 
 - `@profeplan/knowledge-factory` — interfaces das portas;
-- `@profeplan/types` — contratos retornados/recebidos.
+- `@profeplan/types` — contratos recebidos/retornados.
 
-Sempre que o uso for exclusivamente de tipos, utilizar `import type`.
+Usar `import type` sempre que o símbolo não existir em runtime. A forma de declaração no `package.json` deverá permitir resolução explícita pelo pnpm sem criar dependência circular.
 
 ### Não adicionar inicialmente
 
@@ -165,13 +154,11 @@ Qualquer nova dependência exige aprovação humana.
 
 ---
 
-## 4. Modelo de clientes e privilégio
+## 4. Modelo de clients e privilégio
 
-O Lote 3B terá dois contextos conceituais distintos.
+### 4.1 SYSTEM context
 
-### 4.1 System context
-
-Cliente Supabase privilegiado criado fora do pacote, server-side, com `service_role`.
+Cliente Supabase privilegiado criado fora do pacote, server-side, potencialmente com `service_role`.
 
 Uso permitido:
 
@@ -189,23 +176,19 @@ Uso proibido:
 - fixtures;
 - arquivos versionados.
 
-### 4.2 Requester context
+### 4.2 REQUESTER context
 
-Cliente Supabase autenticado no contexto do usuário, para operações privadas nas quais o RLS deve participar da defesa em profundidade.
+Cliente Supabase autenticado no contexto do usuário, para operações privadas nas quais RLS deve participar da defesa em profundidade.
 
 Uso previsto:
 
 - OPP do próprio requester.
 
-O adapter não cria credenciais. Ele recebe uma instância já configurada pelo composition root.
+O adapter não cria credenciais. Recebe instância já configurada pelo composition root.
 
 ### 4.3 Regra de fronteira
 
-O pacote não acessa `process.env`.
-
-O pacote não importa `api/_lib/supabaseAdmin.ts`.
-
-O composition root atual poderá passar `supabaseAdmin` para adapters de sistema.
+O pacote não acessa `process.env` e não importa `api/_lib/supabaseAdmin.ts`.
 
 A estratégia de criação do requester-scoped client deverá ser definida antes da implementação do `ProductionOrderRepository`.
 
@@ -215,81 +198,63 @@ A estratégia de criação do requester-scoped client deverá ser definida antes
 
 ### GAP-3B-01 — lookup curricular sem `stage`
 
-`CurriculumRepository.findActivePackageByState(state)` recebe apenas Estado.
+`CurriculumRepository.findActivePackageByState(state)` recebe apenas Estado, enquanto o schema 3A admite um pacote ativo por `(state, stage)`.
 
-O schema 3A permite um pacote ativo por `(state, stage)`, portanto MG pode ter simultaneamente um pacote ativo de Fundamental II e um de Ensino Médio.
-
-A consulta apenas por Estado é ambígua.
-
-**Decisão proposta:** antes do adapter curricular, revisar a porta para receber também `stage`.
-
-Nenhuma alteração de contrato será feita nesta definição documental.
+**Decisão proposta:** antes do adapter curricular, revisar a porta para receber também `stage`. Nenhuma alteração de contrato será feita nesta definição.
 
 ### GAP-3B-02 — componente + versão exige atomicidade
 
-`PedagogicalComponentRepository` expõe `saveComponent` e `saveVersion` separadamente.
+`PedagogicalComponentRepository` expõe `saveComponent` e `saveVersion` separadamente. Criar componente + primeira versão/current version como chamadas HTTP independentes não fornece atomicidade.
 
-O schema exige coerência entre `current_version_id` e versão pertencente ao mesmo componente. Criar componente e sua primeira versão como chamadas independentes não fornece atomicidade segura.
-
-**Decisão proposta:** adapter de escrita de componente fica bloqueado até existir comando/RPC transacional aprovado.
+**Decisão proposta:** escrita de componente fica bloqueada até comando/RPC transacional aprovado.
 
 ### GAP-3B-03 — OPP + evento exige atomicidade
 
-`ProductionOrderRepository` expõe `save(order)` e `appendEvent(event)` separadamente.
+`ProductionOrderRepository` expõe `save(order)` e `appendEvent(event)` separadamente. Uma mudança de estado da OPP e o evento correspondente não devem divergir.
 
-Uma mudança de estado da OPP e o evento que a explica não devem divergir.
-
-**Decisão proposta:** escrita de transição OPP fica bloqueada até existir fronteira transacional aprovada.
+**Decisão proposta:** transições OPP ficam bloqueadas até fronteira transacional e requester context aprovados.
 
 ### GAP-3B-04 — lifecycle de fonte incompleto para ingestão
 
-`KnowledgeSourceRepository` permite `save(source)`, mas não oferece operação de gravação de `SourceVersion`, `SourceSegment` ou `SourcePermissionEvent`.
+`KnowledgeSourceRepository` permite `save(source)`, mas não grava `SourceVersion`, `SourceSegment` nem `SourcePermissionEvent`.
 
-Isso não impede adapter de leitura nem `save(source)`, porém significa que o Lote 3B não deve inventar métodos de ingestão por fora da porta.
+**Decisão proposta:** implementar somente métodos existentes; ingestão/versionamento completo fica para lote próprio.
 
-**Decisão proposta:** somente implementar métodos existentes; ingestão/versionamento completo fica para lote próprio.
+### GAP-3B-05 — AuditRepository não round-tripa todo o registro físico
+
+`AuditRepository` trabalha com `DomainEvent`, cujo contrato contém `eventType`, `aggregateType`, `aggregateId`, `occurredAt` e `metadata`. A tabela `kf_audit_events` também persiste `actor_id`, `actor_role`, `correlation_id`, `outcome` e `reason`.
+
+Consequências:
+
+- o adapter pode receber contexto técnico injetado e preencher colunas físicas adicionais ao fazer `append`;
+- `listByAggregate()` não pode devolver esses campos extras sem mudança da porta/contrato;
+- o primeiro adapter prova persistência, mapeamento, append-only, erro e observabilidade, mas **não conclui uma visão de auditoria enriquecida**.
+
+**Decisão proposta:** não ampliar a porta no primeiro PR. Registrar a necessidade antes de declarar US-013.2 integralmente concluída.
 
 ---
 
-## 6. Ordem proposta de implementação dos adapters
+## 6. Ordem proposta de implementação
 
 ### 3B.1 — AuditRepository
 
-Primeira fatia recomendada.
+Primeira fatia recomendada porque usa uma tabela, não exige transação multi-tabela e prova package boundary, client injection, mapper, error translation, telemetria e CI.
 
-Razões:
+### 3B.2 — KnowledgeSourceRepository
 
-- uma porta;
-- uma tabela principal;
-- append/list apenas;
-- sem transação multi-tabela;
-- prova package boundary, Supabase client injection, mapper, error translation, logging e CI;
-- baixo risco pedagógico;
-- rollback por revert do código, sem migration nova.
+Leitura e `save(source)` existentes, sem inventar ingestão.
 
-### 3B.2 — KnowledgeSourceRepository — leitura + `save(source)` existente
+### 3B.3 — CurriculumRepository
 
-Somente métodos já definidos na porta.
-
-Não adicionar ingestão de versões/segmentos/eventos.
-
-### 3B.3 — CurriculumRepository — após correção do GAP-3B-01
-
-Inicialmente read-only.
+Somente após correção do GAP-3B-01; inicialmente read-only.
 
 ### 3B.4 — PedagogicalComponentRepository
 
-Leituras podem preceder escritas.
-
-Escrita fica bloqueada até resolver GAP-3B-02.
+Leituras podem preceder escritas. Escrita fica bloqueada até resolver GAP-3B-02.
 
 ### 3B.5 — ProductionOrderRepository
 
-Somente depois de:
-
-- requester-scoped client definido;
-- atomicidade OPP+evento definida;
-- testes RLS via adapter disponíveis.
+Somente depois de requester-scoped client e atomicidade OPP+evento aprovados.
 
 ---
 
@@ -325,26 +290,21 @@ packages/knowledge-factory-supabase/
     └── audit.integration.test.*
 ```
 
-Possível ajuste do workflow existente apenas para incluir a suíte TypeScript de integração no mesmo Supabase descartável.
+Pode haver ajuste mínimo do workflow descartável apenas para executar a suíte TypeScript de integração.
 
-Não incluir:
-
-- outras quatro portas;
-- API;
-- production client wiring;
-- migration nova;
-- banco de produção;
-- conteúdo real.
+Não incluir outras portas, API, wiring de produção ou migration nova.
 
 ---
 
 ## 8. Stories afetadas
 
-### Avança diretamente
+### Primeiro PR — fatia parcial
 
-- US-013.2 — procedência/auditoria navegável: fatia de auditoria persistida e consultável por aggregate.
+`US-013.2 — persistence/audit adapter infrastructure slice`
 
-### Preparadas para lotes seguintes do 3B
+O primeiro PR **não** recebe `Done` para US-013.2. Ele prova persistência e navegação básica por aggregate dentro do contrato atual. O GAP-3B-05 impede considerar completa uma visão enriquecida de auditoria.
+
+### Preparadas para lotes seguintes
 
 - US-002.1 — procedência da fonte;
 - US-002.2 — autorização/bloqueio;
@@ -356,13 +316,11 @@ Não incluir:
 - US-010.1 — OPP válida;
 - US-010.2 — timeline da OPP.
 
-### Ready for Code proposto para o primeiro PR
+### Ready for Code proposto após aprovação documental
 
 Somente:
 
-`US-013.2 — persistence adapter slice`
-
-Os demais permanecem bloqueados até os respectivos gaps serem resolvidos.
+`US-013.2 — persistence/audit adapter infrastructure slice`
 
 ---
 
@@ -392,17 +350,7 @@ Os demais permanecem bloqueados até os respectivos gaps serem resolvidos.
 
 Lote 3B não é pre-flight de produção.
 
-Antes de aplicar migration 3A ao Supabase real continuam obrigatórios:
-
-1. identificação formal do projeto alvo;
-2. snapshot/schema atual;
-3. drift analysis;
-4. backup/pre-flight;
-5. ausência de objetos `kf_*`;
-6. executor definido;
-7. comando exato;
-8. plano de falha;
-9. autorização humana específica.
+Antes de aplicar migration 3A ao Supabase real continuam obrigatórios: identificação formal do projeto alvo, snapshot/schema, drift analysis, backup/pre-flight, ausência de objetos `kf_*`, executor/comando definidos, plano de falha e autorização humana específica.
 
 Adapters podem ser definidos, implementados e testados em ambiente descartável sem tocar produção.
 
@@ -414,15 +362,16 @@ A definição é aprovada quando houver concordância explícita sobre:
 
 - pacote `@profeplan/knowledge-factory-supabase`;
 - injeção de client;
-- separação system/requester;
-- uso de `api/` apenas como composition root;
-- não dependência direta em `supabaseAdmin.ts`;
+- separação SYSTEM/REQUESTER;
+- `api/` apenas como composition root;
+- nenhuma dependência direta em `supabaseAdmin.ts`;
 - ausência de pseudo-transações;
-- erro sanitizado;
-- logging injetado;
+- erros provider-neutral;
+- telemetria injetada e sanitizada;
 - reutilização do Supabase descartável;
 - AuditRepository como primeiro adapter;
-- gaps 3B-01 a 3B-04;
+- gaps GAP-3B-01 a GAP-3B-05;
+- US-013.2 tratada apenas como fatia parcial no primeiro PR;
 - manutenção do gate separado de produção.
 
 Nenhum item deste documento autoriza código antes da aprovação humana.
