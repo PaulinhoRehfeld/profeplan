@@ -1,8 +1,4 @@
-import type {
-  EntityId,
-  OppEvent,
-  PedagogicalProductionOrder,
-} from '@profeplan/types';
+import type { EntityId, OppEvent, PedagogicalProductionOrder } from '@profeplan/types';
 
 export interface ProductionOrderRepository {
   findById(id: EntityId): Promise<PedagogicalProductionOrder | null>;
