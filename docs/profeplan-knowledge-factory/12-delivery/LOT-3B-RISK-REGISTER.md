@@ -1,6 +1,6 @@
 # Lote 3B — Registro de riscos e bloqueios
 
-Status: proposta documental.
+Status: **aprovado integralmente em 7 de agosto de 2026. Os riscos permanecem ativos até suas condições de mitigação/gate serem satisfeitas.**
 
 ## R-3B-01 — Acoplamento reverso com `api/`
 
@@ -158,3 +158,7 @@ Mitigação:
 - necessidade de auditoria enriquecida será resolvida por alteração contratual explícita posterior.
 
 Gate: US-013.2 não recebe `Done` integral no primeiro PR do 3B.
+
+## Regra de interpretação
+
+A aprovação deste registro significa que os riscos, mitigações e gates são aceitos como controles obrigatórios. Não significa que os riscos foram encerrados.
