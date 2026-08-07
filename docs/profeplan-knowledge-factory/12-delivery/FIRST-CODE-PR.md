@@ -1,25 +1,23 @@
-# Primeiro Pull Request de Código — escopo preparado no Lote 0
+# Primeiro Pull Request de Código — escopo autorizado
 
 ## Status
 
-Preparado, mas ainda não autorizado para execução.
+**Autorizado no Marco 004 — Lote 0.**
+
+A execução deverá ocorrer em ciclo próprio, sem merge automático e dentro dos limites deste documento.
 
 ## Repositório e branch
 
 - repositório: `PaulinhoRehfeld/profeplan`;
 - base: `main`;
-- branch proposta: `feat/knowledge-factory-contracts`;
-- título sugerido: `feat(knowledge-factory): add versioned domain contracts and fixtures`.
-
-A branch não deverá ser criada antes de autorização humana explícita.
+- branch autorizada: `feat/knowledge-factory-contracts`;
+- título autorizado: `feat(knowledge-factory): add versioned domain contracts and fixtures`.
 
 ## Objetivo único
 
 Adicionar contratos puros, versionados e testáveis para o núcleo da Knowledge Factory, sem persistência, IA, API, migrations ou alteração de comportamento da aplicação.
 
 ## Local autorizado
-
-Preferência confirmada:
 
 ```text
 packages/types/src/knowledge-factory/
@@ -147,7 +145,7 @@ Regras:
 9. scripts de validação do pacote são reproduzíveis;
 10. CI geral continua verde no escopo ativo;
 11. falhas preexistentes permanecem separadas;
-12. documentação aponta para ADR-019 e ADR-027;
+12. documentação aponta para ADR-019, ADR-027 e ADR-028;
 13. o PR declara que atende apenas fatias contratuais das Stories;
 14. rollback é um simples revert, sem migração de dados.
 
@@ -161,7 +159,7 @@ Regras:
 
 ## Stories — fatia contratual
 
-Podem receber `Ready for Code — contract slice`, após autorização:
+Recebem `Ready for Code — contract slice`:
 
 - US-001.1;
 - US-001.2;
