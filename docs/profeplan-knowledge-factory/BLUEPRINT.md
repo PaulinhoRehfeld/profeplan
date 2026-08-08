@@ -80,7 +80,7 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.1 AuditRepository
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
-🔵 3B.4 PedagogicalComponentRepository — 3B.4A integrado; 3B.4B bloqueado  ← ESTADO ATUAL
+🔵 3B.4 PedagogicalComponentRepository — 3B.4A integrado; definição do 3B.4B em revisão  ← ESTADO ATUAL
 ⬜ 3B.5 ProductionOrderRepository
 
 FASE C — MATÉRIA-PRIMA
@@ -208,7 +208,7 @@ Este registro atualiza o estado de navegação sem reescrever o histórico prese
 
 ### 6.4 — 3B.4 PedagogicalComponentRepository
 
-Status: **3B.4A integrado; 3B.4B bloqueado.**
+Status: **3B.4A integrado; definição contratual e transacional do 3B.4B proposta para revisão.**
 
 Objetivo:
 
@@ -219,7 +219,7 @@ Estratégia:
 
 ```text
 3B.4A — leituras — integrado pelo PR nº 17
-3B.4B — escritas transacionais — bloqueado
+3B.4B — escritas transacionais — definição documental proposta; implementação bloqueada
 ```
 
 Estado integrado do 3B.4A:
@@ -234,12 +234,13 @@ Restrições ativas:
 
 - GAP-3B-02 — componente + versão exigem atomicidade real;
 - GAP-3B-06 — a porta não representa integralmente a criação de `EvidenceOrigin` nem a semântica de sincronização dos vínculos;
-- 3B.4B permanece bloqueado até decisões contratuais e transacionais próprias;
+- 3B.4B permanece bloqueado para implementação enquanto sua definição documental não for integrada e seus sublotes não receberem gates humanos próprios;
 - nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider.
 
 Definição específica:
 
-`12-delivery/LOT-3B4-PEDAGOGICAL-COMPONENT-ADAPTER-DEFINITION.md`.
+- `12-delivery/LOT-3B4-PEDAGOGICAL-COMPONENT-ADAPTER-DEFINITION.md` — definição histórica do 3B.4 e do 3B.4A;
+- `12-delivery/LOT-3B4B-COMPONENT-WRITE-BOUNDARY-DEFINITION.md` — proposta contratual e transacional específica do 3B.4B.
 
 ### 6.5 — 3B.5 ProductionOrderRepository
 
@@ -670,11 +671,11 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 — 3B.4A integrado; 3B.4B bloqueado por GAP-3B-02 e GAP-3B-06.**
+> **FASE B — Lote 3B.4 — 3B.4A integrado; definição do 3B.4B proposta, com implementação ainda bloqueada por GAP-3B-02 e GAP-3B-06.**
 
 Próximo objetivo imediato:
 
-> definir documentalmente a fronteira contratual e transacional do Lote 3B.4B, sem implementar código, migration ou RPC e sem iniciar o Lote 3B.5.
+> revisar e decidir sobre a integração da definição documental do Lote 3B.4B; nenhuma implementação, migration, RPC ou início do Lote 3B.5 é autorizado por esta proposta.
 
 Próxima grande mudança de natureza do projeto:
 
