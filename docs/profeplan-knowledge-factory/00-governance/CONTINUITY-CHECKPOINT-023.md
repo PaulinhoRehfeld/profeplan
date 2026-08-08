@@ -15,8 +15,10 @@ implementado. `GAP-3B-02` e `GAP-3B-06` permanecem ativos.**
 - branch técnica: `agent/knowledge-factory-lot-3b4b2-transactional-rpcs`;
 - base e merge-base esperados: `d481d998603e9a335edb308cfdb82b7868289cea`;
 - definição governante: `12-delivery/LOT-3B4B-COMPONENT-WRITE-BOUNDARY-DEFINITION.md`;
-- Pull Request: será registrado após a abertura em draft;
+- Pull Request nº 21: https://github.com/PaulinhoRehfeld/profeplan/pull/21;
 - estado inicial exigido: draft.
+- head técnico após os ajustes observados pelo DB CI: `15cf658aa4f6bb0afc7eb0afaed2edba15183ab5`;
+- árvore técnica local/remota: `9665e1dc02e9ba7545b350246801be8657185046`.
 
 ## Escopo implementado
 
@@ -45,6 +47,8 @@ implementado. `GAP-3B-02` e `GAP-3B-06` permanecem ativos.**
 - locks de linha do agregado em ordem determinística;
 - compare-and-set para append, transição e promoção;
 - replay fiel para mesmo comando/fingerprint e conflito para divergência;
+- conflitos usam `PT409` na fronteira PostgREST, evitando os retries automáticos reservados pelo
+  provider ao SQLSTATE `40001` de serialização;
 - recibo retornado sem detalhes do provider.
 
 ### Rollback e DB CI
