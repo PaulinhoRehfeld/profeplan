@@ -1,5 +1,5 @@
 -- =============================================================================
--- ProfePlan Knowledge Factory — Lote 3A validation suite
+-- ProfePlan Knowledge Factory — accumulated schema validation suite
 -- NON-PRODUCTION ONLY.
 -- Assumes supabase/migrations/20260807_knowledge_factory_schema.sql is applied.
 -- All data is synthetic; the complete suite runs inside a transaction and rolls back.
@@ -56,12 +56,12 @@ $$;
 -- -----------------------------------------------------------------------------
 SELECT pg_temp.assert_true(
   (
-    SELECT count(*) = 15
+    SELECT count(*) = 16
     FROM information_schema.tables
     WHERE table_schema = 'public'
       AND table_name LIKE 'kf\_%' ESCAPE '\'
   ),
-  'exactly 15 public.kf_* tables must exist'
+  'exactly 16 public.kf_* tables must exist after Lote 3B.4B.2'
 );
 
 SELECT pg_temp.assert_true(

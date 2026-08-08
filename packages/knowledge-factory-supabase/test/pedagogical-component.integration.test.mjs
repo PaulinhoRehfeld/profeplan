@@ -108,10 +108,10 @@ test('PedagogicalComponent read adapter reconstructs synthetic rows without writ
   assert.equal(linksAfter, linksBefore);
 });
 
-test('disposable schema enforces component relationship foreign keys for administrative fixtures', async () => {
+test('service role cannot bypass the transactional component write boundary', async () => {
   const { error } = await client.from('kf_component_curriculum_links').insert({
     component_version_id: 'cf000000-0000-4000-8000-000000000002',
     curriculum_node_id: CURRICULUM_NODE_IDS[0],
   });
-  assert.equal(error?.code, '23503');
+  assert.equal(error?.code, '42501');
 });
