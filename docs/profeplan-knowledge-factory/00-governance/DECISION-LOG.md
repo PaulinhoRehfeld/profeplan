@@ -357,6 +357,16 @@ Continuam bloqueados sem nova aprovação:
 - Nexus;
 - EPIC-018.
 
+## ADR-048 — Lookup curricular por Estado e etapa
+
+**Status:** proposto para o Lote 3B.3 em 7 de agosto de 2026
+
+A porta `CurriculumRepository` substituirá `findActivePackageByState(state)` por `findActivePackageByStateAndStage(state, stage)`.
+
+A decisão elimina a ambiguidade do GAP-3B-01 e alinha o contrato à unicidade física de pacote ativo por `(state, stage)`. O método antigo não será preservado como alias ou overload. O adapter inicial será exclusivamente read-only, usará contexto SYSTEM injetado e não incluirá currículo real, migration, RPC, API ou wiring de produção.
+
+O GAP-3B-01 somente será encerrado após integração da decisão, alteração da porta, testes de desambiguação e integração humana do futuro PR de código.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
