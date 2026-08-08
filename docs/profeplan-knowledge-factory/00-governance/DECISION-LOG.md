@@ -359,13 +359,27 @@ Continuam bloqueados sem nova aprovação:
 
 ## ADR-048 — Lookup curricular por Estado e etapa
 
-**Status:** proposto para o Lote 3B.3 em 7 de agosto de 2026
+**Status:** aprovado e implementado no Lote 3B.3
 
 A porta `CurriculumRepository` substituirá `findActivePackageByState(state)` por `findActivePackageByStateAndStage(state, stage)`.
 
 A decisão elimina a ambiguidade do GAP-3B-01 e alinha o contrato à unicidade física de pacote ativo por `(state, stage)`. O método antigo não será preservado como alias ou overload. O adapter inicial será exclusivamente read-only, usará contexto SYSTEM injetado e não incluirá currículo real, migration, RPC, API ou wiring de produção.
 
-O GAP-3B-01 somente será encerrado após integração da decisão, alteração da porta, testes de desambiguação e integração humana do futuro PR de código.
+As condições foram satisfeitas pela integração humana do PR nº 15 no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`. O GAP-3B-01 está encerrado.
+
+## ADR-049 — Leitura parcial do PedagogicalComponentRepository antes da escrita transacional
+
+**Status:** proposto para o Lote 3B.4 em 8 de agosto de 2026
+
+O Lote 3B.4 será separado em 3B.4A read-only e 3B.4B transacional.
+
+3B.4A poderá implementar somente `findById`, `findVersion` e `listEvidenceOrigins`, verificados por `Pick` da porta atual. Não serão criados stubs de escrita e a classe não será apresentada como implementação integral da interface enquanto `saveComponent` e `saveVersion` permanecerem bloqueados.
+
+`findVersion()` poderá hidratar evidências e vínculos curriculares por leituras sequenciais, com ordenação determinística, falha integral e sem promessa de snapshot forte. Não há requisito atual que justifique RPC/read model para essa fatia.
+
+3B.4B permanece bloqueado por GAP-3B-02 e pelo novo GAP-3B-06: a porta não oferece criação de `EvidenceOrigin` nem define integralmente a semântica de persistência e sincronização dos vínculos de `saveVersion()`.
+
+Qualquer mudança contratual, comando transacional, função PostgreSQL/RPC, migration ou ampliação de privilégios exigirá decisão e gate humano próprios.
 
 ## Procedência
 

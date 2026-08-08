@@ -1,6 +1,8 @@
 # ProfePlan Knowledge Factory — Blueprint de Execução
 
-Data de consolidação: 7 de agosto de 2026.
+Data de consolidação inicial: 7 de agosto de 2026.
+
+Estado de navegação atualizado em 8 de agosto de 2026.
 
 ## 1. Finalidade
 
@@ -77,8 +79,8 @@ FASE A — FUNDAÇÃO
 FASE B — CONEXÃO COM O BANCO
 ✅ 3B.1 AuditRepository
 ✅ 3B.2 KnowledgeSourceRepository
-🔵 3B.3 CurriculumRepository        ← ESTADO ATUAL
-⬜ 3B.4 PedagogicalComponentRepository
+✅ 3B.3 CurriculumRepository
+🔵 3B.4 PedagogicalComponentRepository  ← ESTADO ATUAL
 ⬜ 3B.5 ProductionOrderRepository
 
 FASE C — MATÉRIA-PRIMA
@@ -189,27 +191,24 @@ Interpretação operacional:
 
 ### 6.3 — 3B.3 CurriculumRepository
 
-Status: em definição documental.
+Status: concluído e integrado.
 
-Pré-condição:
+Resultado:
 
-- resolver formalmente GAP-3B-01.
+- lookup corrigido para Estado e etapa;
+- adapter read-only com client SYSTEM injetado;
+- pacotes hidratados com fontes ordenadas;
+- nós filtrados por pacote e ordenados deterministicamente;
+- testes unitários e integração descartável aprovados;
+- nenhuma escrita, currículo real ou produção.
 
-Problema atual:
+O GAP-3B-01 foi formalmente encerrado após a integração humana do PR nº 15 no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`.
 
-- a porta consulta pacote ativo apenas por Estado;
-- o schema admite um pacote ativo por `(state, stage)`.
-
-Direção aprovada:
-
-- revisar a porta antes do adapter;
-- implementar inicialmente leitura controlada;
-- não misturar currículos estaduais;
-- manter currículo como pacote versionado e plugável.
+Este registro atualiza o estado de navegação sem reescrever o histórico preservado nos checkpoints 016 e 017.
 
 ### 6.4 — 3B.4 PedagogicalComponentRepository
 
-Status: pendente.
+Status: definição documental em revisão.
 
 Objetivo:
 
@@ -226,8 +225,20 @@ Estratégia:
 Restrição ativa:
 
 - GAP-3B-02 — componente + versão exigem atomicidade real.
+- GAP-3B-06 — a porta não representa integralmente a criação de `EvidenceOrigin` nem a semântica de sincronização dos vínculos.
 
 Nenhuma escrita multi-tabela deverá simular atomicidade por chamadas independentes ao provider.
+
+Direção proposta:
+
+- 3B.4A implementa somente `findById`, `findVersion` e `listEvidenceOrigins`;
+- a fatia read-only é verificada como `Pick` da porta, sem stubs de escrita e sem alegar implementação integral;
+- leituras compostas podem ser sequenciais, sem promessa de snapshot forte e sem retorno parcial;
+- 3B.4B permanece bloqueado até decisões contratuais e transacionais próprias.
+
+Definição específica:
+
+`12-delivery/LOT-3B4-PEDAGOGICAL-COMPONENT-ADAPTER-DEFINITION.md`.
 
 ### 6.5 — 3B.5 ProductionOrderRepository
 
@@ -658,11 +669,11 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.3 — CurriculumRepository em definição documental.**
+> **FASE B — Lote 3B.4 — PedagogicalComponentRepository em definição documental.**
 
 Próximo objetivo imediato:
 
-> aprovar a correção do lookup curricular para Estado e etapa e, somente depois, implementar o adapter read-only sem conteúdo curricular real.
+> revisar e integrar, ou não, a definição documental do Lote 3B.4; somente depois, mediante nova autorização, abrir a implementação read-only do 3B.4A.
 
 Próxima grande mudança de natureza do projeto:
 

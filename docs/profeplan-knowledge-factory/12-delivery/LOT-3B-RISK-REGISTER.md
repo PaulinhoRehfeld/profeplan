@@ -34,6 +34,8 @@ Mitigação: substituir o lookup pela assinatura `findActivePackageByStateAndSta
 
 Gate: o adapter curricular permanece bloqueado até integração da definição 3B.3; o risco somente será encerrado após alteração da porta e testes de desambiguação verdes.
 
+Status atualizado: **encerrado em 8 de agosto de 2026**, após integração humana do PR nº 15, remoção do método ambíguo e testes verdes por Estado e etapa.
+
 ## R-3B-05 — Pseudo-transação de componente
 
 Risco: componente criado sem primeira versão, links incompletos ou current_version inconsistente.
@@ -41,6 +43,8 @@ Risco: componente criado sem primeira versão, links incompletos ou current_vers
 Mitigação: função SQL/RPC transacional futura ou fronteira atômica aprovada.
 
 Gate: escrita do componente bloqueada.
+
+O gate inclui `saveComponent()` e `saveVersion()`: a primeira operação não distingue criação de atualização, e a segunda atravessa versão, evidências e vínculos curriculares.
 
 ## R-3B-06 — Pseudo-transação OPP + evento
 
@@ -158,6 +162,22 @@ Mitigação:
 - necessidade de auditoria enriquecida será resolvida por alteração contratual explícita posterior.
 
 Gate: US-013.2 não recebe `Done` integral no primeiro PR do 3B.
+
+## R-3B-20 — Fatia read-only apresentada como porta completa
+
+Risco: uma classe com três leituras ser anunciada como implementação integral de `PedagogicalComponentRepository`, embora a interface também exija duas escritas.
+
+Mitigação: 3B.4A será verificado contra `Pick<PedagogicalComponentRepository, ...>` dos três métodos, sem stubs de escrita e sem declaração de conclusão do repositório completo.
+
+Gate: qualquer alegação de atribuibilidade à porta inteira ou método de escrita no PR 3B.4A bloqueia merge.
+
+## R-3B-21 — Evidência persistida por side-channel
+
+Risco: como `saveVersion()` possui somente IDs de evidência e a porta não cria `EvidenceOrigin`, uma implementação pode gravar evidências por helper público, acesso externo direto ou método inventado, quebrando contract-first e atomicidade.
+
+Mitigação: registrar GAP-3B-06 e bloquear 3B.4B até comando, payload, contrato, idempotência e RPC transacional específicos serem aprovados.
+
+Gate: nenhuma escrita de componente, versão, evidência ou vínculo curricular antes da resolução humana de GAP-3B-02 e GAP-3B-06.
 
 ## Regra de interpretação
 
