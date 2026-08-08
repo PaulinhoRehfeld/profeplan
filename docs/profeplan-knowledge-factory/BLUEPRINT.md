@@ -208,7 +208,7 @@ Este registro atualiza o estado de navegação sem reescrever o histórico prese
 
 ### 6.4 — 3B.4 PedagogicalComponentRepository
 
-Status: **3B.4A e definição contratual/transacional do 3B.4B integrados; 3B.4B.1 em revisão.**
+Status: **3B.4A, definição do 3B.4B e 3B.4B.1 integrados; 3B.4B.2 em revisão.**
 
 Objetivo:
 
@@ -220,8 +220,8 @@ Estratégia:
 ```text
 3B.4A — leituras — integrado pelo PR nº 17
 3B.4B — escritas transacionais — definição integrada pelo PR nº 19
-  3B.4B.1 — contratos e porta — em revisão
-  3B.4B.2 — migration e RPCs — não iniciado
+  3B.4B.1 — contratos e porta — integrado pelo PR nº 20
+  3B.4B.2 — migration e RPCs — em revisão
   3B.4B.3 — adapter Supabase de comando — não iniciado
 ```
 
@@ -237,8 +237,8 @@ Estado integrado do 3B.4A:
 Restrições ativas:
 
 - GAP-3B-02 — componente + versão exigem atomicidade real;
-- GAP-3B-06 — contratos completos precisam ser integrados e depois comprovados pelo adapter transacional;
-- 3B.4B.2 e 3B.4B.3 permanecem bloqueados até os gates humanos próprios;
+- GAP-3B-06 — contratos completos precisam ser comprovados pelo adapter transacional;
+- 3B.4B.3 permanece bloqueado até o gate humano próprio;
 - nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider.
 
 Definição específica:
@@ -676,12 +676,12 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 — 3B.4A e definição do 3B.4B integrados; 3B.4B.1 em revisão, com GAP-3B-02 e GAP-3B-06 ainda ativos.**
+> **FASE B — Lote 3B.4 — 3B.4A, definição do 3B.4B e 3B.4B.1 integrados; 3B.4B.2 em revisão, com GAP-3B-02 e GAP-3B-06 ainda ativos.**
 
 Próximo objetivo imediato:
 
-> revisar e decidir sobre a integração do 3B.4B.1 — contratos e porta; nenhuma migration, RPC,
-> escrita Supabase, produção ou início do Lote 3B.5 está autorizado.
+> revisar e decidir sobre a integração do 3B.4B.2 — migration e RPCs transacionais; nenhum adapter
+> de comando, wiring, acesso à produção ou início do Lote 3B.5 está autorizado.
 
 Próxima grande mudança de natureza do projeto:
 
