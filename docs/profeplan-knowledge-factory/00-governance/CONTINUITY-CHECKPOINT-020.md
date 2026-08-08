@@ -152,7 +152,13 @@ O `CONTINUITY-CHECKPOINT-019.md` permanece inalterado como evidência histórica
 
 Pull Request documental:
 
-`A registrar após a abertura do PR draft.`
+- número: `18`;
+- URL: https://github.com/PaulinhoRehfeld/profeplan/pull/18;
+- estado inicial: aberto em draft;
+- base: `main`;
+- head: `agent/knowledge-factory-checkpoint-020`.
+
+O SHA final que contém esta própria atualização deve ser revalidado após o commit e registrado na descrição do PR e no handoff, sem inventar uma auto-referência impossível.
 
 ## Fronteira preservada
 
