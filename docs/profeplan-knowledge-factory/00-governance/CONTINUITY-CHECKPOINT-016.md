@@ -16,6 +16,14 @@ Branch documental:
 
 `agent/knowledge-factory-lot-3b3-definition`
 
+Pull Request:
+
+`#14 — docs(knowledge-factory): define Lote 3B.3 curriculum adapter`
+
+Estado na abertura:
+
+`draft`
+
 Base:
 
 `d7eab04afc7358b344beb8f86c2584ef1437558b`
