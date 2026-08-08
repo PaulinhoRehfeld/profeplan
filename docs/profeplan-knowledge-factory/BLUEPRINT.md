@@ -80,7 +80,7 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.1 AuditRepository
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
-🔵 3B.4 PedagogicalComponentRepository  ← ESTADO ATUAL
+🔵 3B.4 PedagogicalComponentRepository — 3B.4A integrado; 3B.4B bloqueado  ← ESTADO ATUAL
 ⬜ 3B.5 ProductionOrderRepository
 
 FASE C — MATÉRIA-PRIMA
@@ -208,7 +208,7 @@ Este registro atualiza o estado de navegação sem reescrever o histórico prese
 
 ### 6.4 — 3B.4 PedagogicalComponentRepository
 
-Status: definição documental em revisão.
+Status: **3B.4A integrado; 3B.4B bloqueado.**
 
 Objetivo:
 
@@ -218,23 +218,24 @@ Objetivo:
 Estratégia:
 
 ```text
-3B.4A — leituras
-3B.4B — escritas transacionais
+3B.4A — leituras — integrado pelo PR nº 17
+3B.4B — escritas transacionais — bloqueado
 ```
 
-Restrição ativa:
+Estado integrado do 3B.4A:
 
-- GAP-3B-02 — componente + versão exigem atomicidade real.
-- GAP-3B-06 — a porta não representa integralmente a criação de `EvidenceOrigin` nem a semântica de sincronização dos vínculos.
+- `findById`, `findVersion` e `listEvidenceOrigins` implementados como subconjunto read-only;
+- fatia verificada como `Pick` da porta, sem stubs de escrita e sem alegar implementação integral;
+- leituras compostas sequenciais, sem promessa de snapshot forte e sem retorno parcial;
+- squash merge do PR nº 17 no commit `1c03d21590bf004489d0f4d07e42aaf29db44ac5`;
+- testes unitários, CI geral, integração no Supabase descartável e Vercel aprovados.
 
-Nenhuma escrita multi-tabela deverá simular atomicidade por chamadas independentes ao provider.
+Restrições ativas:
 
-Direção proposta:
-
-- 3B.4A implementa somente `findById`, `findVersion` e `listEvidenceOrigins`;
-- a fatia read-only é verificada como `Pick` da porta, sem stubs de escrita e sem alegar implementação integral;
-- leituras compostas podem ser sequenciais, sem promessa de snapshot forte e sem retorno parcial;
-- 3B.4B permanece bloqueado até decisões contratuais e transacionais próprias.
+- GAP-3B-02 — componente + versão exigem atomicidade real;
+- GAP-3B-06 — a porta não representa integralmente a criação de `EvidenceOrigin` nem a semântica de sincronização dos vínculos;
+- 3B.4B permanece bloqueado até decisões contratuais e transacionais próprias;
+- nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider.
 
 Definição específica:
 
@@ -669,11 +670,11 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 — PedagogicalComponentRepository em definição documental.**
+> **FASE B — Lote 3B.4 — 3B.4A integrado; 3B.4B bloqueado por GAP-3B-02 e GAP-3B-06.**
 
 Próximo objetivo imediato:
 
-> revisar e integrar, ou não, a definição documental do Lote 3B.4; somente depois, mediante nova autorização, abrir a implementação read-only do 3B.4A.
+> definir documentalmente a fronteira contratual e transacional do Lote 3B.4B, sem implementar código, migration ou RPC e sem iniciar o Lote 3B.5.
 
 Próxima grande mudança de natureza do projeto:
 
