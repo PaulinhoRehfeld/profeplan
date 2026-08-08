@@ -76,8 +76,8 @@ FASE A — FUNDAÇÃO
 
 FASE B — CONEXÃO COM O BANCO
 ✅ 3B.1 AuditRepository
-🔵 3B.2 KnowledgeSourceRepository   ← ESTADO ATUAL
-⬜ 3B.3 CurriculumRepository
+✅ 3B.2 KnowledgeSourceRepository
+🔵 3B.3 CurriculumRepository        ← ESTADO ATUAL
 ⬜ 3B.4 PedagogicalComponentRepository
 ⬜ 3B.5 ProductionOrderRepository
 
@@ -169,7 +169,7 @@ O GAP-3B-05 permanece ativo para auditoria enriquecida.
 
 ### 6.2 — 3B.2 KnowledgeSourceRepository
 
-Status: etapa corrente.
+Status: concluído e integrado.
 
 Objetivo:
 
@@ -189,7 +189,7 @@ Interpretação operacional:
 
 ### 6.3 — 3B.3 CurriculumRepository
 
-Status: pendente.
+Status: em definição documental.
 
 Pré-condição:
 
@@ -658,11 +658,11 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.2 — KnowledgeSourceRepository.**
+> **FASE B — Lote 3B.3 — CurriculumRepository em definição documental.**
 
 Próximo objetivo imediato:
 
-> concluir de forma controlada o adapter da porta de fontes, preservando GAP-3B-04 e sem iniciar ingestão real.
+> aprovar a correção do lookup curricular para Estado e etapa e, somente depois, implementar o adapter read-only sem conteúdo curricular real.
 
 Próxima grande mudança de natureza do projeto:
 
