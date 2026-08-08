@@ -503,7 +503,7 @@ test('component failure telemetry contains only the provider-neutral code', asyn
   assert.doesNotMatch(JSON.stringify(entries), /42501|permission denied|secret-jwt/i);
 });
 
-test('adapter surface is exactly the approved read-only Pick', () => {
+test('adapter surface is exactly the approved read-only port', () => {
   assert.deepEqual(
     Object.getOwnPropertyNames(SupabasePedagogicalComponentReadRepository.prototype).sort(),
     ['constructor', 'findById', 'findVersion', 'listEvidenceOrigins']
@@ -520,7 +520,8 @@ test('component implementation has no writes, RPC, generalized any, client creat
     )
   ).join('\n');
 
-  assert.match(source, /type PedagogicalComponentReadRepository = Pick</);
+  assert.match(source, /implements PedagogicalComponentReadRepository/);
+  assert.doesNotMatch(source, /type PedagogicalComponentReadRepository = Pick</);
   assert.doesNotMatch(source, /\bany\b/);
   assert.doesNotMatch(source, /createClient\s*\(|process\.env|api\/_lib|supabaseAdmin/);
   assert.doesNotMatch(source, /\.insert\s*\(|\.upsert\s*\(|\.update\s*\(|\.delete\s*\(|\.rpc\s*\(/);
