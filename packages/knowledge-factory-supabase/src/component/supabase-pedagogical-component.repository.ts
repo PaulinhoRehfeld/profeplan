@@ -1,4 +1,4 @@
-import type { PedagogicalComponentRepository } from '@profeplan/knowledge-factory';
+import type { PedagogicalComponentReadRepository } from '@profeplan/knowledge-factory';
 import type {
   EntityId,
   EvidenceOrigin,
@@ -35,11 +35,6 @@ const COMPONENT_TABLE = 'kf_pedagogical_components';
 const COMPONENT_VERSION_TABLE = 'kf_component_versions';
 const COMPONENT_EVIDENCE_TABLE = 'kf_component_source_evidence';
 const COMPONENT_CURRICULUM_LINK_TABLE = 'kf_component_curriculum_links';
-
-type PedagogicalComponentReadRepository = Pick<
-  PedagogicalComponentRepository,
-  'findById' | 'findVersion' | 'listEvidenceOrigins'
->;
 
 interface ProviderResponse {
   readonly data: unknown;

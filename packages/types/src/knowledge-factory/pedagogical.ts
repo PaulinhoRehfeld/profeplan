@@ -55,6 +55,56 @@ export interface EvidenceOrigin extends VersionedEntity {
   recordedAt: ISODateTime;
 }
 
+export const PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS = Object.freeze([
+  'create_component_aggregate',
+  'append_component_version',
+  'transition_component_version_status',
+  'promote_component_version',
+] as const);
+export type PedagogicalComponentWriteOperation =
+  (typeof PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS)[number];
+
+export interface CreatePedagogicalComponentAggregateCommand {
+  readonly commandId: EntityId;
+  readonly component: Readonly<PedagogicalComponent>;
+  readonly initialVersion: Readonly<PedagogicalComponentVersion>;
+  readonly evidenceOrigins: readonly Readonly<EvidenceOrigin>[];
+}
+
+export interface AppendPedagogicalComponentVersionCommand {
+  readonly commandId: EntityId;
+  readonly expectedCurrentVersionId: EntityId;
+  readonly version: Readonly<PedagogicalComponentVersion>;
+  readonly evidenceOrigins: readonly Readonly<EvidenceOrigin>[];
+}
+
+export interface TransitionPedagogicalComponentVersionStatusCommand {
+  readonly commandId: EntityId;
+  readonly componentId: EntityId;
+  readonly componentVersionId: EntityId;
+  readonly expectedStatus: PedagogicalComponentStatus;
+  readonly toStatus: PedagogicalComponentStatus;
+  readonly occurredAt: ISODateTime;
+}
+
+export interface PromotePedagogicalComponentVersionCommand {
+  readonly commandId: EntityId;
+  readonly componentId: EntityId;
+  readonly targetVersionId: EntityId;
+  readonly expectedCurrentVersionId: EntityId;
+  readonly expectedComponentUpdatedAt: ISODateTime;
+  readonly occurredAt: ISODateTime;
+}
+
+export interface PedagogicalComponentWriteReceipt {
+  readonly commandId: EntityId;
+  readonly operation: PedagogicalComponentWriteOperation;
+  readonly componentId: EntityId;
+  readonly componentVersionId?: EntityId;
+  readonly replayed: boolean;
+  readonly committedAt: ISODateTime;
+}
+
 export function isComponentProductionReady(version: PedagogicalComponentVersion): boolean {
   return (
     version.status === 'approved' &&

@@ -3,6 +3,8 @@ import test from 'node:test';
 
 import {
   EPIC_018_ENABLED,
+  KNOWLEDGE_FACTORY_CONTRACT_VERSION,
+  PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS,
   assertOppTransition,
   canApproveFromFindings,
   hasDeliveryTraceability,
@@ -21,6 +23,17 @@ import {
   syntheticSource,
   syntheticSufficiencyResult,
 } from '../src/knowledge-factory/index.ts';
+
+test('knowledge factory exports the approved 2.0.0 write contract', () => {
+  assert.equal(KNOWLEDGE_FACTORY_CONTRACT_VERSION, '2.0.0');
+  assert.deepEqual(PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS, [
+    'create_component_aggregate',
+    'append_component_version',
+    'transition_component_version_status',
+    'promote_component_version',
+  ]);
+  assert.equal(Object.isFrozen(PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS), true);
+});
 
 test('versioned contracts preserve identity and version', () => {
   assert.equal(hasIdentityAndVersion(syntheticSource), true);

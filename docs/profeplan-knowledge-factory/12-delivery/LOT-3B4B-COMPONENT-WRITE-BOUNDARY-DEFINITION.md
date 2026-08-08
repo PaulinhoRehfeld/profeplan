@@ -4,11 +4,13 @@ Data: 8 de agosto de 2026.
 
 ## Status
 
-**Definição documental proposta para revisão humana. Este documento não autoriza implementação de contrato, adapter, mapper, migration, função PostgreSQL, RPC, RLS, workflow, wiring, acesso a produção ou início do Lote 3B.5.**
+**Definição documental integrada pelo Pull Request nº 19 no commit `d9838ef290522aba6dba4e104a03420dd12192fb`. A autorização posterior alcança somente o 3B.4B.1 — contratos e porta; migration, função PostgreSQL, RPC, adapter de comando, RLS, wiring, produção e Lote 3B.5 permanecem bloqueados.**
 
 Base inspecionada: `main` no commit `8ef2a7cdace312d9286ca50fb74335f6c954a2c8`, após o squash merge do Pull Request nº 18.
 
-O Lote 3B.4A permanece integrado. O Lote 3B.4B permanece bloqueado e não iniciado. `GAP-3B-02` e `GAP-3B-06` continuam ativos até que contratos e transações sejam implementados, testados no Supabase descartável e integrados por gate humano próprio.
+O Lote 3B.4A permanece integrado. O 3B.4B.1 pode avançar em branch e Pull Request próprios.
+`GAP-3B-02` e `GAP-3B-06` continuam ativos até que contratos e transações sejam implementados,
+testados no Supabase descartável e integrados pelos gates humanos correspondentes.
 
 ## 1. Objetivo
 
@@ -466,6 +468,8 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 11. Próximo gate humano
 
-O próximo gate é revisar o Pull Request documental desta definição e decidir entre solicitar ajustes, rejeitar/adiar ou autorizar seu squash merge.
+O próximo gate é revisar o Pull Request do 3B.4B.1 — contratos e porta — e decidir entre solicitar
+ajustes, rejeitar/adiar ou autorizar seu squash merge.
 
-Mesmo após a integração desta definição, nenhuma implementação será automática. O próximo passo autorizado deverá ser exclusivamente o 3B.4B.1 — contratos e porta — em nova branch baseada na `main` integrada.
+Mesmo após a integração do 3B.4B.1, nenhuma implementação posterior será automática. O 3B.4B.2
+— migration e RPCs — exigirá nova autorização explícita, nova branch e gate humano próprio.

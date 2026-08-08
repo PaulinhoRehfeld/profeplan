@@ -80,7 +80,7 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.1 AuditRepository
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
-🔵 3B.4 PedagogicalComponentRepository — 3B.4A integrado; definição do 3B.4B em revisão  ← ESTADO ATUAL
+🔵 3B.4 PedagogicalComponentRepository — 3B.4A e definição do 3B.4B integrados; 3B.4B.1 em revisão  ← ESTADO ATUAL
 ⬜ 3B.5 ProductionOrderRepository
 
 FASE C — MATÉRIA-PRIMA
@@ -208,7 +208,7 @@ Este registro atualiza o estado de navegação sem reescrever o histórico prese
 
 ### 6.4 — 3B.4 PedagogicalComponentRepository
 
-Status: **3B.4A integrado; definição contratual e transacional do 3B.4B proposta para revisão.**
+Status: **3B.4A e definição contratual/transacional do 3B.4B integrados; 3B.4B.1 em revisão.**
 
 Objetivo:
 
@@ -219,13 +219,17 @@ Estratégia:
 
 ```text
 3B.4A — leituras — integrado pelo PR nº 17
-3B.4B — escritas transacionais — definição documental proposta; implementação bloqueada
+3B.4B — escritas transacionais — definição integrada pelo PR nº 19
+  3B.4B.1 — contratos e porta — em revisão
+  3B.4B.2 — migration e RPCs — não iniciado
+  3B.4B.3 — adapter Supabase de comando — não iniciado
 ```
 
 Estado integrado do 3B.4A:
 
 - `findById`, `findVersion` e `listEvidenceOrigins` implementados como subconjunto read-only;
-- fatia verificada como `Pick` da porta, sem stubs de escrita e sem alegar implementação integral;
+- adapter atribuível somente à capacidade read-only da porta, sem stubs de escrita e sem alegar
+  implementação integral;
 - leituras compostas sequenciais, sem promessa de snapshot forte e sem retorno parcial;
 - squash merge do PR nº 17 no commit `1c03d21590bf004489d0f4d07e42aaf29db44ac5`;
 - testes unitários, CI geral, integração no Supabase descartável e Vercel aprovados.
@@ -233,14 +237,15 @@ Estado integrado do 3B.4A:
 Restrições ativas:
 
 - GAP-3B-02 — componente + versão exigem atomicidade real;
-- GAP-3B-06 — a porta não representa integralmente a criação de `EvidenceOrigin` nem a semântica de sincronização dos vínculos;
-- 3B.4B permanece bloqueado para implementação enquanto sua definição documental não for integrada e seus sublotes não receberem gates humanos próprios;
+- GAP-3B-06 — contratos completos precisam ser integrados e depois comprovados pelo adapter transacional;
+- 3B.4B.2 e 3B.4B.3 permanecem bloqueados até os gates humanos próprios;
 - nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider.
 
 Definição específica:
 
 - `12-delivery/LOT-3B4-PEDAGOGICAL-COMPONENT-ADAPTER-DEFINITION.md` — definição histórica do 3B.4 e do 3B.4A;
-- `12-delivery/LOT-3B4B-COMPONENT-WRITE-BOUNDARY-DEFINITION.md` — proposta contratual e transacional específica do 3B.4B.
+- `12-delivery/LOT-3B4B-COMPONENT-WRITE-BOUNDARY-DEFINITION.md` — definição contratual e
+  transacional integrada do 3B.4B.
 
 ### 6.5 — 3B.5 ProductionOrderRepository
 
@@ -671,11 +676,12 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 — 3B.4A integrado; definição do 3B.4B proposta, com implementação ainda bloqueada por GAP-3B-02 e GAP-3B-06.**
+> **FASE B — Lote 3B.4 — 3B.4A e definição do 3B.4B integrados; 3B.4B.1 em revisão, com GAP-3B-02 e GAP-3B-06 ainda ativos.**
 
 Próximo objetivo imediato:
 
-> revisar e decidir sobre a integração da definição documental do Lote 3B.4B; nenhuma implementação, migration, RPC ou início do Lote 3B.5 é autorizado por esta proposta.
+> revisar e decidir sobre a integração do 3B.4B.1 — contratos e porta; nenhuma migration, RPC,
+> escrita Supabase, produção ou início do Lote 3B.5 está autorizado.
 
 Próxima grande mudança de natureza do projeto:
 
