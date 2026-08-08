@@ -136,6 +136,45 @@ Criação inicial de componente é circular com `current_version_id`:
 
 Isso reforça que a criação completa deve ser um comando PostgreSQL transacional futuro, não duas requisições PostgREST independentes.
 
+A FK composta de `current_version_id` é `DEFERRABLE INITIALLY DEFERRED`. Dentro de uma única transação, ela permite inserir o componente apontando para a primeira versão, inserir essa versão com o mesmo `component_id` e validar a coerência no commit. Ela não cria atomicidade entre requisições PostgREST independentes.
+
+### Leituras do 3B.4A
+
+`findVersion()` pode executar leitura base e hidratações sequenciais de evidências e vínculos curriculares sem prometer snapshot forte. No estado atual não existe consumidor operacional nem writer do componente integrado. Qualquer falha de hidratação deve rejeitar o resultado inteiro.
+
+Nenhuma RPC/read model é necessária para o 3B.4A. Um futuro consumidor que exija decisão consistente sob concorrência deverá obter ADR e fronteira de leitura forte próprios.
+
+### Escritas do 3B.4B
+
+`saveComponent()` não pode ser tratado genericamente como operação simples de uma tabela:
+
+- criação isolada termina sem versão válida para o `current_version_id` obrigatório;
+- o contrato não diferencia criação de atualização;
+- promoção de nova versão corrente atravessa componente e versão.
+
+`saveVersion()` também não representa apenas a linha `kf_component_versions`:
+
+- `curriculumNodeIds` vivem em `kf_component_curriculum_links`;
+- `sourceEvidenceIds` apontam para linhas completas de `kf_component_source_evidence`;
+- a porta não oferece criação de `EvidenceOrigin`;
+- insert, upsert e substituição integral dos vínculos ainda não têm semântica aprovada;
+- o schema não concede DELETE ao `service_role`, portanto apagar e recriar vínculos não pode ser presumido.
+
+Essa insuficiência contratual é registrada como GAP-3B-06. Não criar método lateral, acesso direto externo, compensação ou RPC antes da decisão humana sobre o comando e seu payload.
+
+Antes de 3B.4B são obrigatórios:
+
+1. comando de aplicação completo;
+2. payload com evidências e vínculos;
+3. semântica de criação, atualização e promoção;
+4. idempotency key e retry seguro;
+5. privilégios mínimos;
+6. função PostgreSQL/RPC estreita;
+7. migration isolada;
+8. testes de rollback no Supabase descartável;
+9. decisão contratual explícita;
+10. gate humano próprio.
+
 ## KnowledgeSourceRepository
 
 A porta atual somente salva `KnowledgeSource` em `kf_sources`.

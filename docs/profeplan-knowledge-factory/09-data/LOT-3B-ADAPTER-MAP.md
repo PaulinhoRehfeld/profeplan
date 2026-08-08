@@ -23,12 +23,12 @@ Este documento define o mapa técnico aprovado; não implementa código nem auto
 
 ## 1. KnowledgeSourceRepository
 
-| Método | Tabela(s) | Operação | Client | Observações |
-|---|---|---|---|---|
-| `findById(id)` | `kf_sources` | SELECT por `id`, `maybeSingle` | SYSTEM | Retorna fonte inclusive bloqueada/arquivada; elegibilidade é do domínio. |
-| `findVersion(sourceId, version)` | `kf_source_versions` | SELECT por `source_id + version` | SYSTEM | Não lê segmentos. |
-| `listPermissionEvents(sourceId)` | `kf_source_permission_events` | SELECT por `source_id`, ordenado por `occurred_at` | SYSTEM | Somente leitura de histórico append-only. |
-| `save(source)` | `kf_sources` | INSERT/UPDATE controlado por `id` | SYSTEM | Uma tabela. Não cria versão, segmento ou evento. |
+| Método                           | Tabela(s)                     | Operação                                           | Client | Observações                                                              |
+| -------------------------------- | ----------------------------- | -------------------------------------------------- | ------ | ------------------------------------------------------------------------ |
+| `findById(id)`                   | `kf_sources`                  | SELECT por `id`, `maybeSingle`                     | SYSTEM | Retorna fonte inclusive bloqueada/arquivada; elegibilidade é do domínio. |
+| `findVersion(sourceId, version)` | `kf_source_versions`          | SELECT por `source_id + version`                   | SYSTEM | Não lê segmentos.                                                        |
+| `listPermissionEvents(sourceId)` | `kf_source_permission_events` | SELECT por `source_id`, ordenado por `occurred_at` | SYSTEM | Somente leitura de histórico append-only.                                |
+| `save(source)`                   | `kf_sources`                  | INSERT/UPDATE controlado por `id`                  | SYSTEM | Uma tabela. Não cria versão, segmento ou evento.                         |
 
 ### Gap deliberado
 
@@ -42,17 +42,23 @@ O adapter não inventará esses métodos.
 
 ## 2. PedagogicalComponentRepository
 
-| Método | Tabela(s) | Operação | Client | Observações |
-|---|---|---|---|---|
-| `findById(id)` | `kf_pedagogical_components` | SELECT por `id` | SYSTEM | Mapeamento simples. |
-| `findVersion(componentId, version)` | `kf_component_versions`, `kf_component_source_evidence`, `kf_component_curriculum_links` | SELECT + hidratação dos IDs relacionais | SYSTEM | O contrato contém `sourceEvidenceIds` e `curriculumNodeIds`, não armazenados diretamente na linha de versão. |
-| `listEvidenceOrigins(componentVersionId)` | `kf_component_source_evidence` | SELECT por `component_version_id` | SYSTEM | Reconstrói `EvidenceOrigin`. |
-| `saveComponent(component)` | `kf_pedagogical_components` | INSERT/UPDATE | SYSTEM | Isoladamente é uma tabela, mas criação inicial pode depender de versão válida. |
-| `saveVersion(version)` | `kf_component_versions` + potencial sincronização de vínculos curriculares | WRITE | SYSTEM | **Bloqueado para implementação de escrita até estratégia atômica aprovada.** |
+| Método                                    | Tabela(s)                                                                                | Operação                                     | Client | Observações                                                                                                       |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
+| `findById(id)`                            | `kf_pedagogical_components`                                                              | SELECT por `id`, `maybeSingle`               | SYSTEM | Colunas explícitas; ausência legítima retorna `null`.                                                             |
+| `findVersion(componentId, version)`       | `kf_component_versions`, `kf_component_source_evidence`, `kf_component_curriculum_links` | SELECT base + hidratação dos IDs relacionais | SYSTEM | Evidências por `id`; nós por `curriculum_node_id`; falha de hidratação rejeita o resultado inteiro.               |
+| `listEvidenceOrigins(componentVersionId)` | `kf_component_source_evidence`                                                           | SELECT por `component_version_id`            | SYSTEM | Reconstrói `EvidenceOrigin`, ordenado por `recorded_at` e `id`.                                                   |
+| `saveComponent(component)`                | `kf_pedagogical_components` + lifecycle completo                                         | WRITE                                        | SYSTEM | **Bloqueado:** o método não distingue criação de atualização e criação isolada não satisfaz `current_version_id`. |
+| `saveVersion(version)`                    | `kf_component_versions`, `kf_component_source_evidence`, `kf_component_curriculum_links` | WRITE transacional                           | SYSTEM | **Bloqueado:** exige semântica de evidências, vínculos, idempotência e fronteira atômica aprovadas.               |
+
+### Separação do Lote 3B.4
+
+- 3B.4A: somente os três métodos de leitura;
+- 3B.4B: os dois métodos de escrita, bloqueados;
+- a classe 3B.4A será verificável contra um `Pick` read-only da porta, sem stubs e sem afirmar implementação integral da interface.
 
 ### Risco de hidratação
 
-`findVersion()` exige compor dados de três tabelas. Como versões aprovadas tendem a ser estáveis, leituras sequenciais podem ser aceitáveis em estágio inicial, porém nenhum código deverá prometer snapshot transacional.
+`findVersion()` exige compor dados de três tabelas. Como não existe consumidor operacional ou writer integrado, leituras sequenciais são aceitáveis no 3B.4A, porém nenhum código deverá prometer snapshot transacional.
 
 Se consistência estrita for necessária, criar RPC/read model específico em migration aprovada.
 
@@ -62,33 +68,29 @@ Se consistência estrita for necessária, criar RPC/read model específico em mi
 
 Não criar side-channel de persistência fora da porta.
 
+Esta lacuna compõe o GAP-3B-06 e bloqueia 3B.4B, junto ao GAP-3B-02. Não bloqueia as leituras de 3B.4A.
+
 ## 3. CurriculumRepository
 
-| Método | Tabela(s) | Operação | Client | Observações |
-|---|---|---|---|---|
-| `findPackageById(id)` | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT + hidratação `sourceVersionIds` | SYSTEM | Read-only. |
-| `findActivePackageByStateAndStage(state, stage)` | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT de pacote ativo | SYSTEM | Filtrar obrigatoriamente por `state`, `stage` e `status = active`; hidratar fontes sem retorno parcial. |
-| `findNodeById(id)` | `kf_curriculum_nodes` | SELECT por `id` | SYSTEM | Read-only. |
-| `listNodesByPackage(packageId)` | `kf_curriculum_nodes` | SELECT por pacote | SYSTEM | Read-only, ordenação determinística deverá ser definida pelo adapter. |
+| Método                                           | Tabela(s)                                                 | Operação                               | Client | Observações                                                                                             |
+| ------------------------------------------------ | --------------------------------------------------------- | -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
+| `findPackageById(id)`                            | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT + hidratação `sourceVersionIds` | SYSTEM | Read-only.                                                                                              |
+| `findActivePackageByStateAndStage(state, stage)` | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT de pacote ativo                 | SYSTEM | Filtrar obrigatoriamente por `state`, `stage` e `status = active`; hidratar fontes sem retorno parcial. |
+| `findNodeById(id)`                               | `kf_curriculum_nodes`                                     | SELECT por `id`                        | SYSTEM | Read-only.                                                                                              |
+| `listNodesByPackage(packageId)`                  | `kf_curriculum_nodes`                                     | SELECT por pacote                      | SYSTEM | Read-only, ordenação determinística deverá ser definida pelo adapter.                                   |
 
 ### GAP-3B-01
 
-O banco permite um pacote ativo por `(state, stage)`, enquanto a porta atual busca apenas por `state`.
-
-A definição do Lote 3B.3 propõe substituir a assinatura ambígua por:
-
-`findActivePackageByStateAndStage(state, stage)`
-
-O método antigo não será mantido. O GAP-3B-01 permanece aberto até a decisão ser integrada, a porta ser alterada e os testes do adapter comprovarem a desambiguação.
+Encerrado após a integração do PR nº 15: a porta e o adapter usam `findActivePackageByStateAndStage(state, stage)`, sem alias do método antigo, e os testes comprovam desambiguação por etapa.
 
 ## 4. ProductionOrderRepository
 
-| Método | Tabela(s) | Operação | Client | Observações |
-|---|---|---|---|---|
-| `findById(id)` | `kf_production_orders` | SELECT por `id` | REQUESTER preferencial | RLS garante requester próprio. Fluxos internos privilegiados exigem decisão explícita. |
-| `save(order)` | `kf_production_orders` | INSERT ou futura transição | REQUESTER para criação; transição interna a definir | INSERT inicial `requested` pode usar RLS. UPDATE direto de professor não é permitido. |
-| `appendEvent(event)` | `kf_production_order_events` | INSERT | SYSTEM/futura RPC | Professor não possui INSERT direto. Evento de transição deve acompanhar mudança da OPP atomicamente. |
-| `listEvents(oppId)` | `kf_production_order_events` | SELECT por OPP | REQUESTER preferencial | RLS limita aos eventos da OPP própria. |
+| Método               | Tabela(s)                    | Operação                   | Client                                              | Observações                                                                                          |
+| -------------------- | ---------------------------- | -------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `findById(id)`       | `kf_production_orders`       | SELECT por `id`            | REQUESTER preferencial                              | RLS garante requester próprio. Fluxos internos privilegiados exigem decisão explícita.               |
+| `save(order)`        | `kf_production_orders`       | INSERT ou futura transição | REQUESTER para criação; transição interna a definir | INSERT inicial `requested` pode usar RLS. UPDATE direto de professor não é permitido.                |
+| `appendEvent(event)` | `kf_production_order_events` | INSERT                     | SYSTEM/futura RPC                                   | Professor não possui INSERT direto. Evento de transição deve acompanhar mudança da OPP atomicamente. |
+| `listEvents(oppId)`  | `kf_production_order_events` | SELECT por OPP             | REQUESTER preferencial                              | RLS limita aos eventos da OPP própria.                                                               |
 
 ### GAP-3B-03
 
@@ -104,9 +106,9 @@ O adapter de OPP é deliberadamente o último do 3B.
 
 ## 5. AuditRepository
 
-| Método | Tabela(s) | Operação | Client | Observações |
-|---|---|---|---|---|
-| `append(event)` | `kf_audit_events` | INSERT | SYSTEM | Append-only; nunca upsert. |
+| Método                         | Tabela(s)         | Operação                                              | Client | Observações                           |
+| ------------------------------ | ----------------- | ----------------------------------------------------- | ------ | ------------------------------------- |
+| `append(event)`                | `kf_audit_events` | INSERT                                                | SYSTEM | Append-only; nunca upsert.            |
 | `listByAggregate(aggregateId)` | `kf_audit_events` | SELECT por `aggregate_id`, ordenado por `occurred_at` | SYSTEM | Leitura interna/admin; não professor. |
 
 ### Primeiro adapter aprovado
@@ -159,8 +161,8 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 1. `AuditRepository`;
 2. `KnowledgeSourceRepository`;
 3. correção da porta curricular e `CurriculumRepository`;
-4. leituras do `PedagogicalComponentRepository`;
-5. escrita do componente após fronteira transacional;
+4. leituras do `PedagogicalComponentRepository` como fatia 3B.4A;
+5. escrita do componente após resolver GAP-3B-02 e GAP-3B-06;
 6. `ProductionOrderRepository` após requester client + RPC de transição.
 
-A primeira implementação está restrita ao item 1. Avançar para item 2 ou além exige novo gate humano.
+Os itens 1 a 3 foram integrados. O item 4 depende da integração humana da definição específica do 3B.4 e de nova autorização para código. Os itens 5 e 6 permanecem bloqueados.

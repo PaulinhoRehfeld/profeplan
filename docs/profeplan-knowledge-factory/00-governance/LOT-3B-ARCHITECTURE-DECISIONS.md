@@ -8,6 +8,8 @@ Data: 7 de agosto de 2026.
 
 A aprovação destas decisões autoriza somente a preparação do primeiro PR de código do Lote 3B dentro do escopo explicitamente aprovado. Não autoriza produção, migration nova, ampliação das portas bloqueadas, retrieval, agentes, PNLD real, currículo real, Gráfica, Nexus ou EPIC-018.
 
+Estado atualizado em 8 de agosto de 2026: os Lotes 3B.1, 3B.2 e 3B.3 foram integrados; GAP-3B-01 foi encerrado; 3B.4 está em definição documental. O texto histórico de autorização do primeiro PR permanece preservado.
+
 ## ADR-040 — Pacote concreto isolado para adapters Supabase
 
 **Status:** aprovado
@@ -74,15 +76,15 @@ Métodos `find*` que admitem ausência retornam `null`; indisponibilidade nunca 
 
 Mapeamento mínimo:
 
-| Provider | Erro estável |
-|---|---|
-| `23505` | `CONFLICT` |
-| `23503`, `23514`, `23502` | `CONSTRAINT_VIOLATION` |
-| `42501` / permission denied | `FORBIDDEN` |
-| identidade ausente em requester context | `UNAUTHORIZED` |
-| rede/timeout | `UNAVAILABLE` |
-| shape incompatível | `INVALID_RESPONSE` |
-| desconhecido | `UNKNOWN` |
+| Provider                                | Erro estável           |
+| --------------------------------------- | ---------------------- |
+| `23505`                                 | `CONFLICT`             |
+| `23503`, `23514`, `23502`               | `CONSTRAINT_VIOLATION` |
+| `42501` / permission denied             | `FORBIDDEN`            |
+| identidade ausente em requester context | `UNAUTHORIZED`         |
+| rede/timeout                            | `UNAVAILABLE`          |
+| shape incompatível                      | `INVALID_RESPONSE`     |
+| desconhecido                            | `UNKNOWN`              |
 
 SQLSTATE, PostgREST error bruto, query, URL, headers, token e payload integral não atravessam para domínio/API/UX.
 
@@ -152,7 +154,7 @@ A aprovação humana reconhece formalmente estes gaps e suas medidas de contenç
 
 `CurriculumRepository.findActivePackageByState(state)` é ambíguo porque o banco admite um ativo por `(state, stage)`.
 
-Adapter curricular bloqueado até correção de contrato aprovada.
+**Status atualizado:** encerrado após correção do contrato, testes de desambiguação e integração humana do PR nº 15.
 
 ### GAP-3B-02 — componente + versão
 
@@ -180,15 +182,33 @@ O primeiro adapter deverá mapear somente o contrato existente. Contexto adicion
 
 US-013.2 permanece apenas em fatia parcial até eventual extensão contratual explícita.
 
+### GAP-3B-06 — escrita de versão não representa evidências e vínculos integralmente
+
+`PedagogicalComponentVersion` contém `sourceEvidenceIds` e `curriculumNodeIds`, mas a porta não oferece criação de `EvidenceOrigin` nem define se `saveVersion()` insere, atualiza ou substitui os vínculos.
+
+3B.4B permanece bloqueado. O adapter não criará side-channel de persistência, método não contratado ou sincronização destrutiva implícita.
+
 ## ADR-048 — Lookup curricular por Estado e etapa
 
-**Status:** proposto para o Lote 3B.3
+**Status:** aprovado e implementado no Lote 3B.3
 
 `CurriculumRepository.findActivePackageByState(state)` será substituído por `findActivePackageByStateAndStage(state, stage)`.
 
 A interface receberá `EducationStage` explicitamente, sem alias compatível com a busca antiga. O adapter curricular será inicialmente read-only e usará client SYSTEM injetado. Pacotes deverão ser hidratados com `sourceVersionIds` ordenados; nós serão filtrados por pacote e ordenados por `code`, `version` e `id`.
 
-A integração deste documento à `main` aprovará a decisão e autorizará somente o PR de código descrito em `12-delivery/LOT-3B3-CURRICULUM-ADAPTER-DEFINITION.md`.
+A decisão foi implementada e integrada por squash merge do PR nº 15 no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`. O GAP-3B-01 está encerrado.
+
+## ADR-049 — Lote 3B.4 separado em leitura parcial e escrita bloqueada
+
+**Status:** proposto para o Lote 3B.4 em 8 de agosto de 2026
+
+3B.4A implementará somente `findById`, `findVersion` e `listEvidenceOrigins` com client SYSTEM injetado, colunas explícitas, hidratação integral, ordenação determinística e testes descartáveis.
+
+Como a porta completa também expõe `saveComponent` e `saveVersion`, a fatia read-only será verificável contra um `Pick` dos três métodos. Não serão criados stubs de escrita e não será alegada implementação integral da interface.
+
+Leituras sequenciais são aceitas sem promessa de snapshot forte. Nenhuma RPC/read model é necessária enquanto não existir consumidor com requisito explícito de consistência forte.
+
+3B.4B permanece bloqueado por GAP-3B-02 e GAP-3B-06 até decisão contratual, comando transacional, RPC específica, migration isolada, idempotência, privilégios mínimos, testes de rollback e gate humano próprios.
 
 ## Relação com decisões anteriores
 
@@ -210,3 +230,9 @@ Estas decisões complementam, sem substituir:
 Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a primeira fatia de código definida para `AuditRepository`, após integração deste PR documental à `main` e em nova branch a partir da `main` integrada.
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
+
+## Gate vigente após os Lotes 3B.1–3B.3
+
+O próximo gate é exclusivamente a revisão humana da definição documental do Lote 3B.4.
+
+Somente após seu squash merge e nova autorização poderá ser aberta a implementação 3B.4A. Permanecem bloqueados 3B.4B, 3B.5, qualquer mudança contratual, RPC/migration, produção, API, frontend, retrieval, agentes e conteúdo real.
