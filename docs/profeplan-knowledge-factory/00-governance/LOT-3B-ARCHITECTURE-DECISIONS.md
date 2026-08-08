@@ -180,6 +180,16 @@ O primeiro adapter deverá mapear somente o contrato existente. Contexto adicion
 
 US-013.2 permanece apenas em fatia parcial até eventual extensão contratual explícita.
 
+## ADR-048 — Lookup curricular por Estado e etapa
+
+**Status:** proposto para o Lote 3B.3
+
+`CurriculumRepository.findActivePackageByState(state)` será substituído por `findActivePackageByStateAndStage(state, stage)`.
+
+A interface receberá `EducationStage` explicitamente, sem alias compatível com a busca antiga. O adapter curricular será inicialmente read-only e usará client SYSTEM injetado. Pacotes deverão ser hidratados com `sourceVersionIds` ordenados; nós serão filtrados por pacote e ordenados por `code`, `version` e `id`.
+
+A integração deste documento à `main` aprovará a decisão e autorizará somente o PR de código descrito em `12-delivery/LOT-3B3-CURRICULUM-ADAPTER-DEFINITION.md`.
+
 ## Relação com decisões anteriores
 
 Estas decisões complementam, sem substituir:

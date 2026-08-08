@@ -30,9 +30,9 @@ Gate: adapter OPP não inicia até estratégia requester-scoped ser aprovada.
 
 Risco: `findActivePackageByState(state)` retornar pacote errado quando houver ativo para mais de uma etapa.
 
-Mitigação: corrigir contrato para incluir `stage` antes do adapter curricular.
+Mitigação: substituir o lookup pela assinatura `findActivePackageByStateAndStage(state, stage)`, remover a consulta ambígua e testar dois pacotes ativos de MG em etapas distintas.
 
-Gate: CurriculumRepository adapter bloqueado.
+Gate: o adapter curricular permanece bloqueado até integração da definição 3B.3; o risco somente será encerrado após alteração da porta e testes de desambiguação verdes.
 
 ## R-3B-05 — Pseudo-transação de componente
 
