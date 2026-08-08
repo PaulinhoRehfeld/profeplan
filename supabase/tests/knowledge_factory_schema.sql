@@ -1164,7 +1164,7 @@ RESET ROLE;
 -- -----------------------------------------------------------------------------
 SELECT pg_temp.assert_true(
   (
-    SELECT count(*) = 15
+    SELECT count(*) = 16
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE n.nspname = 'public'
@@ -1172,7 +1172,7 @@ SELECT pg_temp.assert_true(
       AND c.relkind = 'r'
       AND c.relrowsecurity
   ),
-  'RLS must be enabled on all 15 Knowledge Factory tables'
+  'RLS must be enabled on all 16 Knowledge Factory tables'
 );
 
 -- All synthetic rows and synthetic auth identities are removed here.
