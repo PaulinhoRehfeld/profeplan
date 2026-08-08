@@ -67,21 +67,19 @@ Não criar side-channel de persistência fora da porta.
 | Método | Tabela(s) | Operação | Client | Observações |
 |---|---|---|---|---|
 | `findPackageById(id)` | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT + hidratação `sourceVersionIds` | SYSTEM | Read-only. |
-| `findActivePackageByState(state)` | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT de pacote ativo | SYSTEM | **Ambíguo enquanto a porta não receber `stage`.** |
+| `findActivePackageByStateAndStage(state, stage)` | `kf_curriculum_packages`, `kf_curriculum_package_sources` | SELECT de pacote ativo | SYSTEM | Filtrar obrigatoriamente por `state`, `stage` e `status = active`; hidratar fontes sem retorno parcial. |
 | `findNodeById(id)` | `kf_curriculum_nodes` | SELECT por `id` | SYSTEM | Read-only. |
 | `listNodesByPackage(packageId)` | `kf_curriculum_nodes` | SELECT por pacote | SYSTEM | Read-only, ordenação determinística deverá ser definida pelo adapter. |
 
 ### GAP-3B-01
 
-O banco permite um pacote ativo por `(state, stage)`, enquanto a porta busca apenas por `state`.
+O banco permite um pacote ativo por `(state, stage)`, enquanto a porta atual busca apenas por `state`.
 
-Antes deste adapter, a porta deverá ser revisada para:
+A definição do Lote 3B.3 propõe substituir a assinatura ambígua por:
 
 `findActivePackageByStateAndStage(state, stage)`
 
-ou contrato equivalente aprovado.
-
-Não alterar no primeiro PR.
+O método antigo não será mantido. O GAP-3B-01 permanece aberto até a decisão ser integrada, a porta ser alterada e os testes do adapter comprovarem a desambiguação.
 
 ## 4. ProductionOrderRepository
 
