@@ -587,7 +587,7 @@ BEGIN
   IF FOUND THEN
     IF v_receipt.operation <> v_operation OR v_receipt.payload_fingerprint <> v_fingerprint THEN
       RAISE EXCEPTION USING
-        ERRCODE = '40001',
+        ERRCODE = 'PT409',
         MESSAGE = 'commandId was already used with a different command payload';
     END IF;
 
@@ -607,13 +607,13 @@ BEGIN
       OR canonical_key = (v_component ->> 'canonicalKey')
   ) THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'component id or canonical key already exists';
   END IF;
 
   IF EXISTS (SELECT 1 FROM public.kf_component_versions WHERE id = v_version_id) THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'component version id already exists';
   END IF;
 
@@ -621,7 +621,7 @@ BEGIN
     SELECT 1 FROM public.kf_component_source_evidence
     WHERE id = ANY(v_evidence_ids)
   ) THEN
-    RAISE EXCEPTION USING ERRCODE = '40001', MESSAGE = 'evidenceOrigin id already exists';
+    RAISE EXCEPTION USING ERRCODE = 'PT409', MESSAGE = 'evidenceOrigin id already exists';
   END IF;
 
   IF EXISTS (
@@ -933,7 +933,7 @@ BEGIN
   IF FOUND THEN
     IF v_receipt.operation <> v_operation OR v_receipt.payload_fingerprint <> v_fingerprint THEN
       RAISE EXCEPTION USING
-        ERRCODE = '40001',
+        ERRCODE = 'PT409',
         MESSAGE = 'commandId was already used with a different command payload';
     END IF;
     RETURN QUERY SELECT
@@ -954,7 +954,7 @@ BEGIN
 
   IF v_current_version_id <> v_expected_current_version_id THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'component current version does not match expectedCurrentVersionId';
   END IF;
 
@@ -972,20 +972,20 @@ BEGIN
          AND versions.version = v_version ->> 'version'
        )
   ) THEN
-    RAISE EXCEPTION USING ERRCODE = '40001', MESSAGE = 'component version already exists';
+    RAISE EXCEPTION USING ERRCODE = 'PT409', MESSAGE = 'component version already exists';
   END IF;
 
   IF EXISTS (
     SELECT 1 FROM public.kf_component_source_evidence
     WHERE id = ANY(v_evidence_ids)
   ) THEN
-    RAISE EXCEPTION USING ERRCODE = '40001', MESSAGE = 'evidenceOrigin id already exists';
+    RAISE EXCEPTION USING ERRCODE = 'PT409', MESSAGE = 'evidenceOrigin id already exists';
   END IF;
 
   IF (v_version ? 'supersedesVersion')
     AND (v_version ->> 'supersedesVersion') <> v_current_version_tag THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'supersedesVersion does not identify the expected current version';
   END IF;
 
@@ -1144,7 +1144,7 @@ BEGIN
   IF FOUND THEN
     IF v_receipt.operation <> v_operation OR v_receipt.payload_fingerprint <> v_fingerprint THEN
       RAISE EXCEPTION USING
-        ERRCODE = '40001',
+        ERRCODE = 'PT409',
         MESSAGE = 'commandId was already used with a different command payload';
     END IF;
     RETURN QUERY SELECT
@@ -1176,7 +1176,7 @@ BEGIN
 
   IF v_current_status <> v_expected_status THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'component version status does not match expectedStatus';
   END IF;
 
@@ -1302,7 +1302,7 @@ BEGIN
   IF FOUND THEN
     IF v_receipt.operation <> v_operation OR v_receipt.payload_fingerprint <> v_fingerprint THEN
       RAISE EXCEPTION USING
-        ERRCODE = '40001',
+        ERRCODE = 'PT409',
         MESSAGE = 'commandId was already used with a different command payload';
     END IF;
     RETURN QUERY SELECT
@@ -1324,13 +1324,13 @@ BEGIN
   IF v_current_version_id <> v_expected_current_version_id
     OR v_current_updated_at <> v_expected_updated_at THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'component state does not match promotion expectations';
   END IF;
 
   IF v_target_version_id = v_current_version_id THEN
     RAISE EXCEPTION USING
-      ERRCODE = '40001',
+      ERRCODE = 'PT409',
       MESSAGE = 'target version is already the current version';
   END IF;
 

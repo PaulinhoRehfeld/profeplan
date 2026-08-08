@@ -419,7 +419,7 @@ SELECT pg_temp.kf_expect_error(
       )
     )
   $sql$,
-  ARRAY['40001'],
+  ARRAY['PT409'],
   'same commandId with a different fingerprint must conflict'
 );
 
@@ -581,7 +581,7 @@ SELECT pg_temp.kf_expect_error(
       )
     )
   $sql$,
-  ARRAY['40001'],
+  ARRAY['PT409'],
   'append must reject a stale expected current version'
 );
 
@@ -758,7 +758,7 @@ SELECT pg_temp.kf_expect_error(
       )
     )
   $sql$,
-  ARRAY['40001'],
+  ARRAY['PT409'],
   'a new command must reject promoting the already-current target'
 );
 

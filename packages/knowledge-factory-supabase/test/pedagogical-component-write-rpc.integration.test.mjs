@@ -136,7 +136,7 @@ test('simultaneous retries of one create command produce one commit and one repl
     conflictingPayload
   );
   assert.equal(conflict.data, null);
-  assert.equal(conflict.error?.code, '40001');
+  assert.equal(conflict.error?.code, 'PT409');
 });
 
 test('concurrent promotions from the same expected state have exactly one winner', async () => {
@@ -200,7 +200,7 @@ test('concurrent promotions from the same expected state have exactly one winner
   ]);
 
   const winners = promotionResults.filter((result) => result.error === null);
-  const conflicts = promotionResults.filter((result) => result.error?.code === '40001');
+  const conflicts = promotionResults.filter((result) => result.error?.code === 'PT409');
   assert.equal(winners.length, 1);
   assert.equal(conflicts.length, 1);
 
