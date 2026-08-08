@@ -15,7 +15,9 @@ revisão humana. Nenhuma migration, RPC ou escrita Supabase foi implementada. `G
 - branch técnica: `agent/knowledge-factory-lot-3b4b1-contracts-port`;
 - base e merge-base esperados: `d9838ef290522aba6dba4e104a03420dd12192fb`;
 - definição governante: `12-delivery/LOT-3B4B-COMPONENT-WRITE-BOUNDARY-DEFINITION.md`;
-- Pull Request: a registrar após sua abertura em draft.
+- Pull Request nº 20: https://github.com/PaulinhoRehfeld/profeplan/pull/20;
+- estado inicial exigido: draft;
+- head técnico inicial: `e09290732f1dc106f0002d3277f43b8a418be720`.
 
 ## Escopo implementado
 
