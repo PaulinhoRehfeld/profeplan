@@ -62,8 +62,8 @@ Não houve:
 
 ## Pull Request
 
-- número: `PENDING`;
-- URL: `PENDING`;
+- número: `19`;
+- URL: https://github.com/PaulinhoRehfeld/profeplan/pull/19;
 - estado inicial exigido: draft;
 - base: `main`;
 - head: `agent/knowledge-factory-lot-3b4b-definition`.
