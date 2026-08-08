@@ -1,5 +1,7 @@
 export * from './audit/audit.mapper.ts';
 export * from './audit/supabase-audit.repository.ts';
+export * from './component/pedagogical-component.mapper.ts';
+export * from './component/supabase-pedagogical-component.repository.ts';
 export * from './context/supabase-system-context.ts';
 export * from './curriculum/curriculum.mapper.ts';
 export * from './curriculum/supabase-curriculum.repository.ts';
