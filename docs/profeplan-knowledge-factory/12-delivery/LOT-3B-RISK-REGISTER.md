@@ -61,10 +61,10 @@ Gate: transição OPP via adapter bloqueada.
 Mitigação proposta no 3B.5: remover `save + appendEvent`, criar comandos fechados e persistir
 criação/transição, evento e recibo em uma única RPC por operação.
 
-Status atualizado em 11 de agosto de 2026: **mitigação técnica implementada, risco ainda ativo.**
-Os contratos, leitura REQUESTER e RPCs foram integrados pelos PRs nº 25 a 27. Os adapters de comando
-exclusivos das RPCs foram implementados no 3B.5.4 para revisão. O risco somente poderá ser encerrado
-após integração humana e checkpoint pós-merge.
+Status atualizado em 11 de agosto de 2026: **encerrado.** Contratos, leitura REQUESTER, RPCs e
+adapters de comando exclusivos foram integrados pelos PRs nº 25 a 28. Atomicidade, rollback,
+idempotência, concorrência e integração real ficaram verdes no DB CI nº 31, e o Checkpoint 031
+formalizou o encerramento pós-merge.
 
 ## R-3B-07 — Inventar métodos fora das portas
 
@@ -205,9 +205,11 @@ método recebe requester para leituras; mapper confere `requester_id` da row.
 
 Gate: testes A/B, identidade ausente, row incompatível e proibição de fallback SYSTEM.
 
-Status atualizado em 11 de agosto de 2026: leitura e criação permanecem em adapters REQUESTER
-separados, e a transição em adapter SYSTEM próprio. O 3B.5.4 adiciona provas de ausência de fallback
-e de negação quando os clients são trocados; o gate remoto ainda depende do DB CI.
+Status atualizado em 11 de agosto de 2026: **mitigado na fatia do Lote 3B.5.** Leitura e criação
+permanecem em adapters REQUESTER separados, e a transição em adapter SYSTEM próprio. O PR nº 28 e o
+DB CI nº 31 comprovaram ausência de fallback, negação quando os clients são trocados e isolamento
+A/B. O futuro composition root continua obrigado a criar contexto efêmero a partir da sessão
+verificada.
 
 ## R-3B-23 — Criação de OPP sem evento inicial
 
@@ -218,9 +220,9 @@ Mitigação: RPC REQUESTER atômica para OPP + evento + recibo e revogação do 
 
 Gate: failure injection em cada etapa, rollback total e teste de grant.
 
-Status atualizado em 11 de agosto de 2026: migration/RPC integrada pelo PR nº 27; adapter REQUESTER
-implementado localmente no 3B.5.4, usando somente `kf_create_production_order`. Encerramento depende
-de integração e checkpoint pós-merge.
+Status atualizado em 11 de agosto de 2026: **encerrado.** Migration/RPC e adapter REQUESTER foram
+integrados pelos PRs nº 27 e 28. O DB CI nº 31 comprovou OPP + evento + recibo atômicos, rollback,
+grants, replay e uso exclusivo de `kf_create_production_order`.
 
 ## R-3B-24 — RPC de transição exposta ao requester
 
@@ -232,9 +234,10 @@ repete ownership, compare-and-set e matriz estrutural.
 
 Gate: `anon` e `authenticated` sem EXECUTE; testes de bypass e ausência de DML direto.
 
-Status atualizado em 11 de agosto de 2026: migration/RPC integrada pelo PR nº 27; adapter SYSTEM
-implementado localmente no 3B.5.4, usando somente `kf_transition_production_order`. O adapter não
-executa a política pedagógica nem deve ser chamado antes de uma decisão de domínio aceita.
+Status atualizado em 11 de agosto de 2026: **encerrado na fronteira de persistência.** Migration/RPC
+e adapter SYSTEM foram integrados pelos PRs nº 27 e 28. O DB CI nº 31 comprovou grants, bypass
+negado e uso exclusivo de `kf_transition_production_order`. O adapter não executa a política
+pedagógica e continua proibido chamá-lo antes de uma decisão de domínio aceita.
 
 ## R-3B-25 — Fatia mínima apresentada como OPP funcional completa
 
@@ -245,6 +248,10 @@ Mitigação: registrar `GAP-3B-07`, manter Stories parciais e separar extensões
 contratos próprios.
 
 Gate: checkpoint final do 3B.5 deve distinguir adapter concluído de OPP normativa completa.
+
+Status atualizado em 11 de agosto de 2026: **ativo e contido.** O Checkpoint 031 distingue
+explicitamente o Lote 3B.5 concluído da OPP normativa incompleta. As Stories normativas permanecem
+parciais e qualquer extensão exige contrato, dados, minimização/LGPD e migrations próprios.
 
 ## Regra de interpretação
 

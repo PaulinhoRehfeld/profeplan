@@ -51,17 +51,18 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigente.
 
 - Fase A — concluída;
-- Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — integrados;
+- Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — concluídos;
 - GAP-3B-01 — encerrado;
 - GAP-3B-02 e GAP-3B-06 — condições de encerramento satisfeitas e formalizadas no
   [Checkpoint 025](00-governance/CONTINUITY-CHECKPOINT-025.md);
-- GAP-3B-03, GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos;
-- Lote 3B.5 — definição documental e sublotes 3B.5.1 a 3B.5.3 integrados; 3B.5.4 — adapters
-  de comando implementado em branch isolada para revisão;
+- GAP-3B-03 — condições de encerramento satisfeitas e formalizadas no
+  [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
+- GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e explicitamente limitados;
+- Lote 3B.5 — definição documental e sublotes 3B.5.1 a 3B.5.4 integrados; encerramento
+  formalizado no [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
 - Fase B — não concluída;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate é revisar o 3B.5.4 conforme a
-[definição do Lote 3B.5](12-delivery/LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md) e o
-[Checkpoint 030](00-governance/CONTINUITY-CHECKPOINT-030.md). A implementação local não autoriza
-push, Pull Request, encerramento de GAP, wiring, Supabase hospedado ou produção.
+O próximo gate, após integração do Checkpoint 031, é inspecionar documentalmente a saída da Fase B
+e decidir se `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` estão formalmente contidos para essa passagem.
+Essa navegação não inicia a Fase C e não autoriza wiring, Supabase hospedado ou produção.

@@ -80,14 +80,14 @@ Tabelas:
 
 ## Matriz de acesso direto
 
-| Ator                 |            Corpus global SELECT | Corpus global WRITE | OPP própria SELECT | OPP própria INSERT | OPP UPDATE direto | Eventos OPP SELECT | Auditoria SELECT | Auditoria WRITE |
-| -------------------- | ------------------------------: | ------------------: | -----------------: | -----------------: | ----------------: | -----------------: | ---------------: | --------------: |
-| anon                 |                           negar |               negar |              negar |              negar |             negar |              negar |            negar |           negar |
-| teacher              |                           negar |               negar |           permitir |           permitir |             negar |  permitir próprios |            negar |           negar |
-| manager              |                           negar |               negar |  permitir próprias |   permitir própria |             negar |  permitir próprios |            negar |           negar |
-| school_admin         |                           negar |               negar |  permitir próprias |   permitir própria |             negar |  permitir próprios |            negar |           negar |
-| admin                | permitir leitura administrativa |        negar direta |  permitir próprias |   permitir própria |             negar |  permitir próprios |         permitir |    negar direta |
-| service_role/backend |                     via backend |         via backend |        via backend |        via backend |       via backend |        via backend |      via backend |     via backend |
+| Ator                 |            Corpus global SELECT | Corpus global WRITE | OPP própria SELECT | OPP INSERT direto | OPP UPDATE direto | Eventos OPP SELECT | Auditoria SELECT | Auditoria WRITE |
+| -------------------- | ------------------------------: | ------------------: | -----------------: | ----------------: | ----------------: | -----------------: | ---------------: | --------------: |
+| anon                 |                           negar |               negar |              negar |             negar |             negar |              negar |            negar |           negar |
+| teacher              |                           negar |               negar |           permitir |             negar |             negar |  permitir próprios |            negar |           negar |
+| manager              |                           negar |               negar |  permitir próprias |             negar |             negar |  permitir próprios |            negar |           negar |
+| school_admin         |                           negar |               negar |  permitir próprias |             negar |             negar |  permitir próprios |            negar |           negar |
+| admin                | permitir leitura administrativa |        negar direta |  permitir próprias |             negar |             negar |  permitir próprios |         permitir |    negar direta |
+| service_role/backend |                     via backend |         via backend |        via backend |      negar direto |      negar direto |        via backend |      via backend |     via backend |
 
 Observação: `service_role` pode contornar RLS no Supabase. Portanto, autorização de backend deve aplicar as políticas do domínio; service role não é permissão pedagógica nem jurídica.
 
@@ -128,10 +128,11 @@ Policy conceitual:
 WITH CHECK (requester_id = auth.uid())
 ```
 
-O schema 3A implementou esse INSERT direto como preparação. A implementação local do 3B.5.3 o
-substitui por RPC REQUESTER que deriva `requester_id = auth.uid()` e grava atomicamente OPP
-`requested`, evento `created` e recibo. A mesma migration revoga o INSERT direto de
-`authenticated`; a eficácia desses grants aguarda confirmação no Supabase descartável do DB CI.
+O schema 3A implementou esse INSERT direto como preparação. O 3B.5.3 o substituiu por RPC REQUESTER
+que deriva `requester_id = auth.uid()` e grava atomicamente OPP `requested`, evento `created` e
+recibo. A migration revogou o INSERT direto de `authenticated` e de `service_role`; grants,
+atomicidade e bypass negado foram aprovados no DB CI nº 31. A policy histórica permanece no schema,
+mas não constitui superfície executável sem privilégio de tabela.
 
 ## OPP — UPDATE/DELETE
 

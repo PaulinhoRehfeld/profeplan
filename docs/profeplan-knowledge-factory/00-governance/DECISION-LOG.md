@@ -418,10 +418,10 @@ mas não executa os gates pedagógicos de `evaluateOppTransition()`. A camada de
 aprovar a decisão de domínio antes de chamar a transição; a RPC repetirá ownership, compare-and-set,
 matriz estrutural, evento derivado, idempotência e atomicidade.
 
-O Lote 3B.5 será dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
-e adapters de comando. O 3B.5.1 foi integrado pelo Pull Request nº 25 e o 3B.5.2 pelo Pull Request
-nº 26. O 3B.5.3 foi integrado pelo Pull Request nº 27. O 3B.5.4 foi implementado em branch própria
-para revisão, com adapters REQUESTER e SYSTEM separados e exclusivos das RPCs aprovadas.
+O Lote 3B.5 foi dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
+e adapters de comando. Os sublotes 3B.5.1 a 3B.5.4 foram integrados pelos Pull Requests nº 25 a 28,
+com adapters REQUESTER e SYSTEM separados e exclusivos das RPCs aprovadas. O Checkpoint 031
+formalizou o encerramento de `GAP-3B-03` e do Lote 3B.5.
 
 ## ADR-052 — 3B.5 conecta uma fatia mínima e não encerra a OPP normativa
 

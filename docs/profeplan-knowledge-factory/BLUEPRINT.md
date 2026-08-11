@@ -81,7 +81,9 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
 ✅ 3B.4 PedagogicalComponentRepository — leituras e escritas transacionais integradas
-🔵 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.3 integrados; 3B.5.4 em revisão  ← ESTADO ATUAL
+✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
+
+🟡 Gate de saída da Fase B — inspeção documental pendente  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ⬜ Governança operacional de fontes
@@ -255,10 +257,9 @@ Definição específica:
 
 ### 6.5 — 3B.5 ProductionOrderRepository
 
-Status: **definição documental integrada pelo PR nº 24, contratos/contextos do 3B.5.1 integrados
-pelo PR nº 25, adapter REQUESTER read-only do 3B.5.2 integrado pelo PR nº 26 e migration/RPCs do
-3B.5.3 integradas pelo PR nº 27. O 3B.5.4 — adapters de comando foi implementado em branch isolada
-e está preparado para revisão; nenhum wiring ou acesso à produção foi iniciado.**
+Status: **concluído. A definição documental e os quatro sublotes foram integrados pelos Pull
+Requests nº 24 a 28, e o encerramento pós-merge foi formalizado no Checkpoint 031. Nenhum wiring,
+Supabase hospedado ou acesso à produção foi iniciado.**
 
 Objetivo:
 
@@ -280,13 +281,13 @@ Estratégia proposta:
 3B.5.1 — contratos e contextos — integrado
 3B.5.2 — adapter requester read-only — integrado
 3B.5.3 — migration e RPCs — integrado
-3B.5.4 — adapters de comando — implementado para revisão
+3B.5.4 — adapters de comando — integrado
 ```
 
-Restrições ativas:
+Estado dos gaps:
 
-- GAP-3B-03.
-- GAP-3B-07 — fatia física atual não representa a OPP normativa completa.
+- GAP-3B-03 — encerrado após integração dos quatro sublotes e checkpoint pós-merge;
+- GAP-3B-07 — ativo e contido; a fatia física atual não representa a OPP normativa completa.
 
 Definição específica:
 
@@ -702,13 +703,13 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 concluído; definição documental e sublotes 3B.5.1 a 3B.5.3 integrados; 3B.5.4 — adapters de comando implementado em branch isolada para revisão. GAP-3B-03 permanece ativo até integração e checkpoint pós-merge; GAP-3B-07 registra que a fatia física não conclui a OPP normativa. A Fase B ainda não está concluída.**
+> **FASE B — Lotes 3B.1 a 3B.5 concluídos; 3B.5.4 integrado pelo PR nº 28 e encerramento do Lote 3B.5 formalizado no Checkpoint 031. GAP-3B-03 está encerrado. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos e limitados. A Fase B ainda aguarda decisão documental própria de saída.**
 
 Próximo objetivo imediato:
 
-> revisar e decidir sobre a publicação e integração do 3B.5.4 — adapters REQUESTER de criação e
-> SYSTEM de transição. Nenhum wiring, encerramento automático de GAP, Supabase hospedado ou acesso
-> à produção é autorizado por esta atualização de navegação.
+> revisar o checkpoint documental de encerramento do Lote 3B.5 e, após sua integração, inspecionar
+> exclusivamente o gate de saída da Fase B. Nenhum início da Fase C, wiring, Supabase hospedado ou
+> acesso à produção é autorizado por esta atualização de navegação.
 
 Próxima grande mudança de natureza do projeto:
 
