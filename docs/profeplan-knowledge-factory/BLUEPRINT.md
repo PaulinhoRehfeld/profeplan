@@ -2,7 +2,7 @@
 
 Data de consolidação inicial: 7 de agosto de 2026.
 
-Estado de navegação atualizado em 8 de agosto de 2026.
+Estado de navegação atualizado em 11 de agosto de 2026.
 
 ## 1. Finalidade
 
@@ -80,8 +80,8 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.1 AuditRepository
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
-🔵 3B.4 PedagogicalComponentRepository — 3B.4A e definição do 3B.4B integrados; 3B.4B.1 em revisão  ← ESTADO ATUAL
-⬜ 3B.5 ProductionOrderRepository
+✅ 3B.4 PedagogicalComponentRepository — leituras e escritas transacionais integradas
+⬜ 3B.5 ProductionOrderRepository — não iniciado  ← PRÓXIMO GATE DOCUMENTAL
 
 FASE C — MATÉRIA-PRIMA
 ⬜ Governança operacional de fontes
@@ -208,7 +208,7 @@ Este registro atualiza o estado de navegação sem reescrever o histórico prese
 
 ### 6.4 — 3B.4 PedagogicalComponentRepository
 
-Status: **3B.4A, definição do 3B.4B, 3B.4B.1 e 3B.4B.2 integrados; 3B.4B.3 em revisão.**
+Status: **concluído. 3B.4A e todos os sublotes do 3B.4B foram integrados por decisão humana.**
 
 Objetivo:
 
@@ -222,7 +222,7 @@ Estratégia:
 3B.4B — escritas transacionais — definição integrada pelo PR nº 19
   3B.4B.1 — contratos e porta — integrado pelo PR nº 20
   3B.4B.2 — migration e RPCs — integrado pelo PR nº 21
-  3B.4B.3 — adapter Supabase de comando — em revisão
+  3B.4B.3 — adapter Supabase de comando — integrado pelo PR nº 22
 ```
 
 Estado integrado do 3B.4A:
@@ -234,13 +234,18 @@ Estado integrado do 3B.4A:
 - squash merge do PR nº 17 no commit `1c03d21590bf004489d0f4d07e42aaf29db44ac5`;
 - testes unitários, CI geral, integração no Supabase descartável e Vercel aprovados.
 
-Restrições ativas:
+Estado integrado das escritas:
 
-- GAP-3B-02 — componente + versão exigem atomicidade real;
-- GAP-3B-06 — contratos completos precisam ser comprovados pelo adapter transacional;
-- o adapter 3B.4B.3 usa exclusivamente as quatro RPCs integradas e permanece sem wiring;
-- GAP-3B-02 e GAP-3B-06 só poderão ser encerrados após integração humana do 3B.4B.3;
-- nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider.
+- o contrato `2.0.0` transporta evidências completas e vínculos curriculares sem side-channel;
+- as quatro operações usam RPCs PostgreSQL estreitas, transacionais e idempotentes;
+- o adapter 3B.4B.3 usa exclusivamente essas RPCs e permanece separado da leitura;
+- atomicidade, rollback, replay, fingerprint divergente e concorrência foram aprovados no Supabase
+  descartável;
+- o PR nº 22 foi integrado no commit `99b7981695eccb8b6019d570ff6e77529574a58f`, após CI geral,
+  DB CI e Vercel verdes;
+- `GAP-3B-02` e `GAP-3B-06` estão formalmente encerrados;
+- nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider;
+- wiring, Supabase hospedado e produção continuam sujeitos a gates próprios.
 
 Definição específica:
 
@@ -677,12 +682,13 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 — 3B.4A, definição do 3B.4B, 3B.4B.1 e 3B.4B.2 integrados; 3B.4B.3 em revisão, com GAP-3B-02 e GAP-3B-06 ainda ativos.**
+> **FASE B — Lote 3B.4 concluído após integração do 3B.4B.3 pelo PR nº 22; GAP-3B-02 e GAP-3B-06 encerrados. O Lote 3B.5 permanece não iniciado e a Fase B ainda não está concluída.**
 
 Próximo objetivo imediato:
 
-> revisar e decidir sobre a integração do 3B.4B.3 — adapter Supabase de comandos; nenhum wiring,
-> acesso à produção, encerramento antecipado de GAP ou início do Lote 3B.5 está autorizado.
+> definir documentalmente o Lote 3B.5 — `ProductionOrderRepository` — reconciliando requester
+> context, RLS e atomicidade OPP + evento. Nenhum código, migration, RPC, wiring ou acesso à
+> produção é autorizado por esta atualização de navegação.
 
 Próxima grande mudança de natureza do projeto:
 

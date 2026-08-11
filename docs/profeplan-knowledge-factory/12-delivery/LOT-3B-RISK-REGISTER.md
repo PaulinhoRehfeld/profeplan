@@ -46,6 +46,10 @@ Gate: escrita do componente bloqueada.
 
 O gate inclui `saveComponent()` e `saveVersion()`: a primeira operação não distingue criação de atualização, e a segunda atravessa versão, evidências e vínculos curriculares.
 
+Status atualizado: **encerrado em 11 de agosto de 2026.** Os métodos genéricos foram substituídos
+por quatro comandos explícitos; as RPCs transacionais e o adapter exclusivo foram integrados pelos
+PRs nº 20, 21 e 22, com atomicidade, rollback e concorrência verdes no DB CI.
+
 ## R-3B-06 — Pseudo-transação OPP + evento
 
 Risco: status da OPP divergir da timeline append-only.
@@ -178,6 +182,10 @@ Risco: como `saveVersion()` possui somente IDs de evidência e a porta não cria
 Mitigação: registrar GAP-3B-06 e bloquear 3B.4B até comando, payload, contrato, idempotência e RPC transacional específicos serem aprovados.
 
 Gate: nenhuma escrita de componente, versão, evidência ou vínculo curricular antes da resolução humana de GAP-3B-02 e GAP-3B-06.
+
+Status atualizado: **encerrado em 11 de agosto de 2026.** O contrato `2.0.0` transporta evidências
+completas e vínculos dentro do comando, e o adapter integrado pelo PR nº 22 usa exclusivamente a
+RPC correspondente, sem helper público, acesso externo direto ou método inventado.
 
 ## Regra de interpretação
 

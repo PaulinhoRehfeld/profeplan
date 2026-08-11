@@ -177,7 +177,7 @@ Controles satisfeitos pelos sublotes 3B.4B.1 e 3B.4B.2:
 
 ### Adapter de comandos do 3B.4B.3
 
-O adapter em revisão mantém uma classe separada da leitura e chama exatamente uma RPC por método.
+O adapter integrado pelo PR nº 22 mantém uma classe separada da leitura e chama exatamente uma RPC por método.
 Ele separa `commandId` em `p_command_id`, envia o restante do comando como payload fechado, valida
 integralmente o recibo e não contém `.from()`, DML direto, retry automático, criação de client ou
 leitura de ambiente.
@@ -185,7 +185,9 @@ leitura de ambiente.
 Os códigos internos são traduzidos na borda: `PT409` para `CONFLICT`, `P0002` para `NOT_FOUND` e
 `22023` para `INVALID_INPUT`. Nenhum SQLSTATE ou detalhe bruto atravessa o adapter.
 
-GAP-3B-02 e GAP-3B-06 permanecem ativos até o DB CI e a integração humana do 3B.4B.3.
+O DB CI nº 23 e a integração humana do 3B.4B.3 comprovaram o uso exclusivo da fronteira
+transacional e o transporte de evidências e vínculos sem side-channel. GAP-3B-02 e GAP-3B-06 estão
+encerrados. Esta conclusão não autoriza wiring nem aplicação das migrations no Supabase hospedado.
 
 ## KnowledgeSourceRepository
 
