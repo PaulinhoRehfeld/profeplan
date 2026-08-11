@@ -10,8 +10,8 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --experimental-strip-types --test test/*.repository.test.mjs",
-    "test:integration": "node --experimental-strip-types --test --test-concurrency=1 test/*.integration.test.mjs"
+    "test": "node --experimental-transform-types --test test/*.repository.test.mjs",
+    "test:integration": "node --experimental-transform-types --test --test-concurrency=1 test/*.integration.test.mjs"
   },
   "dependencies": {
     "@profeplan/knowledge-factory": "workspace:*",
