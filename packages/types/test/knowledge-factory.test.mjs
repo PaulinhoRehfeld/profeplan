@@ -26,7 +26,7 @@ import {
   syntheticSource,
   syntheticSufficiencyResult,
   syntheticTransitionProductionOrderCommand,
-} from '../src/knowledge-factory/index.ts';
+} from '../src/index.ts';
 
 test('knowledge factory exports the approved 3.0.0 write contract', () => {
   assert.equal(KNOWLEDGE_FACTORY_CONTRACT_VERSION, '3.0.0');

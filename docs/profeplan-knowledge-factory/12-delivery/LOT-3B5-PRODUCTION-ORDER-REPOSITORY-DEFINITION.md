@@ -5,10 +5,10 @@ Data: 11 de agosto de 2026.
 ## Status
 
 **Definição documental integrada pelo Pull Request nº 24, 3B.5.1 — contratos e contextos integrado
-pelo Pull Request nº 25 e 3B.5.2 — adapter REQUESTER read-only integrado pelo Pull Request nº 26. O
-3B.5.3 — migration e RPCs foi implementado em branch isolada e está preparado para revisão humana.
-Nenhum adapter de comando, wiring, Supabase hospedado ou produção está autorizado por
-continuidade.**
+pelo Pull Request nº 25, 3B.5.2 — adapter REQUESTER read-only integrado pelo Pull Request nº 26 e
+3B.5.3 — migration e RPCs integrado pelo Pull Request nº 27. O 3B.5.4 — adapters de comando foi
+implementado em branch isolada e está preparado para revisão humana. Nenhum wiring, Supabase
+hospedado ou produção está autorizado por continuidade.**
 
 Base canônica inspecionada:
 
@@ -26,6 +26,9 @@ Base canônica inspecionada:
 - integração do 3B.5.2: Pull Request nº 26;
 - commit de integração do 3B.5.2: `b0d83c1b0a27dd20ca9bba891297c7453bb6e5fa`;
 - branch técnica do 3B.5.3: `feat/knowledge-factory-production-order-write-rpcs`.
+- integração do 3B.5.3: Pull Request nº 27;
+- commit de integração do 3B.5.3: `e223de4d02b39df748c3063d0e495f528c025e9d`;
+- branch técnica do 3B.5.4: `feat/knowledge-factory-production-order-command-adapters`.
 
 O Lote 3B.4 está encerrado. `GAP-3B-03`, requester isolation e a coerência da timeline são as
 restrições centrais desta definição. `GAP-3B-04` e `GAP-3B-05` permanecem fora do escopo.
@@ -426,13 +429,13 @@ escrita, RPC, migration, client, sessão ou fallback SYSTEM foi criada.
 - criar rollback guardado e DB lint;
 - nenhuma aplicação no Supabase hospedado.
 
-Estado: **implementado em branch isolada e preparado para revisão humana.** A migration adiciona
+Estado: **integrado pelo Pull Request nº 27.** A migration adiciona
 recibos requester-scoped, helpers internos e exatamente as duas RPCs aprovadas. A criação
 REQUESTER deriva `auth.uid()`, status, timestamps e evento `created`; a transição SYSTEM confere
 ownership, compare-and-set, matriz estrutural, monotonicidade e evento derivado sob row lock. DML
 direto foi revogado, RLS e append-only foram preservados, rollback guardado e corridas
-multi-sessão foram preparados. Os gates gerais locais passaram; execução SQL, concorrência,
-reaplicação, integração A/B e DB lint aguardam o Supabase descartável do DB CI.
+multi-sessão foram aprovados. CI geral, DB CI, integração A/B, rollback, reaplicação e DB lint
+ficaram verdes antes do squash merge `e223de4d02b39df748c3063d0e495f528c025e9d`.
 
 ### 3B.5.4 — Adapters de comando
 
@@ -444,6 +447,13 @@ reaplicação, integração A/B e DB lint aguardam o Supabase descartável do DB
 - telemetria allowlisted e erros sanitizados;
 - integração no Supabase descartável;
 - nenhum API/frontend/composition root/produção.
+
+Estado: **implementado em branch isolada e preparado para revisão humana.** O adapter REQUESTER
+implementa somente `createProductionOrder` e chama exclusivamente `kf_create_production_order`; o
+adapter SYSTEM implementa somente `transitionProductionOrder` e chama exclusivamente
+`kf_transition_production_order`. Payloads são reconstruídos por allowlist, recibos são validados
+integralmente, telemetria é sanitizada e não existe DML direto, criação de client, troca de contexto
+ou wiring. A integração descartável está preparada e depende do DB CI do futuro Pull Request.
 
 Após os quatro sublotes, um checkpoint pós-merge próprio decidirá sobre encerramento do Lote 3B.5,
 de `GAP-3B-03` e da Fase B. Nenhum encerramento é automático por esta definição.
@@ -562,10 +572,10 @@ Esses riscos serão incorporados ao registro do Lote 3B com gates verificáveis.
 ## 8. Itens expressamente excluídos
 
 Na branch documental original, qualquer alteração de código estava excluída. O 3B.5.1 ficou
-restrito a contratos/contextos; o 3B.5.2, à leitura REQUESTER; e o 3B.5.3 autorizado, à migration,
-RPCs, grants, rollback e provas descartáveis. Permanecem expressamente excluídos:
+restrito a contratos/contextos; o 3B.5.2, à leitura REQUESTER; o 3B.5.3, à migration, RPCs, grants,
+rollback e provas descartáveis; e o 3B.5.4, aos dois adapters de comando exclusivos das RPCs.
+Permanecem expressamente excluídos:
 
-- adapters de comando do 3B.5.4;
 - DML direto em adapters ou fallback entre REQUESTER e SYSTEM;
 - aplicação no Supabase hospedado;
 - criação ou rotação de credenciais;
@@ -600,11 +610,11 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 10. Próximo gate humano
 
-Revisar a implementação técnica do **3B.5.3 — migration e RPCs** e decidir entre solicitar ajustes,
-rejeitar/adiar ou autorizar sua publicação em Pull Request draft. O DB CI deverá aprovar migration,
-grants, atomicidade, replay, concorrência, rollback, reaplicação, integração A/B e DB lint antes de
-qualquer integração.
+Revisar a implementação técnica do **3B.5.4 — adapters de comando** e decidir entre solicitar
+ajustes, rejeitar/adiar ou autorizar sua publicação em Pull Request draft. O CI geral e o DB CI
+deverão aprovar superfície, payloads fechados, recibos, erros, telemetria, separação REQUESTER/SYSTEM
+e integração descartável antes de qualquer merge.
 
-Mesmo após eventual integração do 3B.5.3, o **3B.5.4 — adapters de comando** somente poderá ser
-iniciado em branch e PR próprios mediante nova autorização explícita. Nenhum sublote posterior
-recebe autorização por continuidade implícita.
+Mesmo após eventual integração do 3B.5.4, o encerramento de `GAP-3B-03`, do Lote 3B.5 e da Fase B
+somente poderá ocorrer por checkpoint pós-merge e decisão humana próprios. Nenhuma produção ou fase
+posterior recebe autorização por continuidade implícita.
