@@ -81,7 +81,7 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
 ✅ 3B.4 PedagogicalComponentRepository — leituras e escritas transacionais integradas
-⬜ 3B.5 ProductionOrderRepository — não iniciado  ← PRÓXIMO GATE DOCUMENTAL
+🔵 3B.5 ProductionOrderRepository — definição documental proposta  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ⬜ Governança operacional de fontes
@@ -255,7 +255,7 @@ Definição específica:
 
 ### 6.5 — 3B.5 ProductionOrderRepository
 
-Status: pendente.
+Status: **definição documental proposta para revisão. Nenhum código do 3B.5 foi iniciado.**
 
 Objetivo:
 
@@ -265,12 +265,29 @@ Objetivo:
 
 Pré-condições:
 
-- requester-scoped client formalmente definido;
-- atomicidade OPP + evento aprovada.
+- requester-scoped client formalmente definido e efêmero;
+- criação de OPP + evento `created` atômica;
+- transição OPP + evento atômica e server-only;
+- idempotência e concorrência otimista;
+- separação entre leitura, solicitação e transição.
 
-Restrição ativa:
+Estratégia proposta:
+
+```text
+3B.5.1 — contratos e contextos
+3B.5.2 — adapter requester read-only
+3B.5.3 — migration e RPCs
+3B.5.4 — adapters de comando
+```
+
+Restrições ativas:
 
 - GAP-3B-03.
+- GAP-3B-07 — fatia física atual não representa a OPP normativa completa.
+
+Definição específica:
+
+- `12-delivery/LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md`.
 
 ### Gate de saída da Fase B
 
@@ -682,13 +699,13 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 concluído após integração do 3B.4B.3 pelo PR nº 22; GAP-3B-02 e GAP-3B-06 encerrados. O Lote 3B.5 permanece não iniciado e a Fase B ainda não está concluída.**
+> **FASE B — Lote 3B.4 concluído; definição documental do Lote 3B.5 proposta para revisão. GAP-3B-03 permanece ativo e GAP-3B-07 registra que a fatia física não conclui a OPP normativa. A Fase B ainda não está concluída.**
 
 Próximo objetivo imediato:
 
-> definir documentalmente o Lote 3B.5 — `ProductionOrderRepository` — reconciliando requester
-> context, RLS e atomicidade OPP + evento. Nenhum código, migration, RPC, wiring ou acesso à
-> produção é autorizado por esta atualização de navegação.
+> revisar e decidir sobre a definição documental do Lote 3B.5 — `ProductionOrderRepository`.
+> Somente após eventual integração poderá ser iniciado o 3B.5.1. Nenhum código, migration, RPC,
+> wiring ou acesso à produção é autorizado por esta atualização de navegação.
 
 Próxima grande mudança de natureza do projeto:
 

@@ -103,7 +103,17 @@ Retry de leitura pode ser permitido futuramente; retry de escrita só quando a o
 
 O schema 3A permite INSERT autenticado de OPP própria em status `requested`.
 
-Essa criação isolada pode ocorrer com requester-scoped client em fase futura.
+Essa possibilidade física foi preparatória. A definição do 3B.5 rejeita a criação isolada como
+fronteira final porque ela permite OPP sem evento `created`.
+
+A futura criação usará requester-scoped client e uma RPC específica para inserir, na mesma
+transação:
+
+- OPP própria em `requested`;
+- evento `created` derivado;
+- recibo idempotente.
+
+Após essa RPC, o INSERT direto de `authenticated` será revogado.
 
 ### Transição de estado
 
@@ -118,13 +128,23 @@ Porque a segunda operação pode falhar deixando timeline divergente.
 
 Antes do adapter de transição, criar RPC específica que:
 
+- seja executável somente pelo backend server-side, não por `authenticated`;
 - valida estado esperado;
+- valida requester esperado contra o owner da OPP;
+- valida `updated_at` esperado e monotonicidade temporal;
 - atualiza OPP;
-- insere evento;
+- deriva e insere o evento correspondente;
 - opcionalmente insere auditoria quando aprovado;
 - falha como unidade.
 
-Nenhum nome de função é fechado por este documento; o contrato da função será definido no ciclo correspondente.
+A exposição server-only é obrigatória porque RLS não executa os gates pedagógicos da política de
+domínio. A aplicação deve obter decisão aceita antes da RPC; a função repete apenas invariantes
+estruturais verificáveis no banco.
+
+O documento histórico não fechava nomes de função. A definição do 3B.5 propõe
+`kf_create_production_order` e
+`kf_transition_production_order`, cada uma com comando fechado, recibo idempotente e gate humano
+próprio antes da implementação.
 
 ## PedagogicalComponentRepository
 
