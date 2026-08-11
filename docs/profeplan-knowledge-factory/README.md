@@ -56,12 +56,12 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
 - GAP-3B-02 e GAP-3B-06 — condições de encerramento satisfeitas e formalizadas no
   [Checkpoint 025](00-governance/CONTINUITY-CHECKPOINT-025.md);
 - GAP-3B-03, GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos;
-- Lote 3B.5 — definição documental e 3B.5.1 — contratos e contextos integrados; 3B.5.2 — adapter
-  REQUESTER read-only em revisão;
+- Lote 3B.5 — definição documental, 3B.5.1 e 3B.5.2 integrados; 3B.5.3 — migration e RPCs
+  implementado em branch isolada para revisão;
 - Fase B — não concluída;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate é revisar o 3B.5.2 conforme a
-[definição do Lote 3B.5](12-delivery/LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md). O adapter
-read-only não autoriza migrations, RPCs, adapters de comando, wiring, Supabase hospedado ou
-produção.
+O próximo gate é revisar o 3B.5.3 conforme a
+[definição do Lote 3B.5](12-delivery/LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md) e o
+[Checkpoint 029](00-governance/CONTINUITY-CHECKPOINT-029.md). A implementação local não autoriza
+push, Pull Request, 3B.5.4, wiring, Supabase hospedado ou produção.

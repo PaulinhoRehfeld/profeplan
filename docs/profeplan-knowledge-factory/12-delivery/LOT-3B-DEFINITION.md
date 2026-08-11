@@ -258,11 +258,11 @@ Leituras podem preceder escritas. Escrita fica bloqueada até resolver GAP-3B-02
 
 Somente depois de requester-scoped client e atomicidade OPP+evento aprovados.
 
-Estado proposto em 11 de agosto de 2026: definição específica em
+Estado atualizado em 11 de agosto de 2026: definição específica em
 `LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md`, dividida em contratos/contextos, leitura
-REQUESTER, migration/RPCs e adapters de comando. `GAP-3B-03` permanece ativo e `GAP-3B-07`
-registra que a fatia física atual não representa a OPP normativa completa. Nenhum código do 3B.5
-foi iniciado por essa atualização.
+REQUESTER, migration/RPCs e adapters de comando. 3B.5.1 e 3B.5.2 foram integrados; 3B.5.3 foi
+implementado em branch isolada para revisão; 3B.5.4 permanece bloqueado. `GAP-3B-03` permanece
+ativo e `GAP-3B-07` registra que a fatia física atual não representa a OPP normativa completa.
 
 ---
 

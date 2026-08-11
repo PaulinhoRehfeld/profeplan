@@ -238,8 +238,9 @@ precedida pela política de domínio e executada por RPC estreita com ownership 
 compare-and-set e evento derivado.
 
 O sublote 3B.5.1 elevou o contrato para `3.0.0` e foi integrado pelo Pull Request nº 25. O adapter
-REQUESTER read-only do 3B.5.2 foi implementado em branch técnica própria e está preparado para
-revisão. RPCs, grants e adapters de comando permanecem bloqueados até seus PRs próprios.
+REQUESTER read-only do 3B.5.2 foi integrado pelo Pull Request nº 26. A migration/RPCs do 3B.5.3 foi
+implementada em branch técnica própria para revisão; adapters de comando permanecem bloqueados até
+seu PR e gate próprios.
 
 ## ADR-052 — Cobertura mínima explicitamente parcial da OPP
 
@@ -270,11 +271,11 @@ Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a pri
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
 
-## Gate vigente — Lote 3B.5.2
+## Gate vigente — Lote 3B.5.3
 
-O próximo gate é exclusivamente a revisão humana do 3B.5.2 — adapter REQUESTER read-only do
-`ProductionOrderRepository`.
+O próximo gate é exclusivamente a revisão humana do 3B.5.3 — migration e RPCs transacionais do
+`ProductionOrderRepository`, seguida de autorização própria para publicação e validação no DB CI.
 
-Mesmo após eventual integração, o 3B.5.3 continuará bloqueado até nova autorização explícita.
-RPC/migration, adapters de comando, produção, API, frontend, retrieval, agentes e conteúdo real
-permanecem bloqueados até autorizações próprias.
+Mesmo após eventual integração, o 3B.5.4 continuará bloqueado até nova autorização explícita.
+Adapters de comando, produção, API, frontend, retrieval, agentes e conteúdo real permanecem
+bloqueados até autorizações próprias.

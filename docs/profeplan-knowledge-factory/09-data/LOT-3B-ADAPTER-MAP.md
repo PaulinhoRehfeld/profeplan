@@ -179,6 +179,6 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 6. `ProductionOrderRepository` em quatro sublotes após integração da definição 3B.5.
 
 Os itens 1 a 5 foram integrados. O Lote 3B.4 está concluído. A definição do item 6 foi integrada e o
-3B.5.1 foi integrado pelo Pull Request nº 25. O adapter REQUESTER read-only do 3B.5.2 foi
-implementado em branch própria e está em revisão. Os sublotes 3B.5.3 e 3B.5.4 permanecem bloqueados
-até gates humanos próprios.
+3B.5.1 foi integrado pelo Pull Request nº 25. O adapter REQUESTER read-only do 3B.5.2 foi integrado
+pelo Pull Request nº 26. O 3B.5.3 — migration e RPCs foi implementado em branch própria e está em
+revisão; o 3B.5.4 permanece bloqueado até gate humano próprio.

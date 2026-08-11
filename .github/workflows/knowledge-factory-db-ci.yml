@@ -8,6 +8,7 @@ on:
       - '.github/workflows/knowledge-factory-db-ci.yml'
       - 'supabase/migrations/202608071120_knowledge_factory_schema.sql'
       - 'supabase/migrations/202608081600_kf_component_write_rpcs.sql'
+      - 'supabase/migrations/202608111900_kf_production_order_write_rpcs.sql'
       - 'supabase/tests/**'
       - 'packages/knowledge-factory-supabase/**'
       - 'pnpm-lock.yaml'
@@ -18,7 +19,7 @@ permissions:
 
 jobs:
   validate-knowledge-factory-db:
-    name: Validate schema and component transactions on disposable Supabase
+    name: Validate schema and transactional writes on disposable Supabase
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -71,10 +72,12 @@ jobs:
               supabase/migrations/202608071120_knowledge_factory_schema.sql
             cp ../supabase/migrations/202608081600_kf_component_write_rpcs.sql \
               supabase/migrations/202608081600_kf_component_write_rpcs.sql
+            cp ../supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
+              supabase/migrations/202608111900_kf_production_order_write_rpcs.sql
           )
 
           {
-            echo "Knowledge Factory disposable schema and component transaction validation"
+            echo "Knowledge Factory disposable schema and transactional write validation"
             echo "UTC start: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo "Commit: $GITHUB_SHA"
             echo "Supabase CLI: $(supabase --version)"
@@ -160,6 +163,41 @@ jobs:
             -f supabase/tests/knowledge_factory_component_writes.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
 
+      - name: First pass - transactional production order writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_production_order_writes.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: First pass - production order concurrency
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash supabase/tests/knowledge_factory_production_order_concurrency.sh \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Rehearse guarded production order write rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_production_order_write_rollback.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -Atc \
+            "SELECT CASE
+               WHEN to_regclass('public.kf_production_orders') IS NULL
+                 THEN 'FAIL:base_opp_table_missing'
+               WHEN to_regclass('public.kf_production_order_write_receipts') IS NOT NULL
+                 THEN 'FAIL:opp_receipt_table_remains'
+               WHEN to_regprocedure('public.kf_create_production_order(uuid,jsonb)') IS NOT NULL
+                 THEN 'FAIL:create_opp_rpc_remains'
+               ELSE 'OK:opp_write_rollback_isolated'
+             END;" \
+            2>&1 | tee -a "$KF_EVIDENCE" | grep -q 'OK:opp_write_rollback_isolated'
+
       - name: Rehearse guarded component write rollback
         shell: bash
         run: |
@@ -182,18 +220,25 @@ jobs:
              END;" \
             2>&1 | tee -a "$KF_EVIDENCE" | grep -q 'OK:component_write_rollback_isolated'
 
-      - name: Reapply component write migration before full rollback rehearsal
+      - name: Reapply transactional migrations before full rollback rehearsal
         shell: bash
         run: |
           set -euo pipefail
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/migrations/202608081600_kf_component_write_rpcs.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Rehearse guarded rollback
         shell: bash
         run: |
           set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_production_order_write_rollback.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/tests/knowledge_factory_component_write_rollback.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
@@ -227,6 +272,9 @@ jobs:
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/migrations/202608081600_kf_component_write_rpcs.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Second pass - schema and constraints
         shell: bash
@@ -250,6 +298,21 @@ jobs:
           set -euo pipefail
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/tests/knowledge_factory_component_writes.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Second pass - transactional production order writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_production_order_writes.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Second pass - production order concurrency
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash supabase/tests/knowledge_factory_production_order_concurrency.sh \
             2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Load synthetic component read adapter fixtures
