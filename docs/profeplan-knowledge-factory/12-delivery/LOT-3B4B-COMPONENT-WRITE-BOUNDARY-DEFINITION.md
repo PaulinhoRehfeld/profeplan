@@ -4,14 +4,15 @@ Data: 8 de agosto de 2026.
 
 ## Status
 
-**Definição documental integrada pelo Pull Request nº 19 no commit `d9838ef290522aba6dba4e104a03420dd12192fb`. O 3B.4B.1 foi integrado pelo Pull Request nº 20 no commit `d481d998603e9a335edb308cfdb82b7868289cea`. O 3B.4B.2 foi integrado pelo Pull Request nº 21 no commit `fdf9bfdb28bea5dc85f9ed6b11913dd69b94cbd1`. A autorização atual alcança somente o 3B.4B.3 — adapter Supabase de comandos; wiring, produção e Lote 3B.5 permanecem bloqueados.**
+**Concluído. A definição documental foi integrada pelo Pull Request nº 19; o 3B.4B.1, pelo PR nº 20; o 3B.4B.2, pelo PR nº 21; e o 3B.4B.3, pelo PR nº 22 no commit `99b7981695eccb8b6019d570ff6e77529574a58f`. GAP-3B-02 e GAP-3B-06 estão encerrados. Wiring, Supabase hospedado, produção e Lote 3B.5 permanecem fora deste encerramento.**
 
-Base inspecionada para o 3B.4B.3: `main` no commit
-`fdf9bfdb28bea5dc85f9ed6b11913dd69b94cbd1`, após o squash merge do Pull Request nº 21.
+Base pós-integração inspecionada: `main` no commit
+`99b7981695eccb8b6019d570ff6e77529574a58f`, squash merge do Pull Request nº 22.
 
-O Lote 3B.4A, o 3B.4B.1 e o 3B.4B.2 permanecem integrados. O 3B.4B.3 avançou em branch própria
-para revisão humana. `GAP-3B-02` e `GAP-3B-06` continuam ativos até que o adapter seja aprovado no
-Supabase descartável e integrado consumindo exclusivamente as quatro RPCs transacionais.
+O Lote 3B.4A e os três sublotes do 3B.4B estão integrados. O CI geral nº 252, o Knowledge Factory
+DB CI nº 23 e a Vercel foram aprovados no head revisado do PR nº 22. O adapter integrado consome
+exclusivamente as quatro RPCs transacionais e persiste evidências completas e vínculos curriculares
+sem side-channel.
 
 ## 1. Objetivo
 
@@ -372,7 +373,7 @@ O 3B.4B será dividido em três sublotes, cada um com branch, PR e gate humano p
 - testar atomicidade, falha intermediária, retry, replay, fingerprint divergente e concorrência no Supabase descartável;
 - nenhuma integração com produção e nenhum wiring de aplicação.
 
-### 3B.4B.3 — Adapter Supabase de comando — em revisão
+### 3B.4B.3 — Adapter Supabase de comando — integrado
 
 - implementar a porta de comando usando somente as RPCs;
 - reutilizar `SupabaseSystemContext` injetado;
@@ -382,7 +383,8 @@ O 3B.4B será dividido em três sublotes, cada um com branch, PR e gate humano p
 - não criar fallback para DML direto;
 - não ativar API, frontend ou produção.
 
-O Lote 3B.4 somente poderá ser considerado concluído após integração humana dos três sublotes e checkpoint pós-merge próprio.
+Os três sublotes foram integrados por decisão humana. O Lote 3B.4 está concluído; seu encerramento
+pós-merge é registrado no Checkpoint 025.
 
 ## 7. Testes obrigatórios futuros
 
@@ -430,20 +432,22 @@ O Lote 3B.4 somente poderá ser considerado concluído após integração humana
 
 ### GAP-3B-02
 
-Permanece ativo. O sublote 3B.4B.2 integrou a contenção escolhida — transação PostgreSQL real,
-RPCs estreitas e rollback integral. O 3B.4B.3 implementa o consumo exclusivo dessa fronteira, mas
-seu encerramento ainda depende de DB CI e integração humana.
+**Encerrado.** O sublote 3B.4B.2 integrou a contenção escolhida — transação PostgreSQL real, RPCs
+estreitas e rollback integral. O DB CI aprovou atomicidade, falha intermediária, concorrência,
+replay e rollback; o 3B.4B.3 foi então integrado consumindo exclusivamente essa fronteira.
 
 Critério de encerramento: integração humana do sublote 3B.4B.2 com testes de atomicidade, falha intermediária, concorrência e rollback verdes, seguida da integração do adapter de comando que usa exclusivamente essas RPCs.
 
 ### GAP-3B-06
 
-Permanece ativo. O contrato `2.0.0` já transporta `EvidenceOrigin` completo e vínculos versionados,
-mas o encerramento depende do adapter 3B.4B.3 persistir o agregado sem side-channel.
+**Encerrado.** O contrato `2.0.0` transporta `EvidenceOrigin` completo e vínculos versionados. O
+adapter integrado persiste o agregado pela RPC correspondente, sem side-channel, com semântica
+insert-only versionada, idempotência e testes verdes.
 
 Critério de encerramento: integração humana do contrato 2.0 e do adapter que persiste o agregado sem side-channel, com semântica insert-only versionada, idempotência e testes verdes.
 
-Nenhum gap é declarado encerrado por esta etapa documental.
+O encerramento dos dois GAPs decorre do cumprimento dos critérios aprovados e da integração humana
+dos PRs nº 20, 21 e 22. Não amplia o escopo para produção.
 
 ## 9. Itens expressamente excluídos da definição documental original
 
@@ -476,8 +480,8 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 11. Próximo gate humano
 
-O próximo gate é revisar o Pull Request draft do 3B.4B.3 — adapter Supabase de comandos — e decidir
-entre solicitar ajustes, rejeitar/adiar ou autorizar seu squash merge.
+O próximo gate é definir documentalmente o Lote 3B.5 — `ProductionOrderRepository` — sem iniciar
+código por continuidade implícita.
 
-Mesmo após eventual integração do 3B.4B.3, wiring, aplicação de migrations no Supabase hospedado,
-produção e início do Lote 3B.5 exigirão autorizações explícitas próprias.
+Wiring, aplicação de migrations no Supabase hospedado, produção e início do Lote 3B.5 exigem
+autorizações explícitas próprias.

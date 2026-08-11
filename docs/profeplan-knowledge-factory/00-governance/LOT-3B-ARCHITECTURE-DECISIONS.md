@@ -8,7 +8,9 @@ Data: 7 de agosto de 2026.
 
 A aprovação destas decisões autoriza somente a preparação do primeiro PR de código do Lote 3B dentro do escopo explicitamente aprovado. Não autoriza produção, migration nova, ampliação das portas bloqueadas, retrieval, agentes, PNLD real, currículo real, Gráfica, Nexus ou EPIC-018.
 
-Estado atualizado em 8 de agosto de 2026: os Lotes 3B.1, 3B.2 e 3B.3 foram integrados; GAP-3B-01 foi encerrado; 3B.4 está em definição documental. O texto histórico de autorização do primeiro PR permanece preservado.
+Estado atualizado em 11 de agosto de 2026: os Lotes 3B.1, 3B.2, 3B.3 e 3B.4 foram integrados;
+GAP-3B-01, GAP-3B-02 e GAP-3B-06 foram encerrados. O texto histórico de autorização do primeiro PR
+permanece preservado.
 
 ## ADR-040 — Pacote concreto isolado para adapters Supabase
 
@@ -160,7 +162,9 @@ A aprovação humana reconhece formalmente estes gaps e suas medidas de contenç
 
 Criação completa exige atomicidade real.
 
-Escrita bloqueada até RPC/comando aprovado.
+**Status atualizado:** encerrado após integração das RPCs transacionais no PR nº 21 e do adapter
+de comandos no PR nº 22, com atomicidade, rollback, replay e concorrência verdes no Supabase
+descartável.
 
 ### GAP-3B-03 — OPP + evento
 
@@ -186,7 +190,9 @@ US-013.2 permanece apenas em fatia parcial até eventual extensão contratual ex
 
 `PedagogicalComponentVersion` contém `sourceEvidenceIds` e `curriculumNodeIds`, mas a porta não oferece criação de `EvidenceOrigin` nem define se `saveVersion()` insere, atualiza ou substitui os vínculos.
 
-3B.4B permanece bloqueado. O adapter não criará side-channel de persistência, método não contratado ou sincronização destrutiva implícita.
+**Status atualizado:** encerrado. O contrato `2.0.0` substituiu os métodos `save*` por comandos
+explícitos que transportam `EvidenceOrigin` completo e vínculos versionados. O adapter integrado
+pelo PR nº 22 usa somente as RPCs correspondentes, sem side-channel ou sincronização destrutiva.
 
 ## ADR-048 — Lookup curricular por Estado e etapa
 
@@ -200,7 +206,7 @@ A decisão foi implementada e integrada por squash merge do PR nº 15 no commit 
 
 ## ADR-049 — Lote 3B.4 separado em leitura parcial e escrita bloqueada
 
-**Status:** proposto para o Lote 3B.4 em 8 de agosto de 2026
+**Status:** aprovado e implementado integralmente no Lote 3B.4
 
 3B.4A implementará somente `findById`, `findVersion` e `listEvidenceOrigins` com client SYSTEM injetado, colunas explícitas, hidratação integral, ordenação determinística e testes descartáveis.
 
@@ -208,7 +214,9 @@ Como a porta completa também expõe `saveComponent` e `saveVersion`, a fatia re
 
 Leituras sequenciais são aceitas sem promessa de snapshot forte. Nenhuma RPC/read model é necessária enquanto não existir consumidor com requisito explícito de consistência forte.
 
-3B.4B permanece bloqueado por GAP-3B-02 e GAP-3B-06 até decisão contratual, comando transacional, RPC específica, migration isolada, idempotência, privilégios mínimos, testes de rollback e gate humano próprios.
+O 3B.4B permaneceu bloqueado até decisão contratual, comando transacional, RPC específica,
+migration isolada, idempotência, privilégios mínimos, testes de rollback e gates humanos próprios.
+Essas condições foram satisfeitas pelos PRs nº 19 a 22.
 
 ## Relação com decisões anteriores
 
@@ -231,8 +239,10 @@ Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a pri
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
 
-## Gate vigente após os Lotes 3B.1–3B.3
+## Gate vigente após o Lote 3B.4
 
-O próximo gate é exclusivamente a revisão humana da definição documental do Lote 3B.4.
+O próximo gate é exclusivamente a definição documental do Lote 3B.5 —
+`ProductionOrderRepository` — com requester context e atomicidade OPP + evento explícitos.
 
-Somente após seu squash merge e nova autorização poderá ser aberta a implementação 3B.4A. Permanecem bloqueados 3B.4B, 3B.5, qualquer mudança contratual, RPC/migration, produção, API, frontend, retrieval, agentes e conteúdo real.
+Código do 3B.5, nova RPC/migration, produção, API, frontend, retrieval, agentes e conteúdo real
+permanecem bloqueados até autorizações próprias.

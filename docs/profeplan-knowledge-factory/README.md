@@ -46,14 +46,20 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Escopo autorizado do primeiro PR de código](12-delivery/FIRST-CODE-PR.md)
 - [Tarefa autorizada para o Codex](12-delivery/FIRST-PR-CODEX-TASK.md)
 
-## Estado
+## Estado atual
 
-Marcos 001, 002 e 003 aprovados.
+O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigente.
 
-Marco 004 — Lote 0 aprovado integralmente em 6 de agosto de 2026.
+- Fase A — concluída;
+- Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — integrados;
+- GAP-3B-01 — encerrado;
+- GAP-3B-02 e GAP-3B-06 — condições de encerramento satisfeitas e formalizadas no
+  [Checkpoint 025](00-governance/CONTINUITY-CHECKPOINT-025.md);
+- GAP-3B-03, GAP-3B-04 e GAP-3B-05 — ativos;
+- Lote 3B.5 — não iniciado;
+- Fase B — não concluída;
+- produção — não autorizada por nenhum merge técnico ou documental.
 
-O primeiro PR contract-first está autorizado para execução em ciclo próprio, na branch `feat/knowledge-factory-contracts`, restrito a contratos, enums, fixtures sintéticas, testes de invariantes e exports aditivos em `packages/types`.
-
-Nenhum lote posterior, banco, migration, API, IA, agente executável, embedding, PNLD real, currículo RS, frontend ou Gráfica foi autorizado.
-
-O próximo passo oficial é o fork indicado em `CONTINUITY-CHECKPOINT-004.md`.
+O próximo gate, após a integração humana do Checkpoint 025, é definir documentalmente o Lote 3B.5
+— `ProductionOrderRepository`. Código, migration, RPC, wiring, Supabase hospedado e produção exigem
+autorizações próprias.

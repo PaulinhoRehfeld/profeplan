@@ -4,7 +4,7 @@ Data: 8 de agosto de 2026.
 
 ## Status
 
-**Definição documental proposta para revisão humana. Nenhum adapter, mapper, teste de código, contrato, migration, RPC, RLS, wiring ou acesso a produção é autorizado por este documento.**
+**Definição histórica integrada pelo PR nº 16. O 3B.4A foi integrado pelo PR nº 17 e o 3B.4B foi concluído pelos PRs nº 19, 20, 21 e 22. GAP-3B-02 e GAP-3B-06 estão encerrados. Este documento preserva os critérios e bloqueios existentes na data da definição; não autoriza wiring ou produção.**
 
 Base inspecionada: `main` no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`, após o squash merge do Pull Request nº 15.
 
@@ -12,10 +12,10 @@ Base inspecionada: `main` no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`, 
 
 Definir o menor caminho seguro para conectar as leituras já existentes da porta `PedagogicalComponentRepository` às tabelas canônicas `kf_*`, preservando domínio puro, client SYSTEM injetado, erros provider-neutral, observabilidade sanitizada, testes sintéticos e a fronteira separada de produção.
 
-O Lote 3B.4 fica separado em:
+Na data desta definição original, o Lote 3B.4 foi separado em:
 
 - `3B.4A — leituras`, candidato a futuro PR de código após integração humana desta definição e nova autorização;
-- `3B.4B — escritas transacionais`, bloqueado por `GAP-3B-02` e `GAP-3B-06`.
+- `3B.4B — escritas transacionais`, então bloqueado por `GAP-3B-02` e `GAP-3B-06`.
 
 ## 2. Evidências da inspeção
 
@@ -301,11 +301,13 @@ Encerrar 3B.4A não encerra 3B.4, não resolve 3B.4B e não conclui integralment
 
 ## 4. Lote 3B.4B — escritas transacionais
 
-### 4.1 Estado
+### 4.1 Estado na definição original
 
-**Bloqueado.**
+**Bloqueado na data da definição.** Os bloqueios foram posteriormente tratados pela definição
+específica do 3B.4B, pelo contrato `2.0.0`, pelas RPCs transacionais e pelo adapter de comandos
+integrados até o PR nº 22.
 
-Bloqueios ativos:
+Bloqueios ativos na data da definição:
 
 - `GAP-3B-02` — componente, primeira versão e `current_version_id` exigem atomicidade real;
 - `GAP-3B-06` — a superfície contratual de escrita não representa integralmente a persistência de evidências e vínculos.
@@ -378,11 +380,14 @@ Antes de 3B.4B será obrigatório decidir humanamente:
 11. eventual mudança da porta/contratos, em PR documental e contratual separado;
 12. gate humano próprio para implementação e outro para produção.
 
-### 4.7 Critérios futuros para encerrar os gaps
+### 4.7 Critérios históricos para encerrar os gaps
 
 `GAP-3B-02` somente poderá ser encerrado quando o comando transacional aprovado comprovar criação e promoção de versão com rollback integral no Supabase descartável e o PR correspondente for integrado humanamente.
 
 `GAP-3B-06` somente poderá ser encerrado quando a superfície contratual aprovada representar sem side-channel a persistência de evidências e vínculos, com semântica de mutação e idempotência explícitas, testes e integração humana.
+
+Esses critérios foram satisfeitos pelos PRs nº 20, 21 e 22. O encerramento formal pós-merge consta
+no Checkpoint 025.
 
 Não criar `GenericUnitOfWork`, `TransactionManager` fictício, compensação silenciosa, pseudo-transação por Promises ou RPC genérica.
 
@@ -411,8 +416,8 @@ Não criar `GenericUnitOfWork`, `TransactionManager` fictício, compensação si
 - Lote 3B.5;
 - merge automático.
 
-## 7. Próximo gate humano
+## 7. Gate histórico e estado sucessor
 
-O próximo gate é revisar este PR documental e decidir entre solicitar ajustes, rejeitar/adiar ou autorizar seu squash merge.
-
-Somente após integração humana poderá ser aberta, em nova conversa e mediante nova autorização explícita, a branch de implementação do Lote 3B.4A. O Lote 3B.4B permanecerá bloqueado.
+O gate original foi concluído pela integração humana desta definição e pelos sublotes posteriores.
+O próximo gate atual é a definição documental do Lote 3B.5. Wiring, Supabase hospedado e produção
+continuam sujeitos a autorizações próprias.

@@ -57,7 +57,7 @@ O adapter não inventará esses métodos.
 - 3B.4A: adapter separado para os três métodos de leitura, integrado;
 - 3B.4B.1: quatro comandos explícitos e porta separada, integrado;
 - 3B.4B.2: quatro RPCs transacionais estreitas, integrado;
-- 3B.4B.3: adapter de comandos separado, em revisão, sem composição ou wiring automático com a leitura.
+- 3B.4B.3: adapter de comandos separado, integrado pelo PR nº 22, sem composição ou wiring automático com a leitura.
 
 ### Risco de hidratação
 
@@ -70,8 +70,8 @@ Se consistência estrita for necessária, criar RPC/read model específico em mi
 `sourceEvidenceIds` referencia evidências, mas a porta não possui método de criação de `EvidenceOrigin`.
 
 O contrato 2.0 transporta objetos `EvidenceOrigin` completos dentro dos comandos e o adapter 3B.4B.3
-os envia somente pela RPC correspondente, sem side-channel. GAP-3B-06 permanece ativo até a
-integração humana desse adapter.
+os envia somente pela RPC correspondente, sem side-channel. A integração humana do PR nº 22 e o DB
+CI verde satisfizeram o critério de encerramento do GAP-3B-06.
 
 ## 3. CurriculumRepository
 
@@ -165,8 +165,8 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 2. `KnowledgeSourceRepository`;
 3. correção da porta curricular e `CurriculumRepository`;
 4. leituras do `PedagogicalComponentRepository` como fatia 3B.4A;
-5. escrita do componente por RPC, encerrando GAP-3B-02 e GAP-3B-06 somente após integração humana;
+5. escrita do componente por RPC, integrada e com GAP-3B-02 e GAP-3B-06 encerrados;
 6. `ProductionOrderRepository` após requester client + RPC de transição.
 
-Os itens 1 a 4 e a fronteira SQL do item 5 foram integrados. O adapter do item 5 está em revisão.
-O item 6 permanece bloqueado.
+Os itens 1 a 5 foram integrados. O Lote 3B.4 está concluído. O item 6 permanece bloqueado até
+definição documental e gate humano próprios.

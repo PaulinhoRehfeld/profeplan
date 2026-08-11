@@ -369,7 +369,7 @@ As condições foram satisfeitas pela integração humana do PR nº 15 no commit
 
 ## ADR-049 — Leitura parcial do PedagogicalComponentRepository antes da escrita transacional
 
-**Status:** proposto para o Lote 3B.4 em 8 de agosto de 2026
+**Status:** aprovado e implementado integralmente no Lote 3B.4
 
 O Lote 3B.4 será separado em 3B.4A read-only e 3B.4B transacional.
 
@@ -377,13 +377,15 @@ O Lote 3B.4 será separado em 3B.4A read-only e 3B.4B transacional.
 
 `findVersion()` poderá hidratar evidências e vínculos curriculares por leituras sequenciais, com ordenação determinística, falha integral e sem promessa de snapshot forte. Não há requisito atual que justifique RPC/read model para essa fatia.
 
-3B.4B permanece bloqueado por GAP-3B-02 e pelo novo GAP-3B-06: a porta não oferece criação de `EvidenceOrigin` nem define integralmente a semântica de persistência e sincronização dos vínculos de `saveVersion()`.
+O 3B.4B permaneceu bloqueado até a aprovação do contrato `2.0.0`, das RPCs transacionais e do
+adapter de comandos. Esses controles foram integrados pelos PRs nº 20, 21 e 22, sem side-channel
+de evidências e sem DML multi-tabela independente.
 
 Qualquer mudança contratual, comando transacional, função PostgreSQL/RPC, migration ou ampliação de privilégios exigirá decisão e gate humano próprios.
 
 ## ADR-050 — Adapter de comandos separado e erros de entrada provider-neutral
 
-**Status:** implementado para revisão no Lote 3B.4B.3 em 11 de agosto de 2026
+**Status:** integrado no Lote 3B.4B.3 pelo PR nº 22 em 11 de agosto de 2026
 
 O adapter Supabase de comandos de componentes será uma classe separada do adapter read-only e
 implementará somente `PedagogicalComponentCommandRepository`. Cada método chamará exatamente uma
@@ -397,6 +399,10 @@ timestamp esperados antes de atravessar a borda.
 A taxonomia provider-neutral é ampliada com `INVALID_INPUT`. O adapter traduzirá `22023` para
 `INVALID_INPUT`, `PT409` para `CONFLICT` e `P0002` para `NOT_FOUND`, sem expor SQLSTATE, mensagem,
 hint ou detalhes do PostgREST.
+
+A integração humana no commit `99b7981695eccb8b6019d570ff6e77529574a58f`, após CI geral, DB CI
+e Vercel verdes, satisfez os critérios de encerramento de GAP-3B-02 e GAP-3B-06 e concluiu o Lote
+3B.4. Produção e wiring permanecem gates separados.
 
 ## Procedência
 
