@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import test from 'node:test';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseProductionOrderReadRepository } from '../src/index.ts';
+import { createSyntheticAuthPassword } from './support/synthetic-auth.mjs';
 
 const SUPABASE_URL = process.env.KF_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.KF_SUPABASE_SERVICE_ROLE_KEY;
@@ -28,7 +29,7 @@ let eventAIds;
 
 async function createRequester(label) {
   const email = `kf-opp-${label}-${randomUUID()}@example.invalid`;
-  const password = `${randomUUID()}-${randomUUID()}`;
+  const password = createSyntheticAuthPassword();
   const { data: created, error: createError } = await systemClient.auth.admin.createUser({
     email,
     password,
