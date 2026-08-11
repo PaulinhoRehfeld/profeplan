@@ -61,6 +61,11 @@ Gate: transição OPP via adapter bloqueada.
 Mitigação proposta no 3B.5: remover `save + appendEvent`, criar comandos fechados e persistir
 criação/transição, evento e recibo em uma única RPC por operação.
 
+Status atualizado em 11 de agosto de 2026: **mitigação técnica implementada, risco ainda ativo.**
+Os contratos, leitura REQUESTER e RPCs foram integrados pelos PRs nº 25 a 27. Os adapters de comando
+exclusivos das RPCs foram implementados no 3B.5.4 para revisão. O risco somente poderá ser encerrado
+após integração humana e checkpoint pós-merge.
+
 ## R-3B-07 — Inventar métodos fora das portas
 
 Risco: adapter virar camada de aplicação/ingestão e contornar arquitetura contract-first.
@@ -200,6 +205,10 @@ método recebe requester para leituras; mapper confere `requester_id` da row.
 
 Gate: testes A/B, identidade ausente, row incompatível e proibição de fallback SYSTEM.
 
+Status atualizado em 11 de agosto de 2026: leitura e criação permanecem em adapters REQUESTER
+separados, e a transição em adapter SYSTEM próprio. O 3B.5.4 adiciona provas de ausência de fallback
+e de negação quando os clients são trocados; o gate remoto ainda depende do DB CI.
+
 ## R-3B-23 — Criação de OPP sem evento inicial
 
 Risco: o INSERT autenticado atual criar OPP `requested` sem evento `created`, impedindo reconstrução
@@ -208,6 +217,10 @@ integral da timeline.
 Mitigação: RPC REQUESTER atômica para OPP + evento + recibo e revogação do INSERT direto.
 
 Gate: failure injection em cada etapa, rollback total e teste de grant.
+
+Status atualizado em 11 de agosto de 2026: migration/RPC integrada pelo PR nº 27; adapter REQUESTER
+implementado localmente no 3B.5.4, usando somente `kf_create_production_order`. Encerramento depende
+de integração e checkpoint pós-merge.
 
 ## R-3B-24 — RPC de transição exposta ao requester
 
@@ -218,6 +231,10 @@ Mitigação: transição server-only; aplicação executa `evaluateOppTransition
 repete ownership, compare-and-set e matriz estrutural.
 
 Gate: `anon` e `authenticated` sem EXECUTE; testes de bypass e ausência de DML direto.
+
+Status atualizado em 11 de agosto de 2026: migration/RPC integrada pelo PR nº 27; adapter SYSTEM
+implementado localmente no 3B.5.4, usando somente `kf_transition_production_order`. O adapter não
+executa a política pedagógica nem deve ser chamado antes de uma decisão de domínio aceita.
 
 ## R-3B-25 — Fatia mínima apresentada como OPP funcional completa
 

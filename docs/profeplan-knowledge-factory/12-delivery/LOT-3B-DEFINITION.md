@@ -260,9 +260,10 @@ Somente depois de requester-scoped client e atomicidade OPP+evento aprovados.
 
 Estado atualizado em 11 de agosto de 2026: definição específica em
 `LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md`, dividida em contratos/contextos, leitura
-REQUESTER, migration/RPCs e adapters de comando. 3B.5.1 e 3B.5.2 foram integrados; 3B.5.3 foi
-implementado em branch isolada para revisão; 3B.5.4 permanece bloqueado. `GAP-3B-03` permanece
-ativo e `GAP-3B-07` registra que a fatia física atual não representa a OPP normativa completa.
+REQUESTER, migration/RPCs e adapters de comando. 3B.5.1, 3B.5.2 e 3B.5.3 foram integrados pelos
+Pull Requests nº 25, 26 e 27. O 3B.5.4 foi implementado em branch isolada para revisão.
+`GAP-3B-03` permanece ativo até integração humana e checkpoint pós-merge; `GAP-3B-07` registra que
+a fatia física atual não representa a OPP normativa completa.
 
 ---
 

@@ -71,12 +71,16 @@ export function toPersistenceError(
     return new KnowledgeFactoryPersistenceError('CONSTRAINT_VIOLATION', operation);
   }
 
-  if (code === '42501' || /permission denied|insufficient privilege/.test(text)) {
-    return new KnowledgeFactoryPersistenceError('FORBIDDEN', operation);
+  if (
+    status === 401 ||
+    code === 'PGRST301' ||
+    /missing.*identity|authenticated requester is required|jwt.*missing/.test(text)
+  ) {
+    return new KnowledgeFactoryPersistenceError('UNAUTHORIZED', operation);
   }
 
-  if (status === 401 || code === 'PGRST301' || /missing.*identity|jwt.*missing/.test(text)) {
-    return new KnowledgeFactoryPersistenceError('UNAUTHORIZED', operation);
+  if (code === '42501' || /permission denied|insufficient privilege/.test(text)) {
+    return new KnowledgeFactoryPersistenceError('FORBIDDEN', operation);
   }
 
   if (code === 'PGRST116' || status === 404) {

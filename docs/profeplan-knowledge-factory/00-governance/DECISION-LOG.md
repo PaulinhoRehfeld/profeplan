@@ -420,7 +420,8 @@ matriz estrutural, evento derivado, idempotência e atomicidade.
 
 O Lote 3B.5 será dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
 e adapters de comando. O 3B.5.1 foi integrado pelo Pull Request nº 25 e o 3B.5.2 pelo Pull Request
-nº 26. O 3B.5.3 foi implementado em branch própria e está em revisão; o 3B.5.4 permanece bloqueado.
+nº 26. O 3B.5.3 foi integrado pelo Pull Request nº 27. O 3B.5.4 foi implementado em branch própria
+para revisão, com adapters REQUESTER e SYSTEM separados e exclusivos das RPCs aprovadas.
 
 ## ADR-052 — 3B.5 conecta uma fatia mínima e não encerra a OPP normativa
 
