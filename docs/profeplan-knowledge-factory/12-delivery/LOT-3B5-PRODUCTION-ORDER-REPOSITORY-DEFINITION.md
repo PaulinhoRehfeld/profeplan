@@ -4,9 +4,10 @@ Data: 11 de agosto de 2026.
 
 ## Status
 
-**Definição documental integrada pelo Pull Request nº 24. O sublote 3B.5.1 — contratos e contextos
-foi implementado em branch isolada e está preparado para revisão humana. Nenhum sublote posterior,
-migration, RPC, adapter, wiring, Supabase hospedado ou produção está autorizado por continuidade.**
+**Definição documental integrada pelo Pull Request nº 24 e 3B.5.1 — contratos e contextos integrado
+pelo Pull Request nº 25. O 3B.5.2 — adapter REQUESTER read-only foi implementado em branch isolada
+e está preparado para revisão humana. Nenhuma migration, RPC, capacidade de comando, wiring,
+Supabase hospedado ou produção está autorizada por continuidade.**
 
 Base canônica inspecionada:
 
@@ -18,6 +19,9 @@ Base canônica inspecionada:
 - integração documental: Pull Request nº 24;
 - commit de integração: `dc52b843094236207ab7aa22b12cbb97f02aab11`;
 - branch técnica do 3B.5.1: `agent/knowledge-factory-lot-3b5-1-contracts`.
+- integração do 3B.5.1: Pull Request nº 25;
+- commit de integração do 3B.5.1: `a25acd014c213ce7552105a538fea5f0bd07037e`;
+- branch técnica do 3B.5.2: `feat/knowledge-factory-supabase-production-order-requester-readonly`.
 
 O Lote 3B.4 está encerrado. `GAP-3B-03`, requester isolation e a coerência da timeline são as
 restrições centrais desta definição. `GAP-3B-04` e `GAP-3B-05` permanecem fora do escopo.
@@ -382,7 +386,7 @@ Cada sublote terá branch, PR, CI e gate humano próprios.
 - provar ausência de consumidores quebrados;
 - nenhuma migration, RPC ou adapter.
 
-Estado: **implementado em branch isolada e preparado para revisão humana.** O contrato foi elevado
+Estado: **integrado pelo Pull Request nº 25.** O contrato foi elevado
 para `3.0.0`; operações, comandos e recibo foram adicionados; a porta foi separada em leitura,
 solicitação e transição; `save` e `appendEvent` foram removidos; e
 `SupabaseRequesterContext` foi publicado somente com client injetado e `requesterId` que o
@@ -397,6 +401,13 @@ imutabilidade. Nenhum comportamento de persistência foi criado.
 - ordenar eventos deterministicamente;
 - testar usuários A/B, identidade ausente, erro e redaction;
 - nenhuma escrita, RPC ou SYSTEM fallback.
+
+Estado: **implementado em branch isolada e preparado para revisão humana.** O adapter implementa
+somente `ProductionOrderReadRepository`, usa `SupabaseRequesterContext` injetado, valida identidade
+antes de consultar, confere o requester da OPP hidratada, seleciona colunas explícitas e ordena
+eventos por `occurred_at ASC, id ASC`. Testes unitários cobrem ausência, mismatch, sanitização e
+proibições; teste de integração A/B está preparado para o Supabase descartável do DB CI. Nenhuma
+escrita, RPC, migration, client, sessão ou fallback SYSTEM foi criada.
 
 ### 3B.5.3 — Migration e RPCs
 
@@ -576,9 +587,9 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 10. Próximo gate humano
 
-Revisar o Pull Request técnico do **3B.5.1 — contratos e contextos** e decidir entre solicitar
-ajustes, rejeitar/adiar ou autorizar seu squash merge.
+Revisar a implementação técnica do **3B.5.2 — adapter REQUESTER read-only** e decidir entre
+solicitar ajustes, rejeitar/adiar ou autorizar sua publicação e posterior squash merge.
 
-Mesmo após eventual integração do 3B.5.1, o **3B.5.2 — adapter REQUESTER read-only** somente poderá
-ser iniciado em branch e PR próprios mediante nova autorização explícita. Nenhum sublote posterior
+Mesmo após eventual integração do 3B.5.2, o **3B.5.3 — migration e RPCs** somente poderá ser
+iniciado em branch e PR próprios mediante nova autorização explícita. Nenhum sublote posterior
 recebe autorização por continuidade implícita.
