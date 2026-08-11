@@ -80,14 +80,14 @@ Tabelas:
 
 ## Matriz de acesso direto
 
-| Ator | Corpus global SELECT | Corpus global WRITE | OPP própria SELECT | OPP própria INSERT | OPP UPDATE direto | Eventos OPP SELECT | Auditoria SELECT | Auditoria WRITE |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| anon | negar | negar | negar | negar | negar | negar | negar | negar |
-| teacher | negar | negar | permitir | permitir | negar | permitir próprios | negar | negar |
-| manager | negar | negar | permitir próprias | permitir própria | negar | permitir próprios | negar | negar |
-| school_admin | negar | negar | permitir próprias | permitir própria | negar | permitir próprios | negar | negar |
-| admin | permitir leitura administrativa | negar direta | permitir próprias | permitir própria | negar | permitir próprios | permitir | negar direta |
-| service_role/backend | via backend | via backend | via backend | via backend | via backend | via backend | via backend | via backend |
+| Ator                 |            Corpus global SELECT | Corpus global WRITE | OPP própria SELECT | OPP própria INSERT | OPP UPDATE direto | Eventos OPP SELECT | Auditoria SELECT | Auditoria WRITE |
+| -------------------- | ------------------------------: | ------------------: | -----------------: | -----------------: | ----------------: | -----------------: | ---------------: | --------------: |
+| anon                 |                           negar |               negar |              negar |              negar |             negar |              negar |            negar |           negar |
+| teacher              |                           negar |               negar |           permitir |           permitir |             negar |  permitir próprios |            negar |           negar |
+| manager              |                           negar |               negar |  permitir próprias |   permitir própria |             negar |  permitir próprios |            negar |           negar |
+| school_admin         |                           negar |               negar |  permitir próprias |   permitir própria |             negar |  permitir próprios |            negar |           negar |
+| admin                | permitir leitura administrativa |        negar direta |  permitir próprias |   permitir própria |             negar |  permitir próprios |         permitir |    negar direta |
+| service_role/backend |                     via backend |         via backend |        via backend |        via backend |       via backend |        via backend |      via backend |     via backend |
 
 Observação: `service_role` pode contornar RLS no Supabase. Portanto, autorização de backend deve aplicar as políticas do domínio; service role não é permissão pedagógica nem jurídica.
 
@@ -128,7 +128,9 @@ Policy conceitual:
 WITH CHECK (requester_id = auth.uid())
 ```
 
-Entretanto, o fluxo de produção futuro poderá optar por criar OPP exclusivamente via backend. A implementação do Lote 3A deve documentar se INSERT direto autenticado será realmente necessário. Se não houver uso imediato, preferir negar e testar via adapter de backend.
+O schema 3A implementou esse INSERT direto como preparação. A definição do 3B.5 propõe substituí-lo
+por RPC REQUESTER que deriva `requester_id = auth.uid()` e grava atomicamente OPP `requested`,
+evento `created` e recibo. Após a migration, o INSERT direto de `authenticated` será revogado.
 
 ## OPP — UPDATE/DELETE
 
@@ -149,6 +151,26 @@ evento.opp_id pertence a OPP cujo requester_id = auth.uid()
 ```
 
 Não pode inserir, atualizar ou excluir diretamente.
+
+## Comandos de OPP propostos no 3B.5
+
+Criação:
+
+- executável por `authenticated` via RPC estreita;
+- `auth.uid()` obrigatório e usado como requester;
+- payload não escolhe requester, status ou timestamps da OPP;
+- atomicidade com evento `created` e recibo.
+
+Transição:
+
+- não executável por `anon` ou `authenticated`;
+- executável somente pelo backend server-side;
+- política de domínio deve aceitar a transição antes da chamada;
+- RPC verifica requester esperado, estado esperado, timestamp esperado e matriz estrutural;
+- UPDATE da OPP, evento e recibo são uma unidade.
+
+RLS permanece a defesa primária das leituras. A RPC server-only não transforma `service_role` em
+permissão pedagógica: seu uso é restrito à transição já autorizada pela aplicação, sem DML direto.
 
 ## Auditoria
 

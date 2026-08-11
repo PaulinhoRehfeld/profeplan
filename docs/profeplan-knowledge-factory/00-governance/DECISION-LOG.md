@@ -404,6 +404,36 @@ A integração humana no commit `99b7981695eccb8b6019d570ff6e77529574a58f`, apó
 e Vercel verdes, satisfez os critérios de encerramento de GAP-3B-02 e GAP-3B-06 e concluiu o Lote
 3B.4. Produção e wiring permanecem gates separados.
 
+## ADR-051 — OPP separa leitura requester, solicitação e transição server-only
+
+**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+
+`ProductionOrderRepository` será decomposto em capacidades de leitura, solicitação e transição. Os
+métodos genéricos `save(order)` e `appendEvent(event)` serão removidos sem aliases, e o contrato será
+elevado para `3.0.0`.
+
+Leituras e criação usarão client REQUESTER efêmero. Criação persistirá OPP `requested`, evento
+`created` e recibo em uma única RPC. Transições usarão RPC server-only porque RLS protege ownership,
+mas não executa os gates pedagógicos de `evaluateOppTransition()`. A camada de aplicação deverá
+aprovar a decisão de domínio antes de chamar a transição; a RPC repetirá ownership, compare-and-set,
+matriz estrutural, evento derivado, idempotência e atomicidade.
+
+O Lote 3B.5 será dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
+e adapters de comando. Nenhuma implementação é autorizada por esta ADR documental.
+
+## ADR-052 — 3B.5 conecta uma fatia mínima e não encerra a OPP normativa
+
+**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+
+O contrato e o schema atuais não materializam todos os campos e eventos do contrato normativo da
+OPP aprovado no Marco 003. O 3B.5 conectará somente a fatia mínima existente, sem antecipar
+contexto de turma, inclusão, atores, sequence, correlation/causation, retrieval, geração, validação
+ou entrega.
+
+Essa diferença será registrada como `GAP-3B-07`. O gap não bloqueia a infraestrutura mínima, mas
+impede declarar integralmente concluídas US-010.1, US-010.2, US-014.1 e US-016.\*. A Fase B somente
+poderá encerrar essa diferença por decisão formal de bloqueio parcial, conforme seu gate de saída.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.

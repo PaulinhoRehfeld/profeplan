@@ -58,6 +58,9 @@ Mitigação: comando transacional no banco antes de escrita de transição.
 
 Gate: transição OPP via adapter bloqueada.
 
+Mitigação proposta no 3B.5: remover `save + appendEvent`, criar comandos fechados e persistir
+criação/transição, evento e recibo em uma única RPC por operação.
+
 ## R-3B-07 — Inventar métodos fora das portas
 
 Risco: adapter virar camada de aplicação/ingestão e contornar arquitetura contract-first.
@@ -186,6 +189,45 @@ Gate: nenhuma escrita de componente, versão, evidência ou vínculo curricular 
 Status atualizado: **encerrado em 11 de agosto de 2026.** O contrato `2.0.0` transporta evidências
 completas e vínculos dentro do comando, e o adapter integrado pelo PR nº 22 usa exclusivamente a
 RPC correspondente, sem helper público, acesso externo direto ou método inventado.
+
+## R-3B-22 — Contexto REQUESTER reutilizado ou adulterado
+
+Risco: singleton, cache global ou requester vindo do payload causar leitura cruzada entre
+professores.
+
+Mitigação: contexto efêmero criado pelo composition root a partir da sessão verificada; nenhum
+método recebe requester para leituras; mapper confere `requester_id` da row.
+
+Gate: testes A/B, identidade ausente, row incompatível e proibição de fallback SYSTEM.
+
+## R-3B-23 — Criação de OPP sem evento inicial
+
+Risco: o INSERT autenticado atual criar OPP `requested` sem evento `created`, impedindo reconstrução
+integral da timeline.
+
+Mitigação: RPC REQUESTER atômica para OPP + evento + recibo e revogação do INSERT direto.
+
+Gate: failure injection em cada etapa, rollback total e teste de grant.
+
+## R-3B-24 — RPC de transição exposta ao requester
+
+Risco: usuário autenticado percorrer estados estruturalmente válidos sem executar suficiência,
+findings ou outros gates pedagógicos.
+
+Mitigação: transição server-only; aplicação executa `evaluateOppTransition()` antes da RPC; função
+repete ownership, compare-and-set e matriz estrutural.
+
+Gate: `anon` e `authenticated` sem EXECUTE; testes de bypass e ausência de DML direto.
+
+## R-3B-25 — Fatia mínima apresentada como OPP funcional completa
+
+Risco: concluir Stories de OPP, inclusão, observabilidade ou entrega embora o schema atual não
+persista campos normativos como atores, sequência, contexto, correlação e linhagem.
+
+Mitigação: registrar `GAP-3B-07`, manter Stories parciais e separar extensões futuras por fases e
+contratos próprios.
+
+Gate: checkpoint final do 3B.5 deve distinguir adapter concluído de OPP normativa completa.
 
 ## Regra de interpretação
 

@@ -97,18 +97,29 @@ A matriz SQL do Lote 3A continua provando negação direta ao professor.
 
 ### OPP/requester
 
-Quando o `ProductionOrderRepository` for implementado futuramente:
+No futuro Lote 3B.5:
 
 - usuário A lê OPP A;
 - usuário A não lê OPP B;
 - usuário B não lê OPP A;
+- OPP estrangeira retorna `null`, sem permitir enumeração;
 - requester adulterado falha;
+- contexto sem identidade falha como `UNAUTHORIZED`;
 - professor não atualiza status diretamente;
 - professor não insere evento arbitrário;
 - client request-scoped é usado no fluxo do professor;
 - service role não substitui teste de RLS.
+- criação persiste OPP, `created` e recibo ou reverte tudo;
+- transição persiste UPDATE, evento e recibo ou reverte tudo;
+- `authenticated` não executa RPC de transição;
+- backend não usa DML direto para transicionar;
+- requester/status/timestamp esperados são comparados sob lock;
+- evento é derivado do destino, não fornecido pelo chamador;
+- replay não duplica OPP nem evento;
+- concorrência produz resultado determinístico;
+- matriz SQL de transições mantém paridade com o contrato TypeScript.
 
-Até esse momento, o adapter de OPP fica bloqueado.
+Até a integração humana da definição 3B.5, contratos, adapters e RPCs de OPP ficam bloqueados.
 
 ## Primeiro PR — AuditRepository
 

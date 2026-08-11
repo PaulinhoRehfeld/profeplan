@@ -194,6 +194,15 @@ US-013.2 permanece apenas em fatia parcial até eventual extensão contratual ex
 explícitos que transportam `EvidenceOrigin` completo e vínculos versionados. O adapter integrado
 pelo PR nº 22 usa somente as RPCs correspondentes, sem side-channel ou sincronização destrutiva.
 
+### GAP-3B-07 — fatia física da OPP menor que o contrato normativo
+
+O contrato e o schema atuais não persistem integralmente contexto, inclusão, atores, sequência,
+correlação, tentativas, componentes utilizados, validações e entrega previstos no contrato
+normativo da OPP.
+
+O gap não bloqueia a fatia mínima do `ProductionOrderRepository`, mas impede declarar a OPP
+funcional completa ou as Stories US-010.1/US-010.2 integralmente concluídas.
+
 ## ADR-048 — Lookup curricular por Estado e etapa
 
 **Status:** aprovado e implementado no Lote 3B.3
@@ -218,6 +227,27 @@ O 3B.4B permaneceu bloqueado até decisão contratual, comando transacional, RPC
 migration isolada, idempotência, privilégios mínimos, testes de rollback e gates humanos próprios.
 Essas condições foram satisfeitas pelos PRs nº 19 a 22.
 
+## ADR-051 — Fronteira tripartida e comandos atômicos da OPP
+
+**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+
+O `ProductionOrderRepository` será decomposto em leitura, solicitação e transição. `save(order)` e
+`appendEvent(event)` serão removidos; criação e transição terão comandos e recibos idempotentes
+próprios. A criação será REQUESTER e sempre incluirá o evento `created`. A transição será server-only,
+precedida pela política de domínio e executada por RPC estreita com ownership esperado,
+compare-and-set e evento derivado.
+
+O sublote 3B.5.1 elevará o contrato para `3.0.0`. Os adapters, RPCs e grants permanecem bloqueados
+até seus PRs próprios.
+
+## ADR-052 — Cobertura mínima explicitamente parcial da OPP
+
+**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+
+O 3B.5 conecta somente o domínio e o schema já materializados. Os campos normativos ainda ausentes
+permanecem em `GAP-3B-07` e não serão antecipados das Fases C, D ou E. O gate de saída da Fase B
+poderá reconhecer bloqueio parcial, mas não declarar o contrato normativo integralmente entregue.
+
 ## Relação com decisões anteriores
 
 Estas decisões complementam, sem substituir:
@@ -239,10 +269,11 @@ Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a pri
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
 
-## Gate vigente após o Lote 3B.4
+## Gate vigente — definição do Lote 3B.5
 
-O próximo gate é exclusivamente a definição documental do Lote 3B.5 —
-`ProductionOrderRepository` — com requester context e atomicidade OPP + evento explícitos.
+O próximo gate é exclusivamente a revisão humana da definição documental do Lote 3B.5 —
+`ProductionOrderRepository`.
 
-Código do 3B.5, nova RPC/migration, produção, API, frontend, retrieval, agentes e conteúdo real
-permanecem bloqueados até autorizações próprias.
+Somente após eventual integração poderá ser iniciado o 3B.5.1 — contratos e contextos. Nova
+RPC/migration, adapters, produção, API, frontend, retrieval, agentes e conteúdo real permanecem
+bloqueados até autorizações próprias.

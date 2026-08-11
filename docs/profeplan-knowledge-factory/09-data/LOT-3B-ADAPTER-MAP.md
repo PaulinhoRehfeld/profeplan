@@ -88,24 +88,34 @@ Encerrado após a integração do PR nº 15: a porta e o adapter usam `findActiv
 
 ## 4. ProductionOrderRepository
 
-| Método               | Tabela(s)                    | Operação                   | Client                                              | Observações                                                                                          |
-| -------------------- | ---------------------------- | -------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `findById(id)`       | `kf_production_orders`       | SELECT por `id`            | REQUESTER preferencial                              | RLS garante requester próprio. Fluxos internos privilegiados exigem decisão explícita.               |
-| `save(order)`        | `kf_production_orders`       | INSERT ou futura transição | REQUESTER para criação; transição interna a definir | INSERT inicial `requested` pode usar RLS. UPDATE direto de professor não é permitido.                |
-| `appendEvent(event)` | `kf_production_order_events` | INSERT                     | SYSTEM/futura RPC                                   | Professor não possui INSERT direto. Evento de transição deve acompanhar mudança da OPP atomicamente. |
-| `listEvents(oppId)`  | `kf_production_order_events` | SELECT por OPP             | REQUESTER preferencial                              | RLS limita aos eventos da OPP própria.                                                               |
+Definição proposta do 3B.5:
+
+| Capacidade / método                         | Fronteira física                 | Operação                      | Client             | Observações                                                                                 |
+| ------------------------------------------- | -------------------------------- | ----------------------------- | ------------------ | ------------------------------------------------------------------------------------------- |
+| `Read.findById(id)`                         | `kf_production_orders`           | SELECT por `id`               | REQUESTER          | RLS garante OPP própria; OPP estrangeira é indistinguível de ausente.                       |
+| `Read.listEvents(oppId)`                    | `kf_production_order_events`     | SELECT por OPP, ordenado      | REQUESTER          | RLS segue ownership da OPP pai; ordem `occurred_at`, `id`.                                  |
+| `Request.createProductionOrder(cmd)`        | `kf_create_production_order`     | RPC: OPP + `created` + recibo | REQUESTER          | Requester deriva de `auth.uid()`; sem INSERT direto após a migration.                       |
+| `Transition.transitionProductionOrder(cmd)` | `kf_transition_production_order` | RPC: UPDATE + evento + recibo | SYSTEM server-only | Política de domínio precede chamada; requester/status/timestamp esperados impedem confusão. |
 
 ### GAP-3B-03
 
 `save(order)` + `appendEvent(event)` separados não constituem uma transição atômica.
 
-Antes de implementar transições reais:
+Decisão proposta:
 
-- definir comando/RPC PostgreSQL transacional;
+- remover `save` e `appendEvent` no contrato `3.0.0`;
+- criar comandos distintos para criação e transição;
+- fazer criação + `created` e transição + evento como transações reais;
+- manter leituras e criação sob REQUESTER;
+- manter transição server-only para impedir bypass dos gates pedagógicos;
 - testar no Supabase descartável;
 - não liberar `UPDATE` direto de OPP ao professor.
 
 O adapter de OPP é deliberadamente o último do 3B.
+
+`GAP-3B-03` permanece ativo até integração humana de contratos, requester read adapter, RPCs,
+adapters de comando e checkpoint pós-merge. `GAP-3B-07` registra que essa fatia não materializa a
+OPP normativa completa.
 
 ## 5. AuditRepository
 
@@ -166,7 +176,7 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 3. correção da porta curricular e `CurriculumRepository`;
 4. leituras do `PedagogicalComponentRepository` como fatia 3B.4A;
 5. escrita do componente por RPC, integrada e com GAP-3B-02 e GAP-3B-06 encerrados;
-6. `ProductionOrderRepository` após requester client + RPC de transição.
+6. `ProductionOrderRepository` em quatro sublotes após integração da definição 3B.5.
 
 Os itens 1 a 5 foram integrados. O Lote 3B.4 está concluído. O item 6 permanece bloqueado até
-definição documental e gate humano próprios.
+integração da definição documental e gate humano próprio para o 3B.5.1.
