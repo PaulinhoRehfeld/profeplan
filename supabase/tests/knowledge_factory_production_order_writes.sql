@@ -706,7 +706,7 @@ SELECT pg_temp.kf_expect_error(
     SET reason = 'mutated'
     WHERE id = 'e5000000-0000-4000-8000-000000000002'
   $sql$,
-  ARRAY['P0001'],
+  ARRAY['55000'],
   'OPP events must remain append-only after 3B.5.3'
 );
 
