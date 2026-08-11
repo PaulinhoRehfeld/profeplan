@@ -74,6 +74,11 @@ Mitigação: implementar apenas assinaturas existentes.
 
 Gate: método não presente na porta exige nova decisão/contrato.
 
+Status atualizado em 11 de agosto de 2026: **ativo e contido para a saída da Fase B.** O
+`KnowledgeSourceRepository` concluído não autoriza lifecycle de ingestão. Versões, segmentos e
+eventos de permissão permanecem bloqueados até definição contract-first própria na futura Fase C,
+conforme o Checkpoint 032.
+
 ## R-3B-08 — Erro de provider vazando para camadas superiores
 
 Risco: SQLSTATE/PostgREST/queries aparecerem em API ou UX.
@@ -175,6 +180,10 @@ Mitigação:
 
 Gate: US-013.2 não recebe `Done` integral no primeiro PR do 3B.
 
+Status atualizado em 11 de agosto de 2026: **ativo e contido.** A saída da Fase B preserva a
+`US-013.2` parcial. Auditoria enriquecida somente poderá ser aberta por extensão contratual
+explícita com minimização/LGPD, autorização e testes de round-trip, conforme o Checkpoint 032.
+
 ## R-3B-20 — Fatia read-only apresentada como porta completa
 
 Risco: uma classe com três leituras ser anunciada como implementação integral de `PedagogicalComponentRepository`, embora a interface também exija duas escritas.
@@ -250,8 +259,9 @@ contratos próprios.
 Gate: checkpoint final do 3B.5 deve distinguir adapter concluído de OPP normativa completa.
 
 Status atualizado em 11 de agosto de 2026: **ativo e contido.** O Checkpoint 031 distingue
-explicitamente o Lote 3B.5 concluído da OPP normativa incompleta. As Stories normativas permanecem
-parciais e qualquer extensão exige contrato, dados, minimização/LGPD e migrations próprios.
+explicitamente o Lote 3B.5 concluído da OPP normativa incompleta, e o Checkpoint 032 preserva essa
+contenção na saída da Fase B. As Stories normativas permanecem parciais e qualquer extensão exige
+contrato, dados, minimização/LGPD e migrations próprios nos gates das fases correspondentes.
 
 ## Regra de interpretação
 

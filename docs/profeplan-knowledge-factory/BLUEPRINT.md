@@ -82,8 +82,9 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.3 CurriculumRepository
 ✅ 3B.4 PedagogicalComponentRepository — leituras e escritas transacionais integradas
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
+✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-🟡 Gate de saída da Fase B — inspeção documental pendente  ← ESTADO ATUAL
+FASE B ENCERRADA; FASE C NÃO INICIADA  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ⬜ Governança operacional de fontes
@@ -148,6 +149,11 @@ Concluída.
 A Knowledge Factory possui linguagem de domínio, fronteiras e persistência física suficientes para iniciar adapters sem acoplar regra pedagógica ao Supabase.
 
 ## 6. Fase B — Conexão com o banco
+
+### Status
+
+Concluída por bloqueio parcial controlado no Checkpoint 032. `GAP-3B-04`, `GAP-3B-05` e
+`GAP-3B-07` permanecem ativos, contidos e sujeitos a gates futuros próprios.
 
 ### Objetivo
 
@@ -296,6 +302,20 @@ Definição específica:
 ### Gate de saída da Fase B
 
 A Fase B termina quando as portas previstas para o MVP tiverem adapters seguros ou uma decisão formal de bloqueio parcial, sem pseudo-transações e sem wiring de produção implícito.
+
+Resultado: **satisfeito por bloqueio parcial controlado no Checkpoint 032**. Os adapters previstos
+foram concluídos, as fronteiras transacionais críticas foram comprovadas no Supabase descartável e
+não existe dependência de produção. As contenções permanecem obrigatórias:
+
+- `GAP-3B-04` — a Fase C deverá começar documentalmente pela governança operacional do lifecycle
+  de fontes; ingestão, versionamento, segmentação e eventos de permissão reais continuam
+  bloqueados;
+- `GAP-3B-05` — auditoria enriquecida e conclusão integral da `US-013.2` continuam bloqueadas até
+  extensão contratual explícita;
+- `GAP-3B-07` — OPP normativa completa e capacidades de contexto, retrieval, validação e entrega
+  continuam destinadas às fases correspondentes e não foram antecipadas.
+
+O encerramento deste gate não inicia a Fase C.
 
 ## 7. Fase C — Matéria-prima e preparação do conhecimento
 
@@ -590,12 +610,16 @@ Concluído: contratos, domínio e schema aprovados.
 
 ### B → C
 
-Exige:
+Critérios satisfeitos no Checkpoint 032:
 
-- adapters necessários ao fluxo de matéria-prima aprovados;
-- GAPs relevantes resolvidos ou formalmente contidos;
-- testes de integração descartáveis verdes;
-- nenhuma dependência implícita de produção.
+- adapters necessários ao fluxo de matéria-prima aprovados — satisfeito;
+- GAPs relevantes resolvidos ou formalmente contidos — satisfeito por contenção de `GAP-3B-04`,
+  `GAP-3B-05` e `GAP-3B-07`;
+- testes de integração descartáveis verdes — satisfeito;
+- nenhuma dependência implícita de produção — satisfeito.
+
+A passagem arquitetural está documentalmente liberada, mas a Fase C permanece não iniciada até
+definição de lote e autorização humana próprias.
 
 ### C → D
 
@@ -703,14 +727,16 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lotes 3B.1 a 3B.5 concluídos; 3B.5.4 integrado pelo PR nº 28 e encerramento do Lote 3B.5 formalizado no Checkpoint 031. GAP-3B-03 está encerrado. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos e limitados. A Fase B ainda aguarda decisão documental própria de saída.**
+> **FASE B ENCERRADA POR BLOQUEIO PARCIAL CONTROLADO — Lotes 3B.1 a 3B.5 concluídos. GAP-3B-01, GAP-3B-02, GAP-3B-03 e GAP-3B-06 encerrados. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos, contidos e sujeitos a gates futuros explícitos. A Fase C não foi iniciada.**
 
 Próximo objetivo imediato:
 
-> revisar o checkpoint documental de encerramento do Lote 3B.5 e, após sua integração, inspecionar
-> exclusivamente o gate de saída da Fase B. Nenhum início da Fase C, wiring, Supabase hospedado ou
-> acesso à produção é autorizado por esta atualização de navegação.
+> revisar e integrar o Checkpoint 032. Somente após eventual integração e nova autorização humana,
+> definir documentalmente a primeira frente da Fase C: governança operacional do lifecycle de
+> fontes. Nenhum código, ingestão, wiring, Supabase hospedado ou acesso à produção é autorizado por
+> esta atualização de navegação.
 
 Próxima grande mudança de natureza do projeto:
 
-> após encerrar os adapters necessários, iniciar documentalmente a fase de entrada e preparação das matérias-primas pedagógicas.
+> definir, aprovar e somente depois implementar o lifecycle governado que permitirá transformar
+> fontes autorizadas em matérias-primas pedagógicas rastreáveis.

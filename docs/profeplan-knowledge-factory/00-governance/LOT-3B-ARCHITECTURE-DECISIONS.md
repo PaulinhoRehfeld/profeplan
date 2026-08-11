@@ -180,6 +180,11 @@ A porta de fontes não cobre criação de versão, segmento ou evento de permiss
 
 Adapter não inventará operações de ingestão.
 
+**Status atualizado:** ativo e contido para a saída da Fase B no Checkpoint 032. Ingestão,
+versionamento, segmentação e eventos de permissão reais permanecem bloqueados. A primeira frente
+documental futura da Fase C deverá definir a governança operacional desse lifecycle em lote
+próprio, sem autorização implícita de código.
+
 ### GAP-3B-05 — auditoria física mais rica que a porta
 
 `AuditRepository` devolve `DomainEvent`, enquanto `kf_audit_events` também possui `actor_id`, `actor_role`, `correlation_id`, `outcome` e `reason`.
@@ -187,6 +192,10 @@ Adapter não inventará operações de ingestão.
 O primeiro adapter deverá mapear somente o contrato existente. Contexto adicional poderá ser persistido por dependência/contexto injetado quando aprovado, mas não será prometido em `listByAggregate()`.
 
 US-013.2 permanece apenas em fatia parcial até eventual extensão contratual explícita.
+
+**Status atualizado:** ativo e contido no Checkpoint 032. A extensão futura exige contrato
+versionado, minimização/LGPD, regras de acesso, mapeamento completo e testes de round-trip. Não
+bloqueia a preparação de matéria-prima, mas impede qualquer alegação de auditoria enriquecida.
 
 ### GAP-3B-06 — escrita de versão não representa evidências e vínculos integralmente
 
@@ -204,6 +213,10 @@ normativo da OPP.
 
 O gap não bloqueia a fatia mínima do `ProductionOrderRepository`, mas impede declarar a OPP
 funcional completa ou as Stories US-010.1/US-010.2 integralmente concluídas.
+
+**Status atualizado:** ativo e contido para a saída da Fase B no Checkpoint 032. Contexto,
+inclusão, atores, correlação, tentativas, custos, retrieval, validação e entrega somente poderão ser
+abertos nos gates das fases correspondentes.
 
 ## ADR-048 — Lookup curricular por Estado e etapa
 
@@ -253,6 +266,19 @@ O 3B.5 conecta somente o domínio e o schema já materializados. Os campos norma
 permanecem em `GAP-3B-07` e não serão antecipados das Fases C, D ou E. O gate de saída da Fase B
 poderá reconhecer bloqueio parcial, mas não declarar o contrato normativo integralmente entregue.
 
+## ADR-053 — Saída da Fase B por bloqueio parcial controlado
+
+**Status:** aprovado para formalização no Checkpoint 032 em 11 de agosto de 2026
+
+A Fase B será encerrada após a integração do Checkpoint 032 porque os adapters previstos para o
+MVP foram concluídos, as pseudo-transações críticas foram substituídas por fronteiras atômicas
+testadas, a integração descartável está verde e nenhuma capacidade exige produção.
+
+`GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` permanecem ativos. O encerramento ocorre por contenção, não
+por resolução. Cada gap mantém proibições, destino futuro e gate de reabertura explícitos. A Fase C
+não é iniciada por esta decisão; sua primeira frente deverá ser definida documentalmente como
+governança operacional do lifecycle de fontes, mediante autorização humana própria.
+
 ## Relação com decisões anteriores
 
 Estas decisões complementam, sem substituir:
@@ -274,11 +300,11 @@ Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a pri
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
 
-## Gate vigente — saída documental da Fase B
+## Gate vigente — integração do encerramento documental da Fase B
 
-O próximo gate é revisar e integrar o Checkpoint 031. Depois disso, uma branch documental própria
-deverá inspecionar se `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` estão formalmente contidos para o gate
-de saída da Fase B previsto no Blueprint.
+O próximo gate é revisar e integrar o Checkpoint 032. Somente após eventual integração, e mediante
+nova autorização humana em branch própria, poderá ser definida documentalmente a primeira frente
+da Fase C: governança operacional do lifecycle de fontes.
 
-O encerramento do Lote 3B.5 não inicia a Fase C. Produção, API, frontend, retrieval, agentes e
-conteúdo real permanecem bloqueados até autorizações próprias.
+O encerramento da Fase B não inicia a Fase C. Ingestão, produção, API, frontend, retrieval,
+agentes, Supabase hospedado e conteúdo real permanecem bloqueados até autorizações próprias.
