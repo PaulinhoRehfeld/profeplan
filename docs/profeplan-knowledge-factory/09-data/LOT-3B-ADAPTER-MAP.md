@@ -42,19 +42,22 @@ O adapter não inventará esses métodos.
 
 ## 2. PedagogicalComponentRepository
 
-| Método                                    | Tabela(s)                                                                                | Operação                                     | Client | Observações                                                                                                       |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
-| `findById(id)`                            | `kf_pedagogical_components`                                                              | SELECT por `id`, `maybeSingle`               | SYSTEM | Colunas explícitas; ausência legítima retorna `null`.                                                             |
-| `findVersion(componentId, version)`       | `kf_component_versions`, `kf_component_source_evidence`, `kf_component_curriculum_links` | SELECT base + hidratação dos IDs relacionais | SYSTEM | Evidências por `id`; nós por `curriculum_node_id`; falha de hidratação rejeita o resultado inteiro.               |
-| `listEvidenceOrigins(componentVersionId)` | `kf_component_source_evidence`                                                           | SELECT por `component_version_id`            | SYSTEM | Reconstrói `EvidenceOrigin`, ordenado por `recorded_at` e `id`.                                                   |
-| `saveComponent(component)`                | `kf_pedagogical_components` + lifecycle completo                                         | WRITE                                        | SYSTEM | **Bloqueado:** o método não distingue criação de atualização e criação isolada não satisfaz `current_version_id`. |
-| `saveVersion(version)`                    | `kf_component_versions`, `kf_component_source_evidence`, `kf_component_curriculum_links` | WRITE transacional                           | SYSTEM | **Bloqueado:** exige semântica de evidências, vínculos, idempotência e fronteira atômica aprovadas.               |
+| Método                                      | Fronteira física                                                                         | Operação                       | Client | Observações                                                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------ | ------ | --------------------------------------------------------------------------------------------------- |
+| `findById(id)`                              | `kf_pedagogical_components`                                                              | SELECT por `id`, `maybeSingle` | SYSTEM | Colunas explícitas; ausência legítima retorna `null`.                                               |
+| `findVersion(componentId, version)`         | `kf_component_versions`, `kf_component_source_evidence`, `kf_component_curriculum_links` | SELECT base + hidratação       | SYSTEM | Falha de hidratação rejeita o resultado inteiro.                                                    |
+| `listEvidenceOrigins(componentVersionId)`   | `kf_component_source_evidence`                                                           | SELECT por versão              | SYSTEM | Ordenação determinística por `recorded_at` e `id`.                                                  |
+| `createComponentAggregate(command)`         | `kf_create_pedagogical_component_aggregate`                                              | uma RPC transacional           | SYSTEM | Persiste componente, versão inicial, evidências, vínculos e recibo como unidade.                    |
+| `appendComponentVersion(command)`           | `kf_append_pedagogical_component_version`                                                | uma RPC transacional           | SYSTEM | Insere snapshot e relações sem promover o ponteiro corrente.                                        |
+| `transitionComponentVersionStatus(command)` | `kf_transition_pedagogical_component_version_status`                                     | uma RPC transacional           | SYSTEM | Compare-and-set de estado e atualização coerente do componente quando a versão é corrente.          |
+| `promoteComponentVersion(command)`          | `kf_promote_pedagogical_component_version`                                               | uma RPC transacional           | SYSTEM | Compare-and-set do ponteiro corrente e timestamp; exige alvo aprovado e material pedagógico válido. |
 
 ### Separação do Lote 3B.4
 
-- 3B.4A: somente os três métodos de leitura;
-- 3B.4B: os dois métodos de escrita, bloqueados;
-- a classe 3B.4A será verificável contra um `Pick` read-only da porta, sem stubs e sem afirmar implementação integral da interface.
+- 3B.4A: adapter separado para os três métodos de leitura, integrado;
+- 3B.4B.1: quatro comandos explícitos e porta separada, integrado;
+- 3B.4B.2: quatro RPCs transacionais estreitas, integrado;
+- 3B.4B.3: adapter de comandos separado, em revisão, sem composição ou wiring automático com a leitura.
 
 ### Risco de hidratação
 
@@ -66,9 +69,9 @@ Se consistência estrita for necessária, criar RPC/read model específico em mi
 
 `sourceEvidenceIds` referencia evidências, mas a porta não possui método de criação de `EvidenceOrigin`.
 
-Não criar side-channel de persistência fora da porta.
-
-Esta lacuna compõe o GAP-3B-06 e bloqueia 3B.4B, junto ao GAP-3B-02. Não bloqueia as leituras de 3B.4A.
+O contrato 2.0 transporta objetos `EvidenceOrigin` completos dentro dos comandos e o adapter 3B.4B.3
+os envia somente pela RPC correspondente, sem side-channel. GAP-3B-06 permanece ativo até a
+integração humana desse adapter.
 
 ## 3. CurriculumRepository
 
@@ -162,7 +165,8 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 2. `KnowledgeSourceRepository`;
 3. correção da porta curricular e `CurriculumRepository`;
 4. leituras do `PedagogicalComponentRepository` como fatia 3B.4A;
-5. escrita do componente após resolver GAP-3B-02 e GAP-3B-06;
+5. escrita do componente por RPC, encerrando GAP-3B-02 e GAP-3B-06 somente após integração humana;
 6. `ProductionOrderRepository` após requester client + RPC de transição.
 
-Os itens 1 a 3 foram integrados. O item 4 depende da integração humana da definição específica do 3B.4 e de nova autorização para código. Os itens 5 e 6 permanecem bloqueados.
+Os itens 1 a 4 e a fronteira SQL do item 5 foram integrados. O adapter do item 5 está em revisão.
+O item 6 permanece bloqueado.

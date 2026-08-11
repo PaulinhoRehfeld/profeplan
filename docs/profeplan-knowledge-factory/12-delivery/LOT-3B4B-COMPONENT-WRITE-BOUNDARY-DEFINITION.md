@@ -4,14 +4,14 @@ Data: 8 de agosto de 2026.
 
 ## Status
 
-**Definição documental integrada pelo Pull Request nº 19 no commit `d9838ef290522aba6dba4e104a03420dd12192fb`. O 3B.4B.1 foi integrado pelo Pull Request nº 20 no commit `d481d998603e9a335edb308cfdb82b7868289cea`. A autorização atual alcança somente o 3B.4B.2 — migration e RPCs transacionais; adapter de comando, wiring, produção e Lote 3B.5 permanecem bloqueados.**
+**Definição documental integrada pelo Pull Request nº 19 no commit `d9838ef290522aba6dba4e104a03420dd12192fb`. O 3B.4B.1 foi integrado pelo Pull Request nº 20 no commit `d481d998603e9a335edb308cfdb82b7868289cea`. O 3B.4B.2 foi integrado pelo Pull Request nº 21 no commit `fdf9bfdb28bea5dc85f9ed6b11913dd69b94cbd1`. A autorização atual alcança somente o 3B.4B.3 — adapter Supabase de comandos; wiring, produção e Lote 3B.5 permanecem bloqueados.**
 
-Base inspecionada para o 3B.4B.2: `main` no commit
-`d481d998603e9a335edb308cfdb82b7868289cea`, após o squash merge do Pull Request nº 20.
+Base inspecionada para o 3B.4B.3: `main` no commit
+`fdf9bfdb28bea5dc85f9ed6b11913dd69b94cbd1`, após o squash merge do Pull Request nº 21.
 
-O Lote 3B.4A e o 3B.4B.1 permanecem integrados. O 3B.4B.2 avançou em branch e Pull Request
-próprios. `GAP-3B-02` e `GAP-3B-06` continuam ativos até que as transações sejam aprovadas no
-Supabase descartável, integradas e consumidas exclusivamente pelo futuro adapter do 3B.4B.3.
+O Lote 3B.4A, o 3B.4B.1 e o 3B.4B.2 permanecem integrados. O 3B.4B.3 avançou em branch própria
+para revisão humana. `GAP-3B-02` e `GAP-3B-06` continuam ativos até que o adapter seja aprovado no
+Supabase descartável e integrado consumindo exclusivamente as quatro RPCs transacionais.
 
 ## 1. Objetivo
 
@@ -362,7 +362,7 @@ O 3B.4B será dividido em três sublotes, cada um com branch, PR e gate humano p
 - testar invariantes de shape, exports e ausência de consumidores quebrados;
 - nenhuma migration, RPC ou adapter de escrita.
 
-### 3B.4B.2 — Migration e RPCs — em revisão
+### 3B.4B.2 — Migration e RPCs — integrado
 
 - criar tabela mínima de recibos idempotentes;
 - criar as quatro funções estreitas;
@@ -372,7 +372,7 @@ O 3B.4B será dividido em três sublotes, cada um com branch, PR e gate humano p
 - testar atomicidade, falha intermediária, retry, replay, fingerprint divergente e concorrência no Supabase descartável;
 - nenhuma integração com produção e nenhum wiring de aplicação.
 
-### 3B.4B.3 — Adapter Supabase de comando
+### 3B.4B.3 — Adapter Supabase de comando — em revisão
 
 - implementar a porta de comando usando somente as RPCs;
 - reutilizar `SupabaseSystemContext` injetado;
@@ -430,9 +430,9 @@ O Lote 3B.4 somente poderá ser considerado concluído após integração humana
 
 ### GAP-3B-02
 
-Permanece ativo. O sublote 3B.4B.2 implementa a contenção escolhida — transação PostgreSQL real,
-RPCs estreitas e rollback integral — mas ainda depende do DB CI, da integração humana e do adapter
-3B.4B.3 para comprovar uso exclusivo dessa fronteira.
+Permanece ativo. O sublote 3B.4B.2 integrou a contenção escolhida — transação PostgreSQL real,
+RPCs estreitas e rollback integral. O 3B.4B.3 implementa o consumo exclusivo dessa fronteira, mas
+seu encerramento ainda depende de DB CI e integração humana.
 
 Critério de encerramento: integração humana do sublote 3B.4B.2 com testes de atomicidade, falha intermediária, concorrência e rollback verdes, seguida da integração do adapter de comando que usa exclusivamente essas RPCs.
 
@@ -476,8 +476,8 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 11. Próximo gate humano
 
-O próximo gate é revisar o Pull Request do 3B.4B.2 — migration e RPCs transacionais — e decidir
+O próximo gate é revisar o Pull Request draft do 3B.4B.3 — adapter Supabase de comandos — e decidir
 entre solicitar ajustes, rejeitar/adiar ou autorizar seu squash merge.
 
-Mesmo após eventual integração do 3B.4B.2, o adapter Supabase de comando do 3B.4B.3 exigirá
-nova autorização explícita, nova branch e gate humano próprio.
+Mesmo após eventual integração do 3B.4B.3, wiring, aplicação de migrations no Supabase hospedado,
+produção e início do Lote 3B.5 exigirão autorizações explícitas próprias.
