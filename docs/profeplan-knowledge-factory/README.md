@@ -60,9 +60,12 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e explicitamente limitados;
 - Lote 3B.5 — definição documental e sublotes 3B.5.1 a 3B.5.4 integrados; encerramento
   formalizado no [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
-- Fase B — não concluída;
+- Fase B — encerramento por bloqueio parcial controlado formalizado no
+  [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
+- Fase C — não iniciada;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate, após integração do Checkpoint 031, é inspecionar documentalmente a saída da Fase B
-e decidir se `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` estão formalmente contidos para essa passagem.
-Essa navegação não inicia a Fase C e não autoriza wiring, Supabase hospedado ou produção.
+O próximo gate é revisar e integrar o Checkpoint 032. Somente depois, mediante nova autorização
+humana, poderá ser definida documentalmente a primeira frente da Fase C: governança operacional do
+lifecycle de fontes. Essa navegação não inicia ingestão e não autoriza código, wiring, Supabase
+hospedado ou produção.

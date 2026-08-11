@@ -436,6 +436,20 @@ Essa diferença será registrada como `GAP-3B-07`. O gap não bloqueia a infraes
 impede declarar integralmente concluídas US-010.1, US-010.2, US-014.1 e US-016.\*. A Fase B somente
 poderá encerrar essa diferença por decisão formal de bloqueio parcial, conforme seu gate de saída.
 
+## ADR-053 — Saída da Fase B por bloqueio parcial controlado
+
+**Status:** aprovado para formalização no Checkpoint 032 em 11 de agosto de 2026
+
+A Fase B será encerrada após a integração do Checkpoint 032. Os adapters previstos para o MVP
+foram concluídos; as escritas críticas de componentes e OPP usam fronteiras transacionais testadas;
+os testes descartáveis estão verdes; e o avanço não depende de wiring ou produção.
+
+`GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` permanecem ativos e não recebem status de resolvidos. A
+saída é aceita porque cada gap possui contenção explícita, capacidades proibidas, destino futuro e
+gate de reabertura. A primeira frente futura da Fase C deverá ser a definição documental da
+governança operacional do lifecycle de fontes. Esta decisão não inicia a Fase C e não autoriza
+código, ingestão, conteúdo real, Supabase hospedado, wiring ou produção.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
