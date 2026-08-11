@@ -381,6 +381,23 @@ O Lote 3B.4 será separado em 3B.4A read-only e 3B.4B transacional.
 
 Qualquer mudança contratual, comando transacional, função PostgreSQL/RPC, migration ou ampliação de privilégios exigirá decisão e gate humano próprios.
 
+## ADR-050 — Adapter de comandos separado e erros de entrada provider-neutral
+
+**Status:** implementado para revisão no Lote 3B.4B.3 em 11 de agosto de 2026
+
+O adapter Supabase de comandos de componentes será uma classe separada do adapter read-only e
+implementará somente `PedagogicalComponentCommandRepository`. Cada método chamará exatamente uma
+das quatro RPCs transacionais integradas no 3B.4B.2, sem DML direto, fallback, retry automático,
+wiring ou criação interna de client.
+
+O `commandId` será enviado somente como `p_command_id`; o payload JSONB conterá apenas os demais
+campos do comando. Todo recibo será validado contra comando, operação, componente, versão, replay e
+timestamp esperados antes de atravessar a borda.
+
+A taxonomia provider-neutral é ampliada com `INVALID_INPUT`. O adapter traduzirá `22023` para
+`INVALID_INPUT`, `PT409` para `CONFLICT` e `P0002` para `NOT_FOUND`, sem expor SQLSTATE, mensagem,
+hint ou detalhes do PostgREST.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.

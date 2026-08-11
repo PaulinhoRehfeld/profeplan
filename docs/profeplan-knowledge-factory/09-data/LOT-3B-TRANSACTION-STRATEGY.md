@@ -162,7 +162,7 @@ Nenhuma RPC/read model é necessária para o 3B.4A. Um futuro consumidor que exi
 
 Essa insuficiência contratual é registrada como GAP-3B-06. Não criar método lateral, acesso direto externo, compensação ou RPC antes da decisão humana sobre o comando e seu payload.
 
-Antes de 3B.4B são obrigatórios:
+Controles satisfeitos pelos sublotes 3B.4B.1 e 3B.4B.2:
 
 1. comando de aplicação completo;
 2. payload com evidências e vínculos;
@@ -174,6 +174,18 @@ Antes de 3B.4B são obrigatórios:
 8. testes de rollback no Supabase descartável;
 9. decisão contratual explícita;
 10. gate humano próprio.
+
+### Adapter de comandos do 3B.4B.3
+
+O adapter em revisão mantém uma classe separada da leitura e chama exatamente uma RPC por método.
+Ele separa `commandId` em `p_command_id`, envia o restante do comando como payload fechado, valida
+integralmente o recibo e não contém `.from()`, DML direto, retry automático, criação de client ou
+leitura de ambiente.
+
+Os códigos internos são traduzidos na borda: `PT409` para `CONFLICT`, `P0002` para `NOT_FOUND` e
+`22023` para `INVALID_INPUT`. Nenhum SQLSTATE ou detalhe bruto atravessa o adapter.
+
+GAP-3B-02 e GAP-3B-06 permanecem ativos até o DB CI e a integração humana do 3B.4B.3.
 
 ## KnowledgeSourceRepository
 

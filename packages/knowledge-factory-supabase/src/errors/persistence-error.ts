@@ -1,4 +1,5 @@
 export const PERSISTENCE_ERROR_CODES = [
+  'INVALID_INPUT',
   'NOT_FOUND',
   'CONFLICT',
   'CONSTRAINT_VIOLATION',
@@ -49,6 +50,18 @@ export function toPersistenceError(
   const code = typeof error.code === 'string' ? error.code : undefined;
   const status = typeof error.status === 'number' ? error.status : undefined;
   const text = providerText(error);
+
+  if (code === '22023') {
+    return new KnowledgeFactoryPersistenceError('INVALID_INPUT', operation);
+  }
+
+  if (code === 'PT409' || status === 409) {
+    return new KnowledgeFactoryPersistenceError('CONFLICT', operation);
+  }
+
+  if (code === 'P0002') {
+    return new KnowledgeFactoryPersistenceError('NOT_FOUND', operation);
+  }
 
   if (code === '23505') {
     return new KnowledgeFactoryPersistenceError('CONFLICT', operation);
