@@ -170,7 +170,9 @@ descartável.
 
 Transição persistida exige atomicidade real e requester context definido.
 
-Bloqueada até RPC/comando aprovado.
+**Status atualizado:** encerrado após integração dos quatro sublotes do Lote 3B.5 pelos PRs nº 25 a
+28 e formalização pós-merge no Checkpoint 031. RPCs atômicas, requester isolation, transição
+server-only, idempotência e concorrência permanecem controles obrigatórios.
 
 ### GAP-3B-04 — lifecycle de fonte
 
@@ -239,8 +241,9 @@ compare-and-set e evento derivado.
 
 O sublote 3B.5.1 elevou o contrato para `3.0.0` e foi integrado pelo Pull Request nº 25. O adapter
 REQUESTER read-only do 3B.5.2 foi integrado pelo Pull Request nº 26. A migration/RPCs do 3B.5.3 foi
-integrada pelo Pull Request nº 27. Os adapters de comando do 3B.5.4 foram implementados em branch
-técnica própria para revisão, sem composição ou wiring automático.
+integrada pelo Pull Request nº 27. Os adapters de comando do 3B.5.4 foram integrados pelo Pull
+Request nº 28, sem composição ou wiring automático. O Checkpoint 031 encerrou `GAP-3B-03` e o Lote
+3B.5.
 
 ## ADR-052 — Cobertura mínima explicitamente parcial da OPP
 
@@ -271,12 +274,11 @@ Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a pri
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
 
-## Gate vigente — Lote 3B.5.4
+## Gate vigente — saída documental da Fase B
 
-O próximo gate é exclusivamente a revisão humana do 3B.5.4 — adapters REQUESTER de criação e
-SYSTEM de transição do `ProductionOrderRepository`, seguida de autorização própria para publicação
-e validação no DB CI.
+O próximo gate é revisar e integrar o Checkpoint 031. Depois disso, uma branch documental própria
+deverá inspecionar se `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` estão formalmente contidos para o gate
+de saída da Fase B previsto no Blueprint.
 
-Mesmo após eventual integração, o encerramento de `GAP-3B-03`, do Lote 3B.5 e da Fase B dependerá
-de checkpoint pós-merge e decisão humana próprios. Produção, API, frontend, retrieval, agentes e
+O encerramento do Lote 3B.5 não inicia a Fase C. Produção, API, frontend, retrieval, agentes e
 conteúdo real permanecem bloqueados até autorizações próprias.

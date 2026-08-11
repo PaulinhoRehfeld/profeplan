@@ -4,11 +4,9 @@ Data: 11 de agosto de 2026.
 
 ## Status
 
-**Definição documental integrada pelo Pull Request nº 24, 3B.5.1 — contratos e contextos integrado
-pelo Pull Request nº 25, 3B.5.2 — adapter REQUESTER read-only integrado pelo Pull Request nº 26 e
-3B.5.3 — migration e RPCs integrado pelo Pull Request nº 27. O 3B.5.4 — adapters de comando foi
-implementado em branch isolada e está preparado para revisão humana. Nenhum wiring, Supabase
-hospedado ou produção está autorizado por continuidade.**
+**Concluído. A definição documental e os quatro sublotes foram integrados pelos Pull Requests nº 24
+a 28. O `GAP-3B-03` foi encerrado após o checkpoint pós-merge; `GAP-3B-07` permanece ativo e
+contido. Nenhum wiring, Supabase hospedado ou produção está autorizado por continuidade.**
 
 Base canônica inspecionada:
 
@@ -28,10 +26,14 @@ Base canônica inspecionada:
 - branch técnica do 3B.5.3: `feat/knowledge-factory-production-order-write-rpcs`.
 - integração do 3B.5.3: Pull Request nº 27;
 - commit de integração do 3B.5.3: `e223de4d02b39df748c3063d0e495f528c025e9d`;
-- branch técnica do 3B.5.4: `feat/knowledge-factory-production-order-command-adapters`.
+- branch técnica do 3B.5.4: `feat/knowledge-factory-production-order-command-adapters`;
+- integração do 3B.5.4: Pull Request nº 28;
+- commit de integração do 3B.5.4: `1429107facf816a9a45c12b1ce3ed5cb3c7b6722`;
+- encerramento pós-merge: `00-governance/CONTINUITY-CHECKPOINT-031.md`.
 
-O Lote 3B.4 está encerrado. `GAP-3B-03`, requester isolation e a coerência da timeline são as
-restrições centrais desta definição. `GAP-3B-04` e `GAP-3B-05` permanecem fora do escopo.
+Os Lotes 3B.4 e 3B.5 estão encerrados no estado proposto pelo Checkpoint 031. Requester isolation e
+a coerência da timeline permanecem controles obrigatórios mesmo após o encerramento do
+`GAP-3B-03`. `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` permanecem fora do escopo desta conclusão.
 
 ## 1. Objetivo
 
@@ -448,15 +450,17 @@ ficaram verdes antes do squash merge `e223de4d02b39df748c3063d0e495f528c025e9d`.
 - integração no Supabase descartável;
 - nenhum API/frontend/composition root/produção.
 
-Estado: **implementado em branch isolada e preparado para revisão humana.** O adapter REQUESTER
+Estado: **integrado pelo Pull Request nº 28.** O adapter REQUESTER
 implementa somente `createProductionOrder` e chama exclusivamente `kf_create_production_order`; o
 adapter SYSTEM implementa somente `transitionProductionOrder` e chama exclusivamente
 `kf_transition_production_order`. Payloads são reconstruídos por allowlist, recibos são validados
 integralmente, telemetria é sanitizada e não existe DML direto, criação de client, troca de contexto
-ou wiring. A integração descartável está preparada e depende do DB CI do futuro Pull Request.
+ou wiring. CI geral e DB CI ficaram verdes, incluindo a integração PostgreSQL real dos adapters,
+antes do squash merge `1429107facf816a9a45c12b1ce3ed5cb3c7b6722`.
 
-Após os quatro sublotes, um checkpoint pós-merge próprio decidirá sobre encerramento do Lote 3B.5,
-de `GAP-3B-03` e da Fase B. Nenhum encerramento é automático por esta definição.
+O Checkpoint 031 verificou os quatro sublotes, encerrou `GAP-3B-03` e formalizou o encerramento do
+Lote 3B.5. A Fase B permanece aberta até decisão documental própria; nenhum encerramento de fase é
+automático por esta definição.
 
 ## 5. Testes obrigatórios
 
@@ -518,7 +522,7 @@ de `GAP-3B-03` e da Fase B. Nenhum encerramento é automático por esta definiç
 
 ### GAP-3B-03 — OPP + evento
 
-Permanece ativo. Poderá ser encerrado somente após:
+**Status atualizado: encerrado no Checkpoint 031.** As condições exigidas foram:
 
 1. contratos explícitos integrados;
 2. criação e transição atômicas integradas;
@@ -527,6 +531,11 @@ Permanece ativo. Poderá ser encerrado somente após:
 5. adapters usando exclusivamente as RPCs;
 6. integração humana dos quatro sublotes;
 7. checkpoint pós-merge.
+
+Os sete critérios foram satisfeitos pelos Pull Requests nº 25 a 28, pelo CI Pipeline nº 268, pelo
+Knowledge Factory DB CI nº 31 e pelo checkpoint pós-merge. Atomicidade, isolamento REQUESTER,
+transição server-only, idempotência, rollback, concorrência e uso exclusivo das RPCs permanecem
+invariantes obrigatórias.
 
 ### GAP-3B-07 — Fatia física da OPP menor que o contrato normativo
 
@@ -610,11 +619,9 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 10. Próximo gate humano
 
-Revisar a implementação técnica do **3B.5.4 — adapters de comando** e decidir entre solicitar
-ajustes, rejeitar/adiar ou autorizar sua publicação em Pull Request draft. O CI geral e o DB CI
-deverão aprovar superfície, payloads fechados, recibos, erros, telemetria, separação REQUESTER/SYSTEM
-e integração descartável antes de qualquer merge.
+Revisar o Checkpoint 031 e decidir sobre sua integração documental. Após eventual merge desse
+registro, o próximo trabalho permitido é exclusivamente inspecionar o gate de saída da Fase B e a
+contenção formal de `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07`.
 
-Mesmo após eventual integração do 3B.5.4, o encerramento de `GAP-3B-03`, do Lote 3B.5 e da Fase B
-somente poderá ocorrer por checkpoint pós-merge e decisão humana próprios. Nenhuma produção ou fase
-posterior recebe autorização por continuidade implícita.
+Nenhuma produção, wiring, Supabase hospedado ou Fase C recebe autorização por continuidade
+implícita.

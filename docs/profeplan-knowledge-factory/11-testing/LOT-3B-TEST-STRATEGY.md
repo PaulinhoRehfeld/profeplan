@@ -97,7 +97,7 @@ A matriz SQL do Lote 3A continua provando negação direta ao professor.
 
 ### OPP/requester
 
-No futuro Lote 3B.5:
+No Lote 3B.5 concluído:
 
 - usuário A lê OPP A;
 - usuário A não lê OPP B;
@@ -119,7 +119,8 @@ No futuro Lote 3B.5:
 - concorrência produz resultado determinístico;
 - matriz SQL de transições mantém paridade com o contrato TypeScript.
 
-Até a integração humana da definição 3B.5, contratos, adapters e RPCs de OPP ficam bloqueados.
+As provas foram concluídas pelos Pull Requests nº 25 a 28 e pelo DB CI nº 31. Wiring, Supabase
+hospedado e produção permanecem bloqueados por gates próprios.
 
 ## Primeiro PR — AuditRepository
 

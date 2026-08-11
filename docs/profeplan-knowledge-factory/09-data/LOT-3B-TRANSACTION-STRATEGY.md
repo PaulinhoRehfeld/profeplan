@@ -101,19 +101,20 @@ Retry de leitura pode ser permitido futuramente; retry de escrita só quando a o
 
 ### Criação de OPP
 
-O schema 3A permite INSERT autenticado de OPP própria em status `requested`.
+O schema 3A permitia INSERT autenticado de OPP própria em status `requested`.
 
 Essa possibilidade física foi preparatória. A definição do 3B.5 rejeita a criação isolada como
 fronteira final porque ela permite OPP sem evento `created`.
 
-A futura criação usará requester-scoped client e uma RPC específica para inserir, na mesma
-transação:
+A criação integrada usa requester-scoped client e `kf_create_production_order` para inserir, na
+mesma transação:
 
 - OPP própria em `requested`;
 - evento `created` derivado;
 - recibo idempotente.
 
-Após essa RPC, o INSERT direto de `authenticated` será revogado.
+O 3B.5.3 revogou o INSERT direto de `authenticated`, e o 3B.5.4 integrou o adapter REQUESTER
+exclusivo da RPC. Grants, atomicidade, rollback, replay e concorrência foram aprovados no DB CI nº 31.
 
 ### Transição de estado
 
@@ -126,7 +127,7 @@ UPDATE kf_production_orders
 
 Porque a segunda operação pode falhar deixando timeline divergente.
 
-Antes do adapter de transição, criar RPC específica que:
+A RPC integrada de transição:
 
 - seja executável somente pelo backend server-side, não por `authenticated`;
 - valida estado esperado;
@@ -141,10 +142,10 @@ A exposição server-only é obrigatória porque RLS não executa os gates pedag
 domínio. A aplicação deve obter decisão aceita antes da RPC; a função repete apenas invariantes
 estruturais verificáveis no banco.
 
-O documento histórico não fechava nomes de função. A definição do 3B.5 propõe
-`kf_create_production_order` e
-`kf_transition_production_order`, cada uma com comando fechado, recibo idempotente e gate humano
-próprio antes da implementação.
+O documento histórico não fechava nomes de função. A definição do 3B.5 aprovou
+`kf_create_production_order` e `kf_transition_production_order`, cada uma com comando fechado e
+recibo idempotente. As funções e seus adapters exclusivos foram integrados pelos PRs nº 27 e 28; o
+Checkpoint 031 encerrou `GAP-3B-03` e o Lote 3B.5.
 
 ## PedagogicalComponentRepository
 

@@ -113,9 +113,9 @@ Decisão aprovada:
 
 O adapter de OPP é deliberadamente o último do 3B.
 
-`GAP-3B-03` permanece ativo até integração humana de contratos, requester read adapter, RPCs,
-adapters de comando e checkpoint pós-merge. `GAP-3B-07` registra que essa fatia não materializa a
-OPP normativa completa.
+`GAP-3B-03` foi encerrado após a integração humana de contratos, requester read adapter, RPCs e
+adapters de comando, seguida do Checkpoint 031 pós-merge. `GAP-3B-07` permanece ativo e registra
+que essa fatia não materializa a OPP normativa completa.
 
 ## 5. AuditRepository
 
@@ -178,8 +178,6 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 5. escrita do componente por RPC, integrada e com GAP-3B-02 e GAP-3B-06 encerrados;
 6. `ProductionOrderRepository` em quatro sublotes após integração da definição 3B.5.
 
-Os itens 1 a 5 foram integrados. O Lote 3B.4 está concluído. A definição do item 6 foi integrada e o
-3B.5.1 foi integrado pelo Pull Request nº 25, o adapter REQUESTER read-only do 3B.5.2 pelo Pull
-Request nº 26 e a migration/RPCs do 3B.5.3 pelo Pull Request nº 27. Os dois adapters de comando do
-3B.5.4 foram implementados em branch própria para revisão, sem DML direto, fallback de contexto ou
-wiring.
+Os seis itens foram integrados. O Lote 3B.4 está concluído. A definição do item 6 e os sublotes
+3B.5.1 a 3B.5.4 foram integrados pelos Pull Requests nº 24 a 28. O Lote 3B.5 foi encerrado no
+Checkpoint 031, sem DML direto, fallback de contexto ou wiring.
