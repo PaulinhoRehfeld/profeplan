@@ -406,7 +406,7 @@ e Vercel verdes, satisfez os critérios de encerramento de GAP-3B-02 e GAP-3B-06
 
 ## ADR-051 — OPP separa leitura requester, solicitação e transição server-only
 
-**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+**Status:** aprovado e integrado pelo Pull Request nº 24 em 11 de agosto de 2026
 
 `ProductionOrderRepository` será decomposto em capacidades de leitura, solicitação e transição. Os
 métodos genéricos `save(order)` e `appendEvent(event)` serão removidos sem aliases, e o contrato será
@@ -419,11 +419,12 @@ aprovar a decisão de domínio antes de chamar a transição; a RPC repetirá ow
 matriz estrutural, evento derivado, idempotência e atomicidade.
 
 O Lote 3B.5 será dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
-e adapters de comando. Nenhuma implementação é autorizada por esta ADR documental.
+e adapters de comando. O 3B.5.1 foi autorizado separadamente e está em revisão; os três sublotes
+posteriores permanecem bloqueados.
 
 ## ADR-052 — 3B.5 conecta uma fatia mínima e não encerra a OPP normativa
 
-**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+**Status:** aprovado e integrado pelo Pull Request nº 24 em 11 de agosto de 2026
 
 O contrato e o schema atuais não materializam todos os campos e eventos do contrato normativo da
 OPP aprovado no Marco 003. O 3B.5 conectará somente a fatia mínima existente, sem antecipar

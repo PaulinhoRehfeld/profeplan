@@ -81,7 +81,7 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.2 KnowledgeSourceRepository
 ✅ 3B.3 CurriculumRepository
 ✅ 3B.4 PedagogicalComponentRepository — leituras e escritas transacionais integradas
-🔵 3B.5 ProductionOrderRepository — definição documental proposta  ← ESTADO ATUAL
+🔵 3B.5 ProductionOrderRepository — definição integrada; 3B.5.1 em revisão  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ⬜ Governança operacional de fontes
@@ -255,7 +255,9 @@ Definição específica:
 
 ### 6.5 — 3B.5 ProductionOrderRepository
 
-Status: **definição documental proposta para revisão. Nenhum código do 3B.5 foi iniciado.**
+Status: **definição documental integrada pelo PR nº 24. O 3B.5.1 — contratos e contextos foi
+implementado em branch isolada e está preparado para revisão. Nenhum adapter, migration ou RPC do
+3B.5 foi iniciado.**
 
 Objetivo:
 
@@ -274,7 +276,7 @@ Pré-condições:
 Estratégia proposta:
 
 ```text
-3B.5.1 — contratos e contextos
+3B.5.1 — contratos e contextos — em revisão
 3B.5.2 — adapter requester read-only
 3B.5.3 — migration e RPCs
 3B.5.4 — adapters de comando
@@ -699,13 +701,14 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B — Lote 3B.4 concluído; definição documental do Lote 3B.5 proposta para revisão. GAP-3B-03 permanece ativo e GAP-3B-07 registra que a fatia física não conclui a OPP normativa. A Fase B ainda não está concluída.**
+> **FASE B — Lote 3B.4 concluído; definição documental do Lote 3B.5 integrada; 3B.5.1 — contratos e contextos em revisão. GAP-3B-03 permanece ativo e GAP-3B-07 registra que a fatia física não conclui a OPP normativa. A Fase B ainda não está concluída.**
 
 Próximo objetivo imediato:
 
-> revisar e decidir sobre a definição documental do Lote 3B.5 — `ProductionOrderRepository`.
-> Somente após eventual integração poderá ser iniciado o 3B.5.1. Nenhum código, migration, RPC,
-> wiring ou acesso à produção é autorizado por esta atualização de navegação.
+> revisar e decidir sobre a integração do 3B.5.1 — contratos `3.0.0` e contextos. Mesmo após sua
+> eventual integração, o 3B.5.2 permanecerá bloqueado até nova autorização explícita. Nenhuma
+> migration, RPC, adapter, wiring ou acesso à produção é autorizado por esta atualização de
+> navegação.
 
 Próxima grande mudança de natureza do projeto:
 

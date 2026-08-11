@@ -88,7 +88,7 @@ Encerrado após a integração do PR nº 15: a porta e o adapter usam `findActiv
 
 ## 4. ProductionOrderRepository
 
-Definição proposta do 3B.5:
+Definição integrada do 3B.5:
 
 | Capacidade / método                         | Fronteira física                 | Operação                      | Client             | Observações                                                                                 |
 | ------------------------------------------- | -------------------------------- | ----------------------------- | ------------------ | ------------------------------------------------------------------------------------------- |
@@ -101,7 +101,7 @@ Definição proposta do 3B.5:
 
 `save(order)` + `appendEvent(event)` separados não constituem uma transição atômica.
 
-Decisão proposta:
+Decisão aprovada:
 
 - remover `save` e `appendEvent` no contrato `3.0.0`;
 - criar comandos distintos para criação e transição;
@@ -178,5 +178,6 @@ O GAP-3B-05 permanece: a porta retorna `DomainEvent`, enquanto a tabela física 
 5. escrita do componente por RPC, integrada e com GAP-3B-02 e GAP-3B-06 encerrados;
 6. `ProductionOrderRepository` em quatro sublotes após integração da definição 3B.5.
 
-Os itens 1 a 5 foram integrados. O Lote 3B.4 está concluído. O item 6 permanece bloqueado até
-integração da definição documental e gate humano próprio para o 3B.5.1.
+Os itens 1 a 5 foram integrados. O Lote 3B.4 está concluído. A definição do item 6 foi integrada e o
+3B.5.1 está em revisão. Os sublotes 3B.5.2 a 3B.5.4 permanecem bloqueados até gates humanos
+próprios.

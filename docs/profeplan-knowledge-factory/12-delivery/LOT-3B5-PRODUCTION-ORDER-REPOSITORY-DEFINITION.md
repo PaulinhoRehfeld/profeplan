@@ -4,8 +4,9 @@ Data: 11 de agosto de 2026.
 
 ## Status
 
-**Definição documental proposta para revisão humana. Este documento não autoriza alteração de
-TypeScript, migration, RPC, grant, RLS, workflow, wiring, Supabase hospedado ou produção.**
+**Definição documental integrada pelo Pull Request nº 24. O sublote 3B.5.1 — contratos e contextos
+foi implementado em branch isolada e está preparado para revisão humana. Nenhum sublote posterior,
+migration, RPC, adapter, wiring, Supabase hospedado ou produção está autorizado por continuidade.**
 
 Base canônica inspecionada:
 
@@ -14,6 +15,9 @@ Base canônica inspecionada:
 - commit-base: `d54f092e451d6663404e4b747c56196c9bd2536d`;
 - origem da base: squash merge do Pull Request nº 23;
 - branch documental: `agent/knowledge-factory-lot-3b5-definition`.
+- integração documental: Pull Request nº 24;
+- commit de integração: `dc52b843094236207ab7aa22b12cbb97f02aab11`;
+- branch técnica do 3B.5.1: `agent/knowledge-factory-lot-3b5-1-contracts`.
 
 O Lote 3B.4 está encerrado. `GAP-3B-03`, requester isolation e a coerência da timeline são as
 restrições centrais desta definição. `GAP-3B-04` e `GAP-3B-05` permanecem fora do escopo.
@@ -378,6 +382,13 @@ Cada sublote terá branch, PR, CI e gate humano próprios.
 - provar ausência de consumidores quebrados;
 - nenhuma migration, RPC ou adapter.
 
+Estado: **implementado em branch isolada e preparado para revisão humana.** O contrato foi elevado
+para `3.0.0`; operações, comandos e recibo foram adicionados; a porta foi separada em leitura,
+solicitação e transição; `save` e `appendEvent` foram removidos; e
+`SupabaseRequesterContext` foi publicado somente com client injetado e `requesterId` que o
+composition root deverá derivar da identidade verificada. Type tests cobrem a superfície exata e a
+imutabilidade. Nenhum comportamento de persistência foi criado.
+
 ### 3B.5.2 — Adapter requester read-only
 
 - implementar `findById` e `listEvents` com client REQUESTER injetado;
@@ -527,7 +538,10 @@ Esses riscos serão incorporados ao registro do Lote 3B com gates verificáveis.
 
 ## 8. Itens expressamente excluídos
 
-- qualquer alteração de código nesta branch documental;
+Na branch documental original, qualquer alteração de código estava excluída. Na execução autorizada
+do 3B.5.1, a alteração ficou restrita a contratos, porta, contexto, fixtures e testes. Permanecem
+expressamente excluídos:
+
 - migration, RPC, tabela de recibos, grant, policy, trigger ou índice;
 - aplicação no Supabase hospedado;
 - criação ou rotação de credenciais;
@@ -562,9 +576,9 @@ Esta definição estará pronta para integração documental somente se:
 
 ## 10. Próximo gate humano
 
-Revisar o Pull Request documental desta definição e decidir entre solicitar ajustes,
-rejeitar/adiar ou autorizar seu squash merge.
+Revisar o Pull Request técnico do **3B.5.1 — contratos e contextos** e decidir entre solicitar
+ajustes, rejeitar/adiar ou autorizar seu squash merge.
 
-Somente após eventual integração poderá ser iniciado, em branch e PR próprios, o sublote
-**3B.5.1 — contratos e contextos**. Nenhum sublote posterior recebe autorização por continuidade
-implícita.
+Mesmo após eventual integração do 3B.5.1, o **3B.5.2 — adapter REQUESTER read-only** somente poderá
+ser iniciado em branch e PR próprios mediante nova autorização explícita. Nenhum sublote posterior
+recebe autorização por continuidade implícita.

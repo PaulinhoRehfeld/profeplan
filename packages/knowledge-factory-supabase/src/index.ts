@@ -5,6 +5,7 @@ export * from './component/pedagogical-component-command.mapper.ts';
 export * from './component/supabase-pedagogical-component-command.repository.ts';
 export * from './component/supabase-pedagogical-component.repository.ts';
 export * from './context/supabase-system-context.ts';
+export * from './context/supabase-requester-context.ts';
 export * from './curriculum/curriculum.mapper.ts';
 export * from './curriculum/supabase-curriculum.repository.ts';
 export * from './errors/persistence-error.ts';
