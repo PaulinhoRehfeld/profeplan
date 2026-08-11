@@ -10,5 +10,7 @@ export * from './curriculum/curriculum.mapper.ts';
 export * from './curriculum/supabase-curriculum.repository.ts';
 export * from './errors/persistence-error.ts';
 export * from './observability/persistence-logger.ts';
+export * from './production-order/production-order.mapper.ts';
+export * from './production-order/supabase-production-order-read.repository.ts';
 export * from './source/source.mapper.ts';
 export * from './source/supabase-knowledge-source.repository.ts';

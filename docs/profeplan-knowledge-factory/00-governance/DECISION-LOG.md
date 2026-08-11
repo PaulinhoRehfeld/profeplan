@@ -419,8 +419,8 @@ aprovar a decisão de domínio antes de chamar a transição; a RPC repetirá ow
 matriz estrutural, evento derivado, idempotência e atomicidade.
 
 O Lote 3B.5 será dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
-e adapters de comando. O 3B.5.1 foi autorizado separadamente e está em revisão; os três sublotes
-posteriores permanecem bloqueados.
+e adapters de comando. O 3B.5.1 foi integrado pelo Pull Request nº 25. O 3B.5.2 foi implementado em
+branch própria e está em revisão; os sublotes 3B.5.3 e 3B.5.4 permanecem bloqueados.
 
 ## ADR-052 — 3B.5 conecta uma fatia mínima e não encerra a OPP normativa
 
