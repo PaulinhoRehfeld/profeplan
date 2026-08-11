@@ -1,7 +1,12 @@
 import type { AgentProfile, AgentScope } from './agent.ts';
 import type { CurriculumLink, CurriculumNode, CurriculumPackage } from './curriculum.ts';
 import type { DeliveryContract } from './delivery.ts';
-import type { PedagogicalProductionOrder } from './opp.ts';
+import type {
+  CreateProductionOrderCommand,
+  PedagogicalProductionOrder,
+  ProductionOrderWriteReceipt,
+  TransitionProductionOrderCommand,
+} from './opp.ts';
 import type {
   EvidenceOrigin,
   PedagogicalComponent,
@@ -147,6 +152,44 @@ export const syntheticOpp: PedagogicalProductionOrder = {
   status: 'requested',
   createdAt,
   updatedAt: createdAt,
+};
+
+export const syntheticCreateProductionOrderCommand: CreateProductionOrderCommand = {
+  commandId: 'command_create_opp_synthetic_1',
+  order: {
+    id: syntheticOpp.id,
+    version: syntheticOpp.version,
+    agentProfileId: syntheticOpp.agentProfileId,
+    curriculumPackageId: syntheticOpp.curriculumPackageId,
+    productType: syntheticOpp.productType,
+    theme: syntheticOpp.theme,
+    durationMinutes: syntheticOpp.durationMinutes,
+  },
+  eventId: 'oppevent_created_synthetic_1',
+  eventVersion: '1.0.0',
+  occurredAt: createdAt,
+};
+
+export const syntheticTransitionProductionOrderCommand: TransitionProductionOrderCommand = {
+  commandId: 'command_transition_opp_synthetic_1',
+  requesterId: syntheticOpp.requesterId,
+  oppId: syntheticOpp.id,
+  expectedStatus: 'requested',
+  expectedUpdatedAt: syntheticOpp.updatedAt,
+  toStatus: 'scoped',
+  eventId: 'oppevent_scope_resolved_synthetic_1',
+  eventVersion: '1.0.0',
+  occurredAt: '2026-08-06T12:01:00.000Z',
+};
+
+export const syntheticProductionOrderWriteReceipt: ProductionOrderWriteReceipt = {
+  commandId: syntheticCreateProductionOrderCommand.commandId,
+  operation: 'create_production_order',
+  oppId: syntheticOpp.id,
+  eventId: syntheticCreateProductionOrderCommand.eventId,
+  status: 'requested',
+  replayed: false,
+  committedAt: createdAt,
 };
 
 export const syntheticQueryPlan: QueryPlan = {

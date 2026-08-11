@@ -5,6 +5,7 @@ import {
   EPIC_018_ENABLED,
   KNOWLEDGE_FACTORY_CONTRACT_VERSION,
   PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS,
+  PRODUCTION_ORDER_WRITE_OPERATIONS,
   assertOppTransition,
   canApproveFromFindings,
   hasDeliveryTraceability,
@@ -18,14 +19,17 @@ import {
   syntheticComponentVersion,
   syntheticCurriculumPackage,
   syntheticDeliveries,
+  syntheticCreateProductionOrderCommand,
   syntheticFinding,
+  syntheticProductionOrderWriteReceipt,
   syntheticQueryPlan,
   syntheticSource,
   syntheticSufficiencyResult,
+  syntheticTransitionProductionOrderCommand,
 } from '../src/knowledge-factory/index.ts';
 
-test('knowledge factory exports the approved 2.0.0 write contract', () => {
-  assert.equal(KNOWLEDGE_FACTORY_CONTRACT_VERSION, '2.0.0');
+test('knowledge factory exports the approved 3.0.0 write contract', () => {
+  assert.equal(KNOWLEDGE_FACTORY_CONTRACT_VERSION, '3.0.0');
   assert.deepEqual(PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS, [
     'create_component_aggregate',
     'append_component_version',
@@ -33,6 +37,31 @@ test('knowledge factory exports the approved 2.0.0 write contract', () => {
     'promote_component_version',
   ]);
   assert.equal(Object.isFrozen(PEDAGOGICAL_COMPONENT_WRITE_OPERATIONS), true);
+  assert.deepEqual(PRODUCTION_ORDER_WRITE_OPERATIONS, [
+    'create_production_order',
+    'transition_production_order',
+  ]);
+  assert.equal(Object.isFrozen(PRODUCTION_ORDER_WRITE_OPERATIONS), true);
+});
+
+test('production order fixtures keep requester and lifecycle fields outside create payloads', () => {
+  assert.deepEqual(Object.keys(syntheticCreateProductionOrderCommand.order).sort(), [
+    'agentProfileId',
+    'curriculumPackageId',
+    'durationMinutes',
+    'id',
+    'productType',
+    'theme',
+    'version',
+  ]);
+  assert.equal(syntheticProductionOrderWriteReceipt.operation, 'create_production_order');
+  assert.equal(
+    syntheticProductionOrderWriteReceipt.commandId,
+    syntheticCreateProductionOrderCommand.commandId
+  );
+  assert.equal(syntheticTransitionProductionOrderCommand.requesterId, 'teacher_synthetic_1');
+  assert.equal('eventType' in syntheticTransitionProductionOrderCommand, false);
+  assert.equal('fromStatus' in syntheticTransitionProductionOrderCommand, false);
 });
 
 test('versioned contracts preserve identity and version', () => {
@@ -54,16 +83,16 @@ test('incompatible licenses block generation use', () => {
         licenseCategory: 'restricted',
         allowedUses: ['generation', 'internal_review'],
       },
-      'generation',
+      'generation'
     ),
-    false,
+    false
   );
 });
 
 test('unapproved components cannot enter production', () => {
   assert.equal(
     isComponentProductionReady({ ...syntheticComponentVersion, status: 'in_review' }),
-    false,
+    false
   );
   assert.equal(isComponentProductionReady(syntheticComponentVersion), true);
 });
@@ -75,7 +104,7 @@ test('query plans require deterministic mandatory filters', () => {
       ...syntheticQueryPlan,
       filters: { ...syntheticQueryPlan.filters, sourceStatus: 'blocked' },
     }),
-    false,
+    false
   );
 });
 
@@ -86,7 +115,7 @@ test('only one active curriculum is accepted', () => {
       syntheticCurriculumPackage,
       { ...syntheticCurriculumPackage, id: 'cur_mg_second', version: '1.0.0' },
     ]),
-    false,
+    false
   );
 });
 
@@ -99,7 +128,7 @@ test('Rio Grande do Sul and EPIC-018 remain blocked in the MVP', () => {
       id: 'cur_rs_synthetic',
       state: 'RS',
     }),
-    false,
+    false
   );
 });
 
@@ -119,7 +148,7 @@ test('open Must findings block approval', () => {
         status: 'open',
       },
     ]),
-    false,
+    false
   );
 });
 
@@ -131,7 +160,7 @@ test('insufficiency cannot be treated as success', () => {
       sufficient: false,
       reasons: ['insufficient_evidence'],
     }),
-    false,
+    false
   );
 });
 

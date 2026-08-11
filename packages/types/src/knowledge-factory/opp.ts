@@ -1,4 +1,4 @@
-import type { EntityId, ISODateTime, VersionedEntity } from './common.ts';
+import type { EntityId, ISODateTime, VersionTag, VersionedEntity } from './common.ts';
 import type { ProductType } from './delivery.ts';
 
 export const OPP_STATUSES = [
@@ -46,6 +46,45 @@ export interface OppEvent extends VersionedEntity {
   toStatus: OppStatus;
   reason?: string;
   occurredAt: ISODateTime;
+}
+
+export const PRODUCTION_ORDER_WRITE_OPERATIONS = Object.freeze([
+  'create_production_order',
+  'transition_production_order',
+] as const);
+export type ProductionOrderWriteOperation = (typeof PRODUCTION_ORDER_WRITE_OPERATIONS)[number];
+
+export interface CreateProductionOrderCommand {
+  readonly commandId: EntityId;
+  readonly order: Readonly<
+    Omit<PedagogicalProductionOrder, 'requesterId' | 'status' | 'createdAt' | 'updatedAt'>
+  >;
+  readonly eventId: EntityId;
+  readonly eventVersion: VersionTag;
+  readonly occurredAt: ISODateTime;
+}
+
+export interface TransitionProductionOrderCommand {
+  readonly commandId: EntityId;
+  readonly requesterId: EntityId;
+  readonly oppId: EntityId;
+  readonly expectedStatus: OppStatus;
+  readonly expectedUpdatedAt: ISODateTime;
+  readonly toStatus: OppStatus;
+  readonly eventId: EntityId;
+  readonly eventVersion: VersionTag;
+  readonly reason?: string;
+  readonly occurredAt: ISODateTime;
+}
+
+export interface ProductionOrderWriteReceipt {
+  readonly commandId: EntityId;
+  readonly operation: ProductionOrderWriteOperation;
+  readonly oppId: EntityId;
+  readonly eventId: EntityId;
+  readonly status: OppStatus;
+  readonly replayed: boolean;
+  readonly committedAt: ISODateTime;
 }
 
 const OPP_TRANSITIONS: Readonly<Record<OppStatus, readonly OppStatus[]>> = {

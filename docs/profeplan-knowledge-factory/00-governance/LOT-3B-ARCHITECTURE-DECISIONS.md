@@ -229,7 +229,7 @@ Essas condições foram satisfeitas pelos PRs nº 19 a 22.
 
 ## ADR-051 — Fronteira tripartida e comandos atômicos da OPP
 
-**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+**Status:** aprovado e integrado pelo Pull Request nº 24 em 11 de agosto de 2026
 
 O `ProductionOrderRepository` será decomposto em leitura, solicitação e transição. `save(order)` e
 `appendEvent(event)` serão removidos; criação e transição terão comandos e recibos idempotentes
@@ -237,12 +237,12 @@ próprios. A criação será REQUESTER e sempre incluirá o evento `created`. A 
 precedida pela política de domínio e executada por RPC estreita com ownership esperado,
 compare-and-set e evento derivado.
 
-O sublote 3B.5.1 elevará o contrato para `3.0.0`. Os adapters, RPCs e grants permanecem bloqueados
-até seus PRs próprios.
+O sublote 3B.5.1 elevou o contrato para `3.0.0` em branch técnica preparada para revisão. Os
+adapters, RPCs e grants permanecem bloqueados até seus PRs próprios.
 
 ## ADR-052 — Cobertura mínima explicitamente parcial da OPP
 
-**Status:** proposto para o Lote 3B.5 em 11 de agosto de 2026
+**Status:** aprovado e integrado pelo Pull Request nº 24 em 11 de agosto de 2026
 
 O 3B.5 conecta somente o domínio e o schema já materializados. Os campos normativos ainda ausentes
 permanecem em `GAP-3B-07` e não serão antecipados das Fases C, D ou E. O gate de saída da Fase B
@@ -269,11 +269,11 @@ Com ADR-040 a ADR-047 aprovadas, pode ser preparada e implementada somente a pri
 
 Qualquer segunda porta, mudança de contrato público, RPC/migration, wiring de produção ou ampliação de escopo exige novo gate humano.
 
-## Gate vigente — definição do Lote 3B.5
+## Gate vigente — Lote 3B.5.1
 
-O próximo gate é exclusivamente a revisão humana da definição documental do Lote 3B.5 —
+O próximo gate é exclusivamente a revisão humana do 3B.5.1 — contratos `3.0.0` e contextos do
 `ProductionOrderRepository`.
 
-Somente após eventual integração poderá ser iniciado o 3B.5.1 — contratos e contextos. Nova
+Mesmo após eventual integração, o 3B.5.2 continuará bloqueado até nova autorização explícita.
 RPC/migration, adapters, produção, API, frontend, retrieval, agentes e conteúdo real permanecem
 bloqueados até autorizações próprias.
