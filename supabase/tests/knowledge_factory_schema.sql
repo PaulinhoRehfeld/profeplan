@@ -56,12 +56,12 @@ $$;
 -- -----------------------------------------------------------------------------
 SELECT pg_temp.assert_true(
   (
-    SELECT count(*) = 16
+    SELECT count(*) = 17
     FROM information_schema.tables
     WHERE table_schema = 'public'
       AND table_name LIKE 'kf\_%' ESCAPE '\'
   ),
-  'exactly 16 public.kf_* tables must exist after Lote 3B.4B.2'
+  'exactly 17 public.kf_* tables must exist after Sublote 3B.5.3'
 );
 
 SELECT pg_temp.assert_true(
@@ -930,31 +930,41 @@ SELECT pg_temp.assert_true(
   'user A must not read user B OPP'
 );
 
-INSERT INTO public.kf_production_orders (
-  id,
-  version,
-  requester_id,
-  agent_profile_id,
-  curriculum_package_id,
-  product_type,
-  theme,
-  duration_minutes,
-  status,
-  created_at,
-  updated_at
-)
-VALUES (
-  '50000000-0000-4000-8000-000000000003',
-  '1.0.0',
-  '10000000-0000-4000-8000-000000000001',
-  '90000000-0000-4000-8000-000000000001',
-  '40000000-0000-4000-8000-000000000001',
-  'didactic_text',
-  'Synthetic own OPP insert',
-  NULL,
-  'requested',
-  now(),
-  now()
+SELECT * FROM public.kf_create_production_order(
+  '50200000-0000-4000-8000-000000000003',
+  jsonb_build_object(
+    'order', jsonb_build_object(
+      'id', '50000000-0000-4000-8000-000000000003',
+      'version', '1.0.0',
+      'agentProfileId', '90000000-0000-4000-8000-000000000001',
+      'curriculumPackageId', '40000000-0000-4000-8000-000000000001',
+      'productType', 'didactic_text',
+      'theme', 'Synthetic own OPP request'
+    ),
+    'eventId', '50100000-0000-4000-8000-000000000003',
+    'eventVersion', '1.0.0',
+    'occurredAt', '2026-08-11T21:00:00.000Z'
+  )
+);
+
+SELECT pg_temp.expect_error(
+  $sql$
+    INSERT INTO public.kf_production_orders (
+      id, version, requester_id, agent_profile_id, curriculum_package_id,
+      product_type, theme, status
+    ) VALUES (
+      '50000000-0000-4000-8000-000000000099',
+      '1.0.0',
+      '10000000-0000-4000-8000-000000000001',
+      '90000000-0000-4000-8000-000000000001',
+      '40000000-0000-4000-8000-000000000001',
+      'didactic_text',
+      'Synthetic direct OPP insert',
+      'requested'
+    )
+  $sql$,
+  ARRAY['42501']::text[],
+  'authenticated direct OPP insert must be rejected'
 );
 
 SELECT pg_temp.expect_error(
@@ -1164,7 +1174,7 @@ RESET ROLE;
 -- -----------------------------------------------------------------------------
 SELECT pg_temp.assert_true(
   (
-    SELECT count(*) = 16
+    SELECT count(*) = 17
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE n.nspname = 'public'
@@ -1172,7 +1182,7 @@ SELECT pg_temp.assert_true(
       AND c.relkind = 'r'
       AND c.relrowsecurity
   ),
-  'RLS must be enabled on all 16 Knowledge Factory tables'
+  'RLS must be enabled on all 17 Knowledge Factory tables'
 );
 
 -- All synthetic rows and synthetic auth identities are removed here.

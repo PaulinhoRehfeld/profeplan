@@ -128,9 +128,10 @@ Policy conceitual:
 WITH CHECK (requester_id = auth.uid())
 ```
 
-O schema 3A implementou esse INSERT direto como preparação. A definição do 3B.5 propõe substituí-lo
-por RPC REQUESTER que deriva `requester_id = auth.uid()` e grava atomicamente OPP `requested`,
-evento `created` e recibo. Após a migration, o INSERT direto de `authenticated` será revogado.
+O schema 3A implementou esse INSERT direto como preparação. A implementação local do 3B.5.3 o
+substitui por RPC REQUESTER que deriva `requester_id = auth.uid()` e grava atomicamente OPP
+`requested`, evento `created` e recibo. A mesma migration revoga o INSERT direto de
+`authenticated`; a eficácia desses grants aguarda confirmação no Supabase descartável do DB CI.
 
 ## OPP — UPDATE/DELETE
 
@@ -152,7 +153,7 @@ evento.opp_id pertence a OPP cujo requester_id = auth.uid()
 
 Não pode inserir, atualizar ou excluir diretamente.
 
-## Comandos de OPP propostos no 3B.5
+## Comandos de OPP definidos no 3B.5
 
 Criação:
 

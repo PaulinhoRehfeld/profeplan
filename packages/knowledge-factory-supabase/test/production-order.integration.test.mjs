@@ -65,6 +65,82 @@ async function countRows(table) {
   return count;
 }
 
+async function createProductionOrderFixture({
+  requester,
+  commandId,
+  orderId,
+  eventId,
+  curriculumPackageId,
+  agentProfileId,
+  productType,
+  theme,
+  durationMinutes,
+  occurredAt,
+}) {
+  const order = {
+    id: orderId,
+    version: '1.0.0',
+    agentProfileId,
+    curriculumPackageId,
+    productType,
+    theme,
+  };
+  if (durationMinutes !== undefined) {
+    order.durationMinutes = durationMinutes;
+  }
+
+  const { data, error } = await requester.client.rpc('kf_create_production_order', {
+    p_command_id: commandId,
+    p_payload: {
+      order,
+      eventId,
+      eventVersion: '1.0.0',
+      occurredAt,
+    },
+  });
+  assert.equal(error, null);
+  assert.equal(data?.[0]?.opp_id, orderId);
+  assert.equal(data?.[0]?.event_id, eventId);
+  assert.equal(data?.[0]?.status, 'requested');
+  assert.equal(data?.[0]?.replayed, false);
+}
+
+async function transitionProductionOrderFixture({
+  commandId,
+  requesterId,
+  orderId,
+  expectedStatus,
+  expectedUpdatedAt,
+  toStatus,
+  eventId,
+  occurredAt,
+  reason,
+}) {
+  const payload = {
+    requesterId,
+    oppId: orderId,
+    expectedStatus,
+    expectedUpdatedAt,
+    toStatus,
+    eventId,
+    eventVersion: '1.0.0',
+    occurredAt,
+  };
+  if (reason !== undefined) {
+    payload.reason = reason;
+  }
+
+  const { data, error } = await systemClient.rpc('kf_transition_production_order', {
+    p_command_id: commandId,
+    p_payload: payload,
+  });
+  assert.equal(error, null);
+  assert.equal(data?.[0]?.opp_id, orderId);
+  assert.equal(data?.[0]?.event_id, eventId);
+  assert.equal(data?.[0]?.status, toStatus);
+  assert.equal(data?.[0]?.replayed, false);
+}
+
 test.before(async () => {
   requesterA = await createRequester('a');
   requesterB = await createRequester('b');
@@ -88,73 +164,50 @@ test.before(async () => {
   });
   assert.equal(packageError, null);
 
-  const { error: orderError } = await systemClient.from('kf_production_orders').insert([
-    {
-      id: orderAId,
-      version: '1.0.0',
-      requester_id: requesterA.requesterId,
-      agent_profile_id: randomUUID(),
-      curriculum_package_id: curriculumPackageId,
-      product_type: 'lesson_plan',
-      theme: 'Synthetic requester A theme',
-      duration_minutes: 50,
-      status: 'blocked',
-      created_at: '2026-08-11T12:00:00.000Z',
-      updated_at: '2026-08-11T12:05:00.000Z',
-    },
-    {
-      id: orderBId,
-      version: '1.0.0',
-      requester_id: requesterB.requesterId,
-      agent_profile_id: randomUUID(),
-      curriculum_package_id: curriculumPackageId,
-      product_type: 'didactic_text',
-      theme: 'Synthetic requester B theme',
-      status: 'requested',
-      created_at: '2026-08-11T12:00:00.000Z',
-      updated_at: '2026-08-11T12:00:00.000Z',
-    },
-  ]);
-  assert.equal(orderError, null);
-
-  const { error: eventError } = await systemClient.from('kf_production_order_events').insert([
-    {
-      id: createdEventId,
-      version: '1.0.0',
-      opp_id: orderAId,
-      event_type: 'created',
-      to_status: 'requested',
-      occurred_at: '2026-08-11T12:00:00.000Z',
-    },
-    {
-      id: tiedEventIds[1],
-      version: '1.0.0',
-      opp_id: orderAId,
-      event_type: 'blocked',
-      from_status: 'scoped',
-      to_status: 'blocked',
-      reason: 'Synthetic deterministic ordering event',
-      occurred_at: '2026-08-11T12:05:00.000Z',
-    },
-    {
-      id: tiedEventIds[0],
-      version: '1.0.0',
-      opp_id: orderAId,
-      event_type: 'scope_resolved',
-      from_status: 'requested',
-      to_status: 'scoped',
-      occurred_at: '2026-08-11T12:05:00.000Z',
-    },
-    {
-      id: eventBId,
-      version: '1.0.0',
-      opp_id: orderBId,
-      event_type: 'created',
-      to_status: 'requested',
-      occurred_at: '2026-08-11T12:00:00.000Z',
-    },
-  ]);
-  assert.equal(eventError, null);
+  await createProductionOrderFixture({
+    requester: requesterA,
+    commandId: randomUUID(),
+    orderId: orderAId,
+    eventId: createdEventId,
+    curriculumPackageId,
+    agentProfileId: randomUUID(),
+    productType: 'lesson_plan',
+    theme: 'Synthetic requester A theme',
+    durationMinutes: 50,
+    occurredAt: '2026-08-11T12:00:00.000Z',
+  });
+  await transitionProductionOrderFixture({
+    commandId: randomUUID(),
+    requesterId: requesterA.requesterId,
+    orderId: orderAId,
+    expectedStatus: 'requested',
+    expectedUpdatedAt: '2026-08-11T12:00:00.000Z',
+    toStatus: 'scoped',
+    eventId: tiedEventIds[0],
+    occurredAt: '2026-08-11T12:05:00.000Z',
+  });
+  await transitionProductionOrderFixture({
+    commandId: randomUUID(),
+    requesterId: requesterA.requesterId,
+    orderId: orderAId,
+    expectedStatus: 'scoped',
+    expectedUpdatedAt: '2026-08-11T12:05:00.000Z',
+    toStatus: 'blocked',
+    eventId: tiedEventIds[1],
+    occurredAt: '2026-08-11T12:05:00.000Z',
+    reason: 'Synthetic deterministic ordering event',
+  });
+  await createProductionOrderFixture({
+    requester: requesterB,
+    commandId: randomUUID(),
+    orderId: orderBId,
+    eventId: eventBId,
+    curriculumPackageId,
+    agentProfileId: randomUUID(),
+    productType: 'didactic_text',
+    theme: 'Synthetic requester B theme',
+    occurredAt: '2026-08-11T12:00:00.000Z',
+  });
 });
 
 test('REQUESTER adapters read only their own OPP and keep foreign OPP absent', async () => {

@@ -198,17 +198,43 @@ BEGIN
 END;
 $$;
 
--- Own OPP insert must work only in requested status.
-INSERT INTO public.kf_production_orders (
-  id, version, requester_id, agent_profile_id, curriculum_package_id, product_type,
-  theme, status
-) VALUES (
-  '55555555-5555-4555-8555-555555555553', '1.0.0',
-  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1',
-  '66666666-6666-4666-8666-666666666661',
-  '33333333-3333-4333-8333-333333333331',
-  'didactic_text', 'Tema sintético inserido por A', 'requested'
+-- Own OPP creation must cross the REQUESTER RPC and derive requester/status.
+SELECT * FROM public.kf_create_production_order(
+  '88888888-8888-4888-8888-888888888881',
+  jsonb_build_object(
+    'order', jsonb_build_object(
+      'id', '55555555-5555-4555-8555-555555555553',
+      'version', '1.0.0',
+      'agentProfileId', '66666666-6666-4666-8666-666666666661',
+      'curriculumPackageId', '33333333-3333-4333-8333-333333333331',
+      'productType', 'didactic_text',
+      'theme', 'Tema sintético criado por A'
+    ),
+    'eventId', '77777777-7777-4777-8777-777777777773',
+    'eventVersion', '1.0.0',
+    'occurredAt', '2026-08-11T21:00:00.000Z'
+  )
 );
+
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.kf_production_orders (
+      id, version, requester_id, agent_profile_id, curriculum_package_id, product_type,
+      theme, status
+    ) VALUES (
+      '55555555-5555-4555-8555-555555555559', '1.0.0',
+      'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1',
+      '66666666-6666-4666-8666-666666666661',
+      '33333333-3333-4333-8333-333333333331',
+      'didactic_text', 'DML direto proibido', 'requested'
+    );
+    RAISE EXCEPTION 'teacher A unexpectedly inserted OPP directly';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL;
+  END;
+END;
+$$;
 
 DO $$
 BEGIN
