@@ -56,12 +56,12 @@ $$;
 -- -----------------------------------------------------------------------------
 SELECT pg_temp.assert_true(
   (
-    SELECT count(*) = 16
+    SELECT count(*) = 17
     FROM information_schema.tables
     WHERE table_schema = 'public'
       AND table_name LIKE 'kf\_%' ESCAPE '\'
   ),
-  'exactly 16 public.kf_* tables must exist after Lote 3B.4B.2'
+  'exactly 17 public.kf_* tables must exist after Sublote 3B.5.3'
 );
 
 SELECT pg_temp.assert_true(
@@ -1174,7 +1174,7 @@ RESET ROLE;
 -- -----------------------------------------------------------------------------
 SELECT pg_temp.assert_true(
   (
-    SELECT count(*) = 16
+    SELECT count(*) = 17
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE n.nspname = 'public'
@@ -1182,7 +1182,7 @@ SELECT pg_temp.assert_true(
       AND c.relkind = 'r'
       AND c.relrowsecurity
   ),
-  'RLS must be enabled on all 16 Knowledge Factory tables'
+  'RLS must be enabled on all 17 Knowledge Factory tables'
 );
 
 -- All synthetic rows and synthetic auth identities are removed here.
