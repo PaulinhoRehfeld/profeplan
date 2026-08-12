@@ -40,7 +40,9 @@ export function evaluateGrantSourceAuthorization(
   }
 
   if (!command.actor?.actorId?.trim()) {
-    reasons.push(reason('SOURCE_ACTOR_REQUIRED', 'Authorization decision requires an identified actor.'));
+    reasons.push(
+      reason('SOURCE_ACTOR_REQUIRED', 'Authorization decision requires an identified actor.')
+    );
   } else if (!hasCompetentLegalActor(command)) {
     reasons.push(
       reason(
@@ -97,7 +99,9 @@ export function evaluateSourceAuthorizationCommandAuthority(
   const reasons: DomainReason[] = [];
 
   if (!command.actor?.actorId?.trim()) {
-    reasons.push(reason('SOURCE_ACTOR_REQUIRED', 'Authorization decision requires an identified actor.'));
+    reasons.push(
+      reason('SOURCE_ACTOR_REQUIRED', 'Authorization decision requires an identified actor.')
+    );
   } else if (!hasCompetentLegalActor(command)) {
     reasons.push(
       reason(
