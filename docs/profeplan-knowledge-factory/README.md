@@ -46,6 +46,11 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Escopo autorizado do primeiro PR de código](12-delivery/FIRST-CODE-PR.md)
 - [Tarefa autorizada para o Codex](12-delivery/FIRST-PR-CODEX-TASK.md)
 
+### Fase C — Matéria-prima
+
+- [Mapa integral da Fase C](12-delivery/PHASE-C-EXECUTION-MAP.md)
+- [Checkpoint 033 — abertura documental da Fase C](00-governance/CONTINUITY-CHECKPOINT-033.md)
+
 ## Estado atual
 
 O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigente.
@@ -62,10 +67,10 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
   formalizado no [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
 - Fase B — encerramento por bloqueio parcial controlado formalizado no
   [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
-- Fase C — não iniciada;
+- Fase C — abertura documental C.0 em formalização; Lotes C.1–C.7 visíveis e bloqueados;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate é revisar e integrar o Checkpoint 032. Somente depois, mediante nova autorização
-humana, poderá ser definida documentalmente a primeira frente da Fase C: governança operacional do
-lifecycle de fontes. Essa navegação não inicia ingestão e não autoriza código, wiring, Supabase
-hospedado ou produção.
+O próximo gate é revisar e integrar o mapa integral da Fase C e o Checkpoint 033. Somente depois,
+mediante nova autorização humana, poderá ser definida documentalmente a primeira frente técnica da
+Fase C: Lote C.1 — governança operacional do lifecycle de fontes. Essa navegação não inicia
+ingestão e não autoriza código, migration, wiring, Supabase hospedado ou produção.

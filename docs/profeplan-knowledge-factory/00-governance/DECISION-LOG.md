@@ -438,10 +438,10 @@ poderá encerrar essa diferença por decisão formal de bloqueio parcial, confor
 
 ## ADR-053 — Saída da Fase B por bloqueio parcial controlado
 
-**Status:** aprovado para formalização no Checkpoint 032 em 11 de agosto de 2026
+**Status:** integrado pelo Pull Request nº 30 no commit `73599716f28073eb93894682736e4bd497103a49`
 
-A Fase B será encerrada após a integração do Checkpoint 032. Os adapters previstos para o MVP
-foram concluídos; as escritas críticas de componentes e OPP usam fronteiras transacionais testadas;
+A Fase B foi encerrada pela integração do Checkpoint 032. Os adapters previstos para o MVP foram
+concluídos; as escritas críticas de componentes e OPP usam fronteiras transacionais testadas;
 os testes descartáveis estão verdes; e o avanço não depende de wiring ou produção.
 
 `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` permanecem ativos e não recebem status de resolvidos. A
@@ -449,6 +449,28 @@ saída é aceita porque cada gap possui contenção explícita, capacidades proi
 gate de reabertura. A primeira frente futura da Fase C deverá ser a definição documental da
 governança operacional do lifecycle de fontes. Esta decisão não inicia a Fase C e não autoriza
 código, ingestão, conteúdo real, Supabase hospedado, wiring ou produção.
+
+## ADR-054 — Fase C visível por lotes C.0–C.7 sem autorização implícita
+
+**Status:** aprovado documentalmente para formalização no Checkpoint 033 em 11 de agosto de 2026
+
+A Fase C será navegada por oito lotes: C.0 definição/gates; C.1 lifecycle de fontes; C.2 ingestão;
+C.3 extração; C.4 segmentação; C.5 destilação/deduplicação; C.6 componentização/currículo; e C.7
+curadoria/corpus piloto.
+
+Os Lotes C.1–C.7 ficam visíveis com sublotes candidatos, dependências, Epics, Features, Stories e
+gates, mas permanecem bloqueados. A visibilidade integral serve ao planejamento e não autoriza
+continuidade automática. Cada lote e sublote exige definição específica, Definition of Ready,
+autorização humana, testes, revisão, merge humano e checkpoint.
+
+Os identificadores do Marco 003 são preservados: EPIC-002 a EPIC-006, F-002.* a F-006.* e
+US-002.* a US-006.* não serão substituídos por uma taxonomia paralela. C.1 é o primeiro lote
+técnico candidato e o destino primário de `GAP-3B-04`. `GAP-3B-05` e `GAP-3B-07` permanecem ativos
+e não podem ser resolvidos incidentalmente pela Fase C.
+
+Somente C.0 está abrangido pela autorização documental atual. Nenhum código, ingestão, conteúdo
+real, migration, Supabase hospedado, retrieval, agente, wiring ou produção é autorizado por esta
+decisão.
 
 ## Procedência
 
