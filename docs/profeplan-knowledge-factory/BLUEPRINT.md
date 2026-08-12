@@ -84,16 +84,17 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE B ENCERRADA; FASE C NÃO INICIADA  ← ESTADO ATUAL
+FASE B ENCERRADA; FASE C EM ABERTURA DOCUMENTAL  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
-⬜ Governança operacional de fontes
-⬜ Ingestão
-⬜ Extração
-⬜ Segmentação
-⬜ Destilação
-⬜ Componentização
-⬜ Curadoria
+🔵 C.0 Definição integral, governança e gates
+⬜ C.1 Governança operacional do lifecycle de fontes
+⬜ C.2 Ingestão controlada
+⬜ C.3 Extração e validação
+⬜ C.4 Segmentação e classificação estrutural
+⬜ C.5 Destilação pedagógica e deduplicação
+⬜ C.6 Componentização, versionamento e vínculo curricular
+⬜ C.7 Curadoria, corpus piloto e gate C → D
 
 FASE D — INTELIGÊNCIA DO ALMOXARIFADO
 ⬜ Estratégia de embeddings
@@ -321,11 +322,36 @@ O encerramento deste gate não inicia a Fase C.
 
 ### Status
 
-Futura. A nomenclatura dos próximos Lotes ainda deverá ser formalizada documentalmente antes da implementação.
+O Lote C.0 está concluído documentalmente e pronto para publicação. O mapa integral C.0–C.7 está
+definido em
+[`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md). Nenhum lote técnico,
+ingestão, conteúdo real, migration, wiring ou produção foi iniciado.
+
+O plano complementar de ações para cartografia da obra, cobertura integral, paratextos, notas
+atômicas e grafo tipado está em
+[`12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
+Ele detalha requisitos de C.1-C.7 e impactos nas Fases D-G, sem antecipar runtime de agentes ou
+alterar os gates vigentes.
 
 ### Objetivo
 
 Transformar fontes autorizadas em componentes pedagógicos estruturados, rastreáveis e curados.
+
+### Estrutura de execução
+
+| Lote | Capacidade | Epics/Stories principais | Estado |
+|---|---|---|---|
+| C.0 | Definição integral, governança e gates | EPIC-001 | pronto para integração |
+| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | bloqueado |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | bloqueado |
+| C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
+| C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
+| C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
+| C.6 | Componentes, versões e currículo | EPIC-004/006; US-004.1–004.3 e US-006.1–006.2 | bloqueado |
+| C.7 | Curadoria e corpus piloto | EPIC-004/005/006 | bloqueado |
+
+`Bloqueado` significa visível e planejado, mas não autorizado. Cada lote e sublote exige definição,
+DoR, autorização humana, testes, revisão, merge humano e checkpoint próprios.
 
 ### Fluxo esperado
 
@@ -366,6 +392,17 @@ curadoria
 ### Princípio autoral
 
 Não armazenar apenas páginas ou chunks crus como produto de consumo dos agentes.
+
+PDFs, imagens integrais de páginas, renderizações, recortes e miniaturas serão insumos temporários
+de ingestão e validação, nunca componentes do corpus permanente. Depois da extração e da revisão
+exigida, deverão ser descartados de forma verificável. O armazenamento definitivo ficará restrito a
+texto normalizado, chunks selecionados, dados estruturados, descrições semânticas de elementos
+visuais, procedência lógica, componentes, relações, vínculos e embeddings seletivos.
+
+As obras editoriais previstas são predominantemente PDFs com camada textual utilizável. A extração
+nativa do texto e da estrutura do arquivo será o caminho padrão. OCR não fará parte do fluxo comum:
+será um fallback pontual, acionado somente para páginas ou elementos cuja camada textual esteja
+ausente, corrompida ou comprovadamente insuficiente, sempre com justificativa, métricas e revisão.
 
 O objetivo é produzir matérias-primas pedagógicas semielaboradas que preservem:
 
@@ -727,14 +764,18 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B ENCERRADA POR BLOQUEIO PARCIAL CONTROLADO — Lotes 3B.1 a 3B.5 concluídos. GAP-3B-01, GAP-3B-02, GAP-3B-03 e GAP-3B-06 encerrados. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos, contidos e sujeitos a gates futuros explícitos. A Fase C não foi iniciada.**
+> **FASE B ENCERRADA POR BLOQUEIO PARCIAL CONTROLADO — Lotes 3B.1 a 3B.5 concluídos. GAP-3B-01, GAP-3B-02, GAP-3B-03 e GAP-3B-06 encerrados. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos, contidos e sujeitos a gates futuros explícitos. A abertura documental C.0 da Fase C está em formalização; nenhum lote técnico foi iniciado.**
+
+Atualização de navegação da Fase C:
+
+> **A abertura documental C.0 foi autorizada para tornar visíveis os Lotes C.1–C.7, seus Epics,
+> Features, Stories, dependências e gates. Isso não inicia nenhum lote técnico da Fase C.**
 
 Próximo objetivo imediato:
 
-> revisar e integrar o Checkpoint 032. Somente após eventual integração e nova autorização humana,
-> definir documentalmente a primeira frente da Fase C: governança operacional do lifecycle de
-> fontes. Nenhum código, ingestão, wiring, Supabase hospedado ou acesso à produção é autorizado por
-> esta atualização de navegação.
+> revisar e integrar o mapa integral da Fase C e o Checkpoint 033. Somente depois, mediante nova
+> autorização humana, definir documentalmente o Lote C.1: governança operacional do lifecycle de
+> fontes. Nenhum código, ingestão, wiring, Supabase hospedado ou acesso à produção é autorizado.
 
 Próxima grande mudança de natureza do projeto:
 
