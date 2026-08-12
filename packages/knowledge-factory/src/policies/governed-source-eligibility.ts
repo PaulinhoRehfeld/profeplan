@@ -200,9 +200,12 @@ export function evaluateGovernedSourceEligibility(
     byAuthorization.set(event.authorizationId, events);
   }
 
+  const authorizationTimelines = [...byAuthorization.entries()].sort(([left], [right]) =>
+    left.localeCompare(right)
+  );
   const ineligibleReasons: DomainReason[] = [];
 
-  for (const [authorizationId, timeline] of byAuthorization) {
+  for (const [authorizationId, timeline] of authorizationTimelines) {
     const effectiveTimeline = eventsEffectiveAsOf(timeline, instantMs).sort(compareEvents);
     const latest = effectiveTimeline.at(-1);
 
@@ -225,6 +228,20 @@ export function evaluateGovernedSourceEligibility(
       continue;
     }
 
+    if (
+      effectiveUntil !== undefined &&
+      (!Number.isFinite(effectiveUntil) || effectiveUntil < effectiveFrom)
+    ) {
+      ineligibleReasons.push(
+        reason(
+          'SOURCE_INVALID_EFFECTIVE_WINDOW',
+          'Authorization history contains an invalid effective window.',
+          authorizationId
+        )
+      );
+      continue;
+    }
+
     if (instantMs < effectiveFrom) {
       ineligibleReasons.push(
         reason(
@@ -236,11 +253,7 @@ export function evaluateGovernedSourceEligibility(
       continue;
     }
 
-    if (
-      effectiveUntil !== undefined &&
-      Number.isFinite(effectiveUntil) &&
-      instantMs > effectiveUntil
-    ) {
+    if (effectiveUntil !== undefined && instantMs > effectiveUntil) {
       ineligibleReasons.push(
         reason(
           'SOURCE_AUTHORIZATION_EXPIRED',
