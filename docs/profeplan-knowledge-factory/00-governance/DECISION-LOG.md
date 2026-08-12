@@ -452,7 +452,7 @@ código, ingestão, conteúdo real, Supabase hospedado, wiring ou produção.
 
 ## ADR-054 — Fase C visível por lotes C.0–C.7 sem autorização implícita
 
-**Status:** aprovado documentalmente para formalização no Checkpoint 033 em 11 de agosto de 2026
+**Status:** aprovado e integrado pelo PR nº 31 em 12 de agosto de 2026
 
 A Fase C será navegada por oito lotes: C.0 definição/gates; C.1 lifecycle de fontes; C.2 ingestão;
 C.3 extração; C.4 segmentação; C.5 destilação/deduplicação; C.6 componentização/currículo; e C.7
@@ -468,13 +468,12 @@ US-002.* a US-006.* não serão substituídos por uma taxonomia paralela. C.1 é
 técnico candidato e o destino primário de `GAP-3B-04`. `GAP-3B-05` e `GAP-3B-07` permanecem ativos
 e não podem ser resolvidos incidentalmente pela Fase C.
 
-Somente C.0 está abrangido pela autorização documental atual. Nenhum código, ingestão, conteúdo
-real, migration, Supabase hospedado, retrieval, agente, wiring ou produção é autorizado por esta
-decisão.
+A integração de C.0 não autoriza código, ingestão, conteúdo real, migration, Supabase hospedado,
+retrieval, agente, wiring ou produção.
 
 ## ADR-055 — Cartografia, cobertura integral e grafo tipado precedem retrieval e agentes
 
-**Status:** aprovado documentalmente para C.0 em 11 de agosto de 2026
+**Status:** aprovado e integrado pelo PR nº 31 em 12 de agosto de 2026
 
 O processamento de uma obra deverá preservar quatro representações coordenadas: árvore editorial,
 manifesto integral de cobertura, grafo de conhecimento tipado e grafo pedagógico-curricular. Uma
@@ -510,6 +509,63 @@ O detalhamento de ações, artefatos, gates e impactos posteriores consta em
 fontes reais, PNLD, migrations, modelos, prompts, embeddings, wiring, Supabase hospedado ou
 produção.
 
+## ADR-056 — Identidade, lifecycle registral e autorização são dimensões distintas
+
+**Status:** aprovado documentalmente para a definição do Lote C.1 em 12 de agosto de 2026; integração pendente
+
+C.1 distinguirá formalmente obra intelectual, edição, manifestação bibliográfica, arquivo digital
+recebido, hash, versão governada da fonte, execução de processamento, derivados, autorização e
+fundamento da autorização. Essas identidades não serão colapsadas em `KnowledgeSource` nem
+inferidas apenas por checksum.
+
+O lifecycle registral da fonte será separado do lifecycle da autorização por finalidade. A
+`elegibilidade efetiva` será uma decisão derivada para uma finalidade e um instante, e não um novo
+booleano persistido como fonte de verdade. O valor legado `approved` não poderá ser reinterpretado
+silenciosamente como “juridicamente autorizado para todos os usos”.
+
+A compatibilidade com os contratos atuais será preservada por evolução explícita, versionada e
+revisada; qualquer mudança de enum ou contrato público exigirá C.1.1 e gate próprio.
+
+## ADR-057 — Permissão é histórica, temporal, por finalidade e propaga inelegibilidade
+
+**Status:** aprovado documentalmente para a definição do Lote C.1 em 12 de agosto de 2026; integração pendente
+
+A futura autorização será histórica e append-only, com finalidade, escopo, vigência, ator,
+fundamento normativo/contratual e relação de supersessão. O sistema deverá poder responder qual
+permissão estava efetiva em determinado instante e reconstruir quais derivados foram produzidos sob
+ela.
+
+Suspensão, expiração, revogação e bloqueio devem impedir novos usos de forma fail-closed e iniciar
+avaliação de impacto sobre execuções em andamento e derivados. Isso não autoriza apagar auditoria ou
+produtos históricos indiscriminadamente: elegibilidade, retenção, descarte e eventual takedown são
+decisões distintas e auditáveis.
+
+Embeddings, caches, pacotes de retrieval e outros derivados futuros deverão obedecer à mesma
+propagação quando existirem em suas fases próprias. C.1 apenas define o contrato; não implementa a
+propagação.
+
+## ADR-058 — Comandos de lifecycle exigem fronteira atômica e menor privilégio
+
+**Status:** aprovado documentalmente para a definição do Lote C.1 em 12 de agosto de 2026; integração pendente
+
+Consultas e comandos do lifecycle serão capacidades separadas. Comandos que precisam alterar
+projeções, versões, autorizações, recibos ou eventos de forma indivisível não poderão ser
+implementados por múltiplas chamadas PostgREST tratadas como pseudo-transação. C.1.3 deverá definir
+a fronteira atômica estreita, preferencialmente coerente com ADR-043, sem antecipar SQL nesta etapa.
+
+`service_role`, papel de administrador técnico ou identidade SYSTEM não constituem autorização de
+negócio. A futura implementação deverá aplicar menor privilégio, separar papéis de curadoria e
+revisão jurídico-editorial, reduzir DML direto onde a fronteira de comando puder assumir a escrita e
+preservar erros provider-neutral e auditoria sanitizada.
+
+O `KnowledgeSourceRepository` existente permanece uma fundação compatível. `save(source)` não será
+transformado por inferência em comando de lifecycle multi-tabela; novas portas ou contratos só
+poderão surgir após aprovação explícita no sublote correspondente.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
+
+Atualização de 12 de agosto de 2026: C.0 integrado pelo PR nº 31 no commit
+`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`; ADRs 056–058 formalizam exclusivamente a definição
+documental de C.1 e não autorizam implementação.

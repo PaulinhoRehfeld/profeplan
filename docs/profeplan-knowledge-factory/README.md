@@ -51,6 +51,8 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Mapa integral da Fase C](12-delivery/PHASE-C-EXECUTION-MAP.md)
 - [Plano de cartografia, extração integral e grafo de conhecimento](12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md)
 - [Checkpoint 033 — abertura documental da Fase C](00-governance/CONTINUITY-CHECKPOINT-033.md)
+- [Definição do Lote C.1 — lifecycle de fontes](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md)
+- [Checkpoint 034 — C.0 integrado e C.1 definido](00-governance/CONTINUITY-CHECKPOINT-034.md)
 
 ## Estado atual
 
@@ -68,10 +70,13 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
   formalizado no [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
 - Fase B — encerramento por bloqueio parcial controlado formalizado no
   [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
-- Fase C — abertura documental C.0 em formalização; Lotes C.1–C.7 visíveis e bloqueados;
+- Fase C — C.0 integrado pelo PR nº 31 no commit
+  `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`;
+- Lote C.1 — definido documentalmente; C.1.1–C.1.6 permanecem bloqueados para implementação;
+- Lotes C.2–C.7 — bloqueados;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate é revisar e integrar o mapa integral da Fase C e o Checkpoint 033. Somente depois,
-mediante nova autorização humana, poderá ser definida documentalmente a primeira frente técnica da
-Fase C: Lote C.1 — governança operacional do lifecycle de fontes. Essa navegação não inicia
-ingestão e não autoriza código, migration, wiring, Supabase hospedado ou produção.
+O próximo gate é revisar o pacote documental de C.1 e o Checkpoint 034. A integração futura dessa
+documentação não autoriza implementação. Somente depois de integração humana e de nova autorização
+explícita poderá ser aberto o sublote C.1.1. C.2, ingestão, código, migration, RPC, RLS, wiring,
+Supabase hospedado e produção permanecem bloqueados.
