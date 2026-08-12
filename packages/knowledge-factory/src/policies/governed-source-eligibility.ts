@@ -236,7 +236,11 @@ export function evaluateGovernedSourceEligibility(
       continue;
     }
 
-    if (effectiveUntil !== undefined && Number.isFinite(effectiveUntil) && instantMs > effectiveUntil) {
+    if (
+      effectiveUntil !== undefined &&
+      Number.isFinite(effectiveUntil) &&
+      instantMs > effectiveUntil
+    ) {
       ineligibleReasons.push(
         reason(
           'SOURCE_AUTHORIZATION_EXPIRED',
