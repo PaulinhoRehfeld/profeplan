@@ -58,6 +58,8 @@ DROP TRIGGER IF EXISTS kf_source_authorization_bases_append_only
   ON public.kf_source_authorization_bases;
 DROP TRIGGER IF EXISTS kf_source_identities_append_only
   ON public.kf_source_identities;
+DROP TRIGGER IF EXISTS kf_source_authorizations_immutable_scope
+  ON public.kf_source_authorizations;
 
 DROP TABLE IF EXISTS public.kf_source_command_receipt_events;
 DROP TABLE IF EXISTS public.kf_source_governance_events;
@@ -66,6 +68,8 @@ DROP TABLE IF EXISTS public.kf_source_authorizations;
 DROP TABLE IF EXISTS public.kf_source_registration_projections;
 DROP TABLE IF EXISTS public.kf_source_authorization_bases;
 DROP TABLE IF EXISTS public.kf_source_identities;
+
+DROP FUNCTION IF EXISTS public.kf_prevent_source_authorization_scope_mutation();
 
 DO $$
 BEGIN
@@ -96,6 +100,10 @@ BEGIN
 
   IF to_regprocedure('public.kf_prevent_append_only_mutation()') IS NULL THEN
     RAISE EXCEPTION 'C.1.2 rollback removed a shared append-only helper';
+  END IF;
+
+  IF to_regprocedure('public.kf_prevent_source_authorization_scope_mutation()') IS NOT NULL THEN
+    RAISE EXCEPTION 'C.1.2 rollback left its immutable-scope helper behind';
   END IF;
 END;
 $$;

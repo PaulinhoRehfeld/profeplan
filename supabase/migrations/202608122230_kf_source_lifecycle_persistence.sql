@@ -555,6 +555,36 @@ CREATE TRIGGER kf_source_command_receipt_events_append_only
 BEFORE UPDATE OR DELETE ON public.kf_source_command_receipt_events
 FOR EACH ROW EXECUTE FUNCTION public.kf_prevent_append_only_mutation();
 
+CREATE OR REPLACE FUNCTION public.kf_prevent_source_authorization_scope_mutation()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+BEGIN
+  IF NEW.id IS DISTINCT FROM OLD.id
+    OR NEW.subject_identity_id IS DISTINCT FROM OLD.subject_identity_id
+    OR NEW.purpose IS DISTINCT FROM OLD.purpose
+    OR NEW.restrictions IS DISTINCT FROM OLD.restrictions
+    OR NEW.basis_id IS DISTINCT FROM OLD.basis_id
+    OR NEW.effective_from IS DISTINCT FROM OLD.effective_from
+    OR NEW.effective_until IS DISTINCT FROM OLD.effective_until
+    OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+    RAISE EXCEPTION
+      'Knowledge Factory authorization scope and basis are immutable'
+      USING ERRCODE = '55000';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+ALTER FUNCTION public.kf_prevent_source_authorization_scope_mutation() OWNER TO postgres;
+REVOKE ALL ON FUNCTION public.kf_prevent_source_authorization_scope_mutation() FROM PUBLIC;
+
+CREATE TRIGGER kf_source_authorizations_immutable_scope
+BEFORE UPDATE ON public.kf_source_authorizations
+FOR EACH ROW EXECUTE FUNCTION public.kf_prevent_source_authorization_scope_mutation();
+
 -- ---------------------------------------------------------------------------
 -- 9. RLS and grants: deny by default
 --

@@ -502,4 +502,14 @@ SELECT pg_temp.expect_error(
   'authorization bases must reject DELETE'
 );
 
+SELECT pg_temp.expect_error(
+  $sql$
+    UPDATE public.kf_source_authorizations
+    SET purpose = 'generation'
+    WHERE id = '72200000-0000-4000-8000-000000000001'
+  $sql$,
+  ARRAY['55000']::text[],
+  'authorization subject, purpose, scope, basis and window must be immutable'
+);
+
 ROLLBACK;
