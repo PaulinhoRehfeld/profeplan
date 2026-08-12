@@ -2,19 +2,25 @@
 
 Data da definição: 11 de agosto de 2026.
 
-Base canônica: `main` em `73599716f28073eb93894682736e4bd497103a49`.
+Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
+
+Estado canônico pós-merge verificado em 12 de agosto de 2026: `main` em
+`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`.
 
 Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
 
+Definição específica de C.1:
+[`LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
+
 ## Status
 
-**C.0 concluído documentalmente e pronto para publicação. Este mapa torna visível toda a Fase C,
-mas não autoriza código, ingestão, processamento de fontes reais, migrations, wiring, Supabase
-hospedado ou produção.**
+**C.0 integrado e encerrado documentalmente pelo PR nº 31. A definição documental de C.1 está
+concluída neste pacote, mas nenhum sublote técnico C.1.1–C.1.6 está autorizado. O mapa não autoriza
+código, ingestão, processamento de fontes reais, migrations, wiring, Supabase hospedado ou
+produção.**
 
-Somente o sublote `C.0` — definição, navegação e gates — está abrangido pela autorização que
-originou este documento. Cada lote e sublote técnico posterior exige definição específica,
-Definition of Ready satisfeita e autorização humana própria.
+A visibilidade de C.1–C.7 permanece planejamento, não autorização automática. Cada implementação de
+lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
 
 ## 1. Objetivo
 
@@ -56,11 +62,11 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 
 ## 3. Estado executivo
 
-| Lote | Capacidade | Epics/Stories principais | Estado | Gate de início |
+| Lote | Capacidade | Epics/Stories principais | Estado | Gate de início técnico |
 |---|---|---|---|---|
-| C.0 | Mapa integral e governança | EPIC-001 | Pronto para integração | autorização recebida |
-| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | Bloqueado | C.0 integrado e autorização própria |
-| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado |
+| C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
+| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | Definição documental concluída; implementação bloqueada | definição integrada + autorização específica de C.1.1 |
+| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado; autorização própria |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
 | C.5 | Síntese autoral e deduplicação | EPIC-005; US-005.1–005.2 | Bloqueado | C.4 concluído |
@@ -93,19 +99,21 @@ seja iniciada por continuidade implícita.
 
 ### Gate de saída
 
-- todos os lotes C.1–C.7 visíveis;
-- Stories canônicas mapeadas;
-- dependências e proibições explícitas;
-- nenhuma alteração não documental;
-- integração humana do PR documental;
-- nova autorização específica antes de definir ou implementar C.1.
+Gate satisfeito pela integração humana do PR nº 31 no commit
+`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`.
+
+C.0 está encerrado documentalmente. Isso não iniciou implementação da Fase C.
 
 ## 5. Lote C.1 — Governança operacional do lifecycle de fontes
 
 ### Objetivo
 
 Resolver a fronteira que o adapter do Lote 3B.2 deliberadamente não antecipou: registrar e controlar
-versões, permissões, bloqueios, revogações e transições de uma fonte antes da ingestão.
+identidade, versões, permissões, bloqueios, suspensões, revogações, expiração e impacto sobre
+derivados antes da ingestão.
+
+A definição normativa completa está em
+[`LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
 
 ### Epic, Features e Stories
 
@@ -116,29 +124,38 @@ versões, permissões, bloqueios, revogações e transições de uma fonte antes
 As Stories foram parcialmente atendidas nas Fases A e B quanto a contratos, política de
 elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle continua pendente.
 
-### Sublotes candidatos
+### Sublotes oficiais
 
 - `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes;
 - `C.1.2` — modelo físico incremental, RLS, grants e rollback;
 - `C.1.3` — RPCs ou outra fronteira atômica para versão e permissão;
 - `C.1.4` — adapters de comando/leitura e tradução provider-neutral;
-- `C.1.5` — testes unitários, integração descartável, idempotência e concorrência;
+- `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência;
 - `C.1.6` — fechamento documental do lote e decisão sobre `GAP-3B-04`.
 
-### Regras mínimas
+### Regras mínimas consolidadas
 
+- obra, edição, manifestação bibliográfica, arquivo recebido, versão governada e execução de
+  processamento são identidades distintas;
+- lifecycle registral e lifecycle de autorização são ortogonais;
+- elegibilidade é derivada por finalidade e instante;
 - nenhuma fonte avança sem procedência e identidade verificáveis;
 - checksum não substitui identidade bibliográfica ou jurídica;
-- permissão é histórica e revogável, nunca um booleano sobrescrito silenciosamente;
+- permissão é histórica, temporal, escopada e revogável, nunca um booleano sobrescrito
+  silenciosamente;
+- `service_role` não constitui autorização de negócio;
+- substituição não transfere autorização automaticamente;
+- revogação/suspensão/expiração impede novos usos segundo a finalidade afetada e abre avaliação de
+  impacto sobre derivados;
 - versão da obra, versão do arquivo e versão do processamento são conceitos distintos;
-- uma revogação impede novos usos sem apagar auditoria ou produtos históricos;
 - PNLD real permanece proibido sem decisão jurídica e autorização específicas;
-- falha parcial não pode deixar versão publicada sem seu evento de permissão correspondente.
+- falha parcial não pode deixar versão publicada sem o conjunto atômico de eventos/recibos exigido.
 
 ### Gate de saída
 
 `GAP-3B-04` somente poderá ser encerrado quando o lifecycle necessário à ingestão estiver definido,
-persistido, protegido, adaptado e testado. O fechamento não autoriza automaticamente C.2.
+persistido, protegido, adaptado, testado e integrado. A definição documental atual não satisfaz esse
+gate. O fechamento futuro não autoriza automaticamente C.2.
 
 ## 6. Lote C.2 — Ingestão controlada
 
@@ -167,7 +184,7 @@ execução de ingestão rastreável, sem publicar conteúdo parcial.
 - cada execução possui identidade, versão e estado auditável;
 - duplicidade e replay têm comportamento definido;
 - falha não produz publicação parcial;
-- nenhum conteúdo real entra sem corpus e base jurídica explicitamente aprovados.
+- nenhum conteúdo real entra sem corpus e base jurídica explicitamente aprovados;
 - PDF, páginas renderizadas, recortes e miniaturas permanecem somente em staging temporário, com
   prazo e descarte verificável; nunca integram o corpus permanente.
 
@@ -200,7 +217,7 @@ resultado do parser — ou de eventual OCR de exceção — como conhecimento pe
   comprovada da camada textual, com motivo e cobertura registrados;
 - qualidade mínima e exceções estão mensuradas;
 - erro ou baixa confiança não avança silenciosamente;
-- OCR industrial, multimodalidade completa e processamento massivo continuam fora do piloto.
+- OCR industrial, multimodalidade completa e processamento massivo continuam fora do piloto;
 - imagens, mapas e infográficos são persistidos como descrições semânticas; tabelas e gráficos
   quantitativos, como dados estruturados e descrições;
 - saídas brutas, PDFs, renderizações, recortes e coordenadas em pixels são descartados após a
@@ -360,7 +377,7 @@ rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorizaçã
 ### GAP-3B-04 — Lifecycle de fontes
 
 - destino primário: `C.1`;
-- permanece ativo durante C.0;
+- permanece ativo durante a definição documental de C.1;
 - bloqueia ingestão real;
 - somente encerra com contrato, persistência, segurança, adapter e testes integrados.
 
@@ -421,14 +438,16 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 - frontend, API, job ou fila;
 - Supabase hospedado, `service_role`, wiring ou produção;
 - Nexus, Gráfica, PDF ou PPTX;
-- início implícito de C.1–C.7.
+- início implícito de C.1.1–C.1.6 ou C.2–C.7.
 
 ## 17. Próximo escopo elegível
 
-Depois da integração humana deste mapa e do Checkpoint 033, o próximo trabalho elegível será
-exclusivamente a **definição documental do Lote C.1 — Governança operacional do lifecycle de
-fontes**.
+O próximo gate atual é a revisão e eventual integração humana da **definição documental de C.1** e
+do Checkpoint 034.
 
-Essa definição deverá detalhar estados, transições, comandos, eventos, idempotência, concorrência,
-segurança, migrations, adapters, testes e condição exata de encerramento de `GAP-3B-04`. Ela não
-deverá iniciar ingestão nem processar conteúdo real.
+Somente depois dessa integração, mediante nova autorização humana específica, `C.1.1 — contrato
+normativo de estados, comandos, eventos e invariantes` poderá tornar-se o próximo sublote técnico
+candidato.
+
+Essa futura autorização não inclui C.1.2–C.1.6, não inicia C.2 e não autoriza conteúdo real,
+Supabase hospedado, wiring ou produção.

@@ -2,7 +2,7 @@
 
 Data de consolidação inicial: 7 de agosto de 2026.
 
-Estado de navegação atualizado em 11 de agosto de 2026.
+Estado de navegação atualizado em 12 de agosto de 2026.
 
 ## 1. Finalidade
 
@@ -84,11 +84,11 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE B ENCERRADA; FASE C EM ABERTURA DOCUMENTAL  ← ESTADO ATUAL
+FASE C ABERTA DOCUMENTALMENTE; C.1 DEFINIDO, IMPLEMENTAÇÃO NÃO INICIADA  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
-🔵 C.0 Definição integral, governança e gates
-⬜ C.1 Governança operacional do lifecycle de fontes
+✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
+🔵 C.1 Governança operacional do lifecycle de fontes — definição documental concluída
 ⬜ C.2 Ingestão controlada
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
@@ -322,10 +322,12 @@ O encerramento deste gate não inicia a Fase C.
 
 ### Status
 
-O Lote C.0 está concluído documentalmente e pronto para publicação. O mapa integral C.0–C.7 está
-definido em
-[`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md). Nenhum lote técnico,
-ingestão, conteúdo real, migration, wiring ou produção foi iniciado.
+O Lote C.0 foi integrado pelo PR nº 31 no commit canônico
+`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`. O mapa integral C.0–C.7 está definido em
+[`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md). C.1 possui definição
+documental específica em
+[`12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md),
+mas nenhum de seus sublotes técnicos foi iniciado ou autorizado.
 
 O plano complementar de ações para cartografia da obra, cobertura integral, paratextos, notas
 atômicas e grafo tipado está em
@@ -341,8 +343,8 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 
 | Lote | Capacidade | Epics/Stories principais | Estado |
 |---|---|---|---|
-| C.0 | Definição integral, governança e gates | EPIC-001 | pronto para integração |
-| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | bloqueado |
+| C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
+| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | definido documentalmente; implementação bloqueada |
 | C.2 | Ingestão controlada | EPIC-003; US-003.1 | bloqueado |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
@@ -655,8 +657,8 @@ Critérios satisfeitos no Checkpoint 032:
 - testes de integração descartáveis verdes — satisfeito;
 - nenhuma dependência implícita de produção — satisfeito.
 
-A passagem arquitetural está documentalmente liberada, mas a Fase C permanece não iniciada até
-definição de lote e autorização humana próprias.
+A passagem arquitetural foi aberta documentalmente pela integração de C.0. Isso não constitui
+autorização técnica: C.1 está apenas definido e cada sublote exige gate e autorização próprios.
 
 ### C → D
 
@@ -764,18 +766,22 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE B ENCERRADA POR BLOQUEIO PARCIAL CONTROLADO — Lotes 3B.1 a 3B.5 concluídos. GAP-3B-01, GAP-3B-02, GAP-3B-03 e GAP-3B-06 encerrados. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos, contidos e sujeitos a gates futuros explícitos. A abertura documental C.0 da Fase C está em formalização; nenhum lote técnico foi iniciado.**
+> **FASE C ABERTA DOCUMENTALMENTE — C.0 integrado pelo PR nº 31 no commit
+> `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`. C.1 possui definição documental completa, sem
+> implementação. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos e contidos. C.2–C.7 e as
+> Fases D–G continuam bloqueados.**
 
 Atualização de navegação da Fase C:
 
-> **A abertura documental C.0 foi autorizada para tornar visíveis os Lotes C.1–C.7, seus Epics,
-> Features, Stories, dependências e gates. Isso não inicia nenhum lote técnico da Fase C.**
+> **C.1 foi decomposto em C.1.1–C.1.6 com contrato de identidade, lifecycle registral, autorização
+> histórica, elegibilidade derivada, propagação, persistência, segurança, adapters, testes e gates.
+> A definição documental não concede `Ready for Code` a nenhum sublote.**
 
 Próximo objetivo imediato:
 
-> revisar e integrar o mapa integral da Fase C e o Checkpoint 033. Somente depois, mediante nova
-> autorização humana, definir documentalmente o Lote C.1: governança operacional do lifecycle de
-> fontes. Nenhum código, ingestão, wiring, Supabase hospedado ou acesso à produção é autorizado.
+> revisar e, mediante decisão humana, integrar o pacote documental de C.1 e o Checkpoint 034.
+> Somente após essa integração e nova autorização explícita poderá ser aberto C.1.1. Nenhum código,
+> ingestão, C.2, wiring, Supabase hospedado ou acesso à produção é autorizado.
 
 Próxima grande mudança de natureza do projeto:
 
