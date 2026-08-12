@@ -21,13 +21,15 @@ histórico temporal, compatibilidade legada, rollback e testes descartáveis.
 Continuam fora do escopo C.1.3, RPCs, adapters, wiring, ingestão, conteúdo real, Supabase hospedado,
 produção e todas as capacidades das Fases D e E.
 
-## Commits da branch neste checkpoint
+## Commits anteriores a este registro final
 
 - `e845f18cec81d2233832c2716d7b5ab5cc7efbf8` — migration física de C.1.2;
 - `20aa3de3f9c33923014cea2a538d7e78f65234e2` — matriz de testes e integração ao DB CI;
 - `50b9ab2a3e6b4efdf94e59db920b56cd693846f7` — imutabilidade física do escopo da autorização.
-
-O commit documental que contém este checkpoint será registrado no handoff final da branch.
+- `e9a8267b276b137eba1dbd524b7ac611782af00d` — modelo físico, matriz RLS/grants, ADR-059 e
+  reconciliação dos documentos vivos;
+- `63810ff084005cba95286126792635989bb63ce4` — evidência explícita de supersessão e expiração
+  histórica.
 
 ## Entregas materiais
 
@@ -59,6 +61,8 @@ Ausência histórica continua desconhecida, nunca autorização implícita.
 - parser PostgreSQL aceitou migration e as três suítes SQL;
 - inventário acumulado atualizado de 17 para 24 tabelas;
 - workflow inclui aplicação, testes C.1.2, rollback guardado, reaplicação e segunda passagem;
+- testes preservam grants após revogação/supersessão e mantêm grant expirado consultável no instante
+  em que esteve vigente;
 - nenhum arquivo de adapter, API, frontend ou agente foi alterado;
 - nenhuma RPC de lifecycle foi criada;
 - nenhum acesso a produção ou Supabase hospedado foi realizado.
@@ -87,4 +91,3 @@ Não se declara migration, rollback, RLS ou grants “verdes em runtime” antes
 
 Revisar o diff completo da branch. Somente mediante autorização humana específica poderá ser aberto
 um draft PR de C.1.2. A abertura ou integração desse PR não autoriza C.1.3 automaticamente.
-
