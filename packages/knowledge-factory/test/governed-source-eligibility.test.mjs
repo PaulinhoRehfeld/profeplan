@@ -162,6 +162,22 @@ test('expired authorization is ineligible even without a maintenance event', () 
   assert.ok(decision.reasons.some((item) => item.code === 'SOURCE_AUTHORIZATION_EXPIRED'));
 });
 
+test('malformed authorization window fails closed', () => {
+  const decision = evaluate({
+    authorizationEvents: [
+      authorizationEvent({
+        eventId: 'auth-malformed-window',
+        effectiveAt: '2026-08-02T00:00:00.000Z',
+        effectiveUntil: 'not-a-date',
+        sequence: 1,
+      }),
+    ],
+  });
+
+  assert.equal(decision.status, 'INELIGIBLE');
+  assert.ok(decision.reasons.some((item) => item.code === 'SOURCE_INVALID_EFFECTIVE_WINDOW'));
+});
+
 test('blocked source registration is ineligible despite an old grant', () => {
   const decision = evaluate({
     registrationEvents: [
@@ -315,6 +331,28 @@ test('historical query is deterministic regardless of event input order', () => 
 
   assert.deepEqual(first, second);
   assert.equal(first.status, 'ELIGIBLE');
+});
+
+test('multiple active grants choose a deterministic authorization independent of input order', () => {
+  const authorizationA = authorizationEvent({
+    eventId: 'auth-a',
+    authorizationId: 'authorization-a',
+    effectiveAt: '2026-08-02T00:00:00.000Z',
+    sequence: 1,
+  });
+  const authorizationB = authorizationEvent({
+    eventId: 'auth-b',
+    authorizationId: 'authorization-b',
+    effectiveAt: '2026-08-02T00:00:00.000Z',
+    sequence: 1,
+  });
+
+  const first = evaluate({ authorizationEvents: [authorizationB, authorizationA] });
+  const second = evaluate({ authorizationEvents: [authorizationA, authorizationB] });
+
+  assert.deepEqual(first, second);
+  assert.equal(first.status, 'ELIGIBLE');
+  assert.equal(first.authorizationId, 'authorization-a');
 });
 
 test('future registration block does not contaminate a historical query', () => {
