@@ -322,9 +322,16 @@ O encerramento deste gate não inicia a Fase C.
 
 ### Status
 
-Em abertura documental. O mapa integral C.0–C.7 está definido em
+O Lote C.0 está concluído documentalmente e pronto para publicação. O mapa integral C.0–C.7 está
+definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md). Nenhum lote técnico,
 ingestão, conteúdo real, migration, wiring ou produção foi iniciado.
+
+O plano complementar de ações para cartografia da obra, cobertura integral, paratextos, notas
+atômicas e grafo tipado está em
+[`12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
+Ele detalha requisitos de C.1-C.7 e impactos nas Fases D-G, sem antecipar runtime de agentes ou
+alterar os gates vigentes.
 
 ### Objetivo
 
@@ -334,7 +341,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 
 | Lote | Capacidade | Epics/Stories principais | Estado |
 |---|---|---|---|
-| C.0 | Definição integral, governança e gates | EPIC-001 | definição documental |
+| C.0 | Definição integral, governança e gates | EPIC-001 | pronto para integração |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | bloqueado |
 | C.2 | Ingestão controlada | EPIC-003; US-003.1 | bloqueado |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
@@ -385,6 +392,17 @@ curadoria
 ### Princípio autoral
 
 Não armazenar apenas páginas ou chunks crus como produto de consumo dos agentes.
+
+PDFs, imagens integrais de páginas, renderizações, recortes e miniaturas serão insumos temporários
+de ingestão e validação, nunca componentes do corpus permanente. Depois da extração e da revisão
+exigida, deverão ser descartados de forma verificável. O armazenamento definitivo ficará restrito a
+texto normalizado, chunks selecionados, dados estruturados, descrições semânticas de elementos
+visuais, procedência lógica, componentes, relações, vínculos e embeddings seletivos.
+
+As obras editoriais previstas são predominantemente PDFs com camada textual utilizável. A extração
+nativa do texto e da estrutura do arquivo será o caminho padrão. OCR não fará parte do fluxo comum:
+será um fallback pontual, acionado somente para páginas ou elementos cuja camada textual esteja
+ausente, corrompida ou comprovadamente insuficiente, sempre com justificativa, métricas e revisão.
 
 O objetivo é produzir matérias-primas pedagógicas semielaboradas que preservem:
 

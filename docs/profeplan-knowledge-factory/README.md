@@ -49,6 +49,7 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 ### Fase C — Matéria-prima
 
 - [Mapa integral da Fase C](12-delivery/PHASE-C-EXECUTION-MAP.md)
+- [Plano de cartografia, extração integral e grafo de conhecimento](12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md)
 - [Checkpoint 033 — abertura documental da Fase C](00-governance/CONTINUITY-CHECKPOINT-033.md)
 
 ## Estado atual

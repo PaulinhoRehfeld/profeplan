@@ -4,10 +4,13 @@ Data da definição: 11 de agosto de 2026.
 
 Base canônica: `main` em `73599716f28073eb93894682736e4bd497103a49`.
 
+Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
+
 ## Status
 
-**Abertura documental autorizada. Este mapa torna visível toda a Fase C, mas não autoriza código,
-ingestão, processamento de fontes reais, migrations, wiring, Supabase hospedado ou produção.**
+**C.0 concluído documentalmente e pronto para publicação. Este mapa torna visível toda a Fase C,
+mas não autoriza código, ingestão, processamento de fontes reais, migrations, wiring, Supabase
+hospedado ou produção.**
 
 Somente o sublote `C.0` — definição, navegação e gates — está abrangido pela autorização que
 originou este documento. Cada lote e sublote técnico posterior exige definição específica,
@@ -22,6 +25,11 @@ alimentará os experimentos de retrieval da Fase D.
 O produto da Fase C não é um plano de aula, uma avaliação ou outro material final. É matéria-prima
 pedagógica preparada para que os agentes produzam posteriormente com qualidade e baixo consumo de
 contexto.
+
+O processamento de obras deverá preservar árvore editorial, manifesto integral de cobertura, notas
+atômicas, relações tipadas e vínculos curriculares com estados de evidência distintos. As ações,
+artefatos e gates complementares estão definidos no plano de cartografia e formação do grafo de
+conhecimento, sem autorização implícita de implementação.
 
 ## 2. Hierarquia oficial
 
@@ -50,7 +58,7 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 
 | Lote | Capacidade | Epics/Stories principais | Estado | Gate de início |
 |---|---|---|---|---|
-| C.0 | Mapa integral e governança | EPIC-001 | Em definição documental | autorização recebida |
+| C.0 | Mapa integral e governança | EPIC-001 | Pronto para integração | autorização recebida |
 | C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | Bloqueado | C.0 integrado e autorização própria |
 | C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
@@ -160,13 +168,15 @@ execução de ingestão rastreável, sem publicar conteúdo parcial.
 - duplicidade e replay têm comportamento definido;
 - falha não produz publicação parcial;
 - nenhum conteúdo real entra sem corpus e base jurídica explicitamente aprovados.
+- PDF, páginas renderizadas, recortes e miniaturas permanecem somente em staging temporário, com
+  prazo e descarte verificável; nunca integram o corpus permanente.
 
 ## 7. Lote C.3 — Extração e validação do conteúdo extraído
 
 ### Objetivo
 
-Extrair texto e estrutura observável sem tratar resultado de parser ou OCR como conhecimento
-pedagógico validado.
+Extrair prioritariamente a camada textual e a estrutura observável dos PDFs editoriais sem tratar o
+resultado do parser — ou de eventual OCR de exceção — como conhecimento pedagógico validado.
 
 ### Epic, Feature e Story
 
@@ -176,7 +186,7 @@ pedagógico validado.
 ### Sublotes candidatos
 
 - `C.3.1` — porta de extrator e contrato de resultado provider-neutral;
-- `C.3.2` — extração textual do formato piloto aprovado;
+- `C.3.2` — extração nativa da camada textual do formato piloto aprovado;
 - `C.3.3` — preservação de páginas, capítulos, seções e ordem quando observáveis;
 - `C.3.4` — métricas de qualidade, páginas vazias e caracteres inválidos;
 - `C.3.5` — revisão humana, rejeição e reprocessamento controlado;
@@ -185,9 +195,16 @@ pedagógico validado.
 ### Gate de saída
 
 - conteúdo extraído sempre aponta para fonte, versão e execução;
+- extração nativa é o caminho padrão para PDFs com camada textual utilizável;
+- OCR é fallback por página ou elemento, somente diante de ausência, corrupção ou insuficiência
+  comprovada da camada textual, com motivo e cobertura registrados;
 - qualidade mínima e exceções estão mensuradas;
 - erro ou baixa confiança não avança silenciosamente;
 - OCR industrial, multimodalidade completa e processamento massivo continuam fora do piloto.
+- imagens, mapas e infográficos são persistidos como descrições semânticas; tabelas e gráficos
+  quantitativos, como dados estruturados e descrições;
+- saídas brutas, PDFs, renderizações, recortes e coordenadas em pixels são descartados após a
+  validação, com recibo auditável.
 
 ## 8. Lote C.4 — Segmentação e classificação estrutural
 
@@ -212,7 +229,8 @@ destilação e auditoria, sem publicar chunks crus para consumo final dos agente
 
 ### Gate de saída
 
-- origem e posição de cada segmento são reconstruíveis;
+- origem e posição lógica de cada segmento são localizáveis por obra, edição, página, região,
+  seção e bloco, sem conservar cópia visual permanente da fonte;
 - classificação possui confiança e estado de revisão;
 - segmentos não se confundem com componentes pedagógicos;
 - nenhum chunk cru é publicado como resposta ou produto.

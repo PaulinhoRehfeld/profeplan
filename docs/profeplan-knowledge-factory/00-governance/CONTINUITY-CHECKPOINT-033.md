@@ -4,7 +4,8 @@ Data: 11 de agosto de 2026.
 
 ## Status
 
-**Checkpoint documental preparado para revisão humana. Nenhum lote técnico da Fase C foi iniciado.**
+**C.0 concluído documentalmente e pronto para publicação. Nenhum lote técnico da Fase C foi
+iniciado.**
 
 ## 1. Base canônica
 
@@ -26,6 +27,14 @@ A autorização não incluiu:
 - código, dependências, migrations, RPCs, RLS ou grants;
 - Supabase hospedado, wiring ou produção;
 - Fase D, retrieval, embeddings ou agentes.
+
+Em autorização posterior de 11 de agosto de 2026, o início da Fase C foi confirmado. Como C.0 ainda
+não está integrado, o efeito operacional desta autorização é concluir e preparar C.0 para
+publicação. C.1 permanece bloqueado até a integração deste checkpoint e sua definição específica.
+
+Na mesma continuidade, ficou estabelecido que as editoras fornecem predominantemente PDFs com
+camada textual utilizável. OCR não é caminho padrão e somente poderá ser acionado como exceção
+localizada e justificada.
 
 ## 3. Decisão formalizada
 
@@ -58,9 +67,10 @@ Os identificadores vêm do baseline aprovado no Marco 003 e não foram renumerad
 ## 5. Arquivos deste checkpoint
 
 - novo `12-delivery/PHASE-C-EXECUTION-MAP.md`;
+- novo `12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`;
 - atualizado `BLUEPRINT.md`;
 - atualizado `README.md`;
-- atualizado `00-governance/DECISION-LOG.md` com ADR-054;
+- atualizado `00-governance/DECISION-LOG.md` com ADR-054 e ADR-055;
 - novo `00-governance/CONTINUITY-CHECKPOINT-033.md`.
 
 O diff deve permanecer exclusivamente Markdown.
@@ -108,6 +118,22 @@ Nenhum item da lista é dispensado por já estar visível no mapa.
 - embeddings, retrieval e Fase D;
 - runtime de agentes e Sócrates 2;
 - frontend, API, jobs, filas ou produção.
+
+## 8.1 Regra de minimização incorporada ao mapa
+
+PDFs, imagens integrais de páginas, renderizações, recortes, miniaturas, coordenadas em pixels,
+OCRs duplicados e saídas brutas são artefatos transitórios de staging. Não poderão integrar o banco,
+o corpus, o índice vetorial ou o histórico permanente. Após extração, reconciliação e revisão,
+deverão ser descartados com recibo auditável.
+
+O estado permanente conterá somente dados derivados necessários: texto normalizado, chunks
+selecionados, estrutura, tabelas e gráficos estruturados, descrições semânticas dos elementos
+visuais, procedência lógica, hashes, métricas, notas, relações, vínculos, decisões de revisão e
+embeddings seletivos.
+
+Os PDFs editoriais previstos são predominantemente textuais. A extração nativa é obrigatoriamente
+o primeiro caminho. OCR fica restrito a exceções localizadas nas quais a camada textual esteja
+ausente, corrompida ou insuficiente, com causa, cobertura, confiança e revisão registradas.
 
 ## 9. Gate de saída de C.0
 

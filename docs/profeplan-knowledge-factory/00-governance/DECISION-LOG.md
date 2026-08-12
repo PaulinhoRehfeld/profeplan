@@ -472,6 +472,44 @@ Somente C.0 está abrangido pela autorização documental atual. Nenhum código,
 real, migration, Supabase hospedado, retrieval, agente, wiring ou produção é autorizado por esta
 decisão.
 
+## ADR-055 — Cartografia, cobertura integral e grafo tipado precedem retrieval e agentes
+
+**Status:** aprovado documentalmente para C.0 em 11 de agosto de 2026
+
+O processamento de uma obra deverá preservar quatro representações coordenadas: árvore editorial,
+manifesto integral de cobertura, grafo de conhecimento tipado e grafo pedagógico-curricular. Uma
+resposta de parser, OCR ou modelo não comprova conclusão; página, região, seção, capítulo, unidade e
+obra deverão ser reconciliados, incluindo sumário, paratextos, tabelas, elementos visuais e regiões
+anteriores ou posteriores aos capítulos.
+
+O sumário será hipótese estrutural inicial e a sequência editorial permanecerá como procedência, sem
+se tornar automaticamente sequência didática canônica. Notas atômicas, componentes, evidências,
+relações e vínculos curriculares serão entidades e estados distinguíveis. Relações deverão possuir
+tipo, evidência, justificativa, confiança, versão e revisão. Declarações curriculares da editora
+serão separadas de detecção no conteúdo, proposta do processamento, validação normativa e aprovação
+do curador.
+
+Na Fase C, Cartógrafo, Inspetor, Reconstrutor, Extrator Conceitual, Analista Pedagógico, Construtor
+de Relações, Analista Curricular, Procedência e Crítica designam responsabilidades controladas, não
+agentes executáveis. Runtime multiagente permanece bloqueado até a Fase E. Embeddings permanecem
+índices experimentais da Fase D e não substituem a fonte canônica estruturada.
+
+PDFs, páginas renderizadas, recortes, miniaturas, imagens-fonte, coordenadas em pixels, OCRs
+duplicados e saídas brutas existirão somente em staging temporário. Após extração e revisão, serão
+descartados com recibo auditável. Permanecerão texto normalizado, chunks selecionados, estrutura e
+dados tabulares, descrições semânticas dos elementos visuais, localizadores lógicos, metadados,
+notas, relações, vínculos, decisões e embeddings seletivos. Rastreabilidade não autoriza retenção
+de cópia visual da obra.
+
+Como as obras editoriais previstas possuem predominantemente camada textual utilizável, extração
+nativa será o caminho padrão. OCR será exceção localizada, nunca etapa obrigatória de todo o
+documento, e exigirá causa registrada, cobertura mensurada, confiança e revisão.
+
+O detalhamento de ações, artefatos, gates e impactos posteriores consta em
+`12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`. Esta decisão não autoriza implementação,
+fontes reais, PNLD, migrations, modelos, prompts, embeddings, wiring, Supabase hospedado ou
+produção.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
