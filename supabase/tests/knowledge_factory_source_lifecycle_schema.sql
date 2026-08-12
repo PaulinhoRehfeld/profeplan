@@ -330,6 +330,166 @@ SELECT pg_temp.assert_true(
   'authorization history must be reconstructible as of an explicit instant'
 );
 
+-- Supersession creates a new authorization and preserves the old aggregate.
+INSERT INTO public.kf_source_authorizations (
+  id, subject_identity_id, purpose, restrictions, basis_id,
+  effective_from, effective_until, projected_state, aggregate_version,
+  sequence, superseded_by_authorization_id
+) VALUES
+  (
+    '72200000-0000-4000-8000-000000000002',
+    '72000000-0000-4000-8000-000000000002', 'quotation', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '2026-08-12T15:00:00Z', '2026-08-12T16:00:00Z',
+    'SUPERSEDED', '2.0.0', 2,
+    '72200000-0000-4000-8000-000000000003'
+  ),
+  (
+    '72200000-0000-4000-8000-000000000003',
+    '72000000-0000-4000-8000-000000000002', 'quotation', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '2026-08-12T16:00:00Z', NULL,
+    'GRANTED', '1.0.0', 1, NULL
+  ),
+  (
+    '72200000-0000-4000-8000-000000000004',
+    '72000000-0000-4000-8000-000000000002', 'evidence', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '2026-08-12T08:00:00Z', '2026-08-12T09:00:00Z',
+    'GRANTED', '1.0.0', 1, NULL
+  );
+
+INSERT INTO public.kf_source_command_receipts (
+  command_id, fingerprint, dimension, operation, aggregate_id,
+  authorization_id, aggregate_version, sequence, authorization_state,
+  committed_at
+) VALUES
+  (
+    '73500000-0000-4000-8000-000000000001', 'synthetic-grant-quotation-v1',
+    'authorization', 'grant_authorization',
+    '72200000-0000-4000-8000-000000000002',
+    '72200000-0000-4000-8000-000000000002', '1.0.0', 1, 'GRANTED',
+    '2026-08-12T15:00:00Z'
+  ),
+  (
+    '73500000-0000-4000-8000-000000000002', 'synthetic-supersede-quotation-v1',
+    'authorization', 'supersede_authorization',
+    '72200000-0000-4000-8000-000000000002',
+    '72200000-0000-4000-8000-000000000002', '2.0.0', 2, 'SUPERSEDED',
+    '2026-08-12T16:00:00Z'
+  ),
+  (
+    '73500000-0000-4000-8000-000000000003', 'synthetic-grant-successor-v1',
+    'authorization', 'grant_authorization',
+    '72200000-0000-4000-8000-000000000003',
+    '72200000-0000-4000-8000-000000000003', '1.0.0', 1, 'GRANTED',
+    '2026-08-12T16:00:00Z'
+  ),
+  (
+    '73500000-0000-4000-8000-000000000004', 'synthetic-expiring-evidence-v1',
+    'authorization', 'grant_authorization',
+    '72200000-0000-4000-8000-000000000004',
+    '72200000-0000-4000-8000-000000000004', '1.0.0', 1, 'GRANTED',
+    '2026-08-12T08:00:00Z'
+  );
+
+INSERT INTO public.kf_source_governance_events (
+  event_id, dimension, aggregate_id, aggregate_version, sequence, event_type,
+  subject_identity_id, authorization_id, purpose, restrictions, basis_id,
+  actor_id, actor_role, reason, occurred_at, effective_at, correlation_id,
+  command_id, authorization_from_state, authorization_to_state,
+  effective_from, effective_until, superseded_by_authorization_id
+) VALUES
+  (
+    '73600000-0000-4000-8000-000000000001', 'authorization',
+    '72200000-0000-4000-8000-000000000002', '1.0.0', 1,
+    'authorization_granted', '72000000-0000-4000-8000-000000000002',
+    '72200000-0000-4000-8000-000000000002', 'quotation', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '70000000-0000-4000-8000-000000000002', 'legal_editorial_reviewer',
+    'synthetic quotation grant', '2026-08-12T15:00:00Z',
+    '2026-08-12T15:00:00Z', '73900000-0000-4000-8000-000000000003',
+    '73500000-0000-4000-8000-000000000001', NULL, 'GRANTED',
+    '2026-08-12T15:00:00Z', '2026-08-12T16:00:00Z', NULL
+  ),
+  (
+    '73600000-0000-4000-8000-000000000002', 'authorization',
+    '72200000-0000-4000-8000-000000000002', '2.0.0', 2,
+    'authorization_superseded', '72000000-0000-4000-8000-000000000002',
+    '72200000-0000-4000-8000-000000000002', 'quotation', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '70000000-0000-4000-8000-000000000002', 'legal_editorial_reviewer',
+    'synthetic quotation supersession', '2026-08-12T16:00:00Z',
+    '2026-08-12T16:00:00Z', '73900000-0000-4000-8000-000000000003',
+    '73500000-0000-4000-8000-000000000002', 'GRANTED', 'SUPERSEDED',
+    '2026-08-12T15:00:00Z', '2026-08-12T16:00:00Z',
+    '72200000-0000-4000-8000-000000000003'
+  ),
+  (
+    '73600000-0000-4000-8000-000000000003', 'authorization',
+    '72200000-0000-4000-8000-000000000003', '1.0.0', 1,
+    'authorization_granted', '72000000-0000-4000-8000-000000000002',
+    '72200000-0000-4000-8000-000000000003', 'quotation', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '70000000-0000-4000-8000-000000000002', 'legal_editorial_reviewer',
+    'synthetic successor grant', '2026-08-12T16:00:00Z',
+    '2026-08-12T16:00:00Z', '73900000-0000-4000-8000-000000000003',
+    '73500000-0000-4000-8000-000000000003', NULL, 'GRANTED',
+    '2026-08-12T16:00:00Z', NULL, NULL
+  ),
+  (
+    '73600000-0000-4000-8000-000000000004', 'authorization',
+    '72200000-0000-4000-8000-000000000004', '1.0.0', 1,
+    'authorization_granted', '72000000-0000-4000-8000-000000000002',
+    '72200000-0000-4000-8000-000000000004', 'evidence', ARRAY[]::text[],
+    '72100000-0000-4000-8000-000000000001',
+    '70000000-0000-4000-8000-000000000002', 'legal_editorial_reviewer',
+    'synthetic expiring evidence grant', '2026-08-12T08:00:00Z',
+    '2026-08-12T08:00:00Z', '73900000-0000-4000-8000-000000000004',
+    '73500000-0000-4000-8000-000000000004', NULL, 'GRANTED',
+    '2026-08-12T08:00:00Z', '2026-08-12T09:00:00Z', NULL
+  );
+
+INSERT INTO public.kf_source_command_receipt_events (command_id, event_id, event_order)
+VALUES
+  ('73500000-0000-4000-8000-000000000001', '73600000-0000-4000-8000-000000000001', 1),
+  ('73500000-0000-4000-8000-000000000002', '73600000-0000-4000-8000-000000000002', 1),
+  ('73500000-0000-4000-8000-000000000003', '73600000-0000-4000-8000-000000000003', 1),
+  ('73500000-0000-4000-8000-000000000004', '73600000-0000-4000-8000-000000000004', 1);
+
+SELECT pg_temp.assert_true(
+  (
+    SELECT count(*) = 2
+    FROM public.kf_source_governance_events
+    WHERE authorization_id = '72200000-0000-4000-8000-000000000002'
+  ) AND EXISTS (
+    SELECT 1
+    FROM public.kf_source_authorizations
+    WHERE id = '72200000-0000-4000-8000-000000000002'
+      AND projected_state = 'SUPERSEDED'
+      AND superseded_by_authorization_id = '72200000-0000-4000-8000-000000000003'
+  ),
+  'supersession must preserve the prior authorization and its full history'
+);
+
+SELECT pg_temp.assert_true(
+  EXISTS (
+    SELECT 1
+    FROM public.kf_source_governance_events
+    WHERE authorization_id = '72200000-0000-4000-8000-000000000004'
+      AND authorization_to_state = 'GRANTED'
+      AND effective_from <= '2026-08-12T08:30:00Z'
+      AND effective_until >= '2026-08-12T08:30:00Z'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM public.kf_source_governance_events
+    WHERE authorization_id = '72200000-0000-4000-8000-000000000004'
+      AND effective_from <= '2026-08-12T10:00:00Z'
+      AND effective_until >= '2026-08-12T10:00:00Z'
+  ),
+  'an expired grant must remain historically consultable without being effective later'
+);
+
 SELECT pg_temp.assert_true(
   NOT EXISTS (
     SELECT 1
