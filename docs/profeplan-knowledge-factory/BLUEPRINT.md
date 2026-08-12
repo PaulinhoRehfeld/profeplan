@@ -84,11 +84,11 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C ABERTA DOCUMENTALMENTE; C.1 DEFINIDO, IMPLEMENTAÇÃO NÃO INICIADA  ← ESTADO ATUAL
+FASE C EM C.1; C.1.2 IMPLEMENTADO EM BRANCH, PENDENTE PR/CI  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
-🔵 C.1 Governança operacional do lifecycle de fontes — definição documental concluída
+🔵 C.1 Governança operacional do lifecycle de fontes — C.1.1 integrado; C.1.2 em branch
 ⬜ C.2 Ingestão controlada
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
@@ -322,12 +322,12 @@ O encerramento deste gate não inicia a Fase C.
 
 ### Status
 
-O Lote C.0 foi integrado pelo PR nº 31 no commit canônico
-`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`. O mapa integral C.0–C.7 está definido em
+O Lote C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32 e C.1.1 pelo PR nº 33 na
+`main` `2db5fc07378cc7c062753078b2a3fb2025cb1afe`. O mapa integral C.0–C.7 está definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md). C.1 possui definição
-documental específica em
-[`12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md),
-mas nenhum de seus sublotes técnicos foi iniciado ou autorizado.
+específica em
+[`12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
+C.1.2 está implementado em branch própria, pendente revisão, autorização de draft PR e DB CI.
 
 O plano complementar de ações para cartografia da obra, cobertura integral, paratextos, notas
 atômicas e grafo tipado está em
@@ -344,7 +344,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 | Lote | Capacidade | Epics/Stories principais | Estado |
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
-| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | definido documentalmente; implementação bloqueada |
+| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | C.1.1 integrado; C.1.2 implementado em branch, pendente PR/CI |
 | C.2 | Ingestão controlada | EPIC-003; US-003.1 | bloqueado |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
@@ -766,22 +766,22 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE C ABERTA DOCUMENTALMENTE — C.0 integrado pelo PR nº 31 no commit
-> `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`. C.1 possui definição documental completa, sem
-> implementação. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos e contidos. C.2–C.7 e as
-> Fases D–G continuam bloqueados.**
+> **FASE C EM C.1 — C.0 integrado pelo PR nº 31; definição de C.1 integrada pelo PR nº 32;
+> C.1.1 integrado pelo PR nº 33 na `main` `2db5fc07378cc7c062753078b2a3fb2025cb1afe`.
+> C.1.2 está implementado em branch própria, aguardando revisão, autorização de draft PR e execução
+> do DB CI descartável. GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos e contidos.**
 
 Atualização de navegação da Fase C:
 
-> **C.1 foi decomposto em C.1.1–C.1.6 com contrato de identidade, lifecycle registral, autorização
-> histórica, elegibilidade derivada, propagação, persistência, segurança, adapters, testes e gates.
-> A definição documental não concede `Ready for Code` a nenhum sublote.**
+> **C.1 permanece decomposto em C.1.1–C.1.6. C.1.2 adiciona persistência incremental, histórico,
+> RLS, grants e rollback sem RPC, adapter ou ingestão. C.1.3–C.1.6, C.2–C.7 e as Fases D–G
+> continuam bloqueados.**
 
 Próximo objetivo imediato:
 
-> revisar e, mediante decisão humana, integrar o pacote documental de C.1 e o Checkpoint 034.
-> Somente após essa integração e nova autorização explícita poderá ser aberto C.1.1. Nenhum código,
-> ingestão, C.2, wiring, Supabase hospedado ou acesso à produção é autorizado.
+> revisar o diff completo de C.1.2 e, somente mediante autorização humana específica, abrir draft
+> PR para executar CI. A abertura ou integração desse PR não autoriza C.1.3, ingestão, wiring,
+> Supabase hospedado ou produção.
 
 Próxima grande mudança de natureza do projeto:
 

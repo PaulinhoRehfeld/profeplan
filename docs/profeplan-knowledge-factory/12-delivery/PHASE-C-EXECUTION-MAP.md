@@ -5,7 +5,7 @@ Data da definição: 11 de agosto de 2026.
 Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
 
 Estado canônico pós-merge verificado em 12 de agosto de 2026: `main` em
-`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`.
+`2db5fc07378cc7c062753078b2a3fb2025cb1afe` (PR nº 33, C.1.1).
 
 Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
 
@@ -14,10 +14,10 @@ Definição específica de C.1:
 
 ## Status
 
-**C.0 integrado e encerrado documentalmente pelo PR nº 31. A definição documental de C.1 está
-concluída neste pacote, mas nenhum sublote técnico C.1.1–C.1.6 está autorizado. O mapa não autoriza
-código, ingestão, processamento de fontes reais, migrations, wiring, Supabase hospedado ou
-produção.**
+**C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32 e C.1.1 pelo PR nº 33.
+C.1.2 está implementado em branch autorizada, ainda não integrado e sem resultado runtime do DB CI.
+C.1.3–C.1.6, C.2–C.7, ingestão, fontes reais, wiring, Supabase hospedado e produção permanecem
+bloqueados.**
 
 A visibilidade de C.1–C.7 permanece planejamento, não autorização automática. Cada implementação de
 lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
@@ -65,7 +65,7 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 | Lote | Capacidade | Epics/Stories principais | Estado | Gate de início técnico |
 |---|---|---|---|---|
 | C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
-| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | Definição documental concluída; implementação bloqueada | definição integrada + autorização específica de C.1.1 |
+| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | C.1.1 integrado; C.1.2 implementado em branch, pendente PR/CI | revisão e integração humana de cada sublote |
 | C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado; autorização própria |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
@@ -126,12 +126,12 @@ elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle
 
 ### Sublotes oficiais
 
-- `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes;
-- `C.1.2` — modelo físico incremental, RLS, grants e rollback;
-- `C.1.3` — RPCs ou outra fronteira atômica para versão e permissão;
-- `C.1.4` — adapters de comando/leitura e tradução provider-neutral;
-- `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência;
-- `C.1.6` — fechamento documental do lote e decisão sobre `GAP-3B-04`.
+- `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes — **integrado**;
+- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **implementado em branch; pendente PR/CI**;
+- `C.1.3` — RPCs ou outra fronteira atômica para versão e permissão — **bloqueado**;
+- `C.1.4` — adapters de comando/leitura e tradução provider-neutral — **bloqueado**;
+- `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência — **bloqueado**;
+- `C.1.6` — fechamento documental do lote e decisão sobre `GAP-3B-04` — **bloqueado**.
 
 ### Regras mínimas consolidadas
 
@@ -426,8 +426,8 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 
 ## 16. Itens proibidos por esta definição
 
-- código ou dependências;
-- migrations, RPCs, RLS ou grants;
+- código ou dependências sem autorização específica de sublote;
+- RPCs, adapters ou grants de execução de comandos; C.1.2 limita-se à migration, RLS e grants autorizados;
 - upload ou ingestão de arquivo real;
 - PNLD real ou conteúdo protegido;
 - currículo real adicional;
@@ -442,12 +442,11 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 
 ## 17. Próximo escopo elegível
 
-O próximo gate atual é a revisão e eventual integração humana da **definição documental de C.1** e
-do Checkpoint 034.
+O próximo gate atual é a revisão do diff completo de **C.1.2 — persistência incremental, RLS e
+grants** e do Checkpoint 036.
 
-Somente depois dessa integração, mediante nova autorização humana específica, `C.1.1 — contrato
-normativo de estados, comandos, eventos e invariantes` poderá tornar-se o próximo sublote técnico
-candidato.
+Somente mediante autorização humana específica poderá ser aberto um draft PR para executar o DB CI
+descartável. O resultado runtime não deve ser antecipado antes desse CI.
 
-Essa futura autorização não inclui C.1.2–C.1.6, não inicia C.2 e não autoriza conteúdo real,
+C.1.3 não foi iniciado. Nenhuma autorização desta fatia inclui RPCs, adapters, C.2, conteúdo real,
 Supabase hospedado, wiring ou produção.

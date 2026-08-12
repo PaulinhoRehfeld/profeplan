@@ -511,7 +511,7 @@ produção.
 
 ## ADR-056 — Identidade, lifecycle registral e autorização são dimensões distintas
 
-**Status:** aprovado documentalmente para a definição do Lote C.1 em 12 de agosto de 2026; integração pendente
+**Status:** integrado documentalmente pelo PR nº 32 e materializado nos contratos de C.1.1 pelo PR nº 33 em 12 de agosto de 2026
 
 C.1 distinguirá formalmente obra intelectual, edição, manifestação bibliográfica, arquivo digital
 recebido, hash, versão governada da fonte, execução de processamento, derivados, autorização e
@@ -528,7 +528,7 @@ revisada; qualquer mudança de enum ou contrato público exigirá C.1.1 e gate p
 
 ## ADR-057 — Permissão é histórica, temporal, por finalidade e propaga inelegibilidade
 
-**Status:** aprovado documentalmente para a definição do Lote C.1 em 12 de agosto de 2026; integração pendente
+**Status:** integrado documentalmente pelo PR nº 32 e materializado nos contratos de C.1.1 pelo PR nº 33 em 12 de agosto de 2026
 
 A futura autorização será histórica e append-only, com finalidade, escopo, vigência, ator,
 fundamento normativo/contratual e relação de supersessão. O sistema deverá poder responder qual
@@ -546,7 +546,7 @@ propagação.
 
 ## ADR-058 — Comandos de lifecycle exigem fronteira atômica e menor privilégio
 
-**Status:** aprovado documentalmente para a definição do Lote C.1 em 12 de agosto de 2026; integração pendente
+**Status:** integrado documentalmente pelo PR nº 32 e materializado nos contratos de C.1.1 pelo PR nº 33 em 12 de agosto de 2026
 
 Consultas e comandos do lifecycle serão capacidades separadas. Comandos que precisam alterar
 projeções, versões, autorizações, recibos ou eventos de forma indivisível não poderão ser
@@ -562,10 +562,38 @@ O `KnowledgeSourceRepository` existente permanece uma fundação compatível. `s
 transformado por inferência em comando de lifecycle multi-tabela; novas portas ou contratos só
 poderão surgir após aprovação explícita no sublote correspondente.
 
+## ADR-059 — Histórico autoritativo com projeções reconstruíveis e legado sem backfill semântico
+
+**Status:** implementado na branch de C.1.2 em 12 de agosto de 2026; integração e DB CI pendentes
+
+C.1.2 adiciona sete tabelas: identidades mínimas, fundamentos minimizados, projeção registral,
+autorizações, recibos, eventos de governança e relação ordenada recibo–evento. O histórico
+append-only de eventos é autoritativo; estado registral e estado da autorização permanecem
+projeções reconstruíveis e separados. Elegibilidade continua derivada e não é persistida como
+booleano.
+
+A autorização fixa sujeito, finalidade, restrições, fundamento e janela. Esses campos são
+fisicamente imutáveis; mudanças de escopo exigem supersessão. `commandId`, fingerprint, versão e
+sequência preparam idempotência e compare-and-set, mas a execução atômica permanece exclusivamente
+em C.1.3.
+
+As sete tabelas usam deny-by-default. `service_role` não recebe acesso direto; platform admin
+autenticado recebe somente leitura RLS-controlled. Papéis conceituais não são convertidos em roles
+PostgreSQL nesta fatia.
+
+`kf_sources`, `kf_source_versions`, `kf_source_permission_events`, `status`, `allowed_uses` e
+`license_category` permanecem legados e inalterados. Não há backfill porque o legado não prova ator,
+competência, fundamento, escopo ou vigência. Ausência de dado permanece desconhecida.
+
+A migration não cria RPC, adapter, ingestão ou autorização de produção. Rollback destrutivo só é
+admitido em ambiente descartável e se recusa a apagar tabelas que já contenham histórico.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
 
 Atualização de 12 de agosto de 2026: C.0 integrado pelo PR nº 31 no commit
-`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`; ADRs 056–058 formalizam exclusivamente a definição
-documental de C.1 e não autorizam implementação.
+`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`; definição de C.1 integrada pelo PR nº 32 no commit
+`01c92dda8257935e7a6c042be12308ebccdaeb73`; C.1.1 integrado pelo PR nº 33 no commit
+`2db5fc07378cc7c062753078b2a3fb2025cb1afe`; C.1.2 implementado em branch própria, sem autorização
+para PR, C.1.3, Supabase hospedado ou produção.

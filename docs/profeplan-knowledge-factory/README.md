@@ -53,6 +53,8 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 033 — abertura documental da Fase C](00-governance/CONTINUITY-CHECKPOINT-033.md)
 - [Definição do Lote C.1 — lifecycle de fontes](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md)
 - [Checkpoint 034 — C.0 integrado e C.1 definido](00-governance/CONTINUITY-CHECKPOINT-034.md)
+- [Checkpoint 035 — C.1.1 implementado, antes do PR](00-governance/CONTINUITY-CHECKPOINT-035.md)
+- [Checkpoint 036 — C.1.2 implementado em branch](00-governance/CONTINUITY-CHECKPOINT-036.md)
 
 ## Estado atual
 
@@ -72,11 +74,16 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
   [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
 - Fase C — C.0 integrado pelo PR nº 31 no commit
   `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`;
-- Lote C.1 — definido documentalmente; C.1.1–C.1.6 permanecem bloqueados para implementação;
-- Lotes C.2–C.7 — bloqueados;
+- Lote C.1 — definição integrada pelo PR nº 32 no commit
+  `01c92dda8257935e7a6c042be12308ebccdaeb73`;
+- C.1.1 — contratos integrados pelo PR nº 33 no commit
+  `2db5fc07378cc7c062753078b2a3fb2025cb1afe`;
+- C.1.2 — persistência, RLS, grants, rollback e testes implementados na branch própria, aguardando
+  revisão, autorização de draft PR e DB CI descartável;
+- C.1.3–C.1.6 e C.2–C.7 — bloqueados;
+- GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate é revisar o pacote documental de C.1 e o Checkpoint 034. A integração futura dessa
-documentação não autoriza implementação. Somente depois de integração humana e de nova autorização
-explícita poderá ser aberto o sublote C.1.1. C.2, ingestão, código, migration, RPC, RLS, wiring,
-Supabase hospedado e produção permanecem bloqueados.
+O próximo gate é revisar o diff completo de C.1.2. Somente com nova autorização humana poderá ser
+aberto um draft PR. C.1.3, ingestão, adapters, wiring, Supabase hospedado e produção permanecem
+bloqueados.

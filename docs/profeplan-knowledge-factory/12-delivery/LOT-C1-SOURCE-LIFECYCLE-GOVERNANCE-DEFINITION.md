@@ -8,9 +8,10 @@ Base canônica verificada: `main` em `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`.
 
 ## Status
 
-**Definição documental completa do Lote C.1. Nenhum sublote técnico está implementado ou autorizado
-por este documento. `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` permanecem ativos. C.2 continua
-bloqueado.**
+**Definição documental de C.1 integrada pelo PR nº 32. C.1.1 foi integrado pelo PR nº 33. C.1.2
+está implementado em branch própria, aguardando revisão, autorização de draft PR e DB CI
+descartável. C.1.3–C.1.6 e C.2 permanecem bloqueados. `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07`
+permanecem ativos e contidos.**
 
 Este documento detalha a primeira frente elegível depois da integração do Lote C.0 pelo PR nº 31.
 Ele preserva `EPIC-002`, `F-002.1`, `F-002.2`, `US-002.1` e `US-002.2` e transforma os requisitos
@@ -697,13 +698,15 @@ Quando um derivado possui mais de uma fonte:
 - quando retenção do conteúdo não for permitida, o conteúdo deve ser descartado e ficar somente o
   mínimo não reversível necessário para comprovar o evento, quando juridicamente cabível.
 
-C.1.2 deverá definir a persistência necessária para suportar essa distinção sem armazenar PDFs ou
-artefatos visuais permanentes.
+C.1.2 materializa essa distinção sem armazenar PDFs ou artefatos visuais permanentes; o modelo
+físico detalhado está em `../09-data/LOT-C1-2-SOURCE-LIFECYCLE-PHYSICAL-MODEL.md`.
 
 ## 14. Persistência física incremental — requisitos para C.1.2
 
-Nenhuma tabela é criada neste documento. A futura definição física deverá partir do schema atual e
-ser preferencialmente aditiva.
+A definição original não criou tabelas. A implementação autorizada de C.1.2 partiu do schema atual
+por migration aditiva e está detalhada em
+`../09-data/LOT-C1-2-SOURCE-LIFECYCLE-PHYSICAL-MODEL.md`. Eventos são autoritativos; projeções
+correntes são reconstruíveis; o legado permanece sem backfill semântico.
 
 ### 14.1 Entidades candidatas
 
@@ -780,8 +783,9 @@ A implementação não deve inferir autorização jurídica a partir de “admin
 
 `service_role` não é ator de negócio e não é autorização de uso.
 
-C.1.2/C.1.3 deverão reduzir o risco do modelo físico inicial, no qual `service_role` possui grants
-diretos amplos para várias tabelas. Para lifecycle de fontes, a meta é:
+C.1.2 reduz o risco para as sete tabelas novas ao revogar acesso direto de `service_role`; C.1.3
+deverá manter essa fronteira ao conceder apenas execução estreita. Para lifecycle de fontes, a regra
+é:
 
 - nenhuma escrita direta por conveniência;
 - comandos através de fronteiras server-only estreitas;
@@ -964,6 +968,8 @@ A ordem candidata de C.0 é confirmada sem renumeração.
 
 ### C.1.1 — Contrato normativo de estados, comandos, eventos e invariantes
 
+**Estado material:** integrado pelo PR nº 33 na `main` `2db5fc07378cc7c062753078b2a3fb2025cb1afe`.
+
 **Objetivo:** materializar em contratos provider-neutral a semântica aprovada neste documento.
 
 **Definition of Ready:**
@@ -984,6 +990,9 @@ A ordem candidata de C.0 é confirmada sem renumeração.
 - revisão humana e checkpoint próprios.
 
 ### C.1.2 — Modelo físico incremental, RLS, grants e rollback
+
+**Estado material:** implementado em branch própria; parser SQL verde; execução em Supabase
+descartável, PR e integração ainda pendentes.
 
 **Objetivo:** representar identidades, autorizações históricas e comandos de forma segura sobre a
 base existente.
@@ -1166,14 +1175,15 @@ validação e entrega permanecem nas fases correspondentes.
 11. O adapter mínimo existente será preservado até mudança contratual explícita; `save(source)` não
     será transformado silenciosamente em lifecycle multi-tabela.
 12. O pacote permanente não armazenará PDFs, páginas renderizadas, recortes, miniaturas ou OCR bruto.
-13. C.1.1–C.1.6 permanecem bloqueados para implementação até autorização humana individual.
+13. Cada sublote exige autorização humana individual; C.1.1 e C.1.2 receberam autorizações próprias,
+    enquanto C.1.3–C.1.6 permanecem bloqueados.
 14. C.2 permanece bloqueado.
 
 ## 23. Próximo gate seguro
 
-Depois da revisão e integração humana desta definição documental e do checkpoint correspondente, o
-próximo escopo potencialmente autorizável será **C.1.1 — contrato normativo de estados, comandos,
-eventos e invariantes**.
+O próximo gate é revisar o diff completo de **C.1.2**, o modelo físico, a matriz RLS/grants e o
+Checkpoint 036. Somente com autorização humana específica poderá ser aberto um draft PR e executado
+o DB CI descartável.
 
-Essa futura autorização deve ser específica. Não autoriza automaticamente C.1.2–C.1.6, C.2,
-conteúdo real, Supabase hospedado, wiring ou produção.
+C.1.3 não está autorizado. A eventual integração de C.1.2 não autoriza automaticamente C.1.3–C.1.6,
+C.2, conteúdo real, Supabase hospedado, wiring ou produção.
