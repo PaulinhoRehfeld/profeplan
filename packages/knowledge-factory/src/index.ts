@@ -6,5 +6,8 @@ export * from './policies/agent-scope-policy.ts';
 export * from './policies/component-eligibility.ts';
 export * from './policies/component-lifecycle.ts';
 export * from './policies/curriculum-policy.ts';
+export * from './policies/governed-source-eligibility.ts';
+export * from './policies/source-authorization.ts';
 export * from './policies/source-eligibility.ts';
+export * from './policies/source-lifecycle.ts';
 export * from './repositories/index.ts';
