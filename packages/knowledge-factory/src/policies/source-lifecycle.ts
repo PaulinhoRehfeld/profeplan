@@ -6,7 +6,7 @@ import type {
   VersionTag,
 } from '@profeplan/types';
 import { allow, deny, type DomainDecision } from '../domain/result.ts';
-import { reason } from '../domain/reasons.ts';
+import { reason, type DomainReason } from '../domain/reasons.ts';
 
 const REGISTRATION_TRANSITIONS: Readonly<
   Record<SourceRegistrationState, readonly SourceRegistrationState[]>
@@ -154,7 +154,7 @@ export interface SourceOptimisticConcurrencyInput {
 export function evaluateSourceOptimisticConcurrency(
   input: SourceOptimisticConcurrencyInput
 ): DomainDecision<SourceOptimisticConcurrencyInput> {
-  const reasons = [];
+  const reasons: DomainReason[] = [];
 
   if (input.expectedVersion !== undefined && input.expectedVersion !== input.currentVersion) {
     reasons.push(
