@@ -25,6 +25,18 @@ Data: 13 de agosto de 2026.
 
 A integração de C.1.2 não autoriza continuidade automática para C.1.3.
 
+## Precedência documental pós-merge
+
+Este checkpoint é a referência de continuidade material posterior ao squash merge do PR nº 34.
+Trechos de documentos normativos ou ADRs que preservem, em seus cabeçalhos históricos, expressões
+como “PR nº 34 pendente”, “integração pendente” ou equivalentes devem ser lidos como fotografia do
+estado em que aqueles trechos foram produzidos, e não como reversão do fato canônico pós-merge.
+
+A reconciliação de navegação pós-merge atualiza `BLUEPRINT.md`, `PHASE-C-EXECUTION-MAP.md` e
+`README.md` sem reescrever a semântica normativa de C.1. Os contratos, invariantes e decisões de
+C.1.1/C.1.2 permanecem inalterados. Em caso de dúvida sobre estado material, prevalecem o SHA/tree
+canônicos verificados neste checkpoint e o histórico do PR nº 34.
+
 ## Evidências de C.1.2 integradas
 
 C.1.2 adiciona e integra exclusivamente a fundação física do lifecycle governado de fontes:
