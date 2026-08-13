@@ -4,8 +4,9 @@ Data da definição: 11 de agosto de 2026.
 
 Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
 
-Estado canônico pós-merge verificado em 12 de agosto de 2026: `main` em
-`2db5fc07378cc7c062753078b2a3fb2025cb1afe` (PR nº 33, C.1.1).
+Estado canônico pós-merge verificado em 13 de agosto de 2026: `main` em
+`673318c2d3370f60997fd0a15b68bc69c6be5755` (PR nº 34, C.1.2), tree
+`f187e84e3d7917b15f19d4b397376f6bf1006087`.
 
 Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
 
@@ -14,11 +15,9 @@ Definição específica de C.1:
 
 ## Status
 
-**C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32 e C.1.1 pelo PR nº 33.
-C.1.2 está no Draft PR nº 34, com revisão técnica final concluída e `Knowledge Factory DB CI` run
-nº 32 e `CI Pipeline` run nº 280 verdes. A integração ainda depende de autorização humana
-específica. C.1.3–C.1.6, C.2–C.7, ingestão, fontes reais, wiring, Supabase hospedado e produção
-permanecem bloqueados.**
+**C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32, C.1.1 pelo PR nº 33 e C.1.2
+pelo PR nº 34. C.1.2 está integrado e formalizado no Checkpoint 038. C.1.3–C.1.6, C.2–C.7,
+ingestão, fontes reais, wiring, Supabase hospedado e produção permanecem bloqueados.**
 
 A visibilidade de C.1–C.7 permanece planejamento, não autorização automática. Cada implementação de
 lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
@@ -66,7 +65,7 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 | Lote | Capacidade | Epics/Stories principais | Estado | Gate de início técnico |
 |---|---|---|---|---|
 | C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
-| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | C.1.1 integrado; C.1.2 revisado e CI verde no PR nº 34, integração pendente | revisão e integração humana de cada sublote |
+| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | C.1.1 e C.1.2 integrados; C.1.3 bloqueado | revisão e integração humana de cada sublote |
 | C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado; autorização própria |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
@@ -128,7 +127,7 @@ elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle
 ### Sublotes oficiais
 
 - `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes — **integrado**;
-- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **revisado e CI verde no Draft PR nº 34; integração pendente**;
+- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **integrado pelo PR nº 34**;
 - `C.1.3` — RPCs ou outra fronteira atômica para versão e permissão — **bloqueado**;
 - `C.1.4` — adapters de comando/leitura e tradução provider-neutral — **bloqueado**;
 - `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência — **bloqueado**;
@@ -429,7 +428,7 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 ## 16. Itens proibidos por esta definição
 
 - código ou dependências sem autorização específica de sublote;
-- RPCs, adapters ou grants de execução de comandos; C.1.2 limita-se à migration, RLS e grants autorizados;
+- RPCs, adapters ou grants de execução de comandos sem autorização específica; C.1.2 integrou somente migration, RLS e grants autorizados;
 - upload ou ingestão de arquivo real;
 - PNLD real ou conteúdo protegido;
 - currículo real adicional;
@@ -444,12 +443,13 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 
 ## 17. Próximo escopo elegível
 
-O gate técnico de C.1.2 foi satisfeito no Draft PR nº 34: revisão final concluída, DB CI descartável
-verde e CI geral verde. A reconciliação documental pós-PR/pós-CI deve ser concluída antes de qualquer
-integração.
+C.1.2 foi integrado pelo PR nº 34 no commit canônico
+`673318c2d3370f60997fd0a15b68bc69c6be5755`, após revisão final e validações verdes em CI geral,
+DB CI descartável e Vercel. O Checkpoint 038 formaliza o estado pós-merge.
 
-O próximo ato permitido é a decisão humana específica sobre integrar ou não C.1.2, após nova
-confirmação dos checks da branch. A integração, se autorizada, não inicia C.1.3 automaticamente.
+O próximo sublote tecnicamente candidato é **C.1.3 — fronteira atômica para lifecycle e permissão**.
+Ele permanece bloqueado até nova autorização humana explícita e inspeção prévia de seu Definition of
+Ready. A integração de C.1.2 não constitui autorização implícita para C.1.3.
 
-C.1.3 não foi iniciado. Nenhuma autorização desta fatia inclui RPCs, adapters, C.2, conteúdo real,
-Supabase hospedado, wiring ou produção.
+Nenhuma autorização desta formalização inclui RPCs, adapters, C.2, conteúdo real, Supabase hospedado,
+wiring ou produção.
