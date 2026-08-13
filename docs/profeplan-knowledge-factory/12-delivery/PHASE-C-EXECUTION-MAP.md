@@ -15,9 +15,10 @@ Definição específica de C.1:
 ## Status
 
 **C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32 e C.1.1 pelo PR nº 33.
-C.1.2 está implementado em branch autorizada, ainda não integrado e sem resultado runtime do DB CI.
-C.1.3–C.1.6, C.2–C.7, ingestão, fontes reais, wiring, Supabase hospedado e produção permanecem
-bloqueados.**
+C.1.2 está no Draft PR nº 34, com revisão técnica final concluída e `Knowledge Factory DB CI` run
+nº 32 e `CI Pipeline` run nº 280 verdes. A integração ainda depende de autorização humana
+específica. C.1.3–C.1.6, C.2–C.7, ingestão, fontes reais, wiring, Supabase hospedado e produção
+permanecem bloqueados.**
 
 A visibilidade de C.1–C.7 permanece planejamento, não autorização automática. Cada implementação de
 lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
@@ -65,7 +66,7 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 | Lote | Capacidade | Epics/Stories principais | Estado | Gate de início técnico |
 |---|---|---|---|---|
 | C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
-| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | C.1.1 integrado; C.1.2 implementado em branch, pendente PR/CI | revisão e integração humana de cada sublote |
+| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | C.1.1 integrado; C.1.2 revisado e CI verde no PR nº 34, integração pendente | revisão e integração humana de cada sublote |
 | C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado; autorização própria |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
@@ -127,7 +128,7 @@ elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle
 ### Sublotes oficiais
 
 - `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes — **integrado**;
-- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **implementado em branch; pendente PR/CI**;
+- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **revisado e CI verde no Draft PR nº 34; integração pendente**;
 - `C.1.3` — RPCs ou outra fronteira atômica para versão e permissão — **bloqueado**;
 - `C.1.4` — adapters de comando/leitura e tradução provider-neutral — **bloqueado**;
 - `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência — **bloqueado**;
@@ -154,8 +155,8 @@ elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle
 ### Gate de saída
 
 `GAP-3B-04` somente poderá ser encerrado quando o lifecycle necessário à ingestão estiver definido,
-persistido, protegido, adaptado, testado e integrado. A definição documental atual não satisfaz esse
-gate. O fechamento futuro não autoriza automaticamente C.2.
+persistido, protegido, adaptado, testado e integrado. C.1.2, isoladamente, não satisfaz esse gate.
+O fechamento futuro não autoriza automaticamente C.2.
 
 ## 6. Lote C.2 — Ingestão controlada
 
@@ -377,7 +378,8 @@ rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorizaçã
 ### GAP-3B-04 — Lifecycle de fontes
 
 - destino primário: `C.1`;
-- permanece ativo durante a definição documental de C.1;
+- permanece ativo enquanto C.1 não satisfizer integralmente seus critérios de encerramento;
+- C.1.2 isoladamente não o encerra;
 - bloqueia ingestão real;
 - somente encerra com contrato, persistência, segurança, adapter e testes integrados.
 
@@ -438,15 +440,16 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 - frontend, API, job ou fila;
 - Supabase hospedado, `service_role`, wiring ou produção;
 - Nexus, Gráfica, PDF ou PPTX;
-- início implícito de C.1.1–C.1.6 ou C.2–C.7.
+- início implícito de C.1.3–C.1.6 ou C.2–C.7.
 
 ## 17. Próximo escopo elegível
 
-O próximo gate atual é a revisão do diff completo de **C.1.2 — persistência incremental, RLS e
-grants** e do Checkpoint 036.
+O gate técnico de C.1.2 foi satisfeito no Draft PR nº 34: revisão final concluída, DB CI descartável
+verde e CI geral verde. A reconciliação documental pós-PR/pós-CI deve ser concluída antes de qualquer
+integração.
 
-Somente mediante autorização humana específica poderá ser aberto um draft PR para executar o DB CI
-descartável. O resultado runtime não deve ser antecipado antes desse CI.
+O próximo ato permitido é a decisão humana específica sobre integrar ou não C.1.2, após nova
+confirmação dos checks da branch. A integração, se autorizada, não inicia C.1.3 automaticamente.
 
 C.1.3 não foi iniciado. Nenhuma autorização desta fatia inclui RPCs, adapters, C.2, conteúdo real,
 Supabase hospedado, wiring ou produção.
