@@ -9,6 +9,7 @@ on:
       - 'supabase/migrations/202608071120_knowledge_factory_schema.sql'
       - 'supabase/migrations/202608081600_kf_component_write_rpcs.sql'
       - 'supabase/migrations/202608111900_kf_production_order_write_rpcs.sql'
+      - 'supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql'
       - 'supabase/tests/**'
       - 'packages/knowledge-factory-supabase/**'
       - 'pnpm-lock.yaml'
@@ -74,6 +75,8 @@ jobs:
               supabase/migrations/202608081600_kf_component_write_rpcs.sql
             cp ../supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
               supabase/migrations/202608111900_kf_production_order_write_rpcs.sql
+            cp ../supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
+              supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql
           )
 
           {
@@ -155,6 +158,22 @@ jobs:
             -f supabase/tests/knowledge_factory_rls.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
 
+      - name: First pass - governed source lifecycle schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: First pass - governed source lifecycle RLS
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_rls.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
       - name: First pass - transactional component writes
         shell: bash
         run: |
@@ -177,6 +196,26 @@ jobs:
           set -euo pipefail
           bash supabase/tests/knowledge_factory_production_order_concurrency.sh \
             2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Rehearse guarded source lifecycle rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_rollback.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -Atc \
+            "SELECT CASE
+               WHEN to_regclass('public.kf_sources') IS NULL
+                 THEN 'FAIL:legacy_source_table_missing'
+               WHEN to_regclass('public.kf_source_identities') IS NOT NULL
+                 THEN 'FAIL:lifecycle_identity_table_remains'
+               WHEN to_regclass('public.kf_source_governance_events') IS NOT NULL
+                 THEN 'FAIL:lifecycle_event_table_remains'
+               ELSE 'OK:source_lifecycle_rollback_isolated'
+             END;" \
+            2>&1 | tee -a "$KF_EVIDENCE" | grep -q 'OK:source_lifecycle_rollback_isolated'
 
       - name: Rehearse guarded production order write rollback
         shell: bash
@@ -275,6 +314,9 @@ jobs:
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Second pass - schema and constraints
         shell: bash
@@ -290,6 +332,22 @@ jobs:
           set -euo pipefail
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/tests/knowledge_factory_rls.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Second pass - governed source lifecycle schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Second pass - governed source lifecycle RLS
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_rls.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Second pass - transactional component writes
