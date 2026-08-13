@@ -4,8 +4,10 @@ Data: 12 de agosto de 2026.
 
 ## Status
 
-Implementada na branch de C.1.2 e pendente de execução pelo Supabase descartável do DB CI do futuro
-PR. Nenhuma política ou grant foi aplicado a ambiente hospedado ou produção.
+Implementada na branch de C.1.2 e validada no Supabase descartável pelo `Knowledge Factory DB CI`
+run nº 32 (`31657560628`) do Draft PR nº 34. O run concluiu com `success`, incluindo duas passagens
+dos testes de schema/RLS e ensaio de rollback/reaplicação. Nenhuma política ou grant foi aplicado a
+ambiente hospedado ou produção. A integração à `main` ainda depende de autorização humana específica.
 
 ## Princípios
 
@@ -57,12 +59,14 @@ fundamento, janela ou `created_at`.
 As projeções registrais e o estado/versionamento projetado da autorização só poderão ser escritos
 pela fronteira transacional futura. Em C.1.2, nenhum role de runtime tem DML direto.
 
-## Evidência de teste planejada/executável
+## Evidência de teste executada
 
 `knowledge_factory_source_lifecycle_rls.sql` cobre `anon`, professor, `school_admin`, platform admin
 e `service_role`, além de RLS habilitada nas sete tabelas e ausência de policies de mutação.
 `knowledge_factory_source_lifecycle_schema.sql` cobre append-only e imutabilidade de escopo.
 
-Esses testes estão integrados em duas passagens no workflow descartável, antes e depois do ensaio de
-rollback/reaplicação. O resultado runtime só pode ser declarado após o futuro PR executar o DB CI.
-
+No `Knowledge Factory DB CI` run nº 32 (`31657560628`), ambas as suítes passaram antes e depois do
+ensaio de rollback/reaplicação, no HEAD `c742a422373271633dea86ade80afeb3d1a7c396`. O artefato
+`knowledge-factory-db-validation-31657560628` foi produzido como evidência do ambiente descartável.
+O `CI Pipeline` run nº 280 também concluiu com `success`. Esses resultados não autorizam acesso a
+ambiente hospedado, produção nem o início de C.1.3.
