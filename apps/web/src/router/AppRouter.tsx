@@ -46,7 +46,8 @@ const PageLoader: React.FC = () => (
 
 const PublicSiteRedirect: React.FC = () => {
   React.useEffect(() => {
-    window.location.replace('https://www.profeplan.com.br');
+    // Temporary bridge until profeplan.com.br/www are attached to the public-site Vercel project.
+    window.location.replace('https://site-eight-kappa-13.vercel.app');
   }, []);
 
   return <PageLoader />;
