@@ -11,8 +11,8 @@ const PAYMENT_LINKS = {
 };
 
 // Códigos promocionais ativos na Stripe em 2026.
-// Silver: R$ 10,00 de desconto na primeira transação.
-// Gold: 25% de desconto por 6 meses.
+// Silver contém "_" e, por isso, não deve ser enviado via prefilled_promo_code.
+// Gold é alfanumérico e pode ser pré-preenchido no Payment Link.
 const PROMOTION_CODES = {
   SILVER: 'TEST_DRIVE',
   GOLD: 'BOFNZFBM',
@@ -38,12 +38,14 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
     try {
       const isGold = planType === 'gold';
       const link = isGold ? PAYMENT_LINKS.GOLD_LINK : PAYMENT_LINKS.SILVER_LINK;
-      const promoCode = isGold ? PROMOTION_CODES.GOLD : PROMOTION_CODES.SILVER;
       const params = new URLSearchParams({
         client_reference_id: userProfile.id,
         prefilled_email: userProfile.email,
-        prefilled_promo_code: promoCode,
       });
+
+      if (isGold) {
+        params.set('prefilled_promo_code', PROMOTION_CODES.GOLD);
+      }
 
       window.location.href = `${link}?${params.toString()}`;
     } catch (err: any) {
@@ -137,8 +139,9 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
               {loading === 'silver' ? 'Redirecionando...' : 'Comprar 40 créditos'}
             </button>
             <p className="text-[10px] text-slate-500 mt-3 font-medium leading-relaxed">
-              Desconto de R$ 10,00 pré-preenchido no Stripe e sujeito à elegibilidade de primeira
-              transação. Fora da promoção, o valor é R$ 50,00.
+              Para pagar R$ 40,00 na primeira transação, use o código{' '}
+              <strong className="text-blue-700">{PROMOTION_CODES.SILVER}</strong> no checkout Stripe.
+              Fora da promoção, o valor é R$ 50,00.
             </p>
           </div>
 
