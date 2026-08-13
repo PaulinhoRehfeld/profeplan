@@ -57,6 +57,11 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 036 — C.1.2 implementado em branch, antes do PR](00-governance/CONTINUITY-CHECKPOINT-036.md)
 - [Checkpoint 037 — C.1.2 revisado e CI verde, aguardando integração](00-governance/CONTINUITY-CHECKPOINT-037.md)
 - [Checkpoint 038 — C.1.2 integrado; C.1.3 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-038.md)
+- [C.1.3 — definição da fronteira atômica](12-delivery/LOT-C1-3-SOURCE-LIFECYCLE-ATOMIC-BOUNDARY-DEFINITION.md)
+- [C.1.3 — fronteira transacional](09-data/LOT-C1-3-SOURCE-LIFECYCLE-TRANSACTION-BOUNDARY.md)
+- [C.1.3 — matriz de competência e EXECUTE](10-legal-security/LOT-C1-3-EXECUTE-COMPETENCE-MATRIX.md)
+- [ADR-060 — RPCs estreitas, competência explícita e CAS idempotente](00-governance/ADR-060-C1-3-ATOMIC-BOUNDARY.md)
+- [Checkpoint 039 — C.1.3 definido documentalmente; implementação bloqueada](00-governance/CONTINUITY-CHECKPOINT-039.md)
 
 ## Estado atual
 
@@ -83,10 +88,11 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
 - C.1.2 — persistência incremental, RLS, grants, rollback e testes integrados pelo PR nº 34 no
   commit canônico `673318c2d3370f60997fd0a15b68bc69c6be5755`; validações pré-merge concluídas com CI Pipeline
   nº 288, Knowledge Factory DB CI nº 40 e Vercel verdes;
-- C.1.3–C.1.6 e C.2–C.7 — bloqueados;
+- C.1.3 — definição documental materializada na branch `docs/knowledge-factory-lot-c1-3-atomic-boundary`; implementação ainda bloqueada;
+- C.1.4–C.1.6 e C.2–C.7 — bloqueados;
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo sublote tecnicamente candidato é C.1.3 — fronteira atômica para lifecycle e permissão —,
-mas ele permanece bloqueado até nova autorização humana explícita. Nenhum RPC, adapter, ingestão,
-wiring, Supabase hospedado ou produção está autorizado pela integração de C.1.2.
+A definição de C.1.3 fecha o desenho da fronteira atômica, competência, idempotência, CAS, menor
+privilégio, supersessão, impacto, rollback e concorrência. Nenhuma migration, RPC, adapter, ingestão,
+wiring, Supabase hospedado ou produção é autorizada por esta materialização documental.
