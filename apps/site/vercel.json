@@ -1,6 +1,6 @@
 {
   "framework": "vite",
-  "installCommand": "npm install",
+  "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "regions": ["gru1"],
