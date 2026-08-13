@@ -9,8 +9,9 @@ Base canônica verificada: `main` em `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`.
 ## Status
 
 **Definição documental de C.1 integrada pelo PR nº 32. C.1.1 foi integrado pelo PR nº 33. C.1.2
-está implementado em branch própria, aguardando revisão, autorização de draft PR e DB CI
-descartável. C.1.3–C.1.6 e C.2 permanecem bloqueados. `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07`
+está no Draft PR nº 34, com revisão técnica final concluída e `Knowledge Factory DB CI` run nº 32 e
+`CI Pipeline` run nº 280 verdes. A integração de C.1.2 ainda depende de autorização humana
+específica. C.1.3–C.1.6 e C.2 permanecem bloqueados. `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07`
 permanecem ativos e contidos.**
 
 Este documento detalha a primeira frente elegível depois da integração do Lote C.0 pelo PR nº 31.
@@ -26,6 +27,8 @@ Esta definição deve ser lida em conjunto com:
 - `PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`;
 - `../00-governance/CONTINUITY-CHECKPOINT-032.md`;
 - `../00-governance/CONTINUITY-CHECKPOINT-033.md`;
+- `../00-governance/CONTINUITY-CHECKPOINT-036.md`;
+- `../00-governance/CONTINUITY-CHECKPOINT-037.md`;
 - `../00-governance/DECISION-LOG.md`;
 - `../../../packages/types/src/knowledge-factory/source.ts`;
 - `../../../packages/knowledge-factory/src/repositories/knowledge-source.repository.ts`;
@@ -745,7 +748,7 @@ interpretáveis. Nenhuma estratégia de migração poderá apagar ou reinterpret
 
 ### 14.3 Constraints
 
-A futura migration deverá considerar, conforme o modelo final:
+A migration de C.1.2 implementa, conforme o modelo aprovado:
 
 - FKs de identidade e versão;
 - unicidade de chaves de idempotência no escopo correto;
@@ -797,7 +800,7 @@ deverá manter essa fronteira ao conceder apenas execução estreita. Para lifec
 
 ### 15.4 RLS
 
-A matriz futura deve testar explicitamente:
+A matriz de C.1.2 testa explicitamente:
 
 - leitura permitida por papel;
 - leitura negada a professor comum;
@@ -991,8 +994,9 @@ A ordem candidata de C.0 é confirmada sem renumeração.
 
 ### C.1.2 — Modelo físico incremental, RLS, grants e rollback
 
-**Estado material:** implementado em branch própria; parser SQL verde; execução em Supabase
-descartável, PR e integração ainda pendentes.
+**Estado material:** implementado e revisado no Draft PR nº 34; parser SQL verde; execução em
+Supabase descartável, rollback/reaplicação e CI geral verdes; integração ainda pendente de decisão
+humana específica.
 
 **Objetivo:** representar identidades, autorizações históricas e comandos de forma segura sobre a
 base existente.
@@ -1116,7 +1120,8 @@ C.1 somente poderá ser declarado concluído tecnicamente quando houver evidênc
 - rollback;
 - documentação e checkpoint.
 
-Apenas a definição documental presente **não** satisfaz esse gate e **não encerra `GAP-3B-04`**.
+C.1.1 e C.1.2, mesmo com os gates próprios satisfeitos, **não** satisfazem o gate global de C.1 e
+**não encerram `GAP-3B-04`**.
 
 ## 20. Estado dos GAPs
 
@@ -1124,7 +1129,7 @@ Apenas a definição documental presente **não** satisfaz esse gate e **não en
 
 **Ativo e contido.**
 
-C.1 é seu destino primário. Esta definição fecha a ambiguidade normativa, mas o gap só poderá ser
+C.1 é seu destino primário. C.1.1 e C.1.2 avançam contrato e persistência, mas o gap só poderá ser
 encerrado em C.1.6 depois de implementação, segurança, adapters e testes integrados.
 
 ### `GAP-3B-05`
@@ -1181,9 +1186,10 @@ validação e entrega permanecem nas fases correspondentes.
 
 ## 23. Próximo gate seguro
 
-O próximo gate é revisar o diff completo de **C.1.2**, o modelo físico, a matriz RLS/grants e o
-Checkpoint 036. Somente com autorização humana específica poderá ser aberto um draft PR e executado
-o DB CI descartável.
+O gate técnico de C.1.2 foi satisfeito no Draft PR nº 34: revisão final concluída, DB CI descartável
+verde e CI geral verde. A reconciliação documental pós-PR/pós-CI e a confirmação dos checks da branch
+devem preceder qualquer integração.
 
-C.1.3 não está autorizado. A eventual integração de C.1.2 não autoriza automaticamente C.1.3–C.1.6,
-C.2, conteúdo real, Supabase hospedado, wiring ou produção.
+O próximo ato permitido é uma decisão humana específica sobre integrar ou não C.1.2. C.1.3 não está
+autorizado. A eventual integração de C.1.2 não autoriza automaticamente C.1.3–C.1.6, C.2, conteúdo
+real, Supabase hospedado, wiring ou produção.
