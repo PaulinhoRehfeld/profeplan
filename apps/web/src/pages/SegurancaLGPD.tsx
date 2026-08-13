@@ -42,27 +42,15 @@ const SegurancaLGPD: React.FC = () => (
         Para assuntos relacionados à privacidade, proteção de dados ou suspeitas de incidentes de
         segurança:
       </p>
-      <p>
-        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
-      </p>
+      <p><a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a></p>
 
       <h2>Documentos relacionados</h2>
       <ul>
-        <li>
-          <Link to="/politica-de-privacidade">Política de Privacidade</Link>
-        </li>
-        <li>
-          <Link to="/termos-de-uso">Termos de Uso</Link>
-        </li>
-        <li>
-          <Link to="/politica-de-cookies">Política de Cookies</Link>
-        </li>
-        <li>
-          <Link to="/direitos-do-titular">Direitos do Titular</Link>
-        </li>
-        <li>
-          <Link to="/dados-educacionais">Dados Educacionais</Link>
-        </li>
+        <li><Link to="/politica-de-privacidade">Política de Privacidade</Link></li>
+        <li><Link to="/termos-de-uso">Termos de Uso</Link></li>
+        <li><Link to="/politica-de-cookies">Política de Cookies</Link></li>
+        <li><Link to="/direitos-do-titular">Direitos do Titular</Link></li>
+        <li><Link to="/dados-educacionais">Dados Educacionais</Link></li>
       </ul>
 
       <h2>Contato da empresa</h2>
