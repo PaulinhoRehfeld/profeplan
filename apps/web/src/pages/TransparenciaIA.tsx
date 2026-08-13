@@ -44,3 +44,4 @@ const TransparenciaIA: React.FC = () => (
 );
 
 export default TransparenciaIA;
+

@@ -46,9 +46,11 @@ const SegurancaLGPD: React.FC = () => (
       CNPJ 65.458.067/0001-10</p>
       <p>Rua Varginha, nº 92, Bairro Planalto<br />
       Capelinha — MG — CEP 39682-036<br />
-      Brasil</p>
+      Brasil
+    </p>
     </section>
   </LegalLayout>
 );
 
 export default SegurancaLGPD;
+
