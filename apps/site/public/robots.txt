@@ -9,4 +9,4 @@ Allow: /
 User-agent: AWSBot
 Allow: /
 
-Sitemap: https://www.wrtech-ai.com/sitemap.xml
+Sitemap: https://www.profeplan.com.br/sitemap.xml
