@@ -9,6 +9,7 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   );
 }
 
+// Server-side only: never import this helper into browser bundles.
 // createClient lança exceção se a URL for string vazia — usamos placeholder para evitar
 // crash no módulo. Chamadas reais falharão com erro da API, capturado pelo try-catch.
 export const supabaseAdmin = createClient(
