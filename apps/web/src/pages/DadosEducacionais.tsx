@@ -81,8 +81,9 @@ const DadosEducacionais: React.FC = () => (
     <section>
       <h2>7. Direitos</h2>
       <p>
-        Pais, responsáveis, estudantes e instituições poderão solicitar informações ou providências
-        pelo canal: <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+        Pais, responsáveis, estudantes e instituições poderão solicitar informações ou
+        providências pelo canal:{' '}
+        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
       </p>
     </section>
 
