@@ -10,9 +10,12 @@ Branch de implementação:
 
 ## Status e fronteira
 
-Implementado na branch de C.1.2, ainda não integrado à `main`. A migration e os testes SQL foram
-validados por parser; a execução contra Supabase descartável pertence ao DB CI do futuro PR e não é
-declarada como concluída neste estado.
+Implementado na branch de C.1.2 e aberto como Draft PR nº 34. A revisão técnica final confirmou o
+escopo, e a migration, os testes de schema/RLS e o rollback/reaplicação foram executados com sucesso
+no Supabase descartável pelo `Knowledge Factory DB CI` run nº 32 (`31657560628`) sobre o HEAD
+`c742a422373271633dea86ade80afeb3d1a7c396`. O `CI Pipeline` run nº 280 também concluiu com
+`success`. C.1.2 ainda não está integrado à `main` e depende de autorização humana específica para
+merge.
 
 Esta fatia persiste os contratos de C.1.1 e prepara a atomicidade futura. Ela não cria RPCs,
 adapters, ingestão, conteúdo real, wiring, acesso a Supabase hospedado ou autorização de produção.
@@ -93,6 +96,15 @@ persistem comando e fingerprint. Isso permite que C.1.3 implemente compare-and-s
 `expectedVersion`/`expectedSequence` em uma transação real. C.1.2 não implementa nem simula essa
 transação por chamadas PostgREST.
 
+## Evidência runtime descartável
+
+O `Knowledge Factory DB CI` run nº 32 (`31657560628`) concluiu com `success` no HEAD
+`c742a422373271633dea86ade80afeb3d1a7c396`. Foram aprovados, em duas passagens, schema e RLS de
+C.1.2, com ensaio de rollback guardado entre elas, reaplicação das migrations e validação das suítes
+anteriores da Knowledge Factory. O artefato `knowledge-factory-db-validation-31657560628` foi gerado
+pelo run. Essa evidência é exclusivamente não produtiva e não autoriza Supabase hospedado nem
+produção.
+
 ## Rollback
 
 O ensaio `knowledge_factory_source_lifecycle_rollback.sql` é deliberadamente destrutivo e exclusivo
@@ -102,4 +114,3 @@ legadas e o helper compartilhado append-only permanecem.
 
 Depois que histórico real existir, rollback destrutivo é proibido. A reversão operacional deverá
 ser forward-only: revogar acesso/execução futura, preservar eventos e corrigir por migration aditiva.
-
