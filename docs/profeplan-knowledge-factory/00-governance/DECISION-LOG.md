@@ -564,7 +564,7 @@ poderão surgir após aprovação explícita no sublote correspondente.
 
 ## ADR-059 — Histórico autoritativo com projeções reconstruíveis e legado sem backfill semântico
 
-**Status:** implementado na branch de C.1.2 em 12 de agosto de 2026; integração e DB CI pendentes
+**Status:** implementado e revisado no Draft PR nº 34 em 12 de agosto de 2026; DB CI descartável e CI geral verdes; integração pendente de decisão humana
 
 C.1.2 adiciona sete tabelas: identidades mínimas, fundamentos minimizados, projeção registral,
 autorizações, recibos, eventos de governança e relação ordenada recibo–evento. O histórico
@@ -588,6 +588,10 @@ competência, fundamento, escopo ou vigência. Ausência de dado permanece desco
 A migration não cria RPC, adapter, ingestão ou autorização de produção. Rollback destrutivo só é
 admitido em ambiente descartável e se recusa a apagar tabelas que já contenham histórico.
 
+A validação runtime de C.1.2 foi executada no `Knowledge Factory DB CI` run nº 32 (`31657560628`),
+com schema/RLS em duas passagens, rollback/reaplicação e resultado `success`. O `CI Pipeline` run nº
+280 (`31657560699`) também concluiu com `success`. Esses resultados não autorizam produção nem C.1.3.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
@@ -595,5 +599,6 @@ Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprova
 Atualização de 12 de agosto de 2026: C.0 integrado pelo PR nº 31 no commit
 `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`; definição de C.1 integrada pelo PR nº 32 no commit
 `01c92dda8257935e7a6c042be12308ebccdaeb73`; C.1.1 integrado pelo PR nº 33 no commit
-`2db5fc07378cc7c062753078b2a3fb2025cb1afe`; C.1.2 implementado em branch própria, sem autorização
-para PR, C.1.3, Supabase hospedado ou produção.
+`2db5fc07378cc7c062753078b2a3fb2025cb1afe`; C.1.2 aberto como Draft PR nº 34, revisado e validado
+em Supabase descartável, ainda sem integração à `main` e sem autorização para C.1.3, Supabase
+hospedado ou produção.
