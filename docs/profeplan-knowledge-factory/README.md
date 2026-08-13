@@ -54,7 +54,8 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Definição do Lote C.1 — lifecycle de fontes](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md)
 - [Checkpoint 034 — C.0 integrado e C.1 definido](00-governance/CONTINUITY-CHECKPOINT-034.md)
 - [Checkpoint 035 — C.1.1 implementado, antes do PR](00-governance/CONTINUITY-CHECKPOINT-035.md)
-- [Checkpoint 036 — C.1.2 implementado em branch](00-governance/CONTINUITY-CHECKPOINT-036.md)
+- [Checkpoint 036 — C.1.2 implementado em branch, antes do PR](00-governance/CONTINUITY-CHECKPOINT-036.md)
+- [Checkpoint 037 — C.1.2 revisado e CI verde, aguardando integração](00-governance/CONTINUITY-CHECKPOINT-037.md)
 
 ## Estado atual
 
@@ -78,12 +79,13 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
   `01c92dda8257935e7a6c042be12308ebccdaeb73`;
 - C.1.1 — contratos integrados pelo PR nº 33 no commit
   `2db5fc07378cc7c062753078b2a3fb2025cb1afe`;
-- C.1.2 — persistência, RLS, grants, rollback e testes implementados na branch própria, aguardando
-  revisão, autorização de draft PR e DB CI descartável;
+- C.1.2 — Draft PR nº 34 aberto; revisão técnica final concluída; `Knowledge Factory DB CI` run
+  nº 32 e `CI Pipeline` run nº 280 verdes no HEAD técnico validado; reconciliação documental final
+  realizada na própria branch; integração à `main` ainda depende de autorização humana específica;
 - C.1.3–C.1.6 e C.2–C.7 — bloqueados;
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo gate é revisar o diff completo de C.1.2. Somente com nova autorização humana poderá ser
-aberto um draft PR. C.1.3, ingestão, adapters, wiring, Supabase hospedado e produção permanecem
-bloqueados.
+O próximo gate é confirmar novamente os checks do PR nº 34 após a reconciliação documental e,
+somente então, submeter C.1.2 à decisão humana específica de integração. C.1.3, ingestão, adapters,
+wiring, Supabase hospedado e produção permanecem bloqueados.
