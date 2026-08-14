@@ -4,9 +4,9 @@ Data da definição: 11 de agosto de 2026.
 
 Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
 
-Estado canônico após a integração da definição de C.2 verificado em 14 de agosto de 2026: `main` em
-`787432fa8e7f5d891899c94b1089803430a4734a` (PR nº 59), tree
-`fc4d517def95ce23e5ddb73d935e1628710142d7`.
+Estado canônico após a integração de C.2.1 verificado em 14 de agosto de 2026: `main` em
+`e0ba47bf063b324df141c370ebf371763fbf2364` (PR nº 62), tree
+`a78d930b9491724c79665e420ceebc609b122d18`.
 
 Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
 
@@ -19,14 +19,18 @@ Auditoria de fechamento de C.1:
 Definição específica de C.2:
 [`LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](LOT-C2-CONTROLLED-INGESTION-DEFINITION.md).
 
+Definição integrada de C.2.1:
+[`LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md).
+
 ## Status
 
 **C.0 está integrado, C.1 foi concluído integralmente de C.1.1 a C.1.6 e `GAP-3B-04` está
-encerrado. A definição documental de C.2 foi integrada pelo PR nº 59; C.2.1–C.2.6, C.3–C.7,
-ingestão real, fontes reais, wiring, Supabase hospedado e produção permanecem bloqueados.**
+encerrado. A definição documental de C.2 foi integrada pelo PR nº 59 e C.2.1 foi integrado e
+revalidado pelo PR nº 62. C.2.2–C.2.6, C.3–C.7, ingestão real, fontes reais, wiring, Supabase
+hospedado, storage real e produção permanecem bloqueados.**
 
-A visibilidade de C.2.1–C.7 permanece planejamento, não autorização automática. Cada implementação
-de lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
+A visibilidade de C.2.2–C.7 permanece planejamento, não autorização automática. Cada implementação
+de lote ou sublote exige Definition of Ready satisfeita e governança própria.
 
 ## 1. Objetivo
 
@@ -72,7 +76,7 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 |---|---|---|---|---|
 | C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
 | C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | **Concluído — C.1.1–C.1.6** | gate de saída satisfeito em C.1.6 |
-| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | **Definição integrada; C.2.1 bloqueado** | definição integrada pelo PR nº 59; Checkpoint 044; autorização específica para C.2.1 |
+| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | **C.2.1 integrado; C.2.2 bloqueado** | C.2.1 integrado pelo PR nº 62; Checkpoint 045; C.2.2 exige contexto e DoR próprios |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
 | C.5 | Síntese autoral e deduplicação | EPIC-005; US-005.1–005.2 | Bloqueado | C.4 concluído |
@@ -175,12 +179,14 @@ classificação permanecem sob C.4. O fechamento de C.1 não autoriza automatica
 
 ### Status
 
-**Definição documental integrada pelo PR nº 59. C.2.1–C.2.6 permanecem bloqueados.**
+**Definição documental integrada pelo PR nº 59. C.2.1 integrado e revalidado pelo PR nº 62. C.2.2–C.2.6 permanecem bloqueados.**
 
 A definição normativa completa está em
-[`LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](LOT-C2-CONTROLLED-INGESTION-DEFINITION.md), e a
-fronteira entre ingestão, extração e segmentação está formalizada no ADR-062. O estado operacional
-pós-merge é registrado no Checkpoint 044.
+[`LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](LOT-C2-CONTROLLED-INGESTION-DEFINITION.md), a
+fronteira entre ingestão, extração e segmentação está formalizada no ADR-062 e o contrato integrado
+de C.2.1 está em
+[`LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md).
+O estado operacional pós-C.2.1 é registrado no Checkpoint 045.
 
 ### Objetivo
 
@@ -194,14 +200,20 @@ execução de ingestão rastreável, sem publicar conteúdo parcial.
 
 ### Sublotes oficiais
 
-- `C.2.1` — contratos, receipts e state machine;
-- `C.2.2` — intake/staging seguro, limites e retenção;
-- `C.2.3` — integridade, checksum, duplicidade e vínculo;
-- `C.2.4` — idempotência, retomada e falha segura;
-- `C.2.5` — revisão humana e handoff para C.3;
-- `C.2.6` — prova integrada, fechamento e gate para C.3.
+- `C.2.1` — contratos, receipts e state machine — **concluído**;
+- `C.2.2` — intake/staging seguro, limites e retenção — **bloqueado**;
+- `C.2.3` — integridade, checksum, duplicidade e vínculo — **bloqueado**;
+- `C.2.4` — idempotência, retomada e falha segura — **bloqueado**;
+- `C.2.5` — revisão humana e handoff para C.3 — **bloqueado**;
+- `C.2.6` — prova integrada, fechamento e gate para C.3 — **bloqueado**.
 
-Nenhum desses sublotes foi iniciado pela integração da definição.
+C.2.1 estabeleceu contrato `1.0.0`, identidades estreitas compostas sobre C.1, state machine
+explícita, comandos tipados, idempotência contratual, eventos/receipts provider-neutral e a
+invariante de revisão humana + autorização independente de `extraction` antes de
+`APPROVED_FOR_EXTRACTION`.
+
+C.2.1 não criou staging físico, storage, migration, RPC, adapter, upload, checksum real, conteúdo
+real ou extração. A conclusão desse sublote não constitui autorização implícita para C.2.2.
 
 ### Gate de saída
 
@@ -425,7 +437,7 @@ rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorizaçã
 | Capacidade | Fase C | Fase posterior |
 |---|---|---|
 | Governar fontes e permissões | Incluída; C.1 concluído | gestão jurídica ampliada |
-| Ingestão assistida do piloto | Definição de C.2 integrada; execução ainda bloqueada | ingestão massiva/OCR industrial |
+| Ingestão assistida do piloto | C.2.1 contratual integrado; C.2.2–C.2.6 bloqueados | ingestão massiva/OCR industrial |
 | Extração e segmentação | Incluída em C.3/C.4, ainda bloqueada | multimodalidade completa |
 | Destilação e deduplicação básica | Incluída | consolidação automática avançada |
 | Componentes e currículo MG | Incluída | RS e outros Estados |
@@ -444,10 +456,10 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 3. contratos e fronteiras revisados;
 4. análise jurídica/LGPD quando aplicável;
 5. plano de testes e rollback;
-6. autorização humana antes da implementação;
+6. autorização humana antes da implementação quando requerida pelo checkpoint/risco;
 7. CI, typecheck e testes aplicáveis verdes;
 8. Supabase somente descartável quando banco estiver no escopo;
-9. revisão do diff e merge humano;
+9. revisão do diff e merge governado;
 10. checkpoint pós-merge antes do próximo sublote.
 
 ## 16. Itens proibidos por esta definição
@@ -463,7 +475,7 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 - frontend, API, job ou fila;
 - Supabase hospedado, `service_role` real, wiring ou produção;
 - Nexus, Gráfica, PDF ou PPTX;
-- início implícito de C.2.1–C.7.
+- início implícito de C.2.2–C.7.
 
 As RPCs, adapters e grants de C.1 já integrados permanecem como infraestrutura governada no
 repositório, sem ativação em ambiente hospedado ou produção.
@@ -478,8 +490,15 @@ A definição documental de **C.2 — Ingestão controlada** foi integrada pelo 
 `787432fa8e7f5d891899c94b1089803430a4734a`, com CI pós-merge nº 366 verde. O Checkpoint 044
 formaliza o estado pós-integração da definição.
 
-O próximo escopo técnico candidato é **C.2.1 — contratos, receipts e state machine**. Ele permanece
-bloqueado até nova autorização humana específica e inspeção prévia de sua Definition of Ready. A
-integração da definição de C.2 não constitui autorização implícita para C.2.1.
+**C.2.1 — contratos, receipts e state machine** foi integrado pelo PR nº 62 no commit
+`e0ba47bf063b324df141c370ebf371763fbf2364`, tree
+`a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde. O Checkpoint 045
+formaliza o estado pós-C.2.1.
 
-Nenhuma autorização desta formalização inclui conteúdo real, Supabase hospedado, wiring ou produção.
+O próximo sublote na sequência canônica é **C.2.2 — intake/staging seguro, limites e retenção**. Ele
+permanece bloqueado nesta continuidade e deverá começar em contexto próprio com inspeção canônica e
+Definition of Ready próprias. A integração de C.2.1 não autoriza storage real, Supabase hospedado,
+conteúdo real, C.2.3, C.3 ou produção.
+
+Nenhuma autorização desta formalização inclui conteúdo real, Supabase hospedado, storage real,
+wiring ou produção.
