@@ -9,7 +9,10 @@ import type {
   TemporaryStagingDiscardReceipt,
 } from '@profeplan/types';
 import type { SupabaseSystemContext } from '../context/supabase-system-context.ts';
-import { toPersistenceError, type KnowledgeFactoryPersistenceError } from '../errors/persistence-error.ts';
+import {
+  toPersistenceError,
+  type KnowledgeFactoryPersistenceError,
+} from '../errors/persistence-error.ts';
 import {
   NOOP_PERSISTENCE_LOGGER,
   recordPersistenceLog,
