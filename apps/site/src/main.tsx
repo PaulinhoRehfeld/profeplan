@@ -22,10 +22,9 @@ import './styles.css';
 
 const APP_URL = 'https://app.profeplan.com.br';
 const CONTACT_EMAIL = 'suporte@profeplan.com.br';
-const SILVER_CHECKOUT_URL = 'https://buy.stripe.com/28E3cudNyajg3UHbAm2VG00';
+const SILVER_PURCHASE_URL = `${APP_URL}/signup?plan=silver`;
 const SILVER_PROMOTION_CODE = 'TEST_DRIVE';
-const GOLD_CHECKOUT_URL =
-  'https://buy.stripe.com/8x2bJ010Mdvs76T0VI2VG01?prefilled_promo_code=BOFNZFBM';
+const GOLD_PURCHASE_URL = `${APP_URL}/signup?plan=gold`;
 
 const legalLinks = [
   { label: 'Política de Privacidade', href: `${APP_URL}/politica-de-privacidade` },
@@ -185,8 +184,8 @@ function PromotionModal() {
           }}
         >
           <a
-            href={SILVER_CHECKOUT_URL}
-            aria-label={`Comprar ProfePlan Silver: 40 créditos, pagamento único. Primeira compra por R$ 40,00 usando o código ${SILVER_PROMOTION_CODE}; preço regular R$ 50,00.`}
+            href={SILVER_PURCHASE_URL}
+            aria-label={`Continuar para o ProfePlan Silver: crie ou acesse sua conta antes do checkout. 40 créditos, pagamento único; primeira compra por R$ 40,00 usando o código ${SILVER_PROMOTION_CODE}; preço regular R$ 50,00.`}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -217,13 +216,13 @@ function PromotionModal() {
                 fontWeight: 850,
               }}
             >
-              Usar código {SILVER_PROMOTION_CODE} no Stripe →
+              Criar conta e continuar →
             </span>
           </a>
 
           <a
-            href={GOLD_CHECKOUT_URL}
-            aria-label="Assinar ProfePlan Gold por R$ 37,50 ao mês durante 6 meses; depois R$ 50,00 ao mês."
+            href={GOLD_PURCHASE_URL}
+            aria-label="Continuar para o ProfePlan Gold: crie ou acesse sua conta antes do checkout. R$ 37,50 ao mês durante 6 meses; depois R$ 50,00 ao mês."
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -252,14 +251,17 @@ function PromotionModal() {
                 fontWeight: 850,
               }}
             >
-              Desconto pré-preenchido no Stripe →
+              Criar conta e continuar →
             </span>
           </a>
         </div>
 
-        <p style={{ margin: '1.25rem 0 0', color: '#6b8294', fontSize: '0.82rem', lineHeight: 1.6 }}>
+        <p
+          style={{ margin: '1.25rem 0 0', color: '#6b8294', fontSize: '0.82rem', lineHeight: 1.6 }}
+        >
           Silver: desconto de R$ 10,00 restrito à primeira transação. Gold: 25% de desconto por 6
-          meses. A elegibilidade e o valor final são confirmados no checkout seguro da Stripe.
+          meses. Primeiro você cria ou acessa sua conta ProfePlan; depois, o valor final é
+          confirmado no checkout seguro da Stripe.
         </p>
       </div>
     </div>
