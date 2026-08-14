@@ -98,11 +98,13 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       true
     );
 
-    const unauthorizedRemove = await anon.storage.from(bucketName).remove([path]);
-    assert.notEqual(unauthorizedRemove.error, null);
+    // Supabase Storage may represent an RLS-blocked delete as a successful no-op.
+    // The security invariant is that an anonymous caller cannot alter the staged object.
+    await anon.storage.from(bucketName).remove([path]);
 
     const afterUnauthorizedRemove = await admin.storage.from(bucketName).download(path);
     assert.equal(afterUnauthorizedRemove.error, null, afterUnauthorizedRemove.error?.message);
+    assert.deepEqual(new Uint8Array(await afterUnauthorizedRemove.data.arrayBuffer()), bytes);
 
     await assert.rejects(
       adapter.discard({
@@ -117,6 +119,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
 
     const stillPresent = await admin.storage.from(bucketName).download(path);
     assert.equal(stillPresent.error, null, stillPresent.error?.message);
+    assert.deepEqual(new Uint8Array(await stillPresent.data.arrayBuffer()), bytes);
 
     const discard = await adapter.discard({
       artifact: descriptorA.artifact,
