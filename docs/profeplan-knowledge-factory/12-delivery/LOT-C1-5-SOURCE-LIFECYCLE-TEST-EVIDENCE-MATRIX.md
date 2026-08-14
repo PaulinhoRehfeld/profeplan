@@ -120,9 +120,16 @@ ordem é deliberada: testes estruturais congelados de um sublote são executados
 que eles certificam, sem relaxar seus inventários para acomodar estruturas legítimas de sublotes
 posteriores.
 
+O estágio C.1.2 inclui a fundação transacional canônica que já existia quando C.1.2 foi integrado:
+`202608081600_kf_component_write_rpcs.sql` e
+`202608111900_kf_production_order_write_rpcs.sql`. Elas não pertencem a C.1.5 e não são reaplicadas
+como implementação nova; são pré-requisitos históricos necessários para reproduzir exatamente o
+inventário de 24 tabelas certificado pelo teste congelado de C.1.2. C.1.3 e C.1.4 permanecem
+explicitamente ausentes até seus respectivos estágios.
+
 A sequência é:
 
-1. iniciar a stack somente com a fundação e C.1.2;
+1. iniciar a stack com a fundação transacional canônica pré-C.1.2 e com C.1.2, ainda sem C.1.3/C.1.4;
 2. executar contratos, typecheck, unitários e a matriz RLS positiva/negativa C.1.2;
 3. aplicar a migration C.1.3 no mesmo banco descartável;
 4. validar competência, least privilege, matriz completa de comandos e supersessão;
