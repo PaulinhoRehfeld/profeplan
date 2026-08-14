@@ -21,3 +21,4 @@ export * from './source-lifecycle/source-lifecycle-command.mapper.ts';
 export * from './source-lifecycle/source-lifecycle.mapper.ts';
 export * from './source-lifecycle/supabase-source-lifecycle-command.repository.ts';
 export * from './source-lifecycle/supabase-source-lifecycle-read.repository.ts';
+export * from './staging/supabase-temporary-staging.adapter.ts';
