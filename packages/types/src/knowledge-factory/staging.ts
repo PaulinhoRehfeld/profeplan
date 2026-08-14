@@ -1,8 +1,5 @@
 import type { EntityId, ISODateTime } from './common.ts';
-import type {
-  BinaryDuplicateDecision,
-  TemporaryStagingIntegrityEvidence,
-} from './integrity.ts';
+import type { BinaryDuplicateDecision, TemporaryStagingIntegrityEvidence } from './integrity.ts';
 import type {
   IngestionReceivedFileRef,
   IngestionRunRef,
