@@ -1,5 +1,9 @@
 import type { EntityId, ISODateTime } from './common.ts';
 import type {
+  BinaryDuplicateDecision,
+  TemporaryStagingIntegrityEvidence,
+} from './integrity.ts';
+import type {
   IngestionReceivedFileRef,
   IngestionRunRef,
   IngestionSourceVersionRef,
@@ -46,6 +50,17 @@ export interface TemporaryStagingArtifactDescriptor {
   readonly createdAt: ISODateTime;
   readonly expiresAt: ISODateTime;
 }
+
+export interface VerifiedTemporaryStagingArtifactDescriptor
+  extends Omit<TemporaryStagingArtifactDescriptor, 'state'> {
+  readonly state: Extract<TemporaryStagingArtifactState, 'VERIFIED'>;
+  readonly integrity: TemporaryStagingIntegrityEvidence;
+  readonly duplicateDecision: BinaryDuplicateDecision;
+}
+
+export type TemporaryStagingArtifactLifecycleDescriptor =
+  | TemporaryStagingArtifactDescriptor
+  | VerifiedTemporaryStagingArtifactDescriptor;
 
 export interface TemporaryStagingDiscardReceipt {
   readonly contractVersion: typeof STAGING_CONTRACT_VERSION;
