@@ -5,7 +5,10 @@ const DadosEducacionais: React.FC = () => (
   <LegalLayout title="Aviso de Privacidade para Dados Educacionais">
     <section>
       <h2>1. Finalidade</h2>
-      <p>Este aviso explica os cuidados relacionados a informações de estudantes inseridas no ProfePlan por professores, gestores ou instituições.</p>
+      <p>
+        Este aviso explica os cuidados relacionados a informações de estudantes inseridas no
+        ProfePlan por professores, gestores ou instituições.
+      </p>
     </section>
 
     <section>
@@ -43,7 +46,10 @@ const DadosEducacionais: React.FC = () => (
     <section>
       <h2>4. PDI e inclusão</h2>
       <p>Informações relacionadas a PDI e inclusão devem ser tratadas com cuidado reforçado.</p>
-      <p>O ProfePlan apoia a elaboração pedagógica, mas não realiza diagnóstico médico ou psicológico.</p>
+      <p>
+        O ProfePlan apoia a elaboração pedagógica, mas não realiza diagnóstico médico ou
+        psicológico.
+      </p>
     </section>
 
     <section>
@@ -74,13 +80,20 @@ const DadosEducacionais: React.FC = () => (
 
     <section>
       <h2>7. Direitos</h2>
-      <p>Pais, responsáveis, estudantes e instituições poderão solicitar informações ou providências pelo canal: <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a></p>
+      <p>
+        Pais, responsáveis, estudantes e instituições poderão solicitar informações ou providências
+        pelo canal: <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+      </p>
     </section>
 
     <section>
       <h2>8. Uso direto por crianças</h2>
       <p>O ProfePlan não é destinado, nesta versão, à criação direta de contas por crianças.</p>
-      <p>Se futuramente forem criadas contas ou experiências diretamente voltadas a estudantes, deverá ser realizada nova avaliação jurídica, técnica e de produto antes da disponibilização.</p>
+      <p>
+        Se futuramente forem criadas contas ou experiências diretamente voltadas a estudantes,
+        deverá ser realizada nova avaliação jurídica, técnica e de produto antes da
+        disponibilização.
+      </p>
     </section>
   </LegalLayout>
 );

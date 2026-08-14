@@ -23,7 +23,9 @@ const CancelamentoFormulario: React.FC = () => {
   const [error, setError] = useState('');
   const [protocol, setProtocol] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -85,24 +87,28 @@ const CancelamentoFormulario: React.FC = () => {
           <p style={{ marginBottom: '1.5rem', color: '#94a3b8' }}>
             Sua solicitação foi recebida e será analisada pela nossa equipe.
           </p>
-          <div style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '12px',
-            padding: '1.25rem',
-            marginBottom: '1.5rem',
-            display: 'inline-block',
-          }}>
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '12px',
+              padding: '1.25rem',
+              marginBottom: '1.5rem',
+              display: 'inline-block',
+            }}
+          >
             <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>
               NÚMERO DE PROTOCOLO
             </p>
-            <p style={{
-              fontFamily: 'monospace',
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              color: '#e2e8f0',
-              letterSpacing: '0.05em',
-            }}>
+            <p
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                color: '#e2e8f0',
+                letterSpacing: '0.05em',
+              }}
+            >
               {protocol}
             </p>
           </div>
@@ -123,24 +129,31 @@ const CancelamentoFormulario: React.FC = () => {
       title="Cancelamento, Reembolso e Direito de Arrependimento"
       subtitle="Preencha o formulário abaixo para solicitar cancelamento, reembolso ou exercer seu direito de arrependimento. Você receberá um número de protocolo."
     >
-      <div style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '16px',
-        padding: '2rem',
-      }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <div
+        style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '16px',
+          padding: '2rem',
+        }}
+      >
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+        >
           {/* Nome */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.7rem',
-              fontWeight: '700',
-              color: '#64748b',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.5rem',
-            }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.7rem',
+                fontWeight: '700',
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: '0.5rem',
+              }}
+            >
               Nome completo *
             </label>
             <input
@@ -165,15 +178,17 @@ const CancelamentoFormulario: React.FC = () => {
 
           {/* E-mail */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.7rem',
-              fontWeight: '700',
-              color: '#64748b',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.5rem',
-            }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.7rem',
+                fontWeight: '700',
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: '0.5rem',
+              }}
+            >
               E-mail da conta ProfePlan *
             </label>
             <input
@@ -198,15 +213,17 @@ const CancelamentoFormulario: React.FC = () => {
 
           {/* Tipo de solicitação */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.7rem',
-              fontWeight: '700',
-              color: '#64748b',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.5rem',
-            }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.7rem',
+                fontWeight: '700',
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: '0.5rem',
+              }}
+            >
               Tipo de solicitação *
             </label>
             <select
@@ -230,7 +247,11 @@ const CancelamentoFormulario: React.FC = () => {
                 Selecione o tipo de solicitação
               </option>
               {REQUEST_TYPES.map((t) => (
-                <option key={t.value} value={t.value} style={{ background: '#1e293b', color: '#e2e8f0' }}>
+                <option
+                  key={t.value}
+                  value={t.value}
+                  style={{ background: '#1e293b', color: '#e2e8f0' }}
+                >
                   {t.label}
                 </option>
               ))}
@@ -239,15 +260,17 @@ const CancelamentoFormulario: React.FC = () => {
 
           {/* Plano */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.7rem',
-              fontWeight: '700',
-              color: '#64748b',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.5rem',
-            }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.7rem',
+                fontWeight: '700',
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: '0.5rem',
+              }}
+            >
               Plano contratado
             </label>
             <input
@@ -271,15 +294,17 @@ const CancelamentoFormulario: React.FC = () => {
 
           {/* Descrição */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.7rem',
-              fontWeight: '700',
-              color: '#64748b',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.5rem',
-            }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.7rem',
+                fontWeight: '700',
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: '0.5rem',
+              }}
+            >
               Descrição / Motivo *
             </label>
             <textarea
@@ -306,15 +331,17 @@ const CancelamentoFormulario: React.FC = () => {
 
           {/* ID da transação (opcional) */}
           <div>
-            <label style={{
-              display: 'block',
-              fontSize: '0.7rem',
-              fontWeight: '700',
-              color: '#64748b',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: '0.5rem',
-            }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.7rem',
+                fontWeight: '700',
+                color: '#64748b',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: '0.5rem',
+              }}
+            >
               Identificador da cobrança (se disponível)
             </label>
             <input
@@ -337,25 +364,29 @@ const CancelamentoFormulario: React.FC = () => {
           </div>
 
           {/* Aviso de segurança */}
-          <div style={{
-            background: 'rgba(239,68,68,0.08)',
-            border: '1px solid rgba(239,68,68,0.15)',
-            borderRadius: '10px',
-            padding: '0.75rem 1rem',
-          }}>
-            <p style={{ fontSize: '0.75rem', color: '#fca5a5', margin: 0 }}>
-              <strong>⚠️ Importante:</strong> Nunca envie o número completo do seu cartão, código de segurança,
-              senha da conta ou token de autenticação por este formulário ou por e-mail.
-            </p>
-          </div>
-
-          {error && (
-            <div style={{
+          <div
+            style={{
               background: 'rgba(239,68,68,0.08)',
               border: '1px solid rgba(239,68,68,0.15)',
               borderRadius: '10px',
               padding: '0.75rem 1rem',
-            }}>
+            }}
+          >
+            <p style={{ fontSize: '0.75rem', color: '#fca5a5', margin: 0 }}>
+              <strong>⚠️ Importante:</strong> Nunca envie o número completo do seu cartão, código de
+              segurança, senha da conta ou token de autenticação por este formulário ou por e-mail.
+            </p>
+          </div>
+
+          {error && (
+            <div
+              style={{
+                background: 'rgba(239,68,68,0.08)',
+                border: '1px solid rgba(239,68,68,0.15)',
+                borderRadius: '10px',
+                padding: '0.75rem 1rem',
+              }}
+            >
               <p style={{ fontSize: '0.85rem', color: '#fca5a5', margin: 0 }}>{error}</p>
             </div>
           )}
@@ -396,7 +427,14 @@ const CancelamentoFormulario: React.FC = () => {
             )}
           </button>
 
-          <p style={{ fontSize: '0.75rem', color: '#64748b', textAlign: 'center', marginTop: '0.5rem' }}>
+          <p
+            style={{
+              fontSize: '0.75rem',
+              color: '#64748b',
+              textAlign: 'center',
+              marginTop: '0.5rem',
+            }}
+          >
             Você também pode enviar sua solicitação diretamente para{' '}
             <a href="mailto:suporte@profeplan.com.br" style={{ color: '#818cf8' }}>
               suporte@profeplan.com.br
