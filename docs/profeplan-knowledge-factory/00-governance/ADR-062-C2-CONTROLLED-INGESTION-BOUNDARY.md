@@ -2,7 +2,7 @@
 
 Data: 14 de agosto de 2026.
 
-**Status:** proposto para integração com a definição documental do Lote C.2.
+**Status:** aprovado e integrado pelo PR nº 59.
 
 ## Contexto
 
