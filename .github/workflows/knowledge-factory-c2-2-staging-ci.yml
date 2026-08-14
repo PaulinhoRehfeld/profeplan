@@ -150,7 +150,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm --filter @profeplan/knowledge-factory-supabase test:integration -- \
+          node --experimental-transform-types --test --test-concurrency=1 \
             packages/knowledge-factory-supabase/test/staging.c2-2.integration.test.mjs \
             2>&1 | tee -a "$KF_EVIDENCE"
 
