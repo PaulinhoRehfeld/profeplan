@@ -1,5 +1,5 @@
 {
-  "name": "@profeplan/types",
+  "name": "@profeplan/knowledge-factory",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -10,6 +10,6 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --experimental-transform-types --test test/*.test.mjs"
+    "test": "node --experimental-strip-types --test test/*.test.mjs"
   }
 }

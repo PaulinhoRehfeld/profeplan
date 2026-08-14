@@ -1,0 +1,604 @@
+# Decision Log
+
+## Convenção
+
+- Status: proposto, aprovado, substituído ou rejeitado.
+- Toda decisão técnica relevante deve registrar contexto, decisão, consequências e riscos.
+
+## ADR-001 — Escopo educacional
+
+**Status:** aprovado
+
+O ProfePlan atenderá apenas Ensino Fundamental II e Ensino Médio nesta fase.
+
+## ADR-002 — Especialização dos agentes
+
+**Status:** aprovado
+
+Os perfis de agentes serão especializados por componente curricular, etapa e ano.
+
+## ADR-003 — Currículos estaduais plugáveis
+
+**Status:** aprovado
+
+Currículos estaduais serão pacotes versionados carregados conforme o contexto do professor.
+
+## ADR-004 — Mesmo agente para MG e RS
+
+**Status:** aprovado
+
+O mesmo agente poderá operar com Minas Gerais ou Rio Grande do Sul. Não haverá duplicação por Estado.
+
+## ADR-005 — Componentes pedagógicos semielaborados
+
+**Status:** aprovado
+
+As fontes serão transformadas em componentes estruturados. O almoxarifado não armazenará apenas páginas brutas nem apenas produtos finalizados.
+
+## ADR-006 — Filtros antes da busca vetorial
+
+**Status:** aprovado
+
+A recuperação aplicará filtros por componente, etapa, ano, currículo, finalidade, licença e status de validação antes da similaridade semântica.
+
+## ADR-007 — Piloto Sócrates 2
+
+**Status:** aprovado
+
+O primeiro experimento será Filosofia do 2º ano do Ensino Médio, inicialmente com currículo de Minas Gerais.
+
+## ADR-008 — Produção separada da Gráfica
+
+**Status:** aprovado
+
+Agentes pedagógicos produzem e validam o conteúdo. A Gráfica realiza acabamento editorial e exportação.
+
+## ADR-009 — Documentação antes do código
+
+**Status:** aprovado
+
+Nenhuma implementação será iniciada antes da aprovação dos documentos essenciais.
+
+## ADR-010 — Infraestrutura comum, perfis especializados
+
+**Status:** aprovado
+
+Sócrates 2 e os demais especialistas serão configurações sobre uma infraestrutura comum.
+
+## ADR-011 — Continuidade por marcos e forks controlados
+
+**Status:** aprovado
+
+A continuidade do projeto será feita por marcos documentais e checkpoints versionados.
+
+## ADR-012 — Epics selecionados para o MVP
+
+**Status:** aprovado no Marco 002
+
+EPIC-001 a EPIC-017 participam do MVP em escopo reduzido. EPIC-018 permanece fora do MVP.
+
+## ADR-013 — Priorização MoSCoW e preservação dos gates
+
+**Status:** aprovado no Marco 002
+
+Should e Could serão adiadas antes de reduzir gates jurídicos, pedagógicos, curriculares, autorais, inclusivos ou de rastreabilidade.
+
+## ADR-014 — Aprovação baseada em evidências não compensatórias
+
+**Status:** aprovado no Marco 002
+
+Falhas críticas não podem ser compensadas por criatividade, velocidade ou baixo custo.
+
+## ADR-015 — Repositório canônico da implementação
+
+**Status:** aprovado no Marco 003
+
+`PaulinhoRehfeld/profeplan` é o repositório canônico da implementação. A documentação aprovada nos Marcos 001–003 será sincronizada de forma controlada no Lote 0.
+
+## ADR-016 — Reutilização modular do monorepo
+
+**Status:** aprovado no Marco 003
+
+A Knowledge Factory será distribuída pelos módulos responsáveis — types, industry-pnld, industry-curriculum, db, ai, agents, bff, web e observabilidade.
+
+## ADR-017 — Implementação em ondas verticais
+
+**Status:** aprovado no Marco 003
+
+A implementação seguirá ondas cumulativas, com capacidade testável e gate de saída.
+
+## ADR-018 — Fronteiras síncronas e assíncronas
+
+**Status:** aprovado no Marco 003
+
+Ingestão, segmentação, embeddings e avaliações em lote serão assíncronos; OPP, retrieval, geração, gates e entrega serão predominantemente síncronos no MVP.
+
+## ADR-019 — Contract-first
+
+**Status:** aprovado no Marco 003
+
+Contratos compartilhados e testes precederão persistência, APIs, modelos e agentes.
+
+## ADR-020 — Recuperação híbrida filtrada
+
+**Status:** aprovado no Marco 003
+
+Filtros determinísticos serão aplicados antes das buscas lexical e semântica, com estado explícito de insuficiência.
+
+## ADR-021 — Escolhas de retrieval orientadas por experimentos
+
+**Status:** aprovado no Marco 003
+
+Embedding, dimensão, índice, fusão, reranker, orçamento e cache serão escolhidos por experimento reproduzível.
+
+## ADR-022 — Corpus compartilhado sem leitura pública direta
+
+**Status:** aprovado no Marco 003
+
+Conhecimento global será acessado por serviços autorizados. Licença, status, perfil do agente e escopo participam da autorização.
+
+## ADR-023 — Quality gates calibrados e não compensatórios
+
+**Status:** aprovado no Marco 003
+
+Validadores existentes só entram no pipeline obrigatório após avaliação contra casos dourados.
+
+## ADR-024 — ModelPolicy e observabilidade por OPP
+
+**Status:** aprovado no Marco 003
+
+Agentes não acessam SDKs de provedor diretamente. Modelos, limites, retry e fallback são resolvidos por política versionada.
+
+## ADR-025 — Baseline justo e piloto controlado
+
+**Status:** aprovado no Marco 003
+
+A avaliação usa casos dourados, execução pareada e baseline genérico justo.
+
+## ADR-026 — Sócrates 2 como perfil do runtime comum
+
+**Status:** aprovado no Marco 003
+
+Sócrates 2 será um perfil versionado, não um agente duplicado por Estado ou ano.
+
+## ADR-027 — Primeiro PR de código contract-first
+
+**Status:** aprovado no Marco 003
+
+O primeiro PR de código conterá somente contratos, enums, fixtures e testes, sem banco, migrations, IA, API ou mudança de comportamento.
+
+## ADR-028 — Aprovação do Lote 0 e autorização da fatia contratual
+
+**Status:** aprovado no Marco 004
+
+O baseline técnico, a sincronização documental controlada, o mapa de módulos, as falhas preexistentes, a branch `feat/knowledge-factory-contracts`, o escopo do primeiro PR e a tarefa restrita para o Codex foram aprovados integralmente.
+
+O primeiro PR será implementado em `packages/types`, com contratos versionados, enums, fixtures sintéticas, testes de invariantes e exports aditivos.
+
+Nova dependência, alteração fora do escopo autorizado, persistência, API, IA, agentes, embeddings, PNLD real, currículo RS ou mudança de comportamento exigem nova autorização humana.
+
+As Stories US-001.1, US-001.2, US-002.1, US-002.2, US-004.1, US-004.2, US-010.1, US-014.1, US-015.1 e US-016.1 recebem `Ready for Code — contract slice`.
+
+## ADR-029 — Pacote dedicado ao domínio da Knowledge Factory
+
+**Status:** aprovado para o Lote 2
+
+As regras de negócio da Knowledge Factory serão implementadas em um pacote dedicado `@profeplan/knowledge-factory`, separado de `@profeplan/types`.
+
+O novo pacote dependerá dos contratos de `@profeplan/types` e não dependerá de DB, IA, agents, API, frontend ou providers externos.
+
+Consequências:
+
+- `@profeplan/types` permanece como contrato compartilhado;
+- políticas e ciclo de vida ficam coesos em uma camada de domínio própria;
+- banco, agentes e APIs poderão reutilizar o domínio sem dependência circular;
+- criação de novo workspace exige CI e scripts próprios mínimos;
+- nenhuma dependência externa nova será adicionada sem autorização humana.
+
+## ADR-030 — Repositórios como portas, não adapters concretos
+
+**Status:** aprovado para o Lote 2
+
+O Lote 2 criará interfaces abstratas de repositório orientadas ao domínio. Implementações Supabase, PostgreSQL, Prisma ou outras serão proibidas até o Lote 3.
+
+As portas não poderão expor SQL, nomes de tabela, clients de provider, vetores ou HTTP.
+
+## ADR-031 — Domínio puro, determinístico e sem I/O
+
+**Status:** aprovado para o Lote 2
+
+Políticas do Lote 2 serão puras, determinísticas, sem estado global e sem acesso a rede, filesystem, banco ou provider.
+
+Decisões de elegibilidade, ciclo de vida, escopo e OPP deverão ser testáveis apenas com contratos e fixtures sintéticas.
+
+## ADR-032 — Dependência de contratos somente em tempo de compilação no Lote 2
+
+**Status:** aprovado em 7 de agosto de 2026, antes do merge do PR nº 5
+
+Durante a implementação do Lote 2 verificou-se que todos os usos de `@profeplan/types` no novo pacote são exclusivamente `import type`. A declaração inicial `@profeplan/types: workspace:*` no `package.json` exigia atualizar o importer do novo workspace no `pnpm-lock.yaml`, embora nenhum símbolo de runtime fosse consumido.
+
+Decisão aprovada:
+
+- `@profeplan/knowledge-factory` não declarará dependência de runtime/package-manager em `@profeplan/types` no Lote 2;
+- os contratos serão resolvidos em tempo de compilação pelo alias `@profeplan/types` já definido no `tsconfig.base.json` do monorepo;
+- todos os imports de contratos permanecerão `import type`;
+- `pnpm-lock.yaml` permanecerá inalterado;
+- se lote posterior exigir símbolo de runtime de `@profeplan/types`, a dependência explícita deverá ser reavaliada e documentada.
+
+Consequências:
+
+- domínio permanece sem dependências de runtime;
+- lockfile não recebe alteração sem necessidade funcional;
+- typecheck continua validando integralmente os contratos;
+- reduz-se acoplamento entre pacotes no Lote 2;
+- existe dependência arquitetônica de compilação, embora não exista dependência de runtime;
+- a decisão deve ser revista caso a política de build/package publication do monorepo mude.
+
+## ADR-033 — SQL Supabase como persistência canônica da Knowledge Factory
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+A Knowledge Factory usará migrations SQL em `supabase/migrations/` como fonte física de verdade. As tabelas `kf_*` não serão duplicadas em Prisma neste lote.
+
+## ADR-034 — Tabelas `public.kf_*` com deny-by-default
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+O schema físico inicial usará `public.kf_*`, grants explícitos, RLS e corpus global sem leitura direta de professor.
+
+## ADR-035 — Adapter Supabase em pacote separado
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Adapters concretos serão implementados posteriormente em `@profeplan/knowledge-factory-supabase`. O Lote 3 fica dividido em 3A (schema/RLS) e 3B (adapters).
+
+## ADR-036 — Isolamento do MVP por requester, sem inventar tenant novo
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+No MVP individual, OPPs serão isoladas por `requester_id = auth.uid()`. Não será criada tabela tenant nem `school_id` será promovido a tenant universal.
+
+## ADR-037 — Vetores e retrieval permanecem fora do schema do Lote 3
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Nenhuma tabela, coluna ou índice do Lote 3 escolherá embedding, dimensão, `vector`, IVFFlat, HNSW, full-text retrieval ou reranking. `curriculum_rag` permanece legado e não é schema canônico da Knowledge Factory.
+
+## ADR-038 — Merge de migration não autoriza aplicação em produção
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Aprovação/merge do código da migration e autorização para executá-la no Supabase de produção são gates humanos independentes. Produção exige teste não produtivo, matriz RLS, ensaio de rollback e pre-flight do banco alvo.
+
+## ADR-039 — Proveniência e auditoria append-only
+
+**Status:** aprovado para o Lote 3 em 7 de agosto de 2026
+
+Eventos de permissão, OPP e auditoria serão append-only em uso normal. Correção histórica ocorrerá por novo evento, bloqueio, suspensão ou supersessão, não por edição silenciosa.
+
+## ADR-040 — Pacote concreto isolado para adapters Supabase
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Os adapters concretos da Knowledge Factory serão implementados em `packages/knowledge-factory-supabase/`, workspace `@profeplan/knowledge-factory-supabase`. O pacote mapeará contratos ↔ Supabase e não conterá regras pedagógicas, HTTP, leitura de env ou credenciais.
+
+## ADR-041 — SupabaseClient por injeção e separação SYSTEM/REQUESTER
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+O pacote receberá clients já configurados por injeção e não chamará `createClient()`, não lerá `process.env` nem importará `api/_lib/supabaseAdmin.ts`. SYSTEM será usado para corpus/auditoria interna; REQUESTER será usado nas operações privadas sujeitas a RLS. `service_role` não simulará professor.
+
+## ADR-042 — `api/` permanece composition root server-side do runtime atual
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Enquanto o deploy real permanecer Vite/Vercel, `api/` continuará como composition root server-side para wiring futuro. `packages/*` não importarão `api/*`. O Lote 3B não migra backend nem cria API da Knowledge Factory.
+
+## ADR-043 — Atomicidade multi-tabela somente por transação real/RPC específica
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Múltiplas chamadas Supabase/PostgREST independentes não serão tratadas como transação. Comandos multi-tabela com invariantes — como componente + versão e OPP + evento — ficam bloqueados até função PostgreSQL/RPC estreita ou fronteira transacional equivalente, versionada, testada e aprovada.
+
+## ADR-044 — Erros de persistência provider-neutral
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Adapters traduzirão erros Supabase/PostgreSQL para taxonomia estável (`NOT_FOUND`, `CONFLICT`, `CONSTRAINT_VIOLATION`, `UNAUTHORIZED`, `FORBIDDEN`, `UNAVAILABLE`, `INVALID_RESPONSE`, `UNKNOWN`). SQLSTATE e detalhes brutos do provider não atravessarão para domínio/API/UX.
+
+## ADR-045 — Observabilidade injetada e sanitizada
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Adapters receberão telemetria mínima por injeção e não dependerão diretamente de `@profeplan/logger` no primeiro PR. Logs podem registrar operação, duração, outcome, aggregate/correlation IDs e erro sanitizado; nunca tokens, service role, Authorization, `extracted_text`, conteúdo pedagógico integral ou metadata arbitrária completa.
+
+## ADR-046 — Testes do 3B reutilizam Supabase descartável do Lote 3A
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+Adapters terão unitários sem rede, integração com o stack descartável já usado pelo `Knowledge Factory DB CI` e testes RLS quando houver REQUESTER context. Nenhuma suíte dependerá de project ref, token, service role ou dados de produção.
+
+## ADR-047 — Implementação incremental por porta; AuditRepository primeiro
+
+**Status:** aprovado para o Lote 3B em 7 de agosto de 2026
+
+A implementação será incremental. O primeiro PR de código do Lote 3B será exclusivamente para `AuditRepository`, como prova de infraestrutura do pacote, mapper, client injection, erros, telemetria e CI. Não representa conclusão integral da auditoria funcional nem da US-013.2.
+
+## Restrições aprovadas do Lote 3B
+
+A aprovação humana reconhece os GAPs 3B-01 a 3B-05 como restrições arquitetônicas ainda abertas:
+
+- GAP-3B-01: lookup curricular deve incluir `stage` antes do adapter curricular;
+- GAP-3B-02: escrita de componente exige atomicidade real;
+- GAP-3B-03: transição de OPP + evento exige RPC/fronteira transacional e requester context;
+- GAP-3B-04: porta de fontes não cobre ingestão completa e o adapter não inventará métodos;
+- GAP-3B-05: contrato de auditoria é mais estreito que a tabela física; US-013.2 permanece fatia parcial.
+
+## Gate vigente após aprovação do Lote 3B
+
+Após integração do PR documental do Lote 3B à `main`, recebe `Ready for Code` somente:
+
+`US-013.2 — persistence/audit adapter infrastructure slice`
+
+O primeiro PR de código deverá usar branch `feat/knowledge-factory-supabase-audit-adapter` e permanecer restrito ao `AuditRepository`.
+
+Continuam bloqueados sem nova aprovação:
+
+- segunda porta no mesmo PR;
+- mudança de contrato público;
+- RPC/migration nova;
+- Supabase de produção;
+- API pública;
+- frontend;
+- retrieval/embeddings;
+- agentes/Sócrates 2 executável;
+- PNLD/currículo real;
+- Gráfica;
+- Nexus;
+- EPIC-018.
+
+## ADR-048 — Lookup curricular por Estado e etapa
+
+**Status:** aprovado e implementado no Lote 3B.3
+
+A porta `CurriculumRepository` substituirá `findActivePackageByState(state)` por `findActivePackageByStateAndStage(state, stage)`.
+
+A decisão elimina a ambiguidade do GAP-3B-01 e alinha o contrato à unicidade física de pacote ativo por `(state, stage)`. O método antigo não será preservado como alias ou overload. O adapter inicial será exclusivamente read-only, usará contexto SYSTEM injetado e não incluirá currículo real, migration, RPC, API ou wiring de produção.
+
+As condições foram satisfeitas pela integração humana do PR nº 15 no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`. O GAP-3B-01 está encerrado.
+
+## ADR-049 — Leitura parcial do PedagogicalComponentRepository antes da escrita transacional
+
+**Status:** aprovado e implementado integralmente no Lote 3B.4
+
+O Lote 3B.4 será separado em 3B.4A read-only e 3B.4B transacional.
+
+3B.4A poderá implementar somente `findById`, `findVersion` e `listEvidenceOrigins`, verificados por `Pick` da porta atual. Não serão criados stubs de escrita e a classe não será apresentada como implementação integral da interface enquanto `saveComponent` e `saveVersion` permanecerem bloqueados.
+
+`findVersion()` poderá hidratar evidências e vínculos curriculares por leituras sequenciais, com ordenação determinística, falha integral e sem promessa de snapshot forte. Não há requisito atual que justifique RPC/read model para essa fatia.
+
+O 3B.4B permaneceu bloqueado até a aprovação do contrato `2.0.0`, das RPCs transacionais e do
+adapter de comandos. Esses controles foram integrados pelos PRs nº 20, 21 e 22, sem side-channel
+de evidências e sem DML multi-tabela independente.
+
+Qualquer mudança contratual, comando transacional, função PostgreSQL/RPC, migration ou ampliação de privilégios exigirá decisão e gate humano próprios.
+
+## ADR-050 — Adapter de comandos separado e erros de entrada provider-neutral
+
+**Status:** integrado no Lote 3B.4B.3 pelo PR nº 22 em 11 de agosto de 2026
+
+O adapter Supabase de comandos de componentes será uma classe separada do adapter read-only e
+implementará somente `PedagogicalComponentCommandRepository`. Cada método chamará exatamente uma
+das quatro RPCs transacionais integradas no 3B.4B.2, sem DML direto, fallback, retry automático,
+wiring ou criação interna de client.
+
+O `commandId` será enviado somente como `p_command_id`; o payload JSONB conterá apenas os demais
+campos do comando. Todo recibo será validado contra comando, operação, componente, versão, replay e
+timestamp esperados antes de atravessar a borda.
+
+A taxonomia provider-neutral é ampliada com `INVALID_INPUT`. O adapter traduzirá `22023` para
+`INVALID_INPUT`, `PT409` para `CONFLICT` e `P0002` para `NOT_FOUND`, sem expor SQLSTATE, mensagem,
+hint ou detalhes do PostgREST.
+
+A integração humana no commit `99b7981695eccb8b6019d570ff6e77529574a58f`, após CI geral, DB CI
+e Vercel verdes, satisfez os critérios de encerramento de GAP-3B-02 e GAP-3B-06 e concluiu o Lote
+3B.4. Produção e wiring permanecem gates separados.
+
+## ADR-051 — OPP separa leitura requester, solicitação e transição server-only
+
+**Status:** aprovado e integrado pelo Pull Request nº 24 em 11 de agosto de 2026
+
+`ProductionOrderRepository` será decomposto em capacidades de leitura, solicitação e transição. Os
+métodos genéricos `save(order)` e `appendEvent(event)` serão removidos sem aliases, e o contrato será
+elevado para `3.0.0`.
+
+Leituras e criação usarão client REQUESTER efêmero. Criação persistirá OPP `requested`, evento
+`created` e recibo em uma única RPC. Transições usarão RPC server-only porque RLS protege ownership,
+mas não executa os gates pedagógicos de `evaluateOppTransition()`. A camada de aplicação deverá
+aprovar a decisão de domínio antes de chamar a transição; a RPC repetirá ownership, compare-and-set,
+matriz estrutural, evento derivado, idempotência e atomicidade.
+
+O Lote 3B.5 foi dividido em quatro sublotes: contratos/contextos, leitura requester, migration/RPCs
+e adapters de comando. Os sublotes 3B.5.1 a 3B.5.4 foram integrados pelos Pull Requests nº 25 a 28,
+com adapters REQUESTER e SYSTEM separados e exclusivos das RPCs aprovadas. O Checkpoint 031
+formalizou o encerramento de `GAP-3B-03` e do Lote 3B.5.
+
+## ADR-052 — 3B.5 conecta uma fatia mínima e não encerra a OPP normativa
+
+**Status:** aprovado e integrado pelo Pull Request nº 24 em 11 de agosto de 2026
+
+O contrato e o schema atuais não materializam todos os campos e eventos do contrato normativo da
+OPP aprovado no Marco 003. O 3B.5 conectará somente a fatia mínima existente, sem antecipar
+contexto de turma, inclusão, atores, sequence, correlation/causation, retrieval, geração, validação
+ou entrega.
+
+Essa diferença será registrada como `GAP-3B-07`. O gap não bloqueia a infraestrutura mínima, mas
+impede declarar integralmente concluídas US-010.1, US-010.2, US-014.1 e US-016.\*. A Fase B somente
+poderá encerrar essa diferença por decisão formal de bloqueio parcial, conforme seu gate de saída.
+
+## ADR-053 — Saída da Fase B por bloqueio parcial controlado
+
+**Status:** integrado pelo Pull Request nº 30 no commit `73599716f28073eb93894682736e4bd497103a49`
+
+A Fase B foi encerrada pela integração do Checkpoint 032. Os adapters previstos para o MVP foram
+concluídos; as escritas críticas de componentes e OPP usam fronteiras transacionais testadas;
+os testes descartáveis estão verdes; e o avanço não depende de wiring ou produção.
+
+`GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07` permanecem ativos e não recebem status de resolvidos. A
+saída é aceita porque cada gap possui contenção explícita, capacidades proibidas, destino futuro e
+gate de reabertura. A primeira frente futura da Fase C deverá ser a definição documental da
+governança operacional do lifecycle de fontes. Esta decisão não inicia a Fase C e não autoriza
+código, ingestão, conteúdo real, Supabase hospedado, wiring ou produção.
+
+## ADR-054 — Fase C visível por lotes C.0–C.7 sem autorização implícita
+
+**Status:** aprovado e integrado pelo PR nº 31 em 12 de agosto de 2026
+
+A Fase C será navegada por oito lotes: C.0 definição/gates; C.1 lifecycle de fontes; C.2 ingestão;
+C.3 extração; C.4 segmentação; C.5 destilação/deduplicação; C.6 componentização/currículo; e C.7
+curadoria/corpus piloto.
+
+Os Lotes C.1–C.7 ficam visíveis com sublotes candidatos, dependências, Epics, Features, Stories e
+gates, mas permanecem bloqueados. A visibilidade integral serve ao planejamento e não autoriza
+continuidade automática. Cada lote e sublote exige definição específica, Definition of Ready,
+autorização humana, testes, revisão, merge humano e checkpoint.
+
+Os identificadores do Marco 003 são preservados: EPIC-002 a EPIC-006, F-002.* a F-006.* e
+US-002.* a US-006.* não serão substituídos por uma taxonomia paralela. C.1 é o primeiro lote
+técnico candidato e o destino primário de `GAP-3B-04`. `GAP-3B-05` e `GAP-3B-07` permanecem ativos
+e não podem ser resolvidos incidentalmente pela Fase C.
+
+A integração de C.0 não autoriza código, ingestão, conteúdo real, migration, Supabase hospedado,
+retrieval, agente, wiring ou produção.
+
+## ADR-055 — Cartografia, cobertura integral e grafo tipado precedem retrieval e agentes
+
+**Status:** aprovado e integrado pelo PR nº 31 em 12 de agosto de 2026
+
+O processamento de uma obra deverá preservar quatro representações coordenadas: árvore editorial,
+manifesto integral de cobertura, grafo de conhecimento tipado e grafo pedagógico-curricular. Uma
+resposta de parser, OCR ou modelo não comprova conclusão; página, região, seção, capítulo, unidade e
+obra deverão ser reconciliados, incluindo sumário, paratextos, tabelas, elementos visuais e regiões
+anteriores ou posteriores aos capítulos.
+
+O sumário será hipótese estrutural inicial e a sequência editorial permanecerá como procedência, sem
+se tornar automaticamente sequência didática canônica. Notas atômicas, componentes, evidências,
+relações e vínculos curriculares serão entidades e estados distinguíveis. Relações deverão possuir
+tipo, evidência, justificativa, confiança, versão e revisão. Declarações curriculares da editora
+serão separadas de detecção no conteúdo, proposta do processamento, validação normativa e aprovação
+do curador.
+
+Na Fase C, Cartógrafo, Inspetor, Reconstrutor, Extrator Conceitual, Analista Pedagógico, Construtor
+de Relações, Analista Curricular, Procedência e Crítica designam responsabilidades controladas, não
+agentes executáveis. Runtime multiagente permanece bloqueado até a Fase E. Embeddings permanecem
+índices experimentais da Fase D e não substituem a fonte canônica estruturada.
+
+PDFs, páginas renderizadas, recortes, miniaturas, imagens-fonte, coordenadas em pixels, OCRs
+duplicados e saídas brutas existirão somente em staging temporário. Após extração e revisão, serão
+descartados com recibo auditável. Permanecerão texto normalizado, chunks selecionados, estrutura e
+dados tabulares, descrições semânticas dos elementos visuais, localizadores lógicos, metadados,
+notas, relações, vínculos, decisões e embeddings seletivos. Rastreabilidade não autoriza retenção
+de cópia visual da obra.
+
+Como as obras editoriais previstas possuem predominantemente camada textual utilizável, extração
+nativa será o caminho padrão. OCR será exceção localizada, nunca etapa obrigatória de todo o
+documento, e exigirá causa registrada, cobertura mensurada, confiança e revisão.
+
+O detalhamento de ações, artefatos, gates e impactos posteriores consta em
+`12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`. Esta decisão não autoriza implementação,
+fontes reais, PNLD, migrations, modelos, prompts, embeddings, wiring, Supabase hospedado ou
+produção.
+
+## ADR-056 — Identidade, lifecycle registral e autorização são dimensões distintas
+
+**Status:** integrado documentalmente pelo PR nº 32 e materializado nos contratos de C.1.1 pelo PR nº 33 em 12 de agosto de 2026
+
+C.1 distinguirá formalmente obra intelectual, edição, manifestação bibliográfica, arquivo digital
+recebido, hash, versão governada da fonte, execução de processamento, derivados, autorização e
+fundamento da autorização. Essas identidades não serão colapsadas em `KnowledgeSource` nem
+inferidas apenas por checksum.
+
+O lifecycle registral da fonte será separado do lifecycle da autorização por finalidade. A
+`elegibilidade efetiva` será uma decisão derivada para uma finalidade e um instante, e não um novo
+booleano persistido como fonte de verdade. O valor legado `approved` não poderá ser reinterpretado
+silenciosamente como “juridicamente autorizado para todos os usos”.
+
+A compatibilidade com os contratos atuais será preservada por evolução explícita, versionada e
+revisada; qualquer mudança de enum ou contrato público exigirá C.1.1 e gate próprio.
+
+## ADR-057 — Permissão é histórica, temporal, por finalidade e propaga inelegibilidade
+
+**Status:** integrado documentalmente pelo PR nº 32 e materializado nos contratos de C.1.1 pelo PR nº 33 em 12 de agosto de 2026
+
+A futura autorização será histórica e append-only, com finalidade, escopo, vigência, ator,
+fundamento normativo/contratual e relação de supersessão. O sistema deverá poder responder qual
+permissão estava efetiva em determinado instante e reconstruir quais derivados foram produzidos sob
+ela.
+
+Suspensão, expiração, revogação e bloqueio devem impedir novos usos de forma fail-closed e iniciar
+avaliação de impacto sobre execuções em andamento e derivados. Isso não autoriza apagar auditoria ou
+produtos históricos indiscriminadamente: elegibilidade, retenção, descarte e eventual takedown são
+decisões distintas e auditáveis.
+
+Embeddings, caches, pacotes de retrieval e outros derivados futuros deverão obedecer à mesma
+propagação quando existirem em suas fases próprias. C.1 apenas define o contrato; não implementa a
+propagação.
+
+## ADR-058 — Comandos de lifecycle exigem fronteira atômica e menor privilégio
+
+**Status:** integrado documentalmente pelo PR nº 32 e materializado nos contratos de C.1.1 pelo PR nº 33 em 12 de agosto de 2026
+
+Consultas e comandos do lifecycle serão capacidades separadas. Comandos que precisam alterar
+projeções, versões, autorizações, recibos ou eventos de forma indivisível não poderão ser
+implementados por múltiplas chamadas PostgREST tratadas como pseudo-transação. C.1.3 deverá definir
+a fronteira atômica estreita, preferencialmente coerente com ADR-043, sem antecipar SQL nesta etapa.
+
+`service_role`, papel de administrador técnico ou identidade SYSTEM não constituem autorização de
+negócio. A futura implementação deverá aplicar menor privilégio, separar papéis de curadoria e
+revisão jurídico-editorial, reduzir DML direto onde a fronteira de comando puder assumir a escrita e
+preservar erros provider-neutral e auditoria sanitizada.
+
+O `KnowledgeSourceRepository` existente permanece uma fundação compatível. `save(source)` não será
+transformado por inferência em comando de lifecycle multi-tabela; novas portas ou contratos só
+poderão surgir após aprovação explícita no sublote correspondente.
+
+## ADR-059 — Histórico autoritativo com projeções reconstruíveis e legado sem backfill semântico
+
+**Status:** implementado e revisado no Draft PR nº 34 em 12 de agosto de 2026; DB CI descartável e CI geral verdes; integração pendente de decisão humana
+
+C.1.2 adiciona sete tabelas: identidades mínimas, fundamentos minimizados, projeção registral,
+autorizações, recibos, eventos de governança e relação ordenada recibo–evento. O histórico
+append-only de eventos é autoritativo; estado registral e estado da autorização permanecem
+projeções reconstruíveis e separados. Elegibilidade continua derivada e não é persistida como
+booleano.
+
+A autorização fixa sujeito, finalidade, restrições, fundamento e janela. Esses campos são
+fisicamente imutáveis; mudanças de escopo exigem supersessão. `commandId`, fingerprint, versão e
+sequência preparam idempotência e compare-and-set, mas a execução atômica permanece exclusivamente
+em C.1.3.
+
+As sete tabelas usam deny-by-default. `service_role` não recebe acesso direto; platform admin
+autenticado recebe somente leitura RLS-controlled. Papéis conceituais não são convertidos em roles
+PostgreSQL nesta fatia.
+
+`kf_sources`, `kf_source_versions`, `kf_source_permission_events`, `status`, `allowed_uses` e
+`license_category` permanecem legados e inalterados. Não há backfill porque o legado não prova ator,
+competência, fundamento, escopo ou vigência. Ausência de dado permanece desconhecida.
+
+A migration não cria RPC, adapter, ingestão ou autorização de produção. Rollback destrutivo só é
+admitido em ambiente descartável e se recusa a apagar tabelas que já contenham histórico.
+
+A validação runtime de C.1.2 foi executada no `Knowledge Factory DB CI` run nº 32 (`31657560628`),
+com schema/RLS em duas passagens, rollback/reaplicação e resultado `success`. O `CI Pipeline` run nº
+280 (`31657560699`) também concluiu com `success`. Esses resultados não autorizam produção nem C.1.3.
+
+## Procedência
+
+Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.
+
+Atualização de 12 de agosto de 2026: C.0 integrado pelo PR nº 31 no commit
+`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`; definição de C.1 integrada pelo PR nº 32 no commit
+`01c92dda8257935e7a6c042be12308ebccdaeb73`; C.1.1 integrado pelo PR nº 33 no commit
+`2db5fc07378cc7c062753078b2a3fb2025cb1afe`; C.1.2 aberto como Draft PR nº 34, revisado e validado
+em Supabase descartável, ainda sem integração à `main` e sem autorização para C.1.3, Supabase
+hospedado ou produção.
