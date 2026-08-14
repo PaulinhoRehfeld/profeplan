@@ -1,0 +1,330 @@
+name: Knowledge Factory C.1.5 Lifecycle CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/knowledge-factory-c1-5-lifecycle-ci.yml'
+      - 'packages/types/src/knowledge-factory/source-lifecycle.ts'
+      - 'packages/knowledge-factory/src/**'
+      - 'packages/knowledge-factory/test/source-lifecycle.test.mjs'
+      - 'packages/knowledge-factory/test/governed-source-eligibility.test.mjs'
+      - 'packages/knowledge-factory-supabase/src/source-lifecycle/**'
+      - 'packages/knowledge-factory-supabase/src/errors/persistence-error.ts'
+      - 'packages/knowledge-factory-supabase/src/index.ts'
+      - 'packages/knowledge-factory-supabase/test/source-lifecycle*'
+      - 'supabase/migrations/202608071120_knowledge_factory_schema.sql'
+      - 'supabase/migrations/202608081600_kf_component_write_rpcs.sql'
+      - 'supabase/migrations/202608111900_kf_production_order_write_rpcs.sql'
+      - 'supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql'
+      - 'supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql'
+      - 'supabase/migrations/202608141730_kf_source_lifecycle_read_rpcs.sql'
+      - 'supabase/tests/knowledge_factory_source_lifecycle_*.sql'
+      - 'supabase/tests/knowledge_factory_source_lifecycle_*.sh'
+      - 'supabase/tests/fixtures/knowledge_factory_minimal_baseline.sql'
+      - 'supabase/tests/fixtures/knowledge_factory_c1_4_adapter_fixture.sql'
+      - 'docs/profeplan-knowledge-factory/12-delivery/LOT-C1-5-SOURCE-LIFECYCLE-TEST-EVIDENCE-MATRIX.md'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-c1-5-lifecycle:
+    name: Prove C.1.5 lifecycle on disposable Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    env:
+      KF_DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      KF_WORKDIR: .kf-c1-5-supabase-ci
+      KF_EVIDENCE: .kf-evidence/knowledge-factory-c1-5-lifecycle-validation.log
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Prepare disposable Supabase project through C.1.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$KF_WORKDIR" .kf-evidence
+          mkdir -p "$KF_WORKDIR" .kf-evidence
+
+          (
+            cd "$KF_WORKDIR"
+            supabase init --force
+            mkdir -p supabase/migrations
+            cp ../supabase/tests/fixtures/knowledge_factory_minimal_baseline.sql \
+              supabase/migrations/202608071100_kf_test_baseline.sql
+            cp ../supabase/migrations/202608071120_knowledge_factory_schema.sql \
+              supabase/migrations/202608071120_knowledge_factory_schema.sql
+            cp ../supabase/migrations/202608081600_kf_component_write_rpcs.sql \
+              supabase/migrations/202608081600_kf_component_write_rpcs.sql
+            cp ../supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
+              supabase/migrations/202608111900_kf_production_order_write_rpcs.sql
+            cp ../supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
+              supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql
+          )
+
+          {
+            echo "Knowledge Factory C.1.5 disposable lifecycle validation"
+            echo "UTC start: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Commit: $GITHUB_SHA"
+            echo "Supabase CLI: $(supabase --version)"
+            echo "Docker: $(docker --version)"
+            echo "PostgreSQL client: $(psql --version)"
+          } | tee "$KF_EVIDENCE"
+
+      - name: Start disposable Supabase stack at C.1.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          START_LOG="$(mktemp)"
+          if ! (
+            cd "$KF_WORKDIR"
+            supabase start \
+              -x studio,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor
+          ) >"$START_LOG" 2>&1; then
+            DIAGNOSTIC_LINE_COUNT="$(wc -l < "$START_LOG")"
+            rm -f "$START_LOG"
+            echo "Disposable Supabase stack failed to start."
+            echo "Raw startup output suppressed because it may contain disposable credentials."
+            echo "Captured diagnostic lines: $DIAGNOSTIC_LINE_COUNT"
+            exit 1
+          fi
+          echo "Disposable Supabase stack started at C.1.2; generated local credentials omitted." \
+            | tee -a "$KF_EVIDENCE"
+          rm -f "$START_LOG"
+
+      - name: Capture disposable Supabase credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_ENV="$(mktemp)"
+          (
+            cd "$KF_WORKDIR"
+            supabase status -o env
+          ) > "$STATUS_ENV"
+
+          read_local_value() {
+            local name="$1"
+            sed -n "s/^${name}=//p" "$STATUS_ENV" | head -n 1 | sed 's/^"//;s/"$//'
+          }
+
+          KF_SUPABASE_URL="$(read_local_value API_URL)"
+          KF_SUPABASE_SERVICE_ROLE_KEY="$(read_local_value SERVICE_ROLE_KEY)"
+          if [ -z "$KF_SUPABASE_URL" ] || [ -z "$KF_SUPABASE_SERVICE_ROLE_KEY" ]; then
+            rm -f "$STATUS_ENV"
+            echo "Disposable Supabase credentials could not be resolved."
+            exit 1
+          fi
+
+          echo "::add-mask::$KF_SUPABASE_SERVICE_ROLE_KEY"
+          {
+            echo "KF_SUPABASE_URL=$KF_SUPABASE_URL"
+            echo "KF_SUPABASE_SERVICE_ROLE_KEY=$KF_SUPABASE_SERVICE_ROLE_KEY"
+          } >> "$GITHUB_ENV"
+          rm -f "$STATUS_ENV"
+
+      - name: Provider-neutral contract and unit matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --filter @profeplan/knowledge-factory typecheck 2>&1 | tee -a "$KF_EVIDENCE"
+          pnpm --filter @profeplan/knowledge-factory test 2>&1 | tee -a "$KF_EVIDENCE"
+          pnpm --filter @profeplan/knowledge-factory-supabase typecheck 2>&1 | tee -a "$KF_EVIDENCE"
+          pnpm --filter @profeplan/knowledge-factory-supabase test 2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.2 RLS positive and negative matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_rls.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Advance disposable stack to C.1.3
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.3 competence and least privilege
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_command_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.3 complete command and supersession matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_commands.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.3 idempotency CAS and partial-failure rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_atomicity.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.3 real multi-session concurrency
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash supabase/tests/knowledge_factory_source_lifecycle_concurrency.sh \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Advance disposable stack to C.1.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608141730_kf_source_lifecycle_read_rpcs.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.4 historical read least privilege
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_read_rpc_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Rehearse guarded C.1.4 and C.1.3 structural rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_read_rollback.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_command_rollback.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -Atc \
+            "SELECT CASE
+               WHEN to_regprocedure('public.kf_source_list_registration_history(uuid,timestamptz)') IS NOT NULL
+                 THEN 'FAIL:c1_4_read_rpc_remains'
+               WHEN to_regprocedure('public.kf_source_register_identity(uuid,text,jsonb)') IS NOT NULL
+                 THEN 'FAIL:c1_3_command_rpc_remains'
+               WHEN to_regclass('public.kf_source_identities') IS NULL
+                 THEN 'FAIL:c1_2_foundation_missing'
+               ELSE 'OK:c1_5_guarded_rollback_isolated'
+             END;" \
+            2>&1 | tee -a "$KF_EVIDENCE" | grep -q 'OK:c1_5_guarded_rollback_isolated'
+
+      - name: Reapply C.1.3 and C.1.4 boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608141730_kf_source_lifecycle_read_rpcs.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_command_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_source_lifecycle_read_rpc_schema.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Apply synthetic adapter fixture after rollback rehearsal
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/fixtures/knowledge_factory_c1_4_adapter_fixture.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.4 adapter regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --experimental-transform-types --test \
+            packages/knowledge-factory-supabase/test/source-lifecycle.c1-4.test.mjs \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: C.1.5 integrated temporal and supersession proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --experimental-transform-types --test --test-concurrency=1 \
+            packages/knowledge-factory-supabase/test/source-lifecycle.c1-5.test.mjs \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Lint disposable database
+        shell: bash
+        run: |
+          set -euo pipefail
+          (
+            cd "$KF_WORKDIR"
+            supabase db lint --local --level error
+          ) 2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Finalize evidence
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "UTC finish: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Workflow: $GITHUB_WORKFLOW"
+            echo "Run ID: $GITHUB_RUN_ID"
+          } >> "$KF_EVIDENCE"
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knowledge-factory-c1-5-lifecycle-validation-${{ github.run_id }}
+          path: .kf-evidence/knowledge-factory-c1-5-lifecycle-validation.log
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$KF_WORKDIR/supabase/config.toml" ]; then
+            (
+              cd "$KF_WORKDIR"
+              supabase stop --no-backup || true
+            )
+          fi
