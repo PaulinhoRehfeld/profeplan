@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { SupabaseTemporaryStagingAdapter } from '../src/index.ts';
+import { SupabaseTemporaryStagingAdapter, toPersistenceError } from '../src/index.ts';
 
 const run = { kind: 'processing_run', id: 'processing-run-synthetic-1' };
 const sourceVersion = { kind: 'source_version', id: 'source-version-synthetic-1' };
@@ -66,6 +66,21 @@ function fakeContext(behavior = {}) {
     objects,
   };
 }
+
+test('Supabase Storage string statusCode conflict is translated provider-neutrally', () => {
+  const error = toPersistenceError(
+    {
+      name: 'StorageApiError',
+      statusCode: '409',
+      message: 'The resource already exists',
+    },
+    'staging.stage'
+  );
+
+  assert.equal(error.code, 'CONFLICT');
+  assert.equal(error.message, 'Persistence operation failed (CONFLICT)');
+  assert.equal(error.message.includes('resource already exists'), false);
+});
 
 test('staging adapter writes without overwrite and returns only provider-neutral locator', async () => {
   const fake = fakeContext();
