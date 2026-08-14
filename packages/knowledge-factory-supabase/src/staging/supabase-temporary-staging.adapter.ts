@@ -1,5 +1,7 @@
 import type {
   TemporaryStagingDiscardCommand,
+  TemporaryStagingIntegrityPort,
+  TemporaryStagingIntegrityVerificationCommand,
   TemporaryStagingPort,
   TemporaryStagingWrite,
 } from '@profeplan/knowledge-factory';
@@ -7,6 +9,7 @@ import type {
   ISODateTime,
   TemporaryStagingArtifactDescriptor,
   TemporaryStagingDiscardReceipt,
+  TemporaryStagingIntegrityEvidence,
 } from '@profeplan/types';
 import type { SupabaseSystemContext } from '../context/supabase-system-context.ts';
 import {
@@ -37,6 +40,11 @@ function objectPath(runId: string, artifactId: string): string {
 
 function locatorFor(runId: string, artifactId: string): string {
   return `${OPAQUE_LOCATOR_PREFIX}${safeSegment(runId)}:${safeSegment(artifactId)}`;
+}
+
+async function sha256Hex(bytes: ArrayBuffer): Promise<string> {
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function recordSuccess(
@@ -77,7 +85,9 @@ function recordFailure(
   });
 }
 
-export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
+export class SupabaseTemporaryStagingAdapter
+  implements TemporaryStagingPort, TemporaryStagingIntegrityPort
+{
   private readonly context: SupabaseSystemContext;
   private readonly bucketName: string;
   private readonly logger: PersistenceLogger;
@@ -147,6 +157,58 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
         input.artifactId,
         persistenceError
       );
+      throw persistenceError;
+    }
+  }
+
+  async verify(
+    input: TemporaryStagingIntegrityVerificationCommand
+  ): Promise<TemporaryStagingIntegrityEvidence> {
+    const operation = 'staging.verify_integrity';
+    const startedAt = Date.now();
+    const artifactId = input.artifact.artifact.artifactId;
+    const runId = input.artifact.run.id;
+    const expectedLocator = locatorFor(runId, artifactId);
+
+    if (input.algorithm !== 'sha-256' || input.artifact.artifact.opaqueLocator !== expectedLocator) {
+      const error = new KnowledgeFactoryPersistenceError('INVALID_INPUT', operation);
+      recordFailure(this.logger, this.context, operation, startedAt, artifactId, error);
+      throw error;
+    }
+
+    const path = objectPath(runId, artifactId);
+    const bucket = this.context.client.storage.from(this.bucketName);
+
+    try {
+      const { data, error } = await bucket.download(path);
+      if (error !== null) {
+        throw toPersistenceError(error, operation);
+      }
+      if (data === null) {
+        throw new KnowledgeFactoryPersistenceError('UNKNOWN', operation);
+      }
+
+      const storedBytes = await data.arrayBuffer();
+      const evidence: TemporaryStagingIntegrityEvidence = {
+        contractVersion: '1.0.0',
+        artifactId,
+        run: input.artifact.run,
+        sourceVersion: input.artifact.sourceVersion,
+        receivedFile: input.artifact.receivedFile,
+        digest: {
+          algorithm: 'sha-256',
+          value: await sha256Hex(storedBytes),
+        },
+        byteLength: storedBytes.byteLength,
+        verifiedAt: this.now(),
+        correlationId: input.correlationId,
+      };
+
+      recordSuccess(this.logger, this.context, operation, startedAt, artifactId);
+      return evidence;
+    } catch (error) {
+      const persistenceError = toPersistenceError(error, operation);
+      recordFailure(this.logger, this.context, operation, startedAt, artifactId, persistenceError);
       throw persistenceError;
     }
   }
