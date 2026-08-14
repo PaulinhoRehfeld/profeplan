@@ -115,17 +115,29 @@ admin:<operation-id>
 legacy:<user-id>:<migration-version>
 ```
 
-### 4.1 Política de expiração codificada no schema
+### 4.1 Contrato FREE e política de expiração codificados no schema
 
-O schema de 1.3B.1 materializa apenas as regras de expiração já aprovadas:
+O schema de 1.3B.1 materializa diretamente a regra comercial aprovada para a concessão inicial:
 
-- `FREE_TRIAL` **deve** possuir `expires_at`;
+- `FREE_TRIAL` contém **exatamente 10 créditos**;
+- `FREE_TRIAL.expires_at = granted_at + 7 dias`;
+- existe no máximo um lote `FREE_TRIAL` inicial por usuário;
 - `PURCHASED` **não pode** possuir `expires_at`;
 - `LEGACY_BALANCE` **não pode** possuir `expires_at`;
-- toda expiração deve ocorrer depois de `granted_at`;
-- existe no máximo um lote `FREE_TRIAL` inicial por usuário.
+- toda outra expiração eventualmente informada deve ocorrer depois de `granted_at`.
 
 Não se presume expiração automática para `PROMOTIONAL_BONUS` ou `ADMIN_ADJUSTMENT` neste sublote.
+
+### 4.2 Coerência grant ↔ operation
+
+Um trigger de integridade de 1.3B.1 exige que cada novo grant corresponda a uma operação econômica:
+
+- do mesmo usuário;
+- de tipo `GRANT`;
+- com outcome `APPLIED`;
+- com `applied_amount` exatamente igual a `granted_amount`.
+
+Assim, mesmo uma inserção direta com `service_role` não pode criar um lote cujo receipt econômico declare tipo, outcome ou quantidade diferente.
 
 ## 5. `credit_ledger_entries` — lançamentos append-only
 
@@ -150,6 +162,22 @@ Foreign keys compostas por `user_id` impedem que uma operação de um usuário s
 Cada grant aceita apenas um lançamento `CREDIT` inicial.
 
 A mesma combinação `operation_id + grant_id + entry_type` não pode ser repetida.
+
+### 5.1 Coerência ledger ↔ operation ↔ grant
+
+Um segundo trigger de integridade impede combinações semanticamente inválidas:
+
+- todo lançamento exige uma operação `APPLIED`;
+- `CREDIT` exige operação `GRANT`;
+- o `CREDIT` deve usar a mesma operação que criou o grant;
+- o valor do `CREDIT` deve corresponder ao valor integral do grant/receipt;
+- `DEBIT` exige operação `CONSUME`;
+- uma operação `NO_CHARGE` ou `REJECTED` não pode produzir lançamento;
+- um lançamento não pode apontar para grant de outro usuário.
+
+O trigger também impede que um único lançamento `DEBIT` seja maior que `applied_amount` do receipt correspondente.
+
+A soma concorrente de múltiplos débitos contra o mesmo grant permanece fora desta camada e é responsabilidade transacional de 1.3B.2.
 
 ## 6. Saldo derivável
 
@@ -178,7 +206,7 @@ Duas sessões concorrentes não devem poder ler o mesmo saldo e registrar débit
 
 Essa fronteira será responsabilidade de **1.3B.2** e não é implementada neste sublote.
 
-Logo, 1.3B.1 fornece estrutura e constraints locais; ele não afirma que INSERTs arbitrários de `service_role` constituem uma API segura de consumo.
+Logo, 1.3B.1 fornece estrutura, coerência entre entidades e constraints locais; ele não afirma que INSERTs arbitrários de `service_role` constituem uma API completa e segura de consumo.
 
 ## 7. RLS e least privilege
 
@@ -190,8 +218,10 @@ Em 1.3B.1:
 - `anon`: sem privilégios;
 - `authenticated`: sem privilégios diretos;
 - nenhuma policy de usuário é criada;
-- `service_role`: somente `SELECT` e `INSERT`;
+- `service_role`: somente `SELECT` e `INSERT` nas tabelas;
 - `service_role`: sem `UPDATE` e sem `DELETE`.
+
+As funções internas de validação de trigger também têm execução direta revogada de `PUBLIC`, `anon` e `authenticated`.
 
 O objetivo é evitar que o cliente se torne autoridade sobre saldo, grants ou ledger.
 
@@ -245,11 +275,17 @@ A idempotência já existente do webhook Stripe por `stripe_event_id` deverá se
 - ausência de policies diretas de usuário;
 - least privilege de roles;
 - criação válida de FREE e PURCHASED;
-- FREE obrigatoriamente expirável;
-- PURCHASED e LEGACY_BALANCE não expiráveis;
+- FREE com exatamente 10 créditos e janela exata de 7 dias;
+- rejeição de FREE sem expiração, com quantidade diferente ou janela diferente;
+- PURCHASED e LEGACY_BALANCE não expirantes;
 - somente um FREE inicial por usuário;
 - unicidade de `grant_key`;
+- correspondência de quantidade entre `GRANT operation` e grant;
+- proibição de `CONSUME operation` criar grant;
 - um único lançamento `CREDIT` de funding por grant;
+- correspondência do funding com grant e operation;
+- proibição de `GRANT → DEBIT`;
+- proibição de ledger para operação `REJECTED`/`NO_CHARGE`;
 - bloqueio estrutural de atribuição cross-user;
 - formas válidas e inválidas de `outcome/applied_amount`;
 - shape de receipt `NO_CHARGE` para futuro Gold ilimitado.
@@ -317,7 +353,7 @@ Antes de qualquer aplicação futura será necessário, em gate separado:
 
 ### Rollback estrutural futuro
 
-Como 1.3B.1 não faz cutover e não altera `profiles.credits`, um eventual ensaio descartável de rollback pode simplesmente remover, em ordem de dependência:
+Como 1.3B.1 não faz cutover e não altera `profiles.credits`, um eventual ensaio descartável de rollback deve remover primeiro triggers/funções e depois, em ordem de dependência:
 
 ```text
 credit_ledger_entries
@@ -333,10 +369,11 @@ Esse rollback não é executado em produção neste sublote.
 
 - migration for aditiva;
 - `profiles.credits` permanecer sem alteração;
-- as três tabelas e constraints forem comprovadas;
+- as três tabelas, triggers e constraints forem comprovadas;
 - RLS/least privilege forem comprovados;
 - workflow descartável ficar verde;
 - CI geral do monorepo ficar verde;
+- regressões transversais acionadas pelos paths permanecerem verdes;
 - diff permanecer restrito ao sublote;
 - não houver aplicação em Supabase hospedado;
 - não houver alteração de Stripe/frontend;
