@@ -84,12 +84,12 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C — C.1 CONCLUÍDO; C.2 DEFINIDO; C.2.1 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 CONCLUÍDO; C.2.1 INTEGRADO; C.2.2 BLOQUEADO  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
 ✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
-🔵 C.2 Ingestão controlada — definição integrada pelo PR nº 59; C.2.1 bloqueado
+🔵 C.2 Ingestão controlada — definição integrada; C.2.1 integrado pelo PR nº 62; C.2.2 bloqueado
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
@@ -341,9 +341,15 @@ e o estado de continuidade de fechamento em
 A definição documental do Lote C.2 foi integrada pelo PR nº 59 no commit
 `787432fa8e7f5d891899c94b1089803430a4734a`, tree
 `fc4d517def95ce23e5ddb73d935e1628710142d7`, com CI pós-merge nº 366 verde. Sua definição está em
-[`12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md),
-a decisão de fronteira está no ADR-062 e o estado pós-merge no Checkpoint 044. C.2.1–C.2.6 e C.3–C.7
-permanecem bloqueados.
+[`12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md)
+e a decisão de fronteira está no ADR-062.
+
+C.2.1 foi integrado pelo PR nº 62 no commit
+`e0ba47bf063b324df141c370ebf371763fbf2364`, tree
+`a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde. A superfície contratual
+está em
+[`12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md)
+e o estado pós-merge no Checkpoint 045. C.2.2–C.2.6 e C.3–C.7 permanecem bloqueados.
 
 O mapa integral C.0–C.7 está definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
@@ -366,7 +372,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **definição integrada; C.2.1 bloqueado** |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1 integrado; C.2.2 bloqueado** |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
@@ -688,9 +694,11 @@ A passagem arquitetural foi aberta documentalmente pela integração de C.0. Dep
 executado de forma controlada e concluído. `GAP-3B-04` foi encerrado em C.1.6; `GAP-3B-05` e
 `GAP-3B-07` permanecem ativos e contidos.
 
-A definição de C.2 foi integrada pelo PR nº 59 e formalizou sua fronteira operacional. Isso habilita
-C.2 como lote definido, mas **C.2.1 continua bloqueado**: a integração documental não constitui
-autorização automática para implementar ingestão ou admitir conteúdo real.
+A definição de C.2 foi integrada pelo PR nº 59 e formalizou sua fronteira operacional. C.2.1 foi
+integrado pelo PR nº 62 como superfície contract-first, sem staging físico ou conteúdo real. Isso
+habilita a progressão governada para inspeção futura de C.2.2, mas **C.2.2 continua bloqueado** e a
+integração de C.2.1 não constitui autorização para storage, Supabase hospedado, ingestão real,
+extração ou produção.
 
 ### C → D
 
@@ -798,25 +806,26 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE C APÓS A DEFINIÇÃO DE C.2 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
-> `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59 no commit
-> `787432fa8e7f5d891899c94b1089803430a4734a`, tree
-> `fc4d517def95ce23e5ddb73d935e1628710142d7`, com CI pós-merge nº 366 verde.**
+> **FASE C APÓS C.2.1 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
+> `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59; C.2.1 integrado pelo
+> PR nº 62 no commit `e0ba47bf063b324df141c370ebf371763fbf2364`, tree
+> `a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde.**
 
 Atualização de navegação da Fase C:
 
-> **C.2 está definido, mas C.2.1–C.2.6 permanecem bloqueados. C.3–C.7 e as Fases D–G continuam
-> bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece não
-> autorizada. O Checkpoint 044 é a referência operacional corrente após a integração da definição.**
+> **C.2.1 está integrado e revalidado; C.2.2–C.2.6 permanecem bloqueados. C.3–C.7 e as Fases D–G
+> continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece
+> não autorizada. O Checkpoint 045 é a referência operacional corrente após a reconciliação.**
 
-Próximo objetivo possível, somente mediante nova autorização humana específica:
+Próximo objetivo possível, somente mediante nova autorização humana específica, em contexto próprio e após nova inspeção canônica:
 
-> inspecionar o DoR e iniciar **C.2.1 — contratos, receipts e state machine**, preservando a fronteira
-> C.2/C.3/C.4 e sem antecipar staging real, storage hospedado, extração, PDF real, OCR, wiring,
-> Supabase hospedado ou produção.
+> inspecionar o DoR de **C.2.2 — intake/staging seguro, limites e retenção**, preservando a fronteira
+> C.2/C.3/C.4 e sem inferir autorização para storage real, Supabase hospedado, conteúdo real,
+> checksum/deduplicação de C.2.3, extração, PDF real, OCR, wiring ou produção.
 
 Próxima grande mudança de natureza do projeto:
 
-> C.2 introduzirá, se e quando seus sublotes forem autorizados, a entrada controlada de fontes já
-> governadas pelo lifecycle concluído em C.1. Esse trabalho preservará a separação entre ingestão
-> (C.2), extração (C.3) e segmentação/classificação (C.4), sem antecipação de escopo.
+> C.2.2 introduzirá, se e quando for autorizado, a primeira fronteira física de intake/staging de
+> fontes já governadas por C.1 e descritas contratualmente por C.2.1. Esse trabalho deverá preservar
+> a separação entre ingestão (C.2), extração (C.3) e segmentação/classificação (C.4), com segurança,
+> retenção e descarte verificável antes de qualquer fonte real.
