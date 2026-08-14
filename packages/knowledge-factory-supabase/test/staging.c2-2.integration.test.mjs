@@ -60,6 +60,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
     );
 
     const artifactId = 'artifact-synthetic-c2-2';
+    const path = physicalPath(runA, artifactId);
     const descriptorA = await adapter.stage(write(runA, artifactId));
     assert.equal(descriptorA.state, 'STAGED');
     assert.equal(
@@ -68,7 +69,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
     );
     assert.equal(JSON.stringify(descriptorA).includes(bucketName), false);
 
-    const downloaded = await admin.storage.from(bucketName).download(physicalPath(runA, artifactId));
+    const downloaded = await admin.storage.from(bucketName).download(path);
     assert.equal(downloaded.error, null, downloaded.error?.message);
     assert.deepEqual(new Uint8Array(await downloaded.data.arrayBuffer()), bytes);
 
@@ -77,10 +78,31 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       (error) => error.code === 'CONFLICT'
     );
 
-    const unauthorized = await anon.storage
+    const unauthorizedUpload = await anon.storage
       .from(bucketName)
       .upload('unauthorized/synthetic.pdf', bytes, { contentType: 'application/pdf', upsert: false });
-    assert.notEqual(unauthorized.error, null);
+    assert.notEqual(unauthorizedUpload.error, null);
+
+    const unauthorizedDownload = await anon.storage.from(bucketName).download(path);
+    assert.notEqual(unauthorizedDownload.error, null);
+
+    const unauthorizedList = await anon.storage
+      .from(bucketName)
+      .list(`runs/${encodeURIComponent(runA.id)}/artifacts`, {
+        search: encodeURIComponent(artifactId),
+        limit: 2,
+      });
+    assert.equal(
+      unauthorizedList.error !== null ||
+        !unauthorizedList.data.some((item) => item.name === encodeURIComponent(artifactId)),
+      true
+    );
+
+    const unauthorizedRemove = await anon.storage.from(bucketName).remove([path]);
+    assert.notEqual(unauthorizedRemove.error, null);
+
+    const afterUnauthorizedRemove = await admin.storage.from(bucketName).download(path);
+    assert.equal(afterUnauthorizedRemove.error, null, afterUnauthorizedRemove.error?.message);
 
     await assert.rejects(
       adapter.discard({
@@ -93,9 +115,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       (error) => error.code === 'INVALID_INPUT'
     );
 
-    const stillPresent = await admin.storage
-      .from(bucketName)
-      .download(physicalPath(runA, artifactId));
+    const stillPresent = await admin.storage.from(bucketName).download(path);
     assert.equal(stillPresent.error, null, stillPresent.error?.message);
 
     const discard = await adapter.discard({
