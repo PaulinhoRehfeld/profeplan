@@ -702,10 +702,11 @@ executado de forma controlada e concluído. `GAP-3B-04` foi encerrado em C.1.6; 
 `GAP-3B-07` permanecem ativos e contidos.
 
 A definição de C.2 foi integrada pelo PR nº 59 e formalizou sua fronteira operacional. C.2.1 foi
-integrado pelo PR nº 62 como superfície contract-first, sem staging físico ou conteúdo real. Isso
-habilita a progressão governada para inspeção futura de C.2.2, mas **C.2.2 continua bloqueado** e a
-integração de C.2.1 não constitui autorização para storage, Supabase hospedado, ingestão real,
-extração ou produção.
+integrado pelo PR nº 62 como superfície contract-first. C.2.2 foi posteriormente integrado pelo PR
+nº 67 como fronteira física mínima de intake/staging temporário, com CI pós-merge nº 412 verde e
+reconciliação registrada no Checkpoint 046. **C.2.3–C.2.6 permanecem bloqueados**, assim como C.3–C.7;
+a integração de C.2.2 não constitui autorização para checksum/deduplicação de C.2.3, storage
+hospedado, Supabase hospedado, conteúdo real, extração ou produção.
 
 ### C → D
 
@@ -813,26 +814,27 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE C APÓS C.2.1 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
+> **FASE C APÓS C.2.2 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
 > `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59; C.2.1 integrado pelo
-> PR nº 62 no commit `e0ba47bf063b324df141c370ebf371763fbf2364`, tree
-> `a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde.**
+> PR nº 62; C.2.2 integrado pelo PR nº 67 no commit `7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`,
+> tree `61747e439323dcc165c8d3a084e4d73c66f06c4a`, com CI pós-merge nº 412 verde.**
 
 Atualização de navegação da Fase C:
 
-> **C.2.1 está integrado e revalidado; C.2.2–C.2.6 permanecem bloqueados. C.3–C.7 e as Fases D–G
-> continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece
-> não autorizada. O Checkpoint 045 é a referência operacional corrente após a reconciliação.**
+> **C.2.1 e C.2.2 estão integrados e revalidados; C.2.3–C.2.6 permanecem bloqueados. C.3–C.7 e as
+> Fases D–G continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção
+> permanece não autorizada. O Checkpoint 046 é a referência operacional corrente após a reconciliação.**
 
 Próximo objetivo possível, somente mediante nova autorização humana específica, em contexto próprio e após nova inspeção canônica:
 
-> inspecionar o DoR de **C.2.2 — intake/staging seguro, limites e retenção**, preservando a fronteira
-> C.2/C.3/C.4 e sem inferir autorização para storage real, Supabase hospedado, conteúdo real,
-> checksum/deduplicação de C.2.3, extração, PDF real, OCR, wiring ou produção.
+> inspecionar e, se autorizado, implementar **C.2.3 — integridade, checksum, duplicidade e vínculo**,
+> preservando a separação entre identidade bibliográfica, `source_version`, `received_file`,
+> `processing_run`, staging artifact, digest e equivalência editorial; sem inferir autorização para
+> C.2.4, extração, conteúdo real, storage hospedado, Supabase hospedado ou produção.
 
 Próxima grande mudança de natureza do projeto:
 
-> C.2.2 introduzirá, se e quando for autorizado, a primeira fronteira física de intake/staging de
-> fontes já governadas por C.1 e descritas contratualmente por C.2.1. Esse trabalho deverá preservar
-> a separação entre ingestão (C.2), extração (C.3) e segmentação/classificação (C.4), com segurança,
-> retenção e descarte verificável antes de qualquer fonte real.
+> C.2.3 introduzirá, se e quando for autorizado, integridade criptográfica e classificação explícita
+> de duplicidade binária sobre o staging já governado por C.2.1/C.2.2. Digest igual deverá permanecer
+> fato técnico auditável, nunca identidade bibliográfica, equivalência jurídica/editorial ou merge
+> automático de identidades.
