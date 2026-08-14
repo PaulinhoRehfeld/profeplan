@@ -2,7 +2,7 @@
 
 Data de consolidação inicial: 7 de agosto de 2026.
 
-Estado de navegação atualizado em 13 de agosto de 2026.
+Estado de navegação atualizado em 14 de agosto de 2026.
 
 ## 1. Finalidade
 
@@ -84,12 +84,12 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C EM C.1; C.1.2 INTEGRADO PELO PR Nº 34; C.1.3 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 CONCLUÍDO; GAP-3B-04 ENCERRADO; C.2 BLOQUEADO  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
-🔵 C.1 Governança operacional do lifecycle de fontes — C.1.1 e C.1.2 integrados; C.1.3 bloqueado
-⬜ C.2 Ingestão controlada
+✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
+⬜ C.2 Ingestão controlada — bloqueado até autorização própria
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
@@ -153,8 +153,9 @@ A Knowledge Factory possui linguagem de domínio, fronteiras e persistência fí
 
 ### Status
 
-Concluída por bloqueio parcial controlado no Checkpoint 032. `GAP-3B-04`, `GAP-3B-05` e
-`GAP-3B-07` permanecem ativos, contidos e sujeitos a gates futuros próprios.
+Concluída por bloqueio parcial controlado no Checkpoint 032. `GAP-3B-05` e `GAP-3B-07`
+permanecem ativos e contidos. `GAP-3B-04`, que estava contido na saída da Fase B, foi posteriormente
+encerrado pelo fechamento governado do Lote C.1 em C.1.6 e no Checkpoint 043.
 
 ### Objetivo
 
@@ -190,9 +191,13 @@ Objetivo:
 - não inventar ingestão completa;
 - não criar versionamento, segmentos ou permission events além da superfície aprovada.
 
-Restrição ativa:
+Restrição histórica desta etapa:
 
 - GAP-3B-04 — lifecycle de fonte incompleto para ingestão.
+
+Estado posterior: **encerrado em C.1.6**, após o lifecycle necessário à ingestão ter sido definido,
+persistido, protegido, adaptado, testado e integrado. A menção histórica a segmentos não antecipa
+C.4, lote canônico de segmentação e classificação.
 
 Interpretação operacional:
 
@@ -306,31 +311,37 @@ A Fase B termina quando as portas previstas para o MVP tiverem adapters seguros 
 
 Resultado: **satisfeito por bloqueio parcial controlado no Checkpoint 032**. Os adapters previstos
 foram concluídos, as fronteiras transacionais críticas foram comprovadas no Supabase descartável e
-não existe dependência de produção. As contenções permanecem obrigatórias:
+não existe dependência de produção. As contenções registradas naquele momento foram:
 
-- `GAP-3B-04` — a Fase C deverá começar documentalmente pela governança operacional do lifecycle
-  de fontes; ingestão, versionamento, segmentação e eventos de permissão reais continuam
-  bloqueados;
+- `GAP-3B-04` — destinado à governança operacional do lifecycle de fontes na Fase C; **encerrado
+  posteriormente em C.1.6 / Checkpoint 043**;
 - `GAP-3B-05` — auditoria enriquecida e conclusão integral da `US-013.2` continuam bloqueadas até
   extensão contratual explícita;
 - `GAP-3B-07` — OPP normativa completa e capacidades de contexto, retrieval, validação e entrega
   continuam destinadas às fases correspondentes e não foram antecipadas.
 
-O encerramento deste gate não inicia a Fase C.
+O encerramento deste gate não iniciou automaticamente a Fase C; cada lote permaneceu sujeito a
+definição e autorização próprias.
 
 ## 7. Fase C — Matéria-prima e preparação do conhecimento
 
 ### Status
 
-O Lote C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32, C.1.1 pelo PR nº 33 e
-C.1.2 pelo PR nº 34. A `main` canônica pós-merge de C.1.2 está em
-`673318c2d3370f60997fd0a15b68bc69c6be5755`, tree
-`f187e84e3d7917b15f19d4b397376f6bf1006087`. O mapa integral C.0–C.7 está definido em
-[`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md). C.1 possui definição
+C.0 foi integrado pelo PR nº 31. O Lote C.1 foi executado de C.1.1 a C.1.6 e está **concluído**.
+C.1.6 foi integrado pelo PR nº 57 no commit
+`3ae0f5554eed5e7bd7f208647e068a304127058d`, tree
+`26da88424ade53819e3597258a224d575647a5a6`, com CI pós-merge nº 362 verde.
+
+A auditoria final está em
+[`12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md`](12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md)
+e o estado de continuidade em
+[`00-governance/CONTINUITY-CHECKPOINT-043.md`](00-governance/CONTINUITY-CHECKPOINT-043.md).
+`GAP-3B-04` está encerrado. C.2–C.7 permanecem bloqueados e não foram iniciados.
+
+O mapa integral C.0–C.7 está definido em
+[`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
 específica em
 [`12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
-C.1.2 está integrado e formalizado pelo Checkpoint 038. C.1.3 não foi iniciado e permanece
-bloqueado até nova autorização humana específica.
 
 O plano complementar de ações para cartografia da obra, cobertura integral, paratextos, notas
 atômicas e grafo tipado está em
@@ -347,8 +358,8 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 | Lote | Capacidade | Epics/Stories principais | Estado |
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
-| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | C.1.1 e C.1.2 integrados; C.1.3 bloqueado |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | bloqueado |
+| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **bloqueado; próximo candidato** |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
@@ -655,14 +666,17 @@ Concluído: contratos, domínio e schema aprovados.
 Critérios satisfeitos no Checkpoint 032:
 
 - adapters necessários ao fluxo de matéria-prima aprovados — satisfeito;
-- GAPs relevantes resolvidos ou formalmente contidos — satisfeito por contenção de `GAP-3B-04`,
-  `GAP-3B-05` e `GAP-3B-07`;
+- GAPs relevantes resolvidos ou formalmente contidos — satisfeito no momento por contenção de
+  `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07`;
 - testes de integração descartáveis verdes — satisfeito;
 - nenhuma dependência implícita de produção — satisfeito.
 
-A passagem arquitetural foi aberta documentalmente pela integração de C.0. Isso não constitui
-autorização técnica automática: C.1 está em execução controlada, com C.1.1 e C.1.2 integrados;
-C.1.3 e os sublotes posteriores permanecem bloqueados até novos gates e autorizações próprias.
+A passagem arquitetural foi aberta documentalmente pela integração de C.0. Depois disso, C.1 foi
+executado de forma controlada e concluído. `GAP-3B-04` foi encerrado em C.1.6; `GAP-3B-05` e
+`GAP-3B-07` permanecem ativos e contidos.
+
+C.2 continua bloqueado: o encerramento de C.1 e de `GAP-3B-04` satisfaz pré-condições estruturais,
+mas não constitui autorização automática para iniciar ingestão.
 
 ### C → D
 
@@ -770,26 +784,25 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE C EM C.1 — C.0 integrado pelo PR nº 31; definição de C.1 integrada pelo PR nº 32;
-> C.1.1 integrado pelo PR nº 33 e C.1.2 integrado pelo PR nº 34. A `main` canônica está em
-> `673318c2d3370f60997fd0a15b68bc69c6be5755`, tree
-> `f187e84e3d7917b15f19d4b397376f6bf1006087`. C.1.3 permanece bloqueado.
-> GAP-3B-04, GAP-3B-05 e GAP-3B-07 permanecem ativos e contidos.**
+> **FASE C APÓS C.1 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado; `GAP-3B-04`
+> encerrado. A integração de C.1.6 ocorreu pelo PR nº 57 no commit
+> `3ae0f5554eed5e7bd7f208647e068a304127058d`, tree
+> `26da88424ade53819e3597258a224d575647a5a6`, com CI pós-merge nº 362 verde.**
 
 Atualização de navegação da Fase C:
 
-> **C.1 permanece decomposto em C.1.1–C.1.6. C.1.2 integrou persistência incremental, histórico,
-> RLS, grants e rollback sem RPC, adapter ou ingestão. C.1.3–C.1.6, C.2–C.7 e as Fases D–G
-> continuam bloqueados.**
+> **C.2 é o próximo lote estrutural candidato, mas permanece bloqueado. C.3–C.7 e as Fases D–G
+> continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece
+> não autorizada.**
 
-Próximo objetivo imediato:
+Próximo objetivo possível, somente mediante nova autorização humana:
 
-> formalizar o estado pós-merge de C.1.2 e, somente mediante nova autorização humana específica,
-> inspecionar o Definition of Ready de C.1.3. Nenhuma formalização pós-merge autoriza RPC, adapter,
-> ingestão, wiring, Supabase hospedado ou produção.
+> inspecionar a definição canônica e a Definition of Ready de C.2 — Ingestão controlada. O
+> encerramento de C.1 não autoriza ingestão, conteúdo real, PDF, OCR, wiring, Supabase hospedado ou
+> produção.
 
 Próxima grande mudança de natureza do projeto:
 
-> C.1.3 — fronteira atômica para lifecycle e permissão — é o próximo sublote tecnicamente candidato,
-> mas permanece bloqueado até autorização humana explícita e inspeção prévia de invariantes,
-> concorrência, idempotência, privilégios e rollback.
+> C.2 introduzirá, se e quando autorizado, a entrada controlada de fontes já governadas pelo
+> lifecycle concluído em C.1. Esse trabalho deverá preservar a separação entre ingestão (C.2),
+> extração (C.3) e segmentação/classificação (C.4), sem antecipação de escopo.
