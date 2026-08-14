@@ -64,10 +64,12 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 039 — C.1.3 rematerializado sobre a genealogia recuperada](00-governance/CONTINUITY-CHECKPOINT-039.md)
 - [Checkpoint 040 — C.1.3 integrado e revalidado; C.1.4 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-040.md)
 - [Checkpoint 041 — C.1.4 integrado e revalidado; C.1.5 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-041.md)
+- [Matriz de evidências C.1.5 — testes do lifecycle de fontes](12-delivery/LOT-C1-5-SOURCE-LIFECYCLE-TEST-EVIDENCE-MATRIX.md)
+- [Checkpoint 042 — C.1.5 integrado e revalidado; C.1.6 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-042.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente de C.1 após o PR nº 53, prevalece o [Checkpoint 041](00-governance/CONTINUITY-CHECKPOINT-041.md) sobre marcadores de status anteriores ainda preservados no Blueprint e no mapa da Fase C.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente de C.1 após o PR nº 55, prevalece o [Checkpoint 042](00-governance/CONTINUITY-CHECKPOINT-042.md) sobre marcadores de status anteriores ainda preservados no Blueprint e no mapa da Fase C.
 
 - Fase A — concluída;
 - Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — concluídos;
@@ -102,8 +104,13 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
   histórica de registro/autorização/impacto por três RPCs `SECURITY DEFINER` somente-leitura,
   tradução provider-neutral de receipts/erros, telemetria sanitizada e integração validada em
   Supabase descartável, sem reabrir `SELECT` ou DML direto de `service_role` nas tabelas protegidas;
-- C.1.5–C.1.6 e C.2–C.7 — bloqueados;
+- C.1.5 — testes de contrato, integração, segurança e concorrência integrados pelo PR nº 55 no commit
+  canônico `f033faa51ed33ac504c5775e8bdcca7915c00d89`; a prova integrada recompõe C.1.2 → C.1.3 → C.1.4
+  em Supabase descartável, valida RLS, competência, idempotência, CAS, falha parcial, concorrência
+  multi-session, rollback/reapply, leitura histórica, expiração temporal, supersessão e
+  provider-neutrality; não adiciona migration ou código funcional de produto;
+- C.1.6 e C.2–C.7 — bloqueados;
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-C.1.4 está integrado e revalidado. O próximo sublote tecnicamente candidato é C.1.5, mas permanece bloqueado até gate e autorização próprios. Nenhuma ação desta reconciliação inicia C.1.5, C.1.6, C.2, wiring, Supabase hospedado ou produção.
+C.1.5 está integrado e revalidado. O próximo sublote tecnicamente candidato é C.1.6, mas permanece bloqueado e não foi iniciado. Nenhuma ação desta reconciliação encerra `GAP-3B-04`, inicia C.1.6, C.2, ingestão, wiring, Supabase hospedado ou produção.
