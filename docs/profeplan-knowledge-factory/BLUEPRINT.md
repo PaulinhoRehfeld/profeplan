@@ -380,8 +380,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 | C.7 | Curadoria e corpus piloto | EPIC-004/005/006 | bloqueado |
 
 `Bloqueado` significa visível e planejado, mas não autorizado. Cada lote e sublote exige definição,
-DoR, autorização humana quando requerida pelo checkpoint/risco, testes, revisão, merge governado e
-checkpoint próprios.
+DoR, autorização humana, testes, revisão, merge humano e checkpoint próprios.
 
 ### Fluxo esperado
 
