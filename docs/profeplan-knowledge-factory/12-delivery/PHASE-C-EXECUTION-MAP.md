@@ -456,10 +456,10 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 3. contratos e fronteiras revisados;
 4. análise jurídica/LGPD quando aplicável;
 5. plano de testes e rollback;
-6. autorização humana antes da implementação quando requerida pelo checkpoint/risco;
+6. autorização humana antes da implementação;
 7. CI, typecheck e testes aplicáveis verdes;
 8. Supabase somente descartável quando banco estiver no escopo;
-9. revisão do diff e merge governado;
+9. revisão do diff e merge humano;
 10. checkpoint pós-merge antes do próximo sublote.
 
 ## 16. Itens proibidos por esta definição
