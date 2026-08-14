@@ -1,0 +1,21 @@
+{
+  "name": "@profeplan/knowledge-factory-supabase",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --experimental-transform-types --test test/*.repository.test.mjs",
+    "test:integration": "node --experimental-transform-types --test --test-concurrency=1 test/*.integration.test.mjs"
+  },
+  "dependencies": {
+    "@profeplan/knowledge-factory": "workspace:*",
+    "@profeplan/types": "workspace:*",
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

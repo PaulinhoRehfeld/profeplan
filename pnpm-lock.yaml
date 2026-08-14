@@ -331,6 +331,20 @@ importers:
         specifier: ^7.8.0
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
 
+  packages/knowledge-factory: {}
+
+  packages/knowledge-factory-supabase:
+    dependencies:
+      '@profeplan/knowledge-factory':
+        specifier: workspace:*
+        version: link:../knowledge-factory
+      '@profeplan/types':
+        specifier: workspace:*
+        version: link:../types
+      '@supabase/supabase-js':
+        specifier: ^2.45.4
+        version: 2.108.2
+
   packages/logger: {}
 
   packages/types: {}
