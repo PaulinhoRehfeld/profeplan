@@ -83,8 +83,12 @@ CREATE TABLE public.credit_grants (
   CONSTRAINT credit_grants_expiry_window_check CHECK (
     expires_at IS NULL OR expires_at > granted_at
   ),
-  CONSTRAINT credit_grants_free_trial_expiry_check CHECK (
-    origin <> 'FREE_TRIAL' OR expires_at IS NOT NULL
+  CONSTRAINT credit_grants_free_trial_contract_check CHECK (
+    origin <> 'FREE_TRIAL'
+    OR (
+      granted_amount = 10
+      AND expires_at = granted_at + interval '7 days'
+    )
   ),
   CONSTRAINT credit_grants_nonexpiring_origin_check CHECK (
     origin NOT IN ('PURCHASED', 'LEGACY_BALANCE') OR expires_at IS NULL
@@ -98,6 +102,45 @@ CREATE INDEX credit_grants_user_origin_idx
 CREATE UNIQUE INDEX credit_grants_single_free_trial_per_user_idx
   ON public.credit_grants (user_id)
   WHERE origin = 'FREE_TRIAL';
+
+-- A grant must be created by an APPLIED GRANT operation for the same user and
+-- exactly the same amount. This prevents service-level direct INSERTs from
+-- creating a lot whose receipt says something different.
+CREATE OR REPLACE FUNCTION public.credit_validate_grant_insert()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+DECLARE
+  v_kind text;
+  v_outcome text;
+  v_applied_amount integer;
+BEGIN
+  SELECT operation_kind, outcome, applied_amount
+    INTO v_kind, v_outcome, v_applied_amount
+  FROM public.credit_operations
+  WHERE user_id = NEW.user_id
+    AND operation_id = NEW.operation_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'credit grant operation not found'
+      USING ERRCODE = '23503';
+  END IF;
+
+  IF v_kind <> 'GRANT'
+     OR v_outcome <> 'APPLIED'
+     OR v_applied_amount <> NEW.granted_amount THEN
+    RAISE EXCEPTION 'credit grant does not match its economic operation'
+      USING ERRCODE = '23514';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER credit_grants_validate_operation
+BEFORE INSERT ON public.credit_grants
+FOR EACH ROW EXECUTE FUNCTION public.credit_validate_grant_insert();
 
 -- ---------------------------------------------------------------------------
 -- 3. Append-only ledger entries
@@ -134,6 +177,73 @@ CREATE UNIQUE INDEX credit_ledger_entries_single_credit_per_grant_idx
   ON public.credit_ledger_entries (grant_id)
   WHERE entry_type = 'CREDIT';
 
+-- Ledger rows must agree with both their operation receipt and grant. CREDIT
+-- may only fund the grant created by that same APPLIED GRANT operation and for
+-- exactly granted_amount. DEBIT may only belong to an APPLIED CONSUME receipt.
+-- Aggregate anti-overdraft remains intentionally in 1.3B.2 because it requires
+-- transactional serialization across all DEBIT rows for the selected grant(s).
+CREATE OR REPLACE FUNCTION public.credit_validate_ledger_entry_insert()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+DECLARE
+  v_kind text;
+  v_outcome text;
+  v_applied_amount integer;
+  v_grant_operation_id text;
+  v_granted_amount integer;
+BEGIN
+  SELECT operation_kind, outcome, applied_amount
+    INTO v_kind, v_outcome, v_applied_amount
+  FROM public.credit_operations
+  WHERE user_id = NEW.user_id
+    AND operation_id = NEW.operation_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'credit ledger operation not found'
+      USING ERRCODE = '23503';
+  END IF;
+
+  SELECT operation_id, granted_amount
+    INTO v_grant_operation_id, v_granted_amount
+  FROM public.credit_grants
+  WHERE user_id = NEW.user_id
+    AND id = NEW.grant_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'credit ledger grant not found for user'
+      USING ERRCODE = '23503';
+  END IF;
+
+  IF v_outcome <> 'APPLIED' THEN
+    RAISE EXCEPTION 'ledger entries require an APPLIED economic operation'
+      USING ERRCODE = '23514';
+  END IF;
+
+  IF NEW.entry_type = 'CREDIT' THEN
+    IF v_kind <> 'GRANT'
+       OR NEW.operation_id <> v_grant_operation_id
+       OR NEW.amount <> v_granted_amount
+       OR NEW.amount <> v_applied_amount THEN
+      RAISE EXCEPTION 'CREDIT entry does not match its grant operation'
+        USING ERRCODE = '23514';
+    END IF;
+  ELSE
+    IF v_kind <> 'CONSUME' OR NEW.amount > v_applied_amount THEN
+      RAISE EXCEPTION 'DEBIT entry does not match an APPLIED consumption operation'
+        USING ERRCODE = '23514';
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER credit_ledger_entries_validate_operation
+BEFORE INSERT ON public.credit_ledger_entries
+FOR EACH ROW EXECUTE FUNCTION public.credit_validate_ledger_entry_insert();
+
 -- ---------------------------------------------------------------------------
 -- 4. RLS + least privilege
 -- ---------------------------------------------------------------------------
@@ -147,6 +257,11 @@ REVOKE ALL ON TABLE
   public.credit_operations,
   public.credit_grants,
   public.credit_ledger_entries
+FROM PUBLIC, anon, authenticated;
+
+REVOKE ALL ON FUNCTION public.credit_validate_grant_insert()
+FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.credit_validate_ledger_entry_insert()
 FROM PUBLIC, anon, authenticated;
 
 -- Application accounting is append-only at the service role boundary.
