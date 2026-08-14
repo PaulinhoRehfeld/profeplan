@@ -13,6 +13,7 @@ on:
       - 'packages/knowledge-factory/src/staging/**'
       - 'packages/knowledge-factory/src/index.ts'
       - 'packages/knowledge-factory/test/staging.test.mjs'
+      - 'packages/knowledge-factory-supabase/src/errors/persistence-error.ts'
       - 'packages/knowledge-factory-supabase/src/staging/**'
       - 'packages/knowledge-factory-supabase/src/index.ts'
       - 'packages/knowledge-factory-supabase/test/staging*'
