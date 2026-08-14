@@ -12,7 +12,6 @@ import type { SupabaseSystemContext } from '../context/supabase-system-context.t
 import {
   KnowledgeFactoryPersistenceError,
   toPersistenceError,
-  type KnowledgeFactoryPersistenceError as PersistenceError,
 } from '../errors/persistence-error.ts';
 import {
   NOOP_PERSISTENCE_LOGGER,
@@ -64,7 +63,7 @@ function recordFailure(
   operation: string,
   startedAt: number,
   artifactId: string,
-  error: PersistenceError
+  error: KnowledgeFactoryPersistenceError
 ): void {
   recordPersistenceLog(logger, {
     operation,
