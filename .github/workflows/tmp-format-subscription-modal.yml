@@ -1,0 +1,38 @@
+name: Temporary format SubscriptionModal
+
+on:
+  push:
+    branches:
+      - fix/site-commercial-offer-consistency
+    paths:
+      - .github/workflows/tmp-format-subscription-modal.yml
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/site-commercial-offer-consistency
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Format with CI Prettier version
+        run: npx --yes prettier@3.8.4 --write apps/web/src/components/SubscriptionModal.tsx
+
+      - name: Commit formatting and remove temporary workflow
+        run: |
+          rm .github/workflows/tmp-format-subscription-modal.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/components/SubscriptionModal.tsx .github/workflows/tmp-format-subscription-modal.yml
+          git commit -m "style(site): format subscription modal"
+          git push origin HEAD:fix/site-commercial-offer-consistency
