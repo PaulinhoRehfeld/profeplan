@@ -140,8 +140,8 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
             </button>
             <p className="text-[10px] text-slate-500 mt-3 font-medium leading-relaxed">
               Para pagar R$ 40,00 na primeira transação, use o código{' '}
-              <strong className="text-blue-700">{PROMOTION_CODES.SILVER}</strong> no checkout Stripe.
-              Fora da promoção, o valor é R$ 50,00.
+              <strong className="text-blue-700">{PROMOTION_CODES.SILVER}</strong> no checkout
+              Stripe. Fora da promoção, o valor é R$ 50,00.
             </p>
           </div>
 
