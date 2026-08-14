@@ -62,10 +62,11 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Matriz de competência e EXECUTE C.1.3](10-legal-security/LOT-C1-3-EXECUTE-COMPETENCE-MATRIX.md)
 - [Definição da fronteira atômica C.1.3](12-delivery/LOT-C1-3-SOURCE-LIFECYCLE-ATOMIC-BOUNDARY-DEFINITION.md)
 - [Checkpoint 039 — C.1.3 rematerializado sobre a genealogia recuperada](00-governance/CONTINUITY-CHECKPOINT-039.md)
+- [Checkpoint 040 — C.1.3 integrado e revalidado; C.1.4 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-040.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigente.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente de C.1 após o PR nº 51, prevalece o [Checkpoint 040](00-governance/CONTINUITY-CHECKPOINT-040.md) sobre marcadores de status anteriores ainda preservados no Blueprint e no mapa da Fase C.
 
 - Fase A — concluída;
 - Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — concluídos;
@@ -90,10 +91,13 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
   nº 288, Knowledge Factory DB CI nº 40 e Vercel verdes;
 - recuperação canônica da Knowledge Factory até C.1.2 — integrada pelo PR nº 43 no merge commit
   `39068d3225185d29c38c8b5841a21f60636b58b2`;
-- C.1.3 — definição documental rematerializada e integrada pelo PR nº 49 no commit
-  `15d3530dadff3ed0f730c165fb92772dd361fd78`; implementação executável permanece bloqueada por gate de segurança;
+- C.1.3 — definição documental rematerializada pelo PR nº 49 e implementação executável integrada pelo
+  PR nº 51 no commit canônico `27ca7db0d07550b827c66bd4cdc7a2017d30b72d`; a fronteira inclui
+  `kf_source_actor_assignments`, 13 RPCs estreitas `SECURITY DEFINER`, grants mínimos, idempotência,
+  CAS, impacto conservador, supersessão atômica e validação de segurança/concorrência em Supabase
+  descartável; a migration existe no repositório, mas não foi aplicada a Supabase hospedado ou produção;
 - C.1.4–C.1.6 e C.2–C.7 — bloqueados;
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo passo tecnicamente candidato é a implementação executável de C.1.3 — migration, RPCs estreitas e testes em ambiente descartável —, mas essa fronteira envolve `SECURITY DEFINER`, grants `EXECUTE` e competência jurídico-editorial e, por isso, permanece sujeita a gate explícito de segurança. C.1.4, ingestão, wiring, Supabase hospedado e produção continuam bloqueados.
+C.1.3 está integrado e revalidado. O próximo sublote tecnicamente candidato é C.1.4 — adapters de comando/leitura e tradução provider-neutral —, porém permanece bloqueado até gate e autorização próprios. Nenhuma ação desta reconciliação inicia C.1.4, C.1.5, C.1.6, C.2, wiring, Supabase hospedado ou produção.
