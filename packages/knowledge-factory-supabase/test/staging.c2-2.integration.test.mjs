@@ -61,6 +61,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
 
     const artifactId = 'artifact-synthetic-c2-2';
     const descriptorA = await adapter.stage(write(runA, artifactId));
+    assert.equal(descriptorA.state, 'STAGED');
     assert.equal(
       descriptorA.artifact.opaqueLocator,
       `temporary-staging:v1:${encodeURIComponent(runA.id)}:${encodeURIComponent(artifactId)}`
@@ -104,6 +105,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       reasonCode: 'operator_cancelled',
       correlationId: 'correlation-synthetic-c2-2',
     });
+    assert.equal(discard.state, 'DISCARDED');
     assert.equal(discard.outcome, 'discarded');
     assert.equal(discard.confirmedAt, '2026-08-14T21:05:00.000Z');
     assert.equal(JSON.stringify(discard).includes(bucketName), false);
@@ -122,6 +124,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       reasonCode: 'operator_cancelled',
       correlationId: 'correlation-synthetic-c2-2',
     });
+    assert.equal(repeated.state, 'DISCARDED');
     assert.equal(repeated.outcome, 'discarded');
   } finally {
     await admin.storage.emptyBucket(bucketName);
