@@ -79,7 +79,12 @@ export function toPersistenceError(
     return new KnowledgeFactoryPersistenceError('UNAUTHORIZED', operation);
   }
 
-  if (code === '42501' || /permission denied|insufficient privilege/.test(text)) {
+  if (
+    code === 'PT403' ||
+    status === 403 ||
+    code === '42501' ||
+    /permission denied|insufficient privilege/.test(text)
+  ) {
     return new KnowledgeFactoryPersistenceError('FORBIDDEN', operation);
   }
 

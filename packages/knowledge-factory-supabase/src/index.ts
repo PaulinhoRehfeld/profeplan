@@ -17,3 +17,7 @@ export * from './production-order/supabase-production-order-request.repository.t
 export * from './production-order/supabase-production-order-transition.repository.ts';
 export * from './source/source.mapper.ts';
 export * from './source/supabase-knowledge-source.repository.ts';
+export * from './source-lifecycle/source-lifecycle-command.mapper.ts';
+export * from './source-lifecycle/source-lifecycle.mapper.ts';
+export * from './source-lifecycle/supabase-source-lifecycle-command.repository.ts';
+export * from './source-lifecycle/supabase-source-lifecycle-read.repository.ts';
