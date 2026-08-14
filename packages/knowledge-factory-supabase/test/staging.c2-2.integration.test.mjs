@@ -61,7 +61,10 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
 
     const artifactId = 'artifact-synthetic-c2-2';
     const descriptorA = await adapter.stage(write(runA, artifactId));
-    assert.equal(descriptorA.artifact.opaqueLocator, `temporary-staging:${artifactId}`);
+    assert.equal(
+      descriptorA.artifact.opaqueLocator,
+      `temporary-staging:v1:${encodeURIComponent(runA.id)}:${encodeURIComponent(artifactId)}`
+    );
     assert.equal(JSON.stringify(descriptorA).includes(bucketName), false);
 
     const downloaded = await admin.storage.from(bucketName).download(physicalPath(runA, artifactId));
@@ -78,14 +81,16 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       .upload('unauthorized/synthetic.pdf', bytes, { contentType: 'application/pdf', upsert: false });
     assert.notEqual(unauthorized.error, null);
 
-    const wrongRunDiscard = await adapter.discard({
-      artifact: descriptorA.artifact,
-      run: runB,
-      requestedAt: '2026-08-14T21:02:00.000Z',
-      reasonCode: 'orphan_cleanup',
-      correlationId: 'correlation-synthetic-c2-2',
-    });
-    assert.equal(wrongRunDiscard.outcome, 'discarded');
+    await assert.rejects(
+      adapter.discard({
+        artifact: descriptorA.artifact,
+        run: runB,
+        requestedAt: '2026-08-14T21:02:00.000Z',
+        reasonCode: 'orphan_cleanup',
+        correlationId: 'correlation-synthetic-c2-2',
+      }),
+      (error) => error.code === 'INVALID_INPUT'
+    );
 
     const stillPresent = await admin.storage
       .from(bucketName)
