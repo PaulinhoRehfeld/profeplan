@@ -67,6 +67,7 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Matriz de evidências C.1.5 — testes do lifecycle de fontes](12-delivery/LOT-C1-5-SOURCE-LIFECYCLE-TEST-EVIDENCE-MATRIX.md)
 - [Checkpoint 042 — C.1.5 integrado e revalidado](00-governance/CONTINUITY-CHECKPOINT-042.md)
 - [Matriz de fechamento C.1.6 e decisão sobre GAP-3B-04](12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md)
+- [ADR-061 — encerramento de C.1 e GAP-3B-04](00-governance/ADR-061-C1-CLOSURE-GAP-3B-04.md)
 - [Checkpoint 043 — Lote C.1 e GAP-3B-04 encerrados](00-governance/CONTINUITY-CHECKPOINT-043.md)
 
 ## Estado atual
