@@ -287,8 +287,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
               Recursos de PDI e DUA apoiam uma educação mais inclusiva.
             </li>
             <li className="flex items-center gap-3">
-              <ShieldCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-sky-300" />
-              O professor mantém a revisão e a decisão final.
+              <ShieldCheck aria-hidden="true" className="h-5 w-5 shrink-0 text-sky-300" />O
+              professor mantém a revisão e a decisão final.
             </li>
           </ul>
         </div>
@@ -296,220 +296,222 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, initialMode = 'login
       </section>
 
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-8 lg:px-12">
-      {/* Background Decorativo */}
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-100/70 rounded-full blur-[120px]"></div>
-      <div
-        className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-sky-100/70 rounded-full blur-[120px]"
-      ></div>
+        {/* Background Decorativo */}
+        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-100/70 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-sky-100/70 rounded-full blur-[120px]"></div>
 
-      <div className="w-full max-w-lg z-10">
-        <div className="mb-8 text-center lg:hidden">
-          <div className="mb-3 inline-flex items-center justify-center">
-            <img
-              src="/logo-profeplan.png"
-              alt="PROFEPLAN"
-              className="h-12 w-12 rounded-xl bg-white object-contain p-1 shadow-sm"
-            />
+        <div className="w-full max-w-lg z-10">
+          <div className="mb-8 text-center lg:hidden">
+            <div className="mb-3 inline-flex items-center justify-center">
+              <img
+                src="/logo-profeplan.png"
+                alt="PROFEPLAN"
+                className="h-12 w-12 rounded-xl bg-white object-contain p-1 shadow-sm"
+              />
+            </div>
+            <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-950">ProfePlan</h1>
+            <p className="text-xs font-medium text-slate-500">
+              Ecossistema de Inteligência Pedagógica
+            </p>
           </div>
-          <h1 className="mb-1 text-2xl font-bold tracking-tight text-slate-950">ProfePlan</h1>
-          <p className="text-xs font-medium text-slate-500">
-            Ecossistema de Inteligência Pedagógica
-          </p>
-        </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-9">
-          <p className="mb-2 text-sm font-semibold text-blue-700">
-            {isSignUp ? 'Comece gratuitamente' : 'Bem-vindo(a) de volta'}
-          </p>
-          <h2 className="mb-2 text-3xl font-bold tracking-tight text-slate-950">
-            {isSignUp ? 'Criar nova conta' : 'Acessar plataforma'}
-          </h2>
-          <p className="mb-7 text-sm leading-6 text-slate-600">
-            {isSignUp
-              ? 'Crie seu acesso e comece a organizar sua rotina pedagógica.'
-              : 'Entre com seu e-mail e senha para continuar seu trabalho.'}
-          </p>
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:p-9">
+            <p className="mb-2 text-sm font-semibold text-blue-700">
+              {isSignUp ? 'Comece gratuitamente' : 'Bem-vindo(a) de volta'}
+            </p>
+            <h2 className="mb-2 text-3xl font-bold tracking-tight text-slate-950">
+              {isSignUp ? 'Criar nova conta' : 'Acessar plataforma'}
+            </h2>
+            <p className="mb-7 text-sm leading-6 text-slate-600">
+              {isSignUp
+                ? 'Crie seu acesso e comece a organizar sua rotina pedagógica.'
+                : 'Entre com seu e-mail e senha para continuar seu trabalho.'}
+            </p>
 
-          <form onSubmit={handleEmailAuth} className="space-y-5">
-            {isSignUp && (
+            <form onSubmit={handleEmailAuth} className="space-y-5">
+              {isSignUp && (
+                <div className="space-y-1.5">
+                  <label htmlFor="full-name" className="block text-sm font-semibold text-slate-800">
+                    Nome Completo
+                  </label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute left-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-xs font-bold text-slate-400">
+                      Aa
+                    </div>
+                    <input
+                      id="full-name"
+                      type="text"
+                      required={isSignUp}
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Ex: Maria Silva"
+                      autoComplete="name"
+                      className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-1.5">
-                <label htmlFor="full-name" className="block text-sm font-semibold text-slate-800">
-                  Nome Completo
+                <label htmlFor="email" className="block text-sm font-semibold text-slate-800">
+                  E-mail
                 </label>
                 <div className="relative">
-                  <div className="pointer-events-none absolute left-4 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-xs font-bold text-slate-400">
-                    Aa
-                  </div>
+                  <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                   <input
-                    id="full-name"
-                    type="text"
-                    required={isSignUp}
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Ex: Maria Silva"
-                    autoComplete="name"
+                    id="email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Seu melhor e-mail"
+                    autoComplete="email"
                     className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                   />
                 </div>
               </div>
-            )}
 
-            <div className="space-y-1.5">
-              <label htmlFor="email" className="block text-sm font-semibold text-slate-800">
-                E-mail
-              </label>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Seu melhor e-mail"
-                  autoComplete="email"
-                  className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
-                />
+              <div className="space-y-1.5">
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-800">
+                  Senha
+                </label>
+                <div className="relative">
+                  <Lock className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                  <input
+                    id="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                    className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-800">
-                Senha
-              </label>
-              <div className="relative">
-                <Lock className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                  className="min-h-12 w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-base text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
-                />
-              </div>
-            </div>
+              {error && (
+                <div
+                  role="alert"
+                  className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4"
+                >
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-700" />
+                  <p className="text-sm font-medium leading-5 text-red-800">{error}</p>
+                </div>
+              )}
 
-            {error && (
-              <div role="alert" className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
-                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-700" />
-                <p className="text-sm font-medium leading-5 text-red-800">{error}</p>
-              </div>
-            )}
+              {successMsg && (
+                <div
+                  role="status"
+                  className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4"
+                >
+                  <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
+                  <p className="text-sm font-medium leading-5 text-emerald-800">{successMsg}</p>
+                </div>
+              )}
 
-            {successMsg && (
-              <div role="status" className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-                <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
-                <p className="text-sm font-medium leading-5 text-emerald-800">{successMsg}</p>
-              </div>
-            )}
+              {/* ── Termos de Uso & Privacidade (apenas no cadastro) ── */}
+              {isSignUp && (
+                <>
+                  <div className="space-y-3 border-t border-slate-200 pt-4">
+                    {/* Aceite dos Termos de Uso (obrigatório) */}
+                    <label className="flex cursor-pointer items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={termsAccepted}
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm leading-5 text-slate-600">
+                        Li e concordo com os{' '}
+                        <a
+                          href="/termos-de-uso"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Termos de Uso
+                        </a>
+                        .
+                      </span>
+                    </label>
 
-            {/* ── Termos de Uso & Privacidade (apenas no cadastro) ── */}
-            {isSignUp && (
-              <>
-                <div className="space-y-3 border-t border-slate-200 pt-4">
-                  {/* Aceite dos Termos de Uso (obrigatório) */}
-                  <label className="flex cursor-pointer items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                    />
-                    <span className="text-sm leading-5 text-slate-600">
-                      Li e concordo com os{' '}
+                    {/* Aviso de Privacidade (informativo, não é consentimento) */}
+                    <p className="pl-7 text-xs leading-5 text-slate-500">
+                      Seus dados pessoais serão tratados conforme nossa{' '}
                       <a
-                        href="/termos-de-uso"
+                        href="/politica-de-privacidade"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800"
-                        onClick={(e) => e.stopPropagation()}
+                        className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-800"
                       >
-                        Termos de Uso
+                        Política de Privacidade
                       </a>
                       .
-                    </span>
-                  </label>
+                    </p>
 
-                  {/* Aviso de Privacidade (informativo, não é consentimento) */}
-                  <p className="pl-7 text-xs leading-5 text-slate-500">
-                    Seus dados pessoais serão tratados conforme nossa{' '}
-                    <a
-                      href="/politica-de-privacidade"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-800"
-                    >
-                      Política de Privacidade
-                    </a>
-                    .
-                  </p>
-
-                  {/* Comunicações de marketing (opcional, desmarcado) */}
-                  <label className="flex cursor-pointer items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={marketingConsent}
-                      onChange={(e) => setMarketingConsent(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                    />
-                    <span className="text-sm leading-5 text-slate-500">
-                      Desejo receber novidades, conteúdos e comunicações comerciais do ProfePlan.
-                    </span>
-                  </label>
-                </div>
-              </>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              aria-busy={loading || undefined}
-              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loading ? (
-                <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
-              ) : (
-                <>
-                  {isSignUp ? 'Criar Conta Grátis' : 'Acessar Workspace'}{' '}
-                  <ArrowRight className="w-5 h-5" />
+                    {/* Comunicações de marketing (opcional, desmarcado) */}
+                    <label className="flex cursor-pointer items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={marketingConsent}
+                        onChange={(e) => setMarketingConsent(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm leading-5 text-slate-500">
+                        Desejo receber novidades, conteúdos e comunicações comerciais do ProfePlan.
+                      </span>
+                    </label>
+                  </div>
                 </>
               )}
-            </button>
-          </form>
 
-          <div className="mt-6 border-t border-slate-200 pt-5 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError('');
-                setSuccessMsg('');
-              }}
-              className="rounded-md text-sm font-semibold text-blue-700 underline-offset-4 hover:text-blue-800 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
-            </button>
-          </div>
+              <button
+                type="submit"
+                disabled={loading}
+                aria-busy={loading || undefined}
+                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? (
+                  <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
+                ) : (
+                  <>
+                    {isSignUp ? 'Criar Conta Grátis' : 'Acessar Workspace'}{' '}
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+            </form>
 
-          <div className="mt-6 flex justify-center">
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <div
-                className={`h-2 w-2 rounded-full ${supabase.auth ? 'bg-emerald-500' : 'bg-red-600'}`}
-              ></div>
-              <span>Conexão segura</span>
+            <div className="mt-6 border-t border-slate-200 pt-5 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setError('');
+                  setSuccessMsg('');
+                }}
+                className="rounded-md text-sm font-semibold text-blue-700 underline-offset-4 hover:text-blue-800 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {isSignUp ? 'Já tem uma conta? Fazer Login' : 'Ainda não tem conta? Criar cadastro'}
+              </button>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <div className="flex items-center gap-2 text-xs text-slate-500">
+                <div
+                  className={`h-2 w-2 rounded-full ${supabase.auth ? 'bg-emerald-500' : 'bg-red-600'}`}
+                ></div>
+                <span>Conexão segura</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-6 text-center">
-          <p className="text-xs text-slate-500">
-            ProfePlan v1.0.3
-          </p>
+          <div className="mt-6 text-center">
+            <p className="text-xs text-slate-500">ProfePlan v1.0.3</p>
+          </div>
         </div>
-      </div>
       </section>
     </main>
   );

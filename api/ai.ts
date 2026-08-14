@@ -84,9 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Aceita somente modelos DeepSeek conhecidos. "backend-ai-proxy" é apenas
     // um marcador interno do frontend e nunca deve ser enviado ao provedor.
     const requestedModel =
-      body.model === 'deepseek-chat' || body.model === 'deepseek-reasoner'
-        ? body.model
-        : undefined;
+      body.model === 'deepseek-chat' || body.model === 'deepseek-reasoner' ? body.model : undefined;
     const modelName = requestedModel || provider.defaultModel;
 
     logger.info(`[API/AI] Provider: ${provider.type} | Model: ${modelName}`);
