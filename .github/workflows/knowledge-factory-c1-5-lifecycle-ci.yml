@@ -15,6 +15,8 @@ on:
       - 'packages/knowledge-factory-supabase/src/index.ts'
       - 'packages/knowledge-factory-supabase/test/source-lifecycle*'
       - 'supabase/migrations/202608071120_knowledge_factory_schema.sql'
+      - 'supabase/migrations/202608081600_kf_component_write_rpcs.sql'
+      - 'supabase/migrations/202608111900_kf_production_order_write_rpcs.sql'
       - 'supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql'
       - 'supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql'
       - 'supabase/migrations/202608141730_kf_source_lifecycle_read_rpcs.sql'
@@ -82,6 +84,10 @@ jobs:
               supabase/migrations/202608071100_kf_test_baseline.sql
             cp ../supabase/migrations/202608071120_knowledge_factory_schema.sql \
               supabase/migrations/202608071120_knowledge_factory_schema.sql
+            cp ../supabase/migrations/202608081600_kf_component_write_rpcs.sql \
+              supabase/migrations/202608081600_kf_component_write_rpcs.sql
+            cp ../supabase/migrations/202608111900_kf_production_order_write_rpcs.sql \
+              supabase/migrations/202608111900_kf_production_order_write_rpcs.sql
             cp ../supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
               supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql
           )
