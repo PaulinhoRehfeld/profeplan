@@ -62,55 +62,35 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Matriz de competência e EXECUTE C.1.3](10-legal-security/LOT-C1-3-EXECUTE-COMPETENCE-MATRIX.md)
 - [Definição da fronteira atômica C.1.3](12-delivery/LOT-C1-3-SOURCE-LIFECYCLE-ATOMIC-BOUNDARY-DEFINITION.md)
 - [Checkpoint 039 — C.1.3 rematerializado sobre a genealogia recuperada](00-governance/CONTINUITY-CHECKPOINT-039.md)
-- [Checkpoint 040 — C.1.3 integrado e revalidado; C.1.4 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-040.md)
-- [Checkpoint 041 — C.1.4 integrado e revalidado; C.1.5 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-041.md)
+- [Checkpoint 040 — C.1.3 integrado e revalidado](00-governance/CONTINUITY-CHECKPOINT-040.md)
+- [Checkpoint 041 — C.1.4 integrado e revalidado](00-governance/CONTINUITY-CHECKPOINT-041.md)
 - [Matriz de evidências C.1.5 — testes do lifecycle de fontes](12-delivery/LOT-C1-5-SOURCE-LIFECYCLE-TEST-EVIDENCE-MATRIX.md)
-- [Checkpoint 042 — C.1.5 integrado e revalidado; C.1.6 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-042.md)
+- [Checkpoint 042 — C.1.5 integrado e revalidado](00-governance/CONTINUITY-CHECKPOINT-042.md)
+- [Matriz de fechamento C.1.6 e decisão sobre GAP-3B-04](12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md)
+- [ADR-061 — encerramento de C.1 e GAP-3B-04](00-governance/ADR-061-C1-CLOSURE-GAP-3B-04.md)
+- [Checkpoint 043 — Lote C.1 e GAP-3B-04 encerrados](00-governance/CONTINUITY-CHECKPOINT-043.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente de C.1 após o PR nº 55, prevalece o [Checkpoint 042](00-governance/CONTINUITY-CHECKPOINT-042.md) sobre marcadores de status anteriores ainda preservados no Blueprint e no mapa da Fase C.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após C.1.6, prevalece o [Checkpoint 043](00-governance/CONTINUITY-CHECKPOINT-043.md) sobre marcadores históricos de checkpoints anteriores.
 
 - Fase A — concluída;
-- Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — concluídos;
-- GAP-3B-01 — encerrado;
-- GAP-3B-02 e GAP-3B-06 — condições de encerramento satisfeitas e formalizadas no
-  [Checkpoint 025](00-governance/CONTINUITY-CHECKPOINT-025.md);
-- GAP-3B-03 — condições de encerramento satisfeitas e formalizadas no
-  [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
-- GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e explicitamente limitados;
-- Lote 3B.5 — definição documental e sublotes 3B.5.1 a 3B.5.4 integrados; encerramento
-  formalizado no [Checkpoint 031](00-governance/CONTINUITY-CHECKPOINT-031.md);
-- Fase B — encerramento por bloqueio parcial controlado formalizado no
-  [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
-- Fase C — C.0 integrado pelo PR nº 31 no commit
-  `a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`;
-- Lote C.1 — definição integrada pelo PR nº 32 no commit
-  `01c92dda8257935e7a6c042be12308ebccdaeb73`;
-- C.1.1 — contratos integrados pelo PR nº 33 no commit
-  `2db5fc07378cc7c062753078b2a3fb2025cb1afe`;
-- C.1.2 — persistência incremental, RLS, grants, rollback e testes integrados pelo PR nº 34 no
-  commit canônico `673318c2d3370f60997fd0a15b68bc69c6be5755`; validações pré-merge concluídas com CI Pipeline
-  nº 288, Knowledge Factory DB CI nº 40 e Vercel verdes;
-- recuperação canônica da Knowledge Factory até C.1.2 — integrada pelo PR nº 43 no merge commit
-  `39068d3225185d29c38c8b5841a21f60636b58b2`;
-- C.1.3 — definição documental rematerializada pelo PR nº 49 e implementação executável integrada pelo
-  PR nº 51 no commit canônico `27ca7db0d07550b827c66bd4cdc7a2017d30b72d`; a fronteira inclui
-  `kf_source_actor_assignments`, 13 RPCs estreitas `SECURITY DEFINER`, grants mínimos, idempotência,
-  CAS, impacto conservador, supersessão atômica e validação de segurança/concorrência em Supabase
-  descartável; a migration existe no repositório, mas não foi aplicada a Supabase hospedado ou produção;
-- C.1.4 — ports e adapters provider-neutral integrados pelo PR nº 53 no commit canônico
-  `c4620d036addbd2b331ef2aea2396ce104fe9176`; inclui adapter para os 13 comandos C.1.3, leitura
-  histórica de registro/autorização/impacto por três RPCs `SECURITY DEFINER` somente-leitura,
-  tradução provider-neutral de receipts/erros, telemetria sanitizada e integração validada em
-  Supabase descartável, sem reabrir `SELECT` ou DML direto de `service_role` nas tabelas protegidas;
-- C.1.5 — testes de contrato, integração, segurança e concorrência integrados pelo PR nº 55 no commit
-  canônico `f033faa51ed33ac504c5775e8bdcca7915c00d89`; a prova integrada recompõe C.1.2 → C.1.3 → C.1.4
-  em Supabase descartável, valida RLS, competência, idempotência, CAS, falha parcial, concorrência
-  multi-session, rollback/reapply, leitura histórica, expiração temporal, supersessão e
-  provider-neutrality; não adiciona migration ou código funcional de produto;
-- C.1.6 e C.2–C.7 — bloqueados;
-- GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
-- produção — não autorizada por nenhum merge técnico ou documental.
+- Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
+- Lotes 3B.1 a 3B.5 — concluídos;
+- GAP-3B-01, GAP-3B-02, GAP-3B-03, GAP-3B-04 e GAP-3B-06 — encerrados;
+- GAP-3B-05 e GAP-3B-07 — ativos e contidos;
+- Fase C — C.0 integrado pelo PR nº 31;
+- Lote C.1 — **concluído**;
+- C.1.1 — contratos normativos integrados;
+- C.1.2 — persistência incremental, RLS, grants, rollback e testes integrados;
+- C.1.3 — fronteira transacional atômica, competência, idempotência, CAS, concorrência e impacto conservador integrados;
+- C.1.4 — ports e adapters provider-neutral, leitura histórica, erros/receipts e CI integrados;
+- C.1.5 — prova integrada de contrato, segurança, concorrência, rollback e lifecycle E2E integrada;
+- C.1.6 — auditoria de fechamento integrada pelo PR nº 57 no commit `3ae0f5554eed5e7bd7f208647e068a304127058d`;
+- GAP-3B-04 — **encerrado** após comprovação de que o lifecycle necessário à ingestão está definido, persistido, protegido, adaptado, testado e integrado;
+- C.2–C.7 — bloqueados até seus próprios gates e autorizações;
+- produção — não autorizada.
 
-C.1.5 está integrado e revalidado. O próximo sublote tecnicamente candidato é C.1.6, mas permanece bloqueado e não foi iniciado. Nenhuma ação desta reconciliação encerra `GAP-3B-04`, inicia C.1.6, C.2, ingestão, wiring, Supabase hospedado ou produção.
+A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
+
+O próximo lote estrutural candidato é **C.2 — Ingestão controlada**, mas este README não autoriza seu início. C.2 exige nova autorização explícita e deve começar pela inspeção de sua Definition of Ready.

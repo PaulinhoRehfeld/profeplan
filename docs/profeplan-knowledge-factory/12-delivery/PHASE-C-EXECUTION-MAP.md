@@ -4,22 +4,25 @@ Data da definição: 11 de agosto de 2026.
 
 Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
 
-Estado canônico pós-merge verificado em 13 de agosto de 2026: `main` em
-`673318c2d3370f60997fd0a15b68bc69c6be5755` (PR nº 34, C.1.2), tree
-`f187e84e3d7917b15f19d4b397376f6bf1006087`.
+Estado canônico pós-C.1.6 verificado em 14 de agosto de 2026: `main` em
+`3ae0f5554eed5e7bd7f208647e068a304127058d` (PR nº 57, C.1.6), tree
+`26da88424ade53819e3597258a224d575647a5a6`.
 
 Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
 
 Definição específica de C.1:
 [`LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
 
+Auditoria de fechamento de C.1:
+[`LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md`](LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md).
+
 ## Status
 
-**C.0 foi integrado pelo PR nº 31, a definição de C.1 pelo PR nº 32, C.1.1 pelo PR nº 33 e C.1.2
-pelo PR nº 34. C.1.2 está integrado e formalizado no Checkpoint 038. C.1.3–C.1.6, C.2–C.7,
-ingestão, fontes reais, wiring, Supabase hospedado e produção permanecem bloqueados.**
+**C.0 está integrado e C.1 foi concluído integralmente de C.1.1 a C.1.6. `GAP-3B-04` está
+encerrado conforme a auditoria C.1.6 e o Checkpoint 043. C.2–C.7, ingestão, fontes reais, wiring,
+Supabase hospedado e produção permanecem bloqueados.**
 
-A visibilidade de C.1–C.7 permanece planejamento, não autorização automática. Cada implementação de
+A visibilidade de C.2–C.7 permanece planejamento, não autorização automática. Cada implementação de
 lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
 
 ## 1. Objetivo
@@ -65,8 +68,8 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 | Lote | Capacidade | Epics/Stories principais | Estado | Gate de início técnico |
 |---|---|---|---|---|
 | C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
-| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | C.1.1 e C.1.2 integrados; C.1.3 bloqueado | revisão e integração humana de cada sublote |
-| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | Bloqueado | C.1 concluído; `GAP-3B-04` encerrado; autorização própria |
+| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | **Concluído — C.1.1–C.1.6** | gate de saída satisfeito em C.1.6 |
+| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | **Bloqueado; próximo candidato** | C.1 concluído; `GAP-3B-04` encerrado; autorização própria |
 | C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
 | C.5 | Síntese autoral e deduplicação | EPIC-005; US-005.1–005.2 | Bloqueado | C.4 concluído |
@@ -106,6 +109,11 @@ C.0 está encerrado documentalmente. Isso não iniciou implementação da Fase C
 
 ## 5. Lote C.1 — Governança operacional do lifecycle de fontes
 
+### Status
+
+**Concluído.** C.1.1–C.1.6 estão integrados, `GAP-3B-04` está encerrado e a auditoria final está
+registrada na matriz de fechamento C.1.6 e no Checkpoint 043.
+
 ### Objetivo
 
 Resolver a fronteira que o adapter do Lote 3B.2 deliberadamente não antecipou: registrar e controlar
@@ -121,17 +129,18 @@ A definição normativa completa está em
 - `F-002.1` / `US-002.1` — registro de fonte e procedência;
 - `F-002.2` / `US-002.2` — autorização ou bloqueio de uso na geração.
 
-As Stories foram parcialmente atendidas nas Fases A e B quanto a contratos, política de
-elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle continua pendente.
+As Stories foram atendidas no escopo de governança de C.1 por contratos, persistência, fronteira
+transacional, adapters e prova integrada. Isso não significa que ingestão, extração, segmentação ou
+conteúdo real tenham sido iniciados.
 
 ### Sublotes oficiais
 
-- `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes — **integrado**;
-- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **integrado pelo PR nº 34**;
-- `C.1.3` — RPCs ou outra fronteira atômica para versão e permissão — **bloqueado**;
-- `C.1.4` — adapters de comando/leitura e tradução provider-neutral — **bloqueado**;
-- `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência — **bloqueado**;
-- `C.1.6` — fechamento documental do lote e decisão sobre `GAP-3B-04` — **bloqueado**.
+- `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes — **concluído**;
+- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **concluído**;
+- `C.1.3` — fronteira atômica de comandos, competência, idempotência, CAS e concorrência — **concluído**;
+- `C.1.4` — adapters de comando/leitura e tradução provider-neutral — **concluído**;
+- `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência — **concluído**;
+- `C.1.6` — fechamento documental do lote e decisão sobre `GAP-3B-04` — **concluído pelo PR nº 57**.
 
 ### Regras mínimas consolidadas
 
@@ -153,11 +162,17 @@ elegibilidade, schema base e adapter mínimo. A operação completa do lifecycle
 
 ### Gate de saída
 
-`GAP-3B-04` somente poderá ser encerrado quando o lifecycle necessário à ingestão estiver definido,
-persistido, protegido, adaptado, testado e integrado. C.1.2, isoladamente, não satisfaz esse gate.
-O fechamento futuro não autoriza automaticamente C.2.
+**Satisfeito em C.1.6.** O lifecycle necessário à ingestão está definido, persistido, protegido,
+adaptado, testado e integrado. `GAP-3B-04` foi encerrado.
+
+A menção histórica do gap a `SourceSegment` não cria requisito residual para C.1: segmentação e
+classificação permanecem sob C.4. O fechamento de C.1 não autoriza automaticamente C.2.
 
 ## 6. Lote C.2 — Ingestão controlada
+
+### Status
+
+**Bloqueado. Próximo lote estrutural candidato somente mediante nova autorização explícita.**
 
 ### Objetivo
 
@@ -352,7 +367,7 @@ Consolidar a conclusão operacional das Stories `US-004.1–004.3`, `US-005.1–
 - componentes suspensos, rejeitados ou substituídos excluídos do conjunto elegível;
 - métricas de cobertura e lacunas conhecidas;
 - nenhum conteúdo protegido exposto indevidamente;
-- `GAP-3B-04` encerrado ou novo bloqueio formal aprovado;
+- `GAP-3B-04` encerrado — **satisfeito em C.1.6**;
 - `GAP-3B-05` e `GAP-3B-07` não declarados resolvidos sem seus próprios critérios;
 - autorização humana específica para iniciar a Fase D.
 
@@ -377,10 +392,10 @@ rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorizaçã
 ### GAP-3B-04 — Lifecycle de fontes
 
 - destino primário: `C.1`;
-- permanece ativo enquanto C.1 não satisfizer integralmente seus critérios de encerramento;
-- C.1.2 isoladamente não o encerra;
-- bloqueia ingestão real;
-- somente encerra com contrato, persistência, segurança, adapter e testes integrados.
+- **estado atual: encerrado em C.1.6 / Checkpoint 043**;
+- condição de encerramento satisfeita: lifecycle definido, persistido, protegido, adaptado, testado e integrado;
+- a menção histórica a segmentos não antecipa C.4;
+- o encerramento do gap remove a lacuna de governança, mas não autoriza ingestão real.
 
 ### GAP-3B-05 — Auditoria enriquecida / US-013.2 parcial
 
@@ -399,9 +414,9 @@ rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorizaçã
 
 | Capacidade | Fase C | Fase posterior |
 |---|---|---|
-| Governar fontes e permissões | Incluída | gestão jurídica ampliada |
-| Ingestão assistida do piloto | Incluída | ingestão massiva/OCR industrial |
-| Extração e segmentação | Incluída | multimodalidade completa |
+| Governar fontes e permissões | Incluída; C.1 concluído | gestão jurídica ampliada |
+| Ingestão assistida do piloto | Incluída em C.2, ainda bloqueada | ingestão massiva/OCR industrial |
+| Extração e segmentação | Incluída em C.3/C.4, ainda bloqueada | multimodalidade completa |
 | Destilação e deduplicação básica | Incluída | consolidação automática avançada |
 | Componentes e currículo MG | Incluída | RS e outros Estados |
 | Curadoria humana do piloto | Incluída | publicação automatizada em escala |
@@ -427,8 +442,7 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 
 ## 16. Itens proibidos por esta definição
 
-- código ou dependências sem autorização específica de sublote;
-- RPCs, adapters ou grants de execução de comandos sem autorização específica; C.1.2 integrou somente migration, RLS e grants autorizados;
+- código ou dependências sem autorização específica de lote/sublote;
 - upload ou ingestão de arquivo real;
 - PNLD real ou conteúdo protegido;
 - currículo real adicional;
@@ -437,19 +451,21 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 - ativação do Sócrates 2;
 - OPP normativa ampliada;
 - frontend, API, job ou fila;
-- Supabase hospedado, `service_role`, wiring ou produção;
+- Supabase hospedado, `service_role` real, wiring ou produção;
 - Nexus, Gráfica, PDF ou PPTX;
-- início implícito de C.1.3–C.1.6 ou C.2–C.7.
+- início implícito de C.2–C.7.
+
+As RPCs, adapters e grants de C.1 já integrados permanecem como infraestrutura governada no
+repositório, sem ativação em ambiente hospedado ou produção.
 
 ## 17. Próximo escopo elegível
 
-C.1.2 foi integrado pelo PR nº 34 no commit canônico
-`673318c2d3370f60997fd0a15b68bc69c6be5755`, após revisão final e validações verdes em CI geral,
-DB CI descartável e Vercel. O Checkpoint 038 formaliza o estado pós-merge.
+C.1 foi encerrado após a integração do PR nº 57 no commit
+`3ae0f5554eed5e7bd7f208647e068a304127058d`, com CI pós-merge nº 362 verde. O Checkpoint 043
+formaliza o estado pós-C.1.6 e o encerramento de `GAP-3B-04`.
 
-O próximo sublote tecnicamente candidato é **C.1.3 — fronteira atômica para lifecycle e permissão**.
-Ele permanece bloqueado até nova autorização humana explícita e inspeção prévia de seu Definition of
-Ready. A integração de C.1.2 não constitui autorização implícita para C.1.3.
+O próximo lote estrutural candidato é **C.2 — Ingestão controlada**. Ele permanece bloqueado até nova
+autorização humana explícita e inspeção prévia de sua Definition of Ready. A conclusão de C.1 não
+constitui autorização implícita para C.2.
 
-Nenhuma autorização desta formalização inclui RPCs, adapters, C.2, conteúdo real, Supabase hospedado,
-wiring ou produção.
+Nenhuma autorização desta formalização inclui conteúdo real, Supabase hospedado, wiring ou produção.
