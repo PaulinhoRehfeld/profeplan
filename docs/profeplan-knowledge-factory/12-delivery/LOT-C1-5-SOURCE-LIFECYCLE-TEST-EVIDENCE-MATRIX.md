@@ -115,23 +115,28 @@ O gate adicional é:
 
 `.github/workflows/knowledge-factory-c1-5-lifecycle-ci.yml`
 
-Ele executa, em uma única stack descartável:
+Ele usa **uma única stack descartável que avança incrementalmente pelos marcos já integrados**. Essa
+ordem é deliberada: testes estruturais congelados de um sublote são executados exatamente no estágio
+que eles certificam, sem relaxar seus inventários para acomodar estruturas legítimas de sublotes
+posteriores.
 
-1. contratos, typecheck e unitários provider-neutral;
-2. matriz RLS positiva/negativa C.1.2;
-3. competência e least privilege C.1.3;
-4. matriz completa de comandos, incluindo supersessão;
-5. idempotência, CAS, fingerprint e falha parcial injetada;
-6. concorrência real multi-session;
-7. least privilege das leituras C.1.4;
-8. rollback estrutural isolado de C.1.4 e C.1.3;
-9. reaplicação das fronteiras e revalidação de privilégios;
-10. aplicação somente então do fixture sintético de actors para adapters;
-11. regressão E2E C.1.4;
-12. prova integrada C.1.5 de expiração temporal, supersessão e provider-neutrality;
-13. `db lint`;
-14. upload de evidência técnica;
-15. destruição da stack em `always()`.
+A sequência é:
+
+1. iniciar a stack somente com a fundação e C.1.2;
+2. executar contratos, typecheck, unitários e a matriz RLS positiva/negativa C.1.2;
+3. aplicar a migration C.1.3 no mesmo banco descartável;
+4. validar competência, least privilege, matriz completa de comandos e supersessão;
+5. validar idempotência, CAS, fingerprint, falha parcial injetada e concorrência real multi-session;
+6. aplicar a migration C.1.4 no mesmo banco descartável;
+7. validar least privilege das leituras históricas C.1.4;
+8. ensaiar rollback estrutural isolado de C.1.4 e C.1.3, preservando C.1.2;
+9. reaplicar C.1.3/C.1.4 e revalidar suas superfícies de privilégio;
+10. aplicar somente então o fixture sintético de actors necessário aos adapters;
+11. executar a regressão E2E C.1.4;
+12. executar a prova integrada C.1.5 de expiração temporal, supersessão e provider-neutrality;
+13. executar `db lint`;
+14. publicar a evidência técnica do run;
+15. destruir a stack no passo `always()`.
 
 Credenciais locais geradas pela stack descartável são mascaradas e não são armazenadas na matriz ou
 nos logs deliberados. O workflow não lê secrets de Supabase hospedado e não conhece `project_ref` de
