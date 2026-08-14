@@ -30,7 +30,7 @@ revalidado pelo PR nº 62. C.2.2–C.2.6, C.3–C.7, ingestão real, fontes reai
 hospedado, storage real e produção permanecem bloqueados.**
 
 A visibilidade de C.2.2–C.7 permanece planejamento, não autorização automática. Cada implementação
-de lote ou sublote exige Definition of Ready satisfeita e governança própria.
+de lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
 
 ## 1. Objetivo
 
