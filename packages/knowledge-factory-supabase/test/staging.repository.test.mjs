@@ -93,6 +93,7 @@ test('staging adapter writes without overwrite and returns only provider-neutral
 
   assert.equal(fake.calls.upload.length, 1);
   assert.equal(fake.calls.upload[0].options.upsert, false);
+  assert.equal(descriptor.state, 'STAGED');
   assert.equal(
     descriptor.artifact.opaqueLocator,
     'temporary-staging:v1:processing-run-synthetic-1:artifact-synthetic-1'
@@ -188,6 +189,7 @@ test('discard verifies absence and returns an auditable provider-neutral receipt
     correlationId: 'correlation-synthetic-1',
   });
 
+  assert.equal(receipt.state, 'DISCARDED');
   assert.equal(receipt.outcome, 'discarded');
   assert.equal(receipt.confirmedAt, '2026-08-14T21:05:00.000Z');
   assert.equal(fake.calls.list.length, 1);
@@ -215,6 +217,8 @@ test('discard can be repeated safely when the provider treats missing removal as
   const first = await adapter.discard(command);
   const second = await adapter.discard(command);
 
+  assert.equal(first.state, 'DISCARDED');
+  assert.equal(second.state, 'DISCARDED');
   assert.equal(first.outcome, 'discarded');
   assert.equal(second.outcome, 'discarded');
   assert.equal(fake.calls.remove.length, 2);
