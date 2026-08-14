@@ -112,6 +112,7 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
 
       const descriptor: TemporaryStagingArtifactDescriptor = {
         contractVersion: '1.0.0',
+        state: 'STAGED',
         artifact: {
           artifactId: input.artifactId,
           opaqueLocator: locatorFor(input.run.id, input.artifactId),
@@ -189,6 +190,7 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
 
       const receipt: TemporaryStagingDiscardReceipt = {
         contractVersion: '1.0.0',
+        state: 'DISCARDED',
         artifactId,
         run: input.run,
         requestedAt: input.requestedAt,
