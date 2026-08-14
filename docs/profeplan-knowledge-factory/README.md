@@ -69,10 +69,13 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Matriz de fechamento C.1.6 e decisão sobre GAP-3B-04](12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md)
 - [ADR-061 — encerramento de C.1 e GAP-3B-04](00-governance/ADR-061-C1-CLOSURE-GAP-3B-04.md)
 - [Checkpoint 043 — Lote C.1 e GAP-3B-04 encerrados](00-governance/CONTINUITY-CHECKPOINT-043.md)
+- [Definição do Lote C.2 — ingestão controlada](12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md)
+- [ADR-062 — fronteira C.2 entre ingestão, extração e segmentação](00-governance/ADR-062-C2-CONTROLLED-INGESTION-BOUNDARY.md)
+- [Checkpoint 044 — definição de C.2 integrada; C.2.1 bloqueado](00-governance/CONTINUITY-CHECKPOINT-044.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após C.1.6, prevalece o [Checkpoint 043](00-governance/CONTINUITY-CHECKPOINT-043.md) sobre marcadores históricos de checkpoints anteriores.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após a integração da definição documental de C.2, prevalece o [Checkpoint 044](00-governance/CONTINUITY-CHECKPOINT-044.md) sobre marcadores históricos de checkpoints anteriores.
 
 - Fase A — concluída;
 - Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
@@ -88,9 +91,12 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.1.5 — prova integrada de contrato, segurança, concorrência, rollback e lifecycle E2E integrada;
 - C.1.6 — auditoria de fechamento integrada pelo PR nº 57 no commit `3ae0f5554eed5e7bd7f208647e068a304127058d`;
 - GAP-3B-04 — **encerrado** após comprovação de que o lifecycle necessário à ingestão está definido, persistido, protegido, adaptado, testado e integrado;
-- C.2–C.7 — bloqueados até seus próprios gates e autorizações;
-- produção — não autorizada.
+- Lote C.2 — **definição documental integrada** pelo PR nº 59 no commit `787432fa8e7f5d891899c94b1089803430a4734a`;
+- C.2.1 — **bloqueado**, aguardando autorização humana específica e inspeção de seu DoR;
+- C.2.2–C.2.6 — bloqueados;
+- C.3–C.7 — bloqueados;
+- conteúdo real, Supabase hospedado e produção — não autorizados.
 
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-O próximo lote estrutural candidato é **C.2 — Ingestão controlada**, mas este README não autoriza seu início. C.2 exige nova autorização explícita e deve começar pela inspeção de sua Definition of Ready.
+O próximo escopo técnico candidato é **C.2.1 — contratos, receipts e state machine**. Este README não autoriza seu início: C.2.1 permanece bloqueado até nova autorização humana específica, com C.3–C.7 igualmente bloqueados.
