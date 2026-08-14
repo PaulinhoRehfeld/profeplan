@@ -81,9 +81,8 @@ const DadosEducacionais: React.FC = () => (
     <section>
       <h2>7. Direitos</h2>
       <p>
-        Pais, responsáveis, estudantes e instituições poderão solicitar informações ou
-        providências pelo canal:{' '}
-        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+        Pais, responsáveis, estudantes e instituições poderão solicitar informações ou providências
+        pelo canal: <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
       </p>
     </section>
 
@@ -92,7 +91,8 @@ const DadosEducacionais: React.FC = () => (
       <p>O ProfePlan não é destinado, nesta versão, à criação direta de contas por crianças.</p>
       <p>
         Se futuramente forem criadas contas ou experiências diretamente voltadas a estudantes,
-        deverá ser realizada nova avaliação jurídica, técnica e de produto antes da disponibilização.
+        deverá ser realizada nova avaliação jurídica, técnica e de produto antes da
+        disponibilização.
       </p>
     </section>
   </LegalLayout>

@@ -6,14 +6,29 @@ const TermosDeUso: React.FC = () => (
   <LegalLayout title="Termos de Uso do ProfePlan">
     <section>
       <h2>1. Identificação</h2>
-      <p>Estes Termos regulam o acesso e a utilização do ProfePlan, produto desenvolvido e operado por <strong>WR TECH INOVA SIMPLES (I.S.)</strong>, inscrita no CNPJ sob o nº <strong>65.458.067/0001-10</strong>, com sede na Rua Varginha, nº 92, Bairro Planalto, Capelinha, Minas Gerais, CEP 39682-036.</p>
+      <p>
+        Estes Termos regulam o acesso e a utilização do ProfePlan, produto desenvolvido e operado
+        por <strong>WR TECH INOVA SIMPLES (I.S.)</strong>, inscrita no CNPJ sob o nº{' '}
+        <strong>65.458.067/0001-10</strong>, com sede na Rua Varginha, nº 92, Bairro Planalto,
+        Capelinha, Minas Gerais, CEP 39682-036.
+      </p>
     </section>
 
     <section>
       <h2>2. Aceitação</h2>
-      <p>Ao criar uma conta ou contratar um plano, o usuário declara que leu e concorda com estes Termos.</p>
-      <p>A aceitação dos Termos não deve ser confundida com consentimento genérico para tratamento de dados pessoais.</p>
-      <p>O tratamento de dados será realizado conforme a <Link to="/politica-de-privacidade">Política de Privacidade</Link> e as bases legais aplicáveis.</p>
+      <p>
+        Ao criar uma conta ou contratar um plano, o usuário declara que leu e concorda com estes
+        Termos.
+      </p>
+      <p>
+        A aceitação dos Termos não deve ser confundida com consentimento genérico para tratamento de
+        dados pessoais.
+      </p>
+      <p>
+        O tratamento de dados será realizado conforme a{' '}
+        <Link to="/politica-de-privacidade">Política de Privacidade</Link> e as bases legais
+        aplicáveis.
+      </p>
     </section>
 
     <section>
@@ -41,7 +56,10 @@ const TermosDeUso: React.FC = () => (
         <li>comunicar acessos suspeitos;</li>
         <li>utilizar a conta somente para fins legítimos.</li>
       </ul>
-      <p>O usuário é responsável pelas atividades realizadas em sua conta quando decorrentes de negligência na proteção das credenciais.</p>
+      <p>
+        O usuário é responsável pelas atividades realizadas em sua conta quando decorrentes de
+        negligência na proteção das credenciais.
+      </p>
     </section>
 
     <section>
@@ -60,7 +78,10 @@ const TermosDeUso: React.FC = () => (
         <li>inteligência artificial;</li>
         <li>outras funcionalidades relacionadas à educação.</li>
       </ul>
-      <p>As funcionalidades poderão variar de acordo com plano, período de testes, versão, disponibilidade técnica e evolução do produto.</p>
+      <p>
+        As funcionalidades poderão variar de acordo com plano, período de testes, versão,
+        disponibilidade técnica e evolução do produto.
+      </p>
     </section>
 
     <section>
@@ -78,7 +99,9 @@ const TermosDeUso: React.FC = () => (
         <li>respeito aos direitos dos estudantes.</li>
       </ul>
       <p>O ProfePlan não garante que todo conteúdo gerado seja isento de erros.</p>
-      <p>A decisão final sobre o uso do material pertence ao professor ou profissional responsável.</p>
+      <p>
+        A decisão final sobre o uso do material pertence ao professor ou profissional responsável.
+      </p>
     </section>
 
     <section>
@@ -95,13 +118,20 @@ const TermosDeUso: React.FC = () => (
         <li>decisão da escola;</li>
         <li>diálogo com a família.</li>
       </ul>
-      <p>O usuário não deve utilizar respostas de inteligência artificial como diagnóstico de deficiência, transtorno, condição de saúde ou necessidade especial.</p>
+      <p>
+        O usuário não deve utilizar respostas de inteligência artificial como diagnóstico de
+        deficiência, transtorno, condição de saúde ou necessidade especial.
+      </p>
     </section>
 
     <section>
       <h2>8. Conteúdo enviado pelo usuário</h2>
       <p>O usuário permanece titular dos direitos que possuir sobre os conteúdos enviados.</p>
-      <p>Ao utilizar a plataforma, concede à WR TECH INOVA SIMPLES (I.S.) autorização limitada para processar, armazenar, converter e apresentar o conteúdo na medida necessária à prestação do serviço.</p>
+      <p>
+        Ao utilizar a plataforma, concede à WR TECH INOVA SIMPLES (I.S.) autorização limitada para
+        processar, armazenar, converter e apresentar o conteúdo na medida necessária à prestação do
+        serviço.
+      </p>
       <p>Essa autorização não representa transferência integral de propriedade intelectual.</p>
       <p>O usuário declara que possui direito ou autorização para inserir os materiais enviados.</p>
     </section>
@@ -119,7 +149,10 @@ const TermosDeUso: React.FC = () => (
         <li>possuir autorização ou base legal adequada;</li>
         <li>manter sigilo profissional.</li>
       </ul>
-      <p>É proibido utilizar o ProfePlan para expor, constranger, discriminar ou prejudicar estudantes.</p>
+      <p>
+        É proibido utilizar o ProfePlan para expor, constranger, discriminar ou prejudicar
+        estudantes.
+      </p>
     </section>
 
     <section>
@@ -147,29 +180,51 @@ const TermosDeUso: React.FC = () => (
 
     <section>
       <h2>11. Propriedade intelectual</h2>
-      <p>A marca, identidade visual, código, estrutura, interfaces, bancos de dados, documentação e demais elementos próprios do ProfePlan pertencem à WR TECH INOVA SIMPLES (I.S.) ou a seus licenciadores.</p>
+      <p>
+        A marca, identidade visual, código, estrutura, interfaces, bancos de dados, documentação e
+        demais elementos próprios do ProfePlan pertencem à WR TECH INOVA SIMPLES (I.S.) ou a seus
+        licenciadores.
+      </p>
       <p>Nenhuma disposição destes Termos transfere ao usuário a propriedade do software.</p>
     </section>
 
     <section>
       <h2>12. Planos e pagamentos</h2>
-      <p>Os preços, limites, periodicidade e funcionalidades de cada plano serão apresentados antes da contratação.</p>
+      <p>
+        Os preços, limites, periodicidade e funcionalidades de cada plano serão apresentados antes
+        da contratação.
+      </p>
       <p>A contratação poderá envolver cobrança recorrente.</p>
-      <p>Quando existir renovação automática, essa informação deverá aparecer de forma clara antes da confirmação da compra.</p>
+      <p>
+        Quando existir renovação automática, essa informação deverá aparecer de forma clara antes da
+        confirmação da compra.
+      </p>
       <p>Os dados completos de cartão deverão ser tratados pelo provedor de pagamento.</p>
     </section>
 
     <section>
       <h2>13. Cancelamento</h2>
-      <p>O usuário poderá solicitar o cancelamento da renovação da assinatura pelos meios disponibilizados na conta ou pelo suporte.</p>
+      <p>
+        O usuário poderá solicitar o cancelamento da renovação da assinatura pelos meios
+        disponibilizados na conta ou pelo suporte.
+      </p>
       <p>O cancelamento impede novas cobranças após o ciclo aplicável.</p>
-      <p>Salvo informação diferente apresentada na contratação, o acesso ao plano pago poderá permanecer disponível até o encerramento do período já pago.</p>
+      <p>
+        Salvo informação diferente apresentada na contratação, o acesso ao plano pago poderá
+        permanecer disponível até o encerramento do período já pago.
+      </p>
     </section>
 
     <section>
       <h2>14. Direito de arrependimento</h2>
-      <p>Nas contratações realizadas pela internet, o consumidor poderá exercer o direito de arrependimento dentro do prazo legal aplicável.</p>
-      <p>A solicitação poderá ser enviada para: <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a></p>
+      <p>
+        Nas contratações realizadas pela internet, o consumidor poderá exercer o direito de
+        arrependimento dentro do prazo legal aplicável.
+      </p>
+      <p>
+        A solicitação poderá ser enviada para:{' '}
+        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+      </p>
     </section>
 
     <section>
@@ -218,8 +273,13 @@ const TermosDeUso: React.FC = () => (
     <section>
       <h2>18. Limitação responsável</h2>
       <p>O ProfePlan é uma ferramenta de apoio.</p>
-      <p>A empresa não se responsabiliza por decisões tomadas sem revisão humana, uso contrário às orientações da plataforma ou inserção ilegal de dados pelo usuário.</p>
-      <p>Essa disposição não exclui responsabilidades que não possam ser afastadas pela legislação.</p>
+      <p>
+        A empresa não se responsabiliza por decisões tomadas sem revisão humana, uso contrário às
+        orientações da plataforma ou inserção ilegal de dados pelo usuário.
+      </p>
+      <p>
+        Essa disposição não exclui responsabilidades que não possam ser afastadas pela legislação.
+      </p>
     </section>
 
     <section>
@@ -238,17 +298,24 @@ const TermosDeUso: React.FC = () => (
     <section>
       <h2>20. Legislação e foro</h2>
       <p>Aplicam-se as leis brasileiras.</p>
-      <p>Nas relações de consumo, serão respeitados os direitos do consumidor, inclusive as regras relativas ao foro legalmente competente.</p>
+      <p>
+        Nas relações de consumo, serão respeitados os direitos do consumidor, inclusive as regras
+        relativas ao foro legalmente competente.
+      </p>
     </section>
 
     <section>
       <h2>21. Contato</h2>
-      <p><strong>WR TECH INOVA SIMPLES (I.S.)</strong><br />
-      CNPJ 65.458.067/0001-10</p>
-      <p><a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a></p>
+      <p>
+        <strong>WR TECH INOVA SIMPLES (I.S.)</strong>
+        <br />
+        CNPJ 65.458.067/0001-10
+      </p>
+      <p>
+        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+      </p>
     </section>
   </LegalLayout>
 );
 
 export default TermosDeUso;
-

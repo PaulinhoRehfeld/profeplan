@@ -29,11 +29,14 @@ const DireitosTitular: React.FC = () => (
     <section>
       <h2>Como solicitar</h2>
       <p>
-        Enviar e-mail para:{' '}
-        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+        Enviar e-mail para: <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
       </p>
-      <p><strong>Assunto sugerido:</strong> Solicitação LGPD — [tipo da solicitação]</p>
-      <p><strong>Informar:</strong></p>
+      <p>
+        <strong>Assunto sugerido:</strong> Solicitação LGPD — [tipo da solicitação]
+      </p>
+      <p>
+        <strong>Informar:</strong>
+      </p>
       <ul>
         <li>nome completo;</li>
         <li>e-mail utilizado no ProfePlan;</li>
@@ -79,7 +82,9 @@ const DireitosTitular: React.FC = () => (
         <br />
         CNPJ 65.458.067/0001-10
       </p>
-      <p><a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a></p>
+      <p>
+        <a href="mailto:suporte@profeplan.com.br">suporte@profeplan.com.br</a>
+      </p>
     </section>
   </LegalLayout>
 );
