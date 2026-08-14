@@ -73,7 +73,7 @@ INSERT INTO public.profiles (id, tier, credits, is_unlimited) VALUES
   ('11111111-1111-1111-1111-111111111111', 'FREE', 10, false),
   ('22222222-2222-2222-2222-222222222222', 'FREE', 10, false);
 
--- Valid FREE trial grant + funding entry.
+-- Valid FREE trial: exactly 10 credits for exactly seven days.
 INSERT INTO public.credit_operations (
   operation_id, user_id, operation_kind, action_key, request_fingerprint,
   outcome, requested_amount, applied_amount
@@ -102,7 +102,7 @@ INSERT INTO public.credit_ledger_entries (
   'CREDIT', 10
 );
 
--- Valid PURCHASED grant is non-expiring.
+-- Valid PURCHASED grant is non-expiring and funded by the same GRANT receipt.
 INSERT INTO public.credit_operations (
   operation_id, user_id, operation_kind, action_key, request_fingerprint,
   outcome, requested_amount, applied_amount
@@ -159,7 +159,7 @@ INSERT INTO public.credit_operations (
   'CONSUME', 'SAVE_ASSESSMENT', 'fp-gold-001', 'NO_CHARGE', 1, 0, 'GOLD_UNLIMITED'
 );
 
--- FREE_TRIAL must expire.
+-- FREE_TRIAL cannot omit expiry.
 DO $$
 BEGIN
   BEGIN
@@ -188,7 +188,65 @@ BEGIN
 END;
 $$;
 
--- PURCHASED and LEGACY_BALANCE must never receive automatic expiry.
+-- FREE_TRIAL is exactly 10 credits, not an arbitrary promotion size.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount
+    ) VALUES (
+      'grant:bad-free:amount',
+      '22222222-2222-2222-2222-222222222222',
+      'GRANT', 'FREE_TRIAL', 'fp-bad-free-amount', 'APPLIED', 9, 9
+    );
+
+    INSERT INTO public.credit_grants (
+      user_id, operation_id, grant_key, origin, granted_amount, granted_at, expires_at
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'grant:bad-free:amount',
+      'free-trial:bad-amount',
+      'FREE_TRIAL', 9, '2026-08-14T12:00:00Z', '2026-08-21T12:00:00Z'
+    );
+
+    RAISE EXCEPTION 'FREE_TRIAL with amount other than 10 was accepted';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- FREE_TRIAL duration is exactly seven days.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount
+    ) VALUES (
+      'grant:bad-free:window',
+      '22222222-2222-2222-2222-222222222222',
+      'GRANT', 'FREE_TRIAL', 'fp-bad-free-window', 'APPLIED', 10, 10
+    );
+
+    INSERT INTO public.credit_grants (
+      user_id, operation_id, grant_key, origin, granted_amount, granted_at, expires_at
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'grant:bad-free:window',
+      'free-trial:bad-window',
+      'FREE_TRIAL', 10, '2026-08-14T12:00:00Z', '2026-08-20T12:00:00Z'
+    );
+
+    RAISE EXCEPTION 'FREE_TRIAL with duration other than seven days was accepted';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- PURCHASED must never receive automatic expiry.
 DO $$
 BEGIN
   BEGIN
@@ -217,6 +275,35 @@ BEGIN
 END;
 $$;
 
+-- LEGACY_BALANCE must remain non-expiring when provenance is ambiguous.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount
+    ) VALUES (
+      'grant:bad-legacy:expiry',
+      '22222222-2222-2222-2222-222222222222',
+      'GRANT', 'LEGACY_MIGRATION', 'fp-bad-legacy', 'APPLIED', 25, 25
+    );
+
+    INSERT INTO public.credit_grants (
+      user_id, operation_id, grant_key, origin, granted_amount, expires_at
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'grant:bad-legacy:expiry',
+      'legacy:bad-expiry',
+      'LEGACY_BALANCE', 25, now() + interval '365 days'
+    );
+
+    RAISE EXCEPTION 'LEGACY_BALANCE with expiry was accepted';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
 -- A user receives only one initial FREE_TRIAL lot.
 DO $$
 BEGIN
@@ -231,12 +318,12 @@ BEGIN
     );
 
     INSERT INTO public.credit_grants (
-      user_id, operation_id, grant_key, origin, granted_amount, expires_at
+      user_id, operation_id, grant_key, origin, granted_amount, granted_at, expires_at
     ) VALUES (
       '11111111-1111-1111-1111-111111111111',
       'grant:duplicate-free:user-a',
       'free-trial:duplicate-user-a',
-      'FREE_TRIAL', 10, now() + interval '7 days'
+      'FREE_TRIAL', 10, '2026-08-15T12:00:00Z', '2026-08-22T12:00:00Z'
     );
 
     RAISE EXCEPTION 'second FREE_TRIAL lot for same user was accepted';
@@ -275,7 +362,7 @@ BEGIN
 END;
 $$;
 
--- Each grant can be funded by only one CREDIT ledger entry.
+-- A grant cannot disagree with the amount recorded by its GRANT operation.
 DO $$
 BEGIN
   BEGIN
@@ -283,16 +370,65 @@ BEGIN
       operation_id, user_id, operation_kind, action_key, request_fingerprint,
       outcome, requested_amount, applied_amount
     ) VALUES (
-      'grant:second-credit-entry:001',
-      '11111111-1111-1111-1111-111111111111',
-      'GRANT', 'ADMIN_ADJUSTMENT', 'fp-second-credit', 'APPLIED', 10, 10
+      'grant:mismatched-amount:001',
+      '22222222-2222-2222-2222-222222222222',
+      'GRANT', 'ADMIN_ADJUSTMENT', 'fp-mismatched-grant', 'APPLIED', 20, 20
     );
 
+    INSERT INTO public.credit_grants (
+      user_id, operation_id, grant_key, origin, granted_amount
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'grant:mismatched-amount:001',
+      'admin:mismatched-amount:001',
+      'ADMIN_ADJUSTMENT', 10
+    );
+
+    RAISE EXCEPTION 'grant amount different from operation amount was accepted';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- A CONSUME receipt cannot create a grant.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount
+    ) VALUES (
+      'consume:cannot-create-grant:001',
+      '22222222-2222-2222-2222-222222222222',
+      'CONSUME', 'SAVE_DOCUMENT', 'fp-consume-grant', 'APPLIED', 5, 5
+    );
+
+    INSERT INTO public.credit_grants (
+      user_id, operation_id, grant_key, origin, granted_amount
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'consume:cannot-create-grant:001',
+      'admin:from-consume:001',
+      'ADMIN_ADJUSTMENT', 5
+    );
+
+    RAISE EXCEPTION 'CONSUME operation created a grant';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- Each grant can be funded by only one CREDIT ledger entry.
+DO $$
+BEGIN
+  BEGIN
     INSERT INTO public.credit_ledger_entries (
       user_id, operation_id, grant_id, entry_type, amount
     ) VALUES (
       '11111111-1111-1111-1111-111111111111',
-      'grant:second-credit-entry:001',
+      'grant:free:11111111-1111-1111-1111-111111111111',
       'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
       'CREDIT', 10
     );
@@ -304,7 +440,46 @@ BEGIN
 END;
 $$;
 
--- Composite user FKs prevent cross-account ledger attribution.
+-- A CREDIT entry must equal its grant's funded amount.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount
+    ) VALUES (
+      'grant:credit-mismatch:001',
+      '22222222-2222-2222-2222-222222222222',
+      'GRANT', 'ADMIN_ADJUSTMENT', 'fp-credit-mismatch', 'APPLIED', 5, 5
+    );
+
+    INSERT INTO public.credit_grants (
+      id, user_id, operation_id, grant_key, origin, granted_amount
+    ) VALUES (
+      'cccccccc-cccc-cccc-cccc-cccccccccccc',
+      '22222222-2222-2222-2222-222222222222',
+      'grant:credit-mismatch:001',
+      'admin:credit-mismatch:001',
+      'ADMIN_ADJUSTMENT', 5
+    );
+
+    INSERT INTO public.credit_ledger_entries (
+      user_id, operation_id, grant_id, entry_type, amount
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'grant:credit-mismatch:001',
+      'cccccccc-cccc-cccc-cccc-cccccccccccc',
+      'CREDIT', 4
+    );
+
+    RAISE EXCEPTION 'CREDIT entry different from grant amount was accepted';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- Composite user attribution prevents cross-account ledger allocation.
 DO $$
 BEGIN
   BEGIN
@@ -329,6 +504,74 @@ BEGIN
     RAISE EXCEPTION 'cross-user grant allocation was accepted';
   EXCEPTION
     WHEN foreign_key_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- GRANT operations cannot generate DEBIT entries.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount
+    ) VALUES (
+      'grant:no-debit:001',
+      '22222222-2222-2222-2222-222222222222',
+      'GRANT', 'PROMOTIONAL_BONUS', 'fp-no-debit', 'APPLIED', 3, 3
+    );
+
+    INSERT INTO public.credit_grants (
+      id, user_id, operation_id, grant_key, origin, granted_amount
+    ) VALUES (
+      'dddddddd-dddd-dddd-dddd-dddddddddddd',
+      '22222222-2222-2222-2222-222222222222',
+      'grant:no-debit:001',
+      'promo:no-debit:001',
+      'PROMOTIONAL_BONUS', 3
+    );
+
+    INSERT INTO public.credit_ledger_entries (
+      user_id, operation_id, grant_id, entry_type, amount
+    ) VALUES (
+      '22222222-2222-2222-2222-222222222222',
+      'grant:no-debit:001',
+      'dddddddd-dddd-dddd-dddd-dddddddddddd',
+      'DEBIT', 1
+    );
+
+    RAISE EXCEPTION 'GRANT operation generated a DEBIT entry';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
+  END;
+END;
+$$;
+
+-- Rejected/no-charge consumption cannot produce ledger debits.
+DO $$
+BEGIN
+  BEGIN
+    INSERT INTO public.credit_operations (
+      operation_id, user_id, operation_kind, action_key, request_fingerprint,
+      outcome, requested_amount, applied_amount, reason_code
+    ) VALUES (
+      'consume:rejected-with-debit:001',
+      '11111111-1111-1111-1111-111111111111',
+      'CONSUME', 'SAVE_DOCUMENT', 'fp-rejected-debit', 'REJECTED', 1, 0, 'INSUFFICIENT_CREDITS'
+    );
+
+    INSERT INTO public.credit_ledger_entries (
+      user_id, operation_id, grant_id, entry_type, amount
+    ) VALUES (
+      '11111111-1111-1111-1111-111111111111',
+      'consume:rejected-with-debit:001',
+      'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+      'DEBIT', 1
+    );
+
+    RAISE EXCEPTION 'REJECTED consumption generated a ledger DEBIT';
+  EXCEPTION
+    WHEN check_violation THEN NULL;
   END;
 END;
 $$;
