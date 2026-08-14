@@ -57,6 +57,11 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 036 — C.1.2 implementado em branch, antes do PR](00-governance/CONTINUITY-CHECKPOINT-036.md)
 - [Checkpoint 037 — C.1.2 revisado e CI verde, aguardando integração](00-governance/CONTINUITY-CHECKPOINT-037.md)
 - [Checkpoint 038 — C.1.2 integrado; C.1.3 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-038.md)
+- [ADR-060 — fronteira atômica C.1.3](00-governance/ADR-060-C1-3-ATOMIC-BOUNDARY.md)
+- [Fronteira transacional C.1.3](09-data/LOT-C1-3-SOURCE-LIFECYCLE-TRANSACTION-BOUNDARY.md)
+- [Matriz de competência e EXECUTE C.1.3](10-legal-security/LOT-C1-3-EXECUTE-COMPETENCE-MATRIX.md)
+- [Definição da fronteira atômica C.1.3](12-delivery/LOT-C1-3-SOURCE-LIFECYCLE-ATOMIC-BOUNDARY-DEFINITION.md)
+- [Checkpoint 039 — C.1.3 rematerializado sobre a genealogia recuperada](00-governance/CONTINUITY-CHECKPOINT-039.md)
 
 ## Estado atual
 
@@ -83,10 +88,12 @@ O [Blueprint de Execução](BLUEPRINT.md) é a referência de navegação vigent
 - C.1.2 — persistência incremental, RLS, grants, rollback e testes integrados pelo PR nº 34 no
   commit canônico `673318c2d3370f60997fd0a15b68bc69c6be5755`; validações pré-merge concluídas com CI Pipeline
   nº 288, Knowledge Factory DB CI nº 40 e Vercel verdes;
-- C.1.3–C.1.6 e C.2–C.7 — bloqueados;
+- recuperação canônica da Knowledge Factory até C.1.2 — integrada pelo PR nº 43 no merge commit
+  `39068d3225185d29c38c8b5841a21f60636b58b2`;
+- C.1.3 — definição documental rematerializada e integrada pelo PR nº 49 no commit
+  `15d3530dadff3ed0f730c165fb92772dd361fd78`; implementação executável permanece bloqueada por gate de segurança;
+- C.1.4–C.1.6 e C.2–C.7 — bloqueados;
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-O próximo sublote tecnicamente candidato é C.1.3 — fronteira atômica para lifecycle e permissão —,
-mas ele permanece bloqueado até nova autorização humana explícita. Nenhum RPC, adapter, ingestão,
-wiring, Supabase hospedado ou produção está autorizado pela integração de C.1.2.
+O próximo passo tecnicamente candidato é a implementação executável de C.1.3 — migration, RPCs estreitas e testes em ambiente descartável —, mas essa fronteira envolve `SECURITY DEFINER`, grants `EXECUTE` e competência jurídico-editorial e, por isso, permanece sujeita a gate explícito de segurança. C.1.4, ingestão, wiring, Supabase hospedado e produção continuam bloqueados.
