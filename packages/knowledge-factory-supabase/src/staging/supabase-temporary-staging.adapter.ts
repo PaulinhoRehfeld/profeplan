@@ -10,8 +10,9 @@ import type {
 } from '@profeplan/types';
 import type { SupabaseSystemContext } from '../context/supabase-system-context.ts';
 import {
+  KnowledgeFactoryPersistenceError,
   toPersistenceError,
-  type KnowledgeFactoryPersistenceError,
+  type KnowledgeFactoryPersistenceError as PersistenceError,
 } from '../errors/persistence-error.ts';
 import {
   NOOP_PERSISTENCE_LOGGER,
@@ -20,7 +21,7 @@ import {
 } from '../observability/persistence-logger.ts';
 
 const ADAPTER_NAME = 'SupabaseTemporaryStagingAdapter';
-const OPAQUE_LOCATOR_PREFIX = 'temporary-staging:';
+const OPAQUE_LOCATOR_PREFIX = 'temporary-staging:v1:';
 
 export interface SupabaseTemporaryStagingAdapterOptions {
   readonly bucketName: string;
@@ -35,8 +36,8 @@ function objectPath(runId: string, artifactId: string): string {
   return `runs/${safeSegment(runId)}/artifacts/${safeSegment(artifactId)}`;
 }
 
-function locatorFor(artifactId: string): string {
-  return `${OPAQUE_LOCATOR_PREFIX}${artifactId}`;
+function locatorFor(runId: string, artifactId: string): string {
+  return `${OPAQUE_LOCATOR_PREFIX}${safeSegment(runId)}:${safeSegment(artifactId)}`;
 }
 
 function recordSuccess(
@@ -63,7 +64,7 @@ function recordFailure(
   operation: string,
   startedAt: number,
   artifactId: string,
-  error: KnowledgeFactoryPersistenceError
+  error: PersistenceError
 ): void {
   recordPersistenceLog(logger, {
     operation,
@@ -114,7 +115,7 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
         contractVersion: '1.0.0',
         artifact: {
           artifactId: input.artifactId,
-          opaqueLocator: locatorFor(input.artifactId),
+          opaqueLocator: locatorFor(input.run.id, input.artifactId),
         },
         run: input.run,
         sourceVersion: input.sourceVersion,
@@ -153,7 +154,16 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
   async discard(input: TemporaryStagingDiscardCommand): Promise<TemporaryStagingDiscardReceipt> {
     const operation = 'staging.discard';
     const startedAt = Date.now();
-    const path = objectPath(input.run.id, input.artifact.artifactId);
+    const artifactId = input.artifact.artifactId;
+    const expectedLocator = locatorFor(input.run.id, artifactId);
+
+    if (input.artifact.opaqueLocator !== expectedLocator) {
+      const error = new KnowledgeFactoryPersistenceError('INVALID_INPUT', operation);
+      recordFailure(this.logger, this.context, operation, startedAt, artifactId, error);
+      throw error;
+    }
+
+    const path = objectPath(input.run.id, artifactId);
     const bucket = this.context.client.storage.from(this.bucketName);
 
     try {
@@ -180,7 +190,7 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
 
       const receipt: TemporaryStagingDiscardReceipt = {
         contractVersion: '1.0.0',
-        artifactId: input.artifact.artifactId,
+        artifactId,
         run: input.run,
         requestedAt: input.requestedAt,
         confirmedAt: this.now(),
@@ -189,18 +199,11 @@ export class SupabaseTemporaryStagingAdapter implements TemporaryStagingPort {
         correlationId: input.correlationId,
       };
 
-      recordSuccess(this.logger, this.context, operation, startedAt, input.artifact.artifactId);
+      recordSuccess(this.logger, this.context, operation, startedAt, artifactId);
       return receipt;
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
-      recordFailure(
-        this.logger,
-        this.context,
-        operation,
-        startedAt,
-        input.artifact.artifactId,
-        persistenceError
-      );
+      recordFailure(this.logger, this.context, operation, startedAt, artifactId, persistenceError);
       throw persistenceError;
     }
   }
