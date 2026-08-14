@@ -609,4 +609,33 @@ BEGIN
 END;
 $$;
 
+-- Accounting lineage cannot disappear through parent DELETE cascades.
+DO $$
+BEGIN
+  BEGIN
+    DELETE FROM public.profiles
+    WHERE id = '11111111-1111-1111-1111-111111111111';
+    RAISE EXCEPTION 'profile delete erased or bypassed accounting lineage';
+  EXCEPTION
+    WHEN foreign_key_violation THEN NULL;
+  END;
+
+  BEGIN
+    DELETE FROM public.credit_grants
+    WHERE id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    RAISE EXCEPTION 'grant delete erased ledger lineage';
+  EXCEPTION
+    WHEN foreign_key_violation THEN NULL;
+  END;
+
+  BEGIN
+    DELETE FROM public.credit_operations
+    WHERE operation_id = 'grant:free:11111111-1111-1111-1111-111111111111';
+    RAISE EXCEPTION 'operation delete erased grant/ledger lineage';
+  EXCEPTION
+    WHEN foreign_key_violation THEN NULL;
+  END;
+END;
+$$;
+
 SELECT 'OK:credit_accounting_schema_1_3B_1' AS result;
