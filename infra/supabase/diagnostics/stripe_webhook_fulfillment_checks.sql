@@ -1,5 +1,5 @@
--- Read-only verification for the ProfePlan Stripe fulfillment migration.
--- Safe to run after applying 20260813_stripe_webhook_fulfillment.sql.
+-- Read-only verification for the ProfePlan Stripe fulfillment migrations.
+-- Safe to run after applying the fulfillment + RPC grant migrations.
 
 SELECT
   to_regclass('public.stripe_webhook_events') AS stripe_webhook_events,
@@ -23,6 +23,46 @@ JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'public'
   AND c.relname IN ('stripe_webhook_events', 'stripe_subscriptions')
 ORDER BY c.relname;
+
+SELECT
+  has_table_privilege('anon','public.stripe_webhook_events','SELECT') AS anon_events_select,
+  has_table_privilege('authenticated','public.stripe_webhook_events','SELECT') AS authenticated_events_select,
+  has_table_privilege('service_role','public.stripe_webhook_events','SELECT') AS service_events_select,
+  has_table_privilege('anon','public.stripe_subscriptions','SELECT') AS anon_subscriptions_select,
+  has_table_privilege('authenticated','public.stripe_subscriptions','SELECT') AS authenticated_subscriptions_select,
+  has_table_privilege('service_role','public.stripe_subscriptions','SELECT') AS service_subscriptions_select;
+
+SELECT
+  has_function_privilege(
+    'anon',
+    'public.process_stripe_checkout_event(text,text,uuid,text,text,text,text,text,timestamptz)',
+    'EXECUTE'
+  ) AS anon_checkout_execute,
+  has_function_privilege(
+    'authenticated',
+    'public.process_stripe_checkout_event(text,text,uuid,text,text,text,text,text,timestamptz)',
+    'EXECUTE'
+  ) AS authenticated_checkout_execute,
+  has_function_privilege(
+    'service_role',
+    'public.process_stripe_checkout_event(text,text,uuid,text,text,text,text,text,timestamptz)',
+    'EXECUTE'
+  ) AS service_checkout_execute,
+  has_function_privilege(
+    'anon',
+    'public.process_stripe_subscription_event(text,text,text,text,text,boolean,timestamptz)',
+    'EXECUTE'
+  ) AS anon_subscription_execute,
+  has_function_privilege(
+    'authenticated',
+    'public.process_stripe_subscription_event(text,text,text,text,text,boolean,timestamptz)',
+    'EXECUTE'
+  ) AS authenticated_subscription_execute,
+  has_function_privilege(
+    'service_role',
+    'public.process_stripe_subscription_event(text,text,text,text,text,boolean,timestamptz)',
+    'EXECUTE'
+  ) AS service_subscription_execute;
 
 SELECT
   status,
