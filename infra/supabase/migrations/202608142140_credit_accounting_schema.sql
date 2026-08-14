@@ -87,6 +87,7 @@ CREATE TABLE public.credit_grants (
     origin <> 'FREE_TRIAL'
     OR (
       granted_amount = 10
+      AND expires_at IS NOT NULL
       AND expires_at = granted_at + interval '7 days'
     )
   ),
