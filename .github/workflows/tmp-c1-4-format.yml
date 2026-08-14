@@ -1,0 +1,62 @@
+name: Temporary C.1.4 Formatter
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  format-c1-4:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'feat/knowledge-factory-lot-c1-4-source-lifecycle-adapters'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout controlled head branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format C.1.4 TypeScript files
+        run: |
+          pnpm exec prettier --write \
+            packages/knowledge-factory/src/repositories/source-lifecycle.repository.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/source-lifecycle-command.mapper.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/source-lifecycle.mapper.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/supabase-source-lifecycle-command.repository.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/supabase-source-lifecycle-read.repository.ts
+
+      - name: Commit formatting only when needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No formatting changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            packages/knowledge-factory/src/repositories/source-lifecycle.repository.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/source-lifecycle-command.mapper.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/source-lifecycle.mapper.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/supabase-source-lifecycle-command.repository.ts \
+            packages/knowledge-factory-supabase/src/source-lifecycle/supabase-source-lifecycle-read.repository.ts
+          git commit -m "style(knowledge-factory): format C.1.4 adapters"
+          git push origin "HEAD:${{ github.head_ref }}"
