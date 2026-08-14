@@ -60,6 +60,10 @@ A referência futura ao artefato temporário é representada somente por:
 
 O contrato não conhece bucket, path físico, signed URL, SDK ou provider.
 
+A solicitação em `REQUESTED` não transporta referência de staging. A referência opaca torna-se
+obrigatória somente no comando que confirma a passagem `STAGING -> STAGED`, preservando a ordem
+fonte governada → solicitação → staging.
+
 ## 4. Autorização consumida de C.1
 
 `IngestionAuthorizationEvidence` representa a evidência provider-neutral de que uma autorização de
@@ -121,7 +125,7 @@ Nenhum estado terminal possui transição de saída em C.2.1.
 |---|---|---|---|---|
 | `request_ingestion` | criação | `REQUESTED` | `actor` explícito | fonte/arquivo/run identificados; staging e ingestion autorizados |
 | `begin_staging` | `REQUESTED` | `STAGING` | `actor` explícito | `expectedState` coerente |
-| `mark_staged` | `STAGING` | `STAGED` | `actor` explícito | `expectedState` coerente |
+| `mark_staged` | `STAGING` | `STAGED` | `actor` explícito | `expectedState` coerente + referência opaca de staging |
 | `begin_verification` | `STAGED` | `VERIFYING` | `actor` explícito | `expectedState` coerente |
 | `confirm_verified` | `VERIFYING` | `VERIFIED` | `actor` explícito | `expectedState` coerente |
 | `request_review` | `VERIFIED` | `PENDING_REVIEW` | `actor` explícito | `expectedState` coerente |
@@ -169,6 +173,7 @@ Retry ou replay nunca cria aprovação silenciosa.
 C.2.1 define somente o contrato necessário para que o gate futuro seja inequívoco:
 
 - identidade da revisão;
+- `reviewMode: 'human'`;
 - revisor identificado;
 - decisão `APPROVE_FOR_EXTRACTION` ou `REJECT`;
 - instante;
@@ -177,6 +182,8 @@ C.2.1 define somente o contrato necessário para que o gate futuro seja inequív
 A presença de uma revisão não concede `extraction`. A aprovação exige simultaneamente:
 
 ```text
+review.reviewMode == human
+AND
 review.decision == APPROVE_FOR_EXTRACTION
 AND
 C.1 authorization evidence purpose == extraction
@@ -212,12 +219,13 @@ path físico.
 
 ## 10. Metadados técnicos minimizados
 
-C.2.1 admite no contrato somente campos que já são necessários para os sublotes seguintes sem
-executar a validação física:
+C.2.1 admite somente campos que os sublotes seguintes precisarão sem executar validação física:
 
 - media type declarado, opcional;
 - tamanho em bytes, opcional;
-- referência opaca do artefato temporário, opcional.
+- referência opaca do artefato temporário no comando `mark_staged`.
+
+A referência opaca não revela storage provider e não existe na solicitação inicial.
 
 Checksum real, media type detectado, duplicidade, política de tamanho, retenção, quarentena e
 lifecycle físico do staging continuam destinados a C.2.2/C.2.3.

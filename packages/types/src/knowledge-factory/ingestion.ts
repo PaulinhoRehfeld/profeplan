@@ -57,7 +57,6 @@ export interface TemporaryStagingArtifactRef {
 export interface IngestionTechnicalMetadata {
   readonly declaredMediaType?: string;
   readonly sizeBytes?: number;
-  readonly stagingArtifact?: TemporaryStagingArtifactRef;
 }
 
 export interface IngestionRequest {
@@ -68,7 +67,6 @@ export interface IngestionRequest {
   readonly requestedBy: SourceActorRef;
   readonly requestedAt: ISODateTime;
   readonly authorizationEvidence: readonly IngestionAuthorizationEvidence[];
-  readonly technicalMetadata?: IngestionTechnicalMetadata;
 }
 
 export const INGESTION_REVIEW_DECISIONS = ['APPROVE_FOR_EXTRACTION', 'REJECT'] as const;
@@ -76,6 +74,7 @@ export type IngestionReviewDecision = (typeof INGESTION_REVIEW_DECISIONS)[number
 
 export interface IngestionHumanReview {
   readonly reviewId: EntityId;
+  readonly reviewMode: 'human';
   readonly reviewer: SourceActorRef;
   readonly decision: IngestionReviewDecision;
   readonly decidedAt: ISODateTime;
@@ -131,6 +130,7 @@ export interface BeginIngestionStagingCommand extends IngestionTransitionCommand
 
 export interface MarkIngestionStagedCommand extends IngestionTransitionCommandBase {
   readonly commandType: 'mark_staged';
+  readonly stagingArtifact: TemporaryStagingArtifactRef;
   readonly technicalMetadata?: IngestionTechnicalMetadata;
 }
 
