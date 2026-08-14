@@ -165,7 +165,7 @@ test('unsupported digest algorithm fails closed before provider access', async (
 
 test('provider download failures are translated without raw detail leakage', async () => {
   const fake = fakeContext({
-    downloadError: { status: 503, message: 'raw provider readback failure secret-detail' },
+    downloadError: { status: 503, message: 'network provider readback failure secret-detail' },
   });
   const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
     bucketName: 'provider-private-bucket',
