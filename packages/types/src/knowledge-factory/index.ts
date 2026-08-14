@@ -1,6 +1,7 @@
 export * from './common.ts';
 export * from './source.ts';
 export * from './source-lifecycle.ts';
+export * from './ingestion.ts';
 export * from './curriculum.ts';
 export * from './pedagogical.ts';
 export * from './agent.ts';
