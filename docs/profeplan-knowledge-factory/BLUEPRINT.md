@@ -817,7 +817,7 @@ Atualização de navegação da Fase C:
 > continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece
 > não autorizada. O Checkpoint 045 é a referência operacional corrente após a reconciliação.**
 
-Próximo objetivo possível, somente em contexto próprio e após nova inspeção canônica:
+Próximo objetivo possível, somente mediante nova autorização humana específica, em contexto próprio e após nova inspeção canônica:
 
 > inspecionar o DoR de **C.2.2 — intake/staging seguro, limites e retenção**, preservando a fronteira
 > C.2/C.3/C.4 e sem inferir autorização para storage real, Supabase hospedado, conteúdo real,
