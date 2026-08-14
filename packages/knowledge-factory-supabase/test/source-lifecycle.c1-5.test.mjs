@@ -207,6 +207,9 @@ test('C.1.5 composes persisted history with provider-neutral temporal eligibilit
 test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring', async () => {
   await registerValidated(SUPERSESSION_SUBJECT_ID, '18');
 
+  const predecessorScope = scope(SUPERSESSION_SUBJECT_ID, 'retrieval', ['internal_only']);
+  const predecessorBasis = basis();
+
   const grant = await withFingerprint({
     ...envelope(
       REVIEWER_ID,
@@ -216,26 +219,44 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
     ),
     commandType: 'grant_authorization',
     authorizationId: PREDECESSOR_AUTHORIZATION_ID,
-    scope: scope(SUPERSESSION_SUBJECT_ID, 'retrieval', ['internal_only']),
-    basis: basis(),
+    scope: predecessorScope,
+    basis: predecessorBasis,
     effectiveFrom: '2026-08-14T18:03:00Z',
   });
   const granted = await commandRepository.grantAuthorization(grant);
+
+  const suspend = await withFingerprint({
+    ...envelope(
+      REVIEWER_ID,
+      'legal_editorial_reviewer',
+      '2026-08-14T18:04:00Z',
+      'synthetic C.1.5 suspend predecessor before purpose block'
+    ),
+    commandType: 'suspend_authorization',
+    authorizationId: PREDECESSOR_AUTHORIZATION_ID,
+    scope: predecessorScope,
+    basis: predecessorBasis,
+    expectedState: 'GRANTED',
+    expectedVersion: granted.aggregateVersion,
+    expectedSequence: granted.sequence,
+  });
+  const suspended = await commandRepository.suspendAuthorization(suspend);
+  assert.equal(suspended.state, 'SUSPENDED');
 
   const block = await withFingerprint({
     ...envelope(
       REVIEWER_ID,
       'legal_editorial_reviewer',
-      '2026-08-14T18:04:00Z',
+      '2026-08-14T18:05:00Z',
       'synthetic C.1.5 block predecessor purpose'
     ),
     commandType: 'block_purpose',
     authorizationId: PREDECESSOR_AUTHORIZATION_ID,
-    scope: scope(SUPERSESSION_SUBJECT_ID, 'retrieval', ['internal_only']),
-    basis: basis(),
-    expectedState: 'GRANTED',
-    expectedVersion: granted.aggregateVersion,
-    expectedSequence: granted.sequence,
+    scope: predecessorScope,
+    basis: predecessorBasis,
+    expectedState: 'SUSPENDED',
+    expectedVersion: suspended.aggregateVersion,
+    expectedSequence: suspended.sequence,
   });
   const blocked = await commandRepository.blockPurpose(block);
   assert.equal(blocked.state, 'BLOCKED');
@@ -244,7 +265,7 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
     ...envelope(
       REVIEWER_ID,
       'legal_editorial_reviewer',
-      '2026-08-14T18:05:00Z',
+      '2026-08-14T18:06:00Z',
       'synthetic C.1.5 supersede retrieval grant with generation grant'
     ),
     commandType: 'supersede_authorization',
@@ -252,7 +273,7 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
     successorAuthorizationId: SUCCESSOR_AUTHORIZATION_ID,
     scope: scope(SUPERSESSION_SUBJECT_ID, 'generation', ['teacher_output_only']),
     basis: basis(SUCCESSOR_BASIS_ID, 'open_license'),
-    effectiveFrom: '2026-08-14T18:05:00Z',
+    effectiveFrom: '2026-08-14T18:06:00Z',
     expectedState: 'BLOCKED',
     expectedVersion: blocked.aggregateVersion,
     expectedSequence: blocked.sequence,
@@ -267,7 +288,7 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
   );
   const impactEvents = await readRepository.listImpactHistory(SUPERSESSION_SUBJECT_ID);
 
-  assert.ok(authorizationEvents.length >= 4);
+  assert.ok(authorizationEvents.length >= 5);
   assert.ok(
     authorizationEvents.some(
       (event) =>
@@ -291,7 +312,7 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
   const oldPurpose = evaluateGovernedSourceEligibility({
     sourceVersionId: SUPERSESSION_SUBJECT_ID,
     purpose: 'retrieval',
-    instant: '2026-08-14T18:06:00Z',
+    instant: '2026-08-14T18:07:00Z',
     registrationEvents,
     authorizationEvents,
   });
@@ -303,7 +324,7 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
   const successorPurpose = evaluateGovernedSourceEligibility({
     sourceVersionId: SUPERSESSION_SUBJECT_ID,
     purpose: 'generation',
-    instant: '2026-08-14T18:06:00Z',
+    instant: '2026-08-14T18:07:00Z',
     registrationEvents,
     authorizationEvents,
   });
@@ -311,7 +332,7 @@ test('C.1.5 proves supersession is atomic, purpose-scoped and non-transferring',
     status: 'ELIGIBLE',
     sourceVersionId: SUPERSESSION_SUBJECT_ID,
     purpose: 'generation',
-    instant: '2026-08-14T18:06:00Z',
+    instant: '2026-08-14T18:07:00Z',
     authorizationId: SUCCESSOR_AUTHORIZATION_ID,
   });
 });
