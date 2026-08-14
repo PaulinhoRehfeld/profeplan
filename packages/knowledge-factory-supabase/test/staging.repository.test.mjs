@@ -78,7 +78,10 @@ test('staging adapter writes without overwrite and returns only provider-neutral
 
   assert.equal(fake.calls.upload.length, 1);
   assert.equal(fake.calls.upload[0].options.upsert, false);
-  assert.equal(descriptor.artifact.opaqueLocator, 'temporary-staging:artifact-synthetic-1');
+  assert.equal(
+    descriptor.artifact.opaqueLocator,
+    'temporary-staging:v1:processing-run-synthetic-1:artifact-synthetic-1'
+  );
   assert.equal(descriptor.run.id, run.id);
   assert.equal(descriptor.sourceVersion.id, sourceVersion.id);
   assert.equal(descriptor.receivedFile.id, receivedFile.id);
@@ -131,6 +134,27 @@ test('non-conflict staging failure performs best-effort cleanup without leaking 
     (error) => error.code === 'UNAVAILABLE' && !error.message.includes('provider detail')
   );
   assert.equal(fake.calls.remove.length, 1);
+});
+
+test('discard rejects processing-run mismatch before touching the provider', async () => {
+  const fake = fakeContext();
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
+    bucketName: 'private-test-bucket',
+  });
+  const descriptor = await adapter.stage(write());
+  fake.calls.remove.length = 0;
+
+  await assert.rejects(
+    adapter.discard({
+      artifact: descriptor.artifact,
+      run: { kind: 'processing_run', id: 'processing-run-other' },
+      requestedAt: '2026-08-14T21:04:59.000Z',
+      reasonCode: 'orphan_cleanup',
+      correlationId: 'correlation-synthetic-1',
+    }),
+    (error) => error.code === 'INVALID_INPUT'
+  );
+  assert.equal(fake.calls.remove.length, 0);
 });
 
 test('discard verifies absence and returns an auditable provider-neutral receipt', async () => {
