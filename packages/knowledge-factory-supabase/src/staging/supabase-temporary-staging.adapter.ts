@@ -44,9 +44,7 @@ function locatorFor(runId: string, artifactId: string): string {
 
 async function sha256Hex(bytes: ArrayBuffer): Promise<string> {
   const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
-  return Array.from(new Uint8Array(digest), (byte) =>
-    byte.toString(16).padStart(2, '0')
-  ).join('');
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function recordSuccess(
@@ -172,7 +170,10 @@ export class SupabaseTemporaryStagingAdapter
     const runId = input.artifact.run.id;
     const expectedLocator = locatorFor(runId, artifactId);
 
-    if (input.algorithm !== 'sha-256' || input.artifact.artifact.opaqueLocator !== expectedLocator) {
+    if (
+      input.algorithm !== 'sha-256' ||
+      input.artifact.artifact.opaqueLocator !== expectedLocator
+    ) {
       const error = new KnowledgeFactoryPersistenceError('INVALID_INPUT', operation);
       recordFailure(this.logger, this.context, operation, startedAt, artifactId, error);
       throw error;
