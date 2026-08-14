@@ -48,8 +48,10 @@ export interface TemporaryStagingArtifactDescriptor {
   readonly expiresAt: ISODateTime;
 }
 
-export interface VerifiedTemporaryStagingArtifactDescriptor
-  extends Omit<TemporaryStagingArtifactDescriptor, 'state'> {
+export interface VerifiedTemporaryStagingArtifactDescriptor extends Omit<
+  TemporaryStagingArtifactDescriptor,
+  'state'
+> {
   readonly state: Extract<TemporaryStagingArtifactState, 'VERIFIED'>;
   readonly integrity: TemporaryStagingIntegrityEvidence;
   readonly duplicateDecision: BinaryDuplicateDecision;
