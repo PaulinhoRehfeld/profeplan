@@ -84,12 +84,12 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C — C.1 CONCLUÍDO; C.2.1 INTEGRADO; C.2.2 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 CONCLUÍDO; C.2.1 E C.2.2 INTEGRADOS; C.2.3 BLOQUEADO  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
 ✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
-🔵 C.2 Ingestão controlada — definição integrada; C.2.1 integrado pelo PR nº 62; C.2.2 bloqueado
+🔵 C.2 Ingestão controlada — definição integrada; C.2.1 e C.2.2 integrados; C.2.3 bloqueado
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
@@ -349,7 +349,14 @@ C.2.1 foi integrado pelo PR nº 62 no commit
 `a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde. A superfície contratual
 está em
 [`12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md)
-e o estado pós-merge no Checkpoint 045. C.2.2–C.2.6 e C.3–C.7 permanecem bloqueados.
+e o estado pós-merge no Checkpoint 045.
+
+C.2.2 foi integrado pelo PR nº 67 no commit
+`7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, tree
+`61747e439323dcc165c8d3a084e4d73c66f06c4a`, com CI pós-merge nº 412 verde. A fronteira de intake/staging
+está em
+[`12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md`](12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md)
+e o estado pós-merge no Checkpoint 046. C.2.3–C.2.6 e C.3–C.7 permanecem bloqueados.
 
 O mapa integral C.0–C.7 está definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
@@ -372,7 +379,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1 integrado; C.2.2 bloqueado** |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1–C.2.2 integrados; C.2.3 bloqueado** |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |

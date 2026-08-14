@@ -74,10 +74,12 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 044 — definição de C.2 integrada; C.2.1 bloqueado](00-governance/CONTINUITY-CHECKPOINT-044.md)
 - [Definição C.2.1 — contratos, receipts e state machine](12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md)
 - [Checkpoint 045 — C.2.1 integrado; C.2.2 bloqueado](00-governance/CONTINUITY-CHECKPOINT-045.md)
+- [Definição C.2.2 — intake/staging seguro, limites e retenção](12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md)
+- [Checkpoint 046 — C.2.2 integrado; C.2.3 bloqueado](00-governance/CONTINUITY-CHECKPOINT-046.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após a integração técnica de C.2.1, prevalece o [Checkpoint 045](00-governance/CONTINUITY-CHECKPOINT-045.md) sobre marcadores históricos de checkpoints anteriores.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após a integração técnica de C.2.2, prevalece o [Checkpoint 046](00-governance/CONTINUITY-CHECKPOINT-046.md) sobre marcadores históricos de checkpoints anteriores.
 
 - Fase A — concluída;
 - Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
@@ -94,13 +96,16 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.1.6 — auditoria de fechamento integrada pelo PR nº 57 no commit `3ae0f5554eed5e7bd7f208647e068a304127058d`;
 - GAP-3B-04 — **encerrado** após comprovação de que o lifecycle necessário à ingestão está definido, persistido, protegido, adaptado, testado e integrado;
 - Lote C.2 — **em execução governada**, com definição documental integrada pelo PR nº 59 no commit `787432fa8e7f5d891899c94b1089803430a4734a`;
-- C.2.1 — **integrado e revalidado** pelo PR nº 62 no commit `e0ba47bf063b324df141c370ebf371763fbf2364`, com CI pós-merge nº 373 verde;
-- C.2.2–C.2.6 — bloqueados;
+- C.2.1 — **integrado e revalidado** pelo PR nº 62 no commit `e0ba47bf063b324df141c370ebf371763fbf2364`;
+- C.2.2 — **integrado e revalidado** pelo PR nº 67 no commit `7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, com CI pós-merge nº 412 verde;
+- C.2.3–C.2.6 — bloqueados;
 - C.3–C.7 — bloqueados;
-- conteúdo real, Supabase hospedado, storage real e produção — não autorizados.
+- conteúdo real, Supabase hospedado, storage hospedado e produção — não autorizados.
 
-C.2.1 definiu a linguagem operacional da ingestão controlada: identidades compostas sobre C.1, state machine determinística, comandos tipados, idempotência contratual, receipts provider-neutral e revisão humana obrigatória antes de `APPROVED_FOR_EXTRACTION`. Nenhum arquivo real entrou no sistema.
+C.2.1 definiu a linguagem operacional da ingestão controlada: identidades compostas sobre C.1, state machine determinística, comandos tipados, idempotência contratual, receipts provider-neutral e revisão humana obrigatória antes de `APPROVED_FOR_EXTRACTION`.
+
+C.2.2 acrescentou a fronteira física mínima de staging temporário sem alterar a state machine do `processing_run`: porta provider-neutral, policy centralizada de limites e retenção, lifecycle físico do artefato, adapter Supabase isolado, locator opaco, `upsert: false`, descarte verificável e CI específico com Supabase Storage inteiramente descartável. Nenhum arquivo real entrou no sistema; nenhum byte foi persistido em Postgres; nenhum storage hospedado foi criado.
 
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-O próximo sublote na sequência é **C.2.2 — intake/staging seguro, limites e retenção**. Ele permanece bloqueado nesta continuidade e deverá começar em contexto próprio, com nova inspeção canônica e sem inferir autorização de storage, Supabase hospedado, conteúdo real ou produção.
+O próximo sublote na sequência é **C.2.3 — integridade, checksum, duplicidade e vínculo**. Ele permanece bloqueado nesta continuidade e deverá começar em contexto próprio, com nova inspeção canônica, sem inferir autorização de storage hospedado, Supabase hospedado, conteúdo real ou produção.
