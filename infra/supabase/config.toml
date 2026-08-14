@@ -1,0 +1,5 @@
+# Supabase project configuration for versioned functions under infra/supabase.
+# Stripe authenticates this endpoint with Stripe-Signature, not a Supabase user JWT.
+
+[functions.stripe-webhook]
+verify_jwt = false
