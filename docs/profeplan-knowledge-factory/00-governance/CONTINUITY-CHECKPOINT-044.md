@@ -180,10 +180,32 @@ A `main` pós-merge foi verificada em:
 O CI Pipeline nº 366 executado por `push` nesse SHA concluiu com `success`, incluindo formatter,
 lint, typecheck, build e testes.
 
+## Reconciliação documental pós-merge
+
+A reconciliação foi preparada na branch:
+
+`docs/knowledge-factory-c2-definition-post-merge`.
+
+Foi aberto o **PR nº 60**:
+
+`docs(knowledge-factory): formalize C.2 definition post-merge`.
+
+Seu escopo é exclusivamente documental e inclui:
+
+- este Checkpoint 044;
+- README;
+- Blueprint;
+- mapa vivo da Fase C;
+- atualização do status do ADR-062.
+
+A definição original de C.2 não é reescrita para alterar seu estado de criação. O resultado final da
+reconciliação somente será considerado integrado após revisão do HEAD final, CI verde, squash merge
+e validação da `main` pós-merge.
+
 ## Ocorrência externa
 
 Os checks Vercel dos projetos `profeplan` e `site` reportaram limite diário da camada gratuita de
-deployments durante o PR.
+deployments durante o PR nº 59.
 
 A ocorrência é externa ao conteúdo de C.2 e não representa falha de formatter, lint, typecheck,
 build ou testes do repositório. Nenhum gate de segurança foi removido ou relaxado por esse motivo.
