@@ -58,6 +58,7 @@ O contrato complementar `STAGING_CONTRACT_VERSION = 1.0.0` adiciona somente o ne
 - `processing_run`;
 - `source_version`;
 - `received_file`;
+- lifecycle físico próprio do artefato;
 - tamanho em bytes;
 - media type normalizado;
 - `createdAt`;
@@ -68,6 +69,7 @@ O receipt de descarte contém:
 
 - artifact ID;
 - processing run;
+- estado físico `DISCARDED`;
 - instante solicitado;
 - instante confirmado;
 - outcome;
@@ -76,7 +78,32 @@ O receipt de descarte contém:
 
 Não contém bucket, path, signed URL, secret, stack trace ou payload de provider.
 
-## 5. Política de intake
+## 5. Lifecycle físico distinto do `processing_run`
+
+O lifecycle do artefato temporário é distinto da state machine do `processing_run` definida em C.2.1. O vocabulário normativo do artefato permanece:
+
+```text
+EXPECTED
+  -> RECEIVING
+  -> STAGED
+  -> VERIFIED
+  -> RELEASED_FOR_EXTRACTION
+  -> DISCARD_PENDING
+  -> DISCARDED
+
+RECEIVING/STAGED/VERIFIED
+  -> QUARANTINED
+  -> FAILED
+```
+
+C.2.2 materializa operacionalmente somente os estados que pertencem ao seu escopo físico imediato:
+
+- `STAGED` — retornado apenas depois de o adapter confirmar a criação do artefato temporário;
+- `DISCARDED` — emitido apenas depois de a remoção ser solicitada e a ausência do objeto ser verificada.
+
+`EXPECTED`, `RECEIVING`, `DISCARD_PENDING`, `QUARANTINED` e `FAILED` permanecem linguagem normativa para composição futura do lifecycle. `VERIFIED` pertence às verificações técnicas posteriores e `RELEASED_FOR_EXTRACTION` depende dos gates posteriores de C.2; C.2.2 não implementa transições para esses estados nem antecipa C.2.3–C.2.5.
+
+## 6. Política de intake
 
 O intake trata toda entrada como não confiável.
 
@@ -100,7 +127,7 @@ A normalização do media type remove parâmetros e usa comparação lower-case.
 
 Para o formato piloto sintético permitido em C.2.2, a assinatura mínima `%PDF-` pode ser verificada somente como proteção física contra arquivo incompatível com a declaração. Nenhum digest criptográfico é calculado.
 
-## 6. Limites padrão
+## 7. Limites padrão
 
 Os limites ficam em uma única `StagingIntakePolicy`, substituível por configuração:
 
@@ -118,7 +145,7 @@ Os limites ficam em uma única `StagingIntakePolicy`, substituível por configur
 
 Os testes podem injetar limites menores para evitar consumo desnecessário de recursos. Nenhum valor de provider substitui essa policy de domínio.
 
-## 7. Retenção
+## 8. Retenção
 
 Todo artefato de staging nasce com `createdAt` e `expiresAt` explícitos.
 
@@ -135,7 +162,7 @@ Regras:
 
 A automação periódica de órfãos, caso necessária, deverá ser decidida em lote posterior apropriado sem alterar retroativamente esta policy.
 
-## 8. Object identity e isolamento
+## 9. Object identity e isolamento
 
 O adapter não usa nome original do arquivo como object key.
 
@@ -153,7 +180,7 @@ O `opaqueLocator` compartilhado vincula de forma provider-neutral `processing_ru
 
 Um comando de descarte somente pode operar quando o `processing_run` informado corresponde ao locator opaco do artefato. Divergência é rejeitada como `INVALID_INPUT` antes de qualquer chamada ao provider, preservando o artefato pertencente ao run original.
 
-## 9. Segurança de acesso
+## 10. Segurança de acesso
 
 C.2.2 não cria upload público nem signed URL.
 
@@ -166,11 +193,11 @@ A prova descartável cria um bucket privado somente dentro do Supabase local do 
 
 A existência de `service_role` descartável no CI representa somente canal técnico efêmero. Não constitui autorização de negócio e não altera a necessidade das evidências de C.1/C.2.1.
 
-## 10. Descarte verificável
+## 11. Descarte verificável
 
 O adapter executa delete e em seguida consulta o namespace privado correspondente para confirmar ausência do objeto.
 
-Somente após essa verificação é emitido `TemporaryStagingDiscardReceipt`.
+Somente após essa verificação é emitido `TemporaryStagingDiscardReceipt` em estado `DISCARDED`.
 
 Se a ausência não puder ser confirmada, a operação falha de forma sanitizada e não declara descarte concluído.
 
@@ -178,7 +205,7 @@ Repetir o descarte é seguro quando o provider trata remoção de objeto ausente
 
 Em falha não conflitiva de upload, o adapter executa cleanup best-effort do object key gerado. Em conflito, cleanup é deliberadamente proibido para não apagar um objeto preexistente.
 
-## 11. Observabilidade
+## 12. Observabilidade
 
 O adapter reutiliza `PersistenceLogger` e registra somente allowlist estrutural:
 
@@ -193,7 +220,7 @@ O adapter reutiliza `PersistenceLogger` e registra somente allowlist estrutural:
 
 Não registra bytes, texto, nome original, bucket, path, signed URL, secret ou erro bruto do provider.
 
-## 12. Persistência
+## 13. Persistência
 
 C.2.2 não adiciona tabela, migration, RPC, RLS ou grant PostgreSQL.
 
@@ -206,7 +233,7 @@ Justificativa:
 
 Os metadados/receipts necessários são representados por contratos e provados em memória/CI. Sua persistência definitiva será decidida no sublote responsável pelo command boundary de C.2.
 
-## 13. Testes sintéticos
+## 14. Testes sintéticos
 
 C.2.2 usa somente bytes artificiais mínimos iniciados por `%PDF-`.
 
@@ -226,18 +253,20 @@ A suíte cobre:
 - retenção acima do teto;
 - artefato expirado;
 - determinismo;
+- estado `STAGED` após criação física;
 - `upsert: false`;
 - colisão sem overwrite;
+- tradução de conflito do Supabase Storage para código provider-neutral;
 - cleanup em falha não conflitiva;
 - path derivado de IDs codificados;
 - descriptor/receipt sem provider;
 - mismatch de `processing_run` rejeitado antes do provider;
-- descarte verificável;
+- descarte verificável em estado `DISCARDED`;
 - descarte repetido;
 - isolamento entre runs;
 - acesso `anon` negado no Storage descartável.
 
-## 14. Prova remota descartável
+## 15. Prova remota descartável
 
 O workflow dedicado é:
 
@@ -256,17 +285,18 @@ Ele:
 
 Nenhum secret hospedado, bucket real, Supabase hospedado ou produção participa dessa prova.
 
-## 15. Não escopo preservado
+## 16. Não escopo preservado
 
 C.2.2 não implementa:
 
 - checksum/digest criptográfico;
 - deduplicação;
 - vínculo definitivo por hash;
+- verificação de integridade de C.2.3;
 - persistência/replay distribuído de C.2.4;
 - worker, fila, cron ou Trigger.dev;
 - revisão humana operacional;
-- handoff para C.3;
+- liberação/handoff para C.3;
 - extração;
 - parser;
 - OCR;
@@ -283,11 +313,13 @@ C.2.2 não implementa:
 - storage hospedado;
 - produção.
 
-## 16. Gate de saída de C.2.2
+## 17. Gate de saída de C.2.2
 
 C.2.2 estará apto à integração quando:
 
 - a porta provider-neutral estiver fechada e exportada;
+- o lifecycle do artefato estiver distinto da state machine do `processing_run`;
+- C.2.2 materializar somente os estados físicos que lhe pertencem sem antecipar C.2.3–C.2.5;
 - limites e retenção estiverem centralizados e testados;
 - `TemporaryStagingArtifactRef` de C.2.1 for consumido sem redefinição;
 - adapter provider-specific permanecer isolado;
