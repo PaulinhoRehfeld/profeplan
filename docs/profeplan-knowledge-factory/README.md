@@ -63,10 +63,11 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Definição da fronteira atômica C.1.3](12-delivery/LOT-C1-3-SOURCE-LIFECYCLE-ATOMIC-BOUNDARY-DEFINITION.md)
 - [Checkpoint 039 — C.1.3 rematerializado sobre a genealogia recuperada](00-governance/CONTINUITY-CHECKPOINT-039.md)
 - [Checkpoint 040 — C.1.3 integrado e revalidado; C.1.4 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-040.md)
+- [Checkpoint 041 — C.1.4 integrado e revalidado; C.1.5 permanece bloqueado](00-governance/CONTINUITY-CHECKPOINT-041.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente de C.1 após o PR nº 51, prevalece o [Checkpoint 040](00-governance/CONTINUITY-CHECKPOINT-040.md) sobre marcadores de status anteriores ainda preservados no Blueprint e no mapa da Fase C.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente de C.1 após o PR nº 53, prevalece o [Checkpoint 041](00-governance/CONTINUITY-CHECKPOINT-041.md) sobre marcadores de status anteriores ainda preservados no Blueprint e no mapa da Fase C.
 
 - Fase A — concluída;
 - Lotes 3B.1, 3B.2, 3B.3 e 3B.4 — concluídos;
@@ -96,8 +97,13 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
   `kf_source_actor_assignments`, 13 RPCs estreitas `SECURITY DEFINER`, grants mínimos, idempotência,
   CAS, impacto conservador, supersessão atômica e validação de segurança/concorrência em Supabase
   descartável; a migration existe no repositório, mas não foi aplicada a Supabase hospedado ou produção;
-- C.1.4–C.1.6 e C.2–C.7 — bloqueados;
+- C.1.4 — ports e adapters provider-neutral integrados pelo PR nº 53 no commit canônico
+  `c4620d036addbd2b331ef2aea2396ce104fe9176`; inclui adapter para os 13 comandos C.1.3, leitura
+  histórica de registro/autorização/impacto por três RPCs `SECURITY DEFINER` somente-leitura,
+  tradução provider-neutral de receipts/erros, telemetria sanitizada e integração validada em
+  Supabase descartável, sem reabrir `SELECT` ou DML direto de `service_role` nas tabelas protegidas;
+- C.1.5–C.1.6 e C.2–C.7 — bloqueados;
 - GAP-3B-04, GAP-3B-05 e GAP-3B-07 — ativos e contidos;
 - produção — não autorizada por nenhum merge técnico ou documental.
 
-C.1.3 está integrado e revalidado. O próximo sublote tecnicamente candidato é C.1.4 — adapters de comando/leitura e tradução provider-neutral —, porém permanece bloqueado até gate e autorização próprios. Nenhuma ação desta reconciliação inicia C.1.4, C.1.5, C.1.6, C.2, wiring, Supabase hospedado ou produção.
+C.1.4 está integrado e revalidado. O próximo sublote tecnicamente candidato é C.1.5, mas permanece bloqueado até gate e autorização próprios. Nenhuma ação desta reconciliação inicia C.1.5, C.1.6, C.2, wiring, Supabase hospedado ou produção.
