@@ -341,6 +341,10 @@ A reconciliação foi iniciada na branch:
 
 `docs/knowledge-factory-c2-1-post-merge`.
 
+Foi aberto o Draft PR nº 63:
+
+`docs(knowledge-factory): formalize C.2.1 post-merge`.
+
 Seu escopo é exclusivamente documental e inclui:
 
 - este Checkpoint 045;
@@ -348,7 +352,8 @@ Seu escopo é exclusivamente documental e inclui:
 - Blueprint;
 - mapa vivo da Fase C.
 
-O Checkpoint 044 permanece histórico e não será reescrito.
+O Checkpoint 044 permanece histórico e não será reescrito. A reconciliação só será considerada
+canônica depois de revisão integral, CI aplicável verde e integração governada do PR nº 63.
 
 ## Estado operacional após este checkpoint
 
