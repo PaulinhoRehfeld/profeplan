@@ -35,6 +35,22 @@ function providerText(error: Record<string, unknown>): string {
     .toLowerCase();
 }
 
+function providerStatus(error: Record<string, unknown>): number | undefined {
+  if (typeof error.status === 'number') {
+    return error.status;
+  }
+
+  if (typeof error.statusCode === 'number') {
+    return error.statusCode;
+  }
+
+  if (typeof error.statusCode === 'string' && /^\d{3}$/u.test(error.statusCode)) {
+    return Number(error.statusCode);
+  }
+
+  return undefined;
+}
+
 export function toPersistenceError(
   error: unknown,
   operation: string
@@ -48,14 +64,14 @@ export function toPersistenceError(
   }
 
   const code = typeof error.code === 'string' ? error.code : undefined;
-  const status = typeof error.status === 'number' ? error.status : undefined;
+  const status = providerStatus(error);
   const text = providerText(error);
 
   if (code === '22023') {
     return new KnowledgeFactoryPersistenceError('INVALID_INPUT', operation);
   }
 
-  if (code === 'PT409' || status === 409) {
+  if (code === 'PT409' || status === 409 || /resource already exists|already exists/.test(text)) {
     return new KnowledgeFactoryPersistenceError('CONFLICT', operation);
   }
 
