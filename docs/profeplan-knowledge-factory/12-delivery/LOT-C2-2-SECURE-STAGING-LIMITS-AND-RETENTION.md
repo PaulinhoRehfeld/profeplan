@@ -147,11 +147,11 @@ processing_run + artifactId
 
 Cada segmento é codificado antes de compor o path privado do provider. Esse path nunca sai do adapter.
 
-O `opaqueLocator` compartilhado é derivado apenas da identidade lógica do artefato e não revela provider.
+O `opaqueLocator` compartilhado vincula de forma provider-neutral `processing_run + artifactId`. Ele não revela bucket, path físico, região, URL ou provider e é tratado como valor opaco fora do adapter.
 
 `upsert` permanece desabilitado. Uma colisão no mesmo `processing_run`/artifact ID é `CONFLICT`, nunca overwrite silencioso.
 
-Um comando de descarte com run diferente resolve para outro object key e não remove o objeto pertencente ao run original.
+Um comando de descarte somente pode operar quando o `processing_run` informado corresponde ao locator opaco do artefato. Divergência é rejeitada como `INVALID_INPUT` antes de qualquer chamada ao provider, preservando o artefato pertencente ao run original.
 
 ## 9. Segurança de acesso
 
@@ -231,6 +231,7 @@ A suíte cobre:
 - cleanup em falha não conflitiva;
 - path derivado de IDs codificados;
 - descriptor/receipt sem provider;
+- mismatch de `processing_run` rejeitado antes do provider;
 - descarte verificável;
 - descarte repetido;
 - isolamento entre runs;
