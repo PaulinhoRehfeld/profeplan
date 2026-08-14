@@ -143,7 +143,9 @@ export function evaluateIngestionRequest(
     );
   }
 
-  if (!hasAuthorizationEvidence(request.authorizationEvidence, request.sourceVersion, 'ingestion')) {
+  if (
+    !hasAuthorizationEvidence(request.authorizationEvidence, request.sourceVersion, 'ingestion')
+  ) {
     reasons.push(
       reason(
         'INGESTION_AUTHORIZATION_REQUIRED',

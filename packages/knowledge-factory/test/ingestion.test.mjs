@@ -40,6 +40,7 @@ function request(overrides = {}) {
 function review(decision = 'APPROVE_FOR_EXTRACTION') {
   return {
     reviewId: 'review-synthetic-1',
+    reviewMode: 'human',
     reviewer: { actorId: 'reviewer-synthetic-1', role: 'legal_editorial_reviewer' },
     decision,
     decidedAt: instant,
