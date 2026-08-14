@@ -20,7 +20,7 @@ BEGIN;
 -- operation_id; 1.3B.2 will own the transactional decision/replay behavior.
 CREATE TABLE public.credit_operations (
   operation_id text PRIMARY KEY CHECK (btrim(operation_id) <> ''),
-  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE RESTRICT,
   operation_kind text NOT NULL CHECK (operation_kind IN ('GRANT', 'CONSUME')),
   action_key text NOT NULL CHECK (btrim(action_key) <> ''),
   request_fingerprint text NOT NULL CHECK (btrim(request_fingerprint) <> ''),
@@ -57,7 +57,7 @@ CREATE INDEX credit_operations_action_idx
 -- CREDIT/DEBIT ledger entries and expiry, never from a mutable remaining field.
 CREATE TABLE public.credit_grants (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE RESTRICT,
   operation_id text NOT NULL,
   grant_key text NOT NULL UNIQUE CHECK (btrim(grant_key) <> ''),
   origin text NOT NULL CHECK (
@@ -79,7 +79,7 @@ CREATE TABLE public.credit_grants (
   CONSTRAINT credit_grants_operation_fk
     FOREIGN KEY (user_id, operation_id)
     REFERENCES public.credit_operations(user_id, operation_id)
-    ON DELETE CASCADE,
+    ON DELETE RESTRICT,
   CONSTRAINT credit_grants_expiry_window_check CHECK (
     expires_at IS NULL OR expires_at > granted_at
   ),
@@ -149,7 +149,7 @@ FOR EACH ROW EXECUTE FUNCTION public.credit_validate_grant_insert();
 -- a semantic consumption operation against a concrete grant/lot.
 CREATE TABLE public.credit_ledger_entries (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE RESTRICT,
   operation_id text NOT NULL,
   grant_id uuid NOT NULL,
   entry_type text NOT NULL CHECK (entry_type IN ('CREDIT', 'DEBIT')),
@@ -160,11 +160,11 @@ CREATE TABLE public.credit_ledger_entries (
   CONSTRAINT credit_ledger_entries_operation_fk
     FOREIGN KEY (user_id, operation_id)
     REFERENCES public.credit_operations(user_id, operation_id)
-    ON DELETE CASCADE,
+    ON DELETE RESTRICT,
   CONSTRAINT credit_ledger_entries_grant_fk
     FOREIGN KEY (user_id, grant_id)
     REFERENCES public.credit_grants(user_id, id)
-    ON DELETE CASCADE,
+    ON DELETE RESTRICT,
   CONSTRAINT credit_ledger_entries_operation_grant_type_key
     UNIQUE (operation_id, grant_id, entry_type)
 );
@@ -265,7 +265,8 @@ REVOKE ALL ON FUNCTION public.credit_validate_ledger_entry_insert()
 FROM PUBLIC, anon, authenticated;
 
 -- Application accounting is append-only at the service role boundary.
--- No UPDATE or DELETE is granted.
+-- No UPDATE or DELETE is granted. Foreign-key RESTRICT also prevents parent
+-- deletion from erasing accounting lineage through cascades.
 GRANT SELECT, INSERT ON TABLE
   public.credit_operations,
   public.credit_grants,
