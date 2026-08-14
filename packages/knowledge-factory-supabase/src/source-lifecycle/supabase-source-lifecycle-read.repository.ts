@@ -108,11 +108,25 @@ export class SupabaseSourceLifecycleReadRepository implements SourceLifecycleRea
         throw toPersistenceError(response.error, operation);
       }
       const events = registrationHistoryRowsToEvents(response.data, operation);
-      recordSuccess(this.logger, this.context, operation, startedAt, subjectIdentityId, events.length);
+      recordSuccess(
+        this.logger,
+        this.context,
+        operation,
+        startedAt,
+        subjectIdentityId,
+        events.length
+      );
       return events;
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
-      recordFailure(this.logger, this.context, operation, startedAt, subjectIdentityId, persistenceError);
+      recordFailure(
+        this.logger,
+        this.context,
+        operation,
+        startedAt,
+        subjectIdentityId,
+        persistenceError
+      );
       throw persistenceError;
     }
   }
@@ -139,11 +153,25 @@ export class SupabaseSourceLifecycleReadRepository implements SourceLifecycleRea
         throw toPersistenceError(response.error, operation);
       }
       const events = authorizationHistoryRowsToEvents(response.data, operation);
-      recordSuccess(this.logger, this.context, operation, startedAt, subjectIdentityId, events.length);
+      recordSuccess(
+        this.logger,
+        this.context,
+        operation,
+        startedAt,
+        subjectIdentityId,
+        events.length
+      );
       return events;
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
-      recordFailure(this.logger, this.context, operation, startedAt, subjectIdentityId, persistenceError);
+      recordFailure(
+        this.logger,
+        this.context,
+        operation,
+        startedAt,
+        subjectIdentityId,
+        persistenceError
+      );
       throw persistenceError;
     }
   }
@@ -165,11 +193,25 @@ export class SupabaseSourceLifecycleReadRepository implements SourceLifecycleRea
         throw toPersistenceError(response.error, operation);
       }
       const events = impactHistoryRowsToEvents(response.data, operation);
-      recordSuccess(this.logger, this.context, operation, startedAt, subjectIdentityId, events.length);
+      recordSuccess(
+        this.logger,
+        this.context,
+        operation,
+        startedAt,
+        subjectIdentityId,
+        events.length
+      );
       return events;
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
-      recordFailure(this.logger, this.context, operation, startedAt, subjectIdentityId, persistenceError);
+      recordFailure(
+        this.logger,
+        this.context,
+        operation,
+        startedAt,
+        subjectIdentityId,
+        persistenceError
+      );
       throw persistenceError;
     }
   }

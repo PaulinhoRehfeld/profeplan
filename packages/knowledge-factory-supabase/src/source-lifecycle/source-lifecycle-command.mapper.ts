@@ -22,7 +22,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isDateTime(value: unknown): value is string {
-  return typeof value === 'string' && ISO_DATE_TIME_PATTERN.test(value) && Number.isFinite(Date.parse(value));
+  return (
+    typeof value === 'string' &&
+    ISO_DATE_TIME_PATTERN.test(value) &&
+    Number.isFinite(Date.parse(value))
+  );
 }
 
 function isStringArray(value: unknown): value is string[] {

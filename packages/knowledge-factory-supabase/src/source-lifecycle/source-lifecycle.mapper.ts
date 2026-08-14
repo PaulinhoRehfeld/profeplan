@@ -22,11 +22,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isDateTime(value: unknown): value is string {
-  return typeof value === 'string' && ISO_DATE_TIME_PATTERN.test(value) && Number.isFinite(Date.parse(value));
+  return (
+    typeof value === 'string' &&
+    ISO_DATE_TIME_PATTERN.test(value) &&
+    Number.isFinite(Date.parse(value))
+  );
 }
 
 function isUuidLike(value: unknown): value is string {
-  return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+  return (
+    typeof value === 'string' &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
+  );
 }
 
 function isPositiveSequence(value: unknown): value is number {
@@ -101,7 +108,7 @@ export function registrationHistoryRowsToEvents(
         (row.from_state !== null &&
           !SOURCE_REGISTRATION_STATES.some((state) => state === row.from_state)) ||
         !SOURCE_REGISTRATION_STATES.some((state) => state === row.to_state) ||
-        ((row.successor_id === null) !== (row.successor_kind === null)) ||
+        (row.successor_id === null) !== (row.successor_kind === null) ||
         (row.successor_id !== null &&
           (!isUuidLike(row.successor_id) ||
             !SOURCE_IDENTITY_KINDS.some((kind) => kind === row.successor_kind)))

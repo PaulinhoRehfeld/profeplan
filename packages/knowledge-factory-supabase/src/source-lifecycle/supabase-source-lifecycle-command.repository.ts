@@ -139,16 +139,32 @@ export class SupabaseSourceLifecycleCommandRepository implements SourceLifecycle
       }
 
       const receipt = sourceLifecycleReceiptRowToReceipt(response.data, expected, operation);
-      recordSuccess(this.logger, command, operation, startedAt, expected.aggregateId, receipt.eventIds.length);
+      recordSuccess(
+        this.logger,
+        command,
+        operation,
+        startedAt,
+        expected.aggregateId,
+        receipt.eventIds.length
+      );
       return receipt;
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
-      recordFailure(this.logger, command, operation, startedAt, expected.aggregateId, persistenceError);
+      recordFailure(
+        this.logger,
+        command,
+        operation,
+        startedAt,
+        expected.aggregateId,
+        persistenceError
+      );
       throw persistenceError;
     }
   }
 
-  async registerIdentity(command: RegisterSourceIdentityCommand): Promise<SourceRegistrationCommandReceipt> {
+  async registerIdentity(
+    command: RegisterSourceIdentityCommand
+  ): Promise<SourceRegistrationCommandReceipt> {
     return (await this.execute(command, {
       dimension: 'registration',
       commandId: command.commandId,
@@ -159,87 +175,152 @@ export class SupabaseSourceLifecycleCommandRepository implements SourceLifecycle
     })) as SourceRegistrationCommandReceipt;
   }
 
-  async requestValidation(command: RequestSourceValidationCommand): Promise<SourceRegistrationCommandReceipt> {
+  async requestValidation(
+    command: RequestSourceValidationCommand
+  ): Promise<SourceRegistrationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'registration', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'request_validation', aggregateId: command.subject.id, state: 'PENDING_VALIDATION',
+      dimension: 'registration',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'request_validation',
+      aggregateId: command.subject.id,
+      state: 'PENDING_VALIDATION',
     })) as SourceRegistrationCommandReceipt;
   }
 
-  async confirmValidation(command: ConfirmSourceValidationCommand): Promise<SourceRegistrationCommandReceipt> {
+  async confirmValidation(
+    command: ConfirmSourceValidationCommand
+  ): Promise<SourceRegistrationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'registration', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'confirm_validation', aggregateId: command.subject.id, state: 'VALIDATED',
+      dimension: 'registration',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'confirm_validation',
+      aggregateId: command.subject.id,
+      state: 'VALIDATED',
     })) as SourceRegistrationCommandReceipt;
   }
 
   async blockSource(command: BlockSourceCommand): Promise<SourceRegistrationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'registration', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'block_source', aggregateId: command.subject.id, state: 'BLOCKED',
+      dimension: 'registration',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'block_source',
+      aggregateId: command.subject.id,
+      state: 'BLOCKED',
     })) as SourceRegistrationCommandReceipt;
   }
 
   async replaceSource(command: ReplaceSourceCommand): Promise<SourceRegistrationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'registration', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'replace_source', aggregateId: command.subject.id, state: 'REPLACED',
+      dimension: 'registration',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'replace_source',
+      aggregateId: command.subject.id,
+      state: 'REPLACED',
     })) as SourceRegistrationCommandReceipt;
   }
 
   async archiveSource(command: ArchiveSourceCommand): Promise<SourceRegistrationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'registration', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'archive_source', aggregateId: command.subject.id, state: 'ARCHIVED',
+      dimension: 'registration',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'archive_source',
+      aggregateId: command.subject.id,
+      state: 'ARCHIVED',
     })) as SourceRegistrationCommandReceipt;
   }
 
-  async grantAuthorization(command: GrantSourceAuthorizationCommand): Promise<SourceAuthorizationCommandReceipt> {
+  async grantAuthorization(
+    command: GrantSourceAuthorizationCommand
+  ): Promise<SourceAuthorizationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'authorization', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'grant_authorization', aggregateId: command.authorizationId, state: 'GRANTED',
+      dimension: 'authorization',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'grant_authorization',
+      aggregateId: command.authorizationId,
+      state: 'GRANTED',
     })) as SourceAuthorizationCommandReceipt;
   }
 
-  async suspendAuthorization(command: SuspendSourceAuthorizationCommand): Promise<SourceAuthorizationCommandReceipt> {
+  async suspendAuthorization(
+    command: SuspendSourceAuthorizationCommand
+  ): Promise<SourceAuthorizationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'authorization', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'suspend_authorization', aggregateId: command.authorizationId, state: 'SUSPENDED',
+      dimension: 'authorization',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'suspend_authorization',
+      aggregateId: command.authorizationId,
+      state: 'SUSPENDED',
     })) as SourceAuthorizationCommandReceipt;
   }
 
-  async resumeAuthorization(command: ResumeSourceAuthorizationCommand): Promise<SourceAuthorizationCommandReceipt> {
+  async resumeAuthorization(
+    command: ResumeSourceAuthorizationCommand
+  ): Promise<SourceAuthorizationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'authorization', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'resume_authorization', aggregateId: command.authorizationId, state: 'GRANTED',
+      dimension: 'authorization',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'resume_authorization',
+      aggregateId: command.authorizationId,
+      state: 'GRANTED',
     })) as SourceAuthorizationCommandReceipt;
   }
 
-  async revokeAuthorization(command: RevokeSourceAuthorizationCommand): Promise<SourceAuthorizationCommandReceipt> {
+  async revokeAuthorization(
+    command: RevokeSourceAuthorizationCommand
+  ): Promise<SourceAuthorizationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'authorization', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'revoke_authorization', aggregateId: command.authorizationId, state: 'REVOKED',
+      dimension: 'authorization',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'revoke_authorization',
+      aggregateId: command.authorizationId,
+      state: 'REVOKED',
     })) as SourceAuthorizationCommandReceipt;
   }
 
-  async blockPurpose(command: BlockSourcePurposeCommand): Promise<SourceAuthorizationCommandReceipt> {
+  async blockPurpose(
+    command: BlockSourcePurposeCommand
+  ): Promise<SourceAuthorizationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'authorization', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'block_purpose', aggregateId: command.authorizationId, state: 'BLOCKED',
+      dimension: 'authorization',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'block_purpose',
+      aggregateId: command.authorizationId,
+      state: 'BLOCKED',
     })) as SourceAuthorizationCommandReceipt;
   }
 
-  async supersedeAuthorization(command: SupersedeSourceAuthorizationCommand): Promise<SourceAuthorizationCommandReceipt> {
+  async supersedeAuthorization(
+    command: SupersedeSourceAuthorizationCommand
+  ): Promise<SourceAuthorizationCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'authorization', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'supersede_authorization', aggregateId: command.authorizationId, state: 'SUPERSEDED',
+      dimension: 'authorization',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'supersede_authorization',
+      aggregateId: command.authorizationId,
+      state: 'SUPERSEDED',
     })) as SourceAuthorizationCommandReceipt;
   }
 
-  async openImpactAssessment(command: OpenSourceImpactAssessmentCommand): Promise<SourceImpactCommandReceipt> {
+  async openImpactAssessment(
+    command: OpenSourceImpactAssessmentCommand
+  ): Promise<SourceImpactCommandReceipt> {
     return (await this.execute(command, {
-      dimension: 'impact', commandId: command.commandId, fingerprint: command.fingerprint,
-      operation: 'open_impact_assessment', aggregateId: command.subject.id,
+      dimension: 'impact',
+      commandId: command.commandId,
+      fingerprint: command.fingerprint,
+      operation: 'open_impact_assessment',
+      aggregateId: command.subject.id,
     })) as SourceImpactCommandReceipt;
   }
 }
