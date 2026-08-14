@@ -60,20 +60,6 @@ jobs:
       - name: Install JavaScript dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Diagnose exact Prettier output
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .kf-evidence
-          pnpm exec prettier --write \
-            packages/types/src/knowledge-factory/staging.ts \
-            packages/knowledge-factory-supabase/src/staging/supabase-temporary-staging.adapter.ts
-          git diff -- \
-            packages/types/src/knowledge-factory/staging.ts \
-            packages/knowledge-factory-supabase/src/staging/supabase-temporary-staging.adapter.ts
-          echo "Temporary diagnostic step: apply the emitted diff remotely, then remove this step." > "$KF_EVIDENCE"
-          exit 1
-
       - name: Prepare disposable Supabase project
         shell: bash
         run: |
@@ -191,7 +177,6 @@ jobs:
         if: always()
         shell: bash
         run: |
-          mkdir -p .kf-evidence
           {
             echo "UTC finish: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo "Workflow: $GITHUB_WORKFLOW"
