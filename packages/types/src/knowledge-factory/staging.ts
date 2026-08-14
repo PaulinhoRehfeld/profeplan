@@ -8,6 +8,19 @@ import type {
 
 export const STAGING_CONTRACT_VERSION = '1.0.0' as const;
 
+export const TEMPORARY_STAGING_ARTIFACT_STATES = [
+  'EXPECTED',
+  'RECEIVING',
+  'STAGED',
+  'VERIFIED',
+  'RELEASED_FOR_EXTRACTION',
+  'DISCARD_PENDING',
+  'DISCARDED',
+  'QUARANTINED',
+  'FAILED',
+] as const;
+export type TemporaryStagingArtifactState = (typeof TEMPORARY_STAGING_ARTIFACT_STATES)[number];
+
 export const STAGING_DISCARD_OUTCOMES = ['discarded', 'already_discarded'] as const;
 export type StagingDiscardOutcome = (typeof STAGING_DISCARD_OUTCOMES)[number];
 
@@ -23,6 +36,7 @@ export type StagingDiscardReasonCode = (typeof STAGING_DISCARD_REASON_CODES)[num
 
 export interface TemporaryStagingArtifactDescriptor {
   readonly contractVersion: typeof STAGING_CONTRACT_VERSION;
+  readonly state: Extract<TemporaryStagingArtifactState, 'STAGED'>;
   readonly artifact: TemporaryStagingArtifactRef;
   readonly run: IngestionRunRef;
   readonly sourceVersion: IngestionSourceVersionRef;
@@ -35,6 +49,7 @@ export interface TemporaryStagingArtifactDescriptor {
 
 export interface TemporaryStagingDiscardReceipt {
   readonly contractVersion: typeof STAGING_CONTRACT_VERSION;
+  readonly state: Extract<TemporaryStagingArtifactState, 'DISCARDED'>;
   readonly artifactId: EntityId;
   readonly run: IngestionRunRef;
   readonly requestedAt: ISODateTime;
