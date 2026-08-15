@@ -2,9 +2,11 @@
 
 Data de implementação técnica: 14/15 de agosto de 2026.
 
-Base reconciliada da branch: `main` em `56e125bf72aabb885b0c0bc8b27f64d76ce98106`.
+Base reconciliada da implementação: `main` em `56e125bf72aabb885b0c0bc8b27f64d76ce98106`.
 
-Estado deste documento: **implementação em Draft PR; não integrada**.
+Integração canônica: PR nº 74 por squash merge no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, tree `92411aec0c9da3789bb91c87d8f423a3c69f929d`.
+
+Estado deste documento: **implementação integrada e revalidada; C.2.5 permanece bloqueado**.
 
 ## 1. Autoridade e fronteiras preservadas
 
@@ -327,4 +329,4 @@ C.2.4 não implementa:
 
 ## 18. Gate
 
-Enquanto o Draft PR técnico não estiver integralmente verde, revisado e posteriormente integrado por autorização humana específica, C.2.4 permanece **não integrado** e C.2.5 continua bloqueado.
+C.2.4 foi integrado pelo PR nº 74 após revisão humana específica e gates verdes no HEAD final. O CI pós-merge nº 523 também terminou `success`. C.2.5 continua bloqueado e exige contexto próprio, inspeção canônica e autorização humana específica.
