@@ -6,6 +6,25 @@
 -- =============================================================================
 \set ON_ERROR_STOP on
 
+-- Hosted dependency required by the legacy two-argument admin RPC. Production
+-- already has this helper; the disposable rehearsal creates the same definition
+-- only after the local stack is healthy so bootstrap failures stay diagnosable.
+CREATE OR REPLACE FUNCTION public.is_admin_safe()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.profiles
+    WHERE id = auth.uid()
+      AND (role = 'admin' OR is_admin = true)
+  );
+$$;
+ALTER FUNCTION public.is_admin_safe() OWNER TO postgres;
+GRANT EXECUTE ON FUNCTION public.is_admin_safe() TO authenticated;
+
 -- Governed producer-only entry points and trigger must be gone.
 DO $$
 BEGIN
