@@ -249,6 +249,32 @@ test('repeated discard distinguishes already-absent physical state', async () =>
   assert.equal(fake.calls.remove.length, 1);
 });
 
+test('concurrent cleanup callers converge on physical absence without provider leakage', async () => {
+  const fake = fakeContext();
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
+    bucketName: 'private-test-bucket',
+    now: () => '2026-08-14T21:05:00.000Z',
+  });
+  const descriptor = await adapter.stage(write());
+  const command = {
+    artifact: descriptor.artifact,
+    run,
+    requestedAt: '2026-08-14T21:04:59.000Z',
+    reasonCode: 'orphan_cleanup',
+    correlationId: 'correlation-synthetic-1',
+  };
+
+  const receipts = await Promise.all([adapter.discard(command), adapter.discard(command)]);
+
+  assert.deepEqual(
+    receipts.map((receipt) => receipt.state),
+    ['DISCARDED', 'DISCARDED']
+  );
+  assert.equal(fake.objects.size, 0);
+  assert.equal(JSON.stringify(receipts).includes('private-test-bucket'), false);
+  assert.equal(JSON.stringify(receipts).includes('provider'), false);
+});
+
 test('lost delete response reconciles to already_discarded on retry without a second physical delete', async () => {
   const fake = fakeContext({
     deleteBeforeRemoveError: true,
