@@ -19,9 +19,7 @@ export const registerPhone = async (userId: string, phone: string) => {
 
     if (error) return { success: false, message: error.message };
 
-    const result = data as
-      | { success?: boolean; result?: string; credited?: boolean }
-      | null;
+    const result = data as { success?: boolean; result?: string; credited?: boolean } | null;
 
     if (result?.result === 'already_registered') {
       return { success: false, message: 'Telefone já cadastrado anteriormente.' };
