@@ -153,7 +153,33 @@ O workflow `Credit Accounting 1.3C.4D PDI CI` monta um Supabase descartável e p
 
 Os testes usam somente fixtures sintéticas e nunca um Supabase hospedado.
 
-## Não escopo
+## Fechamento técnico pós-merge
+
+O sublote 1.3C.4D foi integrado tecnicamente pelo PR #85:
+
+```text
+feat(commercial): govern PDI adaptation and report saves (#85)
+```
+
+Evidência canônica:
+
+- HEAD técnico final pré-merge: `43d32b5b770ecf67a4ae3f7a18b4e4af954715da`;
+- squash SHA integrado à `main`: `f1629934941b682051bb55910da5e40cca21ba04`;
+- tree canônica: `8318669e21f1add13ae45b614bec455b6ffb320d`;
+- parent direto: `d5ebf99a6265dd6f68ae2a4d2d8ca7c429a48c82`.
+
+Gates do HEAD técnico final:
+
+- CI Pipeline #530 — SUCCESS;
+- Credit Accounting 1.3C.4D PDI CI #1 — SUCCESS;
+- Credit Accounting 1.3C.4A Generated Content CI #22 — SUCCESS;
+- Knowledge Factory DB CI #173 — SUCCESS.
+
+Após o squash, o CI Pipeline #533 foi disparado por `push` sobre a `main` canônica `f1629934...` e concluiu com SUCCESS.
+
+Assim, 1.3C.4D está encerrado tecnicamente e integrado. A migration 4D permanece apenas versionada no repositório: nenhuma aplicação em Supabase hospedado foi autorizada ou executada.
+
+## Não escopo e handoff
 
 4D não autoriza:
 
@@ -164,6 +190,8 @@ Os testes usam somente fixtures sintéticas e nunca um Supabase hospedado.
 - alteração de Edge Function hospedada;
 - Stripe;
 - revogação final de writes diretos;
-- 4E cutover/enforcement final.
+- início automático de 4E cutover/enforcement final.
+
+O próximo gate lógico é 1.3C.4E — varredura final dos consumidores e preparação governada de cutover. Ele permanece bloqueado até inspeção própria; este fechamento documental não o inicia.
 
 Produção permanece bloqueada.
