@@ -15,11 +15,7 @@ export const saveGeneratedContent = async (
   // the only canonical persistence for quarterly plans. The historical
   // generated_contents mirror remains readable as legacy fallback, but no new
   // duplicate write is created outside the atomic save transaction.
-  if (
-    isGovernedTermPlanSavePilotEnabled() &&
-    type === 'trimestral' &&
-    folder === 'TermPlans'
-  ) {
+  if (isGovernedTermPlanSavePilotEnabled() && type === 'trimestral' && folder === 'TermPlans') {
     return null;
   }
 
