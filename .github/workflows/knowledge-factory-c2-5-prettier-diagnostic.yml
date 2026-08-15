@@ -1,0 +1,60 @@
+name: Knowledge Factory C.2.5 Prettier Diagnostic
+
+on:
+  push:
+    branches:
+      - feat/knowledge-factory-lot-c2-5-human-review-handoff
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  format-diff:
+    name: Produce canonical Prettier 3.8.4 diff
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format exact C.2.5 source set in disposable workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec prettier --write \
+            packages/knowledge-factory-supabase/src/index.ts \
+            packages/knowledge-factory-supabase/src/ingestion/ingestion-command.mapper.ts \
+            packages/knowledge-factory-supabase/src/ingestion/ingestion-handoff.mapper.ts \
+            packages/knowledge-factory-supabase/src/ingestion/supabase-ingestion-command.repository.ts \
+            packages/knowledge-factory-supabase/src/ingestion/supabase-ingestion-handoff.repository.ts \
+            packages/knowledge-factory/src/repositories/ingestion.repository.ts \
+            packages/types/src/knowledge-factory/index.ts \
+            packages/types/src/knowledge-factory/ingestion-review-handoff.ts
+
+      - name: Print canonical formatting diff only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git --no-pager diff --no-ext-diff -- \
+            packages/knowledge-factory-supabase/src/index.ts \
+            packages/knowledge-factory-supabase/src/ingestion/ingestion-command.mapper.ts \
+            packages/knowledge-factory-supabase/src/ingestion/ingestion-handoff.mapper.ts \
+            packages/knowledge-factory-supabase/src/ingestion/supabase-ingestion-command.repository.ts \
+            packages/knowledge-factory-supabase/src/ingestion/supabase-ingestion-handoff.repository.ts \
+            packages/knowledge-factory/src/repositories/ingestion.repository.ts \
+            packages/types/src/knowledge-factory/index.ts \
+            packages/types/src/knowledge-factory/ingestion-review-handoff.ts
