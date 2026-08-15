@@ -1,1 +1,1 @@
-docs/profeplan-knowledge-factory/BLUEPRINT.md: expected exactly one match, found 0: 'a fronteira integrada de C.2.3 está em\n[`LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](LOT-C2-3-INTEGRITY-CHECK'
+docs/profeplan-knowledge-factory/BLUEPRINT.md: expected exactly one match, found 0: '- `C.2.4` — idempotência, retomada e falha segura — **bloqueado**;'
