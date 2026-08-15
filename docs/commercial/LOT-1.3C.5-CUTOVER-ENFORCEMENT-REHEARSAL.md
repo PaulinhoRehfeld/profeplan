@@ -76,7 +76,7 @@ Por exemplo:
 
 Encadear as suítes antigas sem adaptação seria incorreto. Depois de 1.3C.3, a criação de um perfil FREE já dispara o grant governado de `FREE_TRIAL`; alguns testes mais antigos criam perfis depois da inicialização e assumem que nenhum producer está ativo.
 
-Assim, 1.3C.5 cria um baseline complementar integrado e uma prova nova de transição. As suítes históricas continuam válidas como regressões dos seus próprios contratos, mas não são tratadas como substituto da prova end-to-end de cutover.
+Assim, 1.3C.5 cria um baseline complementar integrado e provas composáveis de transição. As suítes históricas continuam válidas e **não são reescritas**: elas permanecem regressões isoladas de seus próprios contratos, enquanto 1.3C.5 testa coexistência no estado final.
 
 ## 5. Schema descartável integrado
 
@@ -104,44 +104,67 @@ Assessment e Presentation usam a fronteira genérica `credit_save_generated_cont
 
 O baseline PDI de 1.3C.5 é test-only e evita redefinir colunas de `profiles` já fornecidas pelo baseline de produtores.
 
-## 6. Reutilização da prova de saldo legado
+## 6. Prova integrada de saldo legado
 
-Antes do smoke de cutover, o workflow executa a prova existente de 1.3C.2.
+A suíte histórica `credit_legacy_balance_cutover_rehearsal.sql` permanece inalterada e continua exigindo, corretamente para seu baseline isolado, que o banco contenha exatamente os 31 perfis do snapshot de 1.3C.2.
 
-O estado obrigatório permanece:
+No primeiro run integral de 1.3C.5 essa premissa global foi exposta pelo erro:
 
 ```text
+fixture profile count mismatch: 50
+```
+
+Não era erro do ledger nem das migrations finais: o banco integrado também contém os usuários sintéticos necessários às provas de produtores e consumidores.
+
+Por isso 1.3C.5 adiciona `credit_legacy_balance_integrated_rehearsal.sql`, que identifica explicitamente o **mesmo cohort dos 31 IDs legados** dentro do banco composto e preserva os invariantes históricos:
+
+```text
+31 perfis legados no cohort
 30 perfis finitos positivos
 30 grants LEGACY_BALANCE
 soma = 292
 Gold/unlimited sentinel 9999 -> zero grants automáticos
 ```
 
-O import continua:
+A prova integrada mantém:
 
-- não expirável;
-- idempotente;
-- baseado em `credit_grant_command(...)`;
-- sem alterar `profiles.credits`;
-- com rollback integral;
-- fail-closed diante de drift do snapshot.
+- grants não expiráveis;
+- idempotência/replay exato;
+- uso de `credit_grant_command(...)`;
+- `profiles.credits` congelado e não mutado pelo import;
+- rollback integral do cohort;
+- fail-closed diante de drift do snapshot;
+- reconciliação individual do saldo governado com o inteiro legado finito no instante de corte.
+
+Assim, a prova isolada de 1.3C.2 continua intacta e a prova composta de 1.3C.5 não confunde perfis de outras fixtures com o snapshot legado.
 
 ## 7. Produtores no mesmo schema final
 
-Depois da importação legado, o workflow executa a prova existente de 1.3C.3 no **mesmo banco integrado**.
+A suíte histórica `credit_positive_producer_convergence.sql` também permanece inalterada. Ela termina com uma assertion global apropriada ao baseline isolado de 1.3C.3: nenhum perfil daquele banco deve possuir `profiles.credits > 0`.
 
-Isso reconfirma no estado final:
+Ao ser executada depois do import legado no primeiro harness composto, essa assertion detectou 31 perfis positivos:
+
+```text
+positive producer convergence mutated legacy credits: positive 31, negative 0
+```
+
+O finding era novamente uma premissa de isolamento, não uma mutação produzida por 1.3C.3. Os 31 perfis eram exatamente o cohort legado que 1.3C.2 exige preservar congelado.
+
+1.3C.5, portanto, usa `credit_positive_producer_integrated_smoke.sql` para provar, no mesmo banco final:
 
 - onboarding FREE -> `FREE_TRIAL` de 10 créditos / 7 dias;
 - recuperação emergencial de perfil -> mesmo producer governado;
-- telefone -> `PROMOTIONAL_BONUS`;
-- indicação -> `PROMOTIONAL_BONUS`;
-- Stripe Silver -> `PURCHASED`;
-- replay de Stripe sem duplicação;
-- Gold sem grant artificial de consumo;
-- downgrade Gold baseado no saldo governado;
+- telefone -> `PROMOTIONAL_BONUS`, replay-safe;
+- indicação -> `PROMOTIONAL_BONUS`, replay-safe;
+- Stripe Silver -> um lote `PURCHASED`, replay-safe;
+- Gold -> unlimited sem grant artificial;
 - ajuste administrativo -> `ADMIN_ADJUSTMENT` idempotente;
-- ausência de incremento positivo de `profiles.credits` nesses fluxos governados.
+- ausência de incremento positivo ou negativo de `profiles.credits` no cohort sintético de produtores;
+- cohort legado ainda com soma congelada de 292;
+- exatamente 30 grants `LEGACY_BALANCE` / 292 para o cohort legado;
+- nenhum grant de outra origem criado acidentalmente para os 31 usuários legados.
+
+Essa separação é deliberada: regressão isolada continua pertencendo a 1.3C.3; composição e coexistência pertencem a 1.3C.5.
 
 ## 8. Enforcement dos bypasses billable
 
@@ -204,7 +227,7 @@ Depois do enforcement, ele executa sete primeiros Saves governados:
 
 Cada `CONSUME` possui contrato de custo unitário no command boundary.
 
-Resultado esperado:
+Resultado obrigatório e efetivamente provado pelo gate integral:
 
 ```text
 ledger antes = 10
@@ -333,39 +356,58 @@ executa:
 
 1. varredura estática 4E;
 2. criação do Supabase descartável integrado;
-3. import/replay/rollback de `LEGACY_BALANCE`;
-4. regressão integral dos produtores positivos;
-5. prova transacional de enforcement + rollback;
-6. reaplicação descartável de enforcement;
-7. tentativa negativa de writes diretos;
-8. smoke de sete Saves governados;
-9. projeção governada de saldo;
-10. replay/edição sem débito extra nas fronteiras de primeiro Save;
-11. `supabase db lint --level warning`;
-12. destruição do stack descartável.
+3. import/replay/rollback do cohort `LEGACY_BALANCE` por prova integrada escopada;
+4. smoke composável dos produtores positivos no mesmo schema final;
+5. prova de que o cohort legado continua 30 grants / 292 e sem grants de outra origem;
+6. prova transacional de enforcement + rollback;
+7. reaplicação descartável de enforcement;
+8. tentativa negativa de writes diretos;
+9. smoke de sete Saves governados;
+10. projeção governada de saldo;
+11. replay/edição sem débito extra nas fronteiras de primeiro Save;
+12. `supabase db lint --level warning`;
+13. destruição do stack descartável.
+
+As suítes históricas de 1.3C.2 e 1.3C.3 continuam inalteradas e são observadas como dependências do gate, mas suas assertions globais de baseline isolado não são executadas como se descrevessem o banco composto.
 
 O workflow não recebe credenciais de produção.
 
-## 17. Definition of Done
+## 17. Evidência técnica e Definition of Done
 
-1.3C.5 estará tecnicamente pronto quando o mesmo HEAD provar:
+O run `Credit Accounting 1.3C.5 Integral Cutover Rehearsal CI #5` foi a primeira execução a concluir integralmente o harness composto após os dois findings de composabilidade serem corrigidos. No mesmo Supabase descartável, concluíram com sucesso:
+
+- static sweep 4E;
+- montagem de todas as fixtures/migrations finais selecionadas;
+- import/replay/rollback legado integrado;
+- smoke integrado dos produtores;
+- enforcement e rollback;
+- writes diretos negativos;
+- sete Saves governados;
+- readback/projeção de saldo;
+- replay/edição;
+- lint do banco;
+- teardown do stack.
+
+1.3C.5 estará pronto para integração quando o mesmo HEAD final também mantiver os gates gerais verdes e provar:
 
 - `main` de origem confirmada e sem perda de avanço concorrente;
 - static sweep 4E verde;
 - 30 grants `LEGACY_BALANCE` / 292 créditos preservados;
 - sentinel Gold 9999 não materializado;
-- produtores 1.3C.3 verdes no schema integrado;
-- rollback do enforcement restaura a superfície pré-corte;
-- enforcement final descartável remove INSERT/UPDATE billable direto;
-- tentativa de bypass autenticado falha fechada;
-- sete Saves governados geram exatamente sete débitos;
+- producers representativos convergindo no schema integrado sem tocar o inteiro legado;
+- cohort legado permanecendo 292 após os produtores;
+- rollback do enforcement restaurando a superfície pré-corte;
+- enforcement final descartável removendo INSERT/UPDATE billable direto;
+- tentativa de bypass autenticado falhando fechada;
+- sete Saves governados gerando exatamente sete débitos;
 - saldo governado 10 -> 3;
-- `profiles.credits` do usuário de corte permanece 10;
-- persistências canônicas sobrevivem sob enforcement;
-- replay/edição não cria débito indevido;
-- `credit_get_my_balance()` continua funcional;
+- `profiles.credits` do usuário de corte permanecendo 10;
+- persistências canônicas sobrevivendo sob enforcement;
+- replay/edição não criando débito indevido;
+- `credit_get_my_balance()` funcional;
 - lint do banco verde;
 - CI geral verde;
+- regressões não relacionadas verdes;
 - nenhum recurso hospedado alterado.
 
 ## 18. Handoff para 1.3C.6
