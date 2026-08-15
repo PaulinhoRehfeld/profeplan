@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../../../services/supabaseClient';
+import { isGovernedCreditProducerEnabled } from '../../../services/credits/creditProducerFlags';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 
 interface CreateUserModalProps {
@@ -25,6 +26,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
   const [schoolId, setSchoolId] = useState('');
   const [tier, setTier] = useState<'SILVER' | 'GOLD'>('SILVER');
   const [credits, setCredits] = useState(10);
+  const governedCreditProducers = isGovernedCreditProducerEnabled();
 
   // Filter Logic
   const [selectedCity, setSelectedCity] = useState('');
@@ -83,7 +85,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
           role: dbRole,
           schoolId: schoolId || undefined,
           tier,
-          credits,
+          ...(governedCreditProducers ? {} : { credits }),
           sendWelcome: false,
         }),
       });
@@ -273,18 +275,25 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
               )}
             </>
           )}
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
-              Créditos Iniciais
-            </label>
-            <input
-              type="number"
-              disabled={tier === 'GOLD'}
-              value={credits}
-              onChange={(e) => setCredits(parseInt(e.target.value))}
-              className="w-full px-4 py-2 border rounded-lg disabled:opacity-50"
-            />
-          </div>
+          {governedCreditProducers ? (
+            <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-3 text-xs text-indigo-800">
+              Créditos iniciais são geridos pelo ledger. Se necessário, use um ajuste administrativo
+              governado depois de criar o usuário.
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+                Créditos Iniciais
+              </label>
+              <input
+                type="number"
+                disabled={tier === 'GOLD'}
+                value={credits}
+                onChange={(e) => setCredits(parseInt(e.target.value))}
+                className="w-full px-4 py-2 border rounded-lg disabled:opacity-50"
+              />
+            </div>
+          )}
         </div>
         {formError && (
           <div className="flex items-start gap-2 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
