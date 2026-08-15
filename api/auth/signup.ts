@@ -4,10 +4,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { sendEmailConfirmation } from '../_lib/email';
-import {
-  buildSupabaseAdminHeaders,
-  resolveSupabaseAdminKey,
-} from '../_lib/supabaseCredentials';
+import { buildSupabaseAdminHeaders, resolveSupabaseAdminKey } from '../_lib/supabaseCredentials';
 
 // APP_URL controla o redirectTo do link de confirmação.
 // Deve ser https://profeplan.com.br em produção.
