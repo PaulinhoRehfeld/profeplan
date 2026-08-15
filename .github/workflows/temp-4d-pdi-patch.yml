@@ -1,0 +1,227 @@
+name: Temporary 4D PDI remote patch
+
+on:
+  push:
+    branches:
+      - feat/commercial-credit-consumers-4d-pdi
+    paths:
+      - '.github/workflows/temp-4d-pdi-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/commercial-credit-consumers-4d-pdi
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Apply governed PDI UI patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          hook = Path('apps/web/src/features/PDI/usePDIManager.ts')
+          text = hook.read_text()
+
+          old = "import { resolveAuthUid } from '../../utils/authUtils';\n"
+          new = """import { resolveAuthUid } from '../../utils/authUtils';
+          import { isGovernedCreditConsumerEnabled } from '../../services/credits/creditConsumerFlags';
+          import {
+            savePdiGeneratedReportGoverned,
+            validatePdiAdaptationGoverned,
+          } from './PdiCreditService';
+          """
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = "  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);\n"
+          new = """  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);
+            const [reportArtifactIds, setReportArtifactIds] = useState<Record<string, string>>({});
+          """
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = """      setAdaptations((prev) => ({
+                ...prev,
+                [student.id]: {
+                  studentId: student.id,
+                  studentName: student.name,
+                  originalContent: selectedLesson.content,
+                  adaptedContent: markdownResult,
+                  status: 'completed',
+                  block9Payload,
+                },
+              }));
+          """
+          new = """      const artifactId = crypto.randomUUID();
+
+              setAdaptations((prev) => ({
+                ...prev,
+                [student.id]: {
+                  studentId: student.id,
+                  studentName: student.name,
+                  originalContent: selectedLesson.content,
+                  adaptedContent: markdownResult,
+                  status: 'completed',
+                  block9Payload,
+                  ...({ artifactId } as any),
+                },
+              }));
+          """
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          marker = """      let loggedEvent = null;
+              if (schoolStudentId) {
+          """
+          insert = """      if (isGovernedCreditConsumerEnabled()) {
+                const adaptation = adaptations[studentId] as (StudentAdaptation & {
+                  artifactId?: string;
+                }) | undefined;
+                const payload = adaptation?.block9Payload;
+                const artifactId = adaptation?.artifactId;
+
+                if (!schoolStudentId || !payload || !artifactId) {
+                  throw new Error('Identidade ou persistência-base do PDI não pôde ser resolvida.');
+                }
+
+                const year =
+                  typeof selectedClass?.year === 'number'
+                    ? selectedClass.year
+                    : new Date().getFullYear();
+                const { data: pdiDoc, error: pdiError } = await PdiDocumentService.getOrCreatePdi(
+                  schoolStudentId,
+                  year,
+                  { studentName }
+                );
+
+                if (pdiError || !pdiDoc?.id) {
+                  throw pdiError || new Error('PDI do aluno não pôde ser preparado para validação.');
+                }
+
+                const governed = await validatePdiAdaptationGoverned({
+                  artifactId,
+                  pdiDocumentId: pdiDoc.id,
+                  studentId: schoolStudentId,
+                  lessonId: String(selectedLesson.id),
+                  lessonTitle: selectedLesson.topic || selectedLesson.title || 'Aula',
+                  subject: selectedClass?.subject || 'Geral',
+                  content: finalContent,
+                  block9Payload: payload as unknown as Record<string, unknown>,
+                });
+
+                setLastAdaptationDetails({
+                  id: governed.pdi_record_id || artifactId,
+                  studentName,
+                  lessonTopic: selectedLesson.topic,
+                });
+                setFeedbackModalOpen(true);
+                setAdaptations((prev) => ({
+                  ...prev,
+                  [studentId]: {
+                    ...prev[studentId],
+                    status: 'validated',
+                  },
+                }));
+                return;
+              }
+
+              let loggedEvent = null;
+              if (schoolStudentId) {
+          """
+          assert marker in text
+          text = text.replace(marker, insert, 1)
+
+          old = """      try {
+                await saveGeneratedContent(
+                  userId,
+                  'documento',
+                  'PDI',
+                  `RELATORIO PDI - ${student.name}`,
+                  reportHtml
+                );
+              } catch (e) {
+                console.warn('Falha no autosave', e);
+              }
+          """
+          new = """      try {
+                if (isGovernedCreditConsumerEnabled()) {
+                  const artifactId = reportArtifactIds[student.id] || crypto.randomUUID();
+                  if (!reportArtifactIds[student.id]) {
+                    setReportArtifactIds((prev) => ({ ...prev, [student.id]: artifactId }));
+                  }
+
+                  await savePdiGeneratedReportGoverned({
+                    artifactId,
+                    title: `RELATORIO PDI - ${student.name}`,
+                    content: reportHtml,
+                  });
+
+                  setReportArtifactIds((prev) => {
+                    const next = { ...prev };
+                    delete next[student.id];
+                    return next;
+                  });
+                } else {
+                  await saveGeneratedContent(
+                    userId,
+                    'documento',
+                    'PDI',
+                    `RELATORIO PDI - ${student.name}`,
+                    reportHtml
+                  );
+                }
+              } catch (e) {
+                console.warn('Falha no autosave', e);
+                throw e;
+              }
+          """
+          assert old in text
+          text = text.replace(old, new, 1)
+          hook.write_text(text)
+
+          editor = Path('apps/web/src/features/PDI/components/PDIBlock11Editor.tsx')
+          text = editor.read_text()
+          old = "import { generateBlock11Report } from '../../../services/ai/AiPdiService';\n"
+          new = """import { generateBlock11Report } from '../../../services/ai/AiPdiService';
+          import { isGovernedCreditConsumerEnabled } from '../../../services/credits/creditConsumerFlags';
+          import { savePdiFinalReportGoverned } from '../PdiCreditService';
+          """
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = "      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);\n"
+          new = """      if (isGovernedCreditConsumerEnabled()) {
+                await savePdiFinalReportGoverned(pdiId, supervisorEdit);
+              } else {
+                await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
+              }
+          """
+          assert old in text
+          text = text.replace(old, new, 1)
+          editor.write_text(text)
+          PY
+
+          rm .github/workflows/temp-4d-pdi-patch.yml
+
+      - name: Commit patch and remove temporary workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add apps/web/src/features/PDI/usePDIManager.ts \
+                  apps/web/src/features/PDI/components/PDIBlock11Editor.tsx \
+                  .github/workflows/temp-4d-pdi-patch.yml
+          git commit -m 'feat(commercial): govern PDI adaptation and report saves'
+          git push origin HEAD:feat/commercial-credit-consumers-4d-pdi
