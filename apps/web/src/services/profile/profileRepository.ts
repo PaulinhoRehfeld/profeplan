@@ -1,6 +1,7 @@
 import { supabase } from '../supabaseClient';
 import { UserProfile } from '../../types';
 import { isHardcodedAdmin } from '../../constants';
+import { isGovernedCreditProducerEnabled } from '../credits/creditProducerFlags';
 
 /**
  * Repositório de perfil — leitura/gravação de profiles e helpers de sessão.
@@ -209,6 +210,7 @@ export const getUserProfile = async (
           console.warn('[userService] Attempting emergency profile creation for:', targetId);
           const fallbackEmail = authUser.email || activeEmail || '';
           const userIsAdmin = isHardcodedAdmin(fallbackEmail);
+          const governedCreditProducers = isGovernedCreditProducerEnabled();
           const { data: created, error: createErr } = await supabase
             .from('profiles')
             .upsert(
@@ -220,7 +222,7 @@ export const getUserProfile = async (
                 is_admin: userIsAdmin,
                 tier: userIsAdmin ? 'GOLD' : 'FREE',
                 is_unlimited: userIsAdmin,
-                credits: userIsAdmin ? 9999 : 10,
+                ...(governedCreditProducers ? {} : { credits: userIsAdmin ? 9999 : 10 }),
               },
               { onConflict: 'id' }
             )
