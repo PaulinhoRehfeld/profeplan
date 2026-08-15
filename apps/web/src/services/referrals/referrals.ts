@@ -1,16 +1,40 @@
 import { supabase } from '../supabaseClient';
 import { resolveAuthUid } from '../../utils/authUtils';
+import { isGovernedCreditProducerEnabled } from '../credits/creditProducerFlags';
 
 /**
  * Módulo de indicações e recompensas (referrals).
- * Extraído de userService.ts (refatoração Fase 1 — ver docs/REFACTORING_METHODOLOGY.md).
- * Comportamento idêntico ao original.
+ *
+ * Lote 1.3C.3 keeps the legacy implementation available while the governed
+ * producer migration is not deployed. Once VITE_GOVERNED_CREDIT_PRODUCERS is
+ * explicitly true, positive economic writes fail closed through governed RPCs
+ * and never fall back to profiles.credits.
  */
 
 export const registerPhone = async (userId: string, phone: string) => {
-  // Usa auth.uid() real — evita ghost UUID no RLS (mesmo padrão de getClasses).
-  // Sem isso, com Ghost ID o SELECT de guarda retorna vazio e a função devolve
-  // "telefone já cadastrado" indevidamente, sem nunca conceder o bônus.
+  if (isGovernedCreditProducerEnabled()) {
+    const { data, error } = await supabase.rpc('credit_register_my_phone_bonus', {
+      p_phone: phone,
+    });
+
+    if (error) return { success: false, message: error.message };
+
+    const result = data as
+      | { success?: boolean; result?: string; credited?: boolean }
+      | null;
+
+    if (result?.result === 'already_registered') {
+      return { success: false, message: 'Telefone já cadastrado anteriormente.' };
+    }
+
+    if (result?.success === false) {
+      return { success: false, message: 'Não foi possível cadastrar o telefone.' };
+    }
+
+    return { success: true, message: 'Telefone cadastrado! Você ganhou 10 créditos.' };
+  }
+
+  // Legacy path retained only while the governed producer flag is OFF.
   let authUid: string;
   try {
     authUid = await resolveAuthUid();
@@ -18,34 +42,30 @@ export const registerPhone = async (userId: string, phone: string) => {
     authUid = userId;
   }
 
-  // M-3: Atomic update — only succeeds if phone IS NULL (no TOCTOU window).
-  // If two requests race, the second will hit 0 rows updated and return a failure.
   const { data, error } = await supabase
     .from('profiles')
     .select('phone, credits')
     .eq('id', authUid)
-    .is('phone', null) // Only update if phone not yet set
+    .is('phone', null)
     .maybeSingle();
 
   if (error) return { success: false, message: error.message };
   if (!data) return { success: false, message: 'Telefone já cadastrado anteriormente.' };
 
-  // Safe to update: we just confirmed phone is null in the same read
   const { error: updateError } = await supabase
     .from('profiles')
     .update({
-      phone: phone,
+      phone,
       credits: (data.credits || 0) + 10,
     })
     .eq('id', authUid)
-    .is('phone', null); // Atomic guard: fail if phone was set by a racing request
+    .is('phone', null);
 
   if (updateError) return { success: false, message: updateError.message };
   return { success: true, message: 'Telefone cadastrado! Você ganhou 10 créditos.' };
 };
 
 export const addReferral = async (referrerId: string, refereeEmail: string) => {
-  // Check if referral already exists
   const { data: existing } = await supabase
     .from('referrals')
     .select('*')
@@ -66,19 +86,25 @@ export const addReferral = async (referrerId: string, refereeEmail: string) => {
 };
 
 export const checkAndRewardReferrer = async (newUserEmail: string) => {
-  // M-4: Atomic status flip — only the first caller to set status='completed' will proceed.
-  // Subsequent duplicate calls will find no 'pending' row and exit early.
+  if (isGovernedCreditProducerEnabled()) {
+    const { error } = await supabase.rpc('credit_claim_my_referral_bonus');
+    if (error) {
+      console.error('[referrals] governed referral claim failed:', error);
+    }
+    return;
+  }
+
+  // Legacy path retained only while the governed producer flag is OFF.
   const { data: updatedReferral, error: updateError } = await supabase
     .from('referrals')
     .update({ status: 'completed' })
     .eq('referee_email', newUserEmail)
-    .eq('status', 'pending') // Atomic guard: only matches once
+    .eq('status', 'pending')
     .select('referrer_id')
     .maybeSingle();
 
-  if (updateError || !updatedReferral) return; // Already completed or not found
+  if (updateError || !updatedReferral) return;
 
-  // Safe to reward: status was 'pending' and we just atomically flipped it
   const { data: referrerProfile } = await supabase
     .from('profiles')
     .select('credits')
