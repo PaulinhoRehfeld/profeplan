@@ -3,6 +3,8 @@ import type {
   TemporaryStagingIntegrityPort,
   TemporaryStagingIntegrityVerificationCommand,
   TemporaryStagingPort,
+  TemporaryStagingRecoveryPort,
+  TemporaryStagingRecoveryProbeCommand,
   TemporaryStagingWrite,
 } from '@profeplan/knowledge-factory';
 import type {
@@ -10,6 +12,7 @@ import type {
   TemporaryStagingArtifactDescriptor,
   TemporaryStagingDiscardReceipt,
   TemporaryStagingIntegrityEvidence,
+  TemporaryStagingRecoveryProbe,
 } from '@profeplan/types';
 import type { SupabaseSystemContext } from '../context/supabase-system-context.ts';
 import {
@@ -40,6 +43,14 @@ function objectPath(runId: string, artifactId: string): string {
 
 function locatorFor(runId: string, artifactId: string): string {
   return `${OPAQUE_LOCATOR_PREFIX}${safeSegment(runId)}:${safeSegment(artifactId)}`;
+}
+
+function pathParts(path: string): { readonly folder: string; readonly filename: string } {
+  const separator = path.lastIndexOf('/');
+  return {
+    folder: path.slice(0, separator),
+    filename: path.slice(separator + 1),
+  };
 }
 
 async function sha256Hex(bytes: ArrayBuffer): Promise<string> {
@@ -86,7 +97,7 @@ function recordFailure(
 }
 
 export class SupabaseTemporaryStagingAdapter
-  implements TemporaryStagingPort, TemporaryStagingIntegrityPort
+  implements TemporaryStagingPort, TemporaryStagingIntegrityPort, TemporaryStagingRecoveryPort
 {
   private readonly context: SupabaseSystemContext;
   private readonly bucketName: string;
@@ -141,7 +152,14 @@ export class SupabaseTemporaryStagingAdapter
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
 
-      if (persistenceError.code !== 'CONFLICT') {
+      // An unavailable/unknown provider response is ambiguous: the object may
+      // already exist. C.2.4 deliberately leaves it in place for deterministic
+      // reconciliation instead of deleting a potentially successful write.
+      if (
+        persistenceError.code !== 'CONFLICT' &&
+        persistenceError.code !== 'UNAVAILABLE' &&
+        persistenceError.code !== 'UNKNOWN'
+      ) {
         try {
           await bucket.remove([path]);
         } catch {
@@ -157,6 +175,68 @@ export class SupabaseTemporaryStagingAdapter
         input.artifactId,
         persistenceError
       );
+      throw persistenceError;
+    }
+  }
+
+  async inspect(
+    input: TemporaryStagingRecoveryProbeCommand
+  ): Promise<TemporaryStagingRecoveryProbe> {
+    const operation = 'staging.inspect_recovery';
+    const startedAt = Date.now();
+    const artifactId = input.artifactId;
+    const path = objectPath(input.run.id, artifactId);
+    const { folder, filename } = pathParts(path);
+    const bucket = this.context.client.storage.from(this.bucketName);
+
+    try {
+      const { data: listed, error: listError } = await bucket.list(folder, {
+        limit: 2,
+        search: filename,
+      });
+      if (listError !== null) {
+        throw toPersistenceError(listError, operation);
+      }
+
+      if (!(listed ?? []).some((item) => item.name === filename)) {
+        const probe: TemporaryStagingRecoveryProbe = {
+          outcome: 'absent',
+          artifactId,
+          run: input.run,
+          observedAt: this.now(),
+        };
+        recordSuccess(this.logger, this.context, operation, startedAt, artifactId);
+        return probe;
+      }
+
+      const { data, error } = await bucket.download(path);
+      if (error !== null) {
+        throw toPersistenceError(error, operation);
+      }
+      if (data === null) {
+        throw new KnowledgeFactoryPersistenceError('UNKNOWN', operation);
+      }
+
+      const storedBytes = await data.arrayBuffer();
+      const probe: TemporaryStagingRecoveryProbe = {
+        outcome: 'present',
+        artifact: {
+          artifactId,
+          opaqueLocator: locatorFor(input.run.id, artifactId),
+        },
+        run: input.run,
+        observedDigest: {
+          algorithm: 'sha-256',
+          value: await sha256Hex(storedBytes),
+        },
+        observedSizeBytes: storedBytes.byteLength,
+        observedAt: this.now(),
+      };
+      recordSuccess(this.logger, this.context, operation, startedAt, artifactId);
+      return probe;
+    } catch (error) {
+      const persistenceError = toPersistenceError(error, operation);
+      recordFailure(this.logger, this.context, operation, startedAt, artifactId, persistenceError);
       throw persistenceError;
     }
   }
@@ -232,24 +312,39 @@ export class SupabaseTemporaryStagingAdapter
     const bucket = this.context.client.storage.from(this.bucketName);
 
     try {
+      const { data: existsBefore, error: beforeError } = await bucket.exists(path);
+
+      if (!existsBefore) {
+        const receipt: TemporaryStagingDiscardReceipt = {
+          contractVersion: '1.0.0',
+          state: 'DISCARDED',
+          artifactId,
+          run: input.run,
+          requestedAt: input.requestedAt,
+          confirmedAt: this.now(),
+          outcome: 'already_discarded',
+          reasonCode: input.reasonCode,
+          correlationId: input.correlationId,
+        };
+        recordSuccess(this.logger, this.context, operation, startedAt, artifactId);
+        return receipt;
+      }
+
+      if (beforeError !== null) {
+        throw toPersistenceError(beforeError, operation);
+      }
+
       const { error } = await bucket.remove([path]);
       if (error !== null) {
         throw toPersistenceError(error, operation);
       }
 
-      const separator = path.lastIndexOf('/');
-      const folder = path.slice(0, separator);
-      const filename = path.slice(separator + 1);
-      const { data: remaining, error: listError } = await bucket.list(folder, {
-        limit: 2,
-        search: filename,
-      });
+      const { data: existsAfter, error: existsError } = await bucket.exists(path);
 
-      if (listError !== null) {
-        throw toPersistenceError(listError, operation);
-      }
-
-      if ((remaining ?? []).some((item) => item.name === filename)) {
+      if (existsAfter) {
+        if (existsError !== null) {
+          throw toPersistenceError(existsError, operation);
+        }
         throw toPersistenceError({ message: 'delete verification failed' }, operation);
       }
 
