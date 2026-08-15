@@ -11,6 +11,7 @@ const GOVERNED_TERM_PLAN_SAVE_FLAG = 'VITE_GOVERNED_TERM_PLAN_SAVE';
  * generation would become NON_BILLABLE while the corresponding Save remained
  * on the legacy direct-table path.
  *
+ * The 1.3C.4E final-sweep CI guards this coordination as a cutover invariant.
  * Both flags deliberately default to OFF.
  */
 export const isGovernedTermPlanSavePilotEnabled = (): boolean =>
