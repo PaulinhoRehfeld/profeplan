@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { saveTermPlan, fetchTermPlans } from '../TermPlanningService';
 import type { TermPlan } from '../../../types';
 
-// Mock Supabase client
 const upsertMock = vi.fn();
 const selectMock = vi.fn();
 const singleMock = vi.fn();
@@ -95,7 +94,6 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     configureFromMock();
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'false');
 
-    // Mock básico de localStorage para ambiente node
     (globalThis as any).localStorage = {
       store: {} as Record<string, string>,
       getItem(key: string) {
@@ -118,9 +116,8 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     vi.unstubAllEnvs();
   });
 
-  it('mantém o caminho legado por padrão e salva no localStorage mesmo se Supabase falhar', async () => {
+  it('mantém caminho legado e localStorage se Supabase falhar', async () => {
     singleMock.mockRejectedValueOnce(new Error('supabase indisponível'));
-
     const result = await saveTermPlan(basePlan, userId);
 
     expect(result.userId).toBe(userId);
@@ -134,7 +131,7 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     expect(stored[0].lessons?.length).toBe(1);
   });
 
-  it('usa exclusivamente o RPC governado para plano gerado quando o piloto está habilitado', async () => {
+  it('usa RPC governado para plano gerado com piloto ativo', async () => {
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'true');
     rpcMock.mockResolvedValueOnce({
       data: {
@@ -166,12 +163,10 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
       localStorage.getItem(`profeplan_term_plans:${userId}`) || '[]'
     ) as TermPlan[];
     expect(stored).toHaveLength(1);
-    expect(
-      localStorage.getItem(`profeplan_term_plan_governed_draft:${userId}:plan-1`)
-    ).toBeNull();
+    expect(localStorage.getItem(`profeplan_term_plan_governed_draft:${userId}:plan-1`)).toBeNull();
   });
 
-  it('preserva rascunho local e não marca como salvo quando o RPC rejeita por falta de crédito', async () => {
+  it('preserva rascunho quando RPC rejeita por falta de crédito', async () => {
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'true');
     rpcMock.mockResolvedValueOnce({
       data: {
@@ -194,7 +189,7 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     expect(draft.generatedText).toBe('# Planejamento');
   });
 
-  it('mantém plano sem conteúdo gerado no caminho legado mesmo com o piloto habilitado', async () => {
+  it('mantém plano sem conteúdo gerado no caminho legado', async () => {
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'true');
     singleMock.mockResolvedValueOnce({ data: { id: 'plan-1' }, error: null });
 
@@ -204,8 +199,7 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     expect(upsertMock).toHaveBeenCalledTimes(1);
   });
 
-  it('mergeia planos vindos de term_plans com fallback vazio quando Supabase retorna erro', async () => {
-    // Simula erro em select de term_plans
+  it('mantém fallback vazio quando term_plans retorna erro', async () => {
     fromMock.mockImplementationOnce(() => ({
       select: () => ({
         eq: () => ({
