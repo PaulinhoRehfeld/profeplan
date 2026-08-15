@@ -1,0 +1,302 @@
+name: Credit Accounting 1.3C.6 Production Preflight CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/credit-accounting-1-3c-6-production-preflight-ci.yml'
+      - 'infra/supabase/migrations/202608142140_credit_accounting_schema.sql'
+      - 'infra/supabase/migrations/202608142230_credit_accounting_commands.sql'
+      - 'infra/supabase/migrations/202608142231_credit_accounting_command_invariants.sql'
+      - 'infra/supabase/migrations/20260813_stripe_webhook_fulfillment.sql'
+      - 'infra/supabase/migrations/202608150115_credit_term_plan_atomic_save_pilot.sql'
+      - 'infra/supabase/migrations/202608150225_credit_positive_producer_convergence.sql'
+      - 'infra/supabase/migrations/202608150330_credit_generated_content_atomic_save.sql'
+      - 'infra/supabase/migrations/202608151530_credit_pdi_atomic_save.sql'
+      - 'infra/supabase/migrations/202608151900_credit_cutover_enforcement.sql'
+      - 'scripts/sql/credit_legacy_balance_snapshot.sql'
+      - 'scripts/sql/credit_legacy_balance_production_import.sql'
+      - 'scripts/sql/credit_cutover_enforcement_rollback.sql'
+      - 'scripts/sql/credit_positive_producer_rollback.sql'
+      - 'supabase/tests/credit_cutover_enforcement_candidate_rehearsal.sql'
+      - 'supabase/tests/credit_cutover_enforcement_rollback_rehearsal.sql'
+      - 'supabase/tests/credit_positive_producer_rollback_rehearsal.sql'
+      - 'supabase/tests/credit_positive_producer_reapply_rehearsal.sql'
+      - 'supabase/tests/credit_positive_producer_integrated_smoke.sql'
+      - 'supabase/tests/fixtures/credit_cutover_integrated_pdi_baseline.sql'
+      - 'docs/commercial/LOT-1.3C.6-PRODUCTION-CUTOVER-PREFLIGHT.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-production-preflight-artifacts:
+    name: Prove production cutover artifacts on disposable Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    env:
+      CREDIT_DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      CREDIT_WORKDIR: .credit-1-3c-6-supabase-ci
+      CUTOVER_ID: ci-credit-cutover-1-3c-6-v1
+      CUTOVER_AT: '2026-08-15 19:00:00+00'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Prove active runtime authority sweep
+        run: node scripts/credit-consumer-final-sweep.mjs
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Prepare integrated disposable Supabase project
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$CREDIT_WORKDIR"
+          mkdir -p "$CREDIT_WORKDIR"
+
+          (
+            cd "$CREDIT_WORKDIR"
+            supabase init --force
+            mkdir -p supabase/migrations
+
+            cp ../supabase/tests/fixtures/credit_accounting_minimal_baseline.sql \
+              supabase/migrations/202608142130_credit_accounting_test_baseline.sql
+            cp ../supabase/tests/fixtures/credit_positive_producer_baseline.sql \
+              supabase/migrations/202608142131_credit_positive_producer_test_baseline.sql
+            cp ../supabase/tests/fixtures/credit_term_plan_pilot_baseline.sql \
+              supabase/migrations/202608142132_credit_term_plan_test_baseline.sql
+            cp ../supabase/tests/fixtures/credit_generated_content_baseline.sql \
+              supabase/migrations/202608142133_credit_generated_content_test_baseline.sql
+            cp ../supabase/tests/fixtures/credit_cutover_integrated_pdi_baseline.sql \
+              supabase/migrations/202608142134_credit_cutover_integrated_pdi_baseline.sql
+            cp ../supabase/tests/fixtures/credit_legacy_cutover_snapshot.sql \
+              supabase/migrations/202608142135_credit_legacy_cutover_snapshot_fixture.sql
+
+            cp ../infra/supabase/migrations/202608142140_credit_accounting_schema.sql \
+              supabase/migrations/202608142140_credit_accounting_schema.sql
+            cp ../infra/supabase/migrations/202608142230_credit_accounting_commands.sql \
+              supabase/migrations/202608142230_credit_accounting_commands.sql
+            cp ../infra/supabase/migrations/202608142231_credit_accounting_command_invariants.sql \
+              supabase/migrations/202608142231_credit_accounting_command_invariants.sql
+            cp ../infra/supabase/migrations/20260813_stripe_webhook_fulfillment.sql \
+              supabase/migrations/202608142240_stripe_webhook_fulfillment.sql
+            cp ../infra/supabase/migrations/202608150115_credit_term_plan_atomic_save_pilot.sql \
+              supabase/migrations/202608150115_credit_term_plan_atomic_save_pilot.sql
+            cp ../infra/supabase/migrations/202608150225_credit_positive_producer_convergence.sql \
+              supabase/migrations/202608150225_credit_positive_producer_convergence.sql
+            cp ../infra/supabase/migrations/202608150330_credit_generated_content_atomic_save.sql \
+              supabase/migrations/202608150330_credit_generated_content_atomic_save.sql
+            cp ../infra/supabase/migrations/202608151530_credit_pdi_atomic_save.sql \
+              supabase/migrations/202608151530_credit_pdi_atomic_save.sql
+          )
+
+          echo "Prepared disposable 1.3C.6 preflight inputs for commit $GITHUB_SHA."
+
+      - name: Start disposable Supabase stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          START_LOG="$(mktemp)"
+          if ! (
+            cd "$CREDIT_WORKDIR"
+            supabase start \
+              -x studio,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor
+          ) >"$START_LOG" 2>&1; then
+            DIAGNOSTIC_LINE_COUNT="$(wc -l < "$START_LOG")"
+            rm -f "$START_LOG"
+            echo "Disposable Supabase stack failed to start."
+            echo "Raw startup output suppressed because it may contain disposable credentials."
+            echo "Captured diagnostic lines: $DIAGNOSTIC_LINE_COUNT"
+            exit 1
+          fi
+          rm -f "$START_LOG"
+          echo "Disposable Supabase stack started; generated local credentials omitted."
+
+      - name: Capture synthetic frozen snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          SNAPSHOT="$(psql "$CREDIT_DB_URL" -At -F '|' \
+            -f scripts/sql/credit_legacy_balance_snapshot.sql | tail -n 1)"
+          IFS='|' read -r FINITE_COUNT FINITE_SUM FINITE_HASH UNLIMITED_COUNT UNLIMITED_HASH <<< "$SNAPSHOT"
+
+          test -n "$FINITE_COUNT"
+          test -n "$FINITE_SUM"
+          test -n "$FINITE_HASH"
+          test -n "$UNLIMITED_COUNT"
+          test -n "$UNLIMITED_HASH"
+
+          {
+            echo "FINITE_COUNT=$FINITE_COUNT"
+            echo "FINITE_SUM=$FINITE_SUM"
+            echo "FINITE_HASH=$FINITE_HASH"
+            echo "UNLIMITED_COUNT=$UNLIMITED_COUNT"
+            echo "UNLIMITED_HASH=$UNLIMITED_HASH"
+          } >> "$GITHUB_ENV"
+
+          echo "Captured synthetic frozen snapshot: finite_count=$FINITE_COUNT finite_sum=$FINITE_SUM."
+
+      - name: Prove production-shaped LEGACY_BALANCE import and drift guard
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          run_import() {
+            psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+              -v cutover_id="$CUTOVER_ID" \
+              -v cutover_at="$CUTOVER_AT" \
+              -v expected_finite_count="$FINITE_COUNT" \
+              -v expected_finite_sum="$FINITE_SUM" \
+              -v expected_finite_hash="$FINITE_HASH" \
+              -v expected_unlimited_count="$UNLIMITED_COUNT" \
+              -v expected_unlimited_hash="$UNLIMITED_HASH" \
+              -f scripts/sql/credit_legacy_balance_production_import.sql
+          }
+
+          run_import | tee credit-legacy-production-import.log
+          grep -q 'OK:credit_legacy_balance_production_import_1_3C_6' \
+            credit-legacy-production-import.log
+
+          # Exact replay must be safe: same frozen snapshot + same cutover id.
+          run_import >/dev/null
+
+          DRIFT_ID="$(psql "$CREDIT_DB_URL" -At -v ON_ERROR_STOP=1 -c "
+            SELECT id FROM public.profiles
+            WHERE COALESCE(is_unlimited,false)=false
+              AND tier IS DISTINCT FROM 'GOLD'
+              AND COALESCE(credits,0)>0
+            ORDER BY id LIMIT 1;
+          ")"
+          test -n "$DRIFT_ID"
+
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -v drift_id="$DRIFT_ID" \
+            -c "UPDATE public.profiles SET credits=credits+1 WHERE id=:'drift_id'::uuid;" >/dev/null
+
+          set +e
+          run_import >credit-legacy-drift-guard.log 2>&1
+          DRIFT_STATUS=$?
+          set -e
+
+          if [ "$DRIFT_STATUS" -eq 0 ]; then
+            echo "Expected frozen-snapshot drift to fail closed, but import succeeded."
+            exit 1
+          fi
+
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -v drift_id="$DRIFT_ID" \
+            -c "UPDATE public.profiles SET credits=credits-1 WHERE id=:'drift_id'::uuid;" >/dev/null
+
+          run_import >/dev/null
+          echo "Production-shaped LEGACY_BALANCE import is replay-safe and drift-fail-closed."
+
+      - name: Prove governed positive producers before rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_positive_producer_integrated_smoke.sql \
+            | tee credit-positive-producers-1-3c-6.log
+          grep -q 'OK:credit_positive_producer_integrated_smoke_1_3C_5' \
+            credit-positive-producers-1-3c-6.log
+
+      - name: Apply and prove granular hosted-enforcement candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f infra/supabase/migrations/202608151900_credit_cutover_enforcement.sql
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_cutover_enforcement_candidate_rehearsal.sql \
+            | tee credit-enforcement-candidate-1-3c-6.log
+          grep -q 'OK:credit_cutover_enforcement_candidate_1_3C_6' \
+            credit-enforcement-candidate-1-3c-6.log
+
+      - name: Prove enforcement rollback and reapply
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f scripts/sql/credit_cutover_enforcement_rollback.sql
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_cutover_enforcement_rollback_rehearsal.sql \
+            | tee credit-enforcement-rollback-1-3c-6.log
+          grep -q 'OK:credit_cutover_enforcement_rollback_1_3C_6' \
+            credit-enforcement-rollback-1-3c-6.log
+
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f infra/supabase/migrations/202608151900_credit_cutover_enforcement.sql
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_cutover_enforcement_candidate_rehearsal.sql >/dev/null
+
+      - name: Prove positive-producer rollback and governed reapply
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f scripts/sql/credit_positive_producer_rollback.sql
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_positive_producer_rollback_rehearsal.sql \
+            | tee credit-producer-rollback-1-3c-6.log
+          grep -q 'OK:credit_positive_producer_rollback_1_3C_6' \
+            credit-producer-rollback-1-3c-6.log
+
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f infra/supabase/migrations/202608150225_credit_positive_producer_convergence.sql
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_positive_producer_reapply_rehearsal.sql \
+            | tee credit-producer-reapply-1-3c-6.log
+          grep -q 'OK:credit_positive_producer_reapply_1_3C_6' \
+            credit-producer-reapply-1-3c-6.log
+
+      - name: Reconfirm imported legacy cohort survived rollback rehearsals
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -v cutover_id="$CUTOVER_ID" \
+            -v cutover_at="$CUTOVER_AT" \
+            -v expected_finite_count="$FINITE_COUNT" \
+            -v expected_finite_sum="$FINITE_SUM" \
+            -v expected_finite_hash="$FINITE_HASH" \
+            -v expected_unlimited_count="$UNLIMITED_COUNT" \
+            -v expected_unlimited_hash="$UNLIMITED_HASH" \
+            -f scripts/sql/credit_legacy_balance_production_import.sql >/dev/null
+
+      - name: Lint disposable database
+        shell: bash
+        run: |
+          set -euo pipefail
+          (
+            cd "$CREDIT_WORKDIR"
+            supabase db lint --level warning
+          )
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          if [ -d "$CREDIT_WORKDIR/supabase" ]; then
+            (
+              cd "$CREDIT_WORKDIR"
+              supabase stop --no-backup || true
+            ) >/dev/null 2>&1
+          fi
