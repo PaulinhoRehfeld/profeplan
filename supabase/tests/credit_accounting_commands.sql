@@ -5,6 +5,7 @@
 
 CREATE TEMP TABLE credit_test_clock (t timestamptz NOT NULL);
 INSERT INTO credit_test_clock VALUES (clock_timestamp());
+GRANT SELECT ON credit_test_clock TO service_role;
 
 INSERT INTO public.profiles (id, tier, credits, is_unlimited) VALUES
   ('00000000-0000-0000-0000-000000000101', 'FREE', 999, false),
@@ -440,13 +441,23 @@ SELECT set_config(
   '00000000-0000-0000-0000-000000000106',
   true
 );
-SELECT CASE
-  WHEN (public.credit_get_my_balance() ->> 'user_id')::uuid =
-       '00000000-0000-0000-0000-000000000106'::uuid
-   AND (public.credit_get_my_balance() ->> 'total')::integer = 0
-  THEN 1
-  ELSE 1 / 0
-END AS authenticated_balance_guard;
+SELECT set_config(
+  'request.jwt.claims',
+  '{"sub":"00000000-0000-0000-0000-000000000106","role":"authenticated"}',
+  true
+);
+SELECT (
+  (public.credit_get_my_balance() ->> 'user_id')::uuid =
+    '00000000-0000-0000-0000-000000000106'::uuid
+  AND (public.credit_get_my_balance() ->> 'total')::integer = 0
+) AS authenticated_balance_guard
+\gset
+\if :authenticated_balance_guard
+  \echo 'authenticated self-balance guard passed'
+\else
+  \echo 'authenticated self-balance guard failed'
+  \quit 3
+\endif
 ROLLBACK;
 
 -- ---------------------------------------------------------------------------
