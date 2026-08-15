@@ -309,19 +309,14 @@ export class SupabaseTemporaryStagingAdapter
     }
 
     const path = objectPath(input.run.id, artifactId);
-    const { folder, filename } = pathParts(path);
     const bucket = this.context.client.storage.from(this.bucketName);
 
     try {
-      const { data: before, error: beforeError } = await bucket.list(folder, {
-        limit: 2,
-        search: filename,
-      });
+      const { data: existsBefore, error: beforeError } = await bucket.exists(path);
       if (beforeError !== null) {
         throw toPersistenceError(beforeError, operation);
       }
 
-      const existsBefore = (before ?? []).some((item) => item.name === filename);
       if (!existsBefore) {
         const receipt: TemporaryStagingDiscardReceipt = {
           contractVersion: '1.0.0',
@@ -343,16 +338,13 @@ export class SupabaseTemporaryStagingAdapter
         throw toPersistenceError(error, operation);
       }
 
-      const { data: remaining, error: listError } = await bucket.list(folder, {
-        limit: 2,
-        search: filename,
-      });
+      const { data: existsAfter, error: existsError } = await bucket.exists(path);
 
-      if (listError !== null) {
-        throw toPersistenceError(listError, operation);
+      if (existsError !== null) {
+        throw toPersistenceError(existsError, operation);
       }
 
-      if ((remaining ?? []).some((item) => item.name === filename)) {
+      if (existsAfter) {
         throw toPersistenceError({ message: 'delete verification failed' }, operation);
       }
 
