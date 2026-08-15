@@ -4,6 +4,7 @@ import { fetchEnemQuestions } from '../databaseService';
 import { getTeacherContext } from '../supabaseService';
 import { checkUsageQuota, incrementUserUsage } from '../ProfileService';
 import { hybridSearchProfeplan } from '../searchService';
+import { isGovernedCreditConsumerEnabled } from '../credits/creditConsumerFlags';
 import { GENERATION_MODELS, getGenAIClient } from './AiCore';
 import { extractHighSchoolContext } from './AiUtilityService';
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from './AiGuardrailsService';
@@ -28,21 +29,18 @@ export const generateProfePlanStream = async (
   history: { role: string; parts: { text: string }[] }[],
   mode: string,
   imagePart?: { inlineData: { data: string; mimeType: string } },
-  audioPart?: { inlineData: { data: string; mimeType: string } }, // Mantido interface, mas pode não ser usado
+  audioPart?: { inlineData: { data: string; mimeType: string } },
   userAccessLevel?: AccessLevel,
   userId?: string,
-  userSettings?: UserSettings // 🛡️ GUARDRAILS: User preferences
+  userSettings?: UserSettings
 ) => {
   const client = getGenAIClient();
+  const governedConsumers = isGovernedCreditConsumerEnabled();
 
-  // Configuração da instrução do sistema base
-  // [MODIFICAÇÃO V3.2]: O Chat Geral usa SYSTEM_PROMPT_CHAT (com fallback).
-  // Agentes especializados (Quarterly, Planning) mantêm SYSTEM_PROMPT (estrito/RAG only).
   const basePrompt =
     mode === 'quarterly' || mode === 'planning' ? SYSTEM_PROMPT : SYSTEM_PROMPT_CHAT;
   let specificInstruction = `${basePrompt}\n\n[MODO ATIVO]: ${mode.toUpperCase()}`;
 
-  // 🛡️ GUARDRAILS: Apply user preferences to chat responses
   if (userSettings) {
     const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
     guardrailsConfig.context = `Chat - Modo ${mode}`;
@@ -50,7 +48,6 @@ export const generateProfePlanStream = async (
     specificInstruction += `\n\n${guardrailsPrompt}`;
   }
 
-  // Injeção de Memória (Teacher Context)
   if (userId) {
     try {
       const { recentLessons, preferences } = await getTeacherContext(userId);
@@ -74,21 +71,17 @@ export const generateProfePlanStream = async (
     }
   }
 
-  // [REGRA DE OURO] Busca Automática de Questões para Ensino Médio
   const context = extractHighSchoolContext(message);
 
   if (context) {
     console.log(`🔍 Detectado contexto de Ensino Médio: ${context.grade} - ${context.subject}`);
     try {
-      // Usa a mensagem do usuário + contexto extraído
       const searchResults = await hybridSearchProfeplan({
         textoBusca: message,
         limit: 3,
         matchThreshold: 0.5,
-        // Passa os filtros para o Supabase (que deve suportar ou ignorar se null)
-        // O formato '1ANO' é passado como 'nivel' se a RPC suportar, ou concatenado na busca
-        nivel: context.grade, // Ex: "1ANO"
-        disciplina: context.subject, // Ex: "BIOLOGIA"
+        nivel: context.grade,
+        disciplina: context.subject,
       });
 
       if (searchResults && searchResults.length > 0) {
@@ -130,7 +123,6 @@ export const generateProfePlanStream = async (
               : null;
 
       if (area) {
-        // Nota: fetchEnemQuestions deve retornar array de objetos com question_text
         const examples = await fetchEnemQuestions(area, undefined, 2);
         if (examples && examples.length > 0) {
           specificInstruction += `\n\n[EXEMPLOS DE QUESTÕES DO BANCO]:\n${JSON.stringify(examples.map((q) => q.question_text))}`;
@@ -154,13 +146,11 @@ export const generateProfePlanStream = async (
     Gere 8 a 10 slides. Seja sintético e visual.`;
   }
 
-  // Constrói histórico no formato OpenAI (messages)
   const historyMessages: ChatMessage[] = history.map((h) => ({
     role: h.role === 'user' ? 'user' : 'assistant',
     content: (h.parts || []).map((p) => ('text' in p ? p.text : '')).join(' '),
   }));
 
-  // Monta a mensagem atual do usuário (imagem/áudio ainda não integrados na chamada nativa)
   const userMessageContent = message || '';
 
   const messages: ChatMessage[] = [
@@ -175,8 +165,9 @@ export const generateProfePlanStream = async (
     },
   ];
 
-  // Check Quota
-  if (userId) {
+  // 1.3A/1.3C.4A: general/planning chat generation is NON_BILLABLE after
+  // governed consumer cutover. Flag OFF preserves the legacy quota behavior.
+  if (userId && !governedConsumers) {
     const quotaStatus = await checkUsageQuota(userId);
     if (!quotaStatus.allowed) {
       throw new Error(quotaStatus.message);
@@ -192,12 +183,10 @@ export const generateProfePlanStream = async (
       stream: true,
     } as any);
 
-    // Increment Usage only after stream starts successfully
-    if (userId) {
+    if (userId && !governedConsumers) {
       await incrementUserUsage(userId, 'chat');
     }
 
-    // Adaptador para garantir compatibilidade com o App.tsx que espera chunk.text
     async function* streamAdapter() {
       for await (const chunk of stream as unknown as AsyncIterable<any>) {
         const content = chunk.choices[0]?.delta?.content || '';
