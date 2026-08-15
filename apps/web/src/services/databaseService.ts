@@ -1,3 +1,4 @@
+import { isGovernedTermPlanSavePilotEnabled } from './credits/creditPilotFlags';
 import { supabase } from './supabaseClient';
 
 /**
@@ -10,6 +11,14 @@ export const saveGeneratedContent = async (
   title: string,
   content: string
 ) => {
+  // Lote 1.3B.3: when the governed TermPlan pilot is enabled, term_plans is
+  // the only canonical persistence for quarterly plans. The historical
+  // generated_contents mirror remains readable as legacy fallback, but no new
+  // duplicate write is created outside the atomic save transaction.
+  if (isGovernedTermPlanSavePilotEnabled() && type === 'trimestral' && folder === 'TermPlans') {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from('generated_contents')
     .insert([
