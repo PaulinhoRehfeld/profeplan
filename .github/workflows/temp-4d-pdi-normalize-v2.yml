@@ -1,0 +1,138 @@
+name: Temporary 4D PDI normalization v2
+
+on:
+  push:
+    branches:
+      - feat/commercial-credit-consumers-4d-pdi
+    paths:
+      - '.github/workflows/temp-4d-pdi-normalize-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/commercial-credit-consumers-4d-pdi
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Normalize 4D invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          migration = Path('infra/supabase/migrations/202608151530_credit_pdi_atomic_save.sql')
+          text = migration.read_text()
+          old = """    IF NOT v_replaced AND (
+                v_element ->> 'artifact_id' = p_artifact_id::text
+                OR (
+                  NOT (v_element ? 'artifact_id')
+                  AND v_element ->> 'lesson_id' = p_lesson_id
+                )
+              ) THEN
+          """
+          new = """    IF NOT v_replaced AND (
+                v_element ->> 'artifact_id' = p_artifact_id::text
+                OR v_element ->> 'lesson_id' = p_lesson_id
+              ) THEN
+          """
+          if old not in text:
+              raise RuntimeError('missing Block 9 replacement invariant')
+          text = text.replace(old, new, 1)
+          old_role = "v_role NOT IN ('supervisor', 'school_manager', 'school_admin', 'admin')"
+          if old_role not in text:
+              raise RuntimeError('missing final-report role invariant')
+          text = text.replace(
+              old_role,
+              "v_role NOT IN ('manager', 'school_manager', 'school_admin', 'admin')",
+              1,
+          )
+          migration.write_text(text)
+
+          types = Path('apps/web/src/types.ts')
+          text = types.read_text()
+          anchor = """export interface StudentAdaptation {
+            studentId: string;
+          """
+          replacement = """export interface StudentAdaptation {
+            /** Stable economic identity for the generated adaptation until regeneration. */
+            artifactId?: string;
+            studentId: string;
+          """
+          if anchor not in text:
+              raise RuntimeError('missing StudentAdaptation anchor')
+          types.write_text(text.replace(anchor, replacement, 1))
+
+          hook = Path('apps/web/src/features/PDI/usePDIManager.ts')
+          text = hook.read_text()
+          if "          ...({ artifactId } as any)," not in text:
+              raise RuntimeError('missing adaptation identity spread')
+          text = text.replace("          ...({ artifactId } as any),", "          artifactId,", 1)
+          cast = """        const adaptation = adaptations[studentId] as (StudentAdaptation & {
+                  artifactId?: string;
+                }) | undefined;
+          """
+          if cast not in text:
+              raise RuntimeError('missing adaptation identity cast')
+          text = text.replace(cast, "        const adaptation = adaptations[studentId];\n", 1)
+          hook.write_text(text)
+
+          editor = Path('apps/web/src/features/PDI/components/PDIBlock11Editor.tsx')
+          text = editor.read_text()
+          anchor = """  const canEdit =
+            userRole === 'supervisor' ||
+            userRole === 'school_manager' ||
+          """
+          replacement = """  const canEdit =
+            userRole === 'supervisor' ||
+            userRole === 'manager' ||
+            userRole === 'school_manager' ||
+          """
+          if anchor not in text:
+              raise RuntimeError('missing Block 11 role anchor')
+          editor.write_text(text.replace(anchor, replacement, 1))
+          PY
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Format 4D files with canonical Prettier
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec prettier --write \
+            apps/web/src/types.ts \
+            apps/web/src/features/PDI/usePDIManager.ts \
+            apps/web/src/features/PDI/components/PDIBlock11Editor.tsx \
+            apps/web/src/features/PDI/PdiCreditService.ts \
+            apps/web/src/features/PDI/__tests__/PdiCreditService.creditConsumer.test.ts \
+            .github/workflows/credit-accounting-1-3c-4d-pdi-ci.yml \
+            docs/commercial/LOT-1.3C.4D-PDI-SAVE.md
+
+          rm -f .github/workflows/temp-4d-pdi-finalize.yml
+          rm -f .github/workflows/temp-4d-pdi-normalize-v2.yml
+
+      - name: Commit normalized 4D patch and remove temporary workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix(commercial): normalize governed PDI invariants'
+          git push origin HEAD:feat/commercial-credit-consumers-4d-pdi
