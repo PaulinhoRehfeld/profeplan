@@ -337,10 +337,11 @@ A matriz descartável cobre pelo menos:
 ## 17. Arquivos do sublote
 
 1. `infra/supabase/migrations/202608142230_credit_accounting_commands.sql`
-2. `supabase/tests/credit_accounting_commands.sql`
-3. `supabase/tests/credit_accounting_commands_concurrency_assert.sql`
-4. `.github/workflows/credit-accounting-1-3b-2-command-ci.yml`
-5. `docs/commercial/LOT-1.3B.2-CREDIT-COMMAND-BOUNDARY.md`
+2. `infra/supabase/migrations/202608142231_credit_accounting_command_invariants.sql`
+3. `supabase/tests/credit_accounting_commands.sql`
+4. `supabase/tests/credit_accounting_commands_concurrency_assert.sql`
+5. `.github/workflows/credit-accounting-1-3b-2-command-ci.yml`
+6. `docs/commercial/LOT-1.3B.2-CREDIT-COMMAND-BOUNDARY.md`
 
 ## 18. Fora de escopo
 
