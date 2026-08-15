@@ -2,7 +2,9 @@
 
 Data: 15 de agosto de 2026.
 
-Base canônica: `56e125bf72aabb885b0c0bc8b27f64d76ce98106`.
+Base de implementação original: `56e125bf72aabb885b0c0bc8b27f64d76ce98106` (1.3C.4B integrado).
+
+Base canônica reconciliada para revisão final: `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc` (avanço concorrente legítimo da Knowledge Factory C.2.4 preservado).
 
 ## Objetivo
 
