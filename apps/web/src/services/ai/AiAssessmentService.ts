@@ -2,6 +2,7 @@ import { GENERATION_MODELS, getGenAIClient } from './AiCore';
 import { extractGuardrailsFromSettings, generateGuardrailsPrompt } from './AiGuardrailsService';
 import { UserSettings } from '../../types';
 import { checkUsageQuota, incrementUserUsage } from '../ProfileService';
+import { isGovernedCreditConsumerEnabled } from '../credits/creditConsumerFlags';
 
 type LessonContext = {
   topic?: string;
@@ -22,10 +23,14 @@ export const generateAssessmentWithContext = async (
   dissertativeCount: number = 2,
   numEnem: number = 0,
   difficulty: string = 'Médio',
-  userSettings?: UserSettings, // 🛡️ GUARDRAILS
+  userSettings?: UserSettings,
   userId?: string
 ) => {
-  if (userId) {
+  const governedConsumers = isGovernedCreditConsumerEnabled();
+
+  // 1.3C.4B: generation/preview is NON_BILLABLE after governed consumer
+  // cutover. Flag OFF preserves legacy quota behavior until 4E.
+  if (userId && !governedConsumers) {
     const quotaStatus = await checkUsageQuota(userId);
     if (!quotaStatus.allowed) {
       throw new Error(quotaStatus.message);
@@ -41,7 +46,6 @@ export const generateAssessmentWithContext = async (
     )
     .join('\n\n');
 
-  // 🛡️ GUARDRAILS: Apply user preferences to assessments
   let guardrailsPrompt = '';
   if (userSettings) {
     const guardrailsConfig = extractGuardrailsFromSettings(userSettings);
@@ -103,10 +107,7 @@ export const generateAssessmentWithContext = async (
   }`;
 
   const messages = [
-    {
-      role: 'system' as const,
-      content: instruction,
-    },
+    { role: 'system' as const, content: instruction },
     {
       role: 'user' as const,
       content: `Crie uma avaliação de ${subject} para a turma ${className}, referente ao ${academicPeriod}.`,
@@ -136,7 +137,7 @@ export const generateAssessmentWithContext = async (
     throw new Error('Não foi possível gerar a avaliação. Tente novamente.');
   }
 
-  if (userId) {
+  if (userId && !governedConsumers) {
     await incrementUserUsage(userId, 'generate');
   }
 
@@ -150,7 +151,7 @@ export const generateAssessmentWithContext = async (
 export const gradeWrittenAnswer = async (
   questionText: string,
   rubric: string,
-  imageBase64: string // Foto da resposta escrita
+  imageBase64: string
 ) => {
   const client = getGenAIClient();
 
@@ -176,10 +177,7 @@ export const gradeWrittenAnswer = async (
   const dataUrl = `data:image/jpeg;base64,${imageData}`;
 
   const messages: any[] = [
-    {
-      role: 'system',
-      content: instruction,
-    },
+    { role: 'system', content: instruction },
     {
       role: 'user',
       content: [
@@ -187,10 +185,7 @@ export const gradeWrittenAnswer = async (
           type: 'text',
           text: `QUESTÃO: ${questionText}\n\nRUBRICA DE CORREÇÃO:\n${rubric}\n\nAgora analise a resposta escrita do aluno na imagem.`,
         },
-        {
-          type: 'input_image',
-          image_url: { url: dataUrl },
-        },
+        { type: 'input_image', image_url: { url: dataUrl } },
       ],
     },
   ];
@@ -211,9 +206,7 @@ export const gradeWrittenAnswer = async (
 
   try {
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
     return JSON.parse(responseText);
   } catch (e) {
     console.error('Erro ao parsear resultado de correção:', responseText);
