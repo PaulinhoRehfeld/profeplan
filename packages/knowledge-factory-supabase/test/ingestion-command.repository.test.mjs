@@ -6,6 +6,7 @@ const RUN_ID = 'a1000000-0000-4000-8000-000000000001';
 const SOURCE_VERSION_ID = 'a2000000-0000-4000-8000-000000000001';
 const RECEIVED_FILE_ID = 'a3000000-0000-4000-8000-000000000001';
 const ACTOR_ID = 'a4000000-0000-4000-8000-000000000001';
+const REVIEWER_ID = 'a4000000-0000-4000-8000-000000000002';
 const CORRELATION_ID = 'a5000000-0000-4000-8000-000000000001';
 const ARTIFACT_ID = 'a6000000-0000-4000-8000-000000000001';
 const NOW = '2026-08-15T01:20:00.000Z';
@@ -18,7 +19,7 @@ function envelope(commandId) {
     actor: { actorId: ACTOR_ID, role: 'system_worker' },
     occurredAt: NOW,
     correlationId: CORRELATION_ID,
-    reason: 'synthetic C.2.4 repository test',
+    reason: 'synthetic governed ingestion repository test',
   };
 }
 
@@ -41,7 +42,9 @@ function row(command, previousState, state, sequence = 2) {
         ? 'technical_failure'
         : command.commandType === 'cancel_ingestion'
           ? 'operator_cancelled'
-          : null,
+          : command.commandType === 'reject_ingestion'
+            ? 'human_review_rejected'
+            : null,
   };
 }
 
@@ -85,7 +88,18 @@ function verifiedArtifact() {
   };
 }
 
-test('C.2.4 command repository routes only the seven authorized command boundaries', async () => {
+function review(decision) {
+  return {
+    reviewId: 'ab000000-0000-4000-8000-000000000001',
+    reviewMode: 'human',
+    reviewer: { actorId: REVIEWER_ID, role: 'legal_editorial_reviewer' },
+    decision,
+    decidedAt: NOW,
+    reason: 'synthetic human review',
+  };
+}
+
+test('governed ingestion command repository routes C.2.4 plus the three C.2.5 review boundaries', async () => {
   const calls = [];
   const client = {
     async rpc(name, args) {
@@ -97,6 +111,9 @@ test('C.2.4 command repository routes only the seven authorized command boundari
         mark_staged: ['STAGING', 'STAGED', 3],
         begin_verification: ['STAGED', 'VERIFYING', 4],
         confirm_verified: ['VERIFYING', 'VERIFIED', 5],
+        request_review: ['VERIFIED', 'PENDING_REVIEW', 6],
+        approve_for_extraction: ['PENDING_REVIEW', 'APPROVED_FOR_EXTRACTION', 7],
+        reject_ingestion: ['PENDING_REVIEW', 'REJECTED', 7],
         fail_ingestion: ['STAGING', 'FAILED', 3],
         cancel_ingestion: ['STAGING', 'CANCELLED', 3],
       };
@@ -105,9 +122,7 @@ test('C.2.4 command repository routes only the seven authorized command boundari
         ...command,
         commandId: args.p_command_id,
         fingerprint: args.p_fingerprint,
-        ...(command.commandType === 'request_ingestion'
-          ? {}
-          : { run: command.run }),
+        ...(command.commandType === 'request_ingestion' ? {} : { run: command.run }),
       };
       return { data: [row(full, previous, state, sequence)], error: null };
     },
@@ -151,6 +166,44 @@ test('C.2.4 command repository routes only the seven authorized command boundari
     run: { kind: 'processing_run', id: RUN_ID },
     expectedState: 'VERIFYING',
   };
+  const requestReview = {
+    ...envelope('a8000000-0000-4000-8000-000000000008'),
+    commandType: 'request_review',
+    run: { kind: 'processing_run', id: RUN_ID },
+    expectedState: 'VERIFIED',
+    expectedVersion: 'revision-5',
+    expectedSequence: 5,
+  };
+  const approve = {
+    ...envelope('a8000000-0000-4000-8000-000000000009'),
+    actor: { actorId: REVIEWER_ID, role: 'legal_editorial_reviewer' },
+    commandType: 'approve_for_extraction',
+    run: { kind: 'processing_run', id: RUN_ID },
+    expectedState: 'PENDING_REVIEW',
+    expectedVersion: 'revision-6',
+    expectedSequence: 6,
+    sourceVersion: { kind: 'source_version', id: SOURCE_VERSION_ID },
+    review: review('APPROVE_FOR_EXTRACTION'),
+    authorizationEvidence: [
+      {
+        authorizationId: 'ac000000-0000-4000-8000-000000000001',
+        sourceVersion: { kind: 'source_version', id: SOURCE_VERSION_ID },
+        purpose: 'extraction',
+        evaluatedAt: NOW,
+      },
+    ],
+  };
+  const reject = {
+    ...envelope('a8000000-0000-4000-8000-000000000010'),
+    actor: { actorId: REVIEWER_ID, role: 'legal_editorial_reviewer' },
+    commandType: 'reject_ingestion',
+    run: { kind: 'processing_run', id: RUN_ID },
+    expectedState: 'PENDING_REVIEW',
+    expectedVersion: 'revision-6',
+    expectedSequence: 6,
+    reasonCode: 'human_review_rejected',
+    review: review('REJECT'),
+  };
   const fail = {
     ...envelope('a8000000-0000-4000-8000-000000000006'),
     commandType: 'fail_ingestion',
@@ -171,6 +224,9 @@ test('C.2.4 command repository routes only the seven authorized command boundari
   assert.equal((await repository.markStaged(mark, stagedArtifact())).state, 'STAGED');
   assert.equal((await repository.beginVerification(verify)).state, 'VERIFYING');
   assert.equal((await repository.confirmVerified(confirm, verifiedArtifact())).state, 'VERIFIED');
+  assert.equal((await repository.requestReview(requestReview)).state, 'PENDING_REVIEW');
+  assert.equal((await repository.approveForExtraction(approve)).state, 'APPROVED_FOR_EXTRACTION');
+  assert.equal((await repository.rejectAfterHumanReview(reject)).state, 'REJECTED');
   assert.equal((await repository.failIngestion(fail)).state, 'FAILED');
   assert.equal((await repository.cancelIngestion(cancel)).state, 'CANCELLED');
 
@@ -182,6 +238,9 @@ test('C.2.4 command repository routes only the seven authorized command boundari
       'kf_ingestion_mark_staged',
       'kf_ingestion_begin_verification',
       'kf_ingestion_confirm_verified',
+      'kf_ingestion_request_review',
+      'kf_ingestion_approve_for_extraction',
+      'kf_ingestion_reject',
       'kf_ingestion_fail',
       'kf_ingestion_cancel',
     ]
@@ -192,9 +251,10 @@ test('C.2.4 command repository routes only the seven authorized command boundari
   }
   assert.equal(calls[2].args.p_artifact.artifact.artifactId, ARTIFACT_ID);
   assert.equal('duplicateDecision' in calls[4].args.p_verification, false);
+  assert.equal(calls[6].args.p_payload.authorizationEvidence[0].purpose, 'extraction');
 });
 
-test('C.2.4 command repository sanitizes provider conflicts', async () => {
+test('governed ingestion command repository sanitizes provider conflicts', async () => {
   const repository = new SupabaseIngestionCommandRepository({
     client: {
       async rpc() {
