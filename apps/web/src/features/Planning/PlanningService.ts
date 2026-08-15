@@ -188,9 +188,13 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
   }
 
   // generated_contents is canonical. Lesson/PDI memory remains auxiliary and
-  // best-effort exactly as before; an auxiliary failure must not reverse a
-  // canonical save that already committed.
-  if (['plano', 'aula'].includes(plan.type)) {
+  // best-effort exactly as before. Trimestral stays in this auxiliary legacy
+  // branch only while the governed consumer flag is OFF; governed TermPlan has
+  // its own dedicated 1.3B.3 boundary.
+  const shouldSaveLessonMemory =
+    ['plano', 'aula'].includes(plan.type) || (!governed && plan.type === 'trimestral');
+
+  if (shouldSaveLessonMemory) {
     const { error: lessonError } = await supabase.from('lessons').insert({
       user_id: userId,
       topic: plan.title,
