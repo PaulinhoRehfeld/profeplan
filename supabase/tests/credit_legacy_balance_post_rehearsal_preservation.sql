@@ -8,6 +8,8 @@
 -- =============================================================================
 \set ON_ERROR_STOP on
 
+BEGIN;
+
 CREATE TEMP TABLE credit_cutover_preservation_params (
   cutover_id text NOT NULL CHECK (btrim(cutover_id) <> ''),
   expected_finite_count integer NOT NULL CHECK (expected_finite_count >= 0),
@@ -16,8 +18,6 @@ CREATE TEMP TABLE credit_cutover_preservation_params (
   expected_unlimited_count integer NOT NULL CHECK (expected_unlimited_count >= 0),
   expected_unlimited_hash text NOT NULL CHECK (btrim(expected_unlimited_hash) <> '')
 ) ON COMMIT DROP;
-
-BEGIN;
 
 INSERT INTO credit_cutover_preservation_params VALUES (
   :'cutover_id',
