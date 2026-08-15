@@ -30,51 +30,31 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
-          def replace_once(text: str, old: str, new: str, label: str) -> str:
-              if old not in text:
-                  raise RuntimeError(f'missing patch anchor: {label}')
-              return text.replace(old, new, 1)
-
           hook = Path('apps/web/src/features/PDI/usePDIManager.ts')
           text = hook.read_text()
 
-          text = replace_once(
-              text,
-              "import { resolveAuthUid } from '../../utils/authUtils';\n",
-              """import { resolveAuthUid } from '../../utils/authUtils';
+          import_anchor = "import { resolveAuthUid } from '../../utils/authUtils';"
+          idx = text.index(import_anchor) + len(import_anchor)
+          text = text[:idx] + """
           import { isGovernedCreditConsumerEnabled } from '../../services/credits/creditConsumerFlags';
           import {
             savePdiGeneratedReportGoverned,
             validatePdiAdaptationGoverned,
-          } from './PdiCreditService';
-          """,
-              'hook imports',
-          )
+          } from './PdiCreditService';""" + text[idx:]
 
-          text = replace_once(
-              text,
-              "  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);\n",
-              """  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);
-            const [reportArtifactIds, setReportArtifactIds] = useState<Record<string, string>>({});
-          """,
-              'report identity state',
-          )
+          state_anchor = "  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);"
+          idx = text.index(state_anchor) + len(state_anchor)
+          text = text[:idx] + "\n  const [reportArtifactIds, setReportArtifactIds] = useState<Record<string, string>>({});" + text[idx:]
 
-          text = replace_once(
-              text,
-              "      setAdaptations((prev) => ({\n        ...prev,\n        [student.id]: {\n",
-              "      const artifactId = crypto.randomUUID();\n\n      setAdaptations((prev) => ({\n        ...prev,\n        [student.id]: {\n",
-              'adaptation artifact creation',
-          )
+          generation_start = text.index('      const block9Payload = {')
+          set_state = text.index('      setAdaptations((prev) => ({', generation_start)
+          text = text[:set_state] + '      const artifactId = crypto.randomUUID();\n\n' + text[set_state:]
+          payload_property = text.index('          block9Payload,', set_state)
+          payload_end = payload_property + len('          block9Payload,')
+          text = text[:payload_end] + '\n          ...({ artifactId } as any),' + text[payload_end:]
 
-          text = replace_once(
-              text,
-              "          block9Payload,\n        },\n      }));\n",
-              "          block9Payload,\n          ...({ artifactId } as any),\n        },\n      }));\n",
-              'adaptation artifact state',
-          )
-
-          marker = "      let loggedEvent = null;\n      if (schoolStudentId) {\n"
+          validation_start = text.index('  const handleValidate = async')
+          legacy_marker = text.index('      let loggedEvent = null;', validation_start)
           governed = """      if (isGovernedCreditConsumerEnabled()) {
                 const adaptation = adaptations[studentId] as (StudentAdaptation & {
                   artifactId?: string;
@@ -127,24 +107,14 @@ jobs:
                 return;
               }
 
-              let loggedEvent = null;
-              if (schoolStudentId) {
           """
-          text = replace_once(text, marker, governed, 'governed validation boundary')
+          text = text[:legacy_marker] + governed + text[legacy_marker:]
 
-          old_report = """      try {
-                await saveGeneratedContent(
-                  userId,
-                  'documento',
-                  'PDI',
-                  `RELATORIO PDI - ${student.name}`,
-                  reportHtml
-                );
-              } catch (e) {
-                console.warn('Falha no autosave', e);
-              }
-          """
-          new_report = """      try {
+          report_start = text.index('  const handleGenerateReport = async')
+          save_start = text.index('      try {\n        await saveGeneratedContent(', report_start)
+          catch_start = text.index("      } catch (e) {\n        console.warn('Falha no autosave', e);\n      }", save_start)
+          catch_end = catch_start + len("      } catch (e) {\n        console.warn('Falha no autosave', e);\n      }")
+          report_replacement = """      try {
                 if (isGovernedCreditConsumerEnabled()) {
                   const artifactId = reportArtifactIds[student.id] || crypto.randomUUID();
                   if (!reportArtifactIds[student.id]) {
@@ -174,33 +144,26 @@ jobs:
               } catch (e) {
                 console.warn('Falha no autosave', e);
                 throw e;
-              }
-          """
-          text = replace_once(text, old_report, new_report, 'generated PDI report save')
+              }"""
+          text = text[:save_start] + report_replacement + text[catch_end:]
           hook.write_text(text)
 
           editor = Path('apps/web/src/features/PDI/components/PDIBlock11Editor.tsx')
           text = editor.read_text()
-          text = replace_once(
-              text,
-              "import { generateBlock11Report } from '../../../services/ai/AiPdiService';\n",
-              """import { generateBlock11Report } from '../../../services/ai/AiPdiService';
+          import_anchor = "import { generateBlock11Report } from '../../../services/ai/AiPdiService';"
+          idx = text.index(import_anchor) + len(import_anchor)
+          text = text[:idx] + """
           import { isGovernedCreditConsumerEnabled } from '../../../services/credits/creditConsumerFlags';
-          import { savePdiFinalReportGoverned } from '../PdiCreditService';
-          """,
-              'Block 11 imports',
-          )
-          text = replace_once(
-              text,
-              "      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);\n",
-              """      if (isGovernedCreditConsumerEnabled()) {
+          import { savePdiFinalReportGoverned } from '../PdiCreditService';""" + text[idx:]
+
+          save_anchor = '      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);'
+          idx = text.index(save_anchor)
+          replacement = """      if (isGovernedCreditConsumerEnabled()) {
                 await savePdiFinalReportGoverned(pdiId, supervisorEdit);
               } else {
                 await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
-              }
-          """,
-              'Block 11 governed save',
-          )
+              }"""
+          text = text[:idx] + replacement + text[idx + len(save_anchor):]
           editor.write_text(text)
           PY
 
