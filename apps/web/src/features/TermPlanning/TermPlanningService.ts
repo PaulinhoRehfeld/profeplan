@@ -1,9 +1,13 @@
 import { supabase } from '../../services/supabaseClient';
+import { isGovernedTermPlanSavePilotEnabled } from '../../services/credits/creditPilotFlags';
 import { TermPlan } from '../../types';
 
 const LOCAL_STORAGE_KEY = 'profeplan_term_plans';
+const GOVERNED_DRAFT_STORAGE_KEY = 'profeplan_term_plan_governed_draft';
 
 const getStorageKey = (userId: string) => `${LOCAL_STORAGE_KEY}:${userId}`;
+const getGovernedDraftStorageKey = (userId: string, planId: string) =>
+  `${GOVERNED_DRAFT_STORAGE_KEY}:${userId}:${planId}`;
 
 const readLocalPlans = (userId: string): TermPlan[] => {
   try {
@@ -17,11 +21,7 @@ const writeLocalPlans = (userId: string, plans: TermPlan[]) => {
   localStorage.setItem(getStorageKey(userId), JSON.stringify(plans));
 };
 
-/**
- * Salva um plano trimestral (Local + Supabase)
- */
-export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<TermPlan> => {
-  // 1. Save to localStorage (offline-first)
+const cacheSavedPlan = (plan: TermPlan, userId: string): TermPlan => {
   const planWithMeta: TermPlan = {
     ...plan,
     userId,
@@ -36,6 +36,74 @@ export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<Term
   }
 
   writeLocalPlans(userId, existingPlans);
+  return planWithMeta;
+};
+
+type GovernedTermPlanSaveResponse = {
+  saved?: boolean;
+  outcome?: string;
+  reason?: string;
+  original_reason?: string;
+  replay?: boolean;
+  charged?: boolean;
+  balance_after?: number;
+  operation_id?: string;
+  plan_id?: string;
+};
+
+const saveTermPlanGoverned = async (plan: TermPlan, userId: string): Promise<TermPlan> => {
+  const planWithMeta: TermPlan = { ...plan, userId };
+  const draftKey = getGovernedDraftStorageKey(userId, plan.id);
+
+  // Work preservation is separate from the canonical saved-plan cache. A
+  // rejected/failed RPC keeps the generated material available after reload,
+  // but it is not presented as a successfully persisted plan.
+  localStorage.setItem(draftKey, JSON.stringify(planWithMeta));
+
+  const title = plan.title || `Planejamento ${plan.period}º ${plan.regime} - ${plan.subject}`;
+  const { data, error } = await supabase.rpc('credit_save_term_plan', {
+    p_plan_id: plan.id,
+    p_title: title,
+    p_period: plan.period,
+    p_regime: plan.regime,
+    p_subject: plan.subject,
+    p_grade: plan.grade,
+    p_level: plan.level || 'Ensino Médio',
+    p_workload_weekly: plan.workloadWeekly,
+    p_reserves: plan.reserves,
+    p_total_classes: plan.totalClasses,
+    p_grading_grid: plan.gradingGrid,
+    p_state_base: plan.stateBase,
+    p_education_sphere: plan.educationSphere,
+    p_generated_text: plan.generatedText || '',
+    p_lessons: plan.lessons || [],
+  });
+
+  if (error) {
+    throw new Error(`Falha ao salvar o planejamento de forma segura: ${error.message}`);
+  }
+
+  const receipt = (data || {}) as GovernedTermPlanSaveResponse;
+  if (receipt.saved !== true) {
+    if (receipt.reason === 'INSUFFICIENT_CREDITS' || receipt.original_reason === 'INSUFFICIENT_CREDITS') {
+      throw new Error(
+        `Créditos insuficientes para salvar este planejamento. Seu trabalho foi preservado como rascunho local.`
+      );
+    }
+
+    throw new Error(
+      `O planejamento não foi persistido pelo comando governado (${receipt.reason || receipt.outcome || 'decisão desconhecida'}). Seu trabalho foi preservado como rascunho local.`
+    );
+  }
+
+  const saved = cacheSavedPlan(planWithMeta, userId);
+  localStorage.removeItem(draftKey);
+  return saved;
+};
+
+const saveTermPlanLegacy = async (plan: TermPlan, userId: string): Promise<TermPlan> => {
+  // 1. Save to localStorage (offline-first)
+  const planWithMeta = cacheSavedPlan(plan, userId);
 
   // 2. Sync to Supabase (term_plans table)
   if (supabase) {
@@ -73,6 +141,22 @@ export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<Term
   }
 
   return planWithMeta;
+};
+
+/**
+ * Salva um plano trimestral.
+ *
+ * O caminho 1.3B.3 permanece desligado por padrão. Quando ativado após o
+ * cutover de banco, planos com conteúdo gerado usam um único RPC atômico para
+ * persistência + decisão econômica. Planos sem conteúdo gerado continuam no
+ * caminho legado/configuracional e não entram no piloto billable.
+ */
+export const saveTermPlan = async (plan: TermPlan, userId: string): Promise<TermPlan> => {
+  if (isGovernedTermPlanSavePilotEnabled() && (plan.generatedText || '').trim() !== '') {
+    return saveTermPlanGoverned(plan, userId);
+  }
+
+  return saveTermPlanLegacy(plan, userId);
 };
 
 /**
