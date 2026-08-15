@@ -43,15 +43,11 @@ function fakeContext(behavior = {}) {
       calls.download.push(path);
       if (behavior.downloadError) return { data: null, error: behavior.downloadError };
       const payload = objects.get(path);
-      if (payload === undefined)
-        return { data: null, error: { status: 404, message: 'not found' } };
+      if (payload === undefined) return { data: null, error: { status: 404, message: 'not found' } };
       return {
         data: {
           async arrayBuffer() {
-            return payload.buffer.slice(
-              payload.byteOffset,
-              payload.byteOffset + payload.byteLength
-            );
+            return payload.buffer.slice(payload.byteOffset, payload.byteOffset + payload.byteLength);
           },
         },
         error: null,
@@ -135,14 +131,9 @@ test('staging adapter writes without overwrite and returns only provider-neutral
 
 test('provider object path is derived from encoded identities and never from an original filename', async () => {
   const fake = fakeContext();
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   await adapter.stage(
-    write({
-      artifactId: 'artifact/../../synthetic',
-      run: { kind: 'processing_run', id: 'run/../../other' },
-    })
+    write({ artifactId: 'artifact/../../synthetic', run: { kind: 'processing_run', id: 'run/../../other' } })
   );
   const path = fake.calls.upload[0].path;
   assert.equal(path.includes('/../'), false);
@@ -152,9 +143,7 @@ test('provider object path is derived from encoded identities and never from an 
 
 test('collision is translated to provider-neutral conflict and does not delete existing object', async () => {
   const fake = fakeContext({ uploadError: { status: 409, message: 'raw provider collision' } });
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   await assert.rejects(
     adapter.stage(write()),
     (error) => error.code === 'CONFLICT' && !error.message.includes('raw provider collision')
@@ -176,11 +165,7 @@ test('ambiguous timeout preserves a possibly successful object for C.2.4 reconci
     (error) => error.code === 'UNAVAILABLE' && !error.message.includes('provider detail')
   );
   assert.equal(fake.calls.remove.length, 0);
-  const probe = await adapter.inspect({
-    artifactId: write().artifactId,
-    run,
-    correlationId: write().correlationId,
-  });
+  const probe = await adapter.inspect({ artifactId: write().artifactId, run, correlationId: write().correlationId });
   assert.equal(probe.outcome, 'present');
   assert.equal(probe.observedSizeBytes, bytes.byteLength);
   assert.match(probe.observedDigest.value, /^[0-9a-f]{64}$/u);
@@ -208,9 +193,7 @@ test('recovery inspection reports absence without surfacing bucket or provider d
 
 test('discard rejects processing-run mismatch before touching the provider', async () => {
   const fake = fakeContext();
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   const descriptor = await adapter.stage(write());
   fake.calls.remove.length = 0;
   await assert.rejects(
@@ -286,9 +269,7 @@ test('lost delete response reconciles to already_discarded on retry without a se
 
   await assert.rejects(
     adapter.discard(command),
-    (error) =>
-      error.code === 'UNAVAILABLE' &&
-      !error.message.includes('network timeout after provider delete')
+    (error) => error.code === 'UNAVAILABLE' && !error.message.includes('network timeout after provider delete')
   );
   assert.equal(fake.objects.size, 0);
 
@@ -302,9 +283,7 @@ test('lost delete response reconciles to already_discarded on retry without a se
 
 test('unverified deletion fails closed with sanitized error', async () => {
   const fake = fakeContext({ keepAfterRemove: true });
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   const descriptor = await adapter.stage(write());
   await assert.rejects(
     adapter.discard({
@@ -314,7 +293,6 @@ test('unverified deletion fails closed with sanitized error', async () => {
       reasonCode: 'orphan_cleanup',
       correlationId: 'correlation-synthetic-1',
     }),
-    (error) =>
-      error.code === 'UNKNOWN' && error.message === 'Persistence operation failed (UNKNOWN)'
+    (error) => error.code === 'UNKNOWN' && error.message === 'Persistence operation failed (UNKNOWN)'
   );
 });
