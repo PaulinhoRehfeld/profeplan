@@ -28,10 +28,14 @@ jobs:
           import re
           path = Path('.github/scripts/reconcile_c2_4_post_merge.py')
           text = path.read_text(encoding='utf-8')
-          pattern = r"replace_once\(\n    BLUEPRINT,\n    '\*\*Definição documental integrada pelo PR nº 59\..*?\n\)\n"
-          text, count = re.subn(pattern, '', text, count=1, flags=re.S)
-          if count != 1:
-              raise SystemExit(f'expected one obsolete Blueprint replacement block, found {count}')
+          patterns = [
+              r"replace_once\(\n    BLUEPRINT,\n    '\*\*Definição documental integrada pelo PR nº 59\..*?\n\)\n",
+              r"replace_once\(\n    BLUEPRINT,\n    'a fronteira integrada de C\.2\.3 está em.*?\n\)\n",
+          ]
+          for index, pattern in enumerate(patterns, start=1):
+              text, count = re.subn(pattern, '', text, count=1, flags=re.S)
+              if count != 1:
+                  raise SystemExit(f'expected one obsolete Blueprint replacement block #{index}, found {count}')
           path.write_text(text, encoding='utf-8')
           PY
 
