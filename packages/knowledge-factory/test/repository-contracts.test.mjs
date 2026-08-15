@@ -10,5 +10,6 @@ test('knowledge factory exposes exactly the approved abstract repository ports',
     'ProductionOrderRepository',
     'AuditRepository',
     'SourceLifecycleRepository',
+    'IngestionRepository',
   ]);
 });

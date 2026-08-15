@@ -148,7 +148,7 @@ integration('C.2.2 stages and discards synthetic bytes in disposable Supabase St
       correlationId: 'correlation-synthetic-c2-2',
     });
     assert.equal(repeated.state, 'DISCARDED');
-    assert.equal(repeated.outcome, 'discarded');
+    assert.equal(repeated.outcome, 'already_discarded');
   } finally {
     await admin.storage.emptyBucket(bucketName);
     const deleted = await admin.storage.deleteBucket(bucketName);
