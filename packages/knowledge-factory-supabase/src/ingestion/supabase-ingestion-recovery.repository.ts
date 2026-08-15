@@ -83,10 +83,7 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
   private readonly context: SupabaseSystemContext;
   private readonly logger: PersistenceLogger;
 
-  constructor(
-    context: SupabaseSystemContext,
-    logger: PersistenceLogger = NOOP_PERSISTENCE_LOGGER
-  ) {
+  constructor(context: SupabaseSystemContext, logger: PersistenceLogger = NOOP_PERSISTENCE_LOGGER) {
     this.context = context;
     this.logger = logger;
   }
@@ -107,14 +104,7 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
       return snapshot;
     } catch (error) {
       const persistenceError = toPersistenceError(error, operation);
-      recordFailure(
-        this.logger,
-        this.context,
-        operation,
-        startedAt,
-        aggregateId,
-        persistenceError
-      );
+      recordFailure(this.logger, this.context, operation, startedAt, aggregateId, persistenceError);
       throw persistenceError;
     }
   }
@@ -130,9 +120,7 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
     );
   }
 
-  prepareDiscard(
-    input: TemporaryStagingDiscardCommand
-  ): Promise<IngestionStagingArtifactSnapshot> {
+  prepareDiscard(input: TemporaryStagingDiscardCommand): Promise<IngestionStagingArtifactSnapshot> {
     return this.executeArtifact(
       'kf_ingestion_prepare_discard',
       { p_payload: input },
@@ -141,9 +129,7 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
     );
   }
 
-  confirmDiscard(
-    input: TemporaryStagingDiscardReceipt
-  ): Promise<IngestionStagingArtifactSnapshot> {
+  confirmDiscard(input: TemporaryStagingDiscardReceipt): Promise<IngestionStagingArtifactSnapshot> {
     return this.executeArtifact(
       'kf_ingestion_confirm_discard',
       { p_receipt: input },

@@ -27,10 +27,7 @@ function isDateTime(value: unknown): value is string {
 }
 
 function isStringArray(value: unknown): value is string[] {
-  return (
-    Array.isArray(value) &&
-    value.every((item) => typeof item === 'string' && item.length > 0)
-  );
+  return Array.isArray(value) && value.every((item) => typeof item === 'string' && item.length > 0);
 }
 
 function isRunState(value: unknown): value is IngestionRunState {
