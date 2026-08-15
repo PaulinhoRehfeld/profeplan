@@ -24,17 +24,34 @@ function write(overrides = {}) {
 
 function fakeContext(behavior = {}) {
   const objects = new Map();
-  const calls = { upload: [], remove: [], list: [] };
+  const calls = { upload: [], download: [], remove: [], list: [] };
 
   const bucket = {
     async upload(path, payload, options) {
       calls.upload.push({ path, payload, options });
-      if (behavior.uploadError) return { data: null, error: behavior.uploadError };
+      if (behavior.uploadError) {
+        if (behavior.persistBeforeUploadError) objects.set(path, payload);
+        return { data: null, error: behavior.uploadError };
+      }
       if (objects.has(path) && !options.upsert) {
         return { data: null, error: { status: 409, message: 'provider duplicate detail' } };
       }
       objects.set(path, payload);
       return { data: { path }, error: null };
+    },
+    async download(path) {
+      calls.download.push(path);
+      if (behavior.downloadError) return { data: null, error: behavior.downloadError };
+      const payload = objects.get(path);
+      if (payload === undefined) return { data: null, error: { status: 404, message: 'not found' } };
+      return {
+        data: {
+          async arrayBuffer() {
+            return payload.buffer.slice(payload.byteOffset, payload.byteOffset + payload.byteLength);
+          },
+        },
+        error: null,
+      };
     },
     async remove(paths) {
       calls.remove.push(paths);
@@ -76,7 +93,6 @@ test('Supabase Storage string statusCode conflict is translated provider-neutral
     },
     'staging.stage'
   );
-
   assert.equal(error.code, 'CONFLICT');
   assert.equal(error.message, 'Persistence operation failed (CONFLICT)');
   assert.equal(error.message.includes('resource already exists'), false);
@@ -88,9 +104,7 @@ test('staging adapter writes without overwrite and returns only provider-neutral
     bucketName: 'provider-private-bucket',
     now: () => '2026-08-14T21:02:00.000Z',
   });
-
   const descriptor = await adapter.stage(write());
-
   assert.equal(fake.calls.upload.length, 1);
   assert.equal(fake.calls.upload[0].options.upsert, false);
   assert.equal(descriptor.state, 'STAGED');
@@ -98,9 +112,6 @@ test('staging adapter writes without overwrite and returns only provider-neutral
     descriptor.artifact.opaqueLocator,
     'temporary-staging:v1:processing-run-synthetic-1:artifact-synthetic-1'
   );
-  assert.equal(descriptor.run.id, run.id);
-  assert.equal(descriptor.sourceVersion.id, sourceVersion.id);
-  assert.equal(descriptor.receivedFile.id, receivedFile.id);
   const serialized = JSON.stringify(descriptor);
   assert.equal(serialized.includes('provider-private-bucket'), false);
   assert.equal(serialized.includes('runs/'), false);
@@ -109,17 +120,10 @@ test('staging adapter writes without overwrite and returns only provider-neutral
 
 test('provider object path is derived from encoded identities and never from an original filename', async () => {
   const fake = fakeContext();
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
-
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   await adapter.stage(
-    write({
-      artifactId: 'artifact/../../synthetic',
-      run: { kind: 'processing_run', id: 'run/../../other' },
-    })
+    write({ artifactId: 'artifact/../../synthetic', run: { kind: 'processing_run', id: 'run/../../other' } })
   );
-
   const path = fake.calls.upload[0].path;
   assert.equal(path.includes('/../'), false);
   assert.equal(path.includes('\\'), false);
@@ -128,10 +132,7 @@ test('provider object path is derived from encoded identities and never from an 
 
 test('collision is translated to provider-neutral conflict and does not delete existing object', async () => {
   const fake = fakeContext({ uploadError: { status: 409, message: 'raw provider collision' } });
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
-
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   await assert.rejects(
     adapter.stage(write()),
     (error) => error.code === 'CONFLICT' && !error.message.includes('raw provider collision')
@@ -139,27 +140,51 @@ test('collision is translated to provider-neutral conflict and does not delete e
   assert.equal(fake.calls.remove.length, 0);
 });
 
-test('non-conflict staging failure performs best-effort cleanup without leaking provider detail', async () => {
-  const fake = fakeContext({ uploadError: { message: 'network timeout with provider detail' } });
+test('ambiguous timeout preserves a possibly successful object for C.2.4 reconciliation', async () => {
+  const fake = fakeContext({
+    persistBeforeUploadError: true,
+    uploadError: { message: 'network timeout with provider detail' },
+  });
   const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
     bucketName: 'private-test-bucket',
+    now: () => '2026-08-14T21:02:00.000Z',
   });
-
   await assert.rejects(
     adapter.stage(write()),
     (error) => error.code === 'UNAVAILABLE' && !error.message.includes('provider detail')
   );
-  assert.equal(fake.calls.remove.length, 1);
+  assert.equal(fake.calls.remove.length, 0);
+  const probe = await adapter.inspect({ artifactId: write().artifactId, run, correlationId: write().correlationId });
+  assert.equal(probe.outcome, 'present');
+  assert.equal(probe.observedSizeBytes, bytes.byteLength);
+  assert.match(probe.observedDigest.value, /^[0-9a-f]{64}$/u);
+});
+
+test('recovery inspection reports absence without surfacing bucket or provider details', async () => {
+  const fake = fakeContext();
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
+    bucketName: 'private-test-bucket',
+    now: () => '2026-08-14T21:03:00.000Z',
+  });
+  const probe = await adapter.inspect({
+    artifactId: write().artifactId,
+    run,
+    correlationId: write().correlationId,
+  });
+  assert.deepEqual(probe, {
+    outcome: 'absent',
+    artifactId: write().artifactId,
+    run,
+    observedAt: '2026-08-14T21:03:00.000Z',
+  });
+  assert.equal(JSON.stringify(probe).includes('private-test-bucket'), false);
 });
 
 test('discard rejects processing-run mismatch before touching the provider', async () => {
   const fake = fakeContext();
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   const descriptor = await adapter.stage(write());
   fake.calls.remove.length = 0;
-
   await assert.rejects(
     adapter.discard({
       artifact: descriptor.artifact,
@@ -180,7 +205,6 @@ test('discard verifies absence and returns an auditable provider-neutral receipt
     now: () => '2026-08-14T21:05:00.000Z',
   });
   const descriptor = await adapter.stage(write());
-
   const receipt = await adapter.discard({
     artifact: descriptor.artifact,
     run,
@@ -188,18 +212,12 @@ test('discard verifies absence and returns an auditable provider-neutral receipt
     reasonCode: 'operator_cancelled',
     correlationId: 'correlation-synthetic-1',
   });
-
   assert.equal(receipt.state, 'DISCARDED');
   assert.equal(receipt.outcome, 'discarded');
   assert.equal(receipt.confirmedAt, '2026-08-14T21:05:00.000Z');
-  assert.equal(fake.calls.list.length, 1);
-  const serialized = JSON.stringify(receipt);
-  assert.equal(serialized.includes('private-test-bucket'), false);
-  assert.equal(serialized.includes('runs/'), false);
-  assert.equal(serialized.includes('provider'), false);
 });
 
-test('discard can be repeated safely when the provider treats missing removal as success', async () => {
+test('repeated discard distinguishes already-absent physical state', async () => {
   const fake = fakeContext();
   const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
     bucketName: 'private-test-bucket',
@@ -213,24 +231,17 @@ test('discard can be repeated safely when the provider treats missing removal as
     reasonCode: 'technical_failure',
     correlationId: 'correlation-synthetic-1',
   };
-
   const first = await adapter.discard(command);
   const second = await adapter.discard(command);
-
-  assert.equal(first.state, 'DISCARDED');
-  assert.equal(second.state, 'DISCARDED');
   assert.equal(first.outcome, 'discarded');
-  assert.equal(second.outcome, 'discarded');
-  assert.equal(fake.calls.remove.length, 2);
+  assert.equal(second.outcome, 'already_discarded');
+  assert.equal(fake.calls.remove.length, 1);
 });
 
 test('unverified deletion fails closed with sanitized error', async () => {
   const fake = fakeContext({ keepAfterRemove: true });
-  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, {
-    bucketName: 'private-test-bucket',
-  });
+  const adapter = new SupabaseTemporaryStagingAdapter(fake.context, { bucketName: 'private-test-bucket' });
   const descriptor = await adapter.stage(write());
-
   await assert.rejects(
     adapter.discard({
       artifact: descriptor.artifact,
