@@ -693,13 +693,13 @@ SET search_path = pg_catalog, public
 AS $function$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM public.kf_source_authorizations AS authorization
-    WHERE authorization.id = p_authorization_id
-      AND authorization.subject_identity_id = p_source_version_id
-      AND authorization.purpose = p_purpose
-      AND authorization.projected_state = 'GRANTED'
-      AND p_evaluated_at >= authorization.effective_from
-      AND (authorization.effective_until IS NULL OR p_evaluated_at <= authorization.effective_until)
+    SELECT 1 FROM public.kf_source_authorizations AS authz
+    WHERE authz.id = p_authorization_id
+      AND authz.subject_identity_id = p_source_version_id
+      AND authz.purpose = p_purpose
+      AND authz.projected_state = 'GRANTED'
+      AND p_evaluated_at >= authz.effective_from
+      AND (authz.effective_until IS NULL OR p_evaluated_at <= authz.effective_until)
   ) THEN
     RAISE EXCEPTION USING ERRCODE = 'PT403', MESSAGE = 'required source authorization is not currently valid';
   END IF;
