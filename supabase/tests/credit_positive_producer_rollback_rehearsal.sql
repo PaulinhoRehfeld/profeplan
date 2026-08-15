@@ -195,10 +195,6 @@ $$;
 
 -- Ledger history from before rollback is intentionally preserved; rollback is
 -- authority switching, not destructive accounting deletion.
-IF NOT EXISTS (SELECT 1 FROM public.credit_operations) THEN
-  -- psql has no standalone IF; this marker is intentionally handled below.
-END IF;
-
 DO $$
 BEGIN
   IF to_regclass('public.credit_operations') IS NULL
