@@ -18,8 +18,8 @@ import {
   Clock,
 } from 'lucide-react';
 import { generatePresentationJSON } from '../services/ai/AiPresentationService';
-import { getTeacherContext, saveLessonToMemory } from '../services/supabaseService';
-import { saveGeneratedContent } from '../services/databaseService';
+import { getTeacherContext } from '../services/supabaseService';
+import { savePresentation } from '../features/Presentation/PresentationService';
 import CanvaExportModal from './CanvaExportModal';
 import PresentationModal from './PresentationModal';
 
@@ -190,28 +190,7 @@ const PresentationCreator: React.FC<PresentationCreatorProps> = ({ userId, setSi
     if (!generatedPresentation) return;
 
     try {
-      const contentMarkdown = generatedPresentation.slides
-        .map((s: any) => `## ${s.title}\n${s.contentBulletPoints?.join('\n')}`)
-        .join('\n\n');
-
-      // 1. Salvar no Supabase (Memória)
-      await saveLessonToMemory(
-        userId,
-        generatedPresentation.title,
-        contentMarkdown,
-        generatedPresentation, // Salva o JSON completo
-        undefined
-      );
-
-      // 2. Salvar localmente (Generated Contents)
-      await saveGeneratedContent(
-        userId,
-        'apresentacao',
-        'APRESENTAÇÕES',
-        generatedPresentation.title,
-        contentMarkdown
-      );
-
+      await savePresentation(userId, generatedPresentation);
       alert('Apresentação salva com sucesso!');
     } catch (error) {
       console.error('Erro ao salvar:', error);
