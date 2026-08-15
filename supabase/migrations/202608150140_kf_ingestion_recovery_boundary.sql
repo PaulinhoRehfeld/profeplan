@@ -620,7 +620,8 @@ BEGIN
           THEN ARRAY['commandType','actor','occurredAt','correlationId','reason','run','expectedState','stagingArtifact']
           ELSE ARRAY['commandType','actor','occurredAt','correlationId','reason','run','expectedState']
         END
-      END,
+      END
+    END,
     v_allowed,
     'ingestion command payload'
   );

@@ -80,7 +80,11 @@ function parseDiscard(
   ) {
     throw invalidPersistenceResponse(operation);
   }
-  if (value.confirmedAt !== null && value.confirmedAt !== undefined && !isDateTime(value.confirmedAt)) {
+  if (
+    value.confirmedAt !== null &&
+    value.confirmedAt !== undefined &&
+    !isDateTime(value.confirmedAt)
+  ) {
     throw invalidPersistenceResponse(operation);
   }
   if (
@@ -228,7 +232,10 @@ function parseDuplicateDecision(value: unknown, operation: string): BinaryDuplic
       receivedFile: parseRef(match.receivedFile, 'received_file', operation),
     };
   });
-  if ((value.outcome === 'unique' && matches.length !== 0) || (value.outcome === 'duplicate' && matches.length === 0)) {
+  if (
+    (value.outcome === 'unique' && matches.length !== 0) ||
+    (value.outcome === 'duplicate' && matches.length === 0)
+  ) {
     throw invalidPersistenceResponse(operation);
   }
   return {

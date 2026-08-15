@@ -27,7 +27,9 @@ function isDateTime(value: unknown): value is string {
 }
 
 function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === 'string' && item.length > 0);
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === 'string' && item.length > 0)
+  );
 }
 
 function isRunState(value: unknown): value is IngestionRunState {
@@ -186,10 +188,14 @@ export function ingestionReceiptRowToReceipt(
     aggregateVersion: row.aggregate_version,
     sequence: row.sequence,
     eventIds: Object.freeze([...row.event_ids]),
-    ...(row.previous_state === null ? {} : { previousState: row.previous_state as IngestionRunState }),
+    ...(row.previous_state === null
+      ? {}
+      : { previousState: row.previous_state as IngestionRunState }),
     state: row.state,
     outcome: row.replayed ? 'replayed' : 'applied',
     committedAt: row.committed_at,
-    ...(row.reason_code === null ? {} : { reasonCode: row.reason_code as IngestionCommandReceipt['reasonCode'] }),
+    ...(row.reason_code === null
+      ? {}
+      : { reasonCode: row.reason_code as IngestionCommandReceipt['reasonCode'] }),
   });
 }

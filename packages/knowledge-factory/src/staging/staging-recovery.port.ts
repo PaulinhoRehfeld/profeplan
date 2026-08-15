@@ -1,8 +1,4 @@
-import type {
-  EntityId,
-  IngestionRunRef,
-  TemporaryStagingRecoveryProbe,
-} from '@profeplan/types';
+import type { EntityId, IngestionRunRef, TemporaryStagingRecoveryProbe } from '@profeplan/types';
 
 export interface TemporaryStagingRecoveryProbeCommand {
   readonly artifactId: EntityId;

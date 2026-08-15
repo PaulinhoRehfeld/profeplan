@@ -127,7 +127,9 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
     );
   }
 
-  prepareDiscard(input: TemporaryStagingDiscardCommand): Promise<IngestionStagingArtifactSnapshot> {
+  prepareDiscard(
+    input: TemporaryStagingDiscardCommand
+  ): Promise<IngestionStagingArtifactSnapshot> {
     return this.executeArtifact(
       'kf_ingestion_prepare_discard',
       { p_payload: input },
@@ -136,7 +138,9 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
     );
   }
 
-  confirmDiscard(input: TemporaryStagingDiscardReceipt): Promise<IngestionStagingArtifactSnapshot> {
+  confirmDiscard(
+    input: TemporaryStagingDiscardReceipt
+  ): Promise<IngestionStagingArtifactSnapshot> {
     return this.executeArtifact(
       'kf_ingestion_confirm_discard',
       { p_receipt: input },
