@@ -133,6 +133,27 @@ no lifecycle do artefato temporário.
 
 C.2.3 não executa `VERIFIED -> PENDING_REVIEW`, `APPROVED_FOR_EXTRACTION` ou qualquer handoff para C.3.
 
+### 6.1 Acoplamento operacional com `confirm_verified`
+
+C.2.1 permanece a autoridade sobre a topologia da state machine e conserva `INGESTION_CONTRACT_VERSION = 1.0.0` sem alteração do shape histórico de `ConfirmIngestionVerifiedCommand`.
+
+Entretanto, a função genérica `evaluateIngestionTransition` expressa apenas se uma aresta da máquina é estruturalmente permitida. Ela não é, sozinha, prova suficiente para confirmar operacionalmente a verificação física introduzida por C.2.3.
+
+Por isso C.2.3 define `evaluateIngestionVerificationConfirmation` como gate composto canônico para a passagem operacional do `processing_run` de `VERIFYING` para `VERIFIED`.
+
+Na mesma decisão provider-neutral, o gate exige cumulativamente:
+
+1. a transição C.2.1 `VERIFYING -> VERIFIED` válida e o `expectedState` coerente;
+2. `evaluateStagingIntegrity` aprovado e produzindo um artefato `VERIFIED`;
+3. `command.run` igual ao `processing_run` vinculado à evidência física;
+4. `command.correlationId` igual ao correlation ID da evidência de integridade;
+5. `technicalMetadata.sizeBytes`, quando fornecido, coerente com o byte length fisicamente observado;
+6. `technicalMetadata.declaredMediaType`, quando fornecido, não contraditório com o descriptor do staging.
+
+Ausência/inconsistência do valor verificado ou divergência entre o comando e a evidência falham fechadas com razão provider-neutral `INGESTION_VERIFICATION_EVIDENCE_MISMATCH`.
+
+Essa composição não cria uma segunda state machine, não altera o contrato C.2.1 e não persiste a decisão. A atomicidade persistida, replay e recovery permanecem responsabilidade de C.2.4.
+
 ## 7. Duplicidade técnica
 
 A policy classifica digest idêntico de forma explícita e auditável nas relações:
@@ -171,7 +192,8 @@ A promoção técnica para `VERIFIED` é negada quando ocorrer, entre outros:
 - mesmo artefato físico previamente observado com digest diferente;
 - locator opaco incompatível com o `processing_run + artifactId` esperado;
 - falha de download/readback;
-- falha de hashing.
+- falha de hashing;
+- `confirm_verified` não correlacionado à evidência física aprovada.
 
 Erros do provider são traduzidos para erros sanitizados do boundary de persistência.
 
@@ -230,6 +252,10 @@ A suíte C.2.3 cobre pelo menos:
 - duplicidade em outro run da mesma `source_version`;
 - duplicidade entre `source_version`s;
 - preservação das identidades diante de digest igual;
+- `confirm_verified` acoplado à evidência física aprovada;
+- bloqueio de bypass quando integridade física falha;
+- bloqueio de run/correlation/metadados contraditórios;
+- preservação da topologia `VERIFYING -> VERIFIED` de C.2.1;
 - regressão dos boundaries C.2.1 e C.2.2.
 
 ## 13. Prova remota descartável
@@ -289,6 +315,7 @@ C.2.3 estará apto à integração quando:
 - contrato de integridade estiver provider-neutral e versionado;
 - SHA-256 for calculado sobre bytes relidos do staging;
 - `VERIFIED` estiver materializado apenas como estado técnico;
+- `confirm_verified` estiver operacionalmente acoplado à evidência C.2.3 sem redefinir a state machine C.2.1;
 - vínculos canônicos forem preservados;
 - digest igual não colapsar identidades;
 - conflitos do mesmo artefato físico forem fail-closed;
