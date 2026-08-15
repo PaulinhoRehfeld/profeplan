@@ -1,27 +1,13 @@
 -- =============================================================================
--- ProfePlan — Lote 1.3C.6 hosted admin helper baseline
+-- ProfePlan — Lote 1.3C.6 hosted admin helper baseline marker
 -- TEST ONLY. Never a production migration.
 --
--- The real hosted database already has public.is_admin_safe(). The historical
--- 1.3C.3 synthetic baseline did not need it because governed admin_add_credits
--- uses its own explicit authorization. The 1.3C.6 legacy rollback restores the
--- hosted two-argument admin RPC, so the disposable preflight must model this
--- existing hosted dependency faithfully.
+-- The real hosted database already has public.is_admin_safe(). Do not create
+-- this hosted dependency during `supabase start`: doing so makes bootstrap
+-- diagnostics opaque if the local stack rejects the helper while migrations
+-- are being applied. The rollback rehearsal installs the exact hosted helper
+-- explicitly, after the disposable stack is healthy, immediately before the
+-- legacy rollback behavior is exercised.
 -- =============================================================================
 
-CREATE OR REPLACE FUNCTION public.is_admin_safe()
-RETURNS boolean
-LANGUAGE sql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM public.profiles
-    WHERE id = auth.uid()
-      AND (role = 'admin' OR is_admin = true)
-  );
-$$;
-
-ALTER FUNCTION public.is_admin_safe() OWNER TO postgres;
-GRANT EXECUTE ON FUNCTION public.is_admin_safe() TO authenticated;
+SELECT 'credit_cutover_hosted_admin_helpers_deferred_to_rehearsal' AS fixture_marker;
