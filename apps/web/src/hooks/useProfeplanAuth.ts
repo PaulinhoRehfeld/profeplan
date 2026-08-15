@@ -8,6 +8,7 @@ import {
 import { getRoleByEmail, clearLocalSession } from '../utils/authUtils';
 import { UserSession, UserProfile } from '../types';
 import { isHardcodedAdmin } from '../constants';
+import { isGovernedCreditProducerEnabled } from '../services/credits/creditProducerFlags';
 
 const applyAdminOverride = (
   profile: UserProfile,
@@ -101,6 +102,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
             `[Auth] 🩹 Profile STILL null for ID ${userId}. Attempting emergency creation...`
           );
           const isAdminEmail = isHardcodedAdmin(userEmail);
+          const governedCreditProducers = isGovernedCreditProducerEnabled();
           const { data: upsertData, error: upsertError } = await supabase.from('profiles').upsert(
             {
               id: userId,
@@ -108,7 +110,7 @@ const useProvideProfeplanAuth = (): ProfeplanAuthContextValue => {
               full_name: authSession.user.user_metadata?.full_name || '',
               role: isAdminEmail ? 'admin' : getRoleByEmail(userEmail || ''),
               tier: isAdminEmail ? 'GOLD' : 'FREE',
-              credits: isAdminEmail ? 9999 : 10,
+              ...(governedCreditProducers ? {} : { credits: isAdminEmail ? 9999 : 10 }),
               is_unlimited: isAdminEmail,
               is_admin: isAdminEmail,
               allowed_features: ['all'],

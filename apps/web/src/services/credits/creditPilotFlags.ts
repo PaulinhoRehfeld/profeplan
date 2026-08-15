@@ -1,11 +1,18 @@
+import { isGovernedCreditConsumerEnabled } from './creditConsumerFlags';
+
 const GOVERNED_TERM_PLAN_SAVE_FLAG = 'VITE_GOVERNED_TERM_PLAN_SAVE';
 
 /**
- * Lote 1.3B.3 pilot gate.
+ * Term-plan governed-save gate.
  *
- * Deliberately defaults to OFF. The governed term-plan path may only become
- * active after its database migrations are deployed through a separate,
- * explicitly governed cutover.
+ * The original 1.3B.3 pilot flag remains supported for isolated rehearsal.
+ * During the coordinated 1.3C.4E consumer cutover, however, the global
+ * governed-consumer flag must also imply the governed TermPlan path. Otherwise
+ * generation would become NON_BILLABLE while the corresponding Save remained
+ * on the legacy direct-table path.
+ *
+ * The 1.3C.4E final-sweep CI guards this coordination as a cutover invariant.
+ * Both flags deliberately default to OFF.
  */
 export const isGovernedTermPlanSavePilotEnabled = (): boolean =>
-  import.meta.env[GOVERNED_TERM_PLAN_SAVE_FLAG] === 'true';
+  import.meta.env[GOVERNED_TERM_PLAN_SAVE_FLAG] === 'true' || isGovernedCreditConsumerEnabled();

@@ -1,0 +1,64 @@
+name: Credit Accounting 1.3C.4E Final Sweep CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/web/src/services/credits/**'
+      - 'apps/web/src/services/databaseService.ts'
+      - 'apps/web/src/services/profile/profileRepository.ts'
+      - 'apps/web/src/services/admin/adminProfiles.ts'
+      - 'apps/web/src/services/referrals/referrals.ts'
+      - 'apps/web/src/hooks/useProfeplanAuth.ts'
+      - 'apps/web/src/components/Sidebar.tsx'
+      - 'apps/web/src/components/Admin/components/**'
+      - 'apps/web/src/features/Planning/components/PlanningCockpit.tsx'
+      - 'apps/web/src/features/TermPlanning/**'
+      - 'api/auth/admin-create-user.ts'
+      - 'scripts/credit-consumer-final-sweep.mjs'
+      - '.github/workflows/credit-accounting-1-3c-4e-final-sweep-ci.yml'
+      - 'docs/commercial/LOT-1.3C.4E-FINAL-CONSUMER-SWEEP.md'
+  workflow_dispatch:
+
+jobs:
+  prove-final-sweep:
+    name: Prove final active credit authority convergence
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run static authority sweep
+        run: node scripts/credit-consumer-final-sweep.mjs
+
+      - name: Prove TermPlan coordinated cutover
+        run: >-
+          pnpm --filter profeplan-engenharia-pedagogica-v4.0 exec vitest run
+          src/features/TermPlanning/__tests__/TermPlanningService.test.ts
+          src/services/__tests__/databaseService.creditPilot.test.ts
+
+      - name: Prove governed balance projection
+        run: >-
+          pnpm --filter profeplan-engenharia-pedagogica-v4.0 exec vitest run
+          src/services/__tests__/creditBalance.creditConsumer.test.ts
+
+      - name: Prove admin signup producer convergence
+        run: >-
+          pnpm --filter profeplan-engenharia-pedagogica-v4.0 exec vitest run
+          src/components/Admin/components/__tests__/CreateUserModal.creditProducer.test.tsx
+          src/components/Admin/components/__tests__/AddCreditsModal.creditProducer.test.tsx

@@ -25,6 +25,8 @@ import { TermPlan } from '../../../contexts/GlobalPlanningContext';
 import { CurriculumMatcher } from './CurriculumMatcher';
 import { LowCreditModal } from '../../../components/LowCreditModal';
 import { getUserProfile } from '../../../services/ProfileService';
+import { isGovernedCreditConsumerEnabled } from '../../../services/credits/creditConsumerFlags';
+import { getMyGovernedCreditBalance } from '../../../services/credits/creditBalance';
 import { UserProfile, PnldBook } from '../../../types';
 import { PnldService } from '../../../services/PnldService';
 import { IterativeFeedbackWidget } from '../../../components/Feedback/IterativeFeedbackWidget';
@@ -114,7 +116,16 @@ export const PlanningCockpit: React.FC<PlanningCockpitProps> = ({
     const profile = await getUserProfile(userId);
     if (profile) {
       setUserProfile(profile);
-      checkCreditWarning(profile.credits);
+      if (isGovernedCreditConsumerEnabled()) {
+        try {
+          const balance = await getMyGovernedCreditBalance();
+          checkCreditWarning(balance.total);
+        } catch (error) {
+          console.warn('[PlanningCockpit] Falha ao carregar saldo governado:', error);
+        }
+      } else {
+        checkCreditWarning(profile.credits);
+      }
     }
   };
 
