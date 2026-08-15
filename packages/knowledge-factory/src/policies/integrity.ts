@@ -324,14 +324,24 @@ export function evaluateIngestionVerificationConfirmation(
   if (!integrity.allowed) {
     return deny(integrity.reasons);
   }
+  if (integrity.value === undefined) {
+    return deny([
+      reason(
+        'INGESTION_VERIFICATION_EVIDENCE_MISMATCH',
+        'Integrity verification did not produce a verified staging artifact.',
+        input.command.run.id
+      ),
+    ]);
+  }
 
-  const reasons = confirmationBindingReasons(input, integrity.value);
+  const verifiedArtifact = integrity.value;
+  const reasons = confirmationBindingReasons(input, verifiedArtifact);
   if (reasons.length > 0) {
     return deny(reasons);
   }
 
   return allow({
     runState: 'VERIFIED',
-    artifact: integrity.value,
+    artifact: verifiedArtifact,
   });
 }
