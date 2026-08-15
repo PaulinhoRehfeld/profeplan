@@ -1,0 +1,99 @@
+name: Credit Accounting 1.3B.1 Schema CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/credit-accounting-1-3b-1-schema-ci.yml'
+      - 'infra/supabase/migrations/202608142140_credit_accounting_schema.sql'
+      - 'supabase/tests/credit_accounting_schema.sql'
+      - 'supabase/tests/fixtures/credit_accounting_minimal_baseline.sql'
+      - 'docs/commercial/LOT-1.3B.1-CREDIT-ACCOUNTING-SCHEMA.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-credit-schema:
+    name: Prove 1.3B.1 schema on disposable Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      CREDIT_DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      CREDIT_WORKDIR: .credit-1-3b-1-supabase-ci
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Prepare disposable Supabase project
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$CREDIT_WORKDIR"
+          mkdir -p "$CREDIT_WORKDIR"
+
+          (
+            cd "$CREDIT_WORKDIR"
+            supabase init --force
+            mkdir -p supabase/migrations
+            cp ../supabase/tests/fixtures/credit_accounting_minimal_baseline.sql \
+              supabase/migrations/202608142130_credit_accounting_test_baseline.sql
+            cp ../infra/supabase/migrations/202608142140_credit_accounting_schema.sql \
+              supabase/migrations/202608142140_credit_accounting_schema.sql
+          )
+
+          echo "Prepared disposable 1.3B.1 database inputs for commit $GITHUB_SHA."
+
+      - name: Start disposable Supabase stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          START_LOG="$(mktemp)"
+          if ! (
+            cd "$CREDIT_WORKDIR"
+            supabase start \
+              -x studio,imgproxy,storage-api,realtime,edge-runtime,logflare,vector,supavisor
+          ) >"$START_LOG" 2>&1; then
+            DIAGNOSTIC_LINE_COUNT="$(wc -l < "$START_LOG")"
+            rm -f "$START_LOG"
+            echo "Disposable Supabase stack failed to start."
+            echo "Raw startup output suppressed because it may contain disposable credentials."
+            echo "Captured diagnostic lines: $DIAGNOSTIC_LINE_COUNT"
+            exit 1
+          fi
+          rm -f "$START_LOG"
+          echo "Disposable Supabase stack started; generated local credentials omitted."
+
+      - name: Prove schema constraints, RLS, and grants
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/credit_accounting_schema.sql \
+            | tee credit-accounting-schema-validation.log
+          grep -q 'OK:credit_accounting_schema_1_3B_1' credit-accounting-schema-validation.log
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          if [ -d "$CREDIT_WORKDIR/supabase" ]; then
+            (
+              cd "$CREDIT_WORKDIR"
+              supabase stop --no-backup || true
+            ) >/dev/null 2>&1
+          fi
