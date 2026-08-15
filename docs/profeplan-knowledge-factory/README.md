@@ -82,10 +82,12 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 048 — C.2.4 integrado; C.2.5 bloqueado](00-governance/CONTINUITY-CHECKPOINT-048.md)
 - [Definição C.2.5 — revisão humana e handoff governado para C.3](12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md)
 - [Checkpoint 049 — C.2.5 integrado; C.2.6 bloqueado](00-governance/CONTINUITY-CHECKPOINT-049.md)
+- [Prova integrada e fechamento C.2.6](12-delivery/LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md)
+- [Checkpoint 050 — Lote C.2 encerrado; C.3 bloqueado](00-governance/CONTINUITY-CHECKPOINT-050.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após a integração técnica de C.2.5, prevalece o [Checkpoint 049](00-governance/CONTINUITY-CHECKPOINT-049.md) sobre marcadores históricos de checkpoints anteriores.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após o fechamento governado do Lote C.2, prevalece o [Checkpoint 050](00-governance/CONTINUITY-CHECKPOINT-050.md) sobre marcadores históricos de checkpoints anteriores.
 
 - Fase A — concluída;
 - Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
@@ -101,19 +103,19 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.1.5 — prova integrada de contrato, segurança, concorrência, rollback e lifecycle E2E integrada;
 - C.1.6 — auditoria de fechamento integrada pelo PR nº 57 no commit `3ae0f5554eed5e7bd7f208647e068a304127058d`;
 - GAP-3B-04 — **encerrado** após comprovação de que o lifecycle necessário à ingestão está definido, persistido, protegido, adaptado, testado e integrado;
-- Lote C.2 — **em execução governada**, com definição documental integrada pelo PR nº 59 no commit `787432fa8e7f5d891899c94b1089803430a4734a`;
+- Lote C.2 — **concluído**;
 - C.2.1 — **integrado e revalidado** pelo PR nº 62 no commit `e0ba47bf063b324df141c370ebf371763fbf2364`;
 - C.2.2 — **integrado e revalidado** pelo PR nº 67 no commit `7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, com CI pós-merge nº 412 verde;
 - C.2.3 — **integrado e revalidado** pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, com CI pós-merge nº 430 verde;
 - C.2.4 — **integrado e revalidado** pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde;
 - C.2.5 — **integrado e revalidado** pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, com CI pós-merge nº 547 verde;
-- C.2.6 — bloqueado;
+- C.2.6 — **integrado e revalidado** pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde;
 - C.3–C.7 — bloqueados;
-- conteúdo real, PNLD real, Supabase hospedado, storage hospedado e produção — não autorizados.
+- conteúdo real, PNLD real, PDF/livro real, Supabase hospedado, Storage hospedado e produção — não autorizados.
 
 C.2.1 definiu a linguagem operacional da ingestão controlada: identidades compostas sobre C.1, state machine determinística, comandos tipados, idempotência contratual, receipts provider-neutral e revisão humana obrigatória antes de `APPROVED_FOR_EXTRACTION`.
 
-C.2.2 acrescentou a fronteira física mínima de staging temporário sem alterar a state machine do `processing_run`: porta provider-neutral, policy centralizada de limites e retenção, lifecycle físico do artefato, adapter Supabase isolado, locator opaco, `upsert: false`, descarte verificável e CI específico com Supabase Storage inteiramente descartável. Nenhum arquivo real entrou no sistema; nenhum byte foi persistido em Postgres; nenhum storage hospedado foi criado.
+C.2.2 acrescentou a fronteira física mínima de staging temporário sem alterar a state machine do `processing_run`: porta provider-neutral, policy centralizada de limites e retenção, lifecycle físico do artefato, adapter Supabase isolado, locator opaco, `upsert: false`, descarte verificável e CI específico com Supabase Storage inteiramente descartável. Nenhum arquivo real entrou no sistema; nenhum byte foi persistido em Postgres; nenhum Storage hospedado foi criado.
 
 C.2.3 acrescentou integridade criptográfica sobre readback dos bytes efetivamente armazenados, usando SHA-256 em hexadecimal minúsculo, evidência provider-neutral, classificação explícita de duplicidade binária sem colapso de identidades e materialização técnica de `VERIFIED`. O gate `evaluateIngestionVerificationConfirmation` vincula o `confirm_verified` de C.2.1 à evidência física aprovada sem redefinir a state machine.
 
@@ -121,6 +123,10 @@ C.2.4 acrescentou persistência durável do lifecycle operacional, receipts/even
 
 C.2.5 acrescentou a fronteira de revisão humana e handoff governado: competência `legal_editorial_reviewer` sob autoridade C.1, autorização `extraction` independente e historicamente válida no instante da decisão, persistência atômica de run + receipt + event, snapshot read-only provider-neutral e concorrência approve/reject fail-closed. O handoff registra elegibilidade para C.3, mas não executa extração nem inicia C.3.
 
+C.2.6 consolidou C.2.1–C.2.5 em uma única prova E2E sintética e descartável. O caminho positivo concluiu em `APPROVED_FOR_EXTRACTION` + handoff read-only; o caminho fail-safe concluiu em `CANCELLED + DISCARDED`; as postconditions comprovaram ausência de bytes permanentes e ausência de superfície executora C.3. O E2E também revelou uma divergência preexistente entre `localeCompare('en')` e a canonicalização PostgreSQL `COLLATE "C"`; o JavaScript foi corrigido para ordenação bytewise UTF-8, preservando `INGESTION_CONTRACT_VERSION = 1.0.0`.
+
+No merge do PR nº 93, o PR nº 92 da frente comercial avançou a `main` entre a última leitura pré-merge e o squash. O commit de C.2.6 tornou-se filho de `57d7e387676224ef6fb5e3101270c0b6e4f8c245`. A comparação pós-merge confirmou exatamente os sete arquivos de C.2.6, e o CI Pipeline nº 562 validou a árvore composta final. O Checkpoint 050 registra explicitamente essa janela TOCTOU e suas implicações de governança.
+
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-O próximo sublote na sequência é **C.2.6 — prova integrada, fechamento e gate para C.3**. Ele permanece bloqueado nesta continuidade e deverá começar em contexto próprio, com nova inspeção canônica, Definition of Ready e autorização humana específica. C.3 permanece bloqueado e não é autorizado pela integração de C.2.5 nem pela criação do Checkpoint 049.
+O próximo lote na sequência arquitetural é **C.3 — extração e validação do conteúdo extraído**. Ele permanece bloqueado e deverá começar somente em contexto próprio, após reconfirmação canônica, Definition of Ready, definição contract-first e autorização humana específica. O fechamento do Lote C.2 e a criação do Checkpoint 050 não autorizam C.3, conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados, wiring ou produção.

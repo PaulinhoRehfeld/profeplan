@@ -84,13 +84,13 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C — C.1 CONCLUÍDO; C.2.1–C.2.5 INTEGRADOS; C.2.6 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 E C.2 CONCLUÍDOS; C.3 BLOQUEADO  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
 ✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
-🔵 C.2 Ingestão controlada — definição integrada; C.2.1–C.2.5 integrados; C.2.6 bloqueado
-⬜ C.3 Extração e validação
+✅ C.2 Ingestão controlada — C.2.1–C.2.6 concluídos; Checkpoint 050
+⬜ C.3 Extração e validação — bloqueado
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
 ⬜ C.6 Componentização, versionamento e vínculo curricular
@@ -371,7 +371,19 @@ e o estado pós-merge no Checkpoint 048.
 C.2.5 foi integrado pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, tree
 `a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde; sua fronteira está em
 [`12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md).
-O estado pós-merge passa ao Checkpoint 049. C.2.6 e C.3–C.7 permanecem bloqueados.
+O estado pós-merge está no Checkpoint 049.
+
+C.2.6 foi integrado pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree
+`0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde; sua prova integrada e
+matriz de fechamento estão em
+[`12-delivery/LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md`](12-delivery/LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md).
+O Checkpoint 050 formaliza o encerramento canônico do Lote C.2 e mantém C.3 bloqueado.
+
+Durante o merge do PR nº 93 houve uma corrida concorrente governada: o PR nº 92 da frente comercial
+avançou a `main` entre a última leitura pré-merge e o squash de C.2.6. O commit técnico de C.2.6 ficou
+como filho direto de `57d7e387676224ef6fb5e3101270c0b6e4f8c245`. A comparação pós-merge confirmou
+exatamente os sete arquivos de C.2.6 e o CI nº 562 validou a árvore composta final. O evento e a
+limitação TOCTOU da API estão registrados no Checkpoint 050.
 
 O mapa integral C.0–C.7 está definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
@@ -394,8 +406,8 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1–C.2.5 integrados; C.2.6 bloqueado** |
-| C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **concluído — C.2.1–C.2.6** |
+| C.3 | Extração e validação | EPIC-003; US-003.1 | **bloqueado** |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
 | C.6 | Componentes, versões e currículo | EPIC-004/006; US-004.1–004.3 e US-006.1–006.2 | bloqueado |
@@ -723,9 +735,12 @@ integrado pelo PR nº 70 como fronteira de integridade criptográfica, duplicida
 com CI pós-merge nº 430 verde e reconciliação registrada no Checkpoint 047. C.2.4 foi integrado pelo
 PR nº 74 como fronteira durável de idempotência, recovery e fail-safe, com CI pós-merge nº 523 verde
 e Checkpoint 048. C.2.5 foi integrado pelo PR nº 84 como fronteira de revisão humana e handoff
-governado, com CI pós-merge nº 547 verde e Checkpoint 049. **C.2.6 permanece bloqueado**, assim como
-C.3–C.7; a integração de C.2.5 não constitui autorização para a prova integrada final de C.2, C.3,
-conteúdo real, storage hospedado, Supabase hospedado, extração ou produção.
+governado, com CI pós-merge nº 547 verde e Checkpoint 049. C.2.6 foi integrado pelo PR nº 93 como
+prova E2E consolidada e gate de fechamento, com CI pós-merge nº 562 verde. **C.2 está encerrado no
+Checkpoint 050; C.3–C.7 permanecem bloqueados.**
+
+O fechamento de C.2 não constitui autorização para extração, conteúdo real, Storage hospedado,
+Supabase hospedado, wiring ou produção.
 
 ### C → D
 
@@ -833,27 +848,34 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE C APÓS C.2.5 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
-> `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59; C.2.1 integrado pelo
-> PR nº 62; C.2.2 pelo PR nº 67; C.2.3 pelo PR nº 70; C.2.4 pelo PR nº 74; e C.2.5 integrado pelo
-> PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, tree
-> `a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde.**
+> **FASE C APÓS O FECHAMENTO DE C.2 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
+> `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59; C.2.1 pelo PR nº 62;
+> C.2.2 pelo PR nº 67; C.2.3 pelo PR nº 70; C.2.4 pelo PR nº 74; C.2.5 pelo PR nº 84; e C.2.6
+> integrado pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree
+> `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde.**
 
 Atualização de navegação da Fase C:
 
-> **C.2.1–C.2.5 estão integrados e revalidados; C.2.6 permanece bloqueado. C.3–C.7 e as Fases D–G
-> continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece
-> não autorizada. O Checkpoint 049 é a referência operacional corrente após a reconciliação.**
+> **C.2.1–C.2.6 estão integrados e revalidados; o Lote C.2 está encerrado no Checkpoint 050. C.3
+> permanece bloqueado. C.4–C.7 e as Fases D–G continuam bloqueados. `GAP-3B-05` e `GAP-3B-07`
+> permanecem ativos e contidos. Produção permanece não autorizada.**
+
+Registro de concorrência:
+
+> Durante o merge do PR nº 93, o PR nº 92 da frente comercial avançou a `main` entre a verificação
+> pré-merge e o squash. O commit de C.2.6 foi aplicado sobre `57d7e387676224ef6fb5e3101270c0b6e4f8c245`.
+> A comparação pós-merge confirmou os sete arquivos autorizados de C.2.6 e o CI nº 562 validou a
+> árvore composta final. O Checkpoint 050 preserva esse evento e a limitação TOCTOU como evidência.
 
 Próximo objetivo possível, somente em contexto próprio e após nova inspeção canônica:
 
-> inspecionar **C.2.6 — prova integrada, fechamento e gate para C.3**, consolidando a matriz de
-> evidências C.2, o fluxo end-to-end com fixtures sintéticas, segurança negativa, replay,
-> duplicidade/conflito, concorrência, descarte, rollback/reapply e o gate documental C.2 → C.3;
-> sem iniciar C.3, usar conteúdo real ou alterar state machine/ownership por continuidade implícita.
+> inspecionar e **definir C.3 — extração e validação do conteúdo extraído**, começando por contrato
+> provider-neutral e revalidação de autorização `extraction` no instante real de execução; sem usar
+> conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados ou produção por continuidade
+> implícita.
 
 Próxima grande mudança de natureza do projeto:
 
-> C.2.6 deverá provar e encerrar governadamente o Lote C.2 sem introduzir nova capacidade funcional
-> incidental. Mesmo após seu eventual fechamento, C.3 permanecerá sujeito a inspeção, definição e
-> autorização humanas próprias antes de qualquer extração real ou executável.
+> O fechamento de C.2 encerrou a fronteira de ingestão controlada. C.3 será a primeira camada com
+> autoridade para executar extração, mas permanece sujeito a inspeção, Definition of Ready,
+> documentação e autorização humanas próprias antes de qualquer parser, OCR ou conteúdo real.
