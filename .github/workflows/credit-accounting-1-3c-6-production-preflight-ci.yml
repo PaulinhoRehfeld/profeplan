@@ -41,7 +41,7 @@ jobs:
       CREDIT_DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
       CREDIT_WORKDIR: .credit-1-3c-6-supabase-ci
       CUTOVER_ID: ci-credit-cutover-1-3c-6-v1
-      CUTOVER_AT: '2026-08-15 19:00:00+00'
+      CUTOVER_AT: '2026-08-15 00:00:00+00'
 
     steps:
       - name: Checkout repository
