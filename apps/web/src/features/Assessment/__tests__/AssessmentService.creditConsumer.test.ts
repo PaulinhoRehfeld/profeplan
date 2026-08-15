@@ -185,6 +185,28 @@ describe('AssessmentService - governed consumer save', () => {
     expect(localStorage.getItem('profeplan_assessments:user-4b')).toBeNull();
   });
 
+  it('reutiliza o mesmo assessment.id ao tentar novamente após falha do RPC', async () => {
+    vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'true');
+    mocks.rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'rpc unavailable' } })
+      .mockResolvedValueOnce({
+        data: { saved: true, outcome: 'APPLIED', charged: true, reason: 'CHARGED' },
+        error: null,
+      });
+
+    await expect(saveAssessment('user-4b', assessment)).rejects.toMatchObject({
+      message: 'rpc unavailable',
+    });
+    expect(localStorage.getItem('profeplan_assessments:user-4b')).toBeNull();
+
+    await expect(saveAssessment('user-4b', assessment)).resolves.toBe(true);
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(2);
+    expect(mocks.rpc.mock.calls[0][1].p_artifact_id).toBe(assessment.id);
+    expect(mocks.rpc.mock.calls[1][1].p_artifact_id).toBe(assessment.id);
+    expect(mocks.generatedInsert).not.toHaveBeenCalled();
+  });
+
   it('aceita Gold/NO_CHARGE como Save canônico sem caminho alternativo', async () => {
     vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'true');
     mocks.rpc.mockResolvedValueOnce({
