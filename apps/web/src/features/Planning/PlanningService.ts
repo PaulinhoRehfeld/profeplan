@@ -129,6 +129,7 @@ export const savePlan = async (
         ...plan,
         folder: targetFolder,
         synced: false,
+        createdAt: retryDraft.createdAt,
       }
     : {
         ...plan,
