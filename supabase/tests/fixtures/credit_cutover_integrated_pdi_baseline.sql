@@ -1,5 +1,5 @@
 -- =============================================================================
--- ProfePlan — Lote 1.3C.5 integrated cutover PDI baseline
+-- ProfePlan — Lote 1.3C.5/1.3C.6 integrated cutover PDI baseline
 -- TEST ONLY. Never a production migration.
 --
 -- Loaded after the existing accounting / producer / term-plan / generated-content
@@ -58,7 +58,24 @@ GRANT SELECT ON public.school_students, public.pdi_documents, public.pdi_records
 GRANT INSERT, UPDATE ON public.pdi_documents, public.pdi_records
   TO authenticated;
 
+-- The hosted schema currently has RLS policies that allow legitimate
+-- authenticated PDI writes when school/teacher ownership matches. For the
+-- disposable cutover fixture we deliberately allow the synthetic subject to
+-- reach the trigger layer, so 1.3C.6 can prove that the economic guard — not an
+-- unrelated RLS denial — blocks direct billable PDI writes.
+CREATE POLICY pdi_documents_cutover_fixture_write
+  ON public.pdi_documents
+  FOR ALL TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+CREATE POLICY pdi_records_cutover_fixture_write
+  ON public.pdi_records
+  FOR ALL TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
 -- Reproduce the legacy direct-write surface observed by the readiness audit so
--- the 1.3C.5 rehearsal can prove that enforcement actually removes a real
--- bypass and that rollback restores it before user traffic is released.
+-- the rehearsal can prove that enforcement actually removes a real bypass and
+-- that rollback restores it before user traffic is released.
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.term_plans TO authenticated;
