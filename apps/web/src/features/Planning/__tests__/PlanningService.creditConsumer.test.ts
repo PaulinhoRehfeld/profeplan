@@ -127,9 +127,9 @@ describe('PlanningService - governed consumer save', () => {
         error: null,
       });
 
-    await expect(
-      savePlan('user-4a', basePlan, PlanFolder.MATERIAL_ALUNO)
-    ).rejects.toMatchObject({ message: 'timeout' });
+    await expect(savePlan('user-4a', basePlan, PlanFolder.MATERIAL_ALUNO)).rejects.toMatchObject({
+      message: 'timeout',
+    });
 
     const firstArtifactId = mocks.rpc.mock.calls[0][1].p_artifact_id as string;
     expect(firstArtifactId).toBeTruthy();
@@ -159,9 +159,9 @@ describe('PlanningService - governed consumer save', () => {
       error: null,
     });
 
-    await expect(
-      savePlan('user-4a', basePlan, PlanFolder.MATERIAL_ALUNO)
-    ).rejects.toThrow('Créditos insuficientes');
+    await expect(savePlan('user-4a', basePlan, PlanFolder.MATERIAL_ALUNO)).rejects.toThrow(
+      'Créditos insuficientes'
+    );
 
     const drafts = JSON.parse(
       localStorage.getItem('profeplan_history_buffer:user-4a') || '[]'
