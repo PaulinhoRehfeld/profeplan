@@ -1,5 +1,6 @@
 import type { IngestionCommandRepository } from '@profeplan/knowledge-factory';
 import type {
+  ApproveIngestionForExtractionCommand,
   BeginIngestionStagingCommand,
   BeginIngestionVerificationCommand,
   CancelIngestionCommand,
@@ -7,7 +8,9 @@ import type {
   FailIngestionCommand,
   IngestionCommandReceipt,
   MarkIngestionStagedCommand,
+  RejectIngestionCommand,
   RequestIngestionCommand,
+  RequestIngestionReviewCommand,
   TemporaryStagingArtifactDescriptor,
   VerifiedTemporaryStagingArtifactDescriptor,
 } from '@profeplan/types';
@@ -28,7 +31,7 @@ import {
   ingestionReceiptRowToReceipt,
   stagingArtifactToRpcPayload,
   verifiedArtifactToRpcPayload,
-  type C24IngestionCommand,
+  type GovernedIngestionCommand,
 } from './ingestion-command.mapper.ts';
 
 const ADAPTER_NAME = 'SupabaseIngestionCommandRepository';
@@ -39,6 +42,9 @@ const RPC_NAMES = Object.freeze({
   mark_staged: 'kf_ingestion_mark_staged',
   begin_verification: 'kf_ingestion_begin_verification',
   confirm_verified: 'kf_ingestion_confirm_verified',
+  request_review: 'kf_ingestion_request_review',
+  approve_for_extraction: 'kf_ingestion_approve_for_extraction',
+  reject_ingestion: 'kf_ingestion_reject',
   fail_ingestion: 'kf_ingestion_fail',
   cancel_ingestion: 'kf_ingestion_cancel',
 } as const);
@@ -61,7 +67,7 @@ function parseProviderResponse(value: unknown, operation: string): ProviderRespo
 
 function recordSuccess(
   logger: PersistenceLogger,
-  command: C24IngestionCommand,
+  command: GovernedIngestionCommand,
   operation: string,
   startedAt: number
 ): void {
@@ -78,7 +84,7 @@ function recordSuccess(
 
 function recordFailure(
   logger: PersistenceLogger,
-  command: C24IngestionCommand,
+  command: GovernedIngestionCommand,
   operation: string,
   startedAt: number,
   error: KnowledgeFactoryPersistenceError
@@ -105,7 +111,7 @@ export class SupabaseIngestionCommandRepository implements IngestionCommandRepos
   }
 
   private async execute(
-    command: C24IngestionCommand,
+    command: GovernedIngestionCommand,
     extraArgs: Readonly<Record<string, unknown>> = {}
   ): Promise<IngestionCommandReceipt> {
     const operation = `ingestion.${command.commandType}`;
@@ -157,6 +163,20 @@ export class SupabaseIngestionCommandRepository implements IngestionCommandRepos
     artifact: VerifiedTemporaryStagingArtifactDescriptor
   ): Promise<IngestionCommandReceipt> {
     return this.execute(command, { p_verification: verifiedArtifactToRpcPayload(artifact) });
+  }
+
+  requestReview(command: RequestIngestionReviewCommand): Promise<IngestionCommandReceipt> {
+    return this.execute(command);
+  }
+
+  approveForExtraction(
+    command: ApproveIngestionForExtractionCommand
+  ): Promise<IngestionCommandReceipt> {
+    return this.execute(command);
+  }
+
+  rejectAfterHumanReview(command: RejectIngestionCommand): Promise<IngestionCommandReceipt> {
+    return this.execute(command);
   }
 
   failIngestion(command: FailIngestionCommand): Promise<IngestionCommandReceipt> {
