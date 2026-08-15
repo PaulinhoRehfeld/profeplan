@@ -1,0 +1,55 @@
+name: Temporary 4E Profile Producer Patch
+
+on:
+  push:
+    branches:
+      - feat/commercial-credit-consumers-4e-final-sweep
+    paths:
+      - .github/workflows/temp-4e-profile-repo-producer-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/commercial-credit-consumers-4e-final-sweep
+
+      - name: Patch profile repository emergency producer
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('apps/web/src/services/profile/profileRepository.ts')
+          text = path.read_text()
+
+          old_import = "import { isHardcodedAdmin } from '../../constants';\n"
+          new_import = old_import + "import { isGovernedCreditProducerEnabled } from '../credits/creditProducerFlags';\n"
+          if old_import not in text:
+              raise SystemExit('ProfileRepository import anchor not found')
+          text = text.replace(old_import, new_import, 1)
+
+          old_anchor = """          const fallbackEmail = authUser.email || activeEmail || '';\n          const userIsAdmin = isHardcodedAdmin(fallbackEmail);\n          const { data: created, error: createErr } = await supabase\n"""
+          new_anchor = """          const fallbackEmail = authUser.email || activeEmail || '';\n          const userIsAdmin = isHardcodedAdmin(fallbackEmail);\n          const governedCreditProducers = isGovernedCreditProducerEnabled();\n          const { data: created, error: createErr } = await supabase\n"""
+          if old_anchor not in text:
+              raise SystemExit('ProfileRepository emergency anchor not found')
+          text = text.replace(old_anchor, new_anchor, 1)
+
+          old_credits = """                tier: userIsAdmin ? 'GOLD' : 'FREE',\n                is_unlimited: userIsAdmin,\n                credits: userIsAdmin ? 9999 : 10,\n"""
+          new_credits = """                tier: userIsAdmin ? 'GOLD' : 'FREE',\n                is_unlimited: userIsAdmin,\n                ...(governedCreditProducers ? {} : { credits: userIsAdmin ? 9999 : 10 }),\n"""
+          if old_credits not in text:
+              raise SystemExit('ProfileRepository credits anchor not found')
+          text = text.replace(old_credits, new_credits, 1)
+          path.write_text(text)
+
+      - name: Remove temporary workflow and commit patch
+        run: |
+          rm .github/workflows/temp-4e-profile-repo-producer-patch.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/services/profile/profileRepository.ts .github/workflows/temp-4e-profile-repo-producer-patch.yml
+          git commit -m "feat(commercial): govern profile repository emergency credits"
+          git push
