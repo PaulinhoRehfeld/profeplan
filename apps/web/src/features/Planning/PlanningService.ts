@@ -1,7 +1,8 @@
 import { supabase } from '../../services/supabaseClient';
 import { checkUsageQuota, incrementUserUsage } from '../../services/ProfileService';
 import type { UserProfile } from '../../types';
-import { PdiDocumentService } from '../../services/pdi/PdiDocumentService'; // Updated from PdiService
+import { PdiDocumentService } from '../../services/pdi/PdiDocumentService';
+import { isGovernedCreditConsumerEnabled } from '../../services/credits/creditConsumerFlags';
 
 // --- FOLDER STRUCTURE ENUM ---
 export enum PlanFolder {
@@ -15,7 +16,6 @@ export enum PlanFolder {
   OUTROS = 'OUTROS',
 }
 
-// A-1: Key MUST include userId to prevent data leakage between accounts
 const getHistoryKey = (userId: string) => `profeplan_history_buffer:${userId}`;
 
 export interface GeneratedPlan {
@@ -32,22 +32,76 @@ export interface GeneratedPlan {
     | 'outros'
     | 'aula'
     | 'enem';
-  folder: PlanFolder; // New Field
+  folder: PlanFolder;
   title: string;
   content: string;
   createdAt: string;
   synced: boolean;
-  classId?: string; // Optional link to class for PDI automation
+  classId?: string;
 }
+
+type GovernedSaveResult = {
+  saved?: boolean;
+  outcome?: string;
+  charged?: boolean;
+  reason?: string;
+  artifact_id?: string;
+};
+
+const readLocalHistory = (userId: string): GeneratedPlan[] => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(getHistoryKey(userId)) || '[]');
+    return Array.isArray(parsed) ? (parsed as GeneratedPlan[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const createGovernedArtifactId = (): string => {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+  return `artifact_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+};
+
+const findExactUnsyncedDraft = (
+  userId: string,
+  plan: Omit<GeneratedPlan, 'synced' | 'id' | 'folder'>,
+  targetFolder: PlanFolder
+): GeneratedPlan | undefined =>
+  readLocalHistory(userId)
+    .slice()
+    .reverse()
+    .find(
+      (saved) =>
+        saved.synced === false &&
+        saved.type === plan.type &&
+        saved.folder === targetFolder &&
+        saved.title === plan.title &&
+        saved.content === plan.content &&
+        (saved.classId || null) === (plan.classId || null)
+    );
+
+const persistLocalDraft = (userId: string, plan: GeneratedPlan) => {
+  const saved = readLocalHistory(userId);
+  const existingIndex = saved.findIndex((candidate) => candidate.id === plan.id);
+
+  if (existingIndex >= 0) {
+    saved[existingIndex] = plan;
+  } else {
+    saved.push(plan);
+  }
+
+  localStorage.setItem(getHistoryKey(userId), JSON.stringify(saved));
+};
 
 /**
  * [LOCAL-FIRST]
- * Salva o plano gerado no LocalStorage e tenta sincronizar.
- */
-/**
- * [CREDIT TRANSACTION]
- * Salva o plano e consome 1 crédito.
- * Lógica: Check Quota -> Save Local -> Sync Cloud (DB) -> Deduct Credit
+ * Saves a local draft before attempting canonical persistence.
+ *
+ * Flag OFF preserves the legacy quota + direct-table + increment flow.
+ * Flag ON uses the governed first-save boundary. An exact unsynced local draft
+ * is reused after timeout/failure so the retry keeps the same artifact_id.
  */
 export const savePlan = async (
   userId: string,
@@ -55,70 +109,97 @@ export const savePlan = async (
   targetFolder: PlanFolder,
   preloadedProfile?: UserProfile | null
 ) => {
-  // 1. Check Credit Balance (Gatekeeper)
-  const quota = await checkUsageQuota(userId, preloadedProfile);
-  if (!quota.allowed) {
-    throw new Error(quota.message || 'Saldo insuficiente.');
+  const governed = isGovernedCreditConsumerEnabled();
+
+  if (governed && plan.type === 'trimestral') {
+    throw new Error('Planejamento trimestral usa a fronteira governada dedicada.');
   }
 
-  const newPlan: GeneratedPlan = {
-    ...plan,
-    folder: targetFolder,
-    id: `local_${Date.now()}`,
-    synced: false,
-    createdAt: new Date().toISOString(),
-  };
+  if (!governed) {
+    const quota = await checkUsageQuota(userId, preloadedProfile);
+    if (!quota.allowed) {
+      throw new Error(quota.message || 'Saldo insuficiente.');
+    }
+  }
 
-  // 2. Save Locally (Draft/Backup)
+  const retryDraft = governed ? findExactUnsyncedDraft(userId, plan, targetFolder) : undefined;
+  const newPlan: GeneratedPlan = retryDraft
+    ? {
+        ...retryDraft,
+        ...plan,
+        folder: targetFolder,
+        synced: false,
+      }
+    : {
+        ...plan,
+        folder: targetFolder,
+        id: governed ? createGovernedArtifactId() : `local_${Date.now()}`,
+        synced: false,
+        createdAt: new Date().toISOString(),
+      };
+
   try {
-    const saved = JSON.parse(localStorage.getItem(getHistoryKey(userId)) || '[]');
-    saved.push(newPlan);
-    localStorage.setItem(getHistoryKey(userId), JSON.stringify(saved));
+    persistLocalDraft(userId, newPlan);
     console.log('✅ Plano salvo localmente.');
-  } catch (e) {
-    console.error('Erro ao salvar plano localmente:', e);
+  } catch (error) {
+    console.error('Erro ao salvar plano localmente:', error);
   }
 
-  // 3. Sync Background (The Real Save) & Deduct Credit
-  // We await this now to ensure credit deduction validity
   await syncPlanToCloud(userId, newPlan);
-
-  return newPlan;
+  return { ...newPlan, synced: true };
 };
 
-/**
- * Sincroniza com Supabase (generated_contents + lessons)
- */
 const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
-  // A. Generated Contents (Drive)
-  const { error: contentError } = await supabase.from('generated_contents').insert({
-    user_id: userId,
-    type: plan.type,
-    folder: plan.folder,
-    title: plan.title,
-    content: plan.content,
-    created_at: plan.createdAt,
-  });
+  const governed = isGovernedCreditConsumerEnabled();
 
-  if (contentError) throw contentError;
+  if (governed) {
+    const { data, error } = await supabase.rpc('credit_save_generated_content', {
+      p_artifact_id: plan.id,
+      p_type: plan.type,
+      p_folder: plan.folder,
+      p_title: plan.title,
+      p_content: plan.content,
+      p_created_at: plan.createdAt,
+    });
 
-  // A.2 - INCREMENT USAGE (Debit Credit)
-  // Only debit if insertion was successful
-  await incrementUserUsage(userId, 'document');
-  console.log('💰 Crédito debitado por salvamento de documento.');
+    if (error) throw error;
 
-  // B. Memory (Lessons) - Apenas se for relevante (Plano de Aula ou Atividade)
-  if (['plano', 'aula', 'trimestral'].includes(plan.type)) {
+    const result = data as GovernedSaveResult | null;
+    if (!result?.saved) {
+      if (result?.reason === 'INSUFFICIENT_CREDITS') {
+        throw new Error('Créditos insuficientes para salvar este documento.');
+      }
+      throw new Error(result?.reason || 'Não foi possível salvar o documento.');
+    }
+  } else {
+    const { error: contentError } = await supabase.from('generated_contents').insert({
+      user_id: userId,
+      type: plan.type,
+      folder: plan.folder,
+      title: plan.title,
+      content: plan.content,
+      created_at: plan.createdAt,
+    });
+
+    if (contentError) throw contentError;
+
+    await incrementUserUsage(userId, 'document');
+    console.log('💰 Crédito debitado por salvamento de documento.');
+  }
+
+  // generated_contents is canonical. Lesson/PDI memory remains auxiliary and
+  // best-effort exactly as before; an auxiliary failure must not reverse a
+  // canonical save that already committed.
+  if (['plano', 'aula'].includes(plan.type)) {
     const { error: lessonError } = await supabase.from('lessons').insert({
       user_id: userId,
       topic: plan.title,
       content: plan.content,
-      class_id: plan.classId || null, // Pass class ID context
+      class_id: plan.classId || null,
     });
 
     if (lessonError) console.warn('Erro ao salvar memória da aula:', lessonError);
 
-    // C. PDI Automation (Sync to Block VIII - Proposta Pedagógica/Planejamento)
     if (plan.classId) {
       PdiDocumentService.logEventForClass(
         plan.classId,
@@ -134,15 +215,14 @@ const syncPlanToCloud = async (userId: string, plan: GeneratedPlan) => {
     }
   }
 
-  // C. Atualiza status local para 'synced'
   try {
-    const saved = JSON.parse(localStorage.getItem(getHistoryKey(userId)) || '[]');
-    const updated = saved.map((p: GeneratedPlan) =>
-      p.id === plan.id ? { ...p, synced: true } : p
+    const saved = readLocalHistory(userId);
+    const updated = saved.map((candidate) =>
+      candidate.id === plan.id ? { ...candidate, synced: true } : candidate
     );
     localStorage.setItem(getHistoryKey(userId), JSON.stringify(updated));
-  } catch (e) {
-    // Ignorar erro de update local pós-sync
+  } catch {
+    // A canonical cloud save is authoritative even if local cache update fails.
   }
 
   console.log('☁️ Plano sincronizado!');
