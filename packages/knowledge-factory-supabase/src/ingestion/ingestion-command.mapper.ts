@@ -52,21 +52,24 @@ function hasExactReceiptKeys(row: Record<string, unknown>): boolean {
   return Object.keys(row).length === expected.length && expected.every((key) => key in row);
 }
 
-export type C24IngestionCommand =
+export type GovernedIngestionCommand =
   | import('@profeplan/types').RequestIngestionCommand
   | import('@profeplan/types').BeginIngestionStagingCommand
   | import('@profeplan/types').MarkIngestionStagedCommand
   | import('@profeplan/types').BeginIngestionVerificationCommand
   | import('@profeplan/types').ConfirmIngestionVerifiedCommand
+  | import('@profeplan/types').RequestIngestionReviewCommand
+  | import('@profeplan/types').ApproveIngestionForExtractionCommand
+  | import('@profeplan/types').RejectIngestionCommand
   | import('@profeplan/types').FailIngestionCommand
   | import('@profeplan/types').CancelIngestionCommand;
 
-export function ingestionCommandRunId(command: C24IngestionCommand): EntityId {
+export function ingestionCommandRunId(command: GovernedIngestionCommand): EntityId {
   return command.commandType === 'request_ingestion' ? command.request.run.id : command.run.id;
 }
 
 export function ingestionCommandToRpcPayload(
-  command: C24IngestionCommand,
+  command: GovernedIngestionCommand,
   operation = 'ingestion.command.mapper.toPayload'
 ): Readonly<Record<string, unknown>> {
   if (
@@ -116,7 +119,7 @@ export function verifiedArtifactToRpcPayload(
 
 export function ingestionReceiptRowToReceipt(
   data: unknown,
-  command: C24IngestionCommand,
+  command: GovernedIngestionCommand,
   operation = 'ingestion.command.mapper.fromReceipt'
 ): IngestionCommandReceipt {
   if (
@@ -163,7 +166,9 @@ export function ingestionReceiptRowToReceipt(
   }
 
   const expectedReasonCode =
-    command.commandType === 'fail_ingestion' || command.commandType === 'cancel_ingestion'
+    command.commandType === 'fail_ingestion' ||
+    command.commandType === 'cancel_ingestion' ||
+    command.commandType === 'reject_ingestion'
       ? command.reasonCode
       : undefined;
   if (
