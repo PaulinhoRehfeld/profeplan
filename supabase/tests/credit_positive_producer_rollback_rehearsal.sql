@@ -55,10 +55,10 @@ BEGIN
     RAISE EXCEPTION 'producer rollback did not restore legacy admin_add_credits';
   END IF;
 END;
-$;
+$$;
 
 -- Rollback restores legacy credits but never restores the anonymous RPC surface.
-DO $
+DO $$
 DECLARE
   v_profiles_before integer;
   v_profiles_after integer;
@@ -83,7 +83,7 @@ BEGIN
     RAISE EXCEPTION 'rollback identity-null recovery changed profiles';
   END IF;
 END;
-$;
+$$;
 
 -- 1. Normal signup returns to legacy credits=10 and creates no new governed lot.
 INSERT INTO auth.users (

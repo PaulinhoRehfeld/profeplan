@@ -60,11 +60,11 @@ BEGIN
     RAISE EXCEPTION 'service_role must execute Stripe fulfillment';
   END IF;
 END;
-$;
+$$;
 
 -- Defense in depth: even the function owner cannot use the RPC without an
 -- authenticated JWT identity. No profile or grant may be materialized.
-DO $
+DO $$
 DECLARE
   v_profiles_before integer;
   v_profiles_after integer;
@@ -94,7 +94,7 @@ BEGIN
     RAISE EXCEPTION 'identity-null recovery changed profiles or grants';
   END IF;
 END;
-$;
+$$;
 
 -- -----------------------------------------------------------------------------
 -- 2. New auth user -> FREE profile with legacy integer 0 + governed 10/7d lot.

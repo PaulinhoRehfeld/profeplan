@@ -84,7 +84,7 @@ RETURNS public.profiles
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog
-AS $
+AS $$
 DECLARE
   v_uid uuid := auth.uid();
   v_email text;
@@ -156,7 +156,7 @@ BEGIN
 
   RETURN v_result;
 END;
-$;
+$$;
 
 ALTER FUNCTION public.update_my_profile(jsonb) OWNER TO postgres;
 REVOKE ALL ON FUNCTION public.update_my_profile(jsonb)
