@@ -89,6 +89,7 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     vi.resetAllMocks();
     configureFromMock();
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'false');
+    vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'false');
 
     (globalThis as any).localStorage = {
       store: {} as Record<string, string>,
@@ -160,6 +161,30 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     ) as TermPlan[];
     expect(stored).toHaveLength(1);
     expect(localStorage.getItem(`profeplan_term_plan_governed_draft:${userId}:plan-1`)).toBeNull();
+  });
+
+  it('usa RPC governado quando o cutover global de consumidores está ativo', async () => {
+    vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'true');
+    rpcMock.mockResolvedValueOnce({
+      data: {
+        saved: true,
+        outcome: 'APPLIED',
+        reason: 'CHARGED',
+        charged: true,
+        balance_after: 1,
+        operation_id: 'server-derived-operation',
+        plan_id: 'plan-1',
+      },
+      error: null,
+    });
+
+    await saveTermPlan(basePlan, userId);
+
+    expect(rpcMock).toHaveBeenCalledWith(
+      'credit_save_term_plan',
+      expect.objectContaining({ p_plan_id: 'plan-1' })
+    );
+    expect(upsertMock).not.toHaveBeenCalled();
   });
 
   it('preserva rascunho quando RPC rejeita por falta de crédito', async () => {
