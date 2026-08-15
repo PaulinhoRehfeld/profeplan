@@ -84,6 +84,8 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 049 — C.2.5 integrado; C.2.6 bloqueado](00-governance/CONTINUITY-CHECKPOINT-049.md)
 - [Prova integrada e fechamento C.2.6](12-delivery/LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md)
 - [Checkpoint 050 — Lote C.2 encerrado; C.3 bloqueado](00-governance/CONTINUITY-CHECKPOINT-050.md)
+- [Definição do Lote C.3 — extração e validação](12-delivery/LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md)
+- [ADR-063 — fronteira entre ingestão, extração e segmentação](00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md)
 
 ## Estado atual
 
@@ -110,7 +112,8 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.2.4 — **integrado e revalidado** pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde;
 - C.2.5 — **integrado e revalidado** pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, com CI pós-merge nº 547 verde;
 - C.2.6 — **integrado e revalidado** pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde;
-- C.3–C.7 — bloqueados;
+- C.3 — definição documental de fronteira e C.3.1–C.3.8 proposta neste Draft PR; execução técnica bloqueada;
+- C.4–C.7 — bloqueados;
 - conteúdo real, PNLD real, PDF/livro real, Supabase hospedado, Storage hospedado e produção — não autorizados.
 
 C.2.1 definiu a linguagem operacional da ingestão controlada: identidades compostas sobre C.1, state machine determinística, comandos tipados, idempotência contratual, receipts provider-neutral e revisão humana obrigatória antes de `APPROVED_FOR_EXTRACTION`.
@@ -129,4 +132,4 @@ No merge do PR nº 93, o PR nº 92 da frente comercial avançou a `main` entre a
 
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-O próximo lote na sequência arquitetural é **C.3 — extração e validação do conteúdo extraído**. Ele permanece bloqueado e deverá começar somente em contexto próprio, após reconfirmação canônica, Definition of Ready, definição contract-first e autorização humana específica. O fechamento do Lote C.2 e a criação do Checkpoint 050 não autorizam C.3, conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados, wiring ou produção.
+Este Draft PR propõe a definição de **C.3 — extração e validação do conteúdo extraído**, sua ADR de fronteira e a decomposição C.3.1–C.3.8. A proposta é exclusivamente documental: não inicia os sublotes e não cria executor, parser, OCR, migration, conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados, wiring ou produção. Após integração humana e checkpoint próprio, o próximo passo possível será C.3.1, ainda dependente de reconfirmação canônica, Definition of Ready e autorização humana específica.

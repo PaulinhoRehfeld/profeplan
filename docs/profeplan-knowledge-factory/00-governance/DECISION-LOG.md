@@ -592,6 +592,26 @@ A validação runtime de C.1.2 foi executada no `Knowledge Factory DB CI` run n�
 com schema/RLS em duas passagens, rollback/reaplicação e resultado `success`. O `CI Pipeline` run nº
 280 (`31657560699`) também concluiu com `success`. Esses resultados não autorizam produção nem C.1.3.
 
+## ADR-063 — Fronteira de C.3 entre ingestão, extração e segmentação
+
+**Status:** proposto neste Draft PR; sem efeito canônico antes de integração humana
+
+C.3 recebe o handoff read-only de C.2, mas mantém contrato, identidade, lifecycle, receipts, events
+e versão próprios. C.2 não interpreta páginas nem executa extração. A autorização
+`purpose=extraction` é revalidada no claim, na leitura/retomada do artefato e na finalização; não
+existe estado durável `AUTHORIZED`.
+
+C.3 possui texto, páginas, ordem, marcadores e relações físicas observadas, proveniência, cobertura,
+métricas e revisão. C.4 possui chunks/segmentos, hierarquia editorial confirmada e classificação
+pedagógica/curricular. A leitura usa porta provider-neutral estreita; `service_role` não é
+autoridade de negócio. Texto nativo é o baseline, OCR é exceção governada em C.3.7 e imagens recebem
+somente marcadores observados no baseline.
+
+A decisão completa está em
+[ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md](ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md).
+Ela delimita C.3.1–C.3.8 e não cria código, migration, parser, OCR, conteúdo real, recurso hospedado
+ou produção.
+
 ## Procedência
 
 Snapshot controlado dos Marcos 001–004, Lotes 0, 1, 2, 3A e definição aprovada do Lote 3B, incluindo aprovação humana integral das ADRs 040–047 e reconhecimento dos GAPs 3B-01 a 3B-05 em 7 de agosto de 2026.

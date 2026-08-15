@@ -279,45 +279,76 @@ A corrida concorrente do PR nº 92 entre a verificação pré-merge e o squash d
 registrada no Checkpoint 050. A comparação do parent final com o squash de C.2.6 confirmou exatamente
 os sete arquivos técnicos autorizados, e o CI pós-merge nº 562 validou a árvore composta final.
 
+
 ## 7. Lote C.3 — Extração e validação do conteúdo extraído
 
 ### Status
 
-**Bloqueado.** O fechamento de C.2 torna C.3 o próximo lote arquitetural candidato, mas não o inicia.
-C.3 exige inspeção, Definition of Ready, definição contract-first e nova autorização humana própria.
+**Definição documental proposta neste Draft PR; execução técnica bloqueada.** A definição integral
+está em [LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md](LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md)
+e a fronteira arquitetural em
+[ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md](../00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md).
+
+A integração desta documentação não inicia C.3.1, não herda autorização de C.2 e não autoriza
+parser, OCR, migrations, conteúdo real, recursos hospedados ou produção.
 
 ### Objetivo
 
-Extrair prioritariamente a camada textual e a estrutura observável dos PDFs editoriais sem tratar o
-resultado do parser — ou de eventual OCR de exceção — como conhecimento pedagógico validado.
+Transformar um artefato governado e elegível recebido de C.2 em representação extraída observável,
+rastreável e revisável, preservando proveniência por página e elemento, sem promover a saída do
+extrator a conhecimento pedagógico, segmento semântico ou hierarquia editorial confirmada.
 
 ### Epic, Feature e Story
 
 - `EPIC-003`;
-- `F-003.1` / `US-003.1`, na parcela de extração textual vinculada à fonte e à versão.
+- `F-003.1` / `US-003.1`, somente na parcela de extração e validação observável;
+- segmentação e classificação estrutural permanecem em C.4.
 
-### Sublotes candidatos
+### Entradas e fronteiras obrigatórias
 
-- `C.3.1` — porta de extrator e contrato de resultado provider-neutral;
-- `C.3.2` — extração nativa da camada textual do formato piloto aprovado;
-- `C.3.3` — preservação de páginas, capítulos, seções e ordem quando observáveis;
-- `C.3.4` — métricas de qualidade, páginas vazias e caracteres inválidos;
-- `C.3.5` — revisão humana, rejeição e reprocessamento controlado;
-- `C.3.6` — checkpoint e gate para C.4.
+- C.2 entrega `IngestionHandoffEvidence` read-only e o artefato temporário íntegro; não executa
+  extração;
+- C.3 mantém contrato e lifecycle próprios, com `EXTRACTION_CONTRACT_VERSION` independente;
+- a autorização `purpose=extraction` é revalidada no tempo corrente antes de claim,
+  leitura/retomada do artefato e finalização;
+- `service_role` é somente canal técnico e nunca autoridade de negócio;
+- C.3 registra texto, ordem, páginas, marcadores e relações físicas observadas;
+- C.4 cria chunks/segmentos, confirma hierarquia editorial e aplica classificação pedagógica,
+  curricular ou semântica.
 
-### Gate de saída
+### Sublotes delimitados
 
-- conteúdo extraído sempre aponta para fonte, versão e execução;
-- extração nativa é o caminho padrão para PDFs com camada textual utilizável;
-- OCR é fallback por página ou elemento, somente diante de ausência, corrupção ou insuficiência
-  comprovada da camada textual, com motivo e cobertura registrados;
-- qualidade mínima e exceções estão mensuradas;
-- erro ou baixa confiança não avança silenciosamente;
-- OCR industrial, multimodalidade completa e processamento massivo continuam fora do piloto;
-- imagens, mapas e infográficos são persistidos como descrições semânticas; tabelas e gráficos
-  quantitativos, como dados estruturados e descrições;
-- saídas brutas, PDFs, renderizações, recortes e coordenadas em pixels são descartados após a
-  validação, com recibo auditável.
+| Sublote | Escopo documental delimitado | Gate mínimo |
+|---|---|---|
+| C.3.1 | contratos, lifecycle, proveniência, vocabulário de qualidade e fixtures sintéticas | símbolos provider-neutral e incompatibilidades falham fechado |
+| C.3.2 | control plane persistente, autorização temporal, receipts, events, CAS, RLS e grants | schema descartável prova atomicidade e deny-by-default |
+| C.3.3 | porta estreita de leitura do artefato e adapter de extração textual nativa | PDF sintético, sem conteúdo real nem OCR |
+| C.3.4 | persistência incremental de páginas, elementos observados, cobertura e proveniência | reconciliação completa e retomada idempotente |
+| C.3.5 | métricas, policy de qualidade, revisão humana, aceitação, rejeição e reprocessamento | baixa qualidade nunca avança silenciosamente |
+| C.3.6 | retries, recovery, concorrência, cancelamento e cleanup | efeitos únicos sob replay e corridas |
+| C.3.7 | decisão governada de fallback OCR e exceções visuais | contrato e gate; nenhum provedor OCR no baseline |
+| C.3.8 | prova integrada, negativos de segurança, handoff read-only para C.4 e fechamento | evidência E2E sintética e checkpoint separado |
+
+### Lifecycle candidato a ser cristalizado em C.3.1
+
+`REQUESTED → READY → EXTRACTING → VALIDATING → PENDING_REVIEW → VALIDATED_FOR_SEGMENTATION`.
+
+Saídas controladas: `REQUIRES_ALTERNATE_EXTRACTION`, `BLOCKED_AUTHORIZATION`, `REJECTED`,
+`FAILED` e `CANCELLED`. Não existe estado durável `AUTHORIZED`: autorização é temporal,
+revogável e verificada no instante do efeito.
+
+### Gate de saída do lote
+
+- cada resultado aponta para fonte, versão, run de ingestão, handoff e run de extração;
+- cobertura concilia páginas/elementos esperados, extraídos, rejeitados, pendentes e descartados;
+- texto nativo é o baseline e OCR permanece exceção governada posterior;
+- erros, autorização inválida, baixa qualidade ou cobertura incompleta falham fechado;
+- imagens recebem apenas marcador, tipo observado, localizador e proveniência no baseline;
+- tabelas preservam relações físicas observadas quando suportadas, sem interpretação pedagógica;
+- C.4 recebe snapshot read-only versionado e não muta C.3;
+- bytes, renderizações e saídas transitórias obedecem retenção e cleanup auditáveis;
+- nenhuma saída de C.3 é automaticamente curricularmente correta, autoral, publicável ou elegível
+  para retrieval.
 
 ## 8. Lote C.4 — Segmentação e classificação estrutural
 
@@ -576,9 +607,10 @@ formaliza o estado pós-C.2.5.
 `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde. O Checkpoint 050
 formaliza o fechamento canônico de C.2 e registra a corrida concorrente do PR nº 92.
 
-O próximo lote na sequência canônica é **C.3 — extração e validação do conteúdo extraído**. Ele
-permanece bloqueado e somente poderá ser aberto em contexto próprio, após reconfirmação canônica,
-Definition of Ready, definição contract-first e nova autorização humana específica.
+Este Draft PR propõe a definição canônica futura de **C.3 — extração e validação do conteúdo
+extraído** e delimita C.3.1–C.3.8. A execução técnica permanece bloqueada. Depois de integração
+humana e checkpoint próprio, apenas C.3.1 poderá ser considerado, mediante reconfirmação canônica,
+Definition of Ready e nova autorização humana específica.
 
-O fechamento de C.2 não autoriza conteúdo real, PNLD real, PDF/livro real, Storage hospedado,
-Supabase hospedado, wiring, produção ou execução de C.3.
+A definição documental não autoriza código, migration, parser, OCR, conteúdo real, PNLD real,
+PDF/livro real, Storage hospedado, Supabase hospedado, wiring, produção ou execução de C.3.
