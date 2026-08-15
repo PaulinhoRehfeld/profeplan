@@ -85,7 +85,10 @@ const saveTermPlanGoverned = async (plan: TermPlan, userId: string): Promise<Ter
 
   const receipt = (data || {}) as GovernedTermPlanSaveResponse;
   if (receipt.saved !== true) {
-    if (receipt.reason === 'INSUFFICIENT_CREDITS' || receipt.original_reason === 'INSUFFICIENT_CREDITS') {
+    if (
+      receipt.reason === 'INSUFFICIENT_CREDITS' ||
+      receipt.original_reason === 'INSUFFICIENT_CREDITS'
+    ) {
       throw new Error(
         `Créditos insuficientes para salvar este planejamento. Seu trabalho foi preservado como rascunho local.`
       );
