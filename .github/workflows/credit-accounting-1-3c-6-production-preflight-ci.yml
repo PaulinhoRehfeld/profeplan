@@ -24,6 +24,7 @@ on:
       - 'supabase/tests/credit_positive_producer_rollback_rehearsal.sql'
       - 'supabase/tests/credit_positive_producer_reapply_rehearsal.sql'
       - 'supabase/tests/credit_positive_producer_integrated_smoke.sql'
+      - 'supabase/tests/credit_legacy_balance_post_rehearsal_preservation.sql'
       - 'supabase/tests/fixtures/credit_cutover_hosted_admin_helpers.sql'
       - 'supabase/tests/fixtures/credit_cutover_integrated_pdi_baseline.sql'
       - 'docs/commercial/LOT-1.3C.6-PRODUCTION-CUTOVER-PREFLIGHT.md'
@@ -274,13 +275,15 @@ jobs:
           set -euo pipefail
           psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
             -v cutover_id="$CUTOVER_ID" \
-            -v cutover_at="$CUTOVER_AT" \
             -v expected_finite_count="$FINITE_COUNT" \
             -v expected_finite_sum="$FINITE_SUM" \
             -v expected_finite_hash="$FINITE_HASH" \
             -v expected_unlimited_count="$UNLIMITED_COUNT" \
             -v expected_unlimited_hash="$UNLIMITED_HASH" \
-            -f scripts/sql/credit_legacy_balance_production_import.sql >/dev/null
+            -f supabase/tests/credit_legacy_balance_post_rehearsal_preservation.sql \
+            | tee credit-legacy-post-rehearsal-preservation.log
+          grep -q 'OK:credit_legacy_balance_post_rehearsal_preservation_1_3C_6' \
+            credit-legacy-post-rehearsal-preservation.log
 
       - name: Lint disposable database
         shell: bash
