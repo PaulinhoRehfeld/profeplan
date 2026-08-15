@@ -111,7 +111,10 @@ describe('PresentationService - governed consumer save', () => {
       });
 
     await savePresentation('user-4c', presentation);
-    await savePresentation('user-4c', { ...presentation, title: 'Sociologia e desigualdade — revisada' });
+    await savePresentation('user-4c', {
+      ...presentation,
+      title: 'Sociologia e desigualdade — revisada',
+    });
 
     expect(mocks.rpc).toHaveBeenCalledTimes(2);
     expect(mocks.rpc.mock.calls[0][1].p_artifact_id).toBe(presentation.artifactId);

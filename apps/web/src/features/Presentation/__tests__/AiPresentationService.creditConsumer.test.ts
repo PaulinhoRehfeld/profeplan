@@ -62,14 +62,7 @@ describe('AiPresentationService - governed consumer generation', () => {
   });
 
   it('preserva check e incremento legado com a flag OFF', async () => {
-    const result = await generatePresentationJSON(
-      'Sociologia',
-      '',
-      8,
-      'Moderno',
-      true,
-      'user-4c'
-    );
+    const result = await generatePresentationJSON('Sociologia', '', 8, 'Moderno', true, 'user-4c');
 
     expect(mocks.checkUsageQuota).toHaveBeenCalledWith('user-4c');
     expect(mocks.incrementUserUsage).toHaveBeenCalledWith('user-4c', 'generate');
@@ -80,14 +73,7 @@ describe('AiPresentationService - governed consumer generation', () => {
   it('trata geração como NON_BILLABLE com a flag ON e ainda cria identidade estável', async () => {
     vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'true');
 
-    const result = await generatePresentationJSON(
-      'Sociologia',
-      '',
-      8,
-      'Moderno',
-      true,
-      'user-4c'
-    );
+    const result = await generatePresentationJSON('Sociologia', '', 8, 'Moderno', true, 'user-4c');
 
     expect(mocks.create).toHaveBeenCalledTimes(1);
     expect(mocks.checkUsageQuota).not.toHaveBeenCalled();

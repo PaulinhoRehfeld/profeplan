@@ -62,13 +62,7 @@ export const savePresentation = async (userId: string, presentation: Presentatio
   const contentMarkdown = presentationToMarkdown(presentation);
 
   if (!isGovernedCreditConsumerEnabled()) {
-    await saveLessonToMemory(
-      userId,
-      presentation.title,
-      contentMarkdown,
-      presentation,
-      undefined
-    );
+    await saveLessonToMemory(userId, presentation.title, contentMarkdown, presentation, undefined);
     await saveGeneratedContent(
       userId,
       'apresentacao',
