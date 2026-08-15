@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Accessibility,
   BookOpen,
@@ -23,6 +23,8 @@ import {
 import { ToolMode, UserRole, UserProfile } from '../types';
 import { isAdmin } from '../services/ProfileService';
 import { isHardcodedAdmin } from '../constants';
+import { isGovernedCreditConsumerEnabled } from '../services/credits/creditConsumerFlags';
+import { getMyGovernedCreditBalance } from '../services/credits/creditBalance';
 import { IconButton } from './ui';
 
 interface SidebarProps {
@@ -91,6 +93,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
 }) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const governedConsumers = isGovernedCreditConsumerEnabled();
+  const [governedBalance, setGovernedBalance] = useState<number | null>(null);
+  const [governedBalanceUnavailable, setGovernedBalanceUnavailable] = useState(false);
 
   const isAdminOrManager =
     isHardcodedAdmin(userProfile?.email) ||
@@ -121,6 +126,43 @@ const Sidebar: React.FC<SidebarProps> = ({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!governedConsumers || !userProfile?.id) {
+      setGovernedBalance(null);
+      setGovernedBalanceUnavailable(false);
+      return undefined;
+    }
+
+    let active = true;
+    setGovernedBalanceUnavailable(false);
+    getMyGovernedCreditBalance()
+      .then((balance) => {
+        if (active) setGovernedBalance(balance.total);
+      })
+      .catch((error) => {
+        console.warn('[Sidebar] Falha ao carregar saldo governado:', error);
+        if (active) {
+          setGovernedBalance(null);
+          setGovernedBalanceUnavailable(true);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [governedConsumers, userProfile?.id]);
+
+  const isUnlimited = userProfile?.tier === 'GOLD' || userProfile?.is_unlimited;
+  const creditLabel = isUnlimited
+    ? 'Plano Gold'
+    : governedConsumers
+      ? governedBalanceUnavailable
+        ? 'Saldo indisponível'
+        : governedBalance === null
+          ? 'Carregando saldo...'
+          : `${governedBalance} créditos`
+      : `${userProfile?.credits || 0} créditos`;
 
   const handleModeSelection = (mode: ToolMode) => {
     setActiveMode(mode);
@@ -236,19 +278,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             type="button"
             onClick={onOpenSubscription}
             className="ui-focus-ring mb-2 flex min-h-11 w-full items-center gap-3 rounded-lg border border-slate-700 px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800"
-            aria-label={
-              userProfile?.tier === 'GOLD' || userProfile?.is_unlimited
-                ? 'Plano Gold ilimitado. Gerenciar plano'
-                : `${userProfile?.credits || 0} créditos. Gerenciar plano`
-            }
+            aria-label={isUnlimited ? 'Plano Gold ilimitado. Gerenciar plano' : `${creditLabel}. Gerenciar plano`}
           >
             <Crown aria-hidden="true" className="h-5 w-5 shrink-0 text-amber-400" />
             <span className={`min-w-0 ${isDesktopExpanded ? 'lg:block' : 'lg:hidden'}`}>
-              <span className="block font-semibold text-white">
-                {userProfile?.tier === 'GOLD' || userProfile?.is_unlimited
-                  ? 'Plano Gold'
-                  : `${userProfile?.credits || 0} créditos`}
-              </span>
+              <span className="block font-semibold text-white">{creditLabel}</span>
               <span className="block text-xs text-slate-400">Gerenciar plano</span>
             </span>
           </button>
