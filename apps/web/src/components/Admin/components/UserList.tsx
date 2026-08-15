@@ -109,9 +109,7 @@ export const UserList: React.FC<UserListProps> = ({
                 </td>
                 <td className="px-3 md:px-6 py-4 font-mono font-bold text-slate-600">
                   {governed ? (
-                    <span className="font-sans text-xs font-semibold text-indigo-700">
-                      Ledger governado
-                    </span>
+                    <span className="font-sans text-xs font-semibold text-indigo-700">Ledger governado</span>
                   ) : editingUser?.id === user.id ? (
                     <input
                       type="number"
@@ -135,9 +133,7 @@ export const UserList: React.FC<UserListProps> = ({
                   {editingUser?.id === user.id ? (
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() =>
-                          onUpdateUser(user.id, buildProfileUpdate(editingUser))
-                        }
+                        onClick={() => onUpdateUser(user.id, buildProfileUpdate(editingUser))}
                         className="p-1.5 bg-green-100 text-green-700 rounded hover:bg-green-200"
                       >
                         <Check size={16} />
