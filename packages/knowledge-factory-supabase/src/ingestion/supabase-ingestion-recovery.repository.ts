@@ -83,7 +83,10 @@ export class SupabaseIngestionRecoveryRepository implements IngestionRecoveryRep
   private readonly context: SupabaseSystemContext;
   private readonly logger: PersistenceLogger;
 
-  constructor(context: SupabaseSystemContext, logger: PersistenceLogger = NOOP_PERSISTENCE_LOGGER) {
+  constructor(
+    context: SupabaseSystemContext,
+    logger: PersistenceLogger = NOOP_PERSISTENCE_LOGGER
+  ) {
     this.context = context;
     this.logger = logger;
   }
