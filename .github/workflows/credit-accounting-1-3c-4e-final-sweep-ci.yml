@@ -48,17 +48,17 @@ jobs:
 
       - name: Prove TermPlan coordinated cutover
         run: >-
-          pnpm --filter profeplan-engenharia-pedagogica-v4.0 test --
+          pnpm --filter profeplan-engenharia-pedagogica-v4.0 exec vitest run
           src/features/TermPlanning/__tests__/TermPlanningService.test.ts
           src/services/__tests__/databaseService.creditPilot.test.ts
 
       - name: Prove governed balance projection
         run: >-
-          pnpm --filter profeplan-engenharia-pedagogica-v4.0 test --
+          pnpm --filter profeplan-engenharia-pedagogica-v4.0 exec vitest run
           src/services/__tests__/creditBalance.creditConsumer.test.ts
 
       - name: Prove admin signup producer convergence
         run: >-
-          pnpm --filter profeplan-engenharia-pedagogica-v4.0 test --
+          pnpm --filter profeplan-engenharia-pedagogica-v4.0 exec vitest run
           src/components/Admin/components/__tests__/CreateUserModal.creditProducer.test.tsx
           src/components/Admin/components/__tests__/AddCreditsModal.creditProducer.test.tsx
