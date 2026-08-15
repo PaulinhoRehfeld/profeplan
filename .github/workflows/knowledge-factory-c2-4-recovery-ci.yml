@@ -14,7 +14,6 @@ on:
       - 'packages/knowledge-factory/src/repositories/ingestion.repository.ts'
       - 'packages/knowledge-factory/src/repositories/index.ts'
       - 'packages/knowledge-factory/src/staging/staging-recovery.port.ts'
-      - 'packages/knowledge-factory/src/staging/staging.port.ts'
       - 'packages/knowledge-factory/src/index.ts'
       - 'packages/knowledge-factory/test/ingestion-recovery.test.mjs'
       - 'packages/knowledge-factory-supabase/src/ingestion/**'
@@ -69,7 +68,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
-      - name: Prepare disposable Knowledge Factory schema through C.2.4
+      - name: Prepare disposable Knowledge Factory baseline through C.1.2
         shell: bash
         run: |
           set -euo pipefail
@@ -85,8 +84,6 @@ jobs:
               supabase/migrations/202608071120_knowledge_factory_schema.sql
             cp ../supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
               supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql
-            cp ../supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql \
-              supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql
           )
           {
             echo "Knowledge Factory C.2.4 disposable recovery validation"
@@ -108,11 +105,11 @@ jobs:
           ) >"$START_LOG" 2>&1; then
             LINES="$(wc -l < "$START_LOG")"
             rm -f "$START_LOG"
-            echo "Disposable Supabase stack failed to start; raw output suppressed."
+            echo "Disposable Supabase baseline failed to start; raw output suppressed."
             echo "Captured diagnostic lines: $LINES"
             exit 1
           fi
-          echo "Disposable Supabase C.2.4 stack started; generated credentials omitted." \
+          echo "Disposable Supabase baseline started; generated credentials omitted." \
             | tee -a "$KF_EVIDENCE"
           rm -f "$START_LOG"
 
@@ -142,6 +139,14 @@ jobs:
             echo "KF_SUPABASE_ANON_KEY=$KF_SUPABASE_ANON_KEY"
           } >> "$GITHUB_ENV"
           rm -f "$STATUS_ENV"
+
+      - name: Apply C.2.4 migration explicitly
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Typecheck C.2.4 boundaries
         shell: bash
