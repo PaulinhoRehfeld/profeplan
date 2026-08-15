@@ -188,8 +188,7 @@ jobs:
           test -n "$DRIFT_ID"
 
           psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
-            -v drift_id="$DRIFT_ID" \
-            -c "UPDATE public.profiles SET credits=credits+1 WHERE id=:'drift_id'::uuid;" >/dev/null
+            -c "UPDATE public.profiles SET credits=credits+1 WHERE id='$DRIFT_ID'::uuid;" >/dev/null
 
           set +e
           run_import >credit-legacy-drift-guard.log 2>&1
@@ -202,8 +201,7 @@ jobs:
           fi
 
           psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
-            -v drift_id="$DRIFT_ID" \
-            -c "UPDATE public.profiles SET credits=credits-1 WHERE id=:'drift_id'::uuid;" >/dev/null
+            -c "UPDATE public.profiles SET credits=credits-1 WHERE id='$DRIFT_ID'::uuid;" >/dev/null
 
           run_import >/dev/null
           echo "Production-shaped LEGACY_BALANCE import is replay-safe and drift-fail-closed."
