@@ -41,7 +41,7 @@ const walk = (dir) => {
 // ---------------------------------------------------------------------------
 requireRegex(
   'apps/web/src/services/credits/quota.ts',
-  /checkUsageQuota[\s\S]*?isGovernedCreditConsumerEnabled\(\)[\s\S]*?return true/,
+  /checkUsageQuota[\s\S]*?isGovernedCreditConsumerEnabled\(\)[\s\S]*?return\s*\{\s*allowed:\s*true\s*\}/,
   'governed quota check bypasses profiles.credits'
 );
 requireRegex(
@@ -143,10 +143,9 @@ requireText(
 // inside the legacy compatibility helper. This does not ban legacy fallback
 // code; it bans a second independent debit authority in active runtime code.
 // ---------------------------------------------------------------------------
-const activeFiles = [
-  ...walk('apps/web/src'),
-  ...walk('api'),
-].filter((path) => /\.(?:ts|tsx)$/.test(path) && !path.includes('/__tests__/'));
+const activeFiles = [...walk('apps/web/src'), ...walk('api')].filter(
+  (path) => /\.(?:ts|tsx)$/.test(path) && !path.includes('/__tests__/')
+);
 
 const decrementPattern = /credits\s*:\s*Math\.max\(0\s*,[^\n;]*credits[^\n;]*-\s*1\)/g;
 const directDecrements = [];
