@@ -1,0 +1,292 @@
+name: Knowledge Factory C.2.6 Closure CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/knowledge-factory-c2-6-closure-ci.yml'
+      - 'packages/types/src/knowledge-factory/**'
+      - 'packages/knowledge-factory/src/**'
+      - 'packages/knowledge-factory/test/**'
+      - 'packages/knowledge-factory-supabase/src/ingestion/**'
+      - 'packages/knowledge-factory-supabase/src/staging/**'
+      - 'packages/knowledge-factory-supabase/test/ingestion*'
+      - 'packages/knowledge-factory-supabase/test/staging*'
+      - 'packages/knowledge-factory-supabase/test/integrity*'
+      - 'supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql'
+      - 'supabase/migrations/202608151600_kf_ingestion_human_review_handoff.sql'
+      - 'supabase/tests/knowledge_factory_ingestion_c2_*'
+      - 'docs/profeplan-knowledge-factory/12-delivery/LOT-C2*'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prove-c2-closure:
+    name: Prove integrated C.2 closure on disposable Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    env:
+      KF_DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      KF_WORKDIR: .kf-c2-6-supabase-ci
+      KF_EVIDENCE: .kf-evidence/knowledge-factory-c2-6-closure-validation.log
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Prepare disposable Knowledge Factory baseline through C.1.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$KF_WORKDIR" .kf-evidence
+          mkdir -p "$KF_WORKDIR" .kf-evidence
+          (
+            cd "$KF_WORKDIR"
+            supabase init --force
+            mkdir -p supabase/migrations
+            cp ../supabase/tests/fixtures/knowledge_factory_minimal_baseline.sql \
+              supabase/migrations/202608071100_kf_test_baseline.sql
+            cp ../supabase/migrations/202608071120_knowledge_factory_schema.sql \
+              supabase/migrations/202608071120_knowledge_factory_schema.sql
+            cp ../supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
+              supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql
+          )
+          {
+            echo "Knowledge Factory C.2.6 integrated closure validation"
+            echo "UTC start: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Commit: $GITHUB_SHA"
+            echo "Supabase CLI: $(supabase --version)"
+            echo "Docker: $(docker --version)"
+            echo "PostgreSQL client: $(psql --version)"
+          } | tee "$KF_EVIDENCE"
+
+      - name: Start disposable Supabase with Storage enabled
+        shell: bash
+        run: |
+          set -euo pipefail
+          START_LOG="$(mktemp)"
+          if ! (
+            cd "$KF_WORKDIR"
+            supabase start -x studio,imgproxy,realtime,edge-runtime,logflare,vector,supavisor
+          ) >"$START_LOG" 2>&1; then
+            LINES="$(wc -l < "$START_LOG")"
+            rm -f "$START_LOG"
+            echo "Disposable Supabase baseline failed to start; raw output suppressed."
+            echo "Captured diagnostic lines: $LINES"
+            exit 1
+          fi
+          echo "Disposable Supabase baseline started; generated credentials omitted." \
+            | tee -a "$KF_EVIDENCE"
+          rm -f "$START_LOG"
+
+      - name: Capture disposable credentials safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_ENV="$(mktemp)"
+          (cd "$KF_WORKDIR" && supabase status -o env) > "$STATUS_ENV"
+          read_local_value() {
+            local name="$1"
+            sed -n "s/^${name}=//p" "$STATUS_ENV" | head -n 1 | sed 's/^"//;s/"$//'
+          }
+          KF_SUPABASE_URL="$(read_local_value API_URL)"
+          KF_SUPABASE_SERVICE_ROLE_KEY="$(read_local_value SERVICE_ROLE_KEY)"
+          KF_SUPABASE_ANON_KEY="$(read_local_value ANON_KEY)"
+          if [ -z "$KF_SUPABASE_URL" ] || [ -z "$KF_SUPABASE_SERVICE_ROLE_KEY" ] || [ -z "$KF_SUPABASE_ANON_KEY" ]; then
+            rm -f "$STATUS_ENV"
+            echo "Disposable Supabase credentials could not be resolved."
+            exit 1
+          fi
+          echo "::add-mask::$KF_SUPABASE_SERVICE_ROLE_KEY"
+          echo "::add-mask::$KF_SUPABASE_ANON_KEY"
+          {
+            echo "KF_SUPABASE_URL=$KF_SUPABASE_URL"
+            echo "KF_SUPABASE_SERVICE_ROLE_KEY=$KF_SUPABASE_SERVICE_ROLE_KEY"
+            echo "KF_SUPABASE_ANON_KEY=$KF_SUPABASE_ANON_KEY"
+          } >> "$GITHUB_ENV"
+          rm -f "$STATUS_ENV"
+
+      - name: Prove C.2.1 contracts remain provider-neutral and version-stable
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --filter @profeplan/types typecheck 2>&1 | tee -a "$KF_EVIDENCE"
+          pnpm --filter @profeplan/knowledge-factory typecheck 2>&1 | tee -a "$KF_EVIDENCE"
+          pnpm --filter @profeplan/knowledge-factory-supabase typecheck 2>&1 | tee -a "$KF_EVIDENCE"
+          grep -F "export const INGESTION_CONTRACT_VERSION = '1.0.0' as const;" \
+            packages/types/src/knowledge-factory/ingestion.ts >/dev/null
+          if grep -REn \
+            'SupabaseClient|signedUrl|signedURL|bucketName|SQLSTATE' \
+            packages/types/src/knowledge-factory/ingestion*.ts; then
+            echo "Provider detail leaked into shared ingestion contracts."
+            exit 1
+          fi
+          echo "C.2.1 contract version and provider-neutrality preserved." | tee -a "$KF_EVIDENCE"
+
+      - name: Prove C.2.1-C.2.5 domain and adapter regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --experimental-strip-types --test \
+            packages/knowledge-factory/test/ingestion.test.mjs \
+            packages/knowledge-factory/test/staging.test.mjs \
+            packages/knowledge-factory/test/integrity.test.mjs \
+            packages/knowledge-factory/test/ingestion-recovery.test.mjs \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          node --experimental-transform-types --test \
+            packages/knowledge-factory-supabase/test/staging.repository.test.mjs \
+            packages/knowledge-factory-supabase/test/integrity.repository.test.mjs \
+            packages/knowledge-factory-supabase/test/ingestion-command.repository.test.mjs \
+            packages/knowledge-factory-supabase/test/ingestion-recovery.repository.test.mjs \
+            packages/knowledge-factory-supabase/test/ingestion-handoff.repository.test.mjs \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Prove C.2.2-C.2.4 physical Storage boundaries
+        env:
+          KF_C2_4_STORAGE_INTEGRATION: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --experimental-transform-types --test --test-concurrency=1 \
+            packages/knowledge-factory-supabase/test/staging.c2-2.integration.test.mjs \
+            packages/knowledge-factory-supabase/test/integrity.c2-3.integration.test.mjs \
+            packages/knowledge-factory-supabase/test/ingestion.c2-4.integration.test.mjs \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Apply C.1 command authority and C.2.4 durable boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Reprove C.2.4 durable recovery before human-review extension
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_ingestion_c2_4.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_ingestion_c2_4_atomicity.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          bash supabase/tests/knowledge_factory_ingestion_c2_4_concurrency.sh \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Apply C.2.5 review and handoff boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608151600_kf_ingestion_human_review_handoff.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Reprove C.2.5 human authority, rollback and concurrency
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_ingestion_c2_5.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_ingestion_c2_5_atomicity.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          bash supabase/tests/knowledge_factory_ingestion_c2_5_concurrency.sh \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Seed independent synthetic C.2.6 authority fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_ingestion_c2_6_seed.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Prove one correlated C.2 end-to-end flow with real disposable adapters
+        env:
+          KF_C2_6_E2E: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --experimental-transform-types --test --test-concurrency=1 \
+            packages/knowledge-factory-supabase/test/ingestion.c2-6.e2e.integration.test.mjs \
+            2>&1 | tee -a "$KF_EVIDENCE"
+
+      - name: Assert C.2 closure postconditions and no C.3 execution surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/tests/knowledge_factory_ingestion_c2_6_postconditions.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          if grep -REn \
+            'startExtraction|executeExtraction|enqueueExtraction|publishExtractionJob|createExtractionJob' \
+            packages/types/src/knowledge-factory \
+            packages/knowledge-factory/src \
+            packages/knowledge-factory-supabase/src/ingestion \
+            supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql \
+            supabase/migrations/202608151600_kf_ingestion_human_review_handoff.sql; then
+            echo "C.3 execution surface leaked into C.2."
+            exit 1
+          fi
+          echo "C.2 closes on persisted eligibility evidence only; C.3 remains blocked." \
+            | tee -a "$KF_EVIDENCE"
+
+      - name: Finalize evidence
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "UTC finish: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Workflow: $GITHUB_WORKFLOW"
+            echo "Run ID: $GITHUB_RUN_ID"
+          } >> "$KF_EVIDENCE"
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knowledge-factory-c2-6-closure-validation-${{ github.run_id }}
+          path: .kf-evidence/knowledge-factory-c2-6-closure-validation.log
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$KF_WORKDIR/supabase/config.toml" ]; then
+            (cd "$KF_WORKDIR" && supabase stop --no-backup || true)
+          fi
