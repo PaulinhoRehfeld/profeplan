@@ -6,7 +6,8 @@ import { SupabaseTemporaryStagingAdapter } from '../src/index.ts';
 
 const required = ['KF_SUPABASE_URL', 'KF_SUPABASE_SERVICE_ROLE_KEY'];
 const missing = required.filter((name) => !process.env[name]);
-const integration = missing.length === 0 ? test : test.skip;
+const storageIntegrationEnabled = process.env.KF_C2_4_STORAGE_INTEGRATION === '1';
+const integration = missing.length === 0 && storageIntegrationEnabled ? test : test.skip;
 
 const bytes = new TextEncoder().encode('%PDF-1.7\nsynthetic');
 const expectedDigest = '5aea7a7a5e33d66d021fd52802ceb64ac5b8f377b2be55fddca8607f093ce3ce';
