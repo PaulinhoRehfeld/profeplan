@@ -1,1 +1,1 @@
-docs/profeplan-knowledge-factory/BLUEPRINT.md: expected exactly one match, found 0: '**Definição documental integrada pelo PR nº 59. C.2.1 integrado e revalidado pelo PR nº 62. C.2.2 integrado e revalidado'
+docs/profeplan-knowledge-factory/BLUEPRINT.md: expected exactly one match, found 0: 'a fronteira integrada de C.2.3 está em\n[`LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](LOT-C2-3-INTEGRITY-CHECK'
