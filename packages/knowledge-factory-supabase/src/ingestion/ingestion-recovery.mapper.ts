@@ -44,11 +44,11 @@ function isEntityId(value: unknown): value is EntityId {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-function parseRef(
+function parseRef<K extends 'processing_run' | 'source_version' | 'received_file'>(
   value: unknown,
-  kind: 'processing_run' | 'source_version' | 'received_file',
+  kind: K,
   operation: string
-): { readonly kind: typeof kind; readonly id: EntityId } {
+): { readonly kind: K; readonly id: EntityId } {
   if (!isRecord(value) || value.kind !== kind || !isEntityId(value.id)) {
     throw invalidPersistenceResponse(operation);
   }
