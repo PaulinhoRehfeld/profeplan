@@ -1,8 +1,10 @@
 # Lote 1.3C.4 — Mapa de convergência dos consumidores de créditos
 
-Data: 14 de agosto de 2026.
+Data: 15 de agosto de 2026.
 
-Base canônica da inspeção: `3ded0a583a7b02361f04adcc39faf6515602c888`.
+Base canônica da inspeção original: `3ded0a583a7b02361f04adcc39faf6515602c888`.
+
+Estado canônico reconciliado após 4D: `f1629934941b682051bb55910da5e40cca21ba04`.
 
 ## 1. Objetivo
 
@@ -16,7 +18,7 @@ Edição/retry do mesmo artefato não gera nova cobrança.
 
 ### NON_BILLABLE
 
-Os serviços abaixo ainda executavam check/debito legado durante geração, embora 1.3A os classifique como NON_BILLABLE:
+A inspeção original encontrou serviços que ainda executavam check/débito legado durante geração, embora 1.3A os classifique como NON_BILLABLE:
 
 - `AiChatService` — chat geral;
 - `AiPlanningService` — geração/chat de planejamento;
@@ -24,7 +26,7 @@ Os serviços abaixo ainda executavam check/debito legado durante geração, embo
 - `AiPresentationService` — geração de apresentação;
 - `AiPdiService` — geração/preview de adaptações e relatórios.
 
-Todos passam pelo par legado:
+Todos passavam pelo par legado:
 
 ```text
 checkUsageQuota()
@@ -39,35 +41,33 @@ VITE_GOVERNED_CREDIT_CONSUMERS=true
 
 Quando OFF, a compatibilidade antiga permanece.
 
-Quando ON, `checkUsageQuota()` deixa de bloquear geração por `profiles.credits` e `incrementUserUsage()` deixa de executar read-modify-write no inteiro legado. A flag **não pode ser ativada antes de 1.3C.4E**, quando todos os Saves billable estiverem migrados.
+Quando ON, `checkUsageQuota()` deixa de bloquear geração por `profiles.credits` e `incrementUserUsage()` deixa de executar read-modify-write no inteiro legado. A flag **não pode ser ativada antes de 1.3C.4E**, quando a varredura final provar que todos os consumidores ativos estão reconciliados.
 
 ## 3. Saves BILLABLE e persistência canônica
 
-### Planejamento/documentos
+### Planejamento/documentos — 4A integrado
 
 `PlanningService.savePlan()` persiste em `generated_contents`.
 
-O objeto `GeneratedPlan` já possui `id` local, mas o fluxo antigo descartava esse ID na nuvem e deixava o banco gerar outro.
+O objeto `GeneratedPlan` já possuía `id` local, mas o fluxo antigo descartava esse ID na nuvem e deixava o banco gerar outro.
 
-1.3C.4A transforma o `GeneratedPlan.id` em identidade canônica do Save governado.
+1.3C.4A tornou `GeneratedPlan.id` a identidade canônica do Save governado por `credit_save_generated_content(...)`.
 
-### Avaliação
+### Avaliação — 4B integrado
 
-`AssessmentService.saveAssessment()` já possui `assessment.id` estável e persiste `generated_contents` + memória auxiliar em `lessons`.
+`AssessmentService.saveAssessment()` usa `assessment.id` como identidade canônica no RPC governado.
 
-Será conectado à mesma fronteira genérica em 1.3C.4B.
+`generated_contents` é a persistência econômica canônica e `lessons` permanece memória auxiliar/best-effort depois do Save confirmado.
 
-### Apresentação
+### Apresentação — 4C integrado
 
-`PresentationCreator` persiste `generated_contents` e `lessons`, mas não possui hoje uma identidade de artefato estável antes do primeiro Save.
+Presentation passou a criar `artifactId` estável depois da geração válida e antes do primeiro Save.
 
-1.3C.4C deverá introduzir `artifactId` persistente no estado da tela antes de ligar o Save ao RPC governado.
+Esse ID é reutilizado em retry/edição e se torna `p_artifact_id`/`generated_contents.id` no caminho governado. A memória auxiliar em `lessons` permanece pós-commit e best-effort.
 
-### PDI
+### PDI — 4D integrado
 
-PDI não cabe na fronteira genérica sem perder semântica.
-
-A validação pode envolver:
+PDI usa fronteiras especializadas porque uma única validação semântica pode envolver atomicamente:
 
 ```text
 pdi_records
@@ -75,9 +75,13 @@ pdi_documents.block_9_content
 generated_contents
 ```
 
-O relatório PDI também possui persistência própria.
+1.3C.4D integrou:
 
-1.3C.4D terá fronteiras especializadas para garantir atomicidade do evento pedagógico completo, não apenas de uma linha em `generated_contents`.
+- `credit_validate_pdi_adaptation(...)`;
+- `credit_save_pdi_generated_report(...)`;
+- `credit_save_pdi_final_report(...)`.
+
+A adaptação usa UUID local estável como identidade econômica; o relatório pedagógico mantém identidade estável em retry; e o relatório final deriva server-side `pdi-final-report-v1:<pdi_document_id>`.
 
 ## 4. Finding de schema — `generated_contents`
 
@@ -101,7 +105,7 @@ Conclusão:
 
 > o `artifact_id` precisa ser estável no cliente/estado e tornar-se o próprio `generated_contents.id`; título ou conteúdo não podem substituir identidade.
 
-Snapshot agregado auditado:
+Snapshot agregado auditado na inspeção original:
 
 ```text
 plano / PLANOS DE AULA = 26
@@ -111,52 +115,60 @@ adaptacao_pdi = 4
 
 Nenhum dado pessoal foi materializado na auditoria.
 
-## 5. Divisão de implementação
+## 5. Estado de implementação
 
-### 1.3C.4A — generated content + Planning
+### 1.3C.4A — generated content + Planning — INTEGRADO
 
-- criar fronteira genérica `credit_save_generated_content(...)`;
+- fronteira genérica `credit_save_generated_content(...)`;
 - primeiro Save = até 1 crédito;
 - retry/edição do mesmo artifact id = 0;
 - insuficiência = nenhum artefato;
 - Gold = NO_CHARGE;
-- migrar `PlanningService.savePlan()`;
-- tornar geração/chat non-billable por compatibilidade central sob flag.
+- `PlanningService.savePlan()` migrado;
+- geração/chat tornam-se non-billable sob a flag governada.
 
-### 1.3C.4B — Assessment
+### 1.3C.4B — Assessment — INTEGRADO
 
-- usar `assessment.id` como identidade canônica;
-- conectar Save ao RPC genérico;
-- preservar `lessons` como memória auxiliar;
-- provar primeiro Save versus edição/retry.
+- `assessment.id` é a identidade canônica;
+- Save usa o RPC genérico;
+- `lessons` permanece memória auxiliar;
+- primeiro Save versus edição/retry foi provado.
 
-### 1.3C.4C — Presentation
+### 1.3C.4C — Presentation — INTEGRADO
 
-- introduzir `artifactId` estável antes do primeiro Save;
-- conectar “Salvar na Memória” ao RPC genérico;
-- preservar memória auxiliar.
+- `artifactId` estável criado antes do primeiro Save;
+- “Salvar na Memória” conectado ao RPC genérico;
+- memória auxiliar preservada após commit econômico.
 
-### 1.3C.4D — PDI
+### 1.3C.4D — PDI — INTEGRADO
 
-- criar RPCs especializados;
-- validar adaptação + persistências correlatas de modo governado;
-- governar Save do relatório PDI;
-- provar que edição do mesmo artefato não cobra novamente.
+- RPCs especializados integrados;
+- adaptação e persistências correlatas são governadas atomicamente;
+- Saves dos relatórios PDI são governados;
+- idempotência, insuficiência, Gold, ownership, rollback e concorrência foram provados em Supabase descartável;
+- PR #85 integrado no squash `f1629934941b682051bb55910da5e40cca21ba04`;
+- CI pós-merge #533 — SUCCESS.
 
-### 1.3C.4E — varredura final
+### 1.3C.4E — varredura final — BLOQUEADO / NÃO INICIADO
 
-- provar que nenhum consumidor ativo usa `profiles.credits` como autoridade;
-- provar que `incrementUserUsage()` não produz débito com a flag governada;
-- reconciliar todas as fronteiras de Save;
-- somente então considerar 1.3C.5 enforcement/rehearsal integral.
+4E deve começar por inspeção própria e provar:
+
+- nenhum consumidor ativo usa `profiles.credits` como autoridade de débito;
+- `incrementUserUsage()` não produz débito com a flag governada;
+- todas as fronteiras de Save estão reconciliadas;
+- a migration necessária para o caminho governado está completamente inventariada;
+- a estratégia de ativação/cutover é reversível, observável e segura;
+- somente então pode ser avaliado o handoff para 1.3C.5 enforcement/rehearsal integral.
+
+Este mapa não autoriza o início automático de 4E nem qualquer alteração hospedada.
 
 ## 6. Regra de ativação
 
-`VITE_GOVERNED_CREDIT_CONSUMERS` permanece OFF durante 4A–4D.
+`VITE_GOVERNED_CREDIT_CONSUMERS` permanece OFF durante 4A–4D e continua OFF após a integração técnica de 4D.
 
-Ativação antecipada seria incorreta: geração ficaria non-billable antes de todos os respectivos Saves possuírem uma fronteira econômica governada.
+A integração de código não equivale a cutover: as migrations e fronteiras podem estar versionadas na `main` sem terem sido aplicadas ou ativadas em produção.
 
-Portanto o código pode ser integrado incrementalmente, mas a mudança comportamental só ocorre no gate final coordenado.
+A ativação somente pode ser considerada depois do gate 4E e de autorização material específica para ações hospedadas.
 
 ## 7. Não escopo
 
@@ -164,6 +176,12 @@ Este mapa não autoriza:
 
 - migration hospedada;
 - alteração de saldo real;
+- criação de grant real;
 - ativação de flag;
+- mudança de Vercel;
+- alteração de Edge Function hospedada;
+- Stripe;
 - revogação de write direto;
-- cutover.
+- cutover de produção.
+
+Produção permanece bloqueada.
