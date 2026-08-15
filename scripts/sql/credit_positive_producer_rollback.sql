@@ -77,12 +77,13 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_new_user();
 
--- Restore the hosted emergency profile-creation fallback with credits=10.
+-- Restore legacy credits=10 for authenticated emergency profile recovery.
+-- Rollback changes economic authority but must not restore anonymous access.
 CREATE OR REPLACE FUNCTION public.update_my_profile(p_updates jsonb)
 RETURNS public.profiles
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public
+SET search_path = pg_catalog
 AS $$
 DECLARE
   v_uid uuid := auth.uid();
@@ -91,30 +92,24 @@ DECLARE
   v_result public.profiles;
 BEGIN
   IF v_uid IS NULL THEN
-    v_email := p_updates->>'email';
-    IF v_email IS NULL OR v_email = '' THEN
-      RAISE EXCEPTION 'Não autenticado e sem email nos updates';
-    END IF;
+    RAISE EXCEPTION 'authenticated user required'
+      USING ERRCODE = '42501';
+  END IF;
 
+  SELECT email INTO v_email
+  FROM auth.users
+  WHERE id = v_uid;
+
+  SELECT id INTO v_target_id
+  FROM public.profiles
+  WHERE id = v_uid;
+
+  IF v_target_id IS NULL AND v_email IS NOT NULL THEN
     SELECT id INTO v_target_id
     FROM public.profiles
     WHERE lower(email) = lower(v_email)
     ORDER BY created_at DESC
     LIMIT 1;
-  ELSE
-    SELECT email INTO v_email FROM auth.users WHERE id = v_uid;
-
-    SELECT id INTO v_target_id
-    FROM public.profiles
-    WHERE id = v_uid;
-
-    IF v_target_id IS NULL AND v_email IS NOT NULL THEN
-      SELECT id INTO v_target_id
-      FROM public.profiles
-      WHERE lower(email) = lower(v_email)
-      ORDER BY created_at DESC
-      LIMIT 1;
-    END IF;
   END IF;
 
   IF v_target_id IS NULL THEN
@@ -122,7 +117,7 @@ BEGIN
       INSERT INTO public.profiles (
         id, email, role, tier, credits, is_unlimited, created_at, updated_at
       ) VALUES (
-        COALESCE(v_uid, gen_random_uuid()),
+        v_uid,
         v_email,
         'teacher',
         'FREE',
@@ -164,6 +159,8 @@ END;
 $$;
 
 ALTER FUNCTION public.update_my_profile(jsonb) OWNER TO postgres;
+REVOKE ALL ON FUNCTION public.update_my_profile(jsonb)
+  FROM PUBLIC, anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.update_my_profile(jsonb) TO authenticated;
 
 -- Restore the pre-ledger Stripe fulfillment functions. Their signatures remain

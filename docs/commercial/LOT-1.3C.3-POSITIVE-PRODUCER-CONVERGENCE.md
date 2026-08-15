@@ -124,11 +124,13 @@ O uso de `profiles.created_at` torna o replay temporalmente determinístico.
 
 ### 4.3 Cadastro normal e recuperação
 
-`handle_new_user()` e a criação emergencial de `update_my_profile()` passam a inserir `credits = 0`.
+`handle_new_user()` e a recuperação emergencial autenticada de `update_my_profile()` passam a inserir `credits = 0`.
 
 Ambos dependem do mesmo AFTER INSERT para o grant.
 
-Assim não existem duas implementações de FREE_TRIAL.
+`update_my_profile(jsonb)` não é uma fronteira anônima: exige `auth.uid()`, falha com SQLSTATE `42501` quando a identidade está ausente, usa `search_path = pg_catalog`, revoga `EXECUTE` de `PUBLIC`, `anon` e `service_role` e concede execução somente a `authenticated`. A defesa interna permanece necessária mesmo se a ACL sofrer drift futuro.
+
+Assim não existem duas implementações de FREE_TRIAL nem um caminho por email arbitrário para criar perfil e grant.
 
 ## 5. Bônus de telefone
 

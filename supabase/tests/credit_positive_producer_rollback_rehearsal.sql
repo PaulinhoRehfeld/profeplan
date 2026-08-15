@@ -28,6 +28,15 @@ GRANT EXECUTE ON FUNCTION public.is_admin_safe() TO authenticated;
 -- Governed producer-only entry points and trigger must be gone.
 DO $$
 BEGIN
+  IF has_function_privilege('anon', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'anon must not execute authenticated profile recovery';
+  END IF;
+  IF has_function_privilege('service_role', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'service_role must not execute user profile recovery';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'authenticated must execute profile recovery';
+  END IF;
   IF EXISTS (
     SELECT 1 FROM pg_trigger
     WHERE tgname = 'on_profile_created_credit_free_trial'
@@ -44,6 +53,34 @@ BEGIN
 
   IF to_regprocedure('public.admin_add_credits(uuid,integer)') IS NULL THEN
     RAISE EXCEPTION 'producer rollback did not restore legacy admin_add_credits';
+  END IF;
+END;
+$$;
+
+-- Rollback restores legacy credits but never restores the anonymous RPC surface.
+DO $$
+DECLARE
+  v_profiles_before integer;
+  v_profiles_after integer;
+BEGIN
+  SELECT COUNT(*) INTO v_profiles_before FROM public.profiles;
+
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  PERFORM set_config('request.jwt.claims', '{}'::jsonb::text, true);
+
+  BEGIN
+    PERFORM public.update_my_profile(
+      '{"email":"anonymous-rollback-recovery@example.invalid","full_name":"Anonymous Rollback"}'::jsonb
+    );
+    RAISE EXCEPTION 'rollback accepted identity-null profile recovery';
+  EXCEPTION
+    WHEN insufficient_privilege THEN
+      NULL;
+  END;
+
+  SELECT COUNT(*) INTO v_profiles_after FROM public.profiles;
+  IF v_profiles_after <> v_profiles_before THEN
+    RAISE EXCEPTION 'rollback identity-null recovery changed profiles';
   END IF;
 END;
 $$;

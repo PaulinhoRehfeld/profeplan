@@ -8,6 +8,15 @@
 
 DO $$
 BEGIN
+  IF has_function_privilege('anon', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'anon must not execute authenticated profile recovery';
+  END IF;
+  IF has_function_privilege('service_role', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'service_role must not execute user profile recovery';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'authenticated must execute profile recovery';
+  END IF;
   IF NOT EXISTS (
     SELECT 1 FROM pg_trigger
     WHERE tgname = 'on_profile_created_credit_free_trial'

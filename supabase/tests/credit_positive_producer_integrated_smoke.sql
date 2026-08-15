@@ -77,6 +77,15 @@ $$;
 -- -----------------------------------------------------------------------------
 DO $$
 BEGIN
+  IF has_function_privilege('anon', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'anon must not execute authenticated profile recovery';
+  END IF;
+  IF has_function_privilege('service_role', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'service_role must not execute user profile recovery';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'authenticated must execute profile recovery';
+  END IF;
   IF has_function_privilege('anon', 'public.credit_register_my_phone_bonus(text)', 'EXECUTE') THEN
     RAISE EXCEPTION 'anon must not execute governed phone bonus';
   END IF;
