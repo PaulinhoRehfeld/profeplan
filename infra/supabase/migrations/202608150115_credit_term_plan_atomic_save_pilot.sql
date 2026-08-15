@@ -59,6 +59,21 @@ BEGIN
       USING ERRCODE = '22023';
   END IF;
 
+  -- Lock-order invariant for every governed credit command that also touches an
+  -- artifact row: profile first, artifact second. credit_consume_internal()
+  -- takes the same profile lock. Acquiring it here before any term_plans row
+  -- prevents a concurrent replay from holding the profile while another save
+  -- holds the artifact row and waits back on the same profile (deadlock cycle).
+  PERFORM 1
+  FROM public.profiles AS p
+  WHERE p.id = v_user_id
+  FOR UPDATE;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'credit profile not found'
+      USING ERRCODE = 'P0002';
+  END IF;
+
   -- The browser does not decide economic idempotency. A canonical JSON payload
   -- is hashed on the server; the same user + plan + payload always resolves to
   -- the same semantic operation, while a real edit produces a new operation.
@@ -87,6 +102,7 @@ BEGIN
     'term-plan-save:' || v_user_id::text || ':' || p_plan_id || ':' || v_fingerprint;
 
   -- Reject cross-user artifact collisions before making an economic decision.
+  -- The profile lock above is intentionally acquired before this artifact lock.
   SELECT tp.user_id
     INTO v_existing_owner
   FROM public.term_plans AS tp

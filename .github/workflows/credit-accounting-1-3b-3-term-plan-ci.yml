@@ -156,6 +156,12 @@ jobs:
 
           if [ "$failures" -ne 0 ]; then
             echo "Parallel governed term-plan sessions failed: $failures"
+            for log in /tmp/credit-term-plan-concurrent-*.log; do
+              if grep -qE 'ERROR:|FATAL:' "$log"; then
+                echo "--- $(basename "$log") PostgreSQL diagnostics ---"
+                grep -E 'ERROR:|FATAL:|DETAIL:|HINT:|CONTEXT:' "$log" || true
+              fi
+            done
             exit 1
           fi
 
