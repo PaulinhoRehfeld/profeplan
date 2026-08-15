@@ -2,7 +2,7 @@
 
 Data de implementação técnica: 14/15 de agosto de 2026.
 
-Base reconciliada da branch: `main` em `5d31a1375493b3043b2aa3bc621e9bc3aa98817d`.
+Base reconciliada da branch: `main` em `56e125bf72aabb885b0c0bc8b27f64d76ce98106`.
 
 Estado deste documento: **implementação em Draft PR; não integrada**.
 
