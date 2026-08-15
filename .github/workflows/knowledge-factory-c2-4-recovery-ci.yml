@@ -193,6 +193,8 @@ jobs:
             2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Prove Storage reconciliation and idempotent cleanup
+        env:
+          KF_C2_4_STORAGE_INTEGRATION: '1'
         shell: bash
         run: |
           set -euo pipefail
