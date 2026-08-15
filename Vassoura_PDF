@@ -1,32 +1,51 @@
-import pdfplumber
 import json
-import re
 import os
+import re
 import time
+
 import google.generativeai as genai
+import pdfplumber
 from supabase import create_client
 
-# --- CONFIGURAÇÕES ---
-API_KEY_GOOGLE = "AIzaSyBpLzXwQaFFd0TuHIxZYP4X0eYdICYVJP4"
-SUPABASE_URL = "https://uatejrgmbzgoeayfascf.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhdGVqcmdtYnpnb2VheWZhc2NmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjUxNDYzOCwiZXhwIjoyMDgyMDkwNjM4fQ.eN6j9GnE_7rKqM5QS1hJyAznUPT0l5taSVAq8tBhrLE"
-PASTA_PDFS = r"C:\Users\Admin\PROFEPLANPDFS\PlanosMG"
+
+def require_env(name):
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise RuntimeError(f"Variável de ambiente obrigatória ausente: {name}")
+    return value
+
+
+# Configuração exclusivamente por ambiente. Nunca adicionar credenciais literais.
+API_KEY_GOOGLE = require_env("GEMINI_API_KEY")
+SUPABASE_URL = require_env("SUPABASE_URL")
+SUPABASE_KEY = (
+    os.getenv("SUPABASE_SECRET_KEY", "").strip()
+    or os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+)
+PASTA_PDFS = require_env("PASTA_PDFS")
+
+if not SUPABASE_KEY:
+    raise RuntimeError(
+        "Defina SUPABASE_SECRET_KEY; SUPABASE_SERVICE_ROLE_KEY existe apenas para rollback legado."
+    )
 
 genai.configure(api_key=API_KEY_GOOGLE)
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+
 def extrair_codigo(texto):
-    match = re.search(r'\(([A-Z]{2}\d+[A-Z\d]+)\)', texto)
+    match = re.search(r"\(([A-Z]{2}\d+[A-Z\d]+)\)", texto)
     return match.group(1) if match else "CURRICULO_BASE"
 
+
 def processar_e_subir():
-    arquivos = [f for f in os.listdir(PASTA_PDFS) if f.lower().endswith('.pdf')]
+    arquivos = [f for f in os.listdir(PASTA_PDFS) if f.lower().endswith(".pdf")]
     print(f"📂 Encontrados {len(arquivos)} arquivos para processar.")
 
     for arquivo in arquivos:
         caminho_completo = os.path.join(PASTA_PDFS, arquivo)
         print(f"\n🚀 Lendo: {arquivo}")
-        
+
         disciplina = "Não Identificada"
         bimestre = "Não Identificado"
 
@@ -34,59 +53,66 @@ def processar_e_subir():
             with pdfplumber.open(caminho_completo) as pdf:
                 for pagina in pdf.pages:
                     texto_pag = pagina.extract_text() or ""
-                    
-                    # Tenta identificar disciplina e bimestre no topo da página
+
                     d = re.search(r"COMPONENTE CURRICULAR:\s+(.*)", texto_pag)
-                    if d: disciplina = d.group(1).strip()
-                    
+                    if d:
+                        disciplina = d.group(1).strip()
+
                     b = re.search(r"(\dº\s?BIMESTRE)", texto_pag)
-                    if b: bimestre = b.group(1).strip()
+                    if b:
+                        bimestre = b.group(1).strip()
 
                     tabela = pagina.extract_table()
-                    if not tabela: continue
+                    if not tabela:
+                        continue
 
                     for linha in tabela:
                         if not linha or not linha[0] or "UNIDADE" in str(linha[0]).upper():
                             continue
-                        
-                        # Extração da linha
-                        habilidade_txt = str(linha[1]).replace('\n', ' ') if len(linha) > 1 else ""
-                        obj_conhecimento = str(linha[2]).replace('\n', ' ') if len(linha) > 2 else ""
-                        codigo = extrair_codigo(habilidade_txt)
 
-                        # 1. Cria o vetor de inteligência (Embedding)
-                        conteudo_para_ia = f"Arquivo: {arquivo} | Disciplina: {disciplina} | Hab: {habilidade_txt} | Obj: {obj_conhecimento}"
-                        
+                        habilidade_txt = (
+                            str(linha[1]).replace("\n", " ") if len(linha) > 1 else ""
+                        )
+                        obj_conhecimento = (
+                            str(linha[2]).replace("\n", " ") if len(linha) > 2 else ""
+                        )
+                        codigo = extrair_codigo(habilidade_txt)
+                        conteudo_para_ia = (
+                            f"Arquivo: {arquivo} | Disciplina: {disciplina} | "
+                            f"Hab: {habilidade_txt} | Obj: {obj_conhecimento}"
+                        )
+
                         try:
                             res = genai.embed_content(
                                 model="models/text-embedding-004",
                                 content=conteudo_para_ia,
-                                task_type="retrieval_document"
+                                task_type="retrieval_document",
                             )
-                            
-                            # 2. Sobe para o Supabase
                             payload = {
                                 "disciplina": disciplina,
                                 "bimestre": bimestre,
-                                "unidade_tematica": str(linha[0]).replace('\n', ' '),
+                                "unidade_tematica": str(linha[0]).replace("\n", " "),
                                 "habilidade": habilidade_txt,
                                 "codigo_habilidade": codigo,
                                 "objeto_conhecimento": obj_conhecimento,
-                                "conteudos_relacionados": str(linha[3]).replace('\n', ' ') if len(linha) > 3 else "",
-                                "embedding": res['embedding']
+                                "conteudos_relacionados": (
+                                    str(linha[3]).replace("\n", " ")
+                                    if len(linha) > 3
+                                    else ""
+                                ),
+                                "embedding": res["embedding"],
                             }
-                            
+
                             supabase.table("curriculos_mg").insert(payload).execute()
                             print(f"  ✅ {codigo} inserido.")
-                            time.sleep(0.8) # Evita bloqueio por excesso de requisições
-                        
-                        except Exception as e:
-                            print(f"  ⚠️ Erro no item: {e}")
-                            
-        except Exception as e:
-            print(f"❌ Erro ao abrir {arquivo}: {e}")
+                            time.sleep(0.8)
+                        except Exception as error:
+                            print(f"  ⚠️ Erro no item: {error}")
+        except Exception as error:
+            print(f"❌ Erro ao abrir {arquivo}: {error}")
 
     print("\n🏆 MISSÃO CUMPRIDA! Todos os cadernos de MG foram integrados.")
+
 
 if __name__ == "__main__":
     processar_e_subir()

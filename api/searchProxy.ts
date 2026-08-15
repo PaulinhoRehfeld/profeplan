@@ -2,6 +2,7 @@ export const maxDuration = 60;
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
+import { resolveSupabaseAdminKey } from './_lib/supabaseCredentials';
 
 const logger = {
   info: (msg: string, meta?: unknown) =>
@@ -13,7 +14,7 @@ const logger = {
 const getSupabaseClient = () => {
   const url = process.env.SUPABASE_URL?.trim() || process.env.VITE_SUPABASE_URL?.trim();
   const key =
-    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    resolveSupabaseAdminKey() ||
     process.env.SUPABASE_ANON_KEY?.trim() ||
     process.env.VITE_SUPABASE_ANON_KEY?.trim();
   if (!url || !key) return null;
@@ -78,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // 2. Connect to Supabase
   const supabase = getSupabaseClient();
   if (!supabase) {
-    logger.error('[searchProxy] SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não configurados.');
+    logger.error('[searchProxy] SUPABASE_URL ou credencial Supabase não configurados.');
     return res.status(200).json([]); // non-blocking: return empty instead of 500
   }
 

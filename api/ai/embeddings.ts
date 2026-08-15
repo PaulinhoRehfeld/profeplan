@@ -8,9 +8,12 @@ async function generateGeminiEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) throw new Error('GEMINI_API_KEY não configurada no servidor.');
 
-  const response = await fetch(`${GEMINI_EMBED_URL}?key=${apiKey}`, {
+  const response = await fetch(GEMINI_EMBED_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-goog-api-key': apiKey,
+    },
     body: JSON.stringify({
       model: 'models/text-embedding-004',
       content: { parts: [{ text }] },
