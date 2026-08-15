@@ -313,9 +313,6 @@ export class SupabaseTemporaryStagingAdapter
 
     try {
       const { data: existsBefore, error: beforeError } = await bucket.exists(path);
-      if (beforeError !== null) {
-        throw toPersistenceError(beforeError, operation);
-      }
 
       if (!existsBefore) {
         const receipt: TemporaryStagingDiscardReceipt = {
@@ -333,6 +330,10 @@ export class SupabaseTemporaryStagingAdapter
         return receipt;
       }
 
+      if (beforeError !== null) {
+        throw toPersistenceError(beforeError, operation);
+      }
+
       const { error } = await bucket.remove([path]);
       if (error !== null) {
         throw toPersistenceError(error, operation);
@@ -340,11 +341,10 @@ export class SupabaseTemporaryStagingAdapter
 
       const { data: existsAfter, error: existsError } = await bucket.exists(path);
 
-      if (existsError !== null) {
-        throw toPersistenceError(existsError, operation);
-      }
-
       if (existsAfter) {
+        if (existsError !== null) {
+          throw toPersistenceError(existsError, operation);
+        }
         throw toPersistenceError({ message: 'delete verification failed' }, operation);
       }
 
