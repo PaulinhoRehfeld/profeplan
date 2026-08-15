@@ -7,14 +7,23 @@ Base canônica inspecionada antes do início técnico:
 - `main`: `d5ebf99a6265dd6f68ae2a4d2d8ca7c429a48c82`;
 - tree: `ab6d100b8daf44d5ee9839faacd2c4ad3a1148ef`;
 - parent: `886fbcfe9a543d121c599adbe8f585aec5175a05`;
-- checkpoint vigente: `CONTINUITY-CHECKPOINT-048.md`.
+- checkpoint vigente no início técnico: `CONTINUITY-CHECKPOINT-048.md`.
+
+Integração canônica:
+
+- PR nº 84;
+- squash commit: `01a985a94272608007a57fd60695fed719c625d2`;
+- tree integrada: `a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`;
+- parent direto: `69211a2a64c05c341f5fd2d5742a1d252607e22d`;
+- HEAD técnico validado antes do merge: `041b1890f08bcd39e74a34073fb77aabfdb300e9`;
+- CI pós-merge: CI Pipeline nº 547 — `success`.
 
 ## Status
 
-**Trabalho técnico não integrado.**
+**Implementação técnica integrada e revalidada.**
 
-Este documento pertence à branch/PR de C.2.5. Ele não substitui o Checkpoint 048 e não autoriza merge,
-C.2.6, C.3, conteúdo real, Supabase hospedado, Storage hospedado ou produção.
+C.2.5 foi integrado após revisão humana governada. O Checkpoint 049 formaliza o estado pós-merge.
+A integração não autoriza C.2.6, C.3, conteúdo real, Supabase hospedado, Storage hospedado ou produção.
 
 ## 1. Pergunta arquitetônica
 
@@ -310,11 +319,21 @@ Ele cobre, entre outros:
 - regressão C.2.2–C.2.4;
 - ausência de superfície de execução de C.3.
 
-## 15. Bloqueios preservados
+## 15. Integração e bloqueios preservados
+
+C.2.5 foi integrado pelo PR nº 84 no squash commit
+`01a985a94272608007a57fd60695fed719c625d2`, cuja tree
+`a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1` corresponde exatamente à tree do HEAD técnico
+validado antes do merge. O CI pós-merge nº 547 terminou `success` com Prettier, ESLint, TypeScript,
+Build e Tests verdes.
+
+O merge foi realizado com guarda por `expected_head_sha`. Os dois statuses externos Vercel que
+permaneciam em `failure` foram dispensados somente após autorização humana específica, por estarem
+associados ao limite externo `api-deployments-free-per-day`; todos os oito workflows técnicos do
+HEAD estavam verdes.
 
 Permanecem bloqueados:
 
-- merge sem autorização humana específica;
 - C.2.6;
 - implementação/execução de C.3;
 - C.3–C.7;
@@ -326,4 +345,4 @@ Permanecem bloqueados:
 - secrets de produção;
 - produção.
 
-Checkpoint 049 não pertence a este PR técnico antes de eventual integração e fechamento documental.
+O Checkpoint 049 é a reconciliação documental pós-merge de C.2.5. Ele não inicia C.2.6 nem C.3.

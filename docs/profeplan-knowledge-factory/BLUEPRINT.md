@@ -84,12 +84,12 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C — C.1 CONCLUÍDO; C.2.1–C.2.4 INTEGRADOS; C.2.5 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 CONCLUÍDO; C.2.1–C.2.5 INTEGRADOS; C.2.6 BLOQUEADO  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
 ✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
-🔵 C.2 Ingestão controlada — definição integrada; C.2.1–C.2.4 integrados; C.2.5 bloqueado
+🔵 C.2 Ingestão controlada — definição integrada; C.2.1–C.2.5 integrados; C.2.6 bloqueado
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
@@ -356,7 +356,22 @@ C.2.2 foi integrado pelo PR nº 67 no commit
 `61747e439323dcc165c8d3a084e4d73c66f06c4a`, com CI pós-merge nº 412 verde. A fronteira de intake/staging
 está em
 [`12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md`](12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md)
-e o estado pós-merge no Checkpoint 046. C.2.3 foi integrado pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, tree `4b47c853a2cb041ca895477abc3c710ca9393b94`, com CI pós-merge nº 430 verde; sua fronteira está em [`12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md) e o estado pós-merge no Checkpoint 047. C.2.4 foi integrado pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, tree `92411aec0c9da3789bb91c87d8f423a3c69f929d`, com CI pós-merge nº 523 verde; sua fronteira está em [`12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md). O estado pós-merge passa ao Checkpoint 048. C.2.5–C.2.6 e C.3–C.7 permanecem bloqueados.
+e o estado pós-merge no Checkpoint 046.
+
+C.2.3 foi integrado pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, tree
+`4b47c853a2cb041ca895477abc3c710ca9393b94`, com CI pós-merge nº 430 verde; sua fronteira está em
+[`12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md)
+e o estado pós-merge no Checkpoint 047.
+
+C.2.4 foi integrado pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, tree
+`92411aec0c9da3789bb91c87d8f423a3c69f929d`, com CI pós-merge nº 523 verde; sua fronteira está em
+[`12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md)
+e o estado pós-merge no Checkpoint 048.
+
+C.2.5 foi integrado pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, tree
+`a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde; sua fronteira está em
+[`12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md).
+O estado pós-merge passa ao Checkpoint 049. C.2.6 e C.3–C.7 permanecem bloqueados.
 
 O mapa integral C.0–C.7 está definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
@@ -379,7 +394,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1–C.2.4 integrados; C.2.5 bloqueado** |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1–C.2.5 integrados; C.2.6 bloqueado** |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
@@ -702,12 +717,15 @@ executado de forma controlada e concluído. `GAP-3B-04` foi encerrado em C.1.6; 
 `GAP-3B-07` permanecem ativos e contidos.
 
 A definição de C.2 foi integrada pelo PR nº 59 e formalizou sua fronteira operacional. C.2.1 foi
-integrado pelo PR nº 62 como superfície contract-first. C.2.2 foi posteriormente integrado pelo PR
-nº 67 como fronteira física mínima de intake/staging temporário, com CI pós-merge nº 412 verde. C.2.3
-foi integrado pelo PR nº 70 como fronteira de integridade criptográfica, duplicidade binária e vínculo,
-com CI pós-merge nº 430 verde e reconciliação registrada no Checkpoint 047. **C.2.4–C.2.6 permanecem
-bloqueados**, assim como C.3–C.7; a integração de C.2.3 não constitui autorização para persistência de
-idempotência/recovery de C.2.4, storage hospedado, Supabase hospedado, conteúdo real, extração ou produção.
+integrado pelo PR nº 62 como superfície contract-first. C.2.2 foi integrado pelo PR nº 67 como
+fronteira física mínima de intake/staging temporário, com CI pós-merge nº 412 verde. C.2.3 foi
+integrado pelo PR nº 70 como fronteira de integridade criptográfica, duplicidade binária e vínculo,
+com CI pós-merge nº 430 verde e reconciliação registrada no Checkpoint 047. C.2.4 foi integrado pelo
+PR nº 74 como fronteira durável de idempotência, recovery e fail-safe, com CI pós-merge nº 523 verde
+e Checkpoint 048. C.2.5 foi integrado pelo PR nº 84 como fronteira de revisão humana e handoff
+governado, com CI pós-merge nº 547 verde e Checkpoint 049. **C.2.6 permanece bloqueado**, assim como
+C.3–C.7; a integração de C.2.5 não constitui autorização para a prova integrada final de C.2, C.3,
+conteúdo real, storage hospedado, Supabase hospedado, extração ou produção.
 
 ### C → D
 
@@ -815,27 +833,27 @@ Ela será construída na seguinte ordem:
 
 Ponto atual oficial deste Blueprint:
 
-> **FASE C APÓS C.2.3 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
+> **FASE C APÓS C.2.5 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
 > `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59; C.2.1 integrado pelo
-> PR nº 62; C.2.2 integrado pelo PR nº 67; C.2.3 integrado pelo PR nº 70 no commit
-> `f70312a9936b99e1c131627277ad4c4a65b126a5`, tree
-> `4b47c853a2cb041ca895477abc3c710ca9393b94`, com CI pós-merge nº 430 verde.**
+> PR nº 62; C.2.2 pelo PR nº 67; C.2.3 pelo PR nº 70; C.2.4 pelo PR nº 74; e C.2.5 integrado pelo
+> PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, tree
+> `a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde.**
 
 Atualização de navegação da Fase C:
 
-> **C.2.1–C.2.3 estão integrados e revalidados; C.2.4–C.2.6 permanecem bloqueados. C.3–C.7 e as
-> Fases D–G continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção
-> permanece não autorizada. O Checkpoint 047 é a referência operacional corrente após a reconciliação.**
+> **C.2.1–C.2.5 estão integrados e revalidados; C.2.6 permanece bloqueado. C.3–C.7 e as Fases D–G
+> continuam bloqueados. `GAP-3B-05` e `GAP-3B-07` permanecem ativos e contidos. Produção permanece
+> não autorizada. O Checkpoint 049 é a referência operacional corrente após a reconciliação.**
 
 Próximo objetivo possível, somente em contexto próprio e após nova inspeção canônica:
 
-> inspecionar **C.2.4 — idempotência, retomada e falha segura**, preservando a separação entre replay
-> de comandos, duplicidade binária de C.2.3, persistência transacional, recovery e lifecycle; sem
-> inferir autorização para C.2.5, C.2.6, C.3, conteúdo real, storage hospedado, Supabase hospedado ou produção.
+> inspecionar **C.2.6 — prova integrada, fechamento e gate para C.3**, consolidando a matriz de
+> evidências C.2, o fluxo end-to-end com fixtures sintéticas, segurança negativa, replay,
+> duplicidade/conflito, concorrência, descarte, rollback/reapply e o gate documental C.2 → C.3;
+> sem iniciar C.3, usar conteúdo real ou alterar state machine/ownership por continuidade implícita.
 
 Próxima grande mudança de natureza do projeto:
 
-> C.2.4 deverá transformar as evidências e decisões efêmeras de C.2.3 em comportamento operacional
-> idempotente, retomável e fail-safe quando sua Definition of Ready for satisfeita. Essa etapa deverá
-> definir ownership persistente, atomicidade e recovery sem reabrir a identidade bibliográfica nem
-> antecipar revisão humana de C.2.5 ou extração de C.3.
+> C.2.6 deverá provar e encerrar governadamente o Lote C.2 sem introduzir nova capacidade funcional
+> incidental. Mesmo após seu eventual fechamento, C.3 permanecerá sujeito a inspeção, definição e
+> autorização humanas próprias antes de qualquer extração real ou executável.
