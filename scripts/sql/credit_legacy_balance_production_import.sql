@@ -8,28 +8,17 @@
 -- - exact -v parameters matching that frozen snapshot.
 --
 -- Required psql variables:
---   cutover_id             non-empty version/id for this one cutover
---   cutover_at             timestamptz used consistently for every grant
---   expected_finite_count  integer
---   expected_finite_sum    integer
---   expected_finite_hash   md5 from the frozen snapshot
+--   cutover_id               non-empty version/id for this one cutover
+--   cutover_at               timestamptz used consistently for every grant
+--   expected_finite_count    integer
+--   expected_finite_sum      integer
+--   expected_finite_hash     md5 from the frozen snapshot
 --   expected_unlimited_count integer
 --   expected_unlimited_hash  md5 from the frozen snapshot
 --
--- Example form (values deliberately illustrative only):
---   psql "$DB" \
---     -v cutover_id='credit-cutover-v1-YYYYMMDDHHMM' \
---     -v cutover_at='YYYY-MM-DD HH:MM:SS+00' \
---     -v expected_finite_count=30 \
---     -v expected_finite_sum=292 \
---     -v expected_finite_hash='...' \
---     -v expected_unlimited_count=1 \
---     -v expected_unlimited_hash='...' \
---     -f scripts/sql/credit_legacy_balance_production_import.sql
---
 -- The whole import is one transaction. Any mismatch aborts and rolls back.
 -- Exact replay with the same cutover_id + snapshot is safe; a foreign/different
--- LEGACY_BALANCE cutover fails closed.
+-- LEGACY_BALANCE cutover fails closed. Source identities are never printed.
 -- =============================================================================
 \set ON_ERROR_STOP on
 
@@ -55,23 +44,27 @@ INSERT INTO credit_cutover_params VALUES (
   :'expected_unlimited_hash'
 );
 
--- Lock the source rows first. The freeze must already prevent application-side
--- economic writes; these row locks additionally make this transaction's source
--- snapshot stable while grants are materialized.
-SELECT id
-FROM public.profiles
-WHERE COALESCE(is_unlimited, false) = false
-  AND tier IS DISTINCT FROM 'GOLD'
-  AND COALESCE(credits, 0) > 0
-ORDER BY id
-FOR UPDATE;
+-- Lock the source rows without returning profile identities to psql output.
+-- The external freeze prevents application-side economic traffic; these row
+-- locks additionally stabilize this transaction's source while grants are made.
+DO $$
+BEGIN
+  PERFORM 1
+  FROM public.profiles
+  WHERE COALESCE(is_unlimited, false) = false
+    AND tier IS DISTINCT FROM 'GOLD'
+    AND COALESCE(credits, 0) > 0
+  ORDER BY id
+  FOR UPDATE;
 
-SELECT id
-FROM public.profiles
-WHERE COALESCE(is_unlimited, false) = true
-   OR tier = 'GOLD'
-ORDER BY id
-FOR UPDATE;
+  PERFORM 1
+  FROM public.profiles
+  WHERE COALESCE(is_unlimited, false) = true
+     OR tier = 'GOLD'
+  ORDER BY id
+  FOR UPDATE;
+END;
+$$;
 
 DO $$
 DECLARE
@@ -165,8 +158,6 @@ BEGIN
 END;
 $$;
 
--- Post-import reconciliation. It validates cardinality/aggregate, one exact lot
--- per finite source profile, no Gold/unlimited import, and source immutability.
 DO $$
 DECLARE
   v_expected credit_cutover_params%ROWTYPE;
