@@ -278,7 +278,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             type="button"
             onClick={onOpenSubscription}
             className="ui-focus-ring mb-2 flex min-h-11 w-full items-center gap-3 rounded-lg border border-slate-700 px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800"
-            aria-label={isUnlimited ? 'Plano Gold ilimitado. Gerenciar plano' : `${creditLabel}. Gerenciar plano`}
+            aria-label={
+              isUnlimited
+                ? 'Plano Gold ilimitado. Gerenciar plano'
+                : `${creditLabel}. Gerenciar plano`
+            }
           >
             <Crown aria-hidden="true" className="h-5 w-5 shrink-0 text-amber-400" />
             <span className={`min-w-0 ${isDesktopExpanded ? 'lg:block' : 'lg:hidden'}`}>

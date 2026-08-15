@@ -18,13 +18,7 @@ import { CreateUserModal } from '../CreateUserModal';
 
 const renderModal = () =>
   render(
-    <CreateUserModal
-      isOpen
-      onClose={vi.fn()}
-      onUserCreated={vi.fn()}
-      allSchools={[]}
-      cities={[]}
-    />
+    <CreateUserModal isOpen onClose={vi.fn()} onUserCreated={vi.fn()} allSchools={[]} cities={[]} />
   );
 
 describe('CreateUserModal - governed initial credit authority', () => {

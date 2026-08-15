@@ -7,8 +7,7 @@ import { supabaseAdmin } from '../_lib/supabaseAdmin';
 import { sendWelcomeEmail } from '../_lib/email';
 
 const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
-const governedCreditProducersEnabled = () =>
-  process.env.VITE_GOVERNED_CREDIT_PRODUCERS === 'true';
+const governedCreditProducersEnabled = () => process.env.VITE_GOVERNED_CREDIT_PRODUCERS === 'true';
 
 const isAllowedOrigin = (origin: string): boolean => {
   if (!origin) return false;
