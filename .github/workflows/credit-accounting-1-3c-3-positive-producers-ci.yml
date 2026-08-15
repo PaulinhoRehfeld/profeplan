@@ -17,10 +17,16 @@ on:
       - 'apps/web/src/services/credits/creditProducerFlags.ts'
       - 'apps/web/src/services/referrals/referrals.ts'
       - 'apps/web/src/services/admin/adminProfiles.ts'
+      - 'apps/web/src/services/profile/profileRepository.ts'
+      - 'apps/web/src/hooks/useProfeplanAuth.ts'
       - 'apps/web/src/components/Admin/components/AddCreditsModal.tsx'
       - 'apps/web/src/components/Admin/components/UserList.tsx'
+      - 'apps/web/src/components/Admin/components/CreateUserModal.tsx'
+      - 'apps/web/src/components/Admin/components/__tests__/*creditProducer*'
       - 'apps/web/src/services/**/__tests__/*creditProducer*'
+      - 'api/auth/admin-create-user.ts'
       - 'docs/commercial/LOT-1.3C.3-POSITIVE-PRODUCER-CONVERGENCE.md'
+      - 'docs/commercial/LOT-1.3C.4E-FINAL-CONSUMER-SWEEP.md'
   workflow_dispatch:
 
 permissions:
