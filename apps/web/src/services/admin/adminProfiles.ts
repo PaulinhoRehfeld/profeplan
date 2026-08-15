@@ -51,11 +51,7 @@ export const updateUserProfileAdmin = async (
   return { data: result, error: null };
 };
 
-export const addUserCredits = async (
-  userId: string,
-  amount: number,
-  operationId?: string
-) => {
+export const addUserCredits = async (userId: string, amount: number, operationId?: string) => {
   if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_CREDITS_ADD) {
     return {
       error: { message: `Valor inválido. Deve ser entre 1 e ${MAX_CREDITS_ADD} créditos.` },
