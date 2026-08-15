@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { PdiDocumentService } from '../../../services/pdi/PdiDocumentService';
 import { generateBlock11Report } from '../../../services/ai/AiPdiService';
+import { isGovernedCreditConsumerEnabled } from '../../../services/credits/creditConsumerFlags';
+import { savePdiFinalReportGoverned } from '../PdiCreditService';
 
 interface PDIBlock11EditorProps {
   pdiId: string;
@@ -39,6 +41,7 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
 
   const canEdit =
     userRole === 'supervisor' ||
+    userRole === 'manager' ||
     userRole === 'school_manager' ||
     userRole === 'school_admin' ||
     userRole === 'admin';
@@ -110,7 +113,11 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
     setError('');
 
     try {
-      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
+      if (isGovernedCreditConsumerEnabled()) {
+        await savePdiFinalReportGoverned(pdiId, supervisorEdit);
+      } else {
+        await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
+      }
       setSuccess('Relatório salvo com sucesso!');
       setEditMode(false);
       await loadBlock11();
