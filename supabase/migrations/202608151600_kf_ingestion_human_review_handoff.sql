@@ -305,8 +305,8 @@ DECLARE
   v_count bigint;
   v_assignment_id uuid;
 BEGIN
-  SELECT count(*), min(assignments.id)
-    INTO v_count, v_assignment_id
+  SELECT count(*)
+    INTO v_count
   FROM public.kf_source_actor_assignments AS assignments
   WHERE assignments.actor_id = p_actor_id
     AND assignments.actor_role = p_role
@@ -319,6 +319,16 @@ BEGIN
   IF v_count <> 1 THEN
     RAISE EXCEPTION USING ERRCODE = 'PT409', MESSAGE = 'actor competence is ambiguous for this ingestion decision time';
   END IF;
+
+  SELECT assignments.id
+    INTO v_assignment_id
+  FROM public.kf_source_actor_assignments AS assignments
+  WHERE assignments.actor_id = p_actor_id
+    AND assignments.actor_role = p_role
+    AND p_at >= assignments.effective_from
+    AND (assignments.effective_until IS NULL OR p_at <= assignments.effective_until)
+  LIMIT 1;
+
   RETURN v_assignment_id;
 END;
 $function$;
