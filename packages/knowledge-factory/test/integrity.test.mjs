@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { evaluateStagingIntegrity } from '../src/index.ts';
+import {
+  evaluateIngestionVerificationConfirmation,
+  evaluateStagingIntegrity,
+} from '../src/index.ts';
 
 const digestA = '5aea7a7a5e33d66d021fd52802ceb64ac5b8f377b2be55fddca8607f093ce3ce';
 const digestB = 'b'.repeat(64);
@@ -43,6 +46,25 @@ function evidence(overrides = {}) {
   };
 }
 
+function confirmCommand(overrides = {}) {
+  return {
+    commandType: 'confirm_verified',
+    commandId: 'command-confirm-verified-integrity-1',
+    fingerprint: 'sha256:synthetic-confirm-verified-integrity-1',
+    actor: { actorId: 'actor-integrity-1', role: 'curator' },
+    occurredAt: '2026-08-14T21:05:30.000Z',
+    correlationId: 'correlation-integrity-1',
+    reason: 'Synthetic C.2.3 verification confirmation.',
+    run,
+    expectedState: 'VERIFYING',
+    technicalMetadata: {
+      declaredMediaType: 'application/pdf',
+      sizeBytes: 18,
+    },
+    ...overrides,
+  };
+}
+
 function reasonCodes(decision) {
   return decision.reasons.map((item) => item.code);
 }
@@ -59,6 +81,75 @@ test('valid physical evidence materializes STAGED -> VERIFIED without release se
   assert.equal(decision.value.integrity.digest.value, digestA);
   assert.equal(decision.value.duplicateDecision.outcome, 'unique');
   assert.equal('releasedForExtractionAt' in decision.value, false);
+});
+
+test('confirm_verified is operationally coupled to C.2.3 verified staging evidence', () => {
+  const decision = evaluateIngestionVerificationConfirmation({
+    currentState: 'VERIFYING',
+    command: confirmCommand(),
+    artifact: artifact(),
+    evidence: evidence(),
+    evaluatedAt: '2026-08-14T21:06:00.000Z',
+  });
+
+  assert.equal(decision.allowed, true);
+  assert.equal(decision.value.runState, 'VERIFIED');
+  assert.equal(decision.value.artifact.state, 'VERIFIED');
+  assert.equal(decision.value.artifact.integrity.digest.value, digestA);
+});
+
+test('confirm_verified cannot bypass failed physical integrity', () => {
+  const decision = evaluateIngestionVerificationConfirmation({
+    currentState: 'VERIFYING',
+    command: confirmCommand(),
+    artifact: artifact(),
+    evidence: evidence({ byteLength: 19 }),
+    evaluatedAt: '2026-08-14T21:06:00.000Z',
+  });
+
+  assert.equal(decision.allowed, false);
+  assert.equal(reasonCodes(decision).includes('STAGING_INTEGRITY_BYTE_LENGTH_MISMATCH'), true);
+});
+
+test('confirm_verified rejects run or correlation mismatch against integrity evidence', () => {
+  const decision = evaluateIngestionVerificationConfirmation({
+    currentState: 'VERIFYING',
+    command: confirmCommand({ correlationId: 'correlation-wrong' }),
+    artifact: artifact(),
+    evidence: evidence(),
+    evaluatedAt: '2026-08-14T21:06:00.000Z',
+  });
+
+  assert.equal(decision.allowed, false);
+  assert.equal(reasonCodes(decision).includes('INGESTION_VERIFICATION_EVIDENCE_MISMATCH'), true);
+});
+
+test('confirm_verified preserves the C.2.1 state machine topology', () => {
+  const decision = evaluateIngestionVerificationConfirmation({
+    currentState: 'STAGED',
+    command: confirmCommand(),
+    artifact: artifact(),
+    evidence: evidence(),
+    evaluatedAt: '2026-08-14T21:06:00.000Z',
+  });
+
+  assert.equal(decision.allowed, false);
+  assert.equal(reasonCodes(decision).includes('INGESTION_EXPECTED_STATE_MISMATCH'), true);
+});
+
+test('confirm_verified technical metadata cannot contradict verified staging evidence', () => {
+  const decision = evaluateIngestionVerificationConfirmation({
+    currentState: 'VERIFYING',
+    command: confirmCommand({
+      technicalMetadata: { declaredMediaType: 'application/pdf', sizeBytes: 19 },
+    }),
+    artifact: artifact(),
+    evidence: evidence(),
+    evaluatedAt: '2026-08-14T21:06:00.000Z',
+  });
+
+  assert.equal(decision.allowed, false);
+  assert.equal(reasonCodes(decision).includes('INGESTION_VERIFICATION_EVIDENCE_MISMATCH'), true);
 });
 
 test('binary duplicates remain auditable relationships and never collapse identities', () => {
