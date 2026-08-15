@@ -1,0 +1,49 @@
+name: Temporary 4E UI Balance Patch
+
+on:
+  push:
+    branches:
+      - feat/commercial-credit-consumers-4e-final-sweep
+    paths:
+      - .github/workflows/temp-4e-ui-balance-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/commercial-credit-consumers-4e-final-sweep
+
+      - name: Patch PlanningCockpit governed balance warning
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('apps/web/src/features/Planning/components/PlanningCockpit.tsx')
+          text = path.read_text()
+
+          old_import = "import { getUserProfile } from '../../../services/ProfileService';\n"
+          new_import = old_import + "import { isGovernedCreditConsumerEnabled } from '../../../services/credits/creditConsumerFlags';\nimport { getMyGovernedCreditBalance } from '../../../services/credits/creditBalance';\n"
+          if old_import not in text:
+              raise SystemExit('PlanningCockpit import anchor not found')
+          text = text.replace(old_import, new_import, 1)
+
+          old_refresh = """    if (profile) {\n      setUserProfile(profile);\n      checkCreditWarning(profile.credits);\n    }\n"""
+          new_refresh = """    if (profile) {\n      setUserProfile(profile);\n      if (isGovernedCreditConsumerEnabled()) {\n        try {\n          const balance = await getMyGovernedCreditBalance();\n          checkCreditWarning(balance.total);\n        } catch (error) {\n          console.warn('[PlanningCockpit] Falha ao carregar saldo governado:', error);\n        }\n      } else {\n        checkCreditWarning(profile.credits);\n      }\n    }\n"""
+          if old_refresh not in text:
+              raise SystemExit('PlanningCockpit refresh anchor not found')
+          text = text.replace(old_refresh, new_refresh, 1)
+          path.write_text(text)
+
+      - name: Remove temporary workflow and commit patch
+        run: |
+          rm .github/workflows/temp-4e-ui-balance-patch.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/features/Planning/components/PlanningCockpit.tsx .github/workflows/temp-4e-ui-balance-patch.yml
+          git commit -m "feat(commercial): use governed balance for low-credit warning"
+          git push
