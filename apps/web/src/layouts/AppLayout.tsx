@@ -7,6 +7,9 @@ import { useProfeplanSettings } from '../hooks/useProfeplanSettings';
 import { supabase } from '../services/supabaseClient';
 import { clearLocalSession } from '../utils/authUtils';
 
+const PURCHASE_INTENT_STORAGE_KEY = 'profeplan:purchase-intent';
+const PURCHASE_INTENT_TTL_MS = 24 * 60 * 60 * 1000;
+
 export const AppLayout: React.FC = () => {
   const { session, userProfile, refreshProfile, setSession } = useProfeplanAuth();
   const { settings, setSettings } = useProfeplanSettings();
@@ -24,6 +27,28 @@ export const AppLayout: React.FC = () => {
   const setIsSettingsOpen = useUIStore((s) => s.setIsSettingsOpen);
   const isSubscriptionOpen = useUIStore((s) => s.isSubscriptionOpen);
   const setIsSubscriptionOpen = useUIStore((s) => s.setIsSubscriptionOpen);
+
+  React.useEffect(() => {
+    if (!session?.isLoggedIn || !userProfile?.id) return;
+
+    const stored = localStorage.getItem(PURCHASE_INTENT_STORAGE_KEY);
+    if (!stored) return;
+
+    try {
+      const intent = JSON.parse(stored) as { plan?: unknown; createdAt?: unknown };
+      const validPlan = intent.plan === 'silver' || intent.plan === 'gold';
+      const createdAt = typeof intent.createdAt === 'number' ? intent.createdAt : 0;
+      const stillValid = Date.now() - createdAt <= PURCHASE_INTENT_TTL_MS;
+
+      if (validPlan && stillValid) {
+        setIsSubscriptionOpen(true);
+      }
+    } catch {
+      // Invalid/stale intent is discarded below.
+    } finally {
+      localStorage.removeItem(PURCHASE_INTENT_STORAGE_KEY);
+    }
+  }, [session?.isLoggedIn, userProfile?.id, setIsSubscriptionOpen]);
 
   const handleLogout = async () => {
     console.log('[AppLayout] 🚪 Initiating targeted logout...');

@@ -10,6 +10,8 @@ import { OfflineIndicator } from '../features/SimulationFactory';
 import { AppProviders } from '../providers/AppProviders';
 import { isPublicPath } from '../router/publicRoutes';
 
+const PURCHASE_INTENT_STORAGE_KEY = 'profeplan:purchase-intent';
+
 const PageLoader = () => (
   <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-50 text-slate-400 p-6">
     <div className="flex items-center mb-4">
@@ -50,6 +52,16 @@ export const RootLayout: React.FC = () => {
   const userId = (session as any)?.userId || (session as any)?.user_id || (session as any)?.id;
   const { needsSelection } = useActiveSchool(userId);
   const location = useLocation();
+
+  React.useEffect(() => {
+    const plan = new URLSearchParams(location.search).get('plan')?.toLowerCase();
+    if (plan !== 'silver' && plan !== 'gold') return;
+
+    localStorage.setItem(
+      PURCHASE_INTENT_STORAGE_KEY,
+      JSON.stringify({ plan, createdAt: Date.now() })
+    );
+  }, [location.search]);
 
   const { showEmergencyReset } = useAppBootstrap({
     loading,

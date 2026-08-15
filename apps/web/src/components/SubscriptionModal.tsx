@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
-import { X, Check, CreditCard, Zap, Crown, ShieldCheck } from 'lucide-react';
-import { createCheckoutSession } from '../services/stripeService';
+import { X, Check, Zap, Crown, ShieldCheck } from 'lucide-react';
 import type { UserProfile } from '../types';
 
-// Replace these with your actual Stripe Price IDs (starting with price_...)
-// You can find these inside the Products:
-// Conta PJ oficial WR TECH AI
-// SILVER (pagamento único): prod_UyXrOejWaOHI4j
-// GOLD (assinatura mensal): prod_UtI9NVcQK04CrP
+// Payment Links da conta oficial WR TECH AI.
+// SILVER: compra única de 40 créditos, preço regular R$ 50,00.
+// GOLD: assinatura mensal, preço regular R$ 50,00/mês.
 const PAYMENT_LINKS = {
   SILVER_LINK: 'https://buy.stripe.com/28E3cudNyajg3UHbAm2VG00',
   GOLD_LINK: 'https://buy.stripe.com/8x2bJ010Mdvs76T0VI2VG01',
+};
+
+// Códigos promocionais ativos na Stripe em 2026.
+// Silver contém "_" e, por isso, não deve ser enviado via prefilled_promo_code.
+// Gold é alfanumérico e pode ser pré-preenchido no Payment Link.
+const PROMOTION_CODES = {
+  SILVER: 'TEST_DRIVE',
+  GOLD: 'BOFNZFBM',
 };
 
 interface SubscriptionModalProps {
@@ -31,12 +36,18 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
     setError('');
 
     try {
-      const link = planType === 'gold' ? PAYMENT_LINKS.GOLD_LINK : PAYMENT_LINKS.SILVER_LINK;
-      // Construct dynamic URL with client_reference_id (userId) and prefilled_email
-      const paymentUrl = `${link}?client_reference_id=${userProfile.id}&prefilled_email=${userProfile.email}`;
+      const isGold = planType === 'gold';
+      const link = isGold ? PAYMENT_LINKS.GOLD_LINK : PAYMENT_LINKS.SILVER_LINK;
+      const params = new URLSearchParams({
+        client_reference_id: userProfile.id,
+        prefilled_email: userProfile.email,
+      });
 
-      // Redirect to Stripe
-      window.location.href = paymentUrl;
+      if (isGold) {
+        params.set('prefilled_promo_code', PROMOTION_CODES.GOLD);
+      }
+
+      window.location.href = `${link}?${params.toString()}`;
     } catch (err: any) {
       setError(err.message || 'Erro ao iniciar pagamento');
       setLoading(null);
@@ -56,6 +67,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+            aria-label="Fechar planos"
           >
             <X className="w-6 h-6 text-slate-400" />
           </button>
@@ -91,11 +103,11 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
             </button>
           </div>
 
-          {/* CREDITS PACKS */}
+          {/* SILVER */}
           <div className="border border-blue-200 bg-blue-50/30 rounded-2xl p-6 flex flex-col items-center text-center relative overflow-hidden">
             <div className="absolute top-0 w-full h-1 bg-blue-500"></div>
             <div className="absolute top-3 right-3 bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase">
-              Flexível
+              Compra única
             </div>
             <h3 className="font-black text-blue-500 uppercase tracking-widest text-sm mb-4">
               Pacote de Créditos
@@ -103,26 +115,34 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
             <div className="mb-4 p-4 bg-blue-100 rounded-full">
               <Zap className="w-8 h-8 text-blue-600" />
             </div>
-            <h4 className="text-xl font-bold text-slate-900 mb-2">Profeplan Silver</h4>
-            <p className="text-slate-500 text-sm mb-6 flex-1">
-              Flexibilidade e produtividade sob medida.
+            <h4 className="text-xl font-bold text-slate-900 mb-2">ProfePlan Silver</h4>
+            <p className="text-slate-500 text-sm mb-4 flex-1">
+              40 créditos adicionais em pagamento único, sem assinatura mensal.
             </p>
 
-            <div className="w-full space-y-3">
-              <button
-                onClick={() => handlePurchase('silver')}
-                disabled={!!loading}
-                className="w-full py-3 bg-white border border-blue-200 hover:border-blue-500 hover:shadow-md text-slate-700 font-bold rounded-xl transition-all flex items-center justify-between px-4"
-              >
-                <span>40 Créditos</span>
-                <span className="text-blue-600">R$ 30,00</span>
-              </button>
+            <div className="w-full mb-4 rounded-xl border border-blue-100 bg-white p-3 text-left">
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Preço regular</span>
+                <span className="line-through">R$ 50,00</span>
+              </div>
+              <div className="mt-1 flex items-end justify-between gap-2">
+                <span className="text-xs font-bold text-blue-600">1ª compra</span>
+                <span className="text-xl font-black text-blue-700">R$ 40,00</span>
+              </div>
             </div>
-            {loading === 'silver' && (
-              <p className="text-xs text-blue-500 font-bold mt-2 animate-pulse">
-                Redirecionando...
-              </p>
-            )}
+
+            <button
+              onClick={() => handlePurchase('silver')}
+              disabled={!!loading}
+              className="w-full py-3 bg-white border border-blue-200 hover:border-blue-500 hover:shadow-md text-blue-700 font-bold rounded-xl transition-all"
+            >
+              {loading === 'silver' ? 'Redirecionando...' : 'Comprar 40 créditos'}
+            </button>
+            <p className="text-[10px] text-slate-500 mt-3 font-medium leading-relaxed">
+              Para pagar R$ 40,00 na primeira transação, use o código{' '}
+              <strong className="text-blue-700">{PROMOTION_CODES.SILVER}</strong> no checkout
+              Stripe. Fora da promoção, o valor é R$ 50,00.
+            </p>
           </div>
 
           {/* GOLD */}
@@ -137,11 +157,21 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
             <div className="mb-4 p-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full shadow-lg shadow-amber-500/30">
               <Crown className="w-8 h-8 text-white" />
             </div>
-            <h4 className="text-xl font-bold text-slate-900 mb-2">Profeplan Gold</h4>
-            <p className="text-amber-800/70 text-sm mb-6 flex-1">
-              Produtividade sem limites. IA Ilimitada.
+            <h4 className="text-xl font-bold text-slate-900 mb-2">ProfePlan Gold</h4>
+            <p className="text-amber-800/70 text-sm mb-4 flex-1">
+              Gerações ilimitadas enquanto a assinatura estiver ativa.
             </p>
-            <ul className="text-left space-y-3 mb-8 w-full">
+            <div className="w-full mb-4 rounded-xl border border-amber-200 bg-white/80 p-3 text-left">
+              <div className="flex items-center justify-between text-xs text-amber-800/60">
+                <span>Preço regular</span>
+                <span className="line-through">R$ 50,00/mês</span>
+              </div>
+              <div className="mt-1 flex items-end justify-between gap-2">
+                <span className="text-xs font-bold text-amber-700">por 6 meses</span>
+                <span className="text-xl font-black text-amber-700">R$ 37,50/mês</span>
+              </div>
+            </div>
+            <ul className="text-left space-y-3 mb-6 w-full">
               <li className="flex items-center gap-2 text-sm text-slate-700">
                 <Check size={16} className="text-amber-500" /> <b>Gerações Ilimitadas</b>
               </li>
@@ -157,9 +187,12 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
               disabled={!!loading}
               className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-black rounded-xl shadow-xl shadow-amber-600/20 transition-all transform active:scale-[0.98]"
             >
-              {loading === 'gold' ? 'Processando...' : 'Assinar Agora - R$ 50/mês'}
+              {loading === 'gold' ? 'Processando...' : 'Assinar por R$ 37,50/mês'}
             </button>
-            <p className="text-[10px] text-amber-700/60 mt-3 font-medium">Cancele quando quiser.</p>
+            <p className="text-[10px] text-amber-700/70 mt-3 font-medium leading-relaxed">
+              25% de desconto pré-preenchido no Stripe por 6 meses. Depois, R$ 50,00/mês. Cancele
+              quando quiser.
+            </p>
           </div>
         </div>
 
