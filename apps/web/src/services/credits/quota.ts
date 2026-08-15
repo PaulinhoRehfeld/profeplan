@@ -2,17 +2,27 @@ import { supabase } from '../supabaseClient';
 import { UserProfile } from '../../types';
 import { isHardcodedAdmin } from '../../constants';
 import { getUserProfile } from '../profile/profileRepository';
+import { isGovernedCreditConsumerEnabled } from './creditConsumerFlags';
 
 /**
  * Módulo de créditos / quota.
  * Extraído de userService.ts (refatoração Fase 1 — ver docs/REFACTORING_METHODOLOGY.md).
- * Comportamento idêntico ao original; coberto por userService.characterization.test.ts.
+ *
+ * Lote 1.3C.4 keeps this compatibility layer intact while the governed consumer
+ * flag is OFF. Once the flag is deliberately activated after all billable saves
+ * have migrated, generation/preview/chat calls that still pass through these
+ * legacy helpers become NON_BILLABLE and the ledger-backed save boundaries are
+ * the only economic authority.
  */
 
 export const checkUsageQuota = async (
   userId: string,
   preloadedProfile?: UserProfile | null
 ): Promise<{ allowed: boolean; message?: string }> => {
+  if (isGovernedCreditConsumerEnabled()) {
+    return { allowed: true };
+  }
+
   const profile = preloadedProfile ?? (await getUserProfile(userId));
 
   // Profile Not Found
@@ -109,6 +119,13 @@ export const incrementUserUsage = async (
   userId: string,
   taskType: string = 'unknown'
 ): Promise<void> => {
+  if (isGovernedCreditConsumerEnabled()) {
+    console.log(
+      `[userService] Governed consumers active; legacy deduction skipped for task type: ${taskType}`
+    );
+    return;
+  }
+
   // Only deduct credits if it's an AI or Content Generation task
   const paidTasks = ['generate', 'document', 'chat', 'term_plan', 'aula', 'simulation'];
   if (!paidTasks.includes(taskType)) {

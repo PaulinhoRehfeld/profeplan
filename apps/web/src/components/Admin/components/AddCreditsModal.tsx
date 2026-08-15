@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Coins } from 'lucide-react';
 import { UserProfile } from '../../../types';
 import { addUserCredits } from '../../../services/ProfileService';
+import { isGovernedCreditProducerEnabled } from '../../../services/credits/creditProducerFlags';
 
 interface AddCreditsModalProps {
   isOpen: boolean;
@@ -10,6 +11,14 @@ interface AddCreditsModalProps {
   onCreditsAdded: () => void;
 }
 
+const createAdminAdjustmentOperationId = (): string => {
+  const randomId =
+    typeof globalThis.crypto?.randomUUID === 'function'
+      ? globalThis.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return `admin-adjustment-ui-v1:${randomId}`;
+};
+
 export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
   isOpen,
   user,
@@ -17,18 +26,49 @@ export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
   onCreditsAdded,
 }) => {
   const [creditAmount, setCreditAmount] = useState(10);
+  const [pendingOperationId, setPendingOperationId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const governed = isGovernedCreditProducerEnabled();
+
+  useEffect(() => {
+    if (isOpen) {
+      setCreditAmount(10);
+      setPendingOperationId(null);
+      setIsSubmitting(false);
+    }
+  }, [isOpen, user?.id]);
 
   if (!isOpen || !user) return null;
 
+  const setNewAmount = (amount: number) => {
+    setCreditAmount(amount);
+    // Changing amount creates a different economic intent. Never reuse a prior
+    // idempotency key with a different request fingerprint.
+    setPendingOperationId(null);
+  };
+
   const handleIncrementCredits = async () => {
-    if (!user) return;
-    const res = await addUserCredits(user.id, creditAmount);
-    if (res.error) {
-      alert('Erro ao adicionar créditos: ' + res.error.message);
-    } else {
+    if (!user || isSubmitting) return;
+
+    const operationId = pendingOperationId ?? createAdminAdjustmentOperationId();
+    if (!pendingOperationId) setPendingOperationId(operationId);
+
+    setIsSubmitting(true);
+    try {
+      const res = await addUserCredits(user.id, creditAmount, operationId);
+      if (res.error) {
+        // Keep pendingOperationId so an exact retry cannot duplicate a grant
+        // that may have committed before a transport failure.
+        alert('Erro ao adicionar créditos: ' + res.error.message);
+        return;
+      }
+
       alert('Créditos adicionados com sucesso!');
+      setPendingOperationId(null);
       setCreditAmount(10);
       onCreditsAdded();
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -42,7 +82,7 @@ export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
         <p className="text-sm text-slate-500 text-center mb-6">
           Para: <span className="font-bold text-slate-700">{user.email}</span>
           <br />
-          Saldo Atual: {user.credits}
+          {governed ? 'Saldo gerenciado pelo ledger contábil' : `Saldo Atual: ${user.credits}`}
         </p>
 
         <div className="space-y-4">
@@ -56,7 +96,7 @@ export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
               value={creditAmount}
               onChange={(e) => {
                 const val = e.target.value;
-                setCreditAmount(val === '' ? 0 : parseInt(val, 10));
+                setNewAmount(val === '' ? 0 : parseInt(val, 10));
               }}
               className="w-full px-4 py-3 border border-slate-300 rounded-xl text-center text-lg font-bold text-indigo-700 focus:ring-2 focus:ring-amber-200 outline-none"
             />
@@ -66,7 +106,7 @@ export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
             {[10, 50, 100, 500].map((v) => (
               <button
                 key={v}
-                onClick={() => setCreditAmount(v)}
+                onClick={() => setNewAmount(v)}
                 className={`py-1 rounded-lg text-xs font-bold transition-colors ${creditAmount === v ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
                 +{v}
@@ -78,15 +118,17 @@ export const AddCreditsModal: React.FC<AddCreditsModalProps> = ({
         <div className="flex gap-3 mt-8">
           <button
             onClick={onClose}
-            className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200"
+            disabled={isSubmitting}
+            className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 disabled:opacity-60"
           >
             Cancelar
           </button>
           <button
             onClick={handleIncrementCredits}
-            className="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 shadow-lg shadow-amber-200"
+            disabled={isSubmitting}
+            className="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 shadow-lg shadow-amber-200 disabled:opacity-60"
           >
-            Confirmar
+            {isSubmitting ? 'Processando...' : 'Confirmar'}
           </button>
         </div>
       </div>
