@@ -32,9 +32,7 @@ const configureFromMock = () => {
           selectMock(table, ...args);
           return {
             eq: () => ({
-              order: () => ({
-                then: () => {},
-              }),
+              order: async () => ({ data: [], error: null }),
             }),
           } as any;
         },
@@ -47,9 +45,7 @@ const configureFromMock = () => {
           return {
             eq: () => ({
               eq: () => ({
-                order: () => ({
-                  then: () => {},
-                }),
+                order: async () => ({ data: [], error: null }),
               }),
             }),
           } as any;
@@ -203,12 +199,13 @@ describe('TermPlanningService - saveTermPlan & fetchTermPlans', () => {
     fromMock.mockImplementationOnce(() => ({
       select: () => ({
         eq: () => ({
-          order: () => ({ data: null, error: { message: 'erro' } }),
+          order: async () => ({ data: null, error: { message: 'erro' } }),
         }),
       }),
     }));
 
     const plans = await fetchTermPlans(userId);
     expect(Array.isArray(plans)).toBe(true);
+    expect(plans).toHaveLength(0);
   });
 });
