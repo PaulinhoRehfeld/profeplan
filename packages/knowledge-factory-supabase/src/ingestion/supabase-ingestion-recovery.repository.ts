@@ -1,10 +1,12 @@
-import type { IngestionRecoveryRepository } from '@profeplan/knowledge-factory';
+import type {
+  IngestionRecoveryRepository,
+  TemporaryStagingDiscardCommand,
+} from '@profeplan/knowledge-factory';
 import type {
   IngestionRecoverySnapshot,
   IngestionRunRef,
   IngestionStagingArtifactSnapshot,
   PrepareIngestionStagingArtifact,
-  TemporaryStagingDiscardCommand,
   TemporaryStagingDiscardReceipt,
 } from '@profeplan/types';
 import type { SupabaseSystemContext } from '../context/supabase-system-context.ts';
