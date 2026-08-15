@@ -2,7 +2,7 @@
 
 Data de consolidação inicial: 7 de agosto de 2026.
 
-Estado de navegação atualizado em 14 de agosto de 2026.
+Estado de navegação atualizado em 15 de agosto de 2026.
 
 ## 1. Finalidade
 
@@ -84,12 +84,12 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C — C.1 CONCLUÍDO; C.2.1–C.2.3 INTEGRADOS; C.2.4 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 CONCLUÍDO; C.2.1–C.2.4 INTEGRADOS; C.2.5 BLOQUEADO  ← ESTADO ATUAL
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
 ✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
-🔵 C.2 Ingestão controlada — definição integrada; C.2.1–C.2.3 integrados; C.2.4 bloqueado
+🔵 C.2 Ingestão controlada — definição integrada; C.2.1–C.2.4 integrados; C.2.5 bloqueado
 ⬜ C.3 Extração e validação
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
@@ -356,7 +356,7 @@ C.2.2 foi integrado pelo PR nº 67 no commit
 `61747e439323dcc165c8d3a084e4d73c66f06c4a`, com CI pós-merge nº 412 verde. A fronteira de intake/staging
 está em
 [`12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md`](12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md)
-e o estado pós-merge no Checkpoint 046. C.2.3 foi integrado pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, tree `4b47c853a2cb041ca895477abc3c710ca9393b94`, com CI pós-merge nº 430 verde; sua fronteira está em [`12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md). O estado pós-merge passa ao Checkpoint 047. C.2.4–C.2.6 e C.3–C.7 permanecem bloqueados.
+e o estado pós-merge no Checkpoint 046. C.2.3 foi integrado pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, tree `4b47c853a2cb041ca895477abc3c710ca9393b94`, com CI pós-merge nº 430 verde; sua fronteira está em [`12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md) e o estado pós-merge no Checkpoint 047. C.2.4 foi integrado pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, tree `92411aec0c9da3789bb91c87d8f423a3c69f929d`, com CI pós-merge nº 523 verde; sua fronteira está em [`12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md). O estado pós-merge passa ao Checkpoint 048. C.2.5–C.2.6 e C.3–C.7 permanecem bloqueados.
 
 O mapa integral C.0–C.7 está definido em
 [`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
@@ -379,7 +379,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 |---|---|---|---|
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1–C.2.3 integrados; C.2.4 bloqueado** |
+| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **C.2.1–C.2.4 integrados; C.2.5 bloqueado** |
 | C.3 | Extração e validação | EPIC-003; US-003.1 | bloqueado |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
