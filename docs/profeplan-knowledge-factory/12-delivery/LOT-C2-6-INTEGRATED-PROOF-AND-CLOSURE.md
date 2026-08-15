@@ -10,15 +10,25 @@ Checkpoint de autoridade na abertura: `CONTINUITY-CHECKPOINT-049.md`.
 
 ## Status
 
-**C.2.6 em validação técnica. C.2 ainda não está formalmente encerrado e C.3 permanece bloqueado.**
+**C.2.6 foi integrado pelo PR nº 93 e revalidado pós-merge. C.2 satisfaz seus critérios globais de saída e é encerrado canonicamente pela reconciliação documental que cria o Checkpoint 050. C.3 permanece bloqueado.**
 
-Este sublote não cria nova capacidade funcional de ingestão. Ele consolida, em uma prova remota e descartável, as fronteiras já integradas em C.2.1–C.2.5 e verifica os critérios globais de saída de C.2.
+Este sublote não criou nova capacidade funcional de ingestão. Ele consolidou, em uma prova remota e descartável, as fronteiras já integradas em C.2.1–C.2.5 e verificou os critérios globais de saída de C.2.
 
-Nenhum merge desta branch, mesmo que tecnicamente verde, autoriza automaticamente C.3. O fechamento canônico de C.2 depende de revisão humana, integração governada, CI pós-merge e checkpoint posterior.
+O fechamento de C.2 não autoriza automaticamente C.3. A abertura de C.3 exige contexto, definição, inspeção e autorização humana próprios.
+
+### Integração técnica de C.2.6
+
+- PR nº 93: `test(knowledge-factory): prove C.2.6 integrated closure`;
+- HEAD técnico validado: `4f010128b5909224bff52914672cf9a080136531`;
+- tree do HEAD técnico: `a0ba9baf16adb427e93d827e11c3628852aec634`;
+- squash integrado: `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`;
+- tree do squash: `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`;
+- parent direto: `57d7e387676224ef6fb5e3101270c0b6e4f8c245`;
+- CI pós-merge: CI Pipeline nº 562 — `success`.
 
 ## 1. Objetivo
 
-C.2.6 deve demonstrar que a ingestão controlada funciona como uma fronteira coerente e fechada entre C.1 e C.3:
+C.2.6 demonstrou que a ingestão controlada funciona como uma fronteira coerente e fechada entre C.1 e C.3:
 
 ```text
 C.1 — identidade, competência e autorização
@@ -38,11 +48,11 @@ APPROVED_FOR_EXTRACTION
 [STOP — C.3 não é executado por C.2]
 ```
 
-A prova deve usar exclusivamente fixtures sintéticas, PostgreSQL/Supabase/Storage descartáveis e GitHub Actions remoto.
+A prova utilizou exclusivamente fixtures sintéticas, PostgreSQL/Supabase/Storage descartáveis e GitHub Actions remoto.
 
 ## 2. Não escopo
 
-C.2.6 não autoriza nem implementa:
+C.2.6 não autorizou nem implementou:
 
 - novo estado de ingestão;
 - nova transição de state machine;
@@ -80,7 +90,7 @@ Permanece autoridade de:
 
 ### C.2
 
-Permanece autoridade de:
+Encerra sua responsabilidade como autoridade de:
 
 - lifecycle operacional do `processing_run`;
 - staging temporário;
@@ -96,7 +106,7 @@ Permanece bloqueado e será, em contexto próprio, a autoridade de execução de
 
 ## 4. Estratégia de fechamento
 
-C.2.6 não duplica cada sublote em um novo sistema. O fechamento utiliza quatro camadas de evidência:
+C.2.6 não duplicou cada sublote em um novo sistema. O fechamento utilizou quatro camadas de evidência:
 
 1. **reexecução regressiva** dos contratos, policies, adapters e provas SQL já integrados;
 2. **reexecução física** de staging/integridade/cleanup em Storage descartável;
@@ -109,7 +119,7 @@ C.2.6 não duplica cada sublote em um novo sistema. O fechamento utiliza quatro 
 
 `.github/workflows/knowledge-factory-c2-6-closure-ci.yml`
 
-Responsabilidades:
+Responsabilidades comprovadas:
 
 - iniciar uma única stack Supabase descartável com Storage;
 - revalidar contrato `1.0.0` e provider-neutrality;
@@ -251,7 +261,7 @@ O fechamento preserva deny-by-default por meio de:
 - ausência de secret real;
 - supressão de credenciais descartáveis nos logs de startup.
 
-## 8. Idempotência, replay e concorrência
+## 8. Idempotência, replay, fingerprint e concorrência
 
 C.2.6 não redefine a semântica já aprovada.
 
@@ -270,6 +280,16 @@ A prova consolidada inclui:
 - CAS por estado/versão/sequence;
 - concorrência multi-session C.2.4;
 - corrida de decisão humana C.2.5.
+
+### Correção de canonicalização descoberta pelo E2E
+
+O primeiro run integrado expôs uma divergência preexistente no cálculo JavaScript do fingerprint v1. O PostgreSQL ordenava chaves JSON com `COLLATE "C"`; o JS usava `localeCompare('en')`.
+
+A correção alterou somente a implementação JS para comparação bytewise UTF-8 compatível com a ordem canônica do banco. O vetor de regressão explícito fixa o fingerprint:
+
+`7a812ddb177c2ab737ab429a925b74c167638af7ce4ac6ed63bd86b512399317`.
+
+A correção não alterou contrato, migration, state machine ou `INGESTION_CONTRACT_VERSION`, que permanece `1.0.0`.
 
 ## 9. Staging, integridade e descarte
 
@@ -319,36 +339,51 @@ Em produção futura, qualquer reversão continuará forward-only e auditável, 
 
 ## 12. Critério de saída técnico de C.2.6
 
-O PR técnico de C.2.6 somente estará apto à revisão humana final quando:
+Os dez critérios técnicos foram satisfeitos pelo HEAD final do PR nº 93:
 
-1. CI geral estiver verde;
-2. `Knowledge Factory C.2.6 Closure CI` estiver verde;
-3. nenhum arquivo de produção, frontend ou C.3 tiver sido introduzido;
-4. nenhuma migration funcional nova tiver sido criada;
-5. `INGESTION_CONTRACT_VERSION` continuar `1.0.0`;
-6. state machine C.2.1 permanecer inalterada;
-7. E2E correlacionado concluir em `APPROVED_FOR_EXTRACTION` sem executar C.3;
-8. caminho cancelado concluir em `CANCELLED` + `DISCARDED`;
-9. regressões de atomicidade e concorrência permanecerem verdes;
-10. diff integral for revisado humanamente.
+1. CI geral verde — CI Pipeline nº 560;
+2. `Knowledge Factory C.2.6 Closure CI` verde — run nº 3;
+3. nenhum arquivo de produção, frontend ou C.3 introduzido;
+4. nenhuma migration funcional nova criada;
+5. `INGESTION_CONTRACT_VERSION = 1.0.0` preservado;
+6. state machine C.2.1 inalterada;
+7. E2E correlacionado concluído em `APPROVED_FOR_EXTRACTION` sem executar C.3;
+8. caminho cancelado concluído em `CANCELLED` + `DISCARDED`;
+9. regressões de atomicidade e concorrência verdes;
+10. diff integral revisado humanamente antes do merge.
 
-## 13. Fechamento canônico posterior ao merge
+Além do gate específico, também fecharam em `success` no HEAD final:
 
-Mesmo se todos os gates acima passarem, C.2 somente será declarado **concluído canonicamente** depois de:
+- Knowledge Factory C.2.4 Recovery CI nº 44;
+- Knowledge Factory C.2.5 Human Review CI nº 10;
+- Knowledge Factory DB CI nº 187;
+- Knowledge Factory C.1.5 Lifecycle CI nº 84.
 
-1. autorização humana específica para merge;
-2. integração do PR técnico de C.2.6;
-3. reconfirmação SHA/tree/parent da `main`;
-4. CI pós-merge verde;
-5. reconciliação documental global;
-6. criação de checkpoint posterior ao 049;
-7. declaração explícita de que C.3 continua bloqueado.
+## 13. Integração, corrida concorrente e fechamento canônico
 
-Até essa sequência ocorrer, o Checkpoint 049 permanece a autoridade vigente.
+A autorização humana de merge exigia HEAD exato, base esperada, `behind_by: 0`, mergeabilidade e seis workflows técnicos verdes, com exceção restrita aos statuses Vercel associados a `api-deployments-free-per-day`.
+
+A verificação imediatamente anterior confirmou essas condições sobre a `main` em:
+
+`0e3a2984b61c1518cd8382a2e45c35c52e86ceaf`.
+
+Entre essa verificação e a operação de squash, o PR nº 92 da frente comercial foi integrado, criando:
+
+`57d7e387676224ef6fb5e3101270c0b6e4f8c245`.
+
+A API protegeu o HEAD do PR nº 93 por `expected_head_sha`, mas não ofereceu guarda equivalente do base SHA na mesma operação. O squash de C.2.6 foi então aplicado sobre o novo tip da `main` e gerou:
+
+`3b8c2d317542bd701ea61e671f9b6e4334f61b1c`.
+
+A comparação direta entre o parent `57d7e387...` e o squash `3b8c2d31...` mostrou exatamente os sete arquivos de C.2.6, sem arquivo comercial no diff técnico e sem perda do avanço concorrente.
+
+O CI Pipeline nº 562 foi executado por `push` na árvore composta final e terminou `success` com Prettier, ESLint, TypeScript, Build e Tests verdes.
+
+A reconciliação documental posterior cria o Checkpoint 050 e declara C.2 canonicamente encerrado, mantendo C.3 bloqueado.
 
 ## 14. Bloqueios preservados
 
-Continuam bloqueados durante e após este PR técnico:
+Continuam bloqueados após o fechamento de C.2:
 
 - C.3–C.7;
 - conteúdo real;
@@ -360,3 +395,5 @@ Continuam bloqueados durante e após este PR técnico:
 - produção;
 - wiring de runtime;
 - qualquer execução de extração.
+
+O próximo passo arquitetural candidato é somente a inspeção e definição governada de C.3, em contexto próprio e mediante nova autorização humana específica.
