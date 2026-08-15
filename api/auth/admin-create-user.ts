@@ -7,6 +7,7 @@ import { supabaseAdmin } from '../_lib/supabaseAdmin';
 import { sendWelcomeEmail } from '../_lib/email';
 
 const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
+const governedCreditProducersEnabled = () => process.env.VITE_GOVERNED_CREDIT_PRODUCERS === 'true';
 
 const isAllowedOrigin = (origin: string): boolean => {
   if (!origin) return false;
@@ -69,7 +70,7 @@ function validate(body: unknown): AdminCreateUserBody | null {
     role,
     schoolId: String(b.schoolId ?? b.school_id ?? '').trim() || undefined,
     tier: (b.tier === 'GOLD' ? 'GOLD' : 'SILVER') as AdminCreateUserBody['tier'],
-    credits: typeof b.credits === 'number' ? b.credits : 10,
+    credits: typeof b.credits === 'number' ? b.credits : undefined,
     sendWelcome: b.sendWelcome !== false,
   };
 }
@@ -125,9 +126,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     role,
     schoolId,
     tier = 'SILVER',
-    credits = 10,
+    credits,
     sendWelcome,
   } = body;
+  const governedProducers = governedCreditProducersEnabled();
+
+  // 1.3C.4E: once positive producers are governed, this endpoint must not be
+  // an alternate authority capable of minting profiles.credits. Fail closed if
+  // an old or forged client still attempts to send a legacy initial balance.
+  if (governedProducers && credits !== undefined) {
+    return res.status(400).json({
+      error:
+        'Créditos iniciais são governados pelo ledger. Crie o usuário sem saldo legado e use um ajuste administrativo governado quando necessário.',
+    });
+  }
+
+  const legacyCredits = credits ?? 10;
 
   try {
     log.info('[AdminCreateUser] Criando usuário', { email, role, createdBy: adminUser.email });
@@ -170,21 +184,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Erro inesperado: usuário não retornou ID.' });
     }
 
-    // Upsert do perfil
-    const { error: profileError } = await supabaseAdmin.from('profiles').upsert(
-      {
-        id: userId,
-        email,
-        role,
-        tier,
-        credits,
-        is_unlimited: tier === 'GOLD',
-        is_admin: role === 'admin',
-        school_id: schoolId || null,
-        allowed_features: ['all'],
-      },
-      { onConflict: 'id' }
-    );
+    // Upsert do perfil. No modo governado, o campo econômico é deliberadamente
+    // omitido: onboarding/grants pertencem às fronteiras 1.3C.3 do banco.
+    const profilePayload = {
+      id: userId,
+      email,
+      role,
+      tier,
+      is_unlimited: tier === 'GOLD',
+      is_admin: role === 'admin',
+      school_id: schoolId || null,
+      allowed_features: ['all'],
+      ...(governedProducers ? {} : { credits: legacyCredits }),
+    };
+
+    const { error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .upsert(profilePayload, { onConflict: 'id' });
 
     if (profileError) {
       log.error('[AdminCreateUser] Falha no perfil', { userId, error: profileError.message });
@@ -201,7 +217,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await sendWelcomeEmail({ to: email, fullName });
     }
 
-    log.audit('ADMIN_USER_CREATED', adminUser.email, { targetEmail: email, role, tier });
+    log.audit('ADMIN_USER_CREATED', adminUser.email, {
+      targetEmail: email,
+      role,
+      tier,
+      creditAuthority: governedProducers ? 'ledger' : 'legacy_profile',
+    });
 
     return res.status(201).json({
       success: true,

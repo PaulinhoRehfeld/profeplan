@@ -18,6 +18,7 @@ describe('databaseService - governed TermPlan mirror suppression', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'false');
+    vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'false');
 
     mocks.select.mockResolvedValue({
       data: [{ id: 'generated-1' }],
@@ -40,6 +41,22 @@ describe('databaseService - governed TermPlan mirror suppression', () => {
 
   it('não cria escrita derivada fora da transação quando o piloto está ativo', async () => {
     vi.stubEnv('VITE_GOVERNED_TERM_PLAN_SAVE', 'true');
+
+    const result = await saveGeneratedContent(
+      'user-1',
+      'trimestral',
+      'TermPlans',
+      'Plano',
+      '# conteúdo'
+    );
+
+    expect(result).toBeNull();
+    expect(mocks.from).not.toHaveBeenCalled();
+    expect(mocks.insert).not.toHaveBeenCalled();
+  });
+
+  it('também suprime o mirror quando o cutover global de consumidores está ativo', async () => {
+    vi.stubEnv('VITE_GOVERNED_CREDIT_CONSUMERS', 'true');
 
     const result = await saveGeneratedContent(
       'user-1',
