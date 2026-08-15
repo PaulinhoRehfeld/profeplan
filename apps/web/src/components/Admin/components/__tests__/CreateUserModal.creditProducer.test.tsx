@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -35,6 +35,7 @@ describe('CreateUserModal - governed initial credit authority', () => {
   });
 
   afterEach(() => {
+    cleanup();
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();
   });
