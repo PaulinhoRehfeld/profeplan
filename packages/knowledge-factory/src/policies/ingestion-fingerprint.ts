@@ -1,5 +1,29 @@
 import type { IngestionCommand } from '@profeplan/types';
 
+const UTF8_ENCODER = new TextEncoder();
+
+/**
+ * PostgreSQL canonical fingerprint v1 orders JSON object keys with COLLATE "C".
+ * For the UTF-8 database encoding used by the Knowledge Factory, that is a
+ * bytewise comparison. Intl/locale-aware collation is intentionally forbidden
+ * here because it can reorder camelCase keys such as requestId/requestedAt and
+ * produce a fingerprint that the database correctly rejects.
+ */
+function compareCanonicalObjectKeys(left: string, right: string): number {
+  const leftBytes = UTF8_ENCODER.encode(left);
+  const rightBytes = UTF8_ENCODER.encode(right);
+  const length = Math.min(leftBytes.length, rightBytes.length);
+
+  for (let index = 0; index < length; index += 1) {
+    const difference = leftBytes[index] - rightBytes[index];
+    if (difference !== 0) {
+      return difference;
+    }
+  }
+
+  return leftBytes.length - rightBytes.length;
+}
+
 function canonicalize(value: unknown): string {
   if (Array.isArray(value)) {
     return `[${value.map((item) => canonicalize(item)).join(',')}]`;
@@ -7,7 +31,7 @@ function canonicalize(value: unknown): string {
   if (value !== null && typeof value === 'object') {
     const entries = Object.entries(value as Record<string, unknown>)
       .filter(([, item]) => item !== undefined)
-      .sort(([left], [right]) => left.localeCompare(right, 'en', { sensitivity: 'variant' }));
+      .sort(([left], [right]) => compareCanonicalObjectKeys(left, right));
     return `{${entries
       .map(([key, item]) => `${JSON.stringify(key)}:${canonicalize(item)}`)
       .join(',')}}`;
