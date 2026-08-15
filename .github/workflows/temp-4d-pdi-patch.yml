@@ -30,61 +30,52 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
+          def replace_once(text: str, old: str, new: str, label: str) -> str:
+              if old not in text:
+                  raise RuntimeError(f'missing patch anchor: {label}')
+              return text.replace(old, new, 1)
+
           hook = Path('apps/web/src/features/PDI/usePDIManager.ts')
           text = hook.read_text()
 
-          old = "import { resolveAuthUid } from '../../utils/authUtils';\n"
-          new = """import { resolveAuthUid } from '../../utils/authUtils';
+          text = replace_once(
+              text,
+              "import { resolveAuthUid } from '../../utils/authUtils';\n",
+              """import { resolveAuthUid } from '../../utils/authUtils';
           import { isGovernedCreditConsumerEnabled } from '../../services/credits/creditConsumerFlags';
           import {
             savePdiGeneratedReportGoverned,
             validatePdiAdaptationGoverned,
           } from './PdiCreditService';
-          """
-          assert old in text
-          text = text.replace(old, new, 1)
+          """,
+              'hook imports',
+          )
 
-          old = "  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);\n"
-          new = """  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);
+          text = replace_once(
+              text,
+              "  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);\n",
+              """  const [consolidatorStudent, setConsolidatorStudent] = useState<Student | null>(null);
             const [reportArtifactIds, setReportArtifactIds] = useState<Record<string, string>>({});
-          """
-          assert old in text
-          text = text.replace(old, new, 1)
+          """,
+              'report identity state',
+          )
 
-          old = """      setAdaptations((prev) => ({
-                ...prev,
-                [student.id]: {
-                  studentId: student.id,
-                  studentName: student.name,
-                  originalContent: selectedLesson.content,
-                  adaptedContent: markdownResult,
-                  status: 'completed',
-                  block9Payload,
-                },
-              }));
-          """
-          new = """      const artifactId = crypto.randomUUID();
+          text = replace_once(
+              text,
+              "      setAdaptations((prev) => ({\n        ...prev,\n        [student.id]: {\n",
+              "      const artifactId = crypto.randomUUID();\n\n      setAdaptations((prev) => ({\n        ...prev,\n        [student.id]: {\n",
+              'adaptation artifact creation',
+          )
 
-              setAdaptations((prev) => ({
-                ...prev,
-                [student.id]: {
-                  studentId: student.id,
-                  studentName: student.name,
-                  originalContent: selectedLesson.content,
-                  adaptedContent: markdownResult,
-                  status: 'completed',
-                  block9Payload,
-                  ...({ artifactId } as any),
-                },
-              }));
-          """
-          assert old in text
-          text = text.replace(old, new, 1)
+          text = replace_once(
+              text,
+              "          block9Payload,\n        },\n      }));\n",
+              "          block9Payload,\n          ...({ artifactId } as any),\n        },\n      }));\n",
+              'adaptation artifact state',
+          )
 
-          marker = """      let loggedEvent = null;
-              if (schoolStudentId) {
-          """
-          insert = """      if (isGovernedCreditConsumerEnabled()) {
+          marker = "      let loggedEvent = null;\n      if (schoolStudentId) {\n"
+          governed = """      if (isGovernedCreditConsumerEnabled()) {
                 const adaptation = adaptations[studentId] as (StudentAdaptation & {
                   artifactId?: string;
                 }) | undefined;
@@ -109,7 +100,7 @@ jobs:
                   throw pdiError || new Error('PDI do aluno não pôde ser preparado para validação.');
                 }
 
-                const governed = await validatePdiAdaptationGoverned({
+                const governedResult = await validatePdiAdaptationGoverned({
                   artifactId,
                   pdiDocumentId: pdiDoc.id,
                   studentId: schoolStudentId,
@@ -121,7 +112,7 @@ jobs:
                 });
 
                 setLastAdaptationDetails({
-                  id: governed.pdi_record_id || artifactId,
+                  id: governedResult.pdi_record_id || artifactId,
                   studentName,
                   lessonTopic: selectedLesson.topic,
                 });
@@ -139,10 +130,9 @@ jobs:
               let loggedEvent = null;
               if (schoolStudentId) {
           """
-          assert marker in text
-          text = text.replace(marker, insert, 1)
+          text = replace_once(text, marker, governed, 'governed validation boundary')
 
-          old = """      try {
+          old_report = """      try {
                 await saveGeneratedContent(
                   userId,
                   'documento',
@@ -154,7 +144,7 @@ jobs:
                 console.warn('Falha no autosave', e);
               }
           """
-          new = """      try {
+          new_report = """      try {
                 if (isGovernedCreditConsumerEnabled()) {
                   const artifactId = reportArtifactIds[student.id] || crypto.randomUUID();
                   if (!reportArtifactIds[student.id]) {
@@ -186,29 +176,31 @@ jobs:
                 throw e;
               }
           """
-          assert old in text
-          text = text.replace(old, new, 1)
+          text = replace_once(text, old_report, new_report, 'generated PDI report save')
           hook.write_text(text)
 
           editor = Path('apps/web/src/features/PDI/components/PDIBlock11Editor.tsx')
           text = editor.read_text()
-          old = "import { generateBlock11Report } from '../../../services/ai/AiPdiService';\n"
-          new = """import { generateBlock11Report } from '../../../services/ai/AiPdiService';
+          text = replace_once(
+              text,
+              "import { generateBlock11Report } from '../../../services/ai/AiPdiService';\n",
+              """import { generateBlock11Report } from '../../../services/ai/AiPdiService';
           import { isGovernedCreditConsumerEnabled } from '../../../services/credits/creditConsumerFlags';
           import { savePdiFinalReportGoverned } from '../PdiCreditService';
-          """
-          assert old in text
-          text = text.replace(old, new, 1)
-
-          old = "      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);\n"
-          new = """      if (isGovernedCreditConsumerEnabled()) {
+          """,
+              'Block 11 imports',
+          )
+          text = replace_once(
+              text,
+              "      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);\n",
+              """      if (isGovernedCreditConsumerEnabled()) {
                 await savePdiFinalReportGoverned(pdiId, supervisorEdit);
               } else {
                 await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
               }
-          """
-          assert old in text
-          text = text.replace(old, new, 1)
+          """,
+              'Block 11 governed save',
+          )
           editor.write_text(text)
           PY
 
