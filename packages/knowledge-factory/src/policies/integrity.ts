@@ -3,6 +3,8 @@ import type {
   BinaryDuplicateDecision,
   BinaryDuplicateMatch,
   BinaryDuplicateRelationship,
+  ConfirmIngestionVerifiedCommand,
+  IngestionRunState,
   ISODateTime,
   TemporaryStagingArtifactDescriptor,
   TemporaryStagingIntegrityEvidence,
@@ -10,6 +12,7 @@ import type {
 } from '@profeplan/types';
 import { allow, deny, type DomainDecision } from '../domain/result.ts';
 import { reason, type DomainReason } from '../domain/reasons.ts';
+import { evaluateIngestionTransition } from './ingestion.ts';
 import { evaluateStagingArtifactAvailability } from './staging.ts';
 
 const SHA_256_HEX = /^[0-9a-f]{64}$/u;
@@ -19,6 +22,16 @@ export interface StagingIntegrityEvaluationInput {
   readonly evidence: TemporaryStagingIntegrityEvidence;
   readonly knownEvidence?: readonly TemporaryStagingIntegrityEvidence[];
   readonly evaluatedAt: ISODateTime;
+}
+
+export interface IngestionVerificationConfirmationInput extends StagingIntegrityEvaluationInput {
+  readonly currentState: IngestionRunState;
+  readonly command: ConfirmIngestionVerifiedCommand;
+}
+
+export interface IngestionVerificationConfirmation {
+  readonly runState: Extract<IngestionRunState, 'VERIFIED'>;
+  readonly artifact: VerifiedTemporaryStagingArtifactDescriptor;
 }
 
 function parseInstant(value: ISODateTime): number | undefined {
@@ -164,6 +177,59 @@ function historicalConflictReasons(
   ];
 }
 
+function confirmationBindingReasons(
+  input: IngestionVerificationConfirmationInput,
+  verifiedArtifact: VerifiedTemporaryStagingArtifactDescriptor
+): DomainReason[] {
+  const reasons: DomainReason[] = [];
+  const commandMetadata = input.command.technicalMetadata;
+
+  if (
+    input.command.run.id !== verifiedArtifact.run.id ||
+    input.command.correlationId !== verifiedArtifact.integrity.correlationId
+  ) {
+    reasons.push(
+      reason(
+        'INGESTION_VERIFICATION_EVIDENCE_MISMATCH',
+        'The confirm_verified command is not correlated to the verified staging evidence.',
+        input.command.run.id
+      )
+    );
+  }
+
+  if (
+    commandMetadata?.sizeBytes !== undefined &&
+    commandMetadata.sizeBytes !== verifiedArtifact.integrity.byteLength
+  ) {
+    reasons.push(
+      reason(
+        'INGESTION_VERIFICATION_EVIDENCE_MISMATCH',
+        'The confirm_verified byte length conflicts with the verified staging evidence.',
+        input.command.run.id,
+        {
+          commandByteLength: commandMetadata.sizeBytes,
+          verifiedByteLength: verifiedArtifact.integrity.byteLength,
+        }
+      )
+    );
+  }
+
+  if (
+    commandMetadata?.declaredMediaType !== undefined &&
+    commandMetadata.declaredMediaType !== verifiedArtifact.mediaType
+  ) {
+    reasons.push(
+      reason(
+        'INGESTION_VERIFICATION_EVIDENCE_MISMATCH',
+        'The confirm_verified media type conflicts with the staged artifact descriptor.',
+        input.command.run.id
+      )
+    );
+  }
+
+  return reasons;
+}
+
 export function classifyBinaryDuplication(
   evidence: TemporaryStagingIntegrityEvidence,
   knownEvidence: readonly TemporaryStagingIntegrityEvidence[],
@@ -234,5 +300,38 @@ export function evaluateStagingIntegrity(
     state: 'VERIFIED',
     integrity: input.evidence,
     duplicateDecision,
+  });
+}
+
+/**
+ * Canonical C.2.3 guard for confirming the C.2.1 processing run as VERIFIED.
+ * The generic C.2.1 state transition remains unchanged; operational confirmation
+ * is only accepted when the same decision also proves the staged artifact.
+ */
+export function evaluateIngestionVerificationConfirmation(
+  input: IngestionVerificationConfirmationInput
+): DomainDecision<IngestionVerificationConfirmation> {
+  const transition = evaluateIngestionTransition({
+    currentState: input.currentState,
+    toState: 'VERIFIED',
+    expectedState: input.command.expectedState,
+  });
+  if (!transition.allowed) {
+    return deny(transition.reasons);
+  }
+
+  const integrity = evaluateStagingIntegrity(input);
+  if (!integrity.allowed) {
+    return deny(integrity.reasons);
+  }
+
+  const reasons = confirmationBindingReasons(input, integrity.value);
+  if (reasons.length > 0) {
+    return deny(reasons);
+  }
+
+  return allow({
+    runState: 'VERIFIED',
+    artifact: integrity.value,
   });
 }
