@@ -85,6 +85,13 @@ jobs:
           rm -f "$START_LOG"
           echo "Disposable Supabase stack started; generated local credentials omitted."
 
+      - name: Prepare disposable test-role access
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$CREDIT_DB_URL" -v ON_ERROR_STOP=1 \
+            -c "ALTER DEFAULT PRIVILEGES FOR ROLE postgres GRANT SELECT ON TABLES TO service_role;"
+
       - name: Prove command permissions, grants, replay, ordering, Gold and rollback
         shell: bash
         run: |
