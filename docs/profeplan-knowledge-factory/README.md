@@ -80,10 +80,12 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 047 — C.2.3 integrado; C.2.4 bloqueado](00-governance/CONTINUITY-CHECKPOINT-047.md)
 - [Definição C.2.4 — idempotência, retomada e falha segura](12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md)
 - [Checkpoint 048 — C.2.4 integrado; C.2.5 bloqueado](00-governance/CONTINUITY-CHECKPOINT-048.md)
+- [Definição C.2.5 — revisão humana e handoff governado para C.3](12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md)
+- [Checkpoint 049 — C.2.5 integrado; C.2.6 bloqueado](00-governance/CONTINUITY-CHECKPOINT-049.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após a integração técnica de C.2.4, prevalece o [Checkpoint 048](00-governance/CONTINUITY-CHECKPOINT-048.md) sobre marcadores históricos de checkpoints anteriores.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após a integração técnica de C.2.5, prevalece o [Checkpoint 049](00-governance/CONTINUITY-CHECKPOINT-049.md) sobre marcadores históricos de checkpoints anteriores.
 
 - Fase A — concluída;
 - Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
@@ -104,9 +106,10 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.2.2 — **integrado e revalidado** pelo PR nº 67 no commit `7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, com CI pós-merge nº 412 verde;
 - C.2.3 — **integrado e revalidado** pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, com CI pós-merge nº 430 verde;
 - C.2.4 — **integrado e revalidado** pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde;
-- C.2.5–C.2.6 — bloqueados;
+- C.2.5 — **integrado e revalidado** pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, com CI pós-merge nº 547 verde;
+- C.2.6 — bloqueado;
 - C.3–C.7 — bloqueados;
-- conteúdo real, Supabase hospedado, storage hospedado e produção — não autorizados.
+- conteúdo real, PNLD real, Supabase hospedado, storage hospedado e produção — não autorizados.
 
 C.2.1 definiu a linguagem operacional da ingestão controlada: identidades compostas sobre C.1, state machine determinística, comandos tipados, idempotência contratual, receipts provider-neutral e revisão humana obrigatória antes de `APPROVED_FOR_EXTRACTION`.
 
@@ -116,6 +119,8 @@ C.2.3 acrescentou integridade criptográfica sobre readback dos bytes efetivamen
 
 C.2.4 acrescentou persistência durável do lifecycle operacional, receipts/events, idempotência por `commandId + fingerprint` recalculado server-side, CAS por state/version/sequence, recovery PostgreSQL ↔ Storage sem pseudo-transação distribuída, write-intent separado da evidence C.2.3, confirmação atômica de `VERIFIED`, cleanup em duas fases e least privilege por RPCs estreitas. A prova integrada permaneceu inteiramente sintética e descartável.
 
+C.2.5 acrescentou a fronteira de revisão humana e handoff governado: competência `legal_editorial_reviewer` sob autoridade C.1, autorização `extraction` independente e historicamente válida no instante da decisão, persistência atômica de run + receipt + event, snapshot read-only provider-neutral e concorrência approve/reject fail-closed. O handoff registra elegibilidade para C.3, mas não executa extração nem inicia C.3.
+
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-O próximo sublote na sequência é **C.2.5 — revisão humana e handoff para C.3**. Ele permanece bloqueado nesta continuidade e deverá começar em contexto próprio, com nova inspeção canônica e autorização humana específica, sem inferir autorização de extração, storage hospedado, Supabase hospedado, conteúdo real, C.3 ou produção.
+O próximo sublote na sequência é **C.2.6 — prova integrada, fechamento e gate para C.3**. Ele permanece bloqueado nesta continuidade e deverá começar em contexto próprio, com nova inspeção canônica, Definition of Ready e autorização humana específica. C.3 permanece bloqueado e não é autorizado pela integração de C.2.5 nem pela criação do Checkpoint 049.
