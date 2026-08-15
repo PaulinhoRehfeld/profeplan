@@ -12,10 +12,10 @@ import type {
   PrepareIngestionStagingArtifact,
   RequestIngestionCommand,
   TemporaryStagingArtifactDescriptor,
-  TemporaryStagingDiscardCommand,
   TemporaryStagingDiscardReceipt,
   VerifiedTemporaryStagingArtifactDescriptor,
 } from '@profeplan/types';
+import type { TemporaryStagingDiscardCommand } from '../staging/staging.port.ts';
 
 /**
  * C.2.4 command boundary. It materializes only the C.2.1 operations required
