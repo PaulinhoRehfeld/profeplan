@@ -12,13 +12,27 @@ BEGIN READ ONLY;
 -- -----------------------------------------------------------------------------
 -- 1. Governed ledger objects currently present
 -- -----------------------------------------------------------------------------
+-- Function presence is discovered by namespace/name instead of an exact
+-- argument signature. Readiness must tolerate signature evolution while still
+-- making absence/presence explicit; later cutover gates inspect exact arguments.
 SELECT
   to_regclass('public.credit_operations') IS NOT NULL AS has_credit_operations,
   to_regclass('public.credit_grants') IS NOT NULL AS has_credit_grants,
   to_regclass('public.credit_ledger_entries') IS NOT NULL AS has_credit_ledger_entries,
-  to_regprocedure('public.credit_get_my_balance()') IS NOT NULL AS has_credit_get_my_balance,
-  to_regprocedure('public.credit_grant_command(text,uuid,text,text,text,integer,timestamptz,timestamptz,text,jsonb)') IS NOT NULL
-    AS has_credit_grant_command;
+  EXISTS (
+    SELECT 1
+    FROM pg_proc AS p
+    JOIN pg_namespace AS n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public'
+      AND p.proname = 'credit_get_my_balance'
+  ) AS has_credit_get_my_balance,
+  EXISTS (
+    SELECT 1
+    FROM pg_proc AS p
+    JOIN pg_namespace AS n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public'
+      AND p.proname = 'credit_grant_command'
+  ) AS has_credit_grant_command;
 
 -- -----------------------------------------------------------------------------
 -- 2. Aggregate legacy economic state — no identity columns
@@ -185,14 +199,30 @@ WHERE table_schema = 'public'
 ORDER BY grantee, privilege_type;
 
 -- -----------------------------------------------------------------------------
--- 5. Relevant hosted functions — signatures only, no secrets/data
+-- 5. Relevant hosted functions — presence only, no secrets/data
 -- -----------------------------------------------------------------------------
 SELECT
-  to_regprocedure('public.handle_new_user()') IS NOT NULL AS has_handle_new_user,
-  to_regprocedure('public.admin_add_credits(uuid,integer)') IS NOT NULL AS has_admin_add_credits,
-  to_regprocedure(
-    'public.process_stripe_checkout_event(text,text,uuid,text,text,text,text,text,timestamptz)'
-  ) IS NOT NULL AS has_process_stripe_checkout_event;
+  EXISTS (
+    SELECT 1
+    FROM pg_proc AS p
+    JOIN pg_namespace AS n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public'
+      AND p.proname = 'handle_new_user'
+  ) AS has_handle_new_user,
+  EXISTS (
+    SELECT 1
+    FROM pg_proc AS p
+    JOIN pg_namespace AS n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public'
+      AND p.proname = 'admin_add_credits'
+  ) AS has_admin_add_credits,
+  EXISTS (
+    SELECT 1
+    FROM pg_proc AS p
+    JOIN pg_namespace AS n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public'
+      AND p.proname = 'process_stripe_checkout_event'
+  ) AS has_process_stripe_checkout_event;
 
 -- -----------------------------------------------------------------------------
 -- 6. Supabase migration registry snapshot.
