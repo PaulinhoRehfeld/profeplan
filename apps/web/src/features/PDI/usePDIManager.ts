@@ -19,10 +19,7 @@ import {
 import { ProfileService } from '../../services/ProfileService';
 import { resolveAuthUid } from '../../utils/authUtils';
 import { isGovernedCreditConsumerEnabled } from '../../services/credits/creditConsumerFlags';
-import {
-  savePdiGeneratedReportGoverned,
-  validatePdiAdaptationGoverned,
-} from './PdiCreditService';
+import { savePdiGeneratedReportGoverned, validatePdiAdaptationGoverned } from './PdiCreditService';
 
 const BNCC_CODE_REGEX = /\b[A-Z]{2}\d{2}[A-Z]{2}\d{2}\b/g;
 
@@ -414,7 +411,7 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
           adaptedContent: markdownResult,
           status: 'completed',
           block9Payload,
-          ...({ artifactId } as any),
+          artifactId,
         },
       }));
     } catch (e: any) {
@@ -664,56 +661,52 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
       }
 
       if (isGovernedCreditConsumerEnabled()) {
-      const adaptation = adaptations[studentId] as (StudentAdaptation & {
-        artifactId?: string;
-      }) | undefined;
-      const payload = adaptation?.block9Payload;
-      const artifactId = adaptation?.artifactId;
+        const adaptation = adaptations[studentId];
+        const payload = adaptation?.block9Payload;
+        const artifactId = adaptation?.artifactId;
 
-      if (!schoolStudentId || !payload || !artifactId) {
-        throw new Error('Identidade ou persistência-base do PDI não pôde ser resolvida.');
+        if (!schoolStudentId || !payload || !artifactId) {
+          throw new Error('Identidade ou persistência-base do PDI não pôde ser resolvida.');
+        }
+
+        const year =
+          typeof selectedClass?.year === 'number' ? selectedClass.year : new Date().getFullYear();
+        const { data: pdiDoc, error: pdiError } = await PdiDocumentService.getOrCreatePdi(
+          schoolStudentId,
+          year,
+          { studentName }
+        );
+
+        if (pdiError || !pdiDoc?.id) {
+          throw pdiError || new Error('PDI do aluno não pôde ser preparado para validação.');
+        }
+
+        const governedResult = await validatePdiAdaptationGoverned({
+          artifactId,
+          pdiDocumentId: pdiDoc.id,
+          studentId: schoolStudentId,
+          lessonId: String(selectedLesson.id),
+          lessonTitle: selectedLesson.topic || selectedLesson.title || 'Aula',
+          subject: selectedClass?.subject || 'Geral',
+          content: finalContent,
+          block9Payload: payload as unknown as Record<string, unknown>,
+        });
+
+        setLastAdaptationDetails({
+          id: governedResult.pdi_record_id || artifactId,
+          studentName,
+          lessonTopic: selectedLesson.topic,
+        });
+        setFeedbackModalOpen(true);
+        setAdaptations((prev) => ({
+          ...prev,
+          [studentId]: {
+            ...prev[studentId],
+            status: 'validated',
+          },
+        }));
+        return;
       }
-
-      const year =
-        typeof selectedClass?.year === 'number'
-          ? selectedClass.year
-          : new Date().getFullYear();
-      const { data: pdiDoc, error: pdiError } = await PdiDocumentService.getOrCreatePdi(
-        schoolStudentId,
-        year,
-        { studentName }
-      );
-
-      if (pdiError || !pdiDoc?.id) {
-        throw pdiError || new Error('PDI do aluno não pôde ser preparado para validação.');
-      }
-
-      const governedResult = await validatePdiAdaptationGoverned({
-        artifactId,
-        pdiDocumentId: pdiDoc.id,
-        studentId: schoolStudentId,
-        lessonId: String(selectedLesson.id),
-        lessonTitle: selectedLesson.topic || selectedLesson.title || 'Aula',
-        subject: selectedClass?.subject || 'Geral',
-        content: finalContent,
-        block9Payload: payload as unknown as Record<string, unknown>,
-      });
-
-      setLastAdaptationDetails({
-        id: governedResult.pdi_record_id || artifactId,
-        studentName,
-        lessonTopic: selectedLesson.topic,
-      });
-      setFeedbackModalOpen(true);
-      setAdaptations((prev) => ({
-        ...prev,
-        [studentId]: {
-          ...prev[studentId],
-          status: 'validated',
-        },
-      }));
-      return;
-    }
 
       let loggedEvent = null;
       if (schoolStudentId) {
@@ -943,36 +936,36 @@ export const usePDIManager = (userId: string, userProfile: UserProfile) => {
       const reportHtml = generatePdiReportDoc(student.name, 'Trimestre Atual', logsContent);
 
       try {
-      if (isGovernedCreditConsumerEnabled()) {
-        const artifactId = reportArtifactIds[student.id] || crypto.randomUUID();
-        if (!reportArtifactIds[student.id]) {
-          setReportArtifactIds((prev) => ({ ...prev, [student.id]: artifactId }));
+        if (isGovernedCreditConsumerEnabled()) {
+          const artifactId = reportArtifactIds[student.id] || crypto.randomUUID();
+          if (!reportArtifactIds[student.id]) {
+            setReportArtifactIds((prev) => ({ ...prev, [student.id]: artifactId }));
+          }
+
+          await savePdiGeneratedReportGoverned({
+            artifactId,
+            title: `RELATORIO PDI - ${student.name}`,
+            content: reportHtml,
+          });
+
+          setReportArtifactIds((prev) => {
+            const next = { ...prev };
+            delete next[student.id];
+            return next;
+          });
+        } else {
+          await saveGeneratedContent(
+            userId,
+            'documento',
+            'PDI',
+            `RELATORIO PDI - ${student.name}`,
+            reportHtml
+          );
         }
-
-        await savePdiGeneratedReportGoverned({
-          artifactId,
-          title: `RELATORIO PDI - ${student.name}`,
-          content: reportHtml,
-        });
-
-        setReportArtifactIds((prev) => {
-          const next = { ...prev };
-          delete next[student.id];
-          return next;
-        });
-      } else {
-        await saveGeneratedContent(
-          userId,
-          'documento',
-          'PDI',
-          `RELATORIO PDI - ${student.name}`,
-          reportHtml
-        );
+      } catch (e) {
+        console.warn('Falha no autosave', e);
+        throw e;
       }
-    } catch (e) {
-      console.warn('Falha no autosave', e);
-      throw e;
-    }
     } catch (e: any) {
       console.error(e);
       setError(`Erro: ${e.message || 'Falha ao gerar relatório'}`);

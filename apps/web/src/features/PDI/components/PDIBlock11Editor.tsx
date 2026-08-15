@@ -41,6 +41,7 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
 
   const canEdit =
     userRole === 'supervisor' ||
+    userRole === 'manager' ||
     userRole === 'school_manager' ||
     userRole === 'school_admin' ||
     userRole === 'admin';
@@ -113,10 +114,10 @@ const PDIBlock11Editor: React.FC<PDIBlock11EditorProps> = ({
 
     try {
       if (isGovernedCreditConsumerEnabled()) {
-      await savePdiFinalReportGoverned(pdiId, supervisorEdit);
-    } else {
-      await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
-    }
+        await savePdiFinalReportGoverned(pdiId, supervisorEdit);
+      } else {
+        await PdiDocumentService.updateBlock11ByProgument(pdiId, supervisorEdit);
+      }
       setSuccess('Relatório salvo com sucesso!');
       setEditMode(false);
       await loadBlock11();

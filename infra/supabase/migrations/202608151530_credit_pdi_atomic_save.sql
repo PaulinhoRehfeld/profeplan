@@ -261,10 +261,7 @@ BEGIN
   LOOP
     IF NOT v_replaced AND (
       v_element ->> 'artifact_id' = p_artifact_id::text
-      OR (
-        NOT (v_element ? 'artifact_id')
-        AND v_element ->> 'lesson_id' = p_lesson_id
-      )
+      OR v_element ->> 'lesson_id' = p_lesson_id
     ) THEN
       v_next_block9 := v_next_block9 || jsonb_build_array(v_block9_entry);
       v_replaced := true;
@@ -494,7 +491,7 @@ BEGIN
       USING ERRCODE = 'P0002';
   END IF;
 
-  IF v_role IS NULL OR v_role NOT IN ('supervisor', 'school_manager', 'school_admin', 'admin') THEN
+  IF v_role IS NULL OR v_role NOT IN ('manager', 'school_manager', 'school_admin', 'admin') THEN
     RAISE EXCEPTION 'authenticated user cannot save PDI final report'
       USING ERRCODE = '42501';
   END IF;

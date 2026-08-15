@@ -214,6 +214,8 @@ export interface PdiLog {
 }
 
 export interface StudentAdaptation {
+  /** Stable economic identity for the generated adaptation until regeneration. */
+  artifactId?: string;
   studentId: string;
   studentName: string;
   originalContent: string;
