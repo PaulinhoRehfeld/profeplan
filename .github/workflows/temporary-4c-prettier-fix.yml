@@ -1,0 +1,56 @@
+name: Temporary 4C Prettier Fix
+
+on:
+  push:
+    branches:
+      - feat/commercial-credit-consumers-4c-presentation
+    paths:
+      - '.github/workflows/temporary-4c-prettier-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/commercial-credit-consumers-4c-presentation
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format only 4C files and remove temporary workflow
+        run: |
+          pnpm exec prettier --write \
+            apps/web/src/components/PresentationCreator.tsx \
+            apps/web/src/features/Presentation/PresentationService.ts \
+            apps/web/src/features/Presentation/__tests__/AiPresentationService.creditConsumer.test.ts \
+            apps/web/src/features/Presentation/__tests__/PresentationService.creditConsumer.test.ts
+          git rm .github/workflows/temporary-4c-prettier-fix.yml
+
+      - name: Commit formatting result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            apps/web/src/components/PresentationCreator.tsx \
+            apps/web/src/features/Presentation/PresentationService.ts \
+            apps/web/src/features/Presentation/__tests__/AiPresentationService.creditConsumer.test.ts \
+            apps/web/src/features/Presentation/__tests__/PresentationService.creditConsumer.test.ts
+          git commit -m "style(commercial): format Presentation 4C files"
+          git push origin HEAD:feat/commercial-credit-consumers-4c-presentation
