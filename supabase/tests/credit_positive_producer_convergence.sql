@@ -24,6 +24,15 @@ $$;
 -- -----------------------------------------------------------------------------
 DO $$
 BEGIN
+  IF has_function_privilege('anon', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'anon must not execute authenticated profile recovery';
+  END IF;
+  IF has_function_privilege('service_role', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'service_role must not execute user profile recovery';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.update_my_profile(jsonb)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'authenticated must execute profile recovery';
+  END IF;
   IF has_function_privilege('anon', 'public.credit_register_my_phone_bonus(text)', 'EXECUTE') THEN
     RAISE EXCEPTION 'anon must not execute governed phone bonus';
   END IF;
@@ -51,7 +60,41 @@ BEGIN
     RAISE EXCEPTION 'service_role must execute Stripe fulfillment';
   END IF;
 END;
-$$;
+$;
+
+-- Defense in depth: even the function owner cannot use the RPC without an
+-- authenticated JWT identity. No profile or grant may be materialized.
+DO $
+DECLARE
+  v_profiles_before integer;
+  v_profiles_after integer;
+  v_grants_before integer;
+  v_grants_after integer;
+BEGIN
+  SELECT COUNT(*) INTO v_profiles_before FROM public.profiles;
+  SELECT COUNT(*) INTO v_grants_before FROM public.credit_grants;
+
+  PERFORM set_config('request.jwt.claim.sub', '', true);
+  PERFORM set_config('request.jwt.claims', '{}'::jsonb::text, true);
+
+  BEGIN
+    PERFORM public.update_my_profile(
+      '{"email":"anonymous-profile-recovery@example.invalid","full_name":"Anonymous Recovery"}'::jsonb
+    );
+    RAISE EXCEPTION 'identity-null profile recovery was accepted';
+  EXCEPTION
+    WHEN insufficient_privilege THEN
+      NULL;
+  END;
+
+  SELECT COUNT(*) INTO v_profiles_after FROM public.profiles;
+  SELECT COUNT(*) INTO v_grants_after FROM public.credit_grants;
+
+  IF v_profiles_after <> v_profiles_before OR v_grants_after <> v_grants_before THEN
+    RAISE EXCEPTION 'identity-null recovery changed profiles or grants';
+  END IF;
+END;
+$;
 
 -- -----------------------------------------------------------------------------
 -- 2. New auth user -> FREE profile with legacy integer 0 + governed 10/7d lot.

@@ -85,6 +85,19 @@ Fingerprint read-only do preflight:
 
 Esses hashes **não são parâmetros permanentes de produção**. Eles servem apenas como evidência deste preflight. A futura janela autorizada deverá executar novamente `scripts/sql/credit_legacy_balance_snapshot.sql` depois do freeze e usar exclusivamente o snapshot congelado daquela janela.
 
+### 3.2.1 Revalidação read-only posterior ao PR #96
+
+Uma segunda leitura hospedada em 2026-08-15 preservou os invariantes econômicos:
+
+- 31 perfis;
+- 30 perfis finitos com saldo positivo;
+- soma finita = **292**;
+- finite hash = `04728d96646ee3a8f3753bd9a9ee45f1`;
+- 1 Gold/unlimited;
+- Gold/unlimited hash = `da1b05b43ebe47d7d19b3fef9f037976`.
+
+Os dois snapshots repetidos dessa revalidação foram idênticos. Porém, a distribuição cadastral observada passou a ser 30 FREE, 0 SILVER e 1 Gold/unlimited, com 2 telefones preenchidos. Isso diverge do registro inicial de 27 FREE, 3 SILVER e 4 telefones, embora count, soma e hashes econômicos tenham permanecido estáveis. A divergência documental deve ser reconciliada em uma futura janela; ela não autoriza inferir alteração econômica nem substituir o snapshot congelado.
+
 ### 3.3 Atividade observável
 
 No momento da inspeção:
@@ -132,6 +145,24 @@ O preflight confirmou que o hospedado ainda contém as autoridades econômicas a
 - `admin_update_profile(...)` aceita substituição direta de `p_credits`.
 
 As definições hospedadas foram capturadas sem dados de usuário e serviram de base para `scripts/sql/credit_positive_producer_rollback.sql`.
+
+### 5.1 Finding crítico posterior — recuperação de perfil exposta
+
+A leitura dos advisors e da ACL hospedada revelou que a função legada `update_my_profile(jsonb)` é `SECURITY DEFINER` e executável por `PUBLIC`/`anon`. A primeira versão do candidato 1.3C.3 usava `CREATE OR REPLACE` e concedia `authenticated`, mas não revogava os privilégios preexistentes. Como `CREATE OR REPLACE FUNCTION` preserva ACL, o cutover poderia manter o endpoint anônimo.
+
+O corpo anterior também aceitava `auth.uid() IS NULL`, resolvia o alvo por email fornecido pelo chamador e podia criar um perfil com UUID aleatório. Depois da ativação de 1.3C.3, esse INSERT acionaria o produtor `FREE_TRIAL`. Portanto, o problema era simultaneamente uma exposição de autorização e uma quebra da convergência econômica.
+
+A correção versionada de follow-up:
+
+- rejeita identidade nula com SQLSTATE `42501`;
+- remove a criação por UUID aleatório e usa somente a identidade autenticada;
+- preserva a recuperação por email apenas a partir do email verificado em `auth.users`;
+- define `search_path = pg_catalog`;
+- revoga `PUBLIC`, `anon`, `authenticated` e `service_role`, concedendo novamente apenas `authenticated`;
+- mantém a mesma proteção no rollback econômico;
+- prova ACL, guard interno, ausência de criação anônima e ciclo rollback/reaplicação em Supabase descartável.
+
+Nenhuma função hospedada foi alterada por este follow-up. Produção permanece NO-GO.
 
 ## 6. Stripe e Edge Function
 
@@ -462,6 +493,7 @@ Abortar/manter NO-GO se qualquer um ocorrer:
 - migration falha;
 - função Stripe/Edge perde compatibilidade de assinatura;
 - producer rollback não estiver previamente verde;
+- `update_my_profile(jsonb)` aceitar identidade nula ou permanecer executável por `PUBLIC`, `anon` ou `service_role`;
 - enforcement rollback não estiver previamente verde;
 - PDI não faturável quebrar sob enforcement;
 - write direto billable sobreviver;
