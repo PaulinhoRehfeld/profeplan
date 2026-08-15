@@ -109,7 +109,9 @@ export const UserList: React.FC<UserListProps> = ({
                 </td>
                 <td className="px-3 md:px-6 py-4 font-mono font-bold text-slate-600">
                   {governed ? (
-                    <span className="font-sans text-xs font-semibold text-indigo-700">Ledger governado</span>
+                    <span className="font-sans text-xs font-semibold text-indigo-700">
+                      Ledger governado
+                    </span>
                   ) : editingUser?.id === user.id ? (
                     <input
                       type="number"
