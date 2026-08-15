@@ -11,8 +11,8 @@
 
 BEGIN;
 
-GRANT INSERT, UPDATE ON public.term_plans TO authenticated;
-GRANT INSERT, UPDATE ON public.generated_contents TO authenticated;
+GRANT INSERT, UPDATE ON public.term_plans TO anon, authenticated;
+GRANT INSERT, UPDATE ON public.generated_contents TO anon, authenticated;
 
 DROP TRIGGER IF EXISTS credit_guard_pdi_record_billable_write ON public.pdi_records;
 DROP TRIGGER IF EXISTS credit_guard_pdi_document_billable_write ON public.pdi_documents;
