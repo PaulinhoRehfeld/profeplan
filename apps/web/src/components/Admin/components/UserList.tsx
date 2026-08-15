@@ -1,15 +1,14 @@
 import React from 'react';
 import { Crown, Check, X, Edit, Trash2, Coins } from 'lucide-react';
 import { UserProfile } from '../../../types';
+import { isGovernedCreditProducerEnabled } from '../../../services/credits/creditProducerFlags';
 
 interface UserListProps {
   users: UserProfile[];
   loading: boolean;
   searchTerm: string;
-  // Editing State Management
   editingUser: UserProfile | null;
   setEditingUser: (u: UserProfile | null) => void;
-  // Actions
   onUpdateUser: (id: string, updates: Partial<UserProfile>) => Promise<void>;
   onDeleteUser: (user: UserProfile) => Promise<void>;
   onAddCredits: (user: UserProfile) => void;
@@ -25,11 +24,16 @@ export const UserList: React.FC<UserListProps> = ({
   onDeleteUser,
   onAddCredits,
 }) => {
-  // Filter locally here or parent? Parent passes `searchTerm` but also passes full `users`.
-  // Let's filter here to match original logic.
+  const governed = isGovernedCreditProducerEnabled();
   const filteredUsers = users.filter((u) =>
     u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const buildProfileUpdate = (user: UserProfile): Partial<UserProfile> => ({
+    tier: user.tier,
+    is_unlimited: user.tier === 'GOLD',
+    ...(governed ? {} : { credits: user.credits }),
+  });
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
@@ -46,13 +50,13 @@ export const UserList: React.FC<UserListProps> = ({
         <tbody className="text-sm divide-y divide-slate-100">
           {loading ? (
             <tr>
-              <td colSpan={4} className="px-6 py-8 text-center text-slate-400">
+              <td colSpan={5} className="px-6 py-8 text-center text-slate-400">
                 Carregando...
               </td>
             </tr>
           ) : filteredUsers.length === 0 ? (
             <tr>
-              <td colSpan={4} className="px-6 py-8 text-center text-slate-400">
+              <td colSpan={5} className="px-6 py-8 text-center text-slate-400">
                 Nenhum usuário encontrado.
               </td>
             </tr>
@@ -104,7 +108,9 @@ export const UserList: React.FC<UserListProps> = ({
                   )}
                 </td>
                 <td className="px-3 md:px-6 py-4 font-mono font-bold text-slate-600">
-                  {editingUser?.id === user.id ? (
+                  {governed ? (
+                    <span className="font-sans text-xs font-semibold text-indigo-700">Ledger governado</span>
+                  ) : editingUser?.id === user.id ? (
                     <input
                       type="number"
                       className="w-20 border rounded px-2 py-1 text-xs"
@@ -127,13 +133,7 @@ export const UserList: React.FC<UserListProps> = ({
                   {editingUser?.id === user.id ? (
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() =>
-                          onUpdateUser(user.id, {
-                            tier: editingUser.tier,
-                            credits: editingUser.credits,
-                            is_unlimited: editingUser.tier === 'GOLD',
-                          })
-                        }
+                        onClick={() => onUpdateUser(user.id, buildProfileUpdate(editingUser))}
                         className="p-1.5 bg-green-100 text-green-700 rounded hover:bg-green-200"
                       >
                         <Check size={16} />
