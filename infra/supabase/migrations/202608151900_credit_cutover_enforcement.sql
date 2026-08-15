@@ -33,10 +33,10 @@ END;
 $$;
 
 -- TermPlan and generated_contents are governed wholesale once the consumer
--- cutover is active. The authenticated browser must no longer persist those
--- billable artifacts directly.
-REVOKE INSERT, UPDATE ON public.term_plans FROM authenticated;
-REVOKE INSERT, UPDATE ON public.generated_contents FROM authenticated;
+-- cutover is active. Neither anonymous nor authenticated browser roles may
+-- persist those billable artifacts directly.
+REVOKE INSERT, UPDATE ON public.term_plans FROM anon, authenticated;
+REVOKE INSERT, UPDATE ON public.generated_contents FROM anon, authenticated;
 
 -- pdi_records is shared by billable adaptations and non-billable timeline
 -- events. Do not revoke the table wholesale. Block only the economic adaptation
