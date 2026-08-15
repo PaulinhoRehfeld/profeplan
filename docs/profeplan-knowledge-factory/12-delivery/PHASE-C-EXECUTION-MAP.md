@@ -4,9 +4,9 @@ Data da definição: 11 de agosto de 2026.
 
 Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
 
-Estado canônico após a integração de C.2.4 verificado em 15 de agosto de 2026: `main` em
-`14b7ff30d1b659ed8b2c824f9a943b05cdca93bc` (PR nº 74), tree
-`92411aec0c9da3789bb91c87d8f423a3c69f929d`.
+Estado canônico após a integração de C.2.5 verificado em 15 de agosto de 2026: `main` em
+`01a985a94272608007a57fd60695fed719c625d2` (PR nº 84), tree
+`a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`.
 
 Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
 
@@ -31,14 +31,18 @@ Definição integrada de C.2.3:
 Definição integrada de C.2.4:
 [`LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md).
 
+Definição integrada de C.2.5:
+[`LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md).
+
 ## Status
 
 **C.0 está integrado, C.1 foi concluído integralmente de C.1.1 a C.1.6 e `GAP-3B-04` está
 encerrado. A definição documental de C.2 foi integrada pelo PR nº 59, C.2.1 foi integrado e
-revalidado pelo PR nº 62, C.2.2 pelo PR nº 67, C.2.3 pelo PR nº 70 e C.2.4 pelo PR nº 74. C.2.5–C.2.6, C.3–C.7,
-ingestão real, fontes reais, wiring, Supabase hospedado, storage hospedado e produção permanecem bloqueados.**
+revalidado pelo PR nº 62, C.2.2 pelo PR nº 67, C.2.3 pelo PR nº 70, C.2.4 pelo PR nº 74 e C.2.5 pelo
+PR nº 84. C.2.6, C.3–C.7, ingestão real, fontes reais, wiring, Supabase hospedado, storage hospedado
+e produção permanecem bloqueados.**
 
-A visibilidade de C.2.5–C.7 permanece planejamento, não autorização automática. Cada implementação
+A visibilidade de C.2.6–C.7 permanece planejamento, não autorização automática. Cada implementação
 de lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
 
 ## 1. Objetivo
@@ -85,8 +89,8 @@ materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
 |---|---|---|---|---|
 | C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
 | C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | **Concluído — C.1.1–C.1.6** | gate de saída satisfeito em C.1.6 |
-| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | **C.2.1–C.2.4 integrados; C.2.5 bloqueado** | C.2.4 integrado pelo PR nº 74; Checkpoint 048; C.2.5 exige contexto e DoR próprios |
-| C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído |
+| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | **C.2.1–C.2.5 integrados; C.2.6 bloqueado** | C.2.5 integrado pelo PR nº 84; Checkpoint 049; C.2.6 exige contexto e DoR próprios |
+| C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | Bloqueado | C.2 concluído e autorização própria |
 | C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
 | C.5 | Síntese autoral e deduplicação | EPIC-005; US-005.1–005.2 | Bloqueado | C.4 concluído |
 | C.6 | Componentes canônicos e currículo | EPIC-004/006; US-004.1–004.3 e US-006.1–006.2 | Bloqueado | C.5 concluído e pacote curricular aprovado |
@@ -188,7 +192,7 @@ classificação permanecem sob C.4. O fechamento de C.1 não autoriza automatica
 
 ### Status
 
-**Definição documental integrada pelo PR nº 59. C.2.1 integrado e revalidado pelo PR nº 62. C.2.2 integrado e revalidado pelo PR nº 67. C.2.3 integrado e revalidado pelo PR nº 70. C.2.4 integrado e revalidado pelo PR nº 74. C.2.5–C.2.6 permanecem bloqueados.**
+**Definição documental integrada pelo PR nº 59. C.2.1 integrado e revalidado pelo PR nº 62. C.2.2 integrado e revalidado pelo PR nº 67. C.2.3 integrado e revalidado pelo PR nº 70. C.2.4 integrado e revalidado pelo PR nº 74. C.2.5 integrado e revalidado pelo PR nº 84. C.2.6 permanece bloqueado.**
 
 A definição normativa completa está em
 [`LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](LOT-C2-CONTROLLED-INGESTION-DEFINITION.md), a
@@ -200,8 +204,10 @@ a fronteira integrada de C.2.2 está em
 a fronteira integrada de C.2.3 está em
 [`LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md),
 a fronteira integrada de C.2.4 está em
-[`LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md)
-e o estado operacional pós-C.2.4 é registrado no Checkpoint 048.
+[`LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md),
+a fronteira integrada de C.2.5 está em
+[`LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md)
+e o estado operacional pós-C.2.5 é registrado no Checkpoint 049.
 
 ### Objetivo
 
@@ -219,7 +225,7 @@ execução de ingestão rastreável, sem publicar conteúdo parcial.
 - `C.2.2` — intake/staging seguro, limites e retenção — **concluído**;
 - `C.2.3` — integridade, checksum, duplicidade e vínculo — **concluído**;
 - `C.2.4` — idempotência, retomada e falha segura — **concluído**;
-- `C.2.5` — revisão humana e handoff para C.3 — **bloqueado**;
+- `C.2.5` — revisão humana e handoff para C.3 — **concluído**;
 - `C.2.6` — prova integrada, fechamento e gate para C.3 — **bloqueado**.
 
 C.2.1 estabeleceu contrato `1.0.0`, identidades estreitas compostas sobre C.1, state machine
@@ -240,7 +246,18 @@ C.2.3 adicionou SHA-256 sobre readback dos bytes armazenados, evidência provide
 de duplicidade binária sem merge de identidades e estado técnico `VERIFIED`. O gate composto de
 confirmação impede `confirm_verified` de avançar o `processing_run` sem a evidência C.2.3 aprovada.
 A implementação permaneceu sem migration, tabela, RPC ou persistência nova; essas responsabilidades
-operacionais continuam reservadas a C.2.4. A conclusão de C.2.3 não autoriza C.2.4.
+operacionais foram assumidas posteriormente por C.2.4. A conclusão de C.2.3 não autorizou C.2.4.
+
+C.2.4 acrescentou persistência durável do lifecycle operacional, receipts/events, idempotência por
+`commandId + fingerprint` recalculado server-side, CAS por state/version/sequence, recovery entre
+PostgreSQL e Storage sem pseudo-transação distribuída, write-intent separado da evidência C.2.3,
+confirmação atômica de `VERIFIED`, cleanup em duas fases e least privilege por RPCs estreitas.
+
+C.2.5 acrescentou revisão humana e handoff governado para C.3 usando somente as transições C.2.1
+`VERIFIED -> PENDING_REVIEW`, `PENDING_REVIEW -> APPROVED_FOR_EXTRACTION` e
+`PENDING_REVIEW -> REJECTED`. A decisão exige competência C.1 de `legal_editorial_reviewer` e,
+para aprovação, autorização C.1 independente `purpose = extraction` válida no instante da decisão.
+O handoff é snapshot read-only de elegibilidade e não possui qualquer superfície que execute C.3.
 
 ### Gate de saída
 
@@ -248,9 +265,14 @@ operacionais continuam reservadas a C.2.4. A conclusão de C.2.3 não autoriza C
 - cada execução possui identidade, versão e estado auditável;
 - duplicidade e replay têm comportamento definido;
 - falha não produz publicação parcial;
+- revisão humana e autorização independente de `extraction` precedem qualquer handoff elegível;
+- o handoff não executa C.3;
 - nenhum conteúdo real entra sem corpus e base jurídica explicitamente aprovados;
 - PDF, páginas renderizadas, recortes e miniaturas permanecem somente em staging temporário, com
   prazo e descarte verificável; nunca integram o corpus permanente.
+
+O gate global de saída de C.2 ainda **não está encerrado**: C.2.6 permanece responsável pela prova
+integrada, matriz de evidências, fechamento documental do lote e gate C.2 → C.3.
 
 ## 7. Lote C.3 — Extração e validação do conteúdo extraído
 
@@ -464,7 +486,7 @@ rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorizaçã
 | Capacidade | Fase C | Fase posterior |
 |---|---|---|
 | Governar fontes e permissões | Incluída; C.1 concluído | gestão jurídica ampliada |
-| Ingestão assistida do piloto | C.2.1 contratual integrado; C.2.2–C.2.6 bloqueados | ingestão massiva/OCR industrial |
+| Ingestão assistida do piloto | C.2.1–C.2.5 integrados; C.2.6 bloqueado | ingestão massiva/OCR industrial |
 | Extração e segmentação | Incluída em C.3/C.4, ainda bloqueada | multimodalidade completa |
 | Destilação e deduplicação básica | Incluída | consolidação automática avançada |
 | Componentes e currículo MG | Incluída | RS e outros Estados |
@@ -502,9 +524,9 @@ Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
 - frontend, API, job ou fila;
 - Supabase hospedado, `service_role` real, wiring ou produção;
 - Nexus, Gráfica, PDF ou PPTX;
-- início implícito de C.2.2–C.7.
+- início implícito de C.2.6 ou C.3–C.7.
 
-As RPCs, adapters e grants de C.1 já integrados permanecem como infraestrutura governada no
+As RPCs, adapters e grants de C.1/C.2 já integrados permanecem como infraestrutura governada no
 repositório, sem ativação em ambiente hospedado ou produção.
 
 ## 17. Próximo escopo elegível
@@ -522,10 +544,27 @@ formaliza o estado pós-integração da definição.
 `a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde. O Checkpoint 045
 formaliza o estado pós-C.2.1.
 
-O próximo sublote na sequência canônica é **C.2.4 — idempotência, retomada e falha segura**. Ele
-permanece bloqueado nesta continuidade e deverá começar em contexto próprio com inspeção canônica e
-Definition of Ready próprias. A integração de C.2.3 não autoriza persistência nova de C.2.4, storage
-hospedado, Supabase hospedado, conteúdo real, C.2.5, C.3 ou produção.
+**C.2.2 — intake/staging seguro, limites e retenção** foi integrado pelo PR nº 67 no commit
+`7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, com CI pós-merge nº 412 verde. O Checkpoint 046
+formaliza o estado pós-C.2.2.
+
+**C.2.3 — integridade, checksum, duplicidade e vínculo** foi integrado pelo PR nº 70 no commit
+`f70312a9936b99e1c131627277ad4c4a65b126a5`, com CI pós-merge nº 430 verde. O Checkpoint 047
+formaliza o estado pós-C.2.3.
+
+**C.2.4 — idempotência, retomada e falha segura** foi integrado pelo PR nº 74 no commit
+`14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde. O Checkpoint 048
+formaliza o estado pós-C.2.4.
+
+**C.2.5 — revisão humana e handoff governado para C.3** foi integrado pelo PR nº 84 no commit
+`01a985a94272608007a57fd60695fed719c625d2`, tree
+`a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde. O Checkpoint 049
+formaliza o estado pós-C.2.5.
+
+O próximo sublote na sequência canônica é **C.2.6 — prova integrada, fechamento e gate para C.3**.
+Ele permanece bloqueado nesta continuidade e deverá começar em contexto próprio com inspeção
+canônica, Definition of Ready e autorização humana específicas. A integração de C.2.5 não autoriza
+C.3, conteúdo real, storage hospedado, Supabase hospedado, wiring ou produção.
 
 Nenhuma autorização desta formalização inclui conteúdo real, Supabase hospedado, storage real,
 wiring ou produção.
