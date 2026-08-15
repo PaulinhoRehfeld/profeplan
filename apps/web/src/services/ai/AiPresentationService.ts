@@ -7,6 +7,7 @@
  */
 import { GENERATION_MODELS, getGenAIClient } from './AiCore';
 import { checkUsageQuota, incrementUserUsage } from '../ProfileService';
+import { isGovernedCreditConsumerEnabled } from '../credits/creditConsumerFlags';
 
 export interface InfographicSlide {
   order: number;
@@ -35,11 +36,23 @@ export interface ContentSlide {
 export type PresentationSlide = ContentSlide | InfographicSlide;
 
 export interface PresentationScript {
+  artifactId: string;
   title: string;
   subtitle: string;
   theme: string;
   slides: PresentationSlide[];
 }
+
+type GeneratedPresentationPayload = Omit<PresentationScript, 'artifactId'>;
+
+const createPresentationArtifactId = (): string => {
+  const randomUUID = globalThis.crypto?.randomUUID;
+  if (typeof randomUUID === 'function') {
+    return randomUUID.call(globalThis.crypto);
+  }
+
+  return `presentation_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+};
 
 export const generatePresentationJSON = async (
   topic: string,
@@ -49,7 +62,11 @@ export const generatePresentationJSON = async (
   includeInteractions: boolean,
   userId?: string
 ): Promise<PresentationScript> => {
-  if (userId) {
+  const governedConsumers = isGovernedCreditConsumerEnabled();
+
+  // 1.3C.4C: generation/preview is NON_BILLABLE after governed consumer
+  // cutover. Flag OFF preserves legacy quota behavior until 4E.
+  if (userId && !governedConsumers) {
     const quotaStatus = await checkUsageQuota(userId);
     if (!quotaStatus.allowed) {
       throw new Error(quotaStatus.message);
@@ -148,11 +165,19 @@ RETORNE APENAS UM JSON VÁLIDO (sem markdown, sem comentários) com esta estrutu
     .trim();
 
   try {
-    const parsed = JSON.parse(jsonText) as PresentationScript;
+    const payload = JSON.parse(jsonText) as GeneratedPresentationPayload;
 
-    if (!parsed.slides || !Array.isArray(parsed.slides)) {
+    if (!payload.slides || !Array.isArray(payload.slides)) {
       throw new Error('JSON inválido: campo "slides" ausente ou não é array');
     }
+
+    // A identidade econômica nasce uma única vez quando a geração termina e
+    // permanece no estado da tela. Retry/edição do mesmo resultado reutiliza
+    // este artifactId; uma nova geração recebe uma nova identidade.
+    const parsed: PresentationScript = {
+      ...payload,
+      artifactId: createPresentationArtifactId(),
+    };
 
     // Validação de idioma — detecta excesso de palavras em inglês
     const englishWords =
@@ -165,7 +190,7 @@ RETORNE APENAS UM JSON VÁLIDO (sem markdown, sem comentários) com esta estrutu
 
     console.log(`[PresentationAgent] ✅ ${parsed.slides.length} slides gerados: "${parsed.title}"`);
 
-    if (userId) {
+    if (userId && !governedConsumers) {
       await incrementUserUsage(userId, 'generate');
     }
 
