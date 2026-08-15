@@ -77,6 +77,10 @@ apresentacao -> SAVE_PRESENTATION
 
 As provas de banco de 4A devem ser reutilizadas em Supabase descartável.
 
+## Reprodutibilidade de estilo
+
+Os arquivos de código e testes de 4C são formatados pelo mesmo Prettier 3.8.4 usado pelo CI canônico. Nenhum workflow temporário de formatação permanece no diff final.
+
 ## Provas mínimas
 
 - flag OFF preserva geração e Save legados;
