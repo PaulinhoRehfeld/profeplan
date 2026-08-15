@@ -38,14 +38,7 @@ describe('AddCreditsModal - governed admin adjustment idempotency', () => {
       .mockResolvedValueOnce({ error: { message: 'timeout' } })
       .mockResolvedValueOnce({ data: { success: true }, error: null });
 
-    render(
-      <AddCreditsModal
-        isOpen
-        user={user}
-        onClose={vi.fn()}
-        onCreditsAdded={vi.fn()}
-      />
-    );
+    render(<AddCreditsModal isOpen user={user} onClose={vi.fn()} onCreditsAdded={vi.fn()} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar' }));
     await waitFor(() => expect(mocks.addUserCredits).toHaveBeenCalledTimes(1));
@@ -53,9 +46,7 @@ describe('AddCreditsModal - governed admin adjustment idempotency', () => {
     const firstOperationId = mocks.addUserCredits.mock.calls[0][2] as string;
     expect(firstOperationId).toMatch(/^admin-adjustment-ui-v1:/);
 
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Confirmar' })).toBeTruthy()
-    );
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Confirmar' })).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar' }));
     await waitFor(() => expect(mocks.addUserCredits).toHaveBeenCalledTimes(2));
 
