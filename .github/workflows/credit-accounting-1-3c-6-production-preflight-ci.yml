@@ -24,6 +24,7 @@ on:
       - 'supabase/tests/credit_positive_producer_rollback_rehearsal.sql'
       - 'supabase/tests/credit_positive_producer_reapply_rehearsal.sql'
       - 'supabase/tests/credit_positive_producer_integrated_smoke.sql'
+      - 'supabase/tests/fixtures/credit_cutover_hosted_admin_helpers.sql'
       - 'supabase/tests/fixtures/credit_cutover_integrated_pdi_baseline.sql'
       - 'docs/commercial/LOT-1.3C.6-PRODUCTION-CUTOVER-PREFLIGHT.md'
   workflow_dispatch:
@@ -81,6 +82,8 @@ jobs:
               supabase/migrations/202608142130_credit_accounting_test_baseline.sql
             cp ../supabase/tests/fixtures/credit_positive_producer_baseline.sql \
               supabase/migrations/202608142131_credit_positive_producer_test_baseline.sql
+            cp ../supabase/tests/fixtures/credit_cutover_hosted_admin_helpers.sql \
+              supabase/migrations/20260814213150_credit_cutover_hosted_admin_helpers.sql
             cp ../supabase/tests/fixtures/credit_term_plan_pilot_baseline.sql \
               supabase/migrations/202608142132_credit_term_plan_test_baseline.sql
             cp ../supabase/tests/fixtures/credit_generated_content_baseline.sql \
