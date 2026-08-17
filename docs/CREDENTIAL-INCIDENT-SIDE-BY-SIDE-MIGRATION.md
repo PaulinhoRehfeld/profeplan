@@ -26,7 +26,7 @@ alterações no Supabase hospedado nem início de C.3.
 ### Supabase Edge Function `stripe-webhook`
 
 1. ler `SUPABASE_SECRET_KEYS`, que é um objeto JSON injetado pela plataforma;
-2. preferir a chave nomeada `stripe-webhook`;
+2. preferir a chave nomeada `stripe_webhook`;
 3. usar `default` como fallback moderno;
 4. usar `SUPABASE_SERVICE_ROLE_KEY` apenas como rollback legado.
 
