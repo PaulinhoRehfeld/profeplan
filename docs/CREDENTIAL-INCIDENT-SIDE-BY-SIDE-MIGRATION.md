@@ -102,25 +102,40 @@ Portanto:
 - nenhuma requisição funcional contra a branch isolada foi validada;
 - signup, busca, embeddings e webhook permanecem sem validação funcional isolada.
 
-### Diagnósticos TypeScript observados
+### Diagnósticos TypeScript resolvidos — 17 de agosto de 2026
 
-Os logs do Preview anterior registraram, apesar de o deployment terminar `READY`:
+Os Previews anteriores registraram, apesar de terminarem `READY`:
 
 `api/auth/admin-create-user.ts(86,32): error TS2339: Property 'getUser' does not exist on type 'SupabaseAuthClient'.`
 
 `api/auth/admin-create-user.ts(150,75): error TS2339: Property 'admin' does not exist on type 'SupabaseAuthClient'.`
 
-Também foram observados avisos de divergência entre a versão Node configurada no
-projeto e `engines.node`, além de aviso de configuração pnpm ignorada.
+A correção foi dividida em duas fronteiras:
 
-O CI do candidato técnico final terminou verde, mas essa evidência não elimina os
-diagnósticos de `api/auth/admin-create-user.ts`. A pasta raiz `api/` não integra o
-typecheck recursivo dos workspaces nas mesmas condições da análise de funções da
-Vercel. Os erros são classificados como defeito técnico real e lacuna de cobertura,
-bloqueadores de promoção ou rotação até resolução ou validação explícita do endpoint.
+- `bd362c65ae1f1e0502185e6e2be5ed27c8c13c4c` modernizou
+  `api/tsconfig.json` e adicionou ao CI o typecheck explícito de `api/**/*.ts`;
+- `6285f5767ef62d6c182df910c576c9f3cb51b98a` adicionou uma fronteira estrutural
+  tipada para os dois métodos de Auth consumidos por `admin-create-user.ts`, sem
+  trocar o objeto de runtime nem alterar o comportamento HTTP do endpoint.
 
-Esta reconciliação não altera código, variáveis, credenciais, deployments, Supabase
-hospedado, produção, revogação, histórico Git anterior ou C.3.
+Evidências da resolução:
+
+- CI Pipeline nº 587: `success`, incluindo o novo gate
+  `Run API Typecheck (TypeScript)`;
+- Credit Accounting 1.3C.3 Positive Producers CI nº 26: `success`;
+- Credit Accounting 1.3C.4E Final Sweep CI nº 10: `success`;
+- Preview `dpl_2mNbyVfaFCx1wdT9JseuF9dAbmVe` do SHA `6285f576...`:
+  `READY`, `target=null`;
+- logs do build sem os dois diagnósticos `TS2339`.
+
+Permanecem apenas avisos preexistentes sobre a divergência Node entre
+`package.json` e Project Settings e sobre a configuração `pnpm.onlyBuiltDependencies`.
+Eles não foram ampliados para esta correção.
+
+A resolução TypeScript não comprova credenciais substitutas, wiring Vercel para a
+branch Supabase isolada nem validação funcional de signup, busca, embeddings ou
+webhook. Nenhuma variável, credencial, deployment de produção, recurso Supabase,
+revogação, merge ou C.3 foi alterado.
 
 ## Gates antes de qualquer cutover
 
@@ -130,7 +145,7 @@ hospedado, produção, revogação, histórico Git anterior ou C.3.
 - [ ] configurar variáveis somente no Preview e, preferencialmente, por Git branch;
 - [ ] comprovar que o wiring Vercel aponta para a branch Supabase isolada;
 - [ ] confirmar que o preview não possui rota administrativa pública conectada à produção;
-- [ ] executar testes unitários, typecheck, build e inspeção do bundle;
+- [x] executar testes unitários, typecheck, build e inspeção do bundle;
 - [ ] validar `signup`, busca e webhook somente no ambiente isolado;
 - [ ] inventariar scripts, automações e terceiros;
 - [ ] obter autorização separada para produção;
