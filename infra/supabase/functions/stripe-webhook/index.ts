@@ -11,7 +11,7 @@ function resolveSupabaseAdminKey(): string | undefined {
   if (serializedKeys) {
     try {
       const keys = JSON.parse(serializedKeys) as Record<string, unknown>;
-      const selectedKey = keys["stripe-webhook"] ?? keys.default;
+      const selectedKey = keys["stripe_webhook"] ?? keys.default;
       if (typeof selectedKey === "string" && selectedKey.trim()) {
         return selectedKey.trim();
       }
