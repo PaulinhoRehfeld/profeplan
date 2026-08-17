@@ -1,19 +1,15 @@
 {
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "commonjs",
-        "lib": [
-            "ES2022",
-            "DOM"
-        ],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "lib": ["ES2022", "DOM"],
     "types": ["node"],
-        "strict": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "outDir": "./dist",
-        "rootDir": "."
-    },
-    "include": [
-        "**/*.ts"
-    ]
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "rootDir": "."
+  },
+  "include": ["**/*.ts"]
 }
