@@ -9,6 +9,38 @@ import { sendWelcomeEmail } from '../_lib/email';
 const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
 const governedCreditProducersEnabled = () => process.env.VITE_GOVERNED_CREDIT_PRODUCERS === 'true';
 
+interface SupabaseAuthBoundaryUser {
+  id: string;
+  email?: string;
+}
+
+interface SupabaseAuthBoundaryError {
+  message: string;
+  code?: string;
+}
+
+interface SupabaseAuthBoundaryResponse {
+  data: { user: SupabaseAuthBoundaryUser | null };
+  error: SupabaseAuthBoundaryError | null;
+}
+
+interface SupabaseAdminAuthBoundary {
+  getUser(token: string): Promise<SupabaseAuthBoundaryResponse>;
+  admin: {
+    createUser(input: {
+      email: string;
+      password: string;
+      email_confirm: boolean;
+      user_metadata: Record<string, unknown>;
+    }): Promise<SupabaseAuthBoundaryResponse>;
+  };
+}
+
+// Vercel analisa cada função isoladamente e perde os membros herdados de AuthClient
+// nos tipos condicionais do Supabase 2.x. O objeto de runtime permanece inalterado;
+// esta fronteira descreve somente os dois métodos consumidos por este endpoint.
+const supabaseAdminAuth = supabaseAdmin.auth as unknown as SupabaseAdminAuthBoundary;
+
 const isAllowedOrigin = (origin: string): boolean => {
   if (!origin) return false;
   return (
@@ -83,7 +115,7 @@ async function verifyAdminToken(req: VercelRequest): Promise<{ id: string; email
   const {
     data: { user },
     error,
-  } = await supabaseAdmin.auth.getUser(token);
+  } = await supabaseAdminAuth.getUser(token);
   if (error || !user) return null;
 
   // Verifica se o usuário é admin no perfil
@@ -147,7 +179,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     log.info('[AdminCreateUser] Criando usuário', { email, role, createdBy: adminUser.email });
 
     // Cria usuário já confirmado — sem e-mail de confirmação
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+    const { data: authData, error: authError } = await supabaseAdminAuth.admin.createUser({
       email,
       password,
       email_confirm: true,
