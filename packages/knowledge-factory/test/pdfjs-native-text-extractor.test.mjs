@@ -39,15 +39,15 @@ function buildSyntheticPdf(pageSpecs) {
     const contentObjectNumber = pageObjectNumber + 1;
     const stream = blocks
       .map(
-        ({ text, x, y }) =>
-          `BT\n/F1 14 Tf\n1 0 0 1 ${x} ${y} Tm\n(${escapePdfString(text)}) Tj\nET`
+        ({ text, x, y }) => `BT\n/F1 14 Tf\n1 0 0 1 ${x} ${y} Tm\n(${escapePdfString(text)}) Tj\nET`
       )
       .join('\n');
 
     objects[pageObjectNumber] =
       `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] ` +
       `/Resources << /Font << /F1 3 0 R >> >> /Contents ${contentObjectNumber} 0 R >>`;
-    objects[contentObjectNumber] = `<< /Length ${byteLength(stream)} >>\nstream\n${stream}\nendstream`;
+    objects[contentObjectNumber] =
+      `<< /Length ${byteLength(stream)} >>\nstream\n${stream}\nendstream`;
   }
 
   let pdf = '%PDF-1.4\n% ProfePlan synthetic fixture\n';
@@ -176,9 +176,13 @@ test('malformed synthetic PDF errors are normalized by the shared native-text bo
   );
 });
 
-test('PDF.js adapter remains free of OCR, hosted Storage and production surfaces', async () => {
-  const source = await readFile(
+test('PDF.js implementation remains free of OCR, hosted Storage and production surfaces', async () => {
+  const extractorSource = await readFile(
     new URL('../src/extraction/pdfjs-native-text-extractor.adapter.ts', import.meta.url),
+    'utf8'
+  );
+  const inspectorSource = await readFile(
+    new URL('../src/cartography/pdfjs-document-inspector.adapter.ts', import.meta.url),
     'utf8'
   );
   const forbidden = [
@@ -195,8 +199,21 @@ test('PDF.js adapter remains free of OCR, hosted Storage and production surfaces
     'https://',
   ];
 
-  assert.equal(source.includes("pdfjs-dist/legacy/build/pdf.mjs"), true);
-  for (const token of forbidden) {
-    assert.equal(source.includes(token), false, `forbidden surface leaked into PDF.js adapter: ${token}`);
+  assert.equal(
+    extractorSource.includes('../cartography/pdfjs-document-inspector.adapter.ts'),
+    true
+  );
+  assert.equal(inspectorSource.includes('pdfjs-dist/legacy/build/pdf.mjs'), true);
+  for (const [surface, source] of [
+    ['C.3.3 extractor', extractorSource],
+    ['PDF.js inspector', inspectorSource],
+  ]) {
+    for (const token of forbidden) {
+      assert.equal(
+        source.includes(token),
+        false,
+        `forbidden surface leaked into ${surface}: ${token}`
+      );
+    }
   }
 });
