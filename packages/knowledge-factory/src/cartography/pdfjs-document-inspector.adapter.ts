@@ -8,11 +8,7 @@ import type {
 
 export const PDFJS_DOCUMENT_INSPECTOR_NAME = 'pdfjs-dist' as const;
 
-const IMAGE_PAINT_OPERATORS = new Set<number>([
-  OPS.paintJpegXObject,
-  OPS.paintImageXObject,
-  OPS.paintInlineImageXObject,
-]);
+const IMAGE_PAINT_OPERATORS = new Set<number>([OPS.paintImageXObject, OPS.paintInlineImageXObject]);
 
 function normalizePageText(parts: readonly string[]): string {
   return parts

@@ -208,7 +208,7 @@ export class PartReconstructionService {
         }
 
         const matchingNode = nodeByExactTitle(scopedNodes, observed.text);
-        if (matchingNode?.nodeId === rootNode?.nodeId) {
+        if (matchingNode && matchingNode.nodeId === rootNode?.nodeId) {
           const partTitle = addElement(
             'part_title',
             page,
