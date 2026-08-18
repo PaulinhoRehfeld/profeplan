@@ -145,7 +145,7 @@ jobs:
         run: |
           set -euo pipefail
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
-            -f supabase/tests/knowledge_factory_extraction_c3_2.sql \
+            -f supabase/tests/knowledge_factory_extraction_c3_2_control_plane.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Prove C.3.2 concurrent single-winner CAS
