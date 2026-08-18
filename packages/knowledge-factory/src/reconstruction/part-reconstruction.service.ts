@@ -106,7 +106,9 @@ export class PartReconstructionService {
     this.inspector = inspector;
   }
 
-  async reconstruct(request: PartReconstructionRequest): Promise<PartReconstructionCandidateSnapshot> {
+  async reconstruct(
+    request: PartReconstructionRequest
+  ): Promise<PartReconstructionCandidateSnapshot> {
     const vocabulary = request.vocabulary ?? DEFAULT_PART_RECONSTRUCTION_VOCABULARY;
     const warnings: PartReconstructionWarning[] = [];
     const elements: PartReconstructionElementCandidate[] = [];
@@ -336,7 +338,9 @@ export class PartReconstructionService {
               0.99
             );
 
-            const following = page.elements.slice(index + 1).find((candidate) => candidate.text?.trim());
+            const following = page.elements
+              .slice(index + 1)
+              .find((candidate) => candidate.text?.trim());
             if (following?.text) {
               const guidanceText = addElement(
                 'teacher_guidance_text',
@@ -381,7 +385,10 @@ export class PartReconstructionService {
       });
     }
 
-    const inspectedPages = new Map<number, { physicalPageNumber: number; printedPageLabel?: string }>();
+    const inspectedPages = new Map<
+      number,
+      { physicalPageNumber: number; printedPageLabel?: string }
+    >();
     for (const element of elements) {
       inspectedPages.set(element.page.physicalPageNumber, element.page);
     }

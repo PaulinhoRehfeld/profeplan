@@ -16,8 +16,7 @@ export const PART_RECONSTRUCTION_ELEMENT_KINDS = [
   'teacher_guidance_heading',
   'teacher_guidance_text',
 ] as const;
-export type PartReconstructionElementKind =
-  (typeof PART_RECONSTRUCTION_ELEMENT_KINDS)[number];
+export type PartReconstructionElementKind = (typeof PART_RECONSTRUCTION_ELEMENT_KINDS)[number];
 
 export const PART_RECONSTRUCTION_EVIDENCE_KINDS = [
   'native_text',
@@ -25,8 +24,7 @@ export const PART_RECONSTRUCTION_EVIDENCE_KINDS = [
   'cartographic_node',
   'teacher_manual_text',
 ] as const;
-export type PartReconstructionEvidenceKind =
-  (typeof PART_RECONSTRUCTION_EVIDENCE_KINDS)[number];
+export type PartReconstructionEvidenceKind = (typeof PART_RECONSTRUCTION_EVIDENCE_KINDS)[number];
 
 export interface PartReconstructionEvidenceRef {
   readonly evidenceId: EntityId;
@@ -52,8 +50,7 @@ export const PART_RECONSTRUCTION_RELATION_KINDS = [
   'caption_for_visual',
   'teacher_guidance_for_activity',
 ] as const;
-export type PartReconstructionRelationKind =
-  (typeof PART_RECONSTRUCTION_RELATION_KINDS)[number];
+export type PartReconstructionRelationKind = (typeof PART_RECONSTRUCTION_RELATION_KINDS)[number];
 
 export interface PartReconstructionRelationCandidate {
   readonly relationId: EntityId;
