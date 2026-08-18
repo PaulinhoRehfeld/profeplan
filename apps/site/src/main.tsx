@@ -22,8 +22,8 @@ import './styles.css';
 
 const APP_URL = 'https://app.profeplan.com.br';
 const CONTACT_EMAIL = 'suporte@profeplan.com.br';
-const SILVER_CHECKOUT_URL = 'https://buy.stripe.com/28E3cudNyajg3UHbAm2VG00';
-const GOLD_CHECKOUT_URL = 'https://buy.stripe.com/8x2bJ010Mdvs76T0VI2VG01';
+const SILVER_CHECKOUT_URL = 'https://buy.stripe.com/28E3cudNyajg3UHbAm2VG00?prefilled_promo_code=LENA';
+const GOLD_CHECKOUT_URL = 'https://buy.stripe.com/8x2bJ010Mdvs76T0VI2VG01?prefilled_promo_code=JUJU';
 
 const legalLinks = [
   { label: 'Política de Privacidade', href: `${APP_URL}/politica-de-privacidade` },
