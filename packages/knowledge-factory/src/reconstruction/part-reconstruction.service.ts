@@ -99,6 +99,19 @@ function teacherManualRange(recognition: StructuralRecognitionSnapshot) {
   return recognition.regions.find((region) => region.kind === 'teacher_manual')?.pageRange;
 }
 
+function headingKindForNode(
+  node: CartographicNodeCandidate,
+  vocabulary: PartReconstructionVocabulary
+): PartReconstructionElementKind {
+  if (startsWithAny(node.observedTitle, vocabulary.activityHeadingPrefixes)) {
+    return 'activity_heading';
+  }
+  if (node.kind === 'chapter') {
+    return 'chapter_heading';
+  }
+  return 'section_heading';
+}
+
 export class PartReconstructionService {
   private readonly inspector: DocumentInspectorPort;
 
@@ -183,9 +196,6 @@ export class PartReconstructionService {
     };
 
     for (const page of partInspection.pages) {
-      currentHeadingElementId = undefined;
-      currentActivityElementId = undefined;
-
       for (const observed of page.elements) {
         if (observed.kind === 'image_marker') {
           const visual = addElement(
@@ -220,16 +230,14 @@ export class PartReconstructionService {
           );
           partTitleElementId = partTitle.elementId;
           currentHeadingElementId = partTitle.elementId;
+          currentActivityElementId = undefined;
           continue;
         }
 
         if (matchingNode) {
-          const activityHeading = startsWithAny(
-            matchingNode.observedTitle,
-            vocabulary.activityHeadingPrefixes
-          );
+          const headingKind = headingKindForNode(matchingNode, vocabulary);
           const heading = addElement(
-            activityHeading ? 'activity_heading' : 'section_heading',
+            headingKind,
             page,
             observed.logicalLocator,
             observed.text,
@@ -238,7 +246,8 @@ export class PartReconstructionService {
             0.99
           );
           currentHeadingElementId = heading.elementId;
-          currentActivityElementId = activityHeading ? heading.elementId : undefined;
+          currentActivityElementId =
+            headingKind === 'activity_heading' ? heading.elementId : undefined;
           if (partTitleElementId) {
             addRelation('contains', partTitleElementId, heading.elementId, heading.evidence, 0.99);
           }
