@@ -16,13 +16,17 @@ export interface VerifiedExtractionArtifactRead {
 
 function assertArtifactReadAuthorization(request: ExtractionArtifactReadRequest): void {
   const { authorizationEvidence, sourceVersion, readAt } = request;
+  const authorizationInstant = Date.parse(authorizationEvidence.evaluatedAt);
+  const readInstant = Date.parse(readAt);
 
   if (
     authorizationEvidence.purpose !== 'extraction' ||
     authorizationEvidence.checkpoint !== 'artifact_read' ||
     authorizationEvidence.sourceVersion.kind !== 'source_version' ||
     authorizationEvidence.sourceVersion.id !== sourceVersion.id ||
-    Date.parse(authorizationEvidence.evaluatedAt) !== Date.parse(readAt)
+    !Number.isFinite(authorizationInstant) ||
+    !Number.isFinite(readInstant) ||
+    authorizationInstant !== readInstant
   ) {
     throw new ExtractionArtifactReadError(
       'authorization_denied',
@@ -50,7 +54,8 @@ export async function calculateExtractionArtifactSha256(body: Uint8Array): Promi
     );
   }
 
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', body);
+  const input = body.slice().buffer;
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', input);
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
