@@ -25,7 +25,6 @@ export class PdfJsNativeTextExtractorAdapter implements NativeTextExtractorPort 
   async extract(artifact: VerifiedExtractionArtifactRead): Promise<NativeTextExtractionResult> {
     const loadingTask = getDocument({
       data: artifact.body.slice(),
-      isEvalSupported: false,
       stopAtErrors: true,
       useSystemFonts: true,
     });
