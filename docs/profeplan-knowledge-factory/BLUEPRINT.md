@@ -2,40 +2,53 @@
 
 Data de consolidação inicial: 7 de agosto de 2026.
 
-Estado de navegação atualizado em 15 de agosto de 2026.
+Estado de navegação atualizado em 18 de agosto de 2026.
+
+Reconciliação arquitetônica vigente:
+[`12-delivery/PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md`](12-delivery/PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md).
 
 ## 1. Finalidade
 
-Este documento apresenta a trilha macro de construção da ProfePlan Knowledge Factory desde a fundação arquitetônica até o piloto operacional do agente Sócrates 2 e a expansão posterior.
+Este Blueprint apresenta a trilha macro de construção da ProfePlan Knowledge Factory desde a fundação arquitetônica até o corpus pedagógico, retrieval, agentes especializados, piloto e escala.
 
-Seu objetivo é reduzir ambiguidade entre Marcos, Lotes, sublotes, Pull Requests, Stories e checkpoints, oferecendo uma visão única da sequência de capacidades.
+Ele existe para manter uma visão única de:
 
-Este Blueprint:
+- capacidades já integradas;
+- fronteiras entre fases e lotes;
+- caminho principal de transformação de fontes em conhecimento pedagógico;
+- gates técnicos, jurídicos e humanos;
+- próximos passos elegíveis.
 
-- não substitui ADRs, definições de Lote, Stories, critérios de aceite ou checkpoints;
-- não autoriza por si só qualquer implementação futura;
-- não altera gates de produção;
-- registra o estado atual e a ordem funcional recomendada;
-- distingue etapas já formalizadas de frentes futuras ainda sujeitas a definição documental e aprovação humana.
+O histórico detalhado de branches, commits, PRs, incidentes e decisões intermediárias permanece nos ADRs, definições de lote e checkpoints. O Blueprint deve privilegiar o **estado atual e a direção arquitetônica**, não repetir integralmente o histórico do repositório.
+
+Este documento:
+
+- não substitui ADRs, contratos, definições de lote ou critérios de aceite;
+- não autoriza produção por si só;
+- não transforma planejamento em autorização implícita;
+- registra a ordem funcional recomendada;
+- deve ser atualizado quando a experiência prática revelar contradições na sequência de execução.
 
 ## 2. Princípio central
 
-A Knowledge Factory será construída em camadas. Nenhuma camada posterior deve compensar uma fundação incompleta da camada anterior.
+A Knowledge Factory é construída em camadas de responsabilidade, mas **uma obra não precisa atravessar uma camada inteira antes que a próxima responsabilidade possa orientar seu processamento**.
 
-A sequência conceitual é:
+A sequência conceitual continua sendo:
 
 ```text
 CONTRATOS
   ↓
 DOMÍNIO
   ↓
-PERSISTÊNCIA E RLS
+PERSISTÊNCIA E SEGURANÇA
   ↓
-ADAPTERS
+MATÉRIA-PRIMA GOVERNADA
   ↓
-MATÉRIA-PRIMA
+CARTOGRAFIA E ESTRUTURA
   ↓
-COMPONENTES PEDAGÓGICOS
+CONHECIMENTO PEDAGÓGICO
+  ↓
+COMPONENTES E GRAFO
   ↓
 INDEXAÇÃO E RETRIEVAL
   ↓
@@ -50,457 +63,419 @@ PILOTO
 ESCALA
 ```
 
-Regra arquitetônica permanente:
+Regra permanente:
 
-> O agente trabalha com matéria-prima pedagógica preparada e recuperada de forma controlada; ele não vasculha indiscriminadamente livros, currículos ou todo o acervo a cada solicitação do professor.
+> O agente de produção trabalha com conhecimento pedagógico previamente preparado e recuperado de forma controlada; ele não reabre indiscriminadamente livros, currículos ou todo o acervo a cada pedido do professor.
+
+Regra complementar da Fase C:
+
+> **A obra é um contêiner documental e pedagógico; não é a unidade semântica de processamento. Primeiro compreendemos sua forma, depois aprofundamos cada parte e, por fim, conectamos o conhecimento.**
 
 ## 3. Visão industrial
 
-A metáfora operacional oficial continua sendo:
+A metáfora operacional oficial permanece:
 
 - ProfePlan: loja e central de entrega;
 - fontes originais: matérias-primas brutas;
+- estrutura editorial e conhecimento extraído: matéria-prima preparada;
 - componentes pedagógicos estruturados: matérias-primas semielaboradas;
-- repositório de componentes: almoxarifado inteligente;
+- repositório de componentes e relações: almoxarifado inteligente;
 - agentes especializados: fábricas;
-- agente coordenador: central de produção;
+- agente coordenador de produção: central de produção;
 - validadores: controle de qualidade;
 - Gráfica: acabamento editorial;
-- material final: produto pedagógico entregue ao professor.
+- material final: produto entregue ao professor.
+
+A coordenação cartográfica da Fase C pertence à construção do conhecimento e não deve ser confundida com o orquestrador de produção da Fase E.
 
 ## 4. Estado macro atual
 
+Base canônica de referência desta atualização: `main@c7cea4b7d0e4c12182a28fa85a4a2ad8f57b282e`.
+
 ```text
 FASE A — FUNDAÇÃO
-✅ Contratos
-✅ Domínio e portas
-✅ Banco, schema e RLS
+✅ contratos
+✅ domínio e portas
+✅ banco, schema e RLS
 
 FASE B — CONEXÃO COM O BANCO
-✅ 3B.1 AuditRepository
-✅ 3B.2 KnowledgeSourceRepository
-✅ 3B.3 CurriculumRepository
-✅ 3B.4 PedagogicalComponentRepository — leituras e escritas transacionais integradas
-✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
-✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
+✅ adapters essenciais integrados
+✅ fronteiras transacionais críticas comprovadas
+✅ Fase B encerrada por bloqueio parcial controlado
 
-FASE C — C.1 E C.2 CONCLUÍDOS; C.3 DEFINIDO EM PROPOSTA DOCUMENTAL  ← ESTADO DESTE DRAFT PR
-
-FASE C — MATÉRIA-PRIMA
-✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
-✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
-✅ C.2 Ingestão controlada — C.2.1–C.2.6 concluídos; Checkpoint 050
-📝 C.3 Extração e validação — fronteira e C.3.1–C.3.8 propostos; execução técnica bloqueada
-⬜ C.4 Segmentação e classificação estrutural
-⬜ C.5 Destilação pedagógica e deduplicação
-⬜ C.6 Componentização, versionamento e vínculo curricular
-⬜ C.7 Curadoria, corpus piloto e gate C → D
+FASE C — MATÉRIA-PRIMA E CONSTRUÇÃO DO CONHECIMENTO
+✅ C.0 definição integral e governança
+✅ C.1 lifecycle de fontes — C.1.1–C.1.6
+✅ C.2 ingestão controlada — C.2.1–C.2.6
+✅ C.3.1 contratos/lifecycle/fixtures
+✅ C.3.2 control plane persistente e segurança
+✅ C.3.3 porta do artefato e extração textual nativa
+✅ C.3.4 persistência incremental e reconciliação física
+✅ C.3.5 qualidade, policy e revisão humana
+⏸ C.3.6 recovery/concorrência/cancelamento/cleanup — PR #110 aberto, não integrado, suspenso para reconciliação
+⬜ protocolo de reconhecimento estrutural da obra — próximo caminho principal
+⬜ golden sample estrutural sintético
+⬜ primeira prova vertical por parte (`Introdução`)
+⬜ C.3.7 recuperação multimodal e fallback visual — não iniciar ainda
+⬜ C.3.8 fechamento integrado — redefinir após prova vertical
+⬜ C.4 reconstrução estrutural confirmada
+⬜ C.5 destilação, relações e deduplicação
+⬜ C.6 componentes, grafo curricular e versionamento
+⬜ C.7 curadoria e corpus piloto
 
 FASE D — INTELIGÊNCIA DO ALMOXARIFADO
-⬜ Estratégia de embeddings
-⬜ Indexação
-⬜ Busca híbrida
-⬜ Reranking
-⬜ Context budget
-⬜ Medição de custo e latência
+⬜ filtros e busca estruturada
+⬜ embeddings seletivos
+⬜ busca híbrida
+⬜ reranking
+⬜ context budget
+⬜ custo e latência
 
 FASE E — FÁBRICA
-⬜ Runtime de agentes
-⬜ Perfil Sócrates 2
-⬜ Orquestrador
-⬜ Produção autoral
-⬜ Validação
+⬜ runtime de agentes
+⬜ Sócrates 2
+⬜ orquestrador
+⬜ produção autoral
+⬜ validadores
 
 FASE F — PILOTO
-⬜ Corpus inicial de 100–300 componentes
+⬜ corpus inicial de 100–300 componentes
 ⬜ Filosofia / 2º ano / MG
-⬜ Quatro produtos pedagógicos
-⬜ Comparação com agente genérico
+⬜ quatro produtos pedagógicos
+⬜ comparação com baseline genérico
 
 FASE G — ESCALA
-⬜ Outros anos
-⬜ Outras disciplinas
-⬜ Rio Grande do Sul
-⬜ Gráfica avançada
-⬜ Novas fábricas e capacidades
+⬜ outros anos
+⬜ outras disciplinas
+⬜ novos currículos
+⬜ gráfica avançada
+⬜ novas fábricas e capacidades
 ```
 
-## 5. Fase A — Fundação
+## 5. Fases A e B — fundação já estabelecida
 
-### Status
+As Fases A e B permanecem concluídas dentro de seus limites aprovados.
 
-Concluída.
+Capacidades relevantes já disponíveis:
 
-### Capacidades estabelecidas
-
-- contratos compartilhados e versionados;
-- enums e invariantes;
-- domínio puro da Knowledge Factory;
-- políticas determinísticas;
+- linguagem de domínio versionada;
+- contratos compartilhados;
 - portas abstratas de repositório;
-- schema físico `kf_*`;
-- constraints e FKs;
+- schema `kf_*` e constraints;
 - RLS deny-by-default;
-- isolamento inicial da OPP por requester;
 - eventos append-only;
-- ambiente Supabase descartável para validação.
+- adapters Supabase controlados;
+- escritas transacionais por fronteiras estreitas;
+- ambiente descartável para testes de banco;
+- ProductionOrderRepository e PedagogicalComponentRepository nas superfícies já aprovadas.
 
-### Resultado da fase
+Gaps ainda contidos:
 
-A Knowledge Factory possui linguagem de domínio, fronteiras e persistência física suficientes para iniciar adapters sem acoplar regra pedagógica ao Supabase.
+- `GAP-3B-05` — auditoria enriquecida;
+- `GAP-3B-07` — OPP normativa completa nas capacidades que pertencem a retrieval, agentes e entrega.
 
-## 6. Fase B — Conexão com o banco
+`GAP-3B-04` foi encerrado pelo fechamento de C.1.
 
-### Status
+## 6. Fase C — resultado esperado
 
-Concluída por bloqueio parcial controlado no Checkpoint 032. `GAP-3B-05` e `GAP-3B-07`
-permanecem ativos e contidos. `GAP-3B-04`, que estava contido na saída da Fase B, foi posteriormente
-encerrado pelo fechamento governado do Lote C.1 em C.1.6 e no Checkpoint 043.
+A Fase C transforma fontes autorizadas em conhecimento pedagógico estruturado, rastreável, curado e elegível para futura recuperação.
 
-### Objetivo
+Ela **não** deve terminar em uma coleção de PDFs, páginas, chunks ou resumos soltos.
 
-Implementar adapters Supabase para as portas existentes, preservando domínio puro, injeção de clients, privilégios explícitos, erros provider-neutral, observabilidade sanitizada e testes fora de produção.
-
-### 6.1 — 3B.1 AuditRepository
-
-Status: concluído e validado.
-
-Provou:
-
-- package boundary;
-- SYSTEM client injetado;
-- mapper SQL ↔ domínio;
-- INSERT append-only;
-- erro provider-neutral;
-- telemetria sanitizada;
-- testes unitários;
-- integração em Supabase descartável;
-- uso controlado do CI de banco.
-
-O GAP-3B-05 permanece ativo para auditoria enriquecida.
-
-### 6.2 — 3B.2 KnowledgeSourceRepository
-
-Status: concluído e integrado.
-
-Objetivo:
-
-- implementar leitura das fontes dentro da porta existente;
-- implementar `save(source)` dentro dos limites aprovados;
-- preservar procedência e autorização;
-- não inventar ingestão completa;
-- não criar versionamento, segmentos ou permission events além da superfície aprovada.
-
-Restrição histórica desta etapa:
-
-- GAP-3B-04 — lifecycle de fonte incompleto para ingestão.
-
-Estado posterior: **encerrado em C.1.6**, após o lifecycle necessário à ingestão ter sido definido,
-persistido, protegido, adaptado, testado e integrado. A menção histórica a segmentos não antecipa
-C.4, lote canônico de segmentação e classificação.
-
-Interpretação operacional:
-
-> Esta etapa cria a ficha e a porta de persistência da matéria-prima; ainda não inicia o processamento de livros ou PDFs.
-
-### 6.3 — 3B.3 CurriculumRepository
-
-Status: concluído e integrado.
-
-Resultado:
-
-- lookup corrigido para Estado e etapa;
-- adapter read-only com client SYSTEM injetado;
-- pacotes hidratados com fontes ordenadas;
-- nós filtrados por pacote e ordenados deterministicamente;
-- testes unitários e integração descartável aprovados;
-- nenhuma escrita, currículo real ou produção.
-
-O GAP-3B-01 foi formalmente encerrado após a integração humana do PR nº 15 no commit `ad168c6926cb404a5abda5109be4a42d4d0df30b`.
-
-Este registro atualiza o estado de navegação sem reescrever o histórico preservado nos checkpoints 016 e 017.
-
-### 6.4 — 3B.4 PedagogicalComponentRepository
-
-Status: **concluído. 3B.4A e todos os sublotes do 3B.4B foram integrados por decisão humana.**
-
-Objetivo:
-
-- permitir leitura dos componentes pedagógicos semielaborados;
-- preparar o acesso ao futuro almoxarifado inteligente.
-
-Estratégia:
+Seu resultado coordenado deverá conservar quatro representações:
 
 ```text
-3B.4A — leituras — integrado pelo PR nº 17
-3B.4B — escritas transacionais — definição integrada pelo PR nº 19
-  3B.4B.1 — contratos e porta — integrado pelo PR nº 20
-  3B.4B.2 — migration e RPCs — integrado pelo PR nº 21
-  3B.4B.3 — adapter Supabase de comando — integrado pelo PR nº 22
+ÁRVORE EDITORIAL
+onde cada conteúdo está e a que parte pertence
+
+MANIFESTO DE COBERTURA
+o que foi processado, rejeitado, reprocessado ou permanece pendente
+
+GRAFO DE CONHECIMENTO
+como conceitos, teorias, autores, problemas e exemplos se relacionam
+
+GRAFO PEDAGÓGICO-CURRICULAR
+como conhecimentos, atividades, orientações docentes e currículo se relacionam
 ```
 
-Estado integrado do 3B.4A:
+O vetor será índice de recuperação, não fonte canônica.
 
-- `findById`, `findVersion` e `listEvidenceOrigins` implementados como subconjunto read-only;
-- adapter atribuível somente à capacidade read-only da porta, sem stubs de escrita e sem alegar
-  implementação integral;
-- leituras compostas sequenciais, sem promessa de snapshot forte e sem retorno parcial;
-- squash merge do PR nº 17 no commit `1c03d21590bf004489d0f4d07e42aaf29db44ac5`;
-- testes unitários, CI geral, integração no Supabase descartável e Vercel aprovados.
+## 7. Princípios de processamento de obras
 
-Estado integrado das escritas:
+### 7.1 A obra não é um bloco
 
-- o contrato `2.0.0` transporta evidências completas e vínculos curriculares sem side-channel;
-- as quatro operações usam RPCs PostgreSQL estreitas, transacionais e idempotentes;
-- o adapter 3B.4B.3 usa exclusivamente essas RPCs e permanece separado da leitura;
-- atomicidade, rollback, replay, fingerprint divergente e concorrência foram aprovados no Supabase
-  descartável;
-- o PR nº 22 foi integrado no commit `99b7981695eccb8b6019d570ff6e77529574a58f`, após CI geral,
-  DB CI e Vercel verdes;
-- `GAP-3B-02` e `GAP-3B-06` estão formalmente encerrados;
-- nenhuma escrita multi-tabela poderá simular atomicidade por chamadas independentes ao provider;
-- wiring, Supabase hospedado e produção continuam sujeitos a gates próprios.
+Nenhum livro completo deverá ser enviado como um único contexto semântico nem tratado como uma sequência cega de páginas.
 
-Definição específica:
+A obra é primeiro cartografada e depois processada por partes editoriais coerentes.
 
-- `12-delivery/LOT-3B4-PEDAGOGICAL-COMPONENT-ADAPTER-DEFINITION.md` — definição histórica do 3B.4 e do 3B.4A;
-- `12-delivery/LOT-3B4B-COMPONENT-WRITE-BOUNDARY-DEFINITION.md` — definição contratual e
-  transacional integrada do 3B.4B.
+### 7.2 Cartografia antes do aprofundamento
 
-### 6.5 — 3B.5 ProductionOrderRepository
+Antes da análise semântica aprofundada, procurar quando disponíveis:
 
-Status: **concluído. A definição documental e os quatro sublotes foram integrados pelos Pull
-Requests nº 24 a 28, e o encerramento pós-merge foi formalizado no Checkpoint 031. Nenhum wiring,
-Supabase hospedado ou acesso à produção foi iniciado.**
+- nome do arquivo;
+- capa;
+- folha de rosto;
+- ficha catalográfica;
+- créditos/expediente;
+- apresentação;
+- seção `Conheça seu livro`, `Organização da obra`, `Como usar este livro` ou equivalente;
+- sumário/índice;
+- paratextos curriculares;
+- início do corpo principal;
+- Manual do Professor e regiões finais.
 
-Objetivo:
+Essa inspeção cria uma **árvore preliminar**, não uma hierarquia canônica definitiva.
 
-- persistir e consultar Ordens de Produção Pedagógica;
-- registrar timeline coerente de produção;
-- preservar isolamento por requester.
+### 7.3 Nome do arquivo é pista
 
-Pré-condições:
-
-- requester-scoped client formalmente definido e efêmero;
-- criação de OPP + evento `created` atômica;
-- transição OPP + evento atômica e server-only;
-- idempotência e concorrência otimista;
-- separação entre leitura, solicitação e transição.
-
-Estratégia proposta:
+Devem ser distinguidas conceitualmente:
 
 ```text
-3B.5.1 — contratos e contextos — integrado
-3B.5.2 — adapter requester read-only — integrado
-3B.5.3 — migration e RPCs — integrado
-3B.5.4 — adapters de comando — integrado
+filename_hints
+  -> pistas derivadas do nome do arquivo
+
+detected_metadata
+  -> dados observados no documento
+
+canonical_metadata
+  -> metadados reconciliados
 ```
 
-Estado dos gaps:
+Nome de arquivo nunca substitui identidade bibliográfica ou jurídica.
 
-- GAP-3B-03 — encerrado após integração dos quatro sublotes e checkpoint pós-merge;
-- GAP-3B-07 — ativo e contido; a fatia física atual não representa a OPP normativa completa.
+### 7.4 Dupla paginação
 
-Definição específica:
+A Knowledge Factory deverá diferenciar:
 
-- `12-delivery/LOT-3B5-PRODUCTION-ORDER-REPOSITORY-DEFINITION.md`.
+- página física do arquivo/PDF;
+- página impressa/editorial;
+- rótulo de página quando aplicável;
+- confiança e método de correspondência.
 
-### Gate de saída da Fase B
+Deslocamentos entre página PDF e página impressa são comportamento normal de livros, não exceção.
 
-A Fase B termina quando as portas previstas para o MVP tiverem adapters seguros ou uma decisão formal de bloqueio parcial, sem pseudo-transações e sem wiring de produção implícito.
+### 7.5 Gramática editorial da coleção
 
-Resultado: **satisfeito por bloqueio parcial controlado no Checkpoint 032**. Os adapters previstos
-foram concluídos, as fronteiras transacionais críticas foram comprovadas no Supabase descartável e
-não existe dependência de produção. As contenções registradas naquele momento foram:
+Quando a obra explicar sua própria organização, essa região deve ser processada cedo porque fornece vocabulário para reconhecer boxes, atividades, infográficos, biografias, glossários e outros recursos.
 
-- `GAP-3B-04` — destinado à governança operacional do lifecycle de fontes na Fase C; **encerrado
-  posteriormente em C.1.6 / Checkpoint 043**;
-- `GAP-3B-05` — auditoria enriquecida e conclusão integral da `US-013.2` continuam bloqueadas até
-  extensão contratual explícita;
-- `GAP-3B-07` — OPP normativa completa e capacidades de contexto, retrieval, validação e entrega
-  continuam destinadas às fases correspondentes e não foram antecipadas.
+Os nomes declarados pela coleção são preservados como tipos editoriais observados; a ontologia canônica do ProfePlan pode posteriormente mapeá-los sem apagar a terminologia original.
 
-O encerramento deste gate não iniciou automaticamente a Fase C; cada lote permaneceu sujeito a
-definição e autorização próprias.
+### 7.6 Manual do Professor
 
-## 7. Fase C — Matéria-prima e preparação do conhecimento
+Orientações, respostas esperadas, mediação, avaliação e referências internas do Manual do Professor são conhecimento pedagógico estruturalmente relevante.
 
-### Status
-
-C.0 foi integrado pelo PR nº 31. O Lote C.1 foi executado de C.1.1 a C.1.6 e está **concluído**.
-C.1.6 foi integrado pelo PR nº 57 no commit
-`3ae0f5554eed5e7bd7f208647e068a304127058d`, tree
-`26da88424ade53819e3597258a224d575647a5a6`, com CI pós-merge nº 362 verde.
-
-A auditoria final está em
-[`12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md`](12-delivery/LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md)
-e o estado de continuidade de fechamento em
-[`00-governance/CONTINUITY-CHECKPOINT-043.md`](00-governance/CONTINUITY-CHECKPOINT-043.md).
-`GAP-3B-04` está encerrado.
-
-A definição documental do Lote C.2 foi integrada pelo PR nº 59 no commit
-`787432fa8e7f5d891899c94b1089803430a4734a`, tree
-`fc4d517def95ce23e5ddb73d935e1628710142d7`, com CI pós-merge nº 366 verde. Sua definição está em
-[`12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](12-delivery/LOT-C2-CONTROLLED-INGESTION-DEFINITION.md)
-e a decisão de fronteira está no ADR-062.
-
-C.2.1 foi integrado pelo PR nº 62 no commit
-`e0ba47bf063b324df141c370ebf371763fbf2364`, tree
-`a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde. A superfície contratual
-está em
-[`12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](12-delivery/LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md)
-e o estado pós-merge no Checkpoint 045.
-
-C.2.2 foi integrado pelo PR nº 67 no commit
-`7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, tree
-`61747e439323dcc165c8d3a084e4d73c66f06c4a`, com CI pós-merge nº 412 verde. A fronteira de intake/staging
-está em
-[`12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md`](12-delivery/LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md)
-e o estado pós-merge no Checkpoint 046.
-
-C.2.3 foi integrado pelo PR nº 70 no commit `f70312a9936b99e1c131627277ad4c4a65b126a5`, tree
-`4b47c853a2cb041ca895477abc3c710ca9393b94`, com CI pós-merge nº 430 verde; sua fronteira está em
-[`12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](12-delivery/LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md)
-e o estado pós-merge no Checkpoint 047.
-
-C.2.4 foi integrado pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, tree
-`92411aec0c9da3789bb91c87d8f423a3c69f929d`, com CI pós-merge nº 523 verde; sua fronteira está em
-[`12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](12-delivery/LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md)
-e o estado pós-merge no Checkpoint 048.
-
-C.2.5 foi integrado pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, tree
-`a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde; sua fronteira está em
-[`12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](12-delivery/LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md).
-O estado pós-merge está no Checkpoint 049.
-
-C.2.6 foi integrado pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree
-`0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde; sua prova integrada e
-matriz de fechamento estão em
-[`12-delivery/LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md`](12-delivery/LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md).
-O Checkpoint 050 formaliza o encerramento canônico do Lote C.2 e mantém C.3 bloqueado.
-
-Durante o merge do PR nº 93 houve uma corrida concorrente governada: o PR nº 92 da frente comercial
-avançou a `main` entre a última leitura pré-merge e o squash de C.2.6. O commit técnico de C.2.6 ficou
-como filho direto de `57d7e387676224ef6fb5e3101270c0b6e4f8c245`. A comparação pós-merge confirmou
-exatamente os sete arquivos de C.2.6 e o CI nº 562 validou a árvore composta final. O evento e a
-limitação TOCTOU da API estão registrados no Checkpoint 050.
-
-O mapa integral C.0–C.7 está definido em
-[`12-delivery/PHASE-C-EXECUTION-MAP.md`](12-delivery/PHASE-C-EXECUTION-MAP.md), e C.1 possui definição
-específica em
-[`12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](12-delivery/LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
-
-O plano complementar de ações para cartografia da obra, cobertura integral, paratextos, notas
-atômicas e grafo tipado está em
-[`12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](12-delivery/PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
-Ele detalha requisitos de C.1-C.7 e impactos nas Fases D-G, sem antecipar runtime de agentes ou
-alterar os gates vigentes.
-
-### Objetivo
-
-Transformar fontes autorizadas em componentes pedagógicos estruturados, rastreáveis e curados.
-
-### Estrutura de execução
-
-| Lote | Capacidade | Epics/Stories principais | Estado |
-|---|---|---|---|
-| C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
-| C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
-| C.2 | Ingestão controlada | EPIC-003; US-003.1 | **concluído — C.2.1–C.2.6** |
-| C.3 | Extração e validação | EPIC-003; US-003.1 | **definição documental proposta; C.3.1–C.3.8 bloqueados** |
-| C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
-| C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
-| C.6 | Componentes, versões e currículo | EPIC-004/006; US-004.1–004.3 e US-006.1–006.2 | bloqueado |
-| C.7 | Curadoria e corpus piloto | EPIC-004/005/006 | bloqueado |
-
-`Bloqueado` significa visível e planejado, mas não autorizado. Cada lote e sublote exige definição,
-DoR, autorização humana, testes, revisão, merge humano e checkpoint próprios.
-
-### Fluxo esperado
+O sistema deverá poder relacionar, quando houver evidência:
 
 ```text
-Fonte autorizada
+conteúdo/atividade
+  -> questão/comando
+  -> resposta ou expectativa
+  -> orientação ao professor
+  -> mediação/avaliação
+  -> conceito/currículo relacionado
+```
+
+### 7.7 Elementos visuais
+
+O caminho futuro distingue:
+
+```text
+texto nativo
+  -> padrão
+
+compreensão multimodal
+  -> elemento visual com função informacional/pedagógica
+
+OCR localizado
+  -> texto relevante não recuperável nativamente
+```
+
+OCR não é etapa obrigatória de livros editoriais com camada textual adequada.
+
+## 8. Modelo operacional vertical da Fase C
+
+As responsabilidades continuam separadas em C.3–C.7, mas o processamento da obra ocorre verticalmente por partes.
+
+### Passagem 1 — cartografia preliminar
+
+```text
+arquivo governado
   ↓
-registro de procedência
+identidade e pistas
   ↓
-versão governada
+regiões preliminares
   ↓
-permissão/licença por finalidade
+sumário/organização
   ↓
-staging temporário controlado
+paginação física x impressa
   ↓
-execução de ingestão rastreável
+árvore candidata
   ↓
-revisão humana / handoff
+plano de partes
+```
+
+### Passagem 2 — ciclo por parte
+
+```text
+parte delimitada
   ↓
-extração
+extração observável — C.3
   ↓
-segmentação
+reconstrução estrutural — C.4
   ↓
-classificação
+contribuições e relações candidatas — C.4/C.5 conforme autorização
   ↓
-destilação pedagógica
+reconciliação e revisão
   ↓
-deduplicação
+próxima parte
+```
+
+A passagem por C.4/C.5 só ocorre quando seus contratos e gates estiverem aprovados; o modelo vertical não autoriza antecipação material. Ele apenas remove a exigência artificial de terminar o livro inteiro em C.3 antes de usar informação estrutural para orientar o próprio processamento.
+
+### Passagem 3 — consolidação da obra
+
+```text
+partes reconciliadas
   ↓
-vínculo curricular
+árvore confirmada
   ↓
-componente pedagógico
+relações entre partes
+  ↓
+destilação/deduplicação
+  ↓
+componentes e grafo curricular
   ↓
 curadoria
 ```
 
-### Fontes iniciais previstas
+## 9. Estado e fronteira de C.3
 
-- documentos próprios;
-- currículo de Minas Gerais;
-- BNCC aplicável;
-- fontes abertas ou expressamente autorizadas;
-- PNLD somente dentro de regras jurídicas e de autorização previamente aprovadas.
+C.3.1–C.3.5 estão integrados e permanecem válidos como infraestrutura de evidência observável.
 
-### Princípio autoral
+C.3 tem autoridade sobre:
 
-Não armazenar apenas páginas ou chunks crus como produto de consumo dos agentes.
+- runs de extração;
+- autorização temporal de extração;
+- leitura provider-neutral do artefato;
+- páginas físicas;
+- texto nativo;
+- elementos observados;
+- proveniência;
+- persistência incremental;
+- métricas e cobertura física;
+- qualidade e revisão humana de extração.
 
-PDFs, imagens integrais de páginas, renderizações, recortes e miniaturas serão insumos temporários
-de ingestão e validação, nunca componentes do corpus permanente. Depois da extração e da revisão
-exigida, deverão ser descartados de forma verificável. O armazenamento definitivo ficará restrito a
-texto normalizado, chunks selecionados, dados estruturados, descrições semânticas de elementos
-visuais, procedência lógica, componentes, relações, vínculos e embeddings seletivos.
+C.3 não transforma observação em conhecimento pedagógico canônico.
 
-As obras editoriais previstas são predominantemente PDFs com camada textual utilizável. A extração
-nativa do texto e da estrutura do arquivo será o caminho padrão. OCR não fará parte do fluxo comum:
-será um fallback pontual, acionado somente para páginas ou elementos cuja camada textual esteja
-ausente, corrompida ou comprovadamente insuficiente, sempre com justificativa, métricas e revisão.
+A cartografia preliminar poderá usar observações de sumário, títulos, marcadores e regiões para orientar execução. A confirmação da hierarquia pertence a C.4.
 
-O objetivo é produzir matérias-primas pedagógicas semielaboradas que preservem:
+### C.3.6
 
-- procedência;
-- contexto;
-- tipo pedagógico;
-- vínculo curricular;
-- direitos de uso;
-- rastreabilidade;
-- espaço para geração autoral posterior.
+O PR #110 permanece aberto e não integrado. Seu hardening de recovery, concorrência, cancelamento e cleanup não foi descartado, mas está suspenso até a prova vertical revelar como essa infraestrutura deve se encaixar no processamento por partes.
 
-## 8. Fase D — Inteligência do almoxarifado
+### C.3.7
 
-### Status
+Não iniciar como “módulo de OCR”. A futura definição deve tratar **recuperação multimodal e fallback visual**, da qual OCR localizado é apenas uma possível técnica.
 
-Futura.
+### C.3.8
 
-### Objetivo
+Deverá ser reconciliado depois da primeira prova vertical; não deve pressupor que o único E2E relevante seja processar horizontalmente uma obra inteira até um handoff monolítico para C.4.
 
-Permitir recuperação rápida, precisa e econômica dos componentes relevantes.
+## 10. C.4 — reconstrução estrutural
 
-### Ordem obrigatória
+C.4 permanece responsável por:
+
+- confirmar ou corrigir a árvore preliminar;
+- segmentar por fronteiras editoriais;
+- classificar regiões e elementos por função;
+- identificar notas/contribuições candidatas;
+- reconciliar sumário, títulos e corpo;
+- produzir mapas confirmados de seção, capítulo, unidade e obra.
+
+A árvore preliminar anterior a C.4 é uma hipótese operacional rastreável, não autoridade canônica.
+
+## 11. C.5 — destilação, relações e deduplicação
+
+C.5 deverá:
+
+- destilar contribuições autorais;
+- preservar consenso, complementaridade, divergência e controvérsia;
+- criar relações tipadas com evidência;
+- evitar que a sequência de uma única coleção vire ontologia canônica;
+- detectar duplicidade e proximidade;
+- manter decisão humana no corpus piloto.
+
+## 12. C.6 — componentes e grafo curricular
+
+C.6 promove apenas resultados aprovados a componentes canônicos.
+
+Deverá manter distintos:
+
+- declaração curricular da obra;
+- detecção no conteúdo;
+- proposta do processamento;
+- validação normativa;
+- aprovação humana.
+
+Informação editorial explícita tem precedência sobre uma inferência gerativa sobre “o que a editora quis dizer”, mas não equivale à validação independente do ProfePlan.
+
+## 13. C.7 — curadoria e corpus piloto
+
+C.7 fecha a Fase C quando houver:
+
+- cobertura hierárquica reconciliada;
+- componentes e relações revisados;
+- procedência e permissões confiáveis;
+- lacunas explícitas;
+- manifesto reproduzível do corpus piloto;
+- 100–300 componentes revisados no escopo aprovado;
+- autorização humana para iniciar experimentos da Fase D.
+
+## 14. Próxima prova obrigatória
+
+Antes de novo hardening de exceções, criar um **golden sample estrutural inteiramente sintético** contendo:
+
+- filename informativo;
+- capa e ficha sintéticas;
+- seção de organização da obra;
+- sumário;
+- paginação física diferente da impressa;
+- uma `Introdução`;
+- títulos e subtítulos;
+- texto expositivo original;
+- elemento visual sintético com legenda;
+- atividade;
+- orientação docente relacionada;
+- declaração curricular sintética;
+- região final de Manual do Professor.
+
+Primeira prova vertical:
+
+```text
+arquivo sintético
+  -> reconhecer identidade
+  -> localizar estrutura
+  -> construir árvore preliminar
+  -> selecionar somente `Introdução`
+  -> extrair a parte
+  -> reconstruir títulos/subtítulos/elementos
+  -> manter relações texto-visual-atividade-orientação
+  -> reconciliar cobertura da parte
+  -> produzir saída revisável
+```
+
+Não processar o livro sintético inteiro como um único contexto.
+
+## 15. Fase D — inteligência do almoxarifado
+
+A recuperação deverá seguir, em princípio:
 
 ```text
 filtros determinísticos
   ↓
 busca lexical/estruturada
   ↓
-busca semântica
+busca semântica seletiva
   ↓
 fusão/reranking
   ↓
@@ -509,56 +484,26 @@ checagem de suficiência
 pacote de contexto
 ```
 
-### Decisões que só serão tomadas por experimento
+Embeddings serão escolhidos por experimento e servirão à recuperação, não à canonicidade do conhecimento.
 
-- modelo de embedding;
-- dimensão;
-- campos vetorizados;
-- índice;
-- estratégia de fusão;
-- reranker;
-- cache;
-- limites de recuperação;
-- orçamento de contexto.
-
-### Regra permanente
-
-> Metadados e filtros pedagógicos restringem o território antes de qualquer similaridade vetorial.
-
-### Métricas mínimas
+Métricas mínimas:
 
 - precisão;
 - recall;
 - relevância pedagógica;
-- incidência de conteúdo inadequado ao ano/componente;
+- mistura indevida de ano/componente/currículo;
 - latência;
 - tokens;
 - custo;
-- taxa de insuficiência corretamente detectada.
+- taxa de insuficiência detectada corretamente.
 
-## 9. Fase E — Fábrica de agentes
+## 16. Fase E — fábrica de agentes
 
-### Status
+Só depois de retrieval mensurável ativaremos runtime agêntico de produção.
 
-Futura.
+O primeiro perfil permanece Sócrates 2, com escopo piloto de Filosofia, Ensino Médio, 2º ano e currículo de Minas Gerais.
 
-### Objetivo
-
-Ativar o primeiro fluxo agêntico sobre infraestrutura e retrieval já mensuráveis.
-
-### Sócrates 2
-
-Perfil piloto:
-
-- componente: Filosofia;
-- etapa: Ensino Médio;
-- ano: 2º ano;
-- currículo inicial: Minas Gerais;
-- currículo futuro plugável: Rio Grande do Sul;
-- runtime compartilhado e versionado;
-- não duplicado por Estado.
-
-### Contexto do agente
+Contexto previsto:
 
 ```text
 IDENTIDADE
@@ -571,21 +516,11 @@ IDENTIDADE
 + ORÇAMENTO DE TOKENS
 ```
 
-### Orquestrador
+O orquestrador de produção não deve reabrir livros inteiros para responder ao professor.
 
-Responsável por:
+## 17. Fase F — piloto controlado
 
-- interpretar a OPP;
-- selecionar agentes e capacidades;
-- controlar escopo de conhecimento;
-- coordenar retrieval;
-- controlar orçamento;
-- acionar validadores;
-- impedir expansão de domínio não autorizada.
-
-## 10. Fase F — Produção e piloto controlado
-
-### Escopo do piloto
+Escopo estratégico permanece:
 
 - Filosofia;
 - 2º ano do Ensino Médio;
@@ -593,290 +528,106 @@ Responsável por:
 - Sócrates 2;
 - 100–300 componentes pedagógicos revisados.
 
-### Produtos mínimos
+Produtos mínimos:
 
 1. plano de aula;
 2. texto didático;
 3. atividade reflexiva;
 4. avaliação formativa curta.
 
-### Fluxo de produção
+Comparação obrigatória com baseline genérico, medindo qualidade, aderência curricular, criatividade, alucinação, mistura de escopo, tokens, latência e custo.
 
-```text
-Pedido do professor
-  ↓
-OPP
-  ↓
-roteamento
-  ↓
-currículo
-  ↓
-retrieval
-  ↓
-pacote de contexto
-  ↓
-Sócrates 2
-  ↓
-produção autoral
-  ↓
-validação
-  ↓
-contrato de entrega
-```
+## 18. Fase G — escala
 
-### Controle de qualidade
+Somente depois do piloto:
 
-Devem participar, conforme o produto:
+1. ampliar anos da disciplina validada;
+2. validar reutilização do runtime;
+3. adicionar disciplina;
+4. expandir currículos;
+5. ampliar produtos;
+6. introduzir acabamento gráfico avançado;
+7. escalar novas fábricas.
 
-- validação curricular;
-- validação conceitual;
-- validação pedagógica;
-- inclusão e acessibilidade;
-- autoria e risco de reprodução;
-- rastreabilidade;
-- custo/tokens/latência.
+Integrações externas não são incorporadas por novidade tecnológica. Nexus, Evolution ou qualquer outra plataforma somente entram quando houver aderência arquitetônica e contribuição concreta mensurável para o ProfePlan.
 
-Finding `Must` aberto permanece bloqueante e não compensatório.
+## 19. Produção é trilha separada
 
-### Baseline obrigatório
+Nenhum lote técnico autoriza automaticamente:
 
-Comparar Sócrates 2 com agente genérico em execução pareada e casos dourados.
-
-Medir:
-
-- qualidade pedagógica;
-- aderência curricular;
-- relevância do repertório;
-- criatividade;
-- alucinação;
-- mistura entre ano/componente;
-- tokens;
-- latência;
-- custo.
-
-### Critério estratégico
-
-A expansão só deve ocorrer se a arquitetura especializada demonstrar ganho real e mensurável em relação ao baseline genérico.
-
-## 11. Fase G — Escala
-
-### Status
-
-Futura e fora do piloto inicial.
-
-### Ordem recomendada
-
-1. expandir Filosofia para 1º e 3º anos;
-2. validar reutilização do runtime comum;
-3. adicionar nova disciplina;
-4. expandir repertório e currículos;
-5. introduzir Rio Grande do Sul como pacote curricular plugável;
-6. ampliar produtos;
-7. integrar acabamento gráfico avançado;
-8. escalar para demais agentes e fábricas.
-
-### Capacidades explicitamente posteriores
-
-- expansão ampla de disciplinas;
-- currículo RS em produção;
-- outros Estados;
-- Gráfica avançada;
-- PDF/PPTX sofisticados;
-- novas fábricas;
-- EPIC-018;
-- integrações externas adicionais.
-
-## 12. Produção é uma trilha separada
-
-Nenhuma conclusão de um Lote técnico autoriza automaticamente:
-
-- migration em Supabase real;
-- uso de `service_role` real;
+- migration em banco hospedado real;
+- `service_role` real;
 - wiring de API de produção;
 - ativação no frontend;
-- processamento de fontes reais;
-- exposição de agentes aos professores.
+- processamento de fonte real protegida;
+- exposição de agentes a professores.
 
-A entrada em produção exige gate próprio com, no mínimo:
+Produção exige gate próprio, análise de alvo, drift, backup/pre-flight, rollback, segurança e autorização humana explícita.
 
-- alvo formalmente identificado;
-- snapshot/schema;
-- drift analysis;
-- backup/pre-flight;
-- comandos exatos;
-- plano de rollback e resposta a falha;
-- revisão de segurança;
-- autorização humana explícita.
+## 20. Governança proporcional ao risco
 
-## 13. Gates entre as fases
+Manter documentação antes do código, mas evitar microgovernança que não reduz risco real.
 
-### A → B
-
-Concluído: contratos, domínio e schema aprovados.
-
-### B → C
-
-Critérios satisfeitos no Checkpoint 032:
-
-- adapters necessários ao fluxo de matéria-prima aprovados — satisfeito;
-- GAPs relevantes resolvidos ou formalmente contidos — satisfeito no momento por contenção de
-  `GAP-3B-04`, `GAP-3B-05` e `GAP-3B-07`;
-- testes de integração descartáveis verdes — satisfeito;
-- nenhuma dependência implícita de produção — satisfeito.
-
-A passagem arquitetural foi aberta documentalmente pela integração de C.0. Depois disso, C.1 foi
-executado de forma controlada e concluído. `GAP-3B-04` foi encerrado em C.1.6; `GAP-3B-05` e
-`GAP-3B-07` permanecem ativos e contidos.
-
-A definição de C.2 foi integrada pelo PR nº 59 e formalizou sua fronteira operacional. C.2.1 foi
-integrado pelo PR nº 62 como superfície contract-first. C.2.2 foi integrado pelo PR nº 67 como
-fronteira física mínima de intake/staging temporário, com CI pós-merge nº 412 verde. C.2.3 foi
-integrado pelo PR nº 70 como fronteira de integridade criptográfica, duplicidade binária e vínculo,
-com CI pós-merge nº 430 verde e reconciliação registrada no Checkpoint 047. C.2.4 foi integrado pelo
-PR nº 74 como fronteira durável de idempotência, recovery e fail-safe, com CI pós-merge nº 523 verde
-e Checkpoint 048. C.2.5 foi integrado pelo PR nº 84 como fronteira de revisão humana e handoff
-governado, com CI pós-merge nº 547 verde e Checkpoint 049. C.2.6 foi integrado pelo PR nº 93 como
-prova E2E consolidada e gate de fechamento, com CI pós-merge nº 562 verde. **C.2 está encerrado no
-Checkpoint 050; C.3–C.7 permanecem bloqueados.**
-
-O fechamento de C.2 não constitui autorização para extração, conteúdo real, Storage hospedado,
-Supabase hospedado, wiring ou produção.
-
-### C → D
-
-Exige:
-
-- corpus piloto curado;
-- procedência e permissões confiáveis;
-- tipologia de componentes estável;
-- amostra suficiente para experimentos de retrieval.
-
-### D → E
-
-Exige:
-
-- estratégia de retrieval escolhida por evidência;
-- filtros determinísticos funcionando;
-- budget de contexto definido;
-- métricas mínimas conhecidas;
-- insuficiência detectável.
-
-### E → F
-
-Exige:
-
-- Sócrates 2 versionado;
-- OPP e orquestração testadas;
-- validadores bloqueantes ativos;
-- nenhum acesso indiscriminado ao corpus.
-
-### F → G
-
-Exige:
-
-- piloto comparativo concluído;
-- ganho mensurável sobre baseline genérico;
-- custos e latência aceitáveis;
-- qualidade pedagógica aprovada;
-- riscos autorais controlados.
-
-## 14. Regra de documentação antes do código
-
-Cada nova frente deverá seguir:
+Fluxo normal:
 
 ```text
-DEFINIR
+DEFINIR A FRONTEIRA
   ↓
-DOCUMENTAR
+DOCUMENTAR O COMPORTAMENTO PRINCIPAL
   ↓
 APROVAR
   ↓
-CRIAR BRANCH
-  ↓
-IMPLEMENTAR
+IMPLEMENTAR EM BRANCH/PR
   ↓
 TESTAR
   ↓
 REVISAR
   ↓
-MERGE HUMANO
+MERGE HUMANO QUANDO APLICÁVEL
   ↓
-CHECKPOINT
+REGISTRAR CONTINUIDADE QUANDO HOUVER GANHO REAL
 ```
 
-Não iniciar etapa futura por continuidade implícita.
+Fixtures, testes, correções necessárias ao próprio gate e reexecuções de CI dentro de escopo aprovado não devem exigir nova autorização por microação.
 
-## 15. Regra de forks e continuidade
+## 21. Regra de continuidade de conversas
 
-Forks de conversa devem ocorrer em marcos naturais, especialmente após:
+Trocar de conversa em marcos naturais, especialmente quando houver:
 
-- merge de um Lote ou sublote relevante;
-- checkpoint oficial;
-- mudança de camada arquitetônica;
-- crescimento significativo do contexto.
+- integração de mudança arquitetônica relevante;
+- mudança de natureza entre documentação e implementação;
+- fechamento de uma prova vertical;
+- crescimento de contexto que dificulte manter decisões e estado técnico.
 
-Antes do fork, deve existir um checkpoint versionado registrando:
+Antes da troca, registrar de forma suficiente:
 
-- estado atual;
-- decisão humana;
-- branch e PR;
+- estado canônico;
+- branch/PR;
+- decisões tomadas;
 - pendências;
-- próximo escopo autorizado;
-- itens explicitamente bloqueados.
+- próximo objetivo;
+- escopo explicitamente bloqueado.
 
-## 16. Visão executiva
+Não criar checkpoint apenas para obedecer ritual quando o PR, a documentação e o estado canônico já preservarem continuidade suficiente.
 
-A Knowledge Factory não será construída começando pela IA.
+## 22. Próximo objetivo oficial
 
-Ela será construída na seguinte ordem:
+A prioridade atual não é C.3.7 nem novo hardening de exceções.
+
+A ordem é:
 
 ```text
-1. definir o que existe;
-2. definir as regras;
-3. guardar com segurança;
-4. conectar o domínio ao armazenamento;
-5. preparar a matéria-prima;
-6. organizar o almoxarifado;
-7. aprender a recuperar somente o necessário;
-8. ativar o agente especializado;
-9. produzir com controle de qualidade;
-10. provar que o resultado é melhor;
-11. somente então escalar.
+1. reconciliar documentalmente a Fase C com cartografia vertical;
+2. definir o Protocolo de Reconhecimento Estrutural da Obra;
+3. criar golden sample sintético;
+4. provar cartografia preliminar;
+5. executar primeira prova vertical somente da `Introdução`;
+6. revisar lacunas concretas;
+7. decidir como absorver/corrigir C.3.6;
+8. decidir recuperação multimodal/OCR com base em necessidade demonstrada;
+9. preparar, em fronteira própria, o primeiro conteúdo real juridicamente autorizado.
 ```
 
-## 17. Estado de navegação
+Regra de síntese:
 
-Ponto atual oficial deste Blueprint:
-
-> **FASE C APÓS O FECHAMENTO DE C.2 — C.0 integrado; C.1.1–C.1.6 concluídos; Lote C.1 encerrado;
-> `GAP-3B-04` encerrado; definição documental de C.2 integrada pelo PR nº 59; C.2.1 pelo PR nº 62;
-> C.2.2 pelo PR nº 67; C.2.3 pelo PR nº 70; C.2.4 pelo PR nº 74; C.2.5 pelo PR nº 84; e C.2.6
-> integrado pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree
-> `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde.**
-
-Atualização de navegação da Fase C:
-
-> **C.2.1–C.2.6 estão integrados e revalidados; o Lote C.2 está encerrado no Checkpoint 050. C.3
-> permanece bloqueado. C.4–C.7 e as Fases D–G continuam bloqueados. `GAP-3B-05` e `GAP-3B-07`
-> permanecem ativos e contidos. Produção permanece não autorizada.**
-
-Registro de concorrência:
-
-> Durante o merge do PR nº 93, o PR nº 92 da frente comercial avançou a `main` entre a verificação
-> pré-merge e o squash. O commit de C.2.6 foi aplicado sobre `57d7e387676224ef6fb5e3101270c0b6e4f8c245`.
-> A comparação pós-merge confirmou os sete arquivos autorizados de C.2.6 e o CI nº 562 validou a
-> árvore composta final. O Checkpoint 050 preserva esse evento e a limitação TOCTOU como evidência.
-
-Próximo objetivo possível, somente após integração humana desta proposta, checkpoint próprio,
-reconfirmação canônica e nova autorização explícita:
-
-> abrir **C.3.1 — contratos, lifecycle, proveniência, vocabulário de qualidade e fixtures
-> sintéticas**, sem parser, OCR, conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados
-> ou produção.
-
-Próxima grande mudança de natureza do projeto:
-
-> A definição documental de C.3 estabelece a primeira camada com autoridade para executar extração,
-> mas não a implementa nem a inicia. O handoff de C.2 é entrada necessária e insuficiente: C.3 deverá
-> revalidar a autorização `purpose=extraction` no instante de claim, leitura/retomada e finalização.
-> Segmentos, chunks semânticos e hierarquia editorial confirmada pertencem a C.4.
+> **Primeiro provar o caminho principal da construção do conhecimento; depois endurecer exceções, concorrência e fallbacks que esse caminho demonstrar precisar.**
