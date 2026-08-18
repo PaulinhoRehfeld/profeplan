@@ -366,8 +366,10 @@ END;
 $service_role_dml$;
 RESET ROLE;
 
--- Create an independent synthetic READY run for the service_role authorization
--- bypass negative and for the explicit BLOCKED_AUTHORIZATION terminal path.
+-- Create an independent synthetic READY run for the explicit
+-- BLOCKED_AUTHORIZATION terminal path. Current authorization failure is already
+-- proved above through the same SECURITY DEFINER begin RPC; no internal helper
+-- privilege is granted to service_role merely for test convenience.
 DO $second_run$
 DECLARE
   v_source public.kf_extraction_runs%ROWTYPE;
@@ -393,49 +395,6 @@ BEGIN
   );
 END;
 $second_run$;
-
-SET ROLE service_role;
-DO $service_role_invalid_claim$
-DECLARE
-  v_snapshot jsonb;
-  v_payload jsonb;
-  v_fp text;
-BEGIN
-  -- The technical role gets its state only through the allowed read-only RPC.
-  v_snapshot := public.kf_extraction_snapshot('e1000000-0000-4000-8000-000000000004');
-  IF v_snapshot IS NULL OR v_snapshot ->> 'state' <> 'READY' THEN
-    RAISE EXCEPTION 'service_role snapshot RPC did not expose the governed READY projection';
-  END IF;
-
-  v_payload := jsonb_build_object(
-    'commandType','begin_extraction',
-    'actor',jsonb_build_object(
-      'actorId','c4000000-0000-4000-8000-000000000001','role','system_worker'
-    ),
-    'occurredAt','2026-08-15T06:30:00.000Z',
-    'correlationId','e5000000-0000-4000-8000-000000000004',
-    'reason','service_role cannot bypass expired extraction authorization',
-    'run',v_snapshot -> 'run',
-    'expectedState','READY',
-    'expectedVersion',v_snapshot ->> 'aggregateVersion',
-    'expectedSequence',(v_snapshot ->> 'sequence')::bigint,
-    'authorizationEvidence',jsonb_build_object(
-      'authorizationId','cf000000-0000-4000-8000-000000000005',
-      'sourceVersion',v_snapshot -> 'sourceVersion',
-      'purpose','extraction','checkpoint','claim','evaluatedAt','2026-08-15T06:30:00.000Z'
-    )
-  );
-  v_fp := public.kf_extraction_command_fingerprint_internal('begin_extraction',v_payload);
-  BEGIN
-    PERFORM * FROM public.kf_extraction_begin(
-      'e7000000-0000-4000-8000-000000000010',v_fp,v_payload
-    );
-    RAISE EXCEPTION 'service_role bypassed current C.1 extraction authorization';
-  EXCEPTION WHEN SQLSTATE 'PT403' THEN NULL;
-  END;
-END;
-$service_role_invalid_claim$;
-RESET ROLE;
 
 DO $blocked_path$
 DECLARE
