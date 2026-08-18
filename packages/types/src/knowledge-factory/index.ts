@@ -6,6 +6,7 @@ export * from './ingestion-recovery.ts';
 export * from './ingestion-review-handoff.ts';
 export * from './extraction.ts';
 export * from './cartography.ts';
+export * from './reconstruction.ts';
 export * from './staging.ts';
 export * from './integrity.ts';
 export * from './curriculum.ts';

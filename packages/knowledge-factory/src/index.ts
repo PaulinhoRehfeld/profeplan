@@ -5,6 +5,7 @@ export * from './cartography/document-inspector.port.ts';
 export * from './cartography/filename-hints.service.ts';
 export * from './cartography/pdfjs-document-inspector.adapter.ts';
 export * from './cartography/structural-recognition.service.ts';
+export * from './reconstruction/part-reconstruction.service.ts';
 export * from './extraction/artifact-read.port.ts';
 export * from './extraction/artifact-read.service.ts';
 export * from './extraction/native-text-extractor.port.ts';
