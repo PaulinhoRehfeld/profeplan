@@ -13,6 +13,7 @@ test('part reconstruction exposes only the first C.4-local candidate vocabulary'
   assert.deepEqual(PART_RECONSTRUCTION_ELEMENT_KINDS, [
     'part_title',
     'section_heading',
+    'chapter_heading',
     'body_text',
     'activity_heading',
     'activity_prompt',
