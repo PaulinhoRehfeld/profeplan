@@ -1,19 +1,20 @@
-import {
-  STRUCTURAL_RECOGNITION_CONTRACT_VERSION,
-  type CartographicNodeCandidate,
-  type CartographicNodeKind,
-  type CartographicPartScope,
-  type CartographicRegionCandidate,
-  type CartographyEvidenceRef,
-  type IngestionSourceVersionRef,
-  type PhysicalPageRange,
-  type StructuralRecognitionSnapshot,
-  type StructuralRecognitionWarning,
+import type {
+  CartographicNodeCandidate,
+  CartographicNodeKind,
+  CartographicPartScope,
+  CartographicRegionCandidate,
+  CartographyEvidenceRef,
+  IngestionSourceVersionRef,
+  PhysicalPageRange,
+  StructuralRecognitionSnapshot,
+  StructuralRecognitionWarning,
 } from '@profeplan/types';
 import type { VerifiedExtractionArtifactRead } from '../extraction/artifact-read.service.ts';
 import type { NativeTextExtractedPage } from '../extraction/native-text-extractor.port.ts';
 import type { DocumentInspectionResult, DocumentInspectorPort } from './document-inspector.port.ts';
 import { deriveFilenameHints, type FilenameHintRule } from './filename-hints.service.ts';
+
+const STRUCTURAL_RECOGNITION_VERSION: StructuralRecognitionSnapshot['contractVersion'] = '1.0.0';
 
 export interface StructuralRecognitionVocabulary {
   readonly tableOfContentsHeadings: readonly string[];
@@ -553,7 +554,7 @@ export class StructuralRecognitionService {
     }
 
     const snapshot: StructuralRecognitionSnapshot = {
-      contractVersion: STRUCTURAL_RECOGNITION_CONTRACT_VERSION,
+      contractVersion: STRUCTURAL_RECOGNITION_VERSION,
       snapshotId: request.snapshotId,
       sourceVersion: request.sourceVersion,
       artifactSha256: request.artifact.sha256,

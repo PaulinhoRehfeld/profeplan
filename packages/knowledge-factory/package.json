@@ -13,7 +13,6 @@
     "test": "node --experimental-strip-types --test test/*.test.mjs"
   },
   "dependencies": {
-    "@profeplan/types": "workspace:*",
     "pdfjs-dist": "^5.4.530"
   }
 }
