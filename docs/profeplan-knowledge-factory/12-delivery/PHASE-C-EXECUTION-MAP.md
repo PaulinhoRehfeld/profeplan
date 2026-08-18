@@ -1,616 +1,448 @@
 # Fase C — Mapa integral de execução da matéria-prima
 
-Data da definição: 11 de agosto de 2026.
+Data da definição inicial: 11 de agosto de 2026.
 
-Base original da definição de C.0: `main` em `73599716f28073eb93894682736e4bd497103a49`.
+Reconciliação executiva: 18 de agosto de 2026.
 
-Estado técnico canônico após a integração de C.2.6 verificado em 15 de agosto de 2026: `main` em
-`3b8c2d317542bd701ea61e671f9b6e4334f61b1c` (PR nº 93), tree
-`0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, parent
-`57d7e387676224ef6fb5e3101270c0b6e4f8c245`.
+Base canônica da reconciliação: `main@c7cea4b7d0e4c12182a28fa85a4a2ad8f57b282e`.
 
-Detalhamento complementar: [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md).
+Documentos complementares:
 
-Definição específica de C.1:
-[`LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
-
-Auditoria de fechamento de C.1:
-[`LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md`](LOT-C1-6-SOURCE-LIFECYCLE-CLOSURE-MATRIX.md).
-
-Definição específica de C.2:
-[`LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](LOT-C2-CONTROLLED-INGESTION-DEFINITION.md).
-
-Definição integrada de C.2.1:
-[`LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md).
-
-Definição integrada de C.2.2:
-[`LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md`](LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md).
-
-Definição integrada de C.2.3:
-[`LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md).
-
-Definição integrada de C.2.4:
-[`LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md).
-
-Definição integrada de C.2.5:
-[`LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md).
-
-Prova integrada e fechamento de C.2.6:
-[`LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md`](LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md).
-
-## Status
-
-**C.0 está integrado. C.1 foi concluído integralmente de C.1.1 a C.1.6 e `GAP-3B-04` está
-encerrado. C.2 foi concluído integralmente de C.2.1 a C.2.6 após o PR nº 93, com CI pós-merge nº 562
-verde e fechamento documental no Checkpoint 050. C.3–C.7, ingestão real, fontes reais, wiring,
-Supabase hospedado, Storage hospedado e produção permanecem bloqueados.**
-
-A visibilidade de C.3–C.7 permanece planejamento, não autorização automática. Cada implementação de
-lote ou sublote exige Definition of Ready satisfeita e autorização humana própria.
+- [`PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md`](PHASE-C-KNOWLEDGE-CARTOGRAPHY-ACTION-PLAN.md);
+- [`PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md`](PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md);
+- [`LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md`](LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md).
 
 ## 1. Objetivo
 
-Transformar fontes autorizadas em componentes pedagógicos semielaborados, autorais, versionados,
-rastreáveis, vinculados ao currículo e aprovados por curadoria, formando o corpus piloto que
-alimentará os experimentos de retrieval da Fase D.
+Transformar fontes autorizadas em componentes pedagógicos semielaborados, autorais, versionados, rastreáveis, conectados e curados, formando o corpus piloto que alimentará os experimentos de retrieval da Fase D.
 
-O produto da Fase C não é um plano de aula, uma avaliação ou outro material final. É matéria-prima
-pedagógica preparada para que os agentes produzam posteriormente com qualidade e baixo consumo de
-contexto.
+A Fase C não produz plano de aula, avaliação ou outro produto final. Ela constrói o **almoxarifado de conhecimento** que permitirá produção posterior com baixo consumo de contexto e alta rastreabilidade.
 
-O processamento de obras deverá preservar árvore editorial, manifesto integral de cobertura, notas
-atômicas, relações tipadas e vínculos curriculares com estados de evidência distintos. As ações,
-artefatos e gates complementares estão definidos no plano de cartografia e formação do grafo de
-conhecimento, sem autorização implícita de implementação.
-
-## 2. Hierarquia oficial
+A Fase C deve conservar simultaneamente:
 
 ```text
-FASE C — MATÉRIA-PRIMA
-├── C.0 — Definição integral, governança e gates
-├── C.1 — Governança operacional do lifecycle de fontes
-├── C.2 — Ingestão controlada
-├── C.3 — Extração e validação do conteúdo extraído
-├── C.4 — Segmentação e classificação estrutural
-├── C.5 — Destilação pedagógica e deduplicação
-├── C.6 — Componentização, versionamento e vínculo curricular
-└── C.7 — Curadoria, publicação no corpus piloto e gate C → D
+ÁRVORE EDITORIAL
+MANIFESTO DE COBERTURA
+GRAFO DE CONHECIMENTO
+GRAFO PEDAGÓGICO-CURRICULAR
 ```
 
-Cada lote segue a mesma decomposição:
+## 2. Hierarquia oficial de responsabilidades
 
 ```text
-Fase → Lote → Sublote → Epic → Feature → User Story → tarefa técnica → teste → gate → checkpoint
+FASE C — MATÉRIA-PRIMA E CONSTRUÇÃO DO CONHECIMENTO
+├── C.0 — definição integral, governança e gates
+├── C.1 — lifecycle de fontes, procedência e direitos
+├── C.2 — ingestão controlada
+├── C.3 — extração e validação observável
+├── C.4 — reconstrução e classificação estrutural
+├── C.5 — destilação, relações e deduplicação
+├── C.6 — componentização, versionamento e vínculo curricular
+└── C.7 — curadoria, corpus piloto e gate C → D
 ```
 
-Epics, Features e Stories preservam os identificadores aprovados no Marco 003. Este documento os
-materializa no contexto da Fase C; não cria uma segunda taxonomia concorrente.
+Essa hierarquia define **autoridade sobre os dados**, não obriga uma obra inteira a terminar um lote horizontalmente antes de qualquer responsabilidade posterior poder operar sobre uma parte elegível.
 
-## 3. Estado executivo
+## 3. Princípio executivo reconciliado
 
-| Lote | Capacidade | Epics/Stories principais | Estado | Gate de início técnico |
-|---|---|---|---|---|
-| C.0 | Mapa integral e governança | EPIC-001 | Integrado/encerrado documentalmente | satisfeito pelo PR nº 31 |
-| C.1 | Lifecycle, procedência, licença e permissão | EPIC-002; US-002.1–002.2 | **Concluído — C.1.1–C.1.6** | gate de saída satisfeito em C.1.6 |
-| C.2 | Entrada controlada de fonte autorizada | EPIC-003; US-003.1 | **Concluído — C.2.1–C.2.6** | gate de saída satisfeito por C.2.6 / PR nº 93 / Checkpoint 050 |
-| C.3 | Extração rastreável e validação | EPIC-003; US-003.1 | **Bloqueado** | C.2 concluído; exige contexto, DoR e autorização próprios |
-| C.4 | Segmentos estruturais e classificação | EPIC-003; US-003.2 | Bloqueado | C.3 concluído |
-| C.5 | Síntese autoral e deduplicação | EPIC-005; US-005.1–005.2 | Bloqueado | C.4 concluído |
-| C.6 | Componentes canônicos e currículo | EPIC-004/006; US-004.1–004.3 e US-006.1–006.2 | Bloqueado | C.5 concluído e pacote curricular aprovado |
-| C.7 | Curadoria e corpus piloto | EPIC-004/005/006 | Bloqueado | C.6 concluído |
+> **A obra é cartografada primeiro e aprofundada por partes.**
 
-`Bloqueado` significa não autorizado para execução. Não significa descartado.
+A sequência monolítica:
 
-## 4. Lote C.0 — Definição integral, governança e gates
+```text
+livro inteiro em C.3
+  -> livro inteiro em C.4
+  -> livro inteiro em C.5
+```
 
-### Objetivo
+não é mais a interpretação operacional da Fase C.
 
-Tornar visível o percurso completo antes do primeiro código da fase e impedir que uma etapa futura
-seja iniciada por continuidade implícita.
+O processamento deverá seguir:
 
-### Sublotes
+```text
+PASSAGEM 1 — CARTOGRAFIA PRELIMINAR
+arquivo -> identidade -> preliminares -> sumário/organização -> árvore candidata -> plano de partes
 
-- `C.0.1` — consolidar a hierarquia Fase/Lote/Sublote/Epic/Feature/Story;
-- `C.0.2` — mapear dependências, entradas, saídas e bloqueios;
-- `C.0.3` — definir gates humanos e checkpoints obrigatórios;
-- `C.0.4` — atualizar Blueprint, README, Decision Log e navegação oficial.
+PASSAGEM 2 — CICLO VERTICAL
+parte -> C.3 observável -> C.4 estrutural -> reconciliação/revisão -> próxima parte
 
-### Entregas
+PASSAGEM 3 — CONSOLIDAÇÃO
+partes reconciliadas -> relações globais -> C.5 -> C.6 -> C.7
+```
 
-- este mapa integral;
-- atualização do Blueprint;
-- ADR de decomposição e controle de escopo;
-- Checkpoint 033;
-- identificação inequívoca de `C.1` como primeiro lote técnico candidato.
+C.5–C.7 continuam bloqueados até contratos/gates próprios. O modelo vertical não autoriza antecipação técnica; ele elimina apenas a barreira artificial de “livro inteiro concluído”.
 
-### Gate de saída
+## 4. Estado executivo atual
 
-Gate satisfeito pela integração humana do PR nº 31 no commit
-`a370d2f80663f2ae5a6bc0aa2ba5942d85db9708`.
-
-C.0 está encerrado documentalmente. Isso não iniciou implementação da Fase C.
-
-## 5. Lote C.1 — Governança operacional do lifecycle de fontes
-
-### Status
-
-**Concluído.** C.1.1–C.1.6 estão integrados, `GAP-3B-04` está encerrado e a auditoria final está
-registrada na matriz de fechamento C.1.6 e no Checkpoint 043.
-
-### Objetivo
-
-Resolver a fronteira que o adapter do Lote 3B.2 deliberadamente não antecipou: registrar e controlar
-identidade, versões, permissões, bloqueios, suspensões, revogações, expiração e impacto sobre
-derivados antes da ingestão.
-
-A definição normativa completa está em
-[`LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md`](LOT-C1-SOURCE-LIFECYCLE-GOVERNANCE-DEFINITION.md).
-
-### Epic, Features e Stories
-
-- `EPIC-002` — Governança das fontes e direitos de uso;
-- `F-002.1` / `US-002.1` — registro de fonte e procedência;
-- `F-002.2` / `US-002.2` — autorização ou bloqueio de uso na geração.
-
-As Stories foram atendidas no escopo de governança de C.1 por contratos, persistência, fronteira
-transacional, adapters e prova integrada. Isso não significa que ingestão, extração, segmentação ou
-conteúdo real tenham sido iniciados.
-
-### Sublotes oficiais
-
-- `C.1.1` — contrato normativo de estados, comandos, eventos e invariantes — **concluído**;
-- `C.1.2` — modelo físico incremental, RLS, grants e rollback — **concluído**;
-- `C.1.3` — fronteira atômica de comandos, competência, idempotência, CAS e concorrência — **concluído**;
-- `C.1.4` — adapters de comando/leitura e tradução provider-neutral — **concluído**;
-- `C.1.5` — testes unitários, contrato, integração descartável, idempotência e concorrência — **concluído**;
-- `C.1.6` — fechamento documental do lote e decisão sobre `GAP-3B-04` — **concluído pelo PR nº 57**.
-
-### Regras mínimas consolidadas
-
-- obra, edição, manifestação bibliográfica, arquivo recebido, versão governada e execução de
-  processamento são identidades distintas;
-- lifecycle registral e lifecycle de autorização são ortogonais;
-- elegibilidade é derivada por finalidade e instante;
-- nenhuma fonte avança sem procedência e identidade verificáveis;
-- checksum não substitui identidade bibliográfica ou jurídica;
-- permissão é histórica, temporal, escopada e revogável, nunca um booleano sobrescrito
-  silenciosamente;
-- `service_role` não constitui autorização de negócio;
-- substituição não transfere autorização automaticamente;
-- revogação/suspensão/expiração impede novos usos segundo a finalidade afetada e abre avaliação de
-  impacto sobre derivados;
-- versão da obra, versão do arquivo e versão do processamento são conceitos distintos;
-- PNLD real permanece proibido sem decisão jurídica e autorização específicas;
-- falha parcial não pode deixar versão publicada sem o conjunto atômico de eventos/recibos exigido.
-
-### Gate de saída
-
-**Satisfeito em C.1.6.** O lifecycle necessário à ingestão está definido, persistido, protegido,
-adaptado, testado e integrado. `GAP-3B-04` foi encerrado.
-
-A menção histórica do gap a `SourceSegment` não cria requisito residual para C.1: segmentação e
-classificação permanecem sob C.4. O fechamento de C.1 não autoriza automaticamente C.2.
-
-## 6. Lote C.2 — Ingestão controlada
-
-### Status
-
-**Concluído canonicamente.** A definição documental foi integrada pelo PR nº 59. C.2.1 foi integrado
-e revalidado pelo PR nº 62; C.2.2 pelo PR nº 67; C.2.3 pelo PR nº 70; C.2.4 pelo PR nº 74; C.2.5
-pelo PR nº 84; e C.2.6 foi integrado pelo PR nº 93, com CI pós-merge nº 562 verde. O fechamento
-canônico é formalizado no Checkpoint 050. C.3 permanece bloqueado.
-
-A definição normativa completa está em
-[`LOT-C2-CONTROLLED-INGESTION-DEFINITION.md`](LOT-C2-CONTROLLED-INGESTION-DEFINITION.md), a
-fronteira entre ingestão, extração e segmentação está formalizada no ADR-062 e o contrato integrado
-de C.2.1 está em
-[`LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md`](LOT-C2-1-INGESTION-CONTRACTS-AND-STATE-MACHINE.md),
-a fronteira integrada de C.2.2 está em
-[`LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md`](LOT-C2-2-SECURE-STAGING-LIMITS-AND-RETENTION.md),
-a fronteira integrada de C.2.3 está em
-[`LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md`](LOT-C2-3-INTEGRITY-CHECKSUM-DUPLICITY-AND-LINKAGE.md),
-a fronteira integrada de C.2.4 está em
-[`LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md`](LOT-C2-4-IDEMPOTENCY-RECOVERY-AND-FAIL-SAFE.md),
-a fronteira integrada de C.2.5 está em
-[`LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md`](LOT-C2-5-HUMAN-REVIEW-AND-C3-HANDOFF.md),
-e a prova integrada e matriz de fechamento estão em
-[`LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md`](LOT-C2-6-INTEGRATED-PROOF-AND-CLOSURE.md).
-
-### Objetivo
-
-Receber uma fonte autorizada em área de preparação, verificar identidade e integridade e abrir uma
-execução de ingestão rastreável, sem publicar conteúdo parcial.
-
-### Epic, Feature e Story
-
-- `EPIC-003` — Ingestão e leitura estrutural das fontes;
-- `F-003.1` / `US-003.1` — ingestão assistida do conjunto piloto, na parcela anterior à extração.
-
-### Sublotes oficiais
-
-- `C.2.1` — contratos, receipts e state machine — **concluído**;
-- `C.2.2` — intake/staging seguro, limites e retenção — **concluído**;
-- `C.2.3` — integridade, checksum, duplicidade e vínculo — **concluído**;
-- `C.2.4` — idempotência, retomada e falha segura — **concluído**;
-- `C.2.5` — revisão humana e handoff para C.3 — **concluído**;
-- `C.2.6` — prova integrada, fechamento e gate para C.3 — **concluído**.
-
-C.2.1 estabeleceu contrato `1.0.0`, identidades compostas sobre C.1, state machine determinística,
-comandos tipados, receipts provider-neutral e revisão humana obrigatória antes do estado terminal
-`APPROVED_FOR_EXTRACTION`.
-
-C.2.2 materializou a fronteira física mínima de staging temporário, policy centralizada de limites e
-retenção, adapter Supabase isolado, locator opaco e descarte verificável, sem persistir bytes no
-PostgreSQL.
-
-C.2.3 adicionou integridade criptográfica por readback físico, SHA-256, classificação explícita de
-duplicidade binária e confirmação técnica de `VERIFIED` sem leitura semântica do conteúdo.
-
-C.2.4 adicionou persistência durável, receipts/eventos, idempotência por `commandId + fingerprint`,
-CAS por state/version/sequence, recovery PostgreSQL ↔ Storage e cleanup em duas fases sem
-pseudo-transação distribuída.
-
-C.2.5 adicionou competência humana `legal_editorial_reviewer`, autorização `extraction` independente
-e historicamente válida no instante da decisão, persistência atômica da decisão e handoff read-only,
-sem executar C.3.
-
-C.2.6 reexecutou as fronteiras anteriores numa única narrativa descartável, provou o caminho positivo
-até `APPROVED_FOR_EXTRACTION`, o caminho fail-safe até `CANCELLED + DISCARDED`, segurança negativa,
-replay, concorrência, rollback, postconditions de fechamento e ausência de superfície executora C.3.
-O E2E revelou e corrigiu a divergência preexistente de canonicalização do fingerprint JS versus
-PostgreSQL `COLLATE "C"`, preservando o contrato `1.0.0`.
-
-### Gate de saída
-
-**Satisfeito por C.2.6 e pelo fechamento documental no Checkpoint 050.**
-
-- somente fontes autorizadas são aceitas;
-- cada execução possui identidade, versão e estado auditável;
-- duplicidade e replay têm comportamento definido;
-- falha não produz publicação parcial;
-- revisão humana e autorização independente de `extraction` precedem qualquer handoff elegível;
-- o handoff não executa C.3;
-- bytes não integram Postgres ou corpus permanente;
-- descarte físico e persistido é verificável;
-- nenhuma dependência de produção foi introduzida;
-- nenhum conteúdo real entrou na prova.
-
-A corrida concorrente do PR nº 92 entre a verificação pré-merge e o squash do PR nº 93 está
-registrada no Checkpoint 050. A comparação do parent final com o squash de C.2.6 confirmou exatamente
-os sete arquivos técnicos autorizados, e o CI pós-merge nº 562 validou a árvore composta final.
-
-
-## 7. Lote C.3 — Extração e validação do conteúdo extraído
-
-### Status
-
-**Definição documental proposta neste Draft PR; execução técnica bloqueada.** A definição integral
-está em [LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md](LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md)
-e a fronteira arquitetural em
-[ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md](../00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md).
-
-A integração desta documentação não inicia C.3.1, não herda autorização de C.2 e não autoriza
-parser, OCR, migrations, conteúdo real, recursos hospedados ou produção.
-
-### Objetivo
-
-Transformar um artefato governado e elegível recebido de C.2 em representação extraída observável,
-rastreável e revisável, preservando proveniência por página e elemento, sem promover a saída do
-extrator a conhecimento pedagógico, segmento semântico ou hierarquia editorial confirmada.
-
-### Epic, Feature e Story
-
-- `EPIC-003`;
-- `F-003.1` / `US-003.1`, somente na parcela de extração e validação observável;
-- segmentação e classificação estrutural permanecem em C.4.
-
-### Entradas e fronteiras obrigatórias
-
-- C.2 entrega `IngestionHandoffEvidence` read-only e o artefato temporário íntegro; não executa
-  extração;
-- C.3 mantém contrato e lifecycle próprios, com `EXTRACTION_CONTRACT_VERSION` independente;
-- a autorização `purpose=extraction` é revalidada no tempo corrente antes de claim,
-  leitura/retomada do artefato e finalização;
-- `service_role` é somente canal técnico e nunca autoridade de negócio;
-- C.3 registra texto, ordem, páginas, marcadores e relações físicas observadas;
-- C.4 cria chunks/segmentos, confirma hierarquia editorial e aplica classificação pedagógica,
-  curricular ou semântica.
-
-### Sublotes delimitados
-
-| Sublote | Escopo documental delimitado | Gate mínimo |
+| Lote/capacidade | Estado em 18/08/2026 | Próxima condição |
 |---|---|---|
-| C.3.1 | contratos, lifecycle, proveniência, vocabulário de qualidade e fixtures sintéticas | símbolos provider-neutral e incompatibilidades falham fechado |
-| C.3.2 | control plane persistente, autorização temporal, receipts, events, CAS, RLS e grants | schema descartável prova atomicidade e deny-by-default |
-| C.3.3 | porta estreita de leitura do artefato e adapter de extração textual nativa | PDF sintético, sem conteúdo real nem OCR |
-| C.3.4 | persistência incremental de páginas, elementos observados, cobertura e proveniência | reconciliação completa e retomada idempotente |
-| C.3.5 | métricas, policy de qualidade, revisão humana, aceitação, rejeição e reprocessamento | baixa qualidade nunca avança silenciosamente |
-| C.3.6 | retries, recovery, concorrência, cancelamento e cleanup | efeitos únicos sob replay e corridas |
-| C.3.7 | decisão governada de fallback OCR e exceções visuais | contrato e gate; nenhum provedor OCR no baseline |
-| C.3.8 | prova integrada, negativos de segurança, handoff read-only para C.4 e fechamento | evidência E2E sintética e checkpoint separado |
+| C.0 | concluído | — |
+| C.1 | concluído — C.1.1–C.1.6 | — |
+| C.2 | concluído — C.2.1–C.2.6 | — |
+| C.3.1 | concluído/integrado | preservar |
+| C.3.2 | concluído/integrado | preservar |
+| C.3.3 | concluído/integrado | usar na prova vertical |
+| C.3.4 | concluído/integrado | usar na prova vertical |
+| C.3.5 | concluído/integrado | usar na prova vertical |
+| C.3.6 | PR #110 aberto, não integrado, suspenso | reavaliar após prova vertical |
+| reconhecimento estrutural | próximo caminho principal | definir protocolo mínimo |
+| golden sample | pendente | criar fixture sintética rica |
+| prova vertical `Introdução` | pendente | executar após protocolo/golden sample |
+| C.3.7 | não iniciar | necessidade multimodal/OCR demonstrada |
+| C.3.8 | não iniciar no formato anterior | reconciliar após prova vertical |
+| C.4 técnico | ainda não iniciado | contrato orientado por árvore candidata/parte |
+| C.5 | bloqueado | saída estrutural elegível |
+| C.6 | bloqueado | destilação/relações aprovadas |
+| C.7 | bloqueado | componentes e vínculos aprovados |
 
-### Lifecycle candidato a ser cristalizado em C.3.1
+## 5. C.0 — definição e governança
 
-`REQUESTED → READY → EXTRACTING → VALIDATING → PENDING_REVIEW → VALIDATED_FOR_SEGMENTATION`.
+C.0 permanece encerrado. Sua função foi tornar o percurso visível antes do código e impedir continuidade implícita.
 
-Saídas controladas: `REQUIRES_ALTERNATE_EXTRACTION`, `BLOCKED_AUTHORIZATION`, `REJECTED`,
-`FAILED` e `CANCELLED`. Não existe estado durável `AUTHORIZED`: autorização é temporal,
-revogável e verificada no instante do efeito.
+A reconciliação de 18/08/2026 não reabre C.0. Ela corrige a leitura operacional da Fase C a partir de evidência prática obtida ao analisar a estrutura de uma obra didática real fora do corpus.
 
-### Gate de saída do lote
+## 6. C.1 — lifecycle de fontes
 
-- cada resultado aponta para fonte, versão, run de ingestão, handoff e run de extração;
-- cobertura concilia páginas/elementos esperados, extraídos, rejeitados, pendentes e descartados;
-- texto nativo é o baseline e OCR permanece exceção governada posterior;
-- erros, autorização inválida, baixa qualidade ou cobertura incompleta falham fechado;
-- imagens recebem apenas marcador, tipo observado, localizador e proveniência no baseline;
-- tabelas preservam relações físicas observadas quando suportadas, sem interpretação pedagógica;
-- C.4 recebe snapshot read-only versionado e não muta C.3;
-- bytes, renderizações e saídas transitórias obedecem retenção e cleanup auditáveis;
-- nenhuma saída de C.3 é automaticamente curricularmente correta, autoral, publicável ou elegível
-  para retrieval.
+C.1 permanece concluído.
 
-## 8. Lote C.4 — Segmentação e classificação estrutural
+Regras preservadas:
 
-### Objetivo
+- obra, edição, manifestação, arquivo, versão do arquivo e execução são identidades distintas;
+- permissão é histórica, temporal, escopada e revogável;
+- autorização técnica não substitui autorização de negócio;
+- livro do estudante, Manual do Professor, suplementos e materiais digitais podem exigir identidade/trilha própria;
+- PNLD real ou outra fonte protegida exige fronteira jurídica específica;
+- retenção e impacto de revogação permanecem auditáveis.
 
-Transformar a extração aprovada em segmentos navegáveis, preservando contexto e ordem para
-destilação e auditoria, sem publicar chunks crus para consumo final dos agentes.
+`GAP-3B-04` permanece encerrado.
 
-### Epic, Feature e Story
+## 7. C.2 — ingestão controlada
 
-- `EPIC-003`;
-- `F-003.2` / `US-003.2` — segmentação e classificação estrutural.
+C.2 permanece concluído e termina no handoff `APPROVED_FOR_EXTRACTION`.
 
-### Sublotes candidatos
+Ele continua responsável por:
 
-- `C.4.1` — contrato de segmento, localização, hierarquia e confiança;
-- `C.4.2` — regras de fronteira por capítulo, seção, bloco e página;
-- `C.4.3` — classificação mínima: conceito, explicação, exemplo, atividade, questão e orientação;
-- `C.4.4` — reconstrução de ordem e integridade referencial;
-- `C.4.5` — revisão de segmentos incompletos ou ambíguos;
-- `C.4.6` — checkpoint e gate para C.5.
+- staging temporário;
+- integridade/checksum;
+- vínculo com fonte/versão;
+- duplicidade;
+- idempotência e fail-safe;
+- revisão humana anterior à extração;
+- autorização independente para `purpose=extraction`;
+- handoff read-only;
+- descarte verificável nos caminhos aplicáveis.
 
-### Gate de saída
+C.2 **não** localiza sumário, não interpreta páginas e não constrói árvore editorial.
 
-- origem e posição lógica de cada segmento são localizáveis por obra, edição, página, região,
-  seção e bloco, sem conservar cópia visual permanente da fonte;
-- classificação possui confiança e estado de revisão;
-- segmentos não se confundem com componentes pedagógicos;
-- nenhum chunk cru é publicado como resposta ou produto.
+## 8. Cartografia preliminar — responsabilidade transversal de coordenação
 
-## 9. Lote C.5 — Destilação pedagógica e deduplicação
+Antes do aprofundamento semântico, a coordenação cartográfica deverá produzir uma árvore candidata utilizando somente observações rastreáveis.
 
-### Objetivo
+### Entradas preferenciais
 
-Converter contribuições rastreáveis em sínteses pedagógicas próprias, distinguindo fatos,
-interpretações, problemas, estratégias e divergências sem reproduzir extensamente uma obra.
+- `filename_hints`;
+- capa/folha de rosto;
+- ficha catalográfica;
+- apresentação;
+- organização da obra;
+- sumário/índice;
+- marcadores internos;
+- paratextos curriculares;
+- paginação física e impressa;
+- títulos efetivamente observados nas páginas necessárias para confirmar fronteiras iniciais.
 
-### Epic, Features e Stories
+### Saída
 
-- `EPIC-005` — Destilação, consolidação e deduplicação;
-- `F-005.1` / `US-005.1` — destilação autoral rastreável;
-- `F-005.2` / `US-005.2` — consolidação e duplicidade básica.
+```text
+mapa editorial preliminar
++ inventário de regiões
++ correspondência inicial pdf_page x printed_page
++ plano de partes
++ confiança/origem de cada hipótese
+```
 
-### Sublotes candidatos
+Essa saída **não é a árvore canônica de C.4**. É uma hipótese operacional que orienta quais páginas e partes C.3 deve processar e em que ordem.
 
-- `C.5.1` — contrato de contribuição, síntese, evidência e divergência;
-- `C.5.2` — processo assistido de destilação multifonte;
-- `C.5.3` — verificação autoral inicial e bloqueio de cópia extensa;
-- `C.5.4` — detecção de candidatos duplicados ou relacionados;
-- `C.5.5` — decisão humana: unir, relacionar, manter ou rejeitar;
-- `C.5.6` — checkpoint e gate para C.6.
+## 9. C.3 — extração e validação observável
 
-### Gate de saída
+### Autoridade
 
-- cada síntese conserva evidências de origem;
-- fonte não autorizada não participa da destilação gerativa;
-- divergências relevantes não são apagadas por consolidação;
-- decisão de deduplicação é auditável;
-- revisão humana é obrigatória no corpus piloto.
+C.3 responde:
 
-## 10. Lote C.6 — Componentização, versionamento e vínculo curricular
+> o que foi observado e extraído, de onde, com qual método, cobertura, autorização e decisão de qualidade?
 
-### Objetivo
+Pode produzir:
 
-Materializar sínteses aprovadas como componentes pedagógicos canônicos, tipados, versionados e
-vinculados ao pacote curricular aplicável.
+- páginas físicas;
+- paginação impressa quando observada;
+- texto nativo;
+- blocos/elementos físicos observados;
+- relações tabulares físicas quando disponíveis;
+- marcadores de elementos visuais;
+- proveniência e método;
+- métricas;
+- cobertura física;
+- revisão humana de extração.
 
-### Epics, Features e Stories
+Não produz como verdade canônica:
 
-- `EPIC-004` — Componentes pedagógicos semielaborados;
-- `F-004.1` / `US-004.1` — componente canônico;
-- `F-004.2` / `US-004.2` — tipologia mínima;
-- `F-004.3` / `US-004.3` — revisão e versionamento;
-- `EPIC-006` — Pacotes curriculares plugáveis;
-- `F-006.1` / `US-006.1` — pacote curricular MG do piloto;
-- `F-006.2` / `US-006.2` — vínculo componente–currículo.
+- conceito pedagógico;
+- segmento semântico;
+- hierarquia editorial confirmada;
+- alinhamento BNCC validado;
+- componente pedagógico;
+- embedding/retrieval.
 
-Contratos, persistência e adapters de componentes/currículo já possuem fundações das Fases A e B.
-Isso reduz risco, mas não conclui as Stories operacionais nem autoriza conteúdo real.
+### Uso orientado por partes
 
-### Sublotes candidatos
+C.3 deve poder executar sobre uma parte delimitada pelo plano cartográfico, preservando ancestralidade da obra e cobertura global.
 
-- `C.6.1` — confirmar tipologia e campos obrigatórios do piloto;
-- `C.6.2` — transformar síntese aprovada em versão de componente;
-- `C.6.3` — validar procedência, licença e evidências completas;
-- `C.6.4` — vincular ao pacote e aos nós curriculares aprovados;
-- `C.6.5` — persistência transacional pelas RPCs já aprovadas, sem DML paralelo;
-- `C.6.6` — testes de elegibilidade, versão, rollback e rastreabilidade;
-- `C.6.7` — checkpoint e gate para C.7.
+Uma parte concluída pode produzir evidência elegível para reconstrução estrutural daquela parte quando o contrato de C.4 assim permitir, sem exigir que todas as demais páginas da obra já tenham atravessado C.3.
 
-### Gate de saída
+## 10. C.3.6 — hardening suspenso
 
-- componentes não são produtos finais;
-- somente versão completa pode entrar em revisão;
-- vínculo curricular tem justificativa e estado próprio;
-- nenhuma escrita contorna as RPCs transacionais da Fase B;
-- pacote RS e mistura de Estados permanecem bloqueados.
+O PR #110 contém proposta de recovery, concorrência, cancelamento e cleanup e permanece aberto/não integrado.
 
-## 11. Lote C.7 — Curadoria, publicação no corpus piloto e gate C → D
+Classificação atual:
 
-### Objetivo
+> infraestrutura de confiabilidade potencialmente útil, mas não determinante do caminho principal.
 
-Aplicar revisão pedagógica, curricular, jurídica e autoral antes de tornar componentes elegíveis ao
-corpus piloto usado nos experimentos da Fase D.
+Não corrigir/mergear automaticamente antes da primeira prova vertical.
 
-### Escopo de Stories
+Após a prova, decidir:
 
-Consolidar a conclusão operacional das Stories `US-004.1–004.3`, `US-005.1–005.2` e
-`US-006.1–006.2`, sem declarar concluídas Stories de retrieval, agentes, geração ou entrega.
+1. corrigir e integrar como infraestrutura genérica;
+2. ajustar para retries/leases por parte;
+3. simplificar ou adiar superfícies não demonstradas como necessárias.
 
-### Sublotes candidatos
+## 11. C.3.7 — multimodal e fallback visual
 
-- `C.7.1` — fila de curadoria, papéis e segregação de responsabilidades;
-- `C.7.2` — rubrica pedagógica, curricular, jurídica e autoral;
-- `C.7.3` — aprovação, rejeição, suspensão e substituição auditáveis;
-- `C.7.4` — análise de cobertura por tema, tipo e nó curricular;
-- `C.7.5` — corpus piloto alinhado à meta de 100–300 componentes revisados;
-- `C.7.6` — amostra e manifesto imutável para experimentos de retrieval;
-- `C.7.7` — inspeção do gate C → D e checkpoint de encerramento.
+C.3.7 deixa de ser interpretado como “a etapa de OCR”.
 
-### Gate de saída da Fase C
+A futura capacidade deverá avaliar:
 
-- corpus piloto curado e versionado;
-- procedência, versões e permissões confiáveis;
-- tipologia suficientemente estável;
-- vínculos curriculares revisados;
-- amostra adequada aos experimentos de retrieval;
-- componentes suspensos, rejeitados ou substituídos excluídos do conjunto elegível;
-- métricas de cobertura e lacunas conhecidas;
-- nenhum conteúdo protegido exposto indevidamente;
-- `GAP-3B-04` encerrado — **satisfeito em C.1.6**;
-- `GAP-3B-05` e `GAP-3B-07` não declarados resolvidos sem seus próprios critérios;
-- autorização humana específica para iniciar a Fase D.
+```text
+texto nativo
+  -> caminho normal
 
-## 12. Dependências
+compreensão multimodal
+  -> quando visual/layout carrega informação pedagógica
+
+OCR localizado
+  -> texto relevante ausente/corrompido na camada nativa
+```
+
+Nenhum provedor ou modelo é pressuposto.
+
+## 12. C.4 — reconstrução e classificação estrutural
+
+### Autoridade
+
+C.4 confirma ou corrige a estrutura candidata com base na evidência extraída.
+
+Responsabilidades:
+
+- confirmar parte/unidade/capítulo/seção/subseção;
+- segmentar por fronteira editorial;
+- preservar continuidade quando houver fragmentação técnica;
+- classificar regiões/blocos por função;
+- distinguir exposição, atividade, orientação docente, referência, paratexto etc.;
+- identificar notas/contribuições candidatas;
+- reconciliar sumário, corpo e regiões descobertas.
+
+### Gate por parte
+
+O gate não é mais “C.3 de toda a obra concluído”.
+
+Uma parte pode entrar na reconstrução quando:
+
+- possui ancestralidade cartográfica candidata;
+- possui evidência C.3 suficiente para sua fronteira;
+- sua cobertura física local está reconciliada ou pendências estão explicitadas;
+- autorização permanece válida;
+- o contrato C.4 correspondente estiver aprovado.
+
+O fechamento **da obra** continua exigindo reconciliação de todas as partes esperadas.
+
+## 13. C.5 — destilação e relações
+
+C.5 permanece posterior à reconstrução estrutural elegível.
+
+Deverá:
+
+- produzir contribuições autorais rastreáveis;
+- distinguir consenso, complementaridade e divergência;
+- propor relações tipadas com evidência;
+- deduplicar sem apagar controvérsia;
+- impedir que uma única coleção se torne ontologia canônica;
+- submeter decisões relevantes à curadoria humana no piloto.
+
+## 14. C.6 — componentização e currículo
+
+C.6 promove apenas resultados aprovados.
+
+Estados de evidência curricular devem permanecer distintos, preservando no mínimo a semântica de:
+
+```text
+DECLARADO_PELA_OBRA
+DETECTADO_NO_CONTEUDO
+PROPOSTO_PELO_PROCESSAMENTO
+VALIDADO_NORMATIVAMENTE
+APROVADO_PELO_CURADOR
+REJEITADO/SUSPENSO
+```
+
+Declaração editorial explícita é evidência forte do que a obra declara, mas não prova validação normativa independente.
+
+## 15. C.7 — curadoria e fechamento da Fase C
+
+Hierarquia de consolidação:
+
+```text
+bloco/elemento
+  -> página
+  -> parte operacional
+  -> seção
+  -> capítulo
+  -> unidade
+  -> obra
+  -> corpus piloto
+```
+
+C.7 somente fecha a obra quando nenhuma parte esperada permanece sem decisão.
+
+Gate C → D exige:
+
+- corpus piloto curado/versionado;
+- procedência e permissões confiáveis;
+- componentes e relações revisados;
+- vínculos curriculares em estado explícito;
+- lacunas conhecidas;
+- amostra reproduzível;
+- autorização humana para experimentos de retrieval.
+
+## 16. Golden sample estrutural
+
+Antes de primeiro processamento completo de uma obra real, criar fixture sintética contendo:
+
+- filename informativo;
+- capa e ficha sintéticas;
+- organização da obra;
+- sumário;
+- paginação PDF ≠ paginação impressa;
+- uma `Introdução`;
+- títulos/subtítulos;
+- texto sintético;
+- imagem/visual sintético + legenda;
+- atividade;
+- orientação docente relacionada;
+- declaração curricular sintética;
+- região final de Manual do Professor.
+
+Não copiar texto, imagens ou estrutura identificável de obra protegida.
+
+## 17. Primeira prova vertical
+
+```text
+GOLDEN SAMPLE
+  ↓
+identificar metadados/pistas
+  ↓
+localizar organização/sumário
+  ↓
+reconciliar paginação
+  ↓
+criar árvore candidata
+  ↓
+selecionar `Introdução`
+  ↓
+extrair somente a parte
+  ↓
+reconstruir títulos/subtítulos/elementos
+  ↓
+relacionar visual + legenda + texto + atividade + orientação
+  ↓
+reconciliar cobertura da parte
+  ↓
+revisão humana
+```
+
+O objetivo da primeira prova é descobrir lacunas no **caminho principal**, não provar todas as exceções possíveis.
+
+## 18. Dependências reconciliadas
 
 ```mermaid
 flowchart TD
-    C0["C.0 Mapa e gates"] --> C1["C.1 Lifecycle de fontes"]
+    C0["C.0 Governança"] --> C1["C.1 Lifecycle"]
     C1 --> C2["C.2 Ingestão"]
-    C2 --> C3["C.3 Extração"]
-    C3 --> C4["C.4 Segmentação"]
-    C4 --> C5["C.5 Destilação"]
-    C5 --> C6["C.6 Componentização e currículo"]
-    C6 --> C7["C.7 Curadoria e corpus"]
+    C2 --> MAP["Cartografia preliminar"]
+    MAP --> P1["Parte 1"]
+    MAP --> P2["Parte 2"]
+    P1 --> C3A["C.3 evidência da parte"]
+    C3A --> C4A["C.4 estrutura da parte"]
+    P2 --> C3B["C.3 evidência da parte"]
+    C3B --> C4B["C.4 estrutura da parte"]
+    C4A --> CONS["Consolidação da obra"]
+    C4B --> CONS
+    CONS --> C5["C.5 Destilação/relações"]
+    C5 --> C6["C.6 Componentes/currículo"]
+    C6 --> C7["C.7 Curadoria/corpus"]
 ```
 
-Paralelismo somente poderá ser aprovado quando não romper precedência de dados, direitos de uso,
-rastreabilidade ou gate humano. A visibilidade de uma etapa não é autorização para antecipá-la.
+A representação ilustra fluxo de dados. Não autoriza tecnicamente C.4–C.7 antes de seus contratos.
 
-## 13. Relação com os GAPs herdados
+## 19. Matriz de fronteiras
 
-### GAP-3B-04 — Lifecycle de fontes
-
-- destino primário: `C.1`;
-- **estado atual: encerrado em C.1.6 / Checkpoint 043**;
-- condição de encerramento satisfeita: lifecycle definido, persistido, protegido, adaptado, testado e integrado;
-- a menção histórica a segmentos não antecipa C.4;
-- o encerramento do gap remove a lacuna de governança, mas não autoriza ingestão real.
-
-### GAP-3B-05 — Auditoria enriquecida / US-013.2 parcial
-
-- permanece ativo e contido;
-- a Fase C registra apenas a auditoria suportada pelos contratos atuais;
-- qualquer extensão exige contrato explícito, minimização/LGPD, persistência e testes de round-trip;
-- não pode ser resolvido incidentalmente dentro de um lote de ingestão.
-
-### GAP-3B-07 — OPP normativa incompleta
-
-- permanece ativo e contido para as fases de retrieval, agentes, validação e entrega;
-- a Fase C não deve transformar a OPP do professor em job interno de ingestão sem decisão própria;
-- não pode ser declarado resolvido pelo corpus piloto.
-
-## 14. Matriz de fronteiras
-
-| Capacidade | Fase C | Fase posterior |
+| Capacidade | Autoridade principal | Observação |
 |---|---|---|
-| Governar fontes e permissões | Incluída; C.1 concluído | gestão jurídica ampliada |
-| Ingestão assistida do piloto | **C.2.1–C.2.6 concluídos** | ingestão massiva/OCR industrial |
-| Extração e segmentação | Incluída em C.3/C.4, ainda bloqueada | multimodalidade completa |
-| Destilação e deduplicação básica | Incluída | consolidação automática avançada |
-| Componentes e currículo MG | Incluída | RS e outros Estados |
-| Curadoria humana do piloto | Incluída | publicação automatizada em escala |
-| Embeddings e retrieval | Proibidos | Fase D |
-| Runtime de agentes | Proibido | Fase E |
-| Produto pedagógico final | Proibido | Fases E–F |
-| Wiring e produção | Proibidos | trilha separada com gate próprio |
+| identidade e permissão | C.1 | histórica e temporal |
+| staging/integridade | C.2 | sem semântica |
+| cartografia preliminar | coordenação transversal | hipótese rastreável |
+| texto/página/elemento observado | C.3 | evidência física |
+| hierarquia confirmada/segmento | C.4 | semântica estrutural |
+| contribuição/relação/deduplicação | C.5 | autoral e multifonte |
+| componente/vínculo curricular | C.6 | versionado e validável |
+| elegibilidade do corpus | C.7 | curadoria |
+| embeddings/retrieval | Fase D | índice, não verdade |
+| runtime agêntico | Fase E | produção |
 
-## 15. Gate obrigatório de cada sublote
+## 20. Riscos principais
 
-Nenhum sublote avança apenas porque o anterior foi concluído. Cada um exige:
+| Risco | Controle |
+|---|---|
+| processar livro inteiro sem mapa | cartografia obrigatória |
+| tratar sumário como verdade | reconciliar com corpo |
+| confundir PDF page e printed page | dupla paginação explícita |
+| perder boxes/atividades/Manual | inventário de regiões e gramática editorial |
+| achatar visual em texto sem função | tratamento multimodal dirigido |
+| usar OCR em tudo | OCR somente fallback localizado |
+| excesso de hardening antes do happy path | prova vertical antes de novas exceções |
+| copiar sequência de coleção | grafo independente e destilação multifonte |
+| confundir BNCC declarada e validada | estados de evidência distintos |
+| vetorizar tudo | embeddings seletivos na Fase D |
 
-1. definição documental específica;
-2. Stories, critérios de aceite e não escopo identificados;
-3. contratos e fronteiras revisados;
-4. análise jurídica/LGPD quando aplicável;
-5. plano de testes e rollback;
-6. autorização humana antes da implementação;
-7. CI, typecheck e testes aplicáveis verdes;
-8. Supabase somente descartável quando banco estiver no escopo;
-9. revisão do diff e merge humano;
-10. checkpoint pós-merge antes do próximo sublote.
+## 21. Governança proporcional
 
-## 16. Itens proibidos por esta definição
+Cada nova fronteira material ainda exige definição e aprovação, mas não há necessidade de nova microautorização para cada commit/teste/correção dentro de escopo aprovado.
 
-- código ou dependências sem autorização específica de lote/sublote;
-- upload ou ingestão de arquivo real;
-- PNLD real ou conteúdo protegido;
-- currículo real adicional;
-- embeddings, pgvector, busca híbrida ou reranking;
-- OpenAI, modelos, prompts ou agentes executáveis;
-- ativação do Sócrates 2;
-- OPP normativa ampliada;
-- frontend, API, job ou fila;
-- Supabase hospedado, `service_role` real, wiring ou produção;
-- Nexus, Gráfica, PDF ou PPTX;
-- início implícito de C.3–C.7.
+Checkpoint deve existir quando agrega continuidade real: mudança de fronteira, incidente, handoff ou fechamento relevante.
 
-As RPCs, adapters e grants de C.1/C.2 já integrados permanecem como infraestrutura governada no
-repositório, sem ativação em ambiente hospedado ou produção.
+Conteúdo real protegido, novo provider relevante, produção, secrets e dados sensíveis continuam sujeitos aos níveis de governança correspondentes.
 
-## 17. Próximo escopo elegível
+## 22. Próximo escopo elegível
 
-C.1 foi encerrado após a integração do PR nº 57 no commit
-`3ae0f5554eed5e7bd7f208647e068a304127058d`, com CI pós-merge nº 362 verde. O Checkpoint 043
-formaliza o estado pós-C.1.6 e o encerramento de `GAP-3B-04`.
+Ordem executiva atual:
 
-A definição documental de **C.2 — Ingestão controlada** foi integrada pelo PR nº 59 no commit
-`787432fa8e7f5d891899c94b1089803430a4734a`, com CI pós-merge nº 366 verde. O Checkpoint 044
-formaliza o estado pós-integração da definição.
+```text
+1. concluir reconciliação documental da cartografia vertical;
+2. definir Protocolo de Reconhecimento Estrutural da Obra;
+3. criar golden sample sintético;
+4. implementar/provar cartografia preliminar sobre o sample;
+5. implementar/provar ciclo vertical da `Introdução`;
+6. revisar lacunas concretas;
+7. decidir destino técnico de C.3.6 / PR #110;
+8. definir multimodal/OCR somente com necessidade demonstrada;
+9. preparar primeiro piloto real em fronteira jurídica própria.
+```
 
-**C.2.1 — contratos, receipts e state machine** foi integrado pelo PR nº 62 no commit
-`e0ba47bf063b324df141c370ebf371763fbf2364`, tree
-`a78d930b9491724c79665e420ceebc609b122d18`, com CI pós-merge nº 373 verde. O Checkpoint 045
-formaliza o estado pós-C.2.1.
-
-**C.2.2 — intake/staging seguro, limites e retenção** foi integrado pelo PR nº 67 no commit
-`7557bc3aa80ce5ebd6423b10a179fa3790b97cb6`, com CI pós-merge nº 412 verde. O Checkpoint 046
-formaliza o estado pós-C.2.2.
-
-**C.2.3 — integridade, checksum, duplicidade e vínculo** foi integrado pelo PR nº 70 no commit
-`f70312a9936b99e1c131627277ad4c4a65b126a5`, com CI pós-merge nº 430 verde. O Checkpoint 047
-formaliza o estado pós-C.2.3.
-
-**C.2.4 — idempotência, retomada e falha segura** foi integrado pelo PR nº 74 no commit
-`14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde. O Checkpoint 048
-formaliza o estado pós-C.2.4.
-
-**C.2.5 — revisão humana e handoff governado para C.3** foi integrado pelo PR nº 84 no commit
-`01a985a94272608007a57fd60695fed719c625d2`, tree
-`a73ad7e9efda8e1c04bcddd3ed129bc44d85eaf1`, com CI pós-merge nº 547 verde. O Checkpoint 049
-formaliza o estado pós-C.2.5.
-
-**C.2.6 — prova integrada, fechamento e gate para C.3** foi integrado pelo PR nº 93 no commit
-`3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree
-`0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde. O Checkpoint 050
-formaliza o fechamento canônico de C.2 e registra a corrida concorrente do PR nº 92.
-
-Este Draft PR propõe a definição canônica futura de **C.3 — extração e validação do conteúdo
-extraído** e delimita C.3.1–C.3.8. A execução técnica permanece bloqueada. Depois de integração
-humana e checkpoint próprio, apenas C.3.1 poderá ser considerado, mediante reconfirmação canônica,
-Definition of Ready e nova autorização humana específica.
-
-A definição documental não autoriza código, migration, parser, OCR, conteúdo real, PNLD real,
-PDF/livro real, Storage hospedado, Supabase hospedado, wiring, produção ou execução de C.3.
+Não iniciar C.3.7 ou processamento real apenas por continuidade implícita.

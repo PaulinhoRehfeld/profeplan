@@ -1,368 +1,527 @@
-# Lote C.3 — Definição de extração e validação do conteúdo extraído
+# Lote C.3 — Extração e validação observável
 
-**Status:** proposta exclusivamente documental neste Draft PR; C.3.1–C.3.8 bloqueados até integração
+Status reconciliado em 18 de agosto de 2026.
 
-**Base canônica inspecionada:** `main@287d5ae989d6b4f0504fee4f6fb16d554f97fbfb`
+Base canônica de referência: `main@c7cea4b7d0e4c12182a28fa85a4a2ad8f57b282e`.
 
-**ADR de fronteira:** [ADR-063](../00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md)
+ADR de fronteira: [ADR-063](../00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md).
 
-**Governança operacional:** [execução proporcional ao risco](../00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md)
+Governança operacional: [execução proporcional ao risco](../00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md).
 
-## 1. Objetivo
+Reconciliação arquitetônica:
+[`PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md`](PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md).
 
-C.3 transforma um artefato governado e elegível recebido de C.2 em uma representação extraída
-observável, rastreável, mensurável e revisável. O lote responde:
+## 1. Estado atual
 
-> O que foi fisicamente observado e extraído do artefato, com qual método, cobertura, proveniência,
-> autorização vigente e decisão de qualidade?
+```text
+C.3.1 — integrado
+C.3.2 — integrado
+C.3.3 — integrado
+C.3.4 — integrado
+C.3.5 — integrado
+C.3.6 — PR #110 aberto, não integrado, suspenso para reconciliação
+C.3.7 — não iniciar
+C.3.8 — não iniciar no desenho anterior
+```
 
-C.3 não responde o que um trecho significa pedagogicamente, onde começa um segmento semântico, qual
-hierarquia editorial deve ser confirmada, como o conteúdo se alinha à BNCC ou se está pronto para
-retrieval. Essas decisões começam em C.4 ou em lotes posteriores.
+A infraestrutura já integrada de C.3.1–C.3.5 permanece válida. Esta atualização não realiza rollback nem reabre seus contratos sem necessidade demonstrada.
 
-Esta definição não implementa nada. Não cria código, migration, schema, parser, OCR, conteúdo real,
-recursos hospedados, wiring ou produção.
+A progressão automática para C.3.6–C.3.8 foi interrompida porque a experiência prática mostrou que o caminho principal da obra precisa ser provado com **cartografia preliminar e processamento por partes** antes de novo hardening de exceções.
 
-## 2. Autoridade e pré-condições
+## 2. Objetivo
 
-C.3 somente poderá operar quando todas as condições seguintes forem verdadeiras no tempo corrente:
+C.3 transforma um artefato governado e elegível de C.2 em evidência extraída observável, rastreável, mensurável e revisável.
 
-- existe fonte e versão governadas por C.1;
-- existe `IngestionHandoffEvidence` válido, versionado e read-only emitido por C.2;
-- existe artefato temporário íntegro e legível por porta autorizada;
-- `purpose=extraction` está vigente e é compatível com sujeito, versão, restrições e operação;
-- a execução permanece dentro da fronteira de risco e escopo autorizada para o lote;
-- fixtures, testes, CI e infraestrutura descartável seguem Nível A; mudanças materiais escalam para
-  Nível B ou C conforme a política de governança.
+C.3 responde:
 
-O handoff de C.2 é necessário e insuficiente. Ele não concede autorização permanente, não garante
-que os bytes continuem disponíveis e não prova qualidade ou cobertura de extração.
+> O que foi fisicamente observado e extraído, em qual parte/página/elemento, com qual método, cobertura, proveniência, autorização vigente e decisão de qualidade?
 
-## 3. Fronteiras entre C.1, C.2, C.3 e C.4
+C.3 não responde como verdade canônica:
+
+- qual é o significado pedagógico final de um trecho;
+- qual hierarquia editorial está definitivamente confirmada;
+- qual relação conceitual é válida;
+- qual vínculo BNCC é normativamente correto;
+- qual componente está pronto para retrieval.
+
+Essas autoridades pertencem a C.4–C.7.
+
+## 3. Correção de rota: C.3 não processa a obra cegamente
+
+A fronteira semântica entre C.3 e C.4 permanece, mas a ordem operacional é reconciliada.
+
+A interpretação anterior:
+
+```text
+C.3 processa o livro inteiro
+  -> somente depois C.4 entende sua estrutura
+```
+
+não é mais válida.
+
+Antes do aprofundamento, uma responsabilidade de coordenação cartográfica pode produzir **hipóteses estruturais rastreáveis** a partir de observações documentais como:
+
+- filename;
+- capa/folha de rosto;
+- ficha catalográfica;
+- organização da obra;
+- sumário/índice;
+- marcadores internos;
+- títulos observados;
+- paginação física/impressa;
+- regiões identificadas do Manual do Professor.
+
+Essas hipóteses orientam quais partes C.3 processa e em que ordem.
+
+Elas **não substituem a confirmação estrutural de C.4**.
+
+## 4. Fronteiras entre C.1, C.2, cartografia, C.3 e C.4
 
 | Camada | Autoridade | Produz | Não produz |
 |---|---|---|---|
-| C.1 | identidade, fundamento, permissão e vigência | fonte/versão e decisão de autorização | bytes, ingestão ou extração |
-| C.2 | staging, integridade, vínculo e revisão de ingestão | artefato temporário, digest, receipts/events e handoff | páginas, texto, cartografia ou executor C.3 |
-| C.3 | extração e validação observável | páginas, texto, elementos observados, métricas, cobertura e handoff C.4 | chunks semânticos, hierarquia confirmada, BNCC ou conhecimento destilado |
-| C.4 | segmentação e classificação estrutural | segmentos/chunks, hierarquia editorial confirmada e classificação | mutação retroativa da evidência C.3 |
+| C.1 | identidade, direitos e vigência | fonte/versão/permissões | bytes, extração |
+| C.2 | staging, integridade e handoff | artefato temporário, receipts, `APPROVED_FOR_EXTRACTION` | páginas, semântica |
+| Coordenação cartográfica | hipótese operacional de estrutura | mapa preliminar, plano de partes, correspondência inicial de páginas | hierarquia canônica, componente |
+| C.3 | evidência observável | páginas, texto, elementos, métricas, cobertura, qualidade | segmento semântico, conhecimento canônico |
+| C.4 | estrutura confirmada | segmentos, hierarquia editorial confirmada, classificação estrutural | mutação da evidência histórica C.3 |
 
-## 4. Princípios contract-first
+A coordenação cartográfica é responsabilidade transversal da Fase C. Não constitui um novo lote independente nem autoriza runtime agêntico.
 
-1. C.3 terá `EXTRACTION_CONTRACT_VERSION` independente.
-2. Identidades compostas e timestamps são explícitos; nenhum locator ou nome de arquivo vira
-   identidade por conveniência.
-3. Commands expressam intenção; receipts registram resultado; events formam histórico
-   autoritativo; snapshots são projeções reconstruíveis.
-4. Mutação exige idempotency key, fingerprint determinístico, versão esperada e compare-and-set.
-5. Replays compatíveis retornam o mesmo efeito lógico; colisões incompatíveis falham fechado.
-6. Tipos provider-neutral não expõem bucket, URL assinada, SDK, parser ou provedor OCR.
-7. Entradas desconhecidas, versões incompatíveis, autorização inválida e transições ilegais são
-   rejeitadas sem efeito parcial.
-8. O contrato não reutiliza informalmente recovery, handoff ou receipt de C.2 para funções novas.
+## 5. Autoridade e pré-condições
 
-## 5. Identidade e vínculos mínimos
+C.3 somente opera quando:
 
-A identidade de C.3 deverá distinguir, no mínimo:
+- fonte/versão existem em C.1;
+- `IngestionHandoffEvidence` de C.2 é válido;
+- o artefato temporário permanece íntegro e legível;
+- `purpose=extraction` está vigente;
+- a operação respeita a fronteira de risco autorizada;
+- a unidade de trabalho possui identificação suficiente para manter procedência.
+
+Para execução orientada por parte, a unidade deve também possuir um **cartographic scope candidato**, contendo o necessário para delimitar a faixa sem afirmar semântica canônica.
+
+O handoff de C.2 é necessário e insuficiente.
+
+## 6. Identidade e escopo de parte
+
+A identidade C.3 continua distinguindo:
 
 - `extractionRunId`;
-- `sourceId` e `sourceVersionId`;
-- `ingestionRunId` e versão do `IngestionHandoffEvidence`;
-- digest canônico do artefato;
-- versão do contrato de extração;
-- método e versão do extrator;
-- tentativa e origem de retomada, quando houver;
-- ator técnico e autoridade de negócio avaliados separadamente.
+- `sourceId`;
+- `sourceVersionId`;
+- `ingestionRunId`;
+- versão do handoff;
+- digest do artefato;
+- versão do contrato;
+- método/versão do extrator;
+- tentativa/recovery quando aplicável.
 
-Nenhum campo novo é presumido dentro do contrato C.2. C.3 consome a evidência publicada por C.2 e
-mantém os próprios vínculos.
+A evolução futura deverá permitir associar a execução a uma parte candidata sem tornar seu título ou posição identidade primária por conveniência.
 
-## 6. Lifecycle de referência
+Conceitualmente:
 
-O lifecycle candidato, a ser cristalizado e testado em C.3.1, é:
-
-| Estado | Significado | Efeito permitido |
-|---|---|---|
-| `REQUESTED` | intenção aceita, sem claim | preparar validações |
-| `READY` | pré-condições verificadas para claim | disputar claim |
-| `EXTRACTING` | leitura/extrator em andamento | persistir lotes incrementais |
-| `VALIDATING` | extração encerrada, cobertura/qualidade em cálculo | reconciliar e avaliar |
-| `PENDING_REVIEW` | decisão humana requerida | aceitar, rejeitar ou reprocessar |
-| `VALIDATED_FOR_SEGMENTATION` | saída C.3 aceita | emitir snapshot read-only para C.4 |
+```text
+ExtractionRun
+  -> governed source/version
+  -> artifact
+  -> cartographic scope candidate
+  -> observed pages/elements
+```
 
-Saídas controladas: `REQUIRES_ALTERNATE_EXTRACTION`, `BLOCKED_AUTHORIZATION`, `REJECTED`,
-`FAILED` e `CANCELLED`.
+O identificador da parte deve ser estável dentro do mapa preliminar e rastreável até sua origem.
 
-Não existe estado durável `AUTHORIZED`. Vigência é reavaliada imediatamente antes de:
+## 7. Filename e metadados
 
-1. claim da execução;
-2. cada abertura ou retomada relevante da leitura do artefato;
-3. finalização e emissão do handoff para C.4.
+Nome do arquivo pode ser observado como `filename_hint`, mas nunca vira identidade canônica.
 
-Se a autorização expirar, for suspensa, revogada ou deixar de abranger o efeito, o run não avança e
-registra bloqueio explícito.
+A Knowledge Factory deverá manter distinção conceitual entre:
 
-## 7. Porta de leitura do artefato
-
-C.3 introduzirá uma porta estreita, provider-neutral e read-only. Seu contrato deverá oferecer apenas
-o necessário para:
+```text
+filename_hints
+observed/detected_metadata
+canonical_metadata
+```
 
-- abrir stream/bytes por referência opaca governada;
-- obter metadados mínimos de integridade e retenção;
-- revalidar digest e tamanho antes do uso;
-- encerrar o handle sem promover cópia permanente;
-- distinguir indisponibilidade, expiração, integridade inválida e negação de autorização.
+C.3 pode registrar o que observou no artefato. Reconciliação bibliográfica completa permanece na governança apropriada.
 
-A porta não fornece URL pública, credencial, listagem irrestrita de storage ou escrita arbitrária.
-O adapter concreto permanece detalhe de infraestrutura. `service_role` não substitui a decisão de
-autorização.
-
-## 8. Extração nativa e fallback
+## 8. Paginação física e impressa
 
-A camada textual nativa é o baseline. C.3.3 deverá provar o fluxo com PDFs inteiramente sintéticos e
-sem conteúdo protegido.
-
-OCR não pertence ao baseline. C.3.7 deverá primeiro definir:
-
-- evidência objetiva de insuficiência nativa;
-- granularidade do fallback por página ou elemento;
-- autorização e restrições aplicáveis;
-- limites de custo, retenção e dados;
-- métricas e revisão obrigatórias;
-- efeitos de reprocessamento e substituição;
-- critérios para escolher ou rejeitar um provedor.
+C.3 pode registrar:
 
-Até que a fronteira C.3.7 seja aprovada como Nível B, implementada e revisada,
-`REQUIRES_ALTERNATE_EXTRACTION` é a saída para ausência ou corrupção da camada textual; nenhum OCR é
-executado.
+- índice físico da página no arquivo;
+- número/rótulo impresso quando observável;
+- método de observação;
+- confiança;
+- relação candidata entre ambas.
 
-## 9. Representação observável e proveniência
+Não presumir `pdf_page == printed_page`.
 
-C.3 poderá registrar:
+Páginas preliminares, romanos, rótulos ausentes e deslocamentos são comportamento normal.
 
-- página física e, quando observada, paginação impressa;
-- blocos/linhas e ordem de leitura observada;
-- texto bruto transitório e texto normalizado persistível conforme policy;
-- cabeçalho, rodapé, nota, box, coluna e outros tipos físicos observados;
-- relações físicas de tabela: linha, coluna, célula, span e cabeçalho, quando expostas pelo adapter;
-- marcador de imagem, mapa, gráfico ou infográfico, tipo observado e localizador lógico;
-- método, versão, digest, timestamps e métricas por unidade;
-- origem de correção ou decisão humana.
+A correspondência final pode ser corrigida durante a reconstrução sem apagar a observação original.
 
-C.3 não inventa descrição semântica de imagem, intenção editorial, título de capítulo, conceito,
-habilidade, disciplina, ano, currículo ou BNCC. Um rótulo vindo do documento continua sendo
-observação, não validação externa.
+## 9. Lifecycle
 
-Localizadores são lógicos. Coordenadas normalizadas poderão ser avaliadas em sublote próprio quando
-necessárias para proveniência; coordenadas em pixels, renderizações e recortes não integram o corpus
-definitivo por padrão.
+O lifecycle integrado permanece:
 
-## 10. Qualidade e cobertura
+```text
+REQUESTED
+  -> READY
+  -> EXTRACTING
+  -> VALIDATING
+  -> PENDING_REVIEW
+  -> VALIDATED_FOR_SEGMENTATION
+```
 
-C.3.1 define vocabulário; C.3.5 cristaliza policy e thresholds com evidência. A definição não escolhe
-números arbitrários.
+Saídas controladas:
 
-As métricas candidatas incluem:
+- `REQUIRES_ALTERNATE_EXTRACTION`;
+- `BLOCKED_AUTHORIZATION`;
+- `REJECTED`;
+- `FAILED`;
+- `CANCELLED`.
 
-- páginas esperadas, abertas, extraídas, vazias, rejeitadas e pendentes;
-- elementos esperados/observados e cobertura por método;
-- caracteres inválidos ou de substituição;
-- densidade e continuidade textual;
-- ordem de leitura ambígua;
-- integridade de relações tabulares observadas;
-- falhas, retries, duração e bytes lidos;
-- necessidade, decisão e resultado de revisão humana.
+Não existe estado durável `AUTHORIZED`.
 
-Gates não compensatórios:
+Autorização deve ser reavaliada antes de:
 
-- autorização inválida;
-- digest divergente;
-- página elegível sem decisão;
-- proveniência quebrada;
-- versão contratual incompatível;
-- efeito parcial não reconciliado.
+1. claim;
+2. abertura/retomada relevante do artefato;
+3. finalização/handoff.
 
-Boa média documental não compensa qualquer um desses gates.
+## 10. Porta de leitura
 
-## 11. Revisão humana
+A porta read-only/provider-neutral permanece estreita:
 
-A revisão recebe snapshot imutável suficiente para decidir sem alterar o histórico. Os comandos
-mínimos deverão cobrir aceitação, rejeição, solicitação de reprocessamento, cancelamento e registro
-de exceção. Cada decisão fixa ator, competência, fundamento, fingerprint, versão esperada e
-timestamp.
+- abrir stream/bytes por referência governada;
+- obter metadados mínimos de integridade/retenção;
+- revalidar digest/tamanho;
+- fechar handle;
+- distinguir indisponibilidade, expiração, integridade inválida e negação.
 
-Correção humana não apaga saída original. O resultado anterior permanece histórico e a correção
-gera nova evidência vinculada.
+Não expõe URL pública, credencial ou listagem irrestrita.
 
-## 12. Idempotência, concorrência e recuperação
+## 11. Extração textual nativa
 
-- claim concorrente admite um único vencedor;
-- batches incrementais usam identidade e sequência determinísticas;
-- replay do mesmo command/fingerprint não duplica páginas, receipts ou events;
-- mesmo command com fingerprint divergente falha fechado;
-- retomada continua do último boundary confirmado;
-- finalize concorre por compare-and-set e ocorre uma única vez;
-- cancelamento bloqueia novos efeitos e dispara cleanup compatível;
-- falha entre persistência e evento não deixa sucesso invisível;
-- cleanup é repetível e emite evidência do resultado.
+Texto nativo continua baseline.
 
-## 13. Persistência, RLS e grants futuros
+O parser já comprovado em C.3.3 permanece base técnica para o golden sample e para a primeira prova vertical.
 
-C.3.2 deverá separar:
+A extração deve ser executável sobre uma faixa/parte delimitada e não exige leitura semântica do arquivo inteiro.
 
-- identidade/configuração do run;
-- projeção de estado;
-- receipts e events append-only;
-- páginas/elementos e seus lotes;
-- métricas/reconciliação;
-- decisões humanas;
-- handoff read-only para C.4.
+C.3 pode observar:
 
-Todas as tabelas começam deny-by-default. Escrita ocorre apenas pela superfície atômica autorizada;
-leitura administrativa obedece RLS. Nenhuma tabela, RPC, migration ou grant é criada nesta proposta
-documental.
+- texto;
+- linhas/blocos físicos;
+- ordem observada;
+- cabeçalho/rodapé/box/coluna quando detectados;
+- relações físicas de tabelas quando expostas pelo adapter;
+- marcadores de elementos visuais.
 
-## 14. Observabilidade
+## 12. Cartografia candidata não é semântica canônica
 
-A telemetria técnica deverá correlacionar `extractionRunId`, source/version, ingestion run,
-command, receipt, event, tentativa, método e versão sem expor bytes, texto protegido, credenciais ou
-locator sensível. Logs não são histórico de negócio e não substituem receipts/events.
+Exemplo de observação permitida:
 
-Métricas operacionais distinguem sucesso, bloqueio de autorização, baixa qualidade, falha técnica,
-cancelamento, retry e cleanup. Alertas não promovem estado automaticamente.
+```text
+source = table_of_contents
+candidate_type = chapter
+observed_title = "..."
+printed_page = 42
+confidence = ...
+```
 
-## 15. Sublotes C.3.1–C.3.8
+Isso não significa que C.3 “confirmou o capítulo”.
 
-### C.3.1 — Contratos, lifecycle e fixtures
+C.4 posteriormente confronta a hipótese com o corpo e decide confirmação/correção/rejeição.
 
-**Inclui:** tipos provider-neutral; identidade; commands/results; receipts/events; state machine;
-proveniência; vocabulário de qualidade; incompatibilidade de versões; fixtures sintéticas.
+Essa distinção resolve a contradição entre:
 
-**Gate:** testes unitários cobrem transições, idempotência contratual, fingerprints, serialização e
-falha fechada. Não inclui schema, adapter, parser ou OCR.
+- cartografia antes da extração semântica integral;
+- C.4 como autoridade estrutural.
 
-### C.3.2 — Control plane persistente e segurança
+## 13. Representação observável de elementos
 
-**Inclui:** schema descartável; RPC/transação atômica; autorização temporal; CAS; receipts/events;
-RLS/grants; rollback seguro no ambiente descartável.
+C.3 deve preservar heterogeneidade física suficiente para que C.4 possa reconhecer funções posteriores.
 
-**Gate:** DB CI prova atomicidade, replay, corridas, reconstrução, deny-by-default e negativos de
-autorização. Não inclui conteúdo real nem recursos hospedados persistentes.
+Marcadores observáveis podem indicar candidatos físicos a:
 
-### C.3.3 — Porta do artefato e extração textual nativa
+- texto;
+- título visual;
+- box;
+- tabela;
+- imagem;
+- gráfico;
+- mapa;
+- infográfico;
+- legenda;
+- nota;
+- coluna.
 
-**Inclui:** porta read-only; adapter mínimo; validação de digest; parser nativo; PDFs sintéticos;
-proveniência de método/versão.
+C.3 não transforma automaticamente isso em categoria pedagógica canônica.
 
-**Gate:** fixtures com páginas simples, vazias, múltiplas colunas e texto corrompido produzem saídas
-determinísticas ou exceções explícitas. Não inclui OCR.
+## 14. Elementos visuais e C.3.7
 
-### C.3.4 — Persistência incremental e reconciliação
+C.3.7 é reinterpretado como **recuperação multimodal e fallback visual governado**.
 
-**Inclui:** batches de páginas/elementos; ordem; cobertura; retomada; deduplicação; proveniência
-granular.
+A futura decisão deverá avaliar três caminhos:
 
-**Gate:** interrupção/replay não duplica efeitos; toda página termina extraída, rejeitada, pendente
-ou descartada com motivo.
+```text
+texto nativo
+  -> padrão
 
-### C.3.5 — Qualidade, policy e revisão
+compreensão multimodal localizada
+  -> visual/layout relevante
 
-**Inclui:** métricas; policy versionada; thresholds baseados em fixtures; fila de revisão; aceitar,
-rejeitar e reprocessar.
+OCR localizado
+  -> texto relevante não recuperável nativamente
+```
 
-**Gate:** baixa qualidade não alcança `VALIDATED_FOR_SEGMENTATION`; decisão humana é auditável e
-replay-safe.
+OCR é técnica, não objetivo arquitetônico.
 
-### C.3.6 — Recovery, concorrência, cancelamento e cleanup
+Antes da primeira prova vertical, nenhum provider/modelo visual novo deve ser introduzido.
 
-**Inclui:** lease/claim se adotado; timeout; retries; retomada; corridas; cancelamento; retenção e
-cleanup.
+O golden sample poderá usar descrições/fixtures sintéticas determinísticas para provar contratos sem conteúdo protegido.
 
-**Gate:** testes de falha injetada e concorrência demonstram efeito único, ausência de órfãos e
-descarte verificável.
+## 15. Manual do Professor
 
-### C.3.7 — Decisão governada de OCR e exceções visuais
+Quando uma região de Manual do Professor for observada, C.3 deve preservar sua localização e evidência sem a misturar com o texto do aluno.
 
-**Inclui:** critérios de fallback, contrato, privacy/security review, limites, métricas e plano de
-avaliação provider-neutral.
+Relações pedagógicas como:
 
-**Gate:** decisão explícita de Nível B autoriza ou rejeita a introdução de adapter OCR. O baseline
-deste lote não pressupõe provedor nem execução OCR.
+```text
+atividade -> orientação -> resposta esperada
+```
 
-### C.3.8 — Prova integrada e fechamento
+não são autoridade C.3, mas C.3 deve preservar evidência/localizadores suficientes para que C.4/C.5 possam construí-las posteriormente.
 
-**Inclui:** E2E sintético C.2 handoff → C.3 → handoff read-only C.4; negativos de segurança;
-reprocessamento; revogação temporal; cleanup; documentação de fechamento.
+## 16. Declarações curriculares
 
-**Gate:** CI verde, diff auditado, nenhuma superfície C.4 executora e nenhuma dependência de conteúdo
-real, storage de produção ou produção.
+C.3 pode observar códigos/textos curriculares declarados pela obra como conteúdo do documento.
 
-## 16. Definition of Ready para iniciar C.3.1
+Não valida BNCC.
 
-Antes de iniciar C.3.1:
+A distinção futura deve preservar:
 
-- esta definição, ADR-063 e a política de execução proporcional ao risco foram revisadas e integradas;
-- `main` foi reinspecionada para mudanças concorrentes relevantes;
-- nomes candidatos foram comparados com símbolos legados;
-- fixtures sintéticas e política de dados estão delimitadas;
-- escopo técnico de C.3.1, invariantes e gates estão fechados.
+- declarado pela obra;
+- detectado;
+- proposto;
+- validado normativamente;
+- aprovado pelo curador.
 
-Não é necessário emitir checkpoint intermediário nem solicitar nova microautorização para cada
-commit, fixture, teste, correção ou reexecução de CI de Nível A.
+## 17. Qualidade e cobertura
 
-## 17. Definition of Done do lote C.3
+C.3.5 permanece responsável pela policy de qualidade de extração.
 
-C.3 somente fecha quando:
+Métricas candidatas preservadas:
 
-- C.3.1–C.3.8 satisfizeram seus gates técnicos e foram integrados conforme a fronteira material de
-  risco aplicável;
-- contratos e migrations aplicáveis têm testes unitários, integração e DB CI;
-- E2E sintético prova caminho positivo e negativos de segurança;
-- autorização é revalidada nos três instantes definidos;
-- cobertura e proveniência são completas;
-- baixa qualidade e falha nunca promovem o run;
-- retries, cancelamento e cleanup são comprovados;
-- handoff para C.4 é versionado, read-only e não executa C.4;
-- qualquer conteúdo real usado no processo foi previamente autorizado em fronteira de Nível B;
-- não há infraestrutura ou efeito de produção sem autorização de Nível C;
-- o fechamento integrado de C.3 é documentado de forma suficiente para handoff a C.4.
+- páginas esperadas/abertas/extraídas/vazias/rejeitadas/pendentes;
+- cobertura por método;
+- caracteres inválidos;
+- densidade/continuidade;
+- ambiguidade de ordem;
+- integridade tabular observável;
+- falhas/retries;
+- decisão humana.
 
-## 18. Governança de branch, PR e TOCTOU
+### Cobertura por parte e obra
 
-Branch e PR continuam como unidades preferenciais de isolamento e revisão, mas a execução segue a
-política proporcional ao risco:
+A reconciliação passa a distinguir:
 
-1. atividades de Nível A podem avançar em sequência dentro do escopo do lote sem autorização humana
-   nova por microação;
-2. cada PR técnico relevante deve registrar head, base, paths, gates e efeitos materiais;
-3. avanço concorrente da `main` deve ser avaliado antes do merge e auditado depois dele;
-4. correções necessárias para cumprir os gates do próprio escopo podem ser feitas e testadas sem
-   reabrir autorização;
-5. checkpoint intermediário é opcional e só deve ser criado quando houver mudança material de
-   fronteira, incidente, handoff importante ou ganho real de continuidade;
-6. merges, conteúdo real, providers novos e recursos hospedados seguem Nível B quando aplicável;
-7. produção, secrets, dados sensíveis, efeitos financeiros e operações destrutivas seguem Nível C.
+```text
+cobertura local da parte
+cobertura acumulada da obra
+```
 
-A integração desta documentação autoriza a continuidade técnica de Nível A em C.3.1–C.3.6, mas não
-autoriza por si só conteúdo real, OCR/provider novo, produção, credenciais ou dados sensíveis.
+Uma parte pode estar pronta para handoff estrutural local enquanto a obra global ainda está em processamento, desde que:
 
-## 19. Fora de escopo desta definição
+- a parte esteja claramente delimitada;
+- suas páginas tenham decisão;
+- sua proveniência esteja íntegra;
+- o contrato C.4 aceite esse handoff incremental;
+- não seja apresentada como “obra concluída”.
 
-- qualquer código, migration, tabela, RPC, adapter ou workflow nesta proposta documental;
-- parser executável, OCR ou modelo multimodal nesta proposta;
-- PDF, livro, PNLD ou conteúdo real sem autorização Nível B;
-- bucket, Storage/Supabase de produção ou credenciais;
-- wiring runtime de produção, cron/fila de produção ou backfill;
-- descrições semânticas geradas de imagens;
-- chunks, embeddings, segmentação, classificação, BNCC ou retrieval;
-- agente autônomo ou orquestrador de produção;
-- qualquer efeito Nível C sem decisão humana específica.
+## 18. Handoff para C.4
 
-## 20. Próximo passo permitido
+O desenho anterior pressupunha predominantemente um snapshot final monolítico.
 
-Após revisão e integração desta definição, **C.3.1 pode começar imediatamente como execução Nível A**
-em branch/PR, com fixtures sintéticas, testes e infraestrutura descartável. C.3.2–C.3.6 podem seguir
-pela mesma autorização agrupada quando cada gate técnico anterior estiver satisfeito.
+A evolução deve avaliar um **handoff incremental/versionado por parte**, sem remover a possibilidade de snapshot consolidado da obra.
 
-O primeiro uso de PDF/conteúdo real juridicamente autorizado será uma fronteira Nível B separada.
-OCR/provider novo também será Nível B. Produção, secrets e dados pessoais/sensíveis permanecem Nível C.
+Conceitualmente:
+
+```text
+ValidatedPartExtractionSnapshot
+  -> source/version
+  -> extraction run
+  -> cartographic scope
+  -> observed pages/elements
+  -> coverage local
+  -> quality decision
+
+ConsolidatedWorkExtractionSnapshot
+  -> conjunto ordenado/reconciliado de partes
+  -> cobertura global
+```
+
+Os nomes finais dependem de contrato próprio; esta definição não cria tipos/código.
+
+C.4 nunca muta evidência histórica C.3.
+
+## 19. C.3.6 — recovery/concorrência/cleanup
+
+O PR #110 está aberto e seu gate específico falhou; CI geral e DB CI foram bem-sucedidos, mas a prova C.3.6 encontrou incompatibilidade de fronteira ao tentar acionar `fail_extraction` pela RPC C.3.5.
+
+Essa falha não será corrigida imediatamente.
+
+Motivo arquitetônico: antes de cristalizar recovery, precisamos provar se a unidade operacional relevante é:
+
+- run global;
+- parte;
+- batch;
+- combinação hierárquica.
+
+O conteúdo do PR #110 é preservado como candidato a hardening.
+
+## 20. C.3.7 — não iniciar ainda
+
+Não iniciar provider OCR ou multimodal por continuidade automática.
+
+Primeiro executar golden sample + prova vertical.
+
+Depois classificar lacunas reais:
+
+- perda textual nativa;
+- visual informacional;
+- texto embutido em visual;
+- tabela/layout;
+- outras.
+
+Somente então definir contrato/provedor/limites.
+
+## 21. C.3.8 — redefinição necessária
+
+C.3.8 não deve mais ser pensado apenas como:
+
+```text
+C.2 -> C.3 completo da obra -> handoff único C.4
+```
+
+O fechamento integrado deverá provar pelo menos:
+
+1. cartografia preliminar;
+2. seleção de parte;
+3. extração nativa da parte;
+4. persistência/cobertura local;
+5. qualidade/revisão;
+6. handoff incremental read-only para reconstrução;
+7. consolidação posterior sem perda da cobertura global;
+8. negativos de autorização e integridade.
+
+Detalhes finais serão definidos depois da primeira prova vertical.
+
+## 22. Golden sample
+
+A próxima fixture deve ser inteiramente sintética e conter:
+
+- filename informativo;
+- capa/ficha;
+- organização da obra;
+- sumário;
+- deslocamento de paginação;
+- `Introdução`;
+- títulos/subtítulos;
+- texto sintético;
+- visual sintético + legenda;
+- atividade;
+- orientação docente;
+- declaração curricular;
+- região final de Manual do Professor.
+
+Nenhum conteúdo protegido será copiado.
+
+## 23. Primeira prova vertical
+
+Caminho obrigatório:
+
+```text
+arquivo sintético
+  -> reconhecer metadados/pistas
+  -> localizar sumário/organização
+  -> reconciliar paginação
+  -> produzir mapa candidato
+  -> selecionar `Introdução`
+  -> extrair somente a parte
+  -> persistir/reconciliar evidência
+  -> disponibilizar saída para reconstrução estrutural
+```
+
+A prova deve registrar o que não conseguiu resolver.
+
+## 24. Definition of Ready do próximo desenvolvimento
+
+Antes de código novo de cartografia/prova vertical:
+
+- esta reconciliação documental deve estar revisada;
+- contrato mínimo do mapa candidato deve estar delimitado;
+- golden sample deve estar especificado;
+- não deve haver dependência de conteúdo real;
+- integração com o que já existe em C.3.3–C.3.5 deve ser explicitada;
+- critérios de sucesso da `Introdução` devem estar definidos.
+
+## 25. Definition of Done revisada para C.3
+
+C.3 só será considerado fechado quando:
+
+- C.3.1–C.3.5 permanecem comprovados;
+- a extração orientada por parte estiver demonstrada;
+- a relação com cartografia candidata e C.4 estiver contratualmente clara;
+- coverage local/global puder ser reconciliado;
+- recovery/cleanup tiver unidade operacional correta e prova correspondente;
+- fallback multimodal/OCR tiver sido decidido com base em necessidade;
+- handoff incremental/consolidado estiver definido e read-only;
+- E2E sintético vertical estiver verde;
+- conteúdo real usado, se houver, tiver autorização própria;
+- nenhuma produção tiver sido antecipada.
+
+## 26. Governança
+
+Mantém-se execução proporcional ao risco:
+
+- documentação/fixtures/testes sintéticos/correções dentro de escopo aprovado: Nível A;
+- conteúdo real protegido, provider novo relevante ou infraestrutura hospedada de prova: Nível B quando aplicável;
+- produção, secrets, dados sensíveis, efeitos financeiros/destrutivos: Nível C.
+
+Não solicitar microautorização para cada correção técnica dentro da fronteira já aprovada.
+
+## 27. Fora de escopo
+
+Esta reconciliação não autoriza:
+
+- PDF/livro real no pipeline;
+- PNLD real;
+- OCR real;
+- modelo multimodal sobre conteúdo protegido;
+- chunks/embeddings;
+- C.5–C.7 técnicos;
+- runtime multiagente;
+- Supabase/Storage de produção;
+- secrets;
+- wiring de produção.
+
+## 28. Próximo passo
+
+Após integração documental:
+
+```text
+1. definir contrato do Protocolo de Reconhecimento Estrutural
+2. criar golden sample
+3. provar cartografia preliminar
+4. provar Introdução verticalmente
+5. revisar lacunas
+6. decidir C.3.6
+7. decidir multimodal/OCR
+8. redefinir/fechar C.3.8
+```
+
+Síntese:
+
+> **C.3 deve ser robusto para extrair a parte certa da obra certa; não apenas robusto para sobreviver a falhas enquanto processa páginas sem compreender a estrutura que deveria orientar o trabalho.**
