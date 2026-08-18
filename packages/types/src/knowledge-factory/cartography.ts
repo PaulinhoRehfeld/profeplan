@@ -111,7 +111,8 @@ export const CARTOGRAPHIC_CANDIDATE_STATES = [
   'reviewed_candidate',
   'rejected',
 ] as const;
-export type CartographicCandidateState = (typeof CARTOGRAPHIC_CANDIDATE_STATES)[number];
+export type CartographicCandidateState =
+  (typeof CARTOGRAPHIC_CANDIDATE_STATES)[number];
 
 export interface CartographicNodeCandidate {
   readonly nodeId: EntityId;
