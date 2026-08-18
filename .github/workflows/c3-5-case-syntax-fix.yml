@@ -33,8 +33,18 @@ jobs:
           new = """    IF public.kf_extraction_text_internal(v_evidence->'checkpoint','authorizationEvidence.checkpoint')
             <> (CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END) THEN"""
           if old not in text:
+              old = """    IF public.kf_extraction_text_internal(v_evidence->'checkpoint','authorizationEvidence.checkpoint')
+              <> CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END THEN"""
+              new = """    IF public.kf_extraction_text_internal(v_evidence->'checkpoint','authorizationEvidence.checkpoint')
+              <> (CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END) THEN"""
+          if old not in text:
+              old = """    IF public.kf_extraction_text_internal(v_evidence->'checkpoint','authorizationEvidence.checkpoint')
+      <> CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END THEN"""
+              new = """    IF public.kf_extraction_text_internal(v_evidence->'checkpoint','authorizationEvidence.checkpoint')
+      <> (CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END) THEN"""
+          if old not in text:
               raise SystemExit('target CASE comparison not found')
-          path.write_text(text.replace(old, new))
+          path.write_text(text.replace(old, new, 1))
           PY
       - name: Commit repaired migration
         run: |
