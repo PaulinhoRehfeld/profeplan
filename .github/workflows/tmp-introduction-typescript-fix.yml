@@ -1,0 +1,58 @@
+name: Temporary Introduction TypeScript fix
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-typecheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+      - run: pnpm install --frozen-lockfile
+      - name: Apply exact TypeScript fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          inspector = Path('packages/knowledge-factory/src/cartography/pdfjs-document-inspector.adapter.ts')
+          text = inspector.read_text()
+          old = "  OPS.paintJpegXObject,\n"
+          if old not in text:
+              raise SystemExit('expected paintJpegXObject line not found')
+          inspector.write_text(text.replace(old, '', 1))
+
+          reconstruction = Path('packages/knowledge-factory/src/reconstruction/part-reconstruction.service.ts')
+          text = reconstruction.read_text()
+          old = "if (matchingNode?.nodeId === rootNode?.nodeId)"
+          new = "if (matchingNode && matchingNode.nodeId === rootNode?.nodeId)"
+          if old not in text:
+              raise SystemExit('expected matchingNode condition not found')
+          reconstruction.write_text(text.replace(old, new, 1))
+          PY
+          pnpm exec prettier --write \
+            packages/knowledge-factory/src/cartography/pdfjs-document-inspector.adapter.ts \
+            packages/knowledge-factory/src/reconstruction/part-reconstruction.service.ts
+      - name: Prove Knowledge Factory typecheck
+        run: pnpm --filter @profeplan/knowledge-factory typecheck
+      - name: Commit verified fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            packages/knowledge-factory/src/cartography/pdfjs-document-inspector.adapter.ts \
+            packages/knowledge-factory/src/reconstruction/part-reconstruction.service.ts
+          git commit -m "fix(knowledge-factory): correct Introduction reconstruction type boundaries"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
