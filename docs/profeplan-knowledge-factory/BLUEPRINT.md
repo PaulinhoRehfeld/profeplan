@@ -90,7 +90,7 @@ A coordenação cartográfica da Fase C pertence à construção do conhecimento
 
 ## 4. Estado macro atual
 
-Base canônica de referência desta atualização: `main@c7cea4b7d0e4c12182a28fa85a4a2ad8f57b282e`.
+Base canônica de referência desta atualização: `main@c943241f218cbebf65184cb6315c8fbae0fd9eb1`, tree `df26a01e61d0aa515ac41ba028073adc0114451a`.
 
 ```text
 FASE A — FUNDAÇÃO
@@ -112,13 +112,15 @@ FASE C — MATÉRIA-PRIMA E CONSTRUÇÃO DO CONHECIMENTO
 ✅ C.3.3 porta do artefato e extração textual nativa
 ✅ C.3.4 persistência incremental e reconciliação física
 ✅ C.3.5 qualidade, policy e revisão humana
-⏸ C.3.6 recovery/concorrência/cancelamento/cleanup — PR #110 aberto, não integrado, suspenso para reconciliação
-⬜ protocolo de reconhecimento estrutural da obra — próximo caminho principal
-⬜ golden sample estrutural sintético
-⬜ primeira prova vertical por parte (`Introdução`)
-⬜ C.3.7 recuperação multimodal e fallback visual — não iniciar ainda
-⬜ C.3.8 fechamento integrado — redefinir após prova vertical
-⬜ C.4 reconstrução estrutural confirmada
+⏸ C.3.6 recovery/concorrência/cancelamento/cleanup — PR #110 aberto, não integrado, suspenso
+✅ protocolo de reconhecimento estrutural da obra
+✅ golden sample estrutural sintético e cartografia preliminar
+✅ primeira prova vertical por parte — `Introdução`
+✅ segunda prova vertical estruturalmente distinta — `Unidade 1 → Capítulo 1`
+🧪 C.4-local candidata — generalização mínima comprovada; lote C.4 integral ainda não aberto
+⬜ C.3.7 recuperação multimodal e fallback visual — somente por necessidade demonstrada
+⬜ C.3.8 fechamento integrado — reconciliar com o ciclo vertical por partes
+⬜ C.4 reconstrução estrutural integral e confirmação editorial
 ⬜ C.5 destilação, relações e deduplicação
 ⬜ C.6 componentes, grafo curricular e versionamento
 ⬜ C.7 curadoria e corpus piloto
@@ -371,7 +373,10 @@ A cartografia preliminar poderá usar observações de sumário, títulos, marca
 
 ### C.3.6
 
-O PR #110 permanece aberto e não integrado. Seu hardening de recovery, concorrência, cancelamento e cleanup não foi descartado, mas está suspenso até a prova vertical revelar como essa infraestrutura deve se encaixar no processamento por partes.
+O PR #110 permanece aberto e não integrado. As provas verticais da Introdução e da Unidade 1
+confirmaram o processamento por `CartographicPartScope`, mas ainda não demonstraram que toda a
+superfície proposta de recovery/concorrência/cleanup é necessária no primeiro piloto real. O PR
+continua suspenso e não deve ser rebaseado ou integrado por continuidade automática.
 
 ### C.3.7
 
@@ -379,7 +384,9 @@ Não iniciar como “módulo de OCR”. A futura definição deve tratar **recup
 
 ### C.3.8
 
-Deverá ser reconciliado depois da primeira prova vertical; não deve pressupor que o único E2E relevante seja processar horizontalmente uma obra inteira até um handoff monolítico para C.4.
+Deverá ser reconciliado com o ciclo vertical já comprovado. O E2E relevante percorre uma parte
+delimitada, preserva cobertura global da obra e produz saída revisável, sem exigir handoff monolítico
+da obra inteira para C.4.
 
 ## 10. C.4 — reconstrução estrutural
 
@@ -393,6 +400,12 @@ C.4 permanece responsável por:
 - produzir mapas confirmados de seção, capítulo, unidade e obra.
 
 A árvore preliminar anterior a C.4 é uma hipótese operacional rastreável, não autoridade canônica.
+
+Os PRs nº 114 e nº 116 provaram uma superfície **C.4-local candidata**, ainda não equivalente à
+abertura integral do lote. Ela preserva tipos explicitamente cartografados, mantém contexto
+estrutural entre páginas dentro da mesma parte e só consulta regiões auxiliares quando existe âncora
+objetiva. Texto sem evidência estrutural adicional permanece `body_text`; nenhuma heurística deve
+inventar headings ou atividades.
 
 ## 11. C.5 — destilação, relações e deduplicação
 
@@ -431,40 +444,37 @@ C.7 fecha a Fase C quando houver:
 - 100–300 componentes revisados no escopo aprovado;
 - autorização humana para iniciar experimentos da Fase D.
 
-## 14. Próxima prova obrigatória
+## 14. Provas verticais integradas e resultado arquitetônico
 
-Antes de novo hardening de exceções, criar um **golden sample estrutural inteiramente sintético** contendo:
+O golden sample estrutural inteiramente sintético e a cartografia preliminar foram integrados pelo
+PR nº 113. A cartografia localizou organização, sumário, dupla paginação, regiões editoriais e
+delimitou partes sem leitura profunda da obra inteira.
 
-- filename informativo;
-- capa e ficha sintéticas;
-- seção de organização da obra;
-- sumário;
-- paginação física diferente da impressa;
-- uma `Introdução`;
-- títulos e subtítulos;
-- texto expositivo original;
-- elemento visual sintético com legenda;
-- atividade;
-- orientação docente relacionada;
-- declaração curricular sintética;
-- região final de Manual do Professor.
+A primeira prova vertical, integrada pelo PR nº 114, processou somente a `Introdução` e demonstrou:
 
-Primeira prova vertical:
+- títulos e subtítulos subordinados;
+- texto expositivo local;
+- marcador visual observado pelo PDF.js e legenda relacionada;
+- atividade e comando;
+- consulta dirigida ao Manual do Professor somente para orientação ancorada;
+- ausência de OCR, interpretação multimodal profunda ou semântica global.
 
-```text
-arquivo sintético
-  -> reconhecer identidade
-  -> localizar estrutura
-  -> construir árvore preliminar
-  -> selecionar somente `Introdução`
-  -> extrair a parte
-  -> reconstruir títulos/subtítulos/elementos
-  -> manter relações texto-visual-atividade-orientação
-  -> reconciliar cobertura da parte
-  -> produzir saída revisável
-```
+A segunda prova vertical, integrada pelo PR nº 116, processou somente a `Unidade 1` e demonstrou:
 
-Não processar o livro sintético inteiro como um único contexto.
+- hierarquia `unit → chapter` estruturalmente distinta da Introdução;
+- preservação de `chapter_heading` quando declarado pela cartografia;
+- continuidade do heading ativo através de limites de página;
+- ausência de consulta ao Manual quando não existe atividade reconhecida;
+- ausência de nova heurística, alteração do fixture ou redesenho do serviço.
+
+Resultado consolidado: **generalização pequena e suficiente do mecanismo principal**. A unidade de
+trabalho é a parte editorial delimitada; a cartografia fornece evidência estrutural; a reconstrução
+local preserva essa evidência sem inventar ontologia.
+
+Não há justificativa para uma terceira prova sintética por rotina. Uma nova fixture só deve ser
+criada se representar risco estrutural realmente novo. O próximo avanço material é preparar uma
+fronteira jurídica e operacional separada para um piloto controlado sobre uma única parte real
+autorizada.
 
 ## 15. Fase D — inteligência do almoxarifado
 
@@ -612,22 +622,27 @@ Não criar checkpoint apenas para obedecer ritual quando o PR, a documentação 
 
 ## 22. Próximo objetivo oficial
 
-A prioridade atual não é C.3.7 nem novo hardening de exceções.
+A pergunta central das duas provas verticais foi respondida: o mecanismo de cartografia +
+reconstrução local generaliza da Introdução para uma Unidade/Capítulo com apenas duas correções
+mínimas e evidenciadas.
 
-A ordem é:
+A ordem material passa a ser:
 
 ```text
-1. reconciliar documentalmente a Fase C com cartografia vertical;
-2. definir o Protocolo de Reconhecimento Estrutural da Obra;
-3. criar golden sample sintético;
-4. provar cartografia preliminar;
-5. executar primeira prova vertical somente da `Introdução`;
-6. revisar lacunas concretas;
-7. decidir como absorver/corrigir C.3.6;
-8. decidir recuperação multimodal/OCR com base em necessidade demonstrada;
-9. preparar, em fronteira própria, o primeiro conteúdo real juridicamente autorizado.
+1. integrar a consolidação documental das duas provas e o Checkpoint 051;
+2. delimitar juridicamente uma única obra e uma única parte para piloto controlado;
+3. definir ambiente temporário, retenção, descarte e critérios de revisão desse piloto;
+4. executar cartografia da obra e aprofundar somente a parte autorizada;
+5. comparar reconstrução candidata com a estrutura editorial real;
+6. usar lacunas concretas para decidir o destino de C.3.6 / PR #110;
+7. introduzir recuperação multimodal/OCR apenas se o piloto demonstrar necessidade localizada;
+8. só depois cristalizar a abertura integral de C.4 e qualquer persistência adicional.
 ```
+
+Continuam bloqueados por continuidade implícita: obra inteira, corpus, produção, embeddings,
+retrieval, OCR geral, novo provider, dados pessoais/sensíveis e runtime multiagente.
 
 Regra de síntese:
 
-> **Primeiro provar o caminho principal da construção do conhecimento; depois endurecer exceções, concorrência e fallbacks que esse caminho demonstrar precisar.**
+> **A próxima prova deve aumentar realidade, não apenas repetir complexidade sintética: uma parte
+> autorizada, um mapa, uma reconstrução local e uma revisão humana comparável.**

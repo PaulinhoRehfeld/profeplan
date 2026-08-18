@@ -207,13 +207,14 @@ Classificação atual:
 
 > infraestrutura de confiabilidade potencialmente útil, mas não determinante do caminho principal.
 
-Não corrigir/mergear automaticamente antes da primeira prova vertical.
+As duas provas verticais foram concluídas sem exigir essa superfície. O PR permanece suspenso e não
+deve ser corrigido, rebaseado ou integrado automaticamente.
 
-Após a prova, decidir:
+A decisão será tomada com base nas falhas concretas do primeiro piloto controlado:
 
-1. corrigir e integrar como infraestrutura genérica;
-2. ajustar para retries/leases por parte;
-3. simplificar ou adiar superfícies não demonstradas como necessárias.
+1. integrar apenas a infraestrutura genérica realmente necessária;
+2. ajustar retry/lease/cleanup à identidade da parte;
+3. simplificar, substituir ou adiar superfícies não exercitadas.
 
 ## 11. C.3.7 — multimodal e fallback visual
 
@@ -321,53 +322,38 @@ Gate C → D exige:
 - amostra reproduzível;
 - autorização humana para experimentos de retrieval.
 
-## 16. Golden sample estrutural
+## 16. Golden sample e cartografia integrados
 
-Antes de primeiro processamento completo de uma obra real, criar fixture sintética contendo:
+O golden sample estrutural sintético e a cartografia preliminar foram integrados pelo PR nº 113. A
+prova localiza organização da obra, sumário, dupla paginação, regiões e limites de partes sem leitura
+profunda do artefato inteiro.
 
-- filename informativo;
-- capa e ficha sintéticas;
-- organização da obra;
-- sumário;
-- paginação PDF ≠ paginação impressa;
-- uma `Introdução`;
-- títulos/subtítulos;
-- texto sintético;
-- imagem/visual sintético + legenda;
-- atividade;
-- orientação docente relacionada;
-- declaração curricular sintética;
-- região final de Manual do Professor.
+## 17. Duas provas verticais integradas
 
-Não copiar texto, imagens ou estrutura identificável de obra protegida.
+### Introdução — PR nº 114
 
-## 17. Primeira prova vertical
+A primeira prova processa somente páginas físicas 11–13 e consulta a região do Manual somente para
+uma orientação docente explicitamente ancorada. Ela preserva títulos, texto, marcador visual,
+legenda, atividade e orientação como candidatos rastreáveis.
 
-```text
-GOLDEN SAMPLE
-  ↓
-identificar metadados/pistas
-  ↓
-localizar organização/sumário
-  ↓
-reconciliar paginação
-  ↓
-criar árvore candidata
-  ↓
-selecionar `Introdução`
-  ↓
-extrair somente a parte
-  ↓
-reconstruir títulos/subtítulos/elementos
-  ↓
-relacionar visual + legenda + texto + atividade + orientação
-  ↓
-reconciliar cobertura da parte
-  ↓
-revisão humana
-```
+### Unidade 1 — PR nº 116
 
-O objetivo da primeira prova é descobrir lacunas no **caminho principal**, não provar todas as exceções possíveis.
+A segunda prova processa somente páginas físicas 14–17 e preserva `unit → chapter`. O
+`chapter_heading` continua ativo através de páginas, e a ausência de atividade reconhecida impede
+consulta desnecessária ao Manual.
+
+### Resultado
+
+O mecanismo apresentou **pequena generalização**, não acoplamento à Introdução:
+
+- tipos estruturais vêm da cartografia;
+- contexto permanece local ao `CartographicPartScope`;
+- texto sem evidência adicional continua `body_text`;
+- regiões auxiliares são consultadas somente por âncora;
+- nenhuma heurística, fixture nova ou grande ontologia foi necessária.
+
+Uma terceira prova sintética exige risco estrutural novo. O próximo passo material é um piloto
+controlado de uma única parte real autorizada.
 
 ## 18. Dependências reconciliadas
 
@@ -434,15 +420,15 @@ Conteúdo real protegido, novo provider relevante, produção, secrets e dados s
 Ordem executiva atual:
 
 ```text
-1. concluir reconciliação documental da cartografia vertical;
-2. definir Protocolo de Reconhecimento Estrutural da Obra;
-3. criar golden sample sintético;
-4. implementar/provar cartografia preliminar sobre o sample;
-5. implementar/provar ciclo vertical da `Introdução`;
-6. revisar lacunas concretas;
-7. decidir destino técnico de C.3.6 / PR #110;
-8. definir multimodal/OCR somente com necessidade demonstrada;
-9. preparar primeiro piloto real em fronteira jurídica própria.
+1. integrar a consolidação documental e o Checkpoint 051;
+2. delimitar juridicamente uma obra/parte para piloto controlado;
+3. definir ambiente temporário, retenção, descarte e revisão;
+4. cartografar a obra e aprofundar somente a parte autorizada;
+5. comparar a reconstrução com a estrutura editorial real;
+6. decidir C.3.6 / PR #110 a partir de falhas concretas;
+7. decidir multimodal/OCR apenas diante de necessidade localizada;
+8. abrir C.4 integral somente depois dessa evidência.
 ```
 
-Não iniciar C.3.7 ou processamento real apenas por continuidade implícita.
+Não iniciar obra inteira, corpus, produção, embeddings, retrieval, OCR geral ou runtime multiagente
+por continuidade implícita.
