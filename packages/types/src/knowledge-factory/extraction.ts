@@ -228,7 +228,9 @@ export interface MarkExtractionReadyCommand extends ExtractionTransitionCommandB
 
 export interface BeginExtractionCommand extends ExtractionTransitionCommandBase {
   readonly commandType: 'begin_extraction';
-  readonly authorizationEvidence: ExtractionAuthorizationEvidence & { readonly checkpoint: 'claim' };
+  readonly authorizationEvidence: ExtractionAuthorizationEvidence & {
+    readonly checkpoint: 'claim';
+  };
 }
 
 export interface BeginExtractionValidationCommand extends ExtractionTransitionCommandBase {
