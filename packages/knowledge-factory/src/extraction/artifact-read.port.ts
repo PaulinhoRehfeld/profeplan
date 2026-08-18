@@ -16,8 +16,7 @@ export const EXTRACTION_ARTIFACT_READ_ERROR_CODES = [
   'artifact_read_failed',
 ] as const;
 
-export type ExtractionArtifactReadErrorCode =
-  (typeof EXTRACTION_ARTIFACT_READ_ERROR_CODES)[number];
+export type ExtractionArtifactReadErrorCode = (typeof EXTRACTION_ARTIFACT_READ_ERROR_CODES)[number];
 
 export class ExtractionArtifactReadError extends Error {
   readonly code: ExtractionArtifactReadErrorCode;
@@ -62,7 +61,5 @@ export interface ExtractionArtifactReadResult {
  * provider-neutral metadata.
  */
 export interface ExtractionArtifactReadPort {
-  read(
-    request: ExtractionArtifactReadRequest
-  ): Promise<ExtractionArtifactReadResult>;
+  read(request: ExtractionArtifactReadRequest): Promise<ExtractionArtifactReadResult>;
 }
