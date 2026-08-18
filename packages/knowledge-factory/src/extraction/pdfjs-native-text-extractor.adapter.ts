@@ -1,5 +1,8 @@
 import { getDocument, version as pdfjsVersion } from 'pdfjs-dist/legacy/build/pdf.mjs';
-import type { NativeTextExtractionResult, NativeTextExtractorPort } from './native-text-extractor.port.ts';
+import type {
+  NativeTextExtractionResult,
+  NativeTextExtractorPort,
+} from './native-text-extractor.port.ts';
 import type { VerifiedExtractionArtifactRead } from './artifact-read.service.ts';
 
 export const PDFJS_NATIVE_TEXT_EXTRACTOR_NAME = 'pdfjs-dist' as const;
@@ -29,7 +32,11 @@ export class PdfJsNativeTextExtractorAdapter implements NativeTextExtractorPort 
       const printedLabels = await document.getPageLabels();
       const pages: NativeTextExtractionResult['pages'][number][] = [];
 
-      for (let physicalPageNumber = 1; physicalPageNumber <= document.numPages; physicalPageNumber += 1) {
+      for (
+        let physicalPageNumber = 1;
+        physicalPageNumber <= document.numPages;
+        physicalPageNumber += 1
+      ) {
         const page = await document.getPage(physicalPageNumber);
         const content = await page.getTextContent();
         const textParts: string[] = [];
