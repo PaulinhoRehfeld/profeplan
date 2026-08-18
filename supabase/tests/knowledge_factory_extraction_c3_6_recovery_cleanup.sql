@@ -65,6 +65,8 @@ DECLARE
   v_cleanup jsonb;
   v_version text;
   v_sequence bigint;
+  v_failed_version text;
+  v_failed_sequence bigint;
   v_attempts bigint;
 BEGIN
   SELECT aggregate_version,sequence INTO v_version,v_sequence
@@ -90,14 +92,16 @@ BEGIN
     RAISE EXCEPTION 'injected failure did not become FAILED exactly once';
   END IF;
 
+  v_failed_version := v_result.aggregate_version;
+  v_failed_sequence := v_result.sequence;
   v_retry_fp := public.kf_extraction_retry_fingerprint_internal(
-    v_run_id,v_result.aggregate_version,v_result.sequence,
+    v_run_id,v_failed_version,v_failed_sequence,
     '2026-08-15T03:02:00.000Z','e5300000-0000-4000-8000-000000000036',
     'resume from last durable batch after synthetic worker failure'
   );
   SELECT * INTO v_result FROM public.kf_extraction_retry_failed(
     'e8600000-0000-4000-8000-000000000036',v_retry_fp,v_run_id,
-    v_result.aggregate_version,v_result.sequence,
+    v_failed_version,v_failed_sequence,
     'c4000000-0000-4000-8000-000000000001','2026-08-15T03:02:00.000Z',
     'e5300000-0000-4000-8000-000000000036',
     'resume from last durable batch after synthetic worker failure'
@@ -108,7 +112,7 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM public.kf_extraction_recovery_attempts
     WHERE run_id=v_run_id AND attempt_number=1
-      AND failed_sequence=4 AND resumed_sequence=5
+      AND failed_sequence=v_failed_sequence AND resumed_sequence=v_failed_sequence+1
   ) THEN
     RAISE EXCEPTION 'recovery attempt evidence is missing or incorrectly bound';
   END IF;
@@ -117,7 +121,7 @@ BEGIN
   FROM public.kf_extraction_recovery_attempts WHERE run_id=v_run_id;
   SELECT * INTO v_result FROM public.kf_extraction_retry_failed(
     'e8600000-0000-4000-8000-000000000036',v_retry_fp,v_run_id,
-    'c36-seed-v1-4',4,
+    v_failed_version,v_failed_sequence,
     'c4000000-0000-4000-8000-000000000001','2026-08-15T03:02:00.000Z',
     'e5300000-0000-4000-8000-000000000036',
     'resume from last durable batch after synthetic worker failure'
@@ -130,7 +134,7 @@ BEGIN
   BEGIN
     PERFORM * FROM public.kf_extraction_retry_failed(
       'e8600000-0000-4000-8000-000000000036',repeat('a',64),v_run_id,
-      'c36-seed-v1-4',4,
+      v_failed_version,v_failed_sequence,
       'c4000000-0000-4000-8000-000000000001','2026-08-15T03:02:00.000Z',
       'e5300000-0000-4000-8000-000000000036','different retry effect'
     );
