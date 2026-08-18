@@ -11,5 +11,8 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --experimental-strip-types --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^5.4.530"
   }
 }
