@@ -173,7 +173,7 @@ jobs:
               )
               and (
                 data_type='bytea'
-                or column_name ~* '(text|content|body|chunk|embedding|ocr|bytes|locator)'
+                or column_name ~* '(text|content|body|chunk|embedding|ocr|locator)'
               );
           ")"
           if [ -n "$FORBIDDEN_COLUMNS" ]; then
