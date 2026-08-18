@@ -3,6 +3,8 @@ export * from './domain/reasons.ts';
 export * from './domain/result.ts';
 export * from './extraction/artifact-read.port.ts';
 export * from './extraction/artifact-read.service.ts';
+export * from './extraction/native-text-extractor.port.ts';
+export * from './extraction/native-text-extractor.service.ts';
 export * from './opp/production-order-policy.ts';
 export * from './policies/agent-scope-policy.ts';
 export * from './policies/component-eligibility.ts';
