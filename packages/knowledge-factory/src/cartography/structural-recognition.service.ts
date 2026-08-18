@@ -326,7 +326,11 @@ function mergeInspectionPages(
 }
 
 export class StructuralRecognitionService {
-  constructor(private readonly inspector: DocumentInspectorPort) {}
+  private readonly inspector: DocumentInspectorPort;
+
+  constructor(inspector: DocumentInspectorPort) {
+    this.inspector = inspector;
+  }
 
   async recognize(request: StructuralRecognitionRequest): Promise<StructuralRecognitionResult> {
     const vocabulary = request.vocabulary ?? DEFAULT_STRUCTURAL_RECOGNITION_VOCABULARY;
