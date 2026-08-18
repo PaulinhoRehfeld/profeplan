@@ -88,6 +88,18 @@ function pageContainsHeading(page: NativeTextExtractedPage, headings: readonly s
   );
 }
 
+function firstMatchingPage(
+  pages: Iterable<NativeTextExtractedPage>,
+  headings: readonly string[]
+): NativeTextExtractedPage | undefined {
+  for (const page of pages) {
+    if (pageContainsHeading(page, headings)) {
+      return page;
+    }
+  }
+  return undefined;
+}
+
 function compactPageRanges(physicalPages: readonly number[]): readonly PhysicalPageRange[] {
   if (physicalPages.length === 0) {
     return [];
@@ -140,10 +152,16 @@ function nodeKindAndRank(
   vocabulary: StructuralRecognitionVocabulary
 ): { readonly kind: CartographicNodeKind; readonly rank: number } {
   const normalized = normalizeSearchText(title);
-  if (vocabulary.introductionHeadings.some((heading) => normalized === normalizeSearchText(heading))) {
+  if (
+    vocabulary.introductionHeadings.some((heading) => normalized === normalizeSearchText(heading))
+  ) {
     return { kind: 'part', rank: 1 };
   }
-  if (vocabulary.unitPrefixes.some((prefix) => normalized.startsWith(`${normalizeSearchText(prefix)} `))) {
+  if (
+    vocabulary.unitPrefixes.some((prefix) =>
+      normalized.startsWith(`${normalizeSearchText(prefix)} `)
+    )
+  ) {
     return { kind: 'unit', rank: 1 };
   }
   if (
@@ -173,25 +191,30 @@ function pageRefEvidence(
   };
 }
 
-function tocNodeDrafts(
-  entries: readonly ParsedTocEntry[],
-  pageRefs: DocumentInspectionResult['pageRefs'],
-  vocabulary: StructuralRecognitionVocabulary,
-  teacherEntry: ParsedTocEntry | undefined
-): readonly NodeDraft[] {
-  const physicalByPrintedLabel = new Map(
+function physicalPageByPrintedLabel(
+  pageRefs: DocumentInspectionResult['pageRefs']
+): ReadonlyMap<string, number> {
+  return new Map(
     pageRefs
       .filter((page) => page.printedPageLabel)
       .map((page) => [page.printedPageLabel as string, page.physicalPageNumber])
   );
+}
 
+function tocNodeDrafts(
+  entries: readonly ParsedTocEntry[],
+  pageRefs: DocumentInspectionResult['pageRefs'],
+  vocabulary: StructuralRecognitionVocabulary,
+  excludedEntries: ReadonlySet<ParsedTocEntry>
+): readonly NodeDraft[] {
+  const physicalByPrintedLabel = physicalPageByPrintedLabel(pageRefs);
   const drafts: NodeDraft[] = [];
   let currentRootNodeId: string | undefined;
   let currentUnitNodeId: string | undefined;
   let currentChapterNodeId: string | undefined;
 
   for (const [index, entry] of entries.entries()) {
-    if (entry === teacherEntry) {
+    if (excludedEntries.has(entry)) {
       continue;
     }
 
@@ -219,11 +242,7 @@ function tocNodeDrafts(
       declaredPrintedPageLabel: entry.declaredPrintedPageLabel,
       startPhysicalPage: physicalByPrintedLabel.get(entry.declaredPrintedPageLabel),
       evidence: [
-        pageRefEvidence(
-          `cartography-evidence:toc:${index + 1}`,
-          'table_of_contents',
-          entry.page
-        ),
+        pageRefEvidence(`cartography-evidence:toc:${index + 1}`, 'table_of_contents', entry.page),
       ],
       confidence: 0.85,
     });
@@ -234,22 +253,18 @@ function tocNodeDrafts(
 
 function finalizeNodes(
   drafts: readonly NodeDraft[],
-  totalPhysicalPages: number,
+  contentEndPhysicalPage: number,
   bodyPages: ReadonlyMap<number, NativeTextExtractedPage>
 ): readonly CartographicNodeCandidate[] {
   return drafts.map((draft, index) => {
     const nextBoundary = drafts
       .slice(index + 1)
       .find(
-        (candidate) =>
-          candidate.rank <= draft.rank && candidate.startPhysicalPage !== undefined
+        (candidate) => candidate.rank <= draft.rank && candidate.startPhysicalPage !== undefined
       );
-    const endPhysicalPage = draft.startPhysicalPage
-      ? (nextBoundary?.startPhysicalPage ?? totalPhysicalPages + 1) - 1
-      : undefined;
-    const bodyPage = draft.startPhysicalPage
-      ? bodyPages.get(draft.startPhysicalPage)
-      : undefined;
+    const naturalEnd = (nextBoundary?.startPhysicalPage ?? contentEndPhysicalPage + 1) - 1;
+    const endPhysicalPage = Math.min(naturalEnd, contentEndPhysicalPage);
+    const bodyPage = draft.startPhysicalPage ? bodyPages.get(draft.startPhysicalPage) : undefined;
     const bodyHeadingMatched =
       bodyPage !== undefined &&
       bodyPage.elements.some(
@@ -266,16 +281,18 @@ function finalizeNodes(
           ),
         ]
       : [];
+    const hasValidRange =
+      draft.startPhysicalPage !== undefined && draft.startPhysicalPage <= endPhysicalPage;
 
     return {
       nodeId: draft.nodeId,
       kind: draft.kind,
       observedTitle: draft.observedTitle,
       ...(draft.parentNodeId ? { parentNodeId: draft.parentNodeId } : {}),
-      ...(draft.startPhysicalPage && endPhysicalPage
+      ...(hasValidRange
         ? {
             pageRange: {
-              startPhysicalPage: draft.startPhysicalPage,
+              startPhysicalPage: draft.startPhysicalPage as number,
               endPhysicalPage,
             },
           }
@@ -288,16 +305,24 @@ function finalizeNodes(
   });
 }
 
-function firstMatchingPage(
-  pages: Iterable<NativeTextExtractedPage>,
+function findTocEntry(
+  entries: readonly ParsedTocEntry[],
   headings: readonly string[]
-): NativeTextExtractedPage | undefined {
-  for (const page of pages) {
-    if (pageContainsHeading(page, headings)) {
-      return page;
-    }
+): ParsedTocEntry | undefined {
+  return entries.find((entry) =>
+    headings.some((heading) =>
+      normalizeSearchText(entry.title).includes(normalizeSearchText(heading))
+    )
+  );
+}
+
+function mergeInspectionPages(
+  observedPages: Map<number, NativeTextExtractedPage>,
+  inspection: DocumentInspectionResult
+): void {
+  for (const page of inspection.pages) {
+    observedPages.set(page.physicalPageNumber, page);
   }
-  return undefined;
 }
 
 export class StructuralRecognitionService {
@@ -306,19 +331,17 @@ export class StructuralRecognitionService {
   async recognize(request: StructuralRecognitionRequest): Promise<StructuralRecognitionResult> {
     const vocabulary = request.vocabulary ?? DEFAULT_STRUCTURAL_RECOGNITION_VOCABULARY;
     const observedPages = new Map<number, NativeTextExtractedPage>();
-    let inspection = await this.inspector.inspect({
+    const baseInspection = await this.inspector.inspect({
       artifact: request.artifact,
       pageRanges: [{ startPhysicalPage: 1, endPhysicalPage: 8 }],
     });
-    for (const page of inspection.pages) {
-      observedPages.set(page.physicalPageNumber, page);
-    }
+    mergeInspectionPages(observedPages, baseInspection);
 
     let tocPage = firstMatchingPage(observedPages.values(), vocabulary.tableOfContentsHeadings);
-    let inspectedThrough = Math.min(8, inspection.totalPhysicalPages);
-    while (!tocPage && inspectedThrough < Math.min(20, inspection.totalPhysicalPages)) {
-      const nextEnd = Math.min(inspectedThrough + 4, 20, inspection.totalPhysicalPages);
-      inspection = await this.inspector.inspect({
+    let inspectedThrough = Math.min(8, baseInspection.totalPhysicalPages);
+    while (!tocPage && inspectedThrough < Math.min(20, baseInspection.totalPhysicalPages)) {
+      const nextEnd = Math.min(inspectedThrough + 4, 20, baseInspection.totalPhysicalPages);
+      const extensionInspection = await this.inspector.inspect({
         artifact: request.artifact,
         pageRanges: [
           {
@@ -327,26 +350,22 @@ export class StructuralRecognitionService {
           },
         ],
       });
-      for (const page of inspection.pages) {
-        observedPages.set(page.physicalPageNumber, page);
-      }
+      mergeInspectionPages(observedPages, extensionInspection);
       inspectedThrough = nextEnd;
       tocPage = firstMatchingPage(observedPages.values(), vocabulary.tableOfContentsHeadings);
     }
 
-    const tailStart = Math.max(1, inspection.totalPhysicalPages - 2);
+    const tailStart = Math.max(1, baseInspection.totalPhysicalPages - 2);
     const tailInspection = await this.inspector.inspect({
       artifact: request.artifact,
       pageRanges: [
         {
           startPhysicalPage: tailStart,
-          endPhysicalPage: inspection.totalPhysicalPages,
+          endPhysicalPage: baseInspection.totalPhysicalPages,
         },
       ],
     });
-    for (const page of tailInspection.pages) {
-      observedPages.set(page.physicalPageNumber, page);
-    }
+    mergeInspectionPages(observedPages, tailInspection);
 
     const warnings: StructuralRecognitionWarning[] = [];
     const regions: CartographicRegionCandidate[] = [];
@@ -387,15 +406,16 @@ export class StructuralRecognitionService {
           page.physicalPageNumber <= tocPage.physicalPageNumber + 1
       );
       entries = parseTocEntries(tocWindow);
+      const tocEndPhysicalPage = Math.max(
+        tocPage.physicalPageNumber,
+        ...entries.map((entry) => entry.page.physicalPageNumber)
+      );
       regions.push({
         regionId: 'cartographic-region:table-of-contents',
         kind: 'table_of_contents',
         pageRange: {
           startPhysicalPage: tocPage.physicalPageNumber,
-          endPhysicalPage: Math.min(
-            tocPage.physicalPageNumber + (entries.length > 0 ? 0 : 1),
-            inspection.totalPhysicalPages
-          ),
+          endPhysicalPage: tocEndPhysicalPage,
         },
         evidence: [
           pageRefEvidence('cartography-evidence:toc-heading', 'table_of_contents', tocPage),
@@ -406,22 +426,31 @@ export class StructuralRecognitionService {
       warnings.push({
         warningId: 'cartography-warning:toc-not-found',
         code: 'table_of_contents_not_found',
-        message: 'No table-of-contents heading was observed within the preliminary inspection limit.',
+        message:
+          'No table-of-contents heading was observed within the preliminary inspection limit.',
       });
     }
 
-    const teacherEntry = entries.find((entry) =>
-      vocabulary.teacherManualHeadings.some((heading) =>
-        normalizeSearchText(entry.title).includes(normalizeSearchText(heading))
+    const teacherEntry = findTocEntry(entries, vocabulary.teacherManualHeadings);
+    const referenceEntry = findTocEntry(entries, vocabulary.referencesHeadings);
+    const physicalByPrintedLabel = physicalPageByPrintedLabel(baseInspection.pageRefs);
+    const teacherStart = teacherEntry
+      ? physicalByPrintedLabel.get(teacherEntry.declaredPrintedPageLabel)
+      : undefined;
+    const referenceStart = referenceEntry
+      ? physicalByPrintedLabel.get(referenceEntry.declaredPrintedPageLabel)
+      : undefined;
+    const excludedEntries = new Set(
+      [teacherEntry, referenceEntry].filter(
+        (entry): entry is ParsedTocEntry => entry !== undefined
       )
     );
-    const referenceEntry = entries.find((entry) =>
-      vocabulary.referencesHeadings.some((heading) =>
-        normalizeSearchText(entry.title).includes(normalizeSearchText(heading))
-      )
+    const drafts = tocNodeDrafts(
+      entries,
+      baseInspection.pageRefs,
+      vocabulary,
+      excludedEntries
     );
-
-    const drafts = tocNodeDrafts(entries, inspection.pageRefs, vocabulary, teacherEntry);
     const rootStarts = drafts
       .filter((draft) => draft.rank === 1 && draft.startPhysicalPage)
       .map((draft) => draft.startPhysicalPage as number);
@@ -433,12 +462,11 @@ export class StructuralRecognitionService {
           endPhysicalPage: physicalPageNumber,
         })),
       });
-      for (const page of bodyInspection.pages) {
-        observedPages.set(page.physicalPageNumber, page);
-      }
+      mergeInspectionPages(observedPages, bodyInspection);
     }
 
-    const nodes = finalizeNodes(drafts, inspection.totalPhysicalPages, observedPages);
+    const contentEndPhysicalPage = (teacherStart ?? baseInspection.totalPhysicalPages + 1) - 1;
+    const nodes = finalizeNodes(drafts, contentEndPhysicalPage, observedPages);
     const introNode = nodes.find(
       (node) =>
         node.kind === 'part' &&
@@ -447,17 +475,6 @@ export class StructuralRecognitionService {
         )
     );
 
-    const physicalByPrintedLabel = new Map(
-      inspection.pageRefs
-        .filter((page) => page.printedPageLabel)
-        .map((page) => [page.printedPageLabel as string, page.physicalPageNumber])
-    );
-    const teacherStart = teacherEntry
-      ? physicalByPrintedLabel.get(teacherEntry.declaredPrintedPageLabel)
-      : undefined;
-    const referenceStart = referenceEntry
-      ? physicalByPrintedLabel.get(referenceEntry.declaredPrintedPageLabel)
-      : undefined;
     const observedTeacherPage = firstMatchingPage(
       observedPages.values(),
       vocabulary.teacherManualHeadings
@@ -469,7 +486,7 @@ export class StructuralRecognitionService {
         kind: 'teacher_manual',
         pageRange: {
           startPhysicalPage: effectiveTeacherStart,
-          endPhysicalPage: (referenceStart ?? inspection.totalPhysicalPages + 1) - 1,
+          endPhysicalPage: (referenceStart ?? baseInspection.totalPhysicalPages + 1) - 1,
         },
         evidence: observedTeacherPage
           ? [
@@ -492,24 +509,30 @@ export class StructuralRecognitionService {
       });
     }
 
+    const observedReferencesPage = firstMatchingPage(
+      observedPages.values(),
+      vocabulary.referencesHeadings
+    );
     if (referenceStart) {
       regions.push({
         regionId: 'cartographic-region:references',
         kind: 'references',
         pageRange: {
           startPhysicalPage: referenceStart,
-          endPhysicalPage: inspection.totalPhysicalPages,
+          endPhysicalPage: baseInspection.totalPhysicalPages,
         },
-        evidence: tocPage
+        evidence: observedReferencesPage
           ? [
               pageRefEvidence(
-                'cartography-evidence:references-toc',
-                'table_of_contents',
-                tocPage
+                'cartography-evidence:references',
+                'page_text',
+                observedReferencesPage
               ),
             ]
-          : [],
-        confidence: 0.85,
+          : tocPage
+            ? [pageRefEvidence('cartography-evidence:references-toc', 'table_of_contents', tocPage)]
+            : [],
+        confidence: observedReferencesPage ? 0.98 : 0.85,
       });
     }
 
@@ -519,7 +542,7 @@ export class StructuralRecognitionService {
         kind: 'main_content',
         pageRange: {
           startPhysicalPage: introNode.pageRange.startPhysicalPage,
-          endPhysicalPage: (effectiveTeacherStart ?? inspection.totalPhysicalPages + 1) - 1,
+          endPhysicalPage: (effectiveTeacherStart ?? baseInspection.totalPhysicalPages + 1) - 1,
         },
         evidence: introNode.evidence,
         confidence: introNode.confidence,
@@ -538,7 +561,7 @@ export class StructuralRecognitionService {
       sourceVersion: request.sourceVersion,
       artifactSha256: request.artifact.sha256,
       createdAt: request.createdAt,
-      totalPhysicalPages: inspection.totalPhysicalPages,
+      totalPhysicalPages: baseInspection.totalPhysicalPages,
       inspectedPageRanges: compactPageRanges([...observedPages.keys()]),
       filenameHints: deriveFilenameHints(request.filename, request.filenameHintRules ?? []),
       metadataObservations: [],
