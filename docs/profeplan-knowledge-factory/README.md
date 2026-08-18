@@ -34,6 +34,7 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 ### Governança
 
 - [Decision Log](00-governance/DECISION-LOG.md)
+- [Governança de execução proporcional ao risco](00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md)
 - [Checkpoint do Marco 003](00-governance/CONTINUITY-CHECKPOINT-003.md)
 - [Checkpoint do Marco 004 — Lote 0](00-governance/CONTINUITY-CHECKPOINT-004.md)
 
@@ -89,7 +90,7 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após o fechamento governado do Lote C.2, prevalece o [Checkpoint 050](00-governance/CONTINUITY-CHECKPOINT-050.md) sobre marcadores históricos de checkpoints anteriores.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após o fechamento governado do Lote C.2, prevalece o [Checkpoint 050](00-governance/CONTINUITY-CHECKPOINT-050.md) sobre marcadores históricos de checkpoints anteriores. Para a granularidade de autorização operacional futura, prevalece a [Governança de execução proporcional ao risco](00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md) após a integração deste PR.
 
 - Fase A — concluída;
 - Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
@@ -112,9 +113,10 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.2.4 — **integrado e revalidado** pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde;
 - C.2.5 — **integrado e revalidado** pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, com CI pós-merge nº 547 verde;
 - C.2.6 — **integrado e revalidado** pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde;
-- C.3 — definição documental de fronteira e C.3.1–C.3.8 proposta neste Draft PR; execução técnica bloqueada;
+- C.3 — definição documental de fronteira e C.3.1–C.3.8 proposta neste PR; execução técnica Nível A será aberta pela integração;
 - C.4–C.7 — bloqueados;
-- conteúdo real, PNLD real, PDF/livro real, Supabase hospedado, Storage hospedado e produção — não autorizados.
+- conteúdo real/PDF/livro/PNLD — somente por autorização Nível B juridicamente delimitada;
+- produção, credenciais e dados pessoais/sensíveis — somente por autorização Nível C específica.
 
 C.2.1 definiu a linguagem operacional da ingestão controlada: identidades compostas sobre C.1, state machine determinística, comandos tipados, idempotência contratual, receipts provider-neutral e revisão humana obrigatória antes de `APPROVED_FOR_EXTRACTION`.
 
@@ -132,4 +134,4 @@ No merge do PR nº 93, o PR nº 92 da frente comercial avançou a `main` entre a
 
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-Este Draft PR propõe a definição de **C.3 — extração e validação do conteúdo extraído**, sua ADR de fronteira e a decomposição C.3.1–C.3.8. A proposta é exclusivamente documental: não inicia os sublotes e não cria executor, parser, OCR, migration, conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados, wiring ou produção. Após integração humana e checkpoint próprio, o próximo passo possível será C.3.1, ainda dependente de reconfirmação canônica, Definition of Ready e autorização humana específica.
+Este PR propõe a definição de **C.3 — extração e validação do conteúdo extraído**, sua ADR de fronteira, a decomposição C.3.1–C.3.8 e a política de execução proporcional ao risco. Após integração, C.3.1–C.3.6 podem avançar em trabalho Nível A — branch/PR, código isolado, fixtures sintéticas, testes, CI e infraestrutura descartável — sem checkpoint ou nova autorização a cada microetapa. Primeiro conteúdo real e novo provider/OCR são fronteiras Nível B; produção, secrets e dados pessoais/sensíveis permanecem Nível C.
