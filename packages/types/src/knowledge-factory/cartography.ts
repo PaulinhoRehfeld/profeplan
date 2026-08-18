@@ -81,7 +81,8 @@ export const CARTOGRAPHIC_REGION_KINDS = [
   'appendix',
   'unknown',
 ] as const;
-export type CartographicRegionKind = (typeof CARTOGRAPHIC_REGION_KINDS)[number];
+export type CartographicRegionKind =
+  (typeof CARTOGRAPHIC_REGION_KINDS)[number];
 
 export interface PhysicalPageRange {
   readonly startPhysicalPage: number;
