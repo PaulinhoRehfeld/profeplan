@@ -136,9 +136,7 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --filter @profeplan/types typecheck 2>&1 | tee -a "$KF_EVIDENCE"
-          node --experimental-strip-types --test \
-            packages/types/test/extraction.test.mjs \
-            2>&1 | tee -a "$KF_EVIDENCE"
+          pnpm --filter @profeplan/types test 2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Prove C.3.2 idempotency, CAS, authorization, RLS and reconstruction
         shell: bash
