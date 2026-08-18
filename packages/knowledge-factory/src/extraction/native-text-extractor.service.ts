@@ -24,7 +24,10 @@ function assertNativePdfArtifact(artifact: VerifiedExtractionArtifactRead): void
 }
 
 function validatePage(page: NativeTextExtractedPage, expectedPageNumber: number): void {
-  if (!Number.isSafeInteger(page.physicalPageNumber) || page.physicalPageNumber !== expectedPageNumber) {
+  if (
+    !Number.isSafeInteger(page.physicalPageNumber) ||
+    page.physicalPageNumber !== expectedPageNumber
+  ) {
     throw new NativeTextExtractionError(
       'invalid_extraction_output',
       'Native extraction pages must be complete, ordered and numbered from one.'
