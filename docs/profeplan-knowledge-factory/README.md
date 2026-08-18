@@ -87,10 +87,18 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Checkpoint 050 — Lote C.2 encerrado; C.3 bloqueado](00-governance/CONTINUITY-CHECKPOINT-050.md)
 - [Definição do Lote C.3 — extração e validação](12-delivery/LOT-C3-EXTRACTION-AND-VALIDATION-DEFINITION.md)
 - [ADR-063 — fronteira entre ingestão, extração e segmentação](00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md)
+- [Reconciliação vertical da Fase C](12-delivery/PHASE-C-VERTICAL-CARTOGRAPHY-RECONCILIATION.md)
+- [Primeira prova vertical — Introdução](12-delivery/INTRODUCTION-VERTICAL-RECONSTRUCTION-PROOF.md)
+- [Segunda prova vertical — Unidade 1](12-delivery/SECOND-PART-VERTICAL-RECONSTRUCTION-PROOF.md)
+- [Checkpoint 051 — duas provas verticais integradas](00-governance/CONTINUITY-CHECKPOINT-051.md)
 
 ## Estado atual
 
-O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e gates. Para o estado operacional corrente após o fechamento governado do Lote C.2, prevalece o [Checkpoint 050](00-governance/CONTINUITY-CHECKPOINT-050.md) sobre marcadores históricos de checkpoints anteriores. Para a granularidade de autorização operacional futura, prevalece a [Governança de execução proporcional ao risco](00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md) após a integração deste PR.
+O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequência, dependências e
+gates. Para o estado operacional corrente da cartografia e reconstrução vertical, prevalece o
+[Checkpoint 051](00-governance/CONTINUITY-CHECKPOINT-051.md) sobre marcadores históricos. A
+[Governança de execução proporcional ao risco](00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md)
+continua definindo os limites de autorização.
 
 - Fase A — concluída;
 - Fase B — concluída por bloqueio parcial controlado no [Checkpoint 032](00-governance/CONTINUITY-CHECKPOINT-032.md);
@@ -113,8 +121,12 @@ O [Blueprint de Execução](BLUEPRINT.md) permanece a referência macro de sequ�
 - C.2.4 — **integrado e revalidado** pelo PR nº 74 no commit `14b7ff30d1b659ed8b2c824f9a943b05cdca93bc`, com CI pós-merge nº 523 verde;
 - C.2.5 — **integrado e revalidado** pelo PR nº 84 no commit `01a985a94272608007a57fd60695fed719c625d2`, com CI pós-merge nº 547 verde;
 - C.2.6 — **integrado e revalidado** pelo PR nº 93 no commit `3b8c2d317542bd701ea61e671f9b6e4334f61b1c`, tree `0fbe3377d3dac6aa9730a6e895d20a0762fc855c`, com CI pós-merge nº 562 verde;
-- C.3 — definição documental de fronteira e C.3.1–C.3.8 proposta neste PR; execução técnica Nível A será aberta pela integração;
-- C.4–C.7 — bloqueados;
+- C.3.1–C.3.5 — integrados;
+- reconhecimento estrutural, golden sample e cartografia preliminar — integrados pelos PRs nº 112–113;
+- primeira prova vertical da Introdução — integrada pelo PR nº 114;
+- segunda prova vertical da Unidade 1 — integrada pelo PR nº 116;
+- C.3.6 / PR nº 110 — aberto, não integrado e suspenso;
+- C.4-local candidata — generalização mínima comprovada; C.4 integral e C.4–C.7 permanecem bloqueados;
 - conteúdo real/PDF/livro/PNLD — somente por autorização Nível B juridicamente delimitada;
 - produção, credenciais e dados pessoais/sensíveis — somente por autorização Nível C específica.
 
@@ -134,4 +146,8 @@ No merge do PR nº 93, o PR nº 92 da frente comercial avançou a `main` entre a
 
 A menção histórica a `SourceSegment` em `GAP-3B-04` não antecipa segmentação no Lote C.1. A decomposição canônica preserva C.2 para ingestão, C.3 para extração e C.4 para segmentação/classificação.
 
-Este PR propõe a definição de **C.3 — extração e validação do conteúdo extraído**, sua ADR de fronteira, a decomposição C.3.1–C.3.8 e a política de execução proporcional ao risco. Após integração, C.3.1–C.3.6 podem avançar em trabalho Nível A — branch/PR, código isolado, fixtures sintéticas, testes, CI e infraestrutura descartável — sem checkpoint ou nova autorização a cada microetapa. Primeiro conteúdo real e novo provider/OCR são fronteiras Nível B; produção, secrets e dados pessoais/sensíveis permanecem Nível C.
+As duas provas verticais demonstraram que a reconstrução local generaliza da Introdução para uma
+Unidade/Capítulo sem processar o livro inteiro e sem criar ontologia antecipada. O próximo avanço
+material não é uma terceira prova sintética automática: é preparar, em fronteira Nível B própria,
+um piloto sobre uma única parte real juridicamente autorizada, com ambiente temporário, retenção,
+descarte e revisão humana definidos. Produção, secrets e dados pessoais/sensíveis permanecem Nível C.

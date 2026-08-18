@@ -342,126 +342,117 @@ bloco/elemento
 
 Uma obra não fecha enquanto houver parte esperada sem decisão explícita. Entretanto, partes já reconciliadas podem alimentar provas controladas de etapas posteriores quando o contrato e o gate correspondentes estiverem aprovados.
 
-## 16. Golden sample estrutural antes do primeiro livro completo
+## 16. Golden sample e cartografia — resultado integrado
 
-O próximo artefato de prova deverá ser um **golden sample inteiramente sintético**, inspirado apenas na diversidade estrutural observada em livros didáticos reais, sem copiar texto, imagens ou conteúdo protegido.
+O golden sample inteiramente sintético e o protocolo de reconhecimento estrutural foram integrados
+pelos PRs nº 112–113. A cartografia:
 
-Ele deverá conter no mínimo:
+- interpreta filename apenas como pista;
+- localiza organização da obra e sumário;
+- reconcilia página física e rótulo impresso;
+- identifica região de Manual do Professor;
+- produz nós candidatos de parte, unidade, capítulo e seção;
+- delimita `CartographicPartScope` sem leitura profunda da obra inteira.
 
-- nome de arquivo informativo;
-- capa sintética;
-- ficha catalográfica sintética;
-- seção `Conheça seu livro` ou equivalente;
-- sumário;
-- paginação física diferente da paginação impressa;
-- uma `Introdução` como primeira parte;
-- títulos e subtítulos;
-- texto expositivo original/sintético;
-- pelo menos um elemento visual sintético com legenda;
-- uma atividade;
-- uma orientação de Manual do Professor relacionada à atividade;
-- uma declaração curricular sintética;
-- região final de orientações docentes.
+## 17. Primeira prova vertical — Introdução
 
-O golden sample deverá ser pequeno o suficiente para revisão humana integral e rico o suficiente para provar o caminho principal.
-
-## 17. Primeira prova vertical obrigatória
-
-A primeira prova após esta reconciliação deverá demonstrar, sem conteúdo real protegido:
+O PR nº 114 integrou a primeira travessia C.3 → C.4-local candidata:
 
 ```text
-arquivo sintético
-  -> reconhecer identidade e pistas do filename
-  -> localizar sumário/organização da obra
-  -> reconciliar paginação física x impressa
-  -> construir árvore preliminar
-  -> selecionar apenas a parte `Introdução`
-  -> extrair essa parte
-  -> reconstruir seus títulos/subtítulos
-  -> reconhecer texto, visual, atividade e orientação docente
-  -> manter as relações entre os elementos
-  -> reconciliar cobertura da parte
-  -> produzir saída revisável
+Introdução — físicas 11–13
+  -> títulos e texto local
+  -> marcador visual + legenda
+  -> atividade + comando
+  -> consulta dirigida ao Manual na física 18
+  -> orientação docente relacionada
 ```
 
-A prova não deverá processar o livro sintético inteiro de uma vez.
+A prova não leu partes intermediárias, não interpretou pixels e não criou OCR, embeddings, corpus ou
+semântica global.
 
-## 18. Estado de C.3.6 e PR nº 110
+## 18. Segunda prova vertical — Unidade 1
 
-O PR nº 110 (`feat/knowledge-factory: implement C.3.6 recovery and cleanup`) permanece **aberto e não integrado** enquanto esta reconciliação arquitetônica é avaliada.
-
-A infraestrutura proposta de retry, cancelamento, concorrência e cleanup não é considerada descartada. Ela é classificada como **endurecimento de confiabilidade potencialmente reutilizável**, subordinado ao caminho principal corrigido.
-
-Não corrigir ou mergear C.3.6 automaticamente durante esta emenda. Após a primeira prova vertical, decidir se:
-
-1. o PR nº 110 deve ser corrigido e integrado como infraestrutura genérica;
-2. deve ser ajustado ao novo modelo operacional por partes;
-3. parte de sua superfície deve ser simplificada ou adiada.
-
-## 19. Atualização de estados executivos
-
-O estado canônico considerado nesta reconciliação é:
+O PR nº 116 integrou uma parte estruturalmente distinta:
 
 ```text
-C.0  concluído
-C.1  concluído
-C.2  concluído
-C.3.1 concluído
-C.3.2 concluído
-C.3.3 concluído
-C.3.4 concluído
-C.3.5 concluído
-C.3.6 em PR aberto, não integrado e temporariamente suspenso para reconciliação
-C.3.7 não iniciar
-C.3.8 não iniciar
-C.4   não iniciar como lote horizontal integral antes da prova vertical de cartografia
+Unidade 1 — físicas 14–17
+  -> Capítulo 1 inicia na física 15
+  -> conteúdo continua nas físicas 16–17
+  -> nenhuma atividade cartograficamente reconhecida
+  -> nenhuma consulta ao Manual
 ```
 
-Essa suspensão não constitui rollback dos sublotes integrados.
+A prova exigiu somente:
 
-## 20. Próximas ações aprovadas após esta emenda
+1. preservar `chapter` cartográfico como `chapter_heading` candidato;
+2. manter o heading ativo entre páginas dentro do mesmo escopo.
 
-Ordem recomendada:
+O fixture não mudou, o serviço não foi redesenhado e nenhuma heurística tipográfica ou semântica foi
+adicionada.
 
-1. reconciliar documentalmente Blueprint, mapa da Fase C, plano de cartografia e definição C.3 com esta emenda;
-2. definir contrato mínimo do Protocolo de Reconhecimento Estrutural da Obra;
-3. criar golden sample sintético;
-4. provar cartografia inicial;
-5. provar ciclo vertical somente da `Introdução`;
-6. revisar o resultado humano e registrar lacunas concretas;
-7. somente então retomar hardening de recovery/cleanup e decisão multimodal/OCR;
-8. preparar fronteira jurídica e operacional específica para primeiro conteúdo real controlado.
+## 19. Decisão arquitetônica após as duas provas
 
-## 21. Escopo negativo desta reconciliação
+Classificação: **Resultado B — pequena generalização**.
 
-Esta emenda não autoriza:
+Regras agora sustentadas por evidência executável:
 
-- ingestão ou persistência de livro PNLD real;
-- upload de conteúdo protegido para infraestrutura hospedada;
-- OCR real;
-- chamadas a modelo multimodal sobre conteúdo protegido;
-- chunks/embeddings de obra real;
-- publicação em corpus;
-- C.4–C.7 técnicos fora da prova vertical futura;
-- runtime multiagente;
-- alteração de produção;
-- merge automático do PR nº 110;
-- Nexus ou Evolution como dependência arquitetônica.
+- obra é contêiner; parte delimitada é unidade operacional;
+- cartografia fornece hipóteses e tipos estruturais rastreáveis;
+- reconstrução local preserva tipos explícitos, não os reinventa;
+- contexto estrutural atravessa páginas somente dentro do escopo;
+- texto sem evidência adicional permanece `body_text`;
+- regiões auxiliares são consultadas somente por âncora objetiva;
+- outputs continuam candidatos; confirmação integral permanece autoridade de C.4;
+- ausência de leitura de páginas não relacionadas é comportamento verificável.
 
-Integrações externas, inclusive Nexus ou atualizações da Evolution, somente serão avaliadas quando demonstrarem aderência arquitetônica e contribuição concreta ao ProfePlan.
+Essas regras são suficientes para abandonar a exigência de uma terceira prova sintética rotineira.
+Nova fixture só se justifica por risco estrutural materialmente novo.
 
-## 22. Critério de saída da reconciliação
+## 20. Estado de C.3.6 e PR nº 110
 
-Esta reconciliação estará pronta para fechar quando:
+O PR nº 110 permanece aberto, não integrado e suspenso. As duas provas não demonstraram necessidade
+imediata de toda a superfície de retry, cancelamento, concorrência e cleanup proposta.
 
-- não houver contradição documental entre `cartografia antes da extração semântica integral` e o gate C.3 -> C.4;
-- o caminho principal por partes estiver explícito no Blueprint e no mapa executivo;
-- C.3 continuar preservando evidência observável sem assumir semântica canônica;
-- C.4 continuar responsável pela confirmação estrutural;
-- o golden sample e a primeira prova vertical estiverem definidos como próximos passos;
-- PR nº 110 estiver explicitamente classificado como suspenso, não perdido nem implicitamente aprovado;
-- nenhum conteúdo real, OCR, novo provedor ou produção tiver sido antecipado.
+A decisão será feita após observar falhas reais do primeiro piloto controlado. Até lá, não rebasear,
+corrigir ou integrar o PR por continuidade automática.
 
-A regra de síntese desta emenda é:
+## 21. Estado executivo atualizado
 
-> **Primeiro compreender a forma da obra, depois aprofundar cada parte, depois conectar o conhecimento; robustez e exceções endurecem um caminho principal já provado, não o substituem.**
+```text
+C.0–C.2 concluídos
+C.3.1–C.3.5 concluídos
+reconhecimento estrutural integrado
+golden sample/cartografia integrados
+primeira prova vertical — Introdução — integrada
+segunda prova vertical — Unidade 1 — integrada
+C.3.6 / PR #110 — suspenso
+C.3.7 — bloqueado até necessidade multimodal localizada
+C.3.8 — requer reconciliação vertical
+C.4-local candidata — comprovada
+C.4 integral e C.4–C.7 — não abertos
+```
+
+## 22. Próxima fronteira material
+
+O próximo avanço não é processar o livro inteiro nem ampliar abstrações sintéticas. É preparar um
+piloto controlado sobre **uma única parte real juridicamente autorizada**.
+
+Antes de executar esse piloto, uma fronteira Nível B deverá fixar:
+
+- obra/edição/manifestação autorizada;
+- finalidade e base jurídica/licença aplicável;
+- parte e páginas máximas;
+- ambiente temporário;
+- retenção e descarte;
+- pessoas autorizadas a revisar;
+- proibição de publicação/corpus;
+- critérios de comparação com a estrutura editorial real;
+- rollback e evidência de encerramento.
+
+Continuam fora de escopo: obra inteira, produção, OCR geral, embeddings, retrieval, corpus,
+persistência adicional, dados pessoais/sensíveis e runtime multiagente.
+
+Regra de síntese:
+
+> **Duas provas sintéticas demonstraram o mecanismo; a próxima prova deve demonstrar aderência a uma
+> parte real autorizada sem transformar a obra inteira em unidade de processamento.**
