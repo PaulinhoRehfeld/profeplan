@@ -6,13 +6,15 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   package-test:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -20,5 +22,88 @@ jobs:
         with:
           version: 11.5.2
       - run: pnpm install --frozen-lockfile
-      - name: Run Knowledge Factory package tests
+      - name: Reconcile PDF.js implementation-boundary assertion
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('packages/knowledge-factory/test/pdfjs-native-text-extractor.test.mjs')
+          text = path.read_text()
+          old = '''test('PDF.js adapter remains free of OCR, hosted Storage and production surfaces', async () => {
+            const source = await readFile(
+              new URL('../src/extraction/pdfjs-native-text-extractor.adapter.ts', import.meta.url),
+              'utf8'
+            );
+            const forbidden = [
+              '@supabase',
+              'SupabaseClient',
+              'tesseract',
+              'Textract',
+              'GoogleDocumentAI',
+              'signedUrl',
+              'bucketName',
+              'process.env',
+              'fetch(',
+              'http://',
+              'https://',
+            ];
+
+            assert.equal(source.includes("pdfjs-dist/legacy/build/pdf.mjs"), true);
+            for (const token of forbidden) {
+              assert.equal(source.includes(token), false, `forbidden surface leaked into PDF.js adapter: ${token}`);
+            }
+          });'''
+          new = '''test('PDF.js implementation remains free of OCR, hosted Storage and production surfaces', async () => {
+            const extractorSource = await readFile(
+              new URL('../src/extraction/pdfjs-native-text-extractor.adapter.ts', import.meta.url),
+              'utf8'
+            );
+            const inspectorSource = await readFile(
+              new URL('../src/cartography/pdfjs-document-inspector.adapter.ts', import.meta.url),
+              'utf8'
+            );
+            const forbidden = [
+              '@supabase',
+              'SupabaseClient',
+              'tesseract',
+              'Textract',
+              'GoogleDocumentAI',
+              'signedUrl',
+              'bucketName',
+              'process.env',
+              'fetch(',
+              'http://',
+              'https://',
+            ];
+
+            assert.equal(
+              extractorSource.includes('../cartography/pdfjs-document-inspector.adapter.ts'),
+              true
+            );
+            assert.equal(inspectorSource.includes("pdfjs-dist/legacy/build/pdf.mjs"), true);
+            for (const [surface, source] of [
+              ['C.3.3 extractor', extractorSource],
+              ['PDF.js inspector', inspectorSource],
+            ]) {
+              for (const token of forbidden) {
+                assert.equal(
+                  source.includes(token),
+                  false,
+                  `forbidden surface leaked into ${surface}: ${token}`
+                );
+              }
+            }
+          });'''
+          if old not in text:
+              raise SystemExit('expected old PDF.js boundary test not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+          pnpm exec prettier --write packages/knowledge-factory/test/pdfjs-native-text-extractor.test.mjs
+      - name: Run all Knowledge Factory package tests
         run: pnpm --filter @profeplan/knowledge-factory test
+      - name: Commit only after all package tests pass
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages/knowledge-factory/test/pdfjs-native-text-extractor.test.mjs
+          git commit -m "test(knowledge-factory): reconcile shared PDF.js boundary"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
