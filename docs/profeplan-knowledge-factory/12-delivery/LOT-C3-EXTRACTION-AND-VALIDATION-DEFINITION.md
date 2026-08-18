@@ -1,10 +1,12 @@
 # Lote C.3 — Definição de extração e validação do conteúdo extraído
 
-**Status:** proposta exclusivamente documental neste Draft PR; C.3.1–C.3.8 bloqueados
+**Status:** proposta exclusivamente documental neste Draft PR; C.3.1–C.3.8 bloqueados até integração
 
 **Base canônica inspecionada:** `main@287d5ae989d6b4f0504fee4f6fb16d554f97fbfb`
 
 **ADR de fronteira:** [ADR-063](../00-governance/ADR-063-C3-EXTRACTION-VALIDATION-BOUNDARY.md)
+
+**Governança operacional:** [execução proporcional ao risco](../00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md)
 
 ## 1. Objetivo
 
@@ -29,8 +31,9 @@ C.3 somente poderá operar quando todas as condições seguintes forem verdadeir
 - existe `IngestionHandoffEvidence` válido, versionado e read-only emitido por C.2;
 - existe artefato temporário íntegro e legível por porta autorizada;
 - `purpose=extraction` está vigente e é compatível com sujeito, versão, restrições e operação;
-- o sublote técnico correspondente foi explicitamente autorizado;
-- execução ocorre apenas em fixture e infraestrutura descartáveis até autorização em contrário.
+- a execução permanece dentro da fronteira de risco e escopo autorizada para o lote;
+- fixtures, testes, CI e infraestrutura descartável seguem Nível A; mudanças materiais escalam para
+  Nível B ou C conforme a política de governança.
 
 O handoff de C.2 é necessário e insuficiente. Ele não concede autorização permanente, não garante
 que os bytes continuem disponíveis e não prova qualidade ou cobertura de extração.
@@ -129,8 +132,9 @@ OCR não pertence ao baseline. C.3.7 deverá primeiro definir:
 - efeitos de reprocessamento e substituição;
 - critérios para escolher ou rejeitar um provedor.
 
-Até que C.3.7 seja autorizado, implementado e revisado, `REQUIRES_ALTERNATE_EXTRACTION` é a saída
-para ausência ou corrupção da camada textual; nenhum OCR é executado.
+Até que a fronteira C.3.7 seja aprovada como Nível B, implementada e revisada,
+`REQUIRES_ALTERNATE_EXTRACTION` é a saída para ausência ou corrupção da camada textual; nenhum OCR é
+executado.
 
 ## 9. Representação observável e proveniência
 
@@ -282,34 +286,36 @@ descarte verificável.
 **Inclui:** critérios de fallback, contrato, privacy/security review, limites, métricas e plano de
 avaliação provider-neutral.
 
-**Gate:** decisão explícita autoriza ou rejeita a introdução de adapter OCR. O baseline deste lote
-não pressupõe provedor nem execução OCR.
+**Gate:** decisão explícita de Nível B autoriza ou rejeita a introdução de adapter OCR. O baseline
+deste lote não pressupõe provedor nem execução OCR.
 
 ### C.3.8 — Prova integrada e fechamento
 
 **Inclui:** E2E sintético C.2 handoff → C.3 → handoff read-only C.4; negativos de segurança;
-reprocessamento; revogação temporal; cleanup; documentação e checkpoint.
+reprocessamento; revogação temporal; cleanup; documentação de fechamento.
 
 **Gate:** CI verde, diff auditado, nenhuma superfície C.4 executora e nenhuma dependência de conteúdo
-real, storage hospedado ou produção.
+real, storage de produção ou produção.
 
-## 16. Definition of Ready para C.3.1
+## 16. Definition of Ready para iniciar C.3.1
 
-Antes de abrir C.3.1:
+Antes de iniciar C.3.1:
 
-- esta definição e ADR-063 foram revisadas e integradas por humano;
-- existe checkpoint pós-merge que reconfirma SHA, tree, parent e CI;
-- `main` foi reinspecionada para mudanças concorrentes;
+- esta definição, ADR-063 e a política de execução proporcional ao risco foram revisadas e integradas;
+- `main` foi reinspecionada para mudanças concorrentes relevantes;
 - nomes candidatos foram comparados com símbolos legados;
-- fixtures sintéticas e política de dados foram aprovadas;
-- escopo do sublote, testes e rollback estão fechados;
-- autorização humana específica para C.3.1 foi registrada.
+- fixtures sintéticas e política de dados estão delimitadas;
+- escopo técnico de C.3.1, invariantes e gates estão fechados.
+
+Não é necessário emitir checkpoint intermediário nem solicitar nova microautorização para cada
+commit, fixture, teste, correção ou reexecução de CI de Nível A.
 
 ## 17. Definition of Done do lote C.3
 
 C.3 somente fecha quando:
 
-- C.3.1–C.3.8 foram autorizados, integrados e checkpointados individualmente;
+- C.3.1–C.3.8 satisfizeram seus gates técnicos e foram integrados conforme a fronteira material de
+  risco aplicável;
 - contratos e migrations aplicáveis têm testes unitários, integração e DB CI;
 - E2E sintético prova caminho positivo e negativos de segurança;
 - autorização é revalidada nos três instantes definidos;
@@ -317,34 +323,46 @@ C.3 somente fecha quando:
 - baixa qualidade e falha nunca promovem o run;
 - retries, cancelamento e cleanup são comprovados;
 - handoff para C.4 é versionado, read-only e não executa C.4;
-- não há conteúdo real ou infraestrutura de produção sem autorização separada.
+- qualquer conteúdo real usado no processo foi previamente autorizado em fronteira de Nível B;
+- não há infraestrutura ou efeito de produção sem autorização de Nível C;
+- o fechamento integrado de C.3 é documentado de forma suficiente para handoff a C.4.
 
 ## 18. Governança de branch, PR e TOCTOU
 
-Cada sublote deverá usar branch e PR próprios. Antes de qualquer merge:
+Branch e PR continuam como unidades preferenciais de isolamento e revisão, mas a execução segue a
+política proporcional ao risco:
 
-1. registrar head do PR e head corrente da `main`;
-2. comparar base/head e confirmar apenas paths autorizados;
-3. avaliar commits concorrentes e colisões semânticas;
-4. exigir revisão humana e checks verdes;
-5. após merge, confirmar commit, tree, parent, diff efetivo e CI da árvore composta;
-6. emitir checkpoint antes de autorizar o sublote seguinte.
+1. atividades de Nível A podem avançar em sequência dentro do escopo do lote sem autorização humana
+   nova por microação;
+2. cada PR técnico relevante deve registrar head, base, paths, gates e efeitos materiais;
+3. avanço concorrente da `main` deve ser avaliado antes do merge e auditado depois dele;
+4. correções necessárias para cumprir os gates do próprio escopo podem ser feitas e testadas sem
+   reabrir autorização;
+5. checkpoint intermediário é opcional e só deve ser criado quando houver mudança material de
+   fronteira, incidente, handoff importante ou ganho real de continuidade;
+6. merges, conteúdo real, providers novos e recursos hospedados seguem Nível B quando aplicável;
+7. produção, secrets, dados sensíveis, efeitos financeiros e operações destrutivas seguem Nível C.
 
-A integração desta documentação não é autorização implícita para C.3.1.
+A integração desta documentação autoriza a continuidade técnica de Nível A em C.3.1–C.3.6, mas não
+autoriza por si só conteúdo real, OCR/provider novo, produção, credenciais ou dados sensíveis.
 
 ## 19. Fora de escopo desta definição
 
-- qualquer código, migration, tabela, RPC, adapter ou workflow;
-- parser executável, OCR ou modelo multimodal;
-- PDF, livro, PNLD ou conteúdo real;
-- bucket, Storage/Supabase hospedados ou credenciais;
-- wiring runtime, cron, fila, produção ou backfill;
+- qualquer código, migration, tabela, RPC, adapter ou workflow nesta proposta documental;
+- parser executável, OCR ou modelo multimodal nesta proposta;
+- PDF, livro, PNLD ou conteúdo real sem autorização Nível B;
+- bucket, Storage/Supabase de produção ou credenciais;
+- wiring runtime de produção, cron/fila de produção ou backfill;
 - descrições semânticas geradas de imagens;
 - chunks, embeddings, segmentação, classificação, BNCC ou retrieval;
 - agente autônomo ou orquestrador de produção;
-- merge desta própria proposta sem decisão humana.
+- qualquer efeito Nível C sem decisão humana específica.
 
 ## 20. Próximo passo permitido
 
-Se este Draft PR for revisado e integrado, o próximo passo possível é emitir checkpoint documental e
-solicitar autorização específica para **C.3.1**. Nenhum outro sublote é aberto por continuidade.
+Após revisão e integração desta definição, **C.3.1 pode começar imediatamente como execução Nível A**
+em branch/PR, com fixtures sintéticas, testes e infraestrutura descartável. C.3.2–C.3.6 podem seguir
+pela mesma autorização agrupada quando cada gate técnico anterior estiver satisfeito.
+
+O primeiro uso de PDF/conteúdo real juridicamente autorizado será uma fronteira Nível B separada.
+OCR/provider novo também será Nível B. Produção, secrets e dados pessoais/sensíveis permanecem Nível C.
