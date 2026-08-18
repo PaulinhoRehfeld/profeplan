@@ -154,7 +154,8 @@ export const CARTOGRAPHIC_PART_SCOPE_REASONS = [
   'pdf_bookmark_boundary',
   'human_review_boundary',
 ] as const;
-export type CartographicPartScopeReason = (typeof CARTOGRAPHIC_PART_SCOPE_REASONS)[number];
+export type CartographicPartScopeReason =
+  (typeof CARTOGRAPHIC_PART_SCOPE_REASONS)[number];
 
 export interface CartographicPartScope {
   readonly scopeId: EntityId;
