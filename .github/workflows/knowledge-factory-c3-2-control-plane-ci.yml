@@ -9,6 +9,7 @@ on:
       - 'packages/types/src/knowledge-factory/extraction.ts'
       - 'supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql'
       - 'supabase/migrations/202608180320_kf_extraction_control_plane.sql'
+      - 'supabase/migrations/202608180321_kf_extraction_control_plane_corrections.sql'
       - 'supabase/tests/knowledge_factory_extraction_c3_2*'
       - 'supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql'
       - 'supabase/migrations/202608151600_kf_ingestion_human_review_handoff.sql'
@@ -129,6 +130,9 @@ jobs:
           set -euo pipefail
           psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
             -f supabase/migrations/202608180320_kf_extraction_control_plane.sql \
+            2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 \
+            -f supabase/migrations/202608180321_kf_extraction_control_plane_corrections.sql \
             2>&1 | tee -a "$KF_EVIDENCE"
 
       - name: Reprove C.3.1 shared contract
