@@ -1,9 +1,9 @@
 name: Temporary cartography Prettier diff
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/knowledge-factory-structural-recognition-contract
+      - main
 
 permissions:
   contents: read
