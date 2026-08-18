@@ -62,5 +62,7 @@ export interface ExtractionArtifactReadResult {
  * provider-neutral metadata.
  */
 export interface ExtractionArtifactReadPort {
-  read(request: ExtractionArtifactReadRequest): Promise<ExtractionArtifactReadResult>;
+  read(
+    request: ExtractionArtifactReadRequest
+  ): Promise<ExtractionArtifactReadResult>;
 }
