@@ -265,8 +265,9 @@ BEGIN
         public.kf_extraction_text_internal(v_element -> 'logicalLocator', 'element.logicalLocator'),
         v_element ->> 'kind',
         CASE WHEN v_element ? 'text' THEN v_element ->> 'text' ELSE NULL END
-      FROM public.kf_extraction_elements
-      WHERE run_id = p_run_id AND physical_page_number = v_page_number;
+      FROM public.kf_extraction_elements AS existing_element
+      WHERE existing_element.run_id = p_run_id
+        AND existing_element.physical_page_number = v_page_number;
     END LOOP;
   END LOOP;
 
