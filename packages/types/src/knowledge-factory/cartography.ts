@@ -35,8 +35,7 @@ export const DOCUMENT_METADATA_OBSERVATION_KINDS = [
   'program_cycle',
   'other',
 ] as const;
-export type DocumentMetadataObservationKind =
-  (typeof DOCUMENT_METADATA_OBSERVATION_KINDS)[number];
+export type DocumentMetadataObservationKind = (typeof DOCUMENT_METADATA_OBSERVATION_KINDS)[number];
 
 export const CARTOGRAPHY_EVIDENCE_SOURCE_KINDS = [
   'filename',
@@ -47,8 +46,7 @@ export const CARTOGRAPHY_EVIDENCE_SOURCE_KINDS = [
   'pdf_bookmark',
   'human_review',
 ] as const;
-export type CartographyEvidenceSourceKind =
-  (typeof CARTOGRAPHY_EVIDENCE_SOURCE_KINDS)[number];
+export type CartographyEvidenceSourceKind = (typeof CARTOGRAPHY_EVIDENCE_SOURCE_KINDS)[number];
 
 export interface CartographyEvidenceRef {
   readonly evidenceId: EntityId;
@@ -81,8 +79,7 @@ export const CARTOGRAPHIC_REGION_KINDS = [
   'appendix',
   'unknown',
 ] as const;
-export type CartographicRegionKind =
-  (typeof CARTOGRAPHIC_REGION_KINDS)[number];
+export type CartographicRegionKind = (typeof CARTOGRAPHIC_REGION_KINDS)[number];
 
 export interface PhysicalPageRange {
   readonly startPhysicalPage: number;
@@ -112,8 +109,7 @@ export const CARTOGRAPHIC_CANDIDATE_STATES = [
   'reviewed_candidate',
   'rejected',
 ] as const;
-export type CartographicCandidateState =
-  (typeof CARTOGRAPHIC_CANDIDATE_STATES)[number];
+export type CartographicCandidateState = (typeof CARTOGRAPHIC_CANDIDATE_STATES)[number];
 
 export interface CartographicNodeCandidate {
   readonly nodeId: EntityId;
@@ -156,8 +152,7 @@ export const CARTOGRAPHIC_PART_SCOPE_REASONS = [
   'pdf_bookmark_boundary',
   'human_review_boundary',
 ] as const;
-export type CartographicPartScopeReason =
-  (typeof CARTOGRAPHIC_PART_SCOPE_REASONS)[number];
+export type CartographicPartScopeReason = (typeof CARTOGRAPHIC_PART_SCOPE_REASONS)[number];
 
 export interface CartographicPartScope {
   readonly scopeId: EntityId;
