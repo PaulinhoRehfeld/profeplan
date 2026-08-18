@@ -1,4 +1,4 @@
-import { getDocument, version as pdfjsVersion } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { OPS, getDocument, version as pdfjsVersion } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { NativeTextExtractedPage } from '../extraction/native-text-extractor.port.ts';
 import type {
   DocumentInspectionRequest,
@@ -7,6 +7,12 @@ import type {
 } from './document-inspector.port.ts';
 
 export const PDFJS_DOCUMENT_INSPECTOR_NAME = 'pdfjs-dist' as const;
+
+const IMAGE_PAINT_OPERATORS = new Set<number>([
+  OPS.paintJpegXObject,
+  OPS.paintImageXObject,
+  OPS.paintInlineImageXObject,
+]);
 
 function normalizePageText(parts: readonly string[]): string {
   return parts
@@ -58,7 +64,10 @@ async function readPage(
 ): Promise<NativeTextExtractedPage> {
   const page = await document.getPage(physicalPageNumber);
   try {
-    const content = await page.getTextContent();
+    const [content, operatorList] = await Promise.all([
+      page.getTextContent(),
+      page.getOperatorList(),
+    ]);
     const textParts: string[] = [];
     const elements: NativeTextExtractedPage['elements'][number][] = [];
     let observedTextIndex = 0;
@@ -81,6 +90,18 @@ async function readPage(
       }
     }
 
+    let observedImageIndex = 0;
+    for (const operator of operatorList.fnArray) {
+      if (!IMAGE_PAINT_OPERATORS.has(operator)) {
+        continue;
+      }
+      observedImageIndex += 1;
+      elements.push({
+        logicalLocator: `page:${physicalPageNumber}/image:${observedImageIndex}`,
+        kind: 'image_marker',
+      });
+    }
+
     return {
       physicalPageNumber,
       ...(printedPageLabel ? { printedPageLabel } : {}),
@@ -94,7 +115,7 @@ async function readPage(
 
 /**
  * PDF.js reconnaissance adapter. It reads page labels for the document but
- * extracts text only from explicitly requested page windows.
+ * extracts content only from explicitly requested page windows.
  */
 export class PdfJsDocumentInspectorAdapter implements DocumentInspectorPort {
   async inspect(request: DocumentInspectionRequest): Promise<DocumentInspectionResult> {
