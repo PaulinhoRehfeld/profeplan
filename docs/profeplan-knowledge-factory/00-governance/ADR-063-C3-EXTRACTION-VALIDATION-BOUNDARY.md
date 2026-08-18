@@ -34,8 +34,10 @@ extração.
 8. C.4 possui chunks/segmentos, confirmação da hierarquia editorial, classificação estrutural,
    pedagógica, curricular e BNCC.
 9. O handoff para C.4 é snapshot read-only versionado. C.4 não muta registros de C.3.
-10. C.3 será entregue em C.3.1–C.3.8, cada um com autorização, DoR, testes, revisão, merge e
-    checkpoint próprios.
+10. C.3 será entregue em C.3.1–C.3.8 com gates técnicos próprios, mas a autorização operacional
+    seguirá a política de risco proporcional: ações reversíveis e isoladas podem avançar sob
+    autorização agrupada; mudanças materiais de ambiente, dados, credenciais ou produção elevam o
+    nível e exigem autorização específica.
 
 ## Lifecycle de referência
 
@@ -54,6 +56,7 @@ Saídas controladas: `REQUIRES_ALTERNATE_EXTRACTION`, `BLOCKED_AUTHORIZATION`, `
   ou OCR específicos;
 - cartografia observável e interpretação semântica deixam de ser colapsadas;
 - qualidade média não compensa ausência de página, autorização inválida ou proveniência quebrada;
+- a continuidade de C.3 não depende de microautorização para cada commit, teste, fixture ou retry;
 - esta ADR não cria schema, migration, adapter, parser, OCR, recurso hospedado ou produção.
 
 ## Alternativas rejeitadas
@@ -78,6 +81,13 @@ de insuficiência da camada textual nativa.
 
 ## Governança
 
-Esta ADR somente se torna canônica após revisão e merge humanos. A integração documental não abre
-C.3.1. Qualquer implementação exige nova inspeção da `main`, Definition of Ready e autorização
-específica.
+Esta ADR somente se torna canônica após revisão e merge humanos. Após a integração, a continuidade
+operacional segue
+[RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md](RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md).
+
+C.3.1–C.3.6 poderão avançar sequencialmente em branch/PR, CI e infraestrutura descartável sob a
+autorização agrupada do lote. Novo checkpoint não é requisito automático entre esses sublotes.
+
+Primeiro uso de conteúdo real, novo provider/OCR, recurso hospedado não produtivo persistente ou
+merge técnico relevante são fronteiras de Nível B. Produção, secrets, dados pessoais/sensíveis,
+efeitos financeiros ou operações destrutivas permanecem Nível C e exigem autorização específica.
