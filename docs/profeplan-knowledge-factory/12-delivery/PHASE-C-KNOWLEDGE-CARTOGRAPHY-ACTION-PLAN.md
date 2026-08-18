@@ -313,99 +313,70 @@ nenhum resultado gerativo poderá tornar-se elegível sem decisão humana regist
 C.1 deverá provar que a autorização pode ser consultada e auditada em cada etapa posterior. Um
 booleano atual de permissão não satisfará o gate.
 
-### 5.2 C.2 - Ingestão controlada e cartografia preliminar
 
-#### Ações a incorporar à futura definição
+### 5.2 C.2 - Ingestão controlada e handoff governado
 
-1. Criar o manifesto físico integral da execução.
-2. Inspecionar arquivo, páginas, paginação, integridade e qualidade.
-3. Detectar ou permitir a marcação assistida do sumário.
-4. Construir a árvore editorial preliminar.
-5. Criar o Inventário de Regiões Informacionais de toda a obra.
-6. Transformar cada item do sumário e cada região detectada em unidade de cobertura.
-7. Estimar fronteiras de seções a partir da próxima entrada e marcá-las como hipóteses.
-8. Bloquear avanço de páginas ou regiões não classificadas.
-9. Registrar exceções que exigirão OCR, leitura tabular ou inspeção visual.
-10. Isolar PDF, renderizações e recortes em staging temporário com prazo e destino de descarte.
+#### Estado reconciliado
 
-#### Artefatos esperados
+C.2 está concluído. Sua autoridade termina em staging temporário, integridade, vínculo,
+idempotência, revisão humana e emissão do handoff read-only `APPROVED_FOR_EXTRACTION`. C.2 não
+interpreta páginas, não localiza sumário, não constrói árvore editorial e não cria manifesto de
+cobertura de extração.
 
-- recibo de ingestão;
-- manifesto físico;
-- árvore editorial preliminar versionada;
-- inventário de regiões;
-- plano de cobertura;
-- relatório de qualidade e exceções.
-- plano de retenção temporária e recibo de descarte previsto.
+#### Artefatos canônicos de C.2
 
-#### Critérios adicionais de saída
+- identidade composta sobre fonte e versão de C.1;
+- artefato temporário com locator opaco, digest e política de retenção;
+- run, receipts e events de ingestão;
+- decisão humana e `IngestionHandoffEvidence` versionada;
+- cleanup ou descarte verificável nos caminhos aplicáveis.
 
-- toda página está contabilizada;
-- o sumário foi localizado ou sua ausência foi registrada;
-- regiões anteriores e posteriores aos capítulos foram classificadas;
-- hipóteses estruturais permanecem distinguíveis de achados confirmados;
-- nenhum arquivo parcial foi publicado.
-- nenhum PDF, renderização ou recorte foi promovido a armazenamento permanente.
+#### Limite de saída
 
-### 5.3 C.3 - Extração textual nativa, exceções controladas e validação observável
+O handoff prova que C.2 concluiu sua própria revisão, mas não prova autorização atual para executar
+C.3, bytes ainda legíveis, qualidade textual, cobertura de páginas ou estrutura editorial. Essas
+condições são verificadas pela autoridade própria de C.3.
 
-#### Ações a incorporar à futura definição
+### 5.3 C.3 - Extração nativa e validação observável
 
-1. Extrair todas as páginas elegíveis prioritariamente pela camada textual nativa do PDF, sem
-   parada silenciosa por limite de contexto.
-2. Conservar ordem de leitura e localização lógica por página física, página impressa, região,
-   bloco, linha/coluna e célula, sem persistir coordenadas visuais em pixels.
-3. Usar a saída bruta do extrator apenas durante validação; persistir o texto normalizado e os
-   chunks selecionados, acompanhados de hash, método e métricas de qualidade.
-4. Classificar como exceção cada página ou elemento sem camada textual, com texto corrompido ou com
-   extração insuficiente; somente essas exceções poderão acionar OCR ou inspeção visual.
-5. Registrar para cada exceção o motivo, o método substitutivo, a cobertura, a confiança e a revisão.
-6. Identificar cabeçalhos, rodapés, notas, colunas, boxes e elementos não lineares.
-7. Criar tratamento específico para tabelas e células.
-8. Converter imagens, mapas, gráficos e infográficos em descrições semânticas; converter tabelas e
-   gráficos quantitativos também em dados estruturados; descartar a representação visual após a
-   revisão exigida.
-9. Calcular qualidade por página, bloco e célula, não apenas por documento.
-10. Encaminhar baixa confiança para revisão ou reprocessamento.
-11. Reconciliar páginas esperadas, extraídas, rejeitadas e pendentes.
-12. Emitir recibo de descarte do PDF, das páginas renderizadas, dos recortes e das saídas brutas
-    transitórias ao encerrar a execução.
+#### Ações delimitadas
 
-#### Requisito específico para tabelas
-
-Uma tabela não poderá ser reduzida a texto corrido. O resultado deverá preservar:
-
-- título e texto introdutório;
-- cabeçalhos;
-- linhas, colunas e células;
-- células mescladas;
-- posição lógica por linha, coluna e célula, além da ordem de leitura;
-- resultado normalizado e estruturado;
-- confiança por célula;
-- descrição semântica da tabela e valores relevantes;
-- correções humanas.
+1. Receber o handoff read-only de C.2 e criar identidade própria de run de extração.
+2. Revalidar `purpose=extraction` no claim, na leitura/retomada do artefato e na finalização.
+3. Ler o artefato por porta provider-neutral estreita, sem transformar locator opaco em URL pública.
+4. Extrair prioritariamente a camada textual nativa de fixtures PDF inteiramente sintéticas.
+5. Persistir incrementalmente páginas, ordem de leitura e elementos físicos observados.
+6. Registrar método, versão do extrator, hash de entrada, proveniência e métricas por página/elemento.
+7. Reconciliar cobertura esperada, extraída, rejeitada, pendente e descartada.
+8. Encaminhar baixa qualidade, ausência de texto ou corrupção para decisão humana ou reprocessamento.
+9. Preservar em tabelas as relações físicas de linhas, colunas e células apenas quando observadas e
+   suportadas pelo adapter, sem inferir significado pedagógico.
+10. Registrar imagens, mapas, gráficos e infográficos somente como marcadores observados, com tipo,
+    ordem e localizador lógico; descrições geradas não pertencem ao baseline.
+11. Manter OCR como fallback governado futuro, decidido em C.3.7; nenhum provedor OCR é autorizado
+    por esta definição.
+12. Emitir snapshot read-only versionado para C.4 somente após validação e cobertura completas.
 
 #### Artefatos esperados
 
-- texto normalizado e blocos estruturados;
-- descrições semânticas dos elementos visuais;
-- tabelas estruturadas;
-- métricas de qualidade;
-- fila de exceções;
-- reconciliação de cobertura de extração.
-- recibo auditável de descarte dos artefatos temporários.
+- run de extração, receipts e events próprios;
+- páginas e elementos físicos observados;
+- texto extraído/normalizado sem segmentação semântica;
+- relações tabulares observadas quando disponíveis;
+- métricas e reconciliação de cobertura;
+- fila de exceções e decisões humanas;
+- evidência de retenção/cleanup;
+- handoff read-only `VALIDATED_FOR_SEGMENTATION` para C.4.
 
 #### Critérios adicionais de saída
 
 - nenhuma página elegível está ausente sem decisão registrada;
-- a camada textual nativa foi tentada primeiro e a cobertura por método foi registrada;
-- nenhuma página ou elemento passou por OCR sem motivo de exceção documentado;
-- texto e estrutura apontam para localizadores lógicos de procedência, sem exigir cópia visual
-  permanente da fonte;
-- tabelas curriculares mantêm a relação célula-cabeçalho;
-- baixa confiança nunca é promovida silenciosamente.
-- PDF, renderizações, recortes, miniaturas, OCR bruto e coordenadas em pixels não permanecem no
-  corpus nem no banco definitivo.
+- texto nativo é tentado primeiro e a cobertura por método é explícita;
+- nenhum OCR ocorre sem sublote, política, autorização e evidência próprios;
+- baixa qualidade ou autorização inválida nunca avança silenciosamente;
+- resultados mantêm proveniência lógica sem exigir persistência de coordenadas em pixels;
+- chunks, segmentos, capítulos confirmados, classificação curricular e BNCC não são criados em C.3;
+- PDF, renderizações, recortes e saídas brutas transitórias obedecem retenção e cleanup auditáveis.
 
 ### 5.4 C.4 - Reconstrução estrutural e notas candidatas
 
@@ -736,9 +707,9 @@ A escala somente poderá ocorrer depois de validar o modelo no piloto.
 | Decisão | C.1 | C.2 | C.3 | C.4 | C.5 | C.6 | C.7 | Posterior |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
 | Identidade, versão e permissão | X | X | X | X | X | X | X | auditoria contínua |
-| Cartografia editorial |  | X | X | X |  |  | X | navegação/retrieval |
-| Manifesto de cobertura |  | X | X | X | X | X | X | observabilidade |
-| Extração tabular e paratextos |  | X | X | X |  | X | X | validação curricular |
+| Cartografia editorial |  |  | observação física | autoridade semântica |  |  | X | navegação/retrieval |
+| Manifesto de cobertura |  |  | X | X | X | X | X | observabilidade |
+| Extração tabular e paratextos |  |  | relações observadas | interpretação estrutural |  | X | X | validação curricular |
 | Notas atômicas |  |  |  | X | X | X | X | retrieval |
 | Relações tipadas |  |  |  | candidato | X | X | X | grafo e agentes |
 | Separação curricular por estado |  |  |  | X | X | X | X | validação/produção |

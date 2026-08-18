@@ -84,13 +84,13 @@ FASE B — CONEXÃO COM O BANCO
 ✅ 3B.5 ProductionOrderRepository — 3B.5.1–3B.5.4 integrados e encerramento documentado
 ✅ Gate de saída da Fase B — bloqueio parcial controlado formalizado no Checkpoint 032
 
-FASE C — C.1 E C.2 CONCLUÍDOS; C.3 BLOQUEADO  ← ESTADO ATUAL
+FASE C — C.1 E C.2 CONCLUÍDOS; C.3 DEFINIDO EM PROPOSTA DOCUMENTAL  ← ESTADO DESTE DRAFT PR
 
 FASE C — MATÉRIA-PRIMA
 ✅ C.0 Definição integral, governança e gates — integrado pelo PR nº 31
 ✅ C.1 Governança operacional do lifecycle de fontes — C.1.1–C.1.6 concluídos
 ✅ C.2 Ingestão controlada — C.2.1–C.2.6 concluídos; Checkpoint 050
-⬜ C.3 Extração e validação — bloqueado
+📝 C.3 Extração e validação — fronteira e C.3.1–C.3.8 propostos; execução técnica bloqueada
 ⬜ C.4 Segmentação e classificação estrutural
 ⬜ C.5 Destilação pedagógica e deduplicação
 ⬜ C.6 Componentização, versionamento e vínculo curricular
@@ -407,7 +407,7 @@ Transformar fontes autorizadas em componentes pedagógicos estruturados, rastre�
 | C.0 | Definição integral, governança e gates | EPIC-001 | integrado/encerrado |
 | C.1 | Lifecycle de fontes, procedência e direitos | EPIC-002; US-002.1–002.2 | **concluído — C.1.1–C.1.6** |
 | C.2 | Ingestão controlada | EPIC-003; US-003.1 | **concluído — C.2.1–C.2.6** |
-| C.3 | Extração e validação | EPIC-003; US-003.1 | **bloqueado** |
+| C.3 | Extração e validação | EPIC-003; US-003.1 | **definição documental proposta; C.3.1–C.3.8 bloqueados** |
 | C.4 | Segmentação e classificação | EPIC-003; US-003.2 | bloqueado |
 | C.5 | Destilação e deduplicação | EPIC-005; US-005.1–005.2 | bloqueado |
 | C.6 | Componentes, versões e currículo | EPIC-004/006; US-004.1–004.3 e US-006.1–006.2 | bloqueado |
@@ -867,15 +867,16 @@ Registro de concorrência:
 > A comparação pós-merge confirmou os sete arquivos autorizados de C.2.6 e o CI nº 562 validou a
 > árvore composta final. O Checkpoint 050 preserva esse evento e a limitação TOCTOU como evidência.
 
-Próximo objetivo possível, somente em contexto próprio e após nova inspeção canônica:
+Próximo objetivo possível, somente após integração humana desta proposta, checkpoint próprio,
+reconfirmação canônica e nova autorização explícita:
 
-> inspecionar e **definir C.3 — extração e validação do conteúdo extraído**, começando por contrato
-> provider-neutral e revalidação de autorização `extraction` no instante real de execução; sem usar
-> conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados ou produção por continuidade
-> implícita.
+> abrir **C.3.1 — contratos, lifecycle, proveniência, vocabulário de qualidade e fixtures
+> sintéticas**, sem parser, OCR, conteúdo real, PNLD real, PDF/livro real, Storage/Supabase hospedados
+> ou produção.
 
 Próxima grande mudança de natureza do projeto:
 
-> O fechamento de C.2 encerrou a fronteira de ingestão controlada. C.3 será a primeira camada com
-> autoridade para executar extração, mas permanece sujeito a inspeção, Definition of Ready,
-> documentação e autorização humanas próprias antes de qualquer parser, OCR ou conteúdo real.
+> A definição documental de C.3 estabelece a primeira camada com autoridade para executar extração,
+> mas não a implementa nem a inicia. O handoff de C.2 é entrada necessária e insuficiente: C.3 deverá
+> revalidar a autorização `purpose=extraction` no instante de claim, leitura/retomada e finalização.
+> Segmentos, chunks semânticos e hierarquia editorial confirmada pertencem a C.4.
