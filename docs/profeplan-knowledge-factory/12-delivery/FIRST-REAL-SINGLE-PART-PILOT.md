@@ -16,51 +16,118 @@ O piloto não inaugura corpus nem processamento em escala.
 
 Obra delimitada para o ensaio:
 
-- título: `Português: Conexão e Uso`;
-- editora: Editora do Brasil;
-- coleção: `Conexão e Uso`;
-- disciplina: Língua Portuguesa;
-- ano: 7º ano;
-- volume: 1;
-- identificação editorial informada: `PNLD 2023 OBJETO 2`;
-- arquivo de trabalho: `PNLD_2023_OBJETO_2_7_ANO_EF_AI_LINGUA_PORTUGUESA_VOLUME_1_WF1.pdf`;
-- total físico esperado: 41 páginas.
+- título: `Do seu jeito — Sociologia`;
+- editora: Ática;
+- componente: Sociologia;
+- etapa: Ensino Médio;
+- área: Ciências Humanas e Sociais Aplicadas;
+- volume: único;
+- manifestação: Manual do Professor;
+- edição editorial observada: 1ª edição, São Paulo, 2024;
+- ciclo declarado na obra: PNLD 2026–2029;
+- código de coleção observado: `0113P260101204816`;
+- nome canônico de trabalho para hints: `DOSEUJEITO_PNLD26_SOCIOLOGIA_VU_MP.pdf`;
+- total físico observado: 449 páginas;
+- SHA-256 do binário autorizado: `1e7f8d613fdb43a49d4a1f0a031465784b03b31b1d22e1779d279365ad82e39a`.
+
+O nome do arquivo temporariamente montado pode conter sufixo local de cópia, como `(1)`. A identidade desta prova é fixada pelo digest e pela identidade bibliográfica, não por esse sufixo local.
 
 A autorização desta prova é exclusivamente técnica e temporária. Ela não autoriza publicação, redistribuição, corpus, treinamento, indexação ou retenção permanente do PDF.
 
 O binário protegido **não deve ser commitado** no repositório.
 
-## 3. Parte escolhida
+## 3. Cartografia real observada
+
+A obra fornece informação editorial explícita útil antes de qualquer leitura profunda:
+
+- `Conheça seu livro`: página física 5 / impressa 4;
+- `Sumário`: começa na página física 7 / impressa 6;
+- o Sumário continua por três páginas físicas, 7–9 / impressas 6–8;
+- `Unidade 1 – Antropologia`: impressa 28 / física 29;
+- `Capítulo 1 — O pensamento antropológico`: impressa 30 / física 31;
+- `Evolucionismo social`: impressa 33 / física 34;
+- próximo irmão cartográfico, `Trabalhando com quadrinhos`: impressa 35 / física 36.
+
+O PDF possui `PDF PageLabels` coerentes com essa dupla paginação. Portanto, este artefato não demonstra necessidade de OCR para recuperar os labels impressos.
+
+## 4. Parte escolhida
 
 Escopo profundo único:
 
 ```text
-Unidade 1 – No mundo da fantasia
-páginas físicas: 9–14
-páginas impressas esperadas: 7–12
+Unidade 1 – Antropologia
+└── Capítulo 1 — O pensamento antropológico
+    └── Evolucionismo social
+
+páginas físicas profundas: 34–35
+páginas impressas: 33–34
 ```
 
-O sumário/índice foi previamente localizado na página física 6 e funciona como evidência cartográfica inicial, não como conteúdo profundo da parte.
+Essa escolha é deliberadamente menor do que aprofundar toda a Unidade 1. A unidade é contêiner hierárquico cartografado; a seção é a parte operacional aprofundada neste piloto.
 
-O piloto não autoriza reconstrução semântica das demais unidades.
+## 5. Primeira observação real
 
-## 4. Envelope operacional Nível B
+A primeira inspeção do binário real demonstrou uma diferença que o golden sample sintético não reproduzia.
+
+Visualmente, uma entrada do Sumário é apresentada como:
+
+```text
+título editorial ........ página
+```
+
+No conteúdo nativo do PDF, porém, a mesma entrada pode estar dividida em vários objetos textuais consecutivos, por exemplo:
+
+```text
+título
+pontilhado
+página
+```
+
+Títulos maiores também podem ser fragmentados em mais de um objeto antes do pontilhado.
+
+O parser cartográfico anterior aplicava o padrão de entrada a cada `text_block` isoladamente. Assim, exigia implicitamente que título, pontilhado e label estivessem no mesmo objeto PDF — uma simplificação verdadeira no fixture, mas falsa nesta obra real.
+
+### Classificação preliminar
+
+**Resultado B — pequena generalização.**
+
+A informação necessária existe em texto nativo e os labels de página existem no próprio PDF. O problema observado não exige OCR e não demonstra insuficiência do modelo estrutural. A necessidade localizada é recompor uma entrada lógica do Sumário a partir de fragmentos textuais consecutivos antes de classificá-la.
+
+## 6. Menor evolução aplicada
+
+A evolução fica limitada a `StructuralRecognitionService`:
+
+- acumular fragmentos textuais consecutivos dentro de cada página de Sumário;
+- reconhecer a entrada quando o conjunto acumulado satisfizer `título + pontilhado + label`;
+- limpar o acumulador ao encontrar cabeçalho de Sumário/Índice;
+- preservar a compatibilidade com o golden sample, onde a entrada já chega inteira em um único `text_block`;
+- não alterar `PdfJsDocumentInspectorAdapter`;
+- não alterar contratos;
+- não alterar `PartReconstructionService`;
+- não adicionar OCR;
+- não criar regra específica para `Do seu jeito`.
+
+A Introdução real aparece no Sumário como cabeçalho sem label próprio antes de seu primeiro tópico. Esse fato fica registrado como observação real, mas não é necessário resolvê-lo para a seção escolhida e não amplia esta correção.
+
+O Sumário real continua pela página física 9, enquanto a janela cartográfica atual usa a página do Sumário e a página seguinte. A parte escolhida e toda a sua cadeia hierárquica aparecem já na física 7, portanto ampliar a janela não é necessário para responder a esta prova e permanece fora desta correção.
+
+## 7. Envelope operacional
 
 ### Entrada temporária
 
-O teste lê o PDF somente a partir do caminho informado por:
+O teste lê o PDF somente a partir de:
 
 ```text
 PROFEPLAN_REAL_PILOT_PDF
 ```
 
-Opcionalmente, o operador pode fixar o digest esperado em:
+O digest governado desta prova está fixado no próprio teste. Opcionalmente, o operador também pode informar:
 
 ```text
 PROFEPLAN_REAL_PILOT_SHA256
 ```
 
-Se o digest for informado e não coincidir, o teste falha antes da cartografia.
+Se o binário montado não corresponder ao SHA-256 governado, a prova falha antes da cartografia.
 
 ### Retenção
 
@@ -72,85 +139,57 @@ Não reter:
 - texto integral;
 - corpus ou chunks.
 
-Pode permanecer como evidência mínima do piloto:
+Pode permanecer como evidência mínima:
 
-- SHA-256 calculado no momento da execução;
-- identidade bibliográfica necessária;
-- faixa física e labels impressos;
-- tipos de elementos e relações candidatas;
+- SHA-256;
+- identidade bibliográfica;
+- faixas físicas e labels impressos;
+- estrutura candidata;
+- tipos de elementos e relações;
 - localizadores/evidências;
-- warnings e classificação arquitetônica A/B/C/D;
-- resultado dos testes e CI sem reprodução extensa do conteúdo protegido.
+- warnings;
+- classificação arquitetônica A/B/C/D;
+- resultado dos testes sem reprodução extensa do conteúdo protegido.
 
 ### Descarte
 
-O arquivo temporário é responsabilidade do ambiente que o disponibiliza. O teste não cria cópia persistente nem artifact de CI e não faz upload do PDF.
+O teste não cria cópia persistente nem artifact de CI e não faz upload do livro.
 
-## 5. Critérios executáveis
+## 8. Critérios executáveis do piloto corrigido
 
-O teste real passa somente se demonstrar, no mínimo:
+A prova material deve demonstrar, no mínimo:
 
-1. o artefato possui 41 páginas físicas;
-2. a inspeção preliminar encontra a região de sumário incluindo a física 6;
-3. a cartografia produz candidato para `Unidade 1 – No mundo da fantasia`;
-4. a Unidade 1 fica delimitada nas físicas 9–14;
-5. o início impresso declarado é `7`;
-6. a reconstrução profunda usa `CartographicPartScope` 9–14;
-7. as páginas 9–14 preservam labels impressos esperados 7–12;
-8. qualquer página externa inspecionada pela reconstrução pertence somente a região auxiliar já cartografada e possui justificativa estrutural objetiva;
-9. o título da parte é corroborado no corpo;
-10. todos os elementos e relações produzidos possuem evidência;
-11. nós cartográficos permanecem em estados candidatos, nunca `confirmed`;
-12. `STRUCTURAL_RECOGNITION_CONTRACT_VERSION` e `PART_RECONSTRUCTION_CONTRACT_VERSION` permanecem `1.0.0` enquanto nenhuma necessidade contratual nova for demonstrada;
-13. as duas provas sintéticas existentes continuam sem regressão.
+1. o binário possui SHA-256 exatamente igual ao digest governado;
+2. o artefato possui 449 páginas físicas;
+3. a cartografia encontra o `Sumário` incluindo a física 7;
+4. a cartografia recompõe entradas fragmentadas sem regra específica da obra;
+5. `Unidade 1 – Antropologia` começa na física 29 / impressa 28;
+6. `Capítulo 1 — O pensamento antropológico` começa na física 31 / impressa 30 e permanece filho da Unidade 1;
+7. `Evolucionismo social` permanece filho do Capítulo 1 e é delimitado nas físicas 34–35;
+8. o início impresso da seção é `33`;
+9. a reconstrução profunda usa somente `CartographicPartScope` 34–35;
+10. as físicas 34–35 preservam labels impressos 33–34;
+11. o título da seção é corroborado no corpo;
+12. elementos e relações permanecem apoiados por evidência;
+13. nós cartográficos permanecem somente em estados candidatos;
+14. os contratos continuam em `1.0.0`;
+15. as duas provas sintéticas continuam sem regressão.
 
-O teste não exige `warnings = []`: warnings reais são evidência diagnóstica. Porém falhas nos invariantes acima classificam o piloto como B, C ou D em vez de serem mascaradas.
+## 9. Estado da execução
 
-## 6. O que o piloto pretende descobrir
+O binário verdadeiro foi disponibilizado temporariamente e inspecionado nesta etapa. Foram materialmente confirmados o SHA-256, a contagem de páginas, os `PDF PageLabels`, o Sumário e a fragmentação nativa das entradas.
 
-O PDF real pode revelar, entre outros:
+A tentativa de executar o teste Node completo no runtime da conversa encontrou uma limitação operacional: o checkout/dependências do repositório não estavam montados e o runtime não conseguiu resolver GitHub/npm externamente. Isso não é tratado como sucesso do piloto.
 
-- entradas de sumário fragmentadas em múltiplos objetos de texto;
-- ausência ou inadequação de `PDF PageLabels`;
-- títulos quebrados;
-- headers/footers repetidos;
-- ordem de leitura inadequada;
-- múltiplas colunas;
-- boxes e elementos editoriais;
-- múltiplos XObjects;
-- necessidade localizada de observabilidade física adicional.
+Portanto, **não registrar a prova vertical como concluída ou verde até que o teste dedicado rode efetivamente com `PdfJsDocumentInspectorAdapter`, `StructuralRecognitionService` e `PartReconstructionService` contra este mesmo SHA-256**.
 
-Nenhuma dessas hipóteses justifica alteração antecipada.
+CI ordinário sem o PDF continua sendo apenas prova de integridade/regressão e mantém o teste real em `skip` por desenho.
 
-## 7. Classificação do resultado
-
-### Resultado A — generaliza bem
-
-Pouca ou nenhuma alteração além da própria prova.
-
-### Resultado B — pequena generalização
-
-Necessidade localizada e orientada por evidência, sem redesenho do modelo.
-
-### Resultado C — parser/inspector insuficiente
-
-A observabilidade física do PDF não fornece a informação necessária. Melhorar seletivamente a camada de inspeção antes de alterar a reconstrução.
-
-### Resultado D — modelo estrutural insuficiente
-
-A estrutura real não cabe nas abstrações atuais. Parar e reconsiderar o modelo antes de acumular regras especiais.
-
-## 8. Estado de execução desta branch
-
-A preparação do piloto pode ser versionada sem o PDF. A execução material real exige que o artefato autorizado esteja temporariamente disponível ao runtime.
-
-Nesta abertura, o compartilhamento remoto anteriormente usado para o PDF não estava acessível pelos conectores disponíveis. Portanto, **não registrar falsamente o piloto como executado ou verde** até que `PROFEPLAN_REAL_PILOT_PDF` aponte para o binário real autorizado e o teste tenha efetivamente rodado.
-
-## 9. Escopo negativo
+## 10. Escopo negativo
 
 Sem:
 
-- commit do PDF real;
+- commit ou publicação do PDF;
 - obra inteira como contexto semântico;
 - outra obra ou coleção;
 - corpus;
@@ -160,7 +199,7 @@ Sem:
 - grafo global;
 - validação semântica BNCC;
 - OCR geral;
-- interpretação multimodal profunda;
+- interpretação multimodal geral;
 - migration, RPC ou nova persistência;
 - Supabase/Storage hospedado para o conteúdo;
 - runtime multiagente;
@@ -168,12 +207,12 @@ Sem:
 - PR nº 99;
 - produção.
 
-## 10. Próxima decisão
+## 11. Próxima decisão
 
-Depois da primeira execução contra o binário real:
+Depois da validação de CI da pequena generalização:
 
-1. registrar o SHA-256 e os invariantes observados sem copiar conteúdo integral;
-2. classificar A/B/C/D;
-3. implementar somente a menor correção demonstrada, se houver;
-4. repetir a mesma prova real;
-5. somente após resultado estável decidir se C.3.6, multimodal/OCR localizado ou outra fronteira merece ser aberta.
+1. montar novamente o mesmo binário temporário em runtime que possua as dependências do repositório;
+2. executar o teste dedicado com o SHA governado;
+3. registrar exatamente o primeiro resultado real;
+4. se houver nova divergência, classificá-la antes de qualquer outra alteração;
+5. se a prova ficar verde, auditar seletividade, regressões e copyright e parar antes do merge.
