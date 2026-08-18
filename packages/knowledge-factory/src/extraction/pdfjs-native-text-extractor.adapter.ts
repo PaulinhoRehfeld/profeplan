@@ -8,7 +8,10 @@ import type { VerifiedExtractionArtifactRead } from './artifact-read.service.ts'
 export const PDFJS_NATIVE_TEXT_EXTRACTOR_NAME = 'pdfjs-dist' as const;
 
 function normalizePageText(parts: readonly string[]): string {
-  return parts.join('').replace(/[ \t]+\n/g, '\n').trimEnd();
+  return parts
+    .join('')
+    .replace(/[ \t]+\n/g, '\n')
+    .trimEnd();
 }
 
 /**
