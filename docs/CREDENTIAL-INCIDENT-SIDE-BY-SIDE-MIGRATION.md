@@ -31,7 +31,12 @@ alterações no Supabase hospedado nem início de C.3.
 4. usar `SUPABASE_SERVICE_ROLE_KEY` apenas como rollback legado.
 
 O webhook permanece com `verify_jwt = false`, pois sua autenticação de entrada é a
-assinatura `Stripe-Signature`. Esta branch não implanta a função hospedada.
+assinatura `Stripe-Signature`.
+
+A inspeção de 18 de agosto de 2026 confirmou que a branch descartável contém a
+`stripe-webhook` versão 5 em estado `ACTIVE`, com o seletor `stripe_webhook` do
+candidato atual. Isso comprova implantação na branch isolada, mas não valida assinatura,
+fulfillment, mutação de assinatura ou evento financeiro. Nenhum evento Stripe foi executado.
 
 ### Google Gemini
 
@@ -71,36 +76,42 @@ wiring do Preview, execução funcional ou isolamento efetivo de uma requisiçã
 Nenhuma alteração nessa branch Supabase foi executada por esta reconciliação
 documental.
 
-### Credenciais e wiring Vercel ainda não comprovados
+### Credenciais e wiring Vercel parcialmente comprovados — 18 de agosto de 2026
 
-As evidências disponíveis não permitem confirmar:
+A inspeção remota e sanitizada confirmou na branch descartável:
 
-- se as credenciais substitutas Supabase e Google já foram criadas nos consoles
-  oficiais;
-- se foram disponibilizadas exclusivamente no ambiente de Preview;
-- se as variáveis Vercel da branch Git apontam para
-  `qporbmwedjvmbfqghkls`;
-- se qualquer rota administrativa do Preview deixou de apontar para produção.
+- chave publishable padrão ativa;
+- chaves secretas nomeadas `stripe_webhook` e `vercel_preview_pr_99`, com notas de uso descartável;
+- ausência de exibição ou registro dos valores completos.
 
-“Não comprovado” não equivale a “inexistente”. Esses itens permanecem gates
-operacionais e não devem ser inferidos a partir da mera existência da branch Supabase.
+No projeto Vercel `profeplan`, cinco entradas específicas continuam restritas a
+`Preview` e à branch `agent/credential-incident-side-by-side-migration`:
 
-A Vercel possui um Preview anterior, `dpl_CNfRMiUgxbTM3ADVxe8Fo8ipqPga`, em
-`READY`, `target=null`, associado ao SHA
-`e33bef95eecaca6882c1a8858895d6cc0d425d57`.
+- `SUPABASE_SECRET_KEY`;
+- `SUPABASE_ANON_KEY`;
+- `VITE_SUPABASE_ANON_KEY`;
+- `SUPABASE_URL`;
+- `VITE_SUPABASE_URL`.
 
-Esse deployment antecede o candidato técnico final
-`576693ce22f7586ac4e537fd48a9364833f5fedf`. Na leitura de reconciliação, nenhum
-deployment do projeto `profeplan` estava associado ao SHA final. Os status externos
-do HEAD final para `site` e `profeplan` registravam falha por
-`api-deployments-free-per-day`.
+O deployment validado é `dpl_6UKCr7LMwq4bW1RzX7ZQu5s33QPU`, em `READY`,
+`target=null`, região `gru1`, associado ao PR 99 e ao SHA
+`67e9e1fe38d572833cdd47dd0863bb89925fac45`. O alias da branch aponta para esse
+deployment e o build terminou sem os diagnósticos `TS2339`.
 
-Portanto:
+Uma tentativa única de login com identidade sintética inexistente retornou
+`invalid_credentials`. O evento correspondente apareceu nos logs de Auth de
+`qporbmwedjvmbfqghkls` e não apareceu nos logs de Auth da produção. A branch
+descartável permaneceu com zero usuários. Isso comprova o wiring da autenticação
+frontend para a branch isolada sem criar usuário ou enviar e-mail.
 
-- o Preview anterior não substitui a prova do candidato técnico final;
-- não existe prova de que ele estivesse conectado à branch Supabase isolada;
-- nenhuma requisição funcional contra a branch isolada foi validada;
-- signup, busca, embeddings e webhook permanecem sem validação funcional isolada.
+Permanecem não comprovados:
+
+- correspondência de valor da variável server-side `SUPABASE_SECRET_KEY` com
+  `vercel_preview_pr_99`, pois o segredo não foi revelado para comparação;
+- signup bem-sucedido, sessão válida e logout com identidade descartável aprovada;
+- execução isolada de busca e embeddings;
+- credencial Google/Gemini substituta e escopo exclusivo por branch;
+- validação funcional da Edge Function com evento Stripe sintético autorizado.
 
 ### Diagnósticos TypeScript resolvidos — 17 de agosto de 2026
 
@@ -139,14 +150,15 @@ revogação, merge ou C.3 foi alterado.
 
 ## Gates antes de qualquer cutover
 
-- [ ] criar chaves substitutas por componente em consoles oficiais;
-- [x] prover uma branch Supabase descartável sem cópia de dados para preview;
-- [ ] confirmar a criação das credenciais substitutas nos consoles oficiais;
-- [ ] configurar variáveis somente no Preview e, preferencialmente, por Git branch;
-- [ ] comprovar que o wiring Vercel aponta para a branch Supabase isolada;
-- [ ] confirmar que o preview não possui rota administrativa pública conectada à produção;
-- [x] executar testes unitários, typecheck, build e inspeção do bundle;
-- [ ] validar `signup`, busca e webhook somente no ambiente isolado;
+- [x] criar chaves Supabase substitutas por componente na branch descartável;
+- [x] prover uma branch Supabase descartável sem cópia de dados;
+- [x] configurar cinco entradas Vercel somente no Preview e por Git branch;
+- [x] comprovar que a autenticação frontend do Preview aponta para a branch isolada;
+- [x] executar testes unitários, typecheck, build e inspeção de literais;
+- [ ] comparar de forma segura o valor server-side Vercel com `vercel_preview_pr_99`;
+- [ ] validar signup, sessão, logout, busca e embeddings somente no ambiente isolado;
+- [ ] criar e isolar a credencial substituta Google/Gemini;
+- [ ] validar webhook apenas com evento sintético e autorização específica;
 - [ ] inventariar scripts, automações e terceiros;
 - [ ] obter autorização separada para produção;
 - [ ] obter autorização posterior e independente para desativar/revogar as chaves antigas.
