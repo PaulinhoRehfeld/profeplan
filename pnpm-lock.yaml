@@ -333,6 +333,9 @@ importers:
 
   packages/knowledge-factory:
     dependencies:
+      '@profeplan/types':
+        specifier: workspace:*
+        version: link:../types
       pdfjs-dist:
         specifier: ^5.4.530
         version: 5.7.284
