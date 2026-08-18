@@ -1,4 +1,4 @@
-name: Temporary structural cartography test
+name: Temporary structural cartography syntax fix
 
 on:
   pull_request:
@@ -6,19 +6,35 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  structural-cartography-test:
+  apply-fix:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 11.5.2
-      - run: pnpm install --frozen-lockfile
-      - name: Run structural cartography test only
-        run: node --test packages/knowledge-factory/test/structural-recognition.test.mjs
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Replace unsupported TypeScript parameter property
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('packages/knowledge-factory/src/cartography/structural-recognition.service.ts')
+          text = path.read_text()
+          old = """export class StructuralRecognitionService {\n  constructor(private readonly inspector: DocumentInspectorPort) {}\n\n  async recognize"""
+          new = """export class StructuralRecognitionService {\n  private readonly inspector: DocumentInspectorPort;\n\n  constructor(inspector: DocumentInspectorPort) {\n    this.inspector = inspector;\n  }\n\n  async recognize"""
+          if old not in text:
+              print('Exact syntax already fixed; nothing to do.')
+              raise SystemExit(0)
+          path.write_text(text.replace(old, new, 1))
+          PY
+      - name: Commit exact fix when needed
+        run: |
+          if git diff --quiet -- packages/knowledge-factory/src/cartography/structural-recognition.service.ts; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages/knowledge-factory/src/cartography/structural-recognition.service.ts
+          git commit -m "fix(knowledge-factory): support Node strip-only tests"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
