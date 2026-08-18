@@ -1,4 +1,4 @@
-name: Temporary structural cartography assertion test
+name: Temporary structural cartography runtime-boundary fix
 
 on:
   pull_request:
@@ -6,13 +6,15 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  structural-cartography-test:
+  runtime-boundary-fix:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -20,5 +22,37 @@ jobs:
         with:
           version: 11.5.2
       - run: pnpm install --frozen-lockfile
-      - name: Run structural cartography test only
+      - name: Keep @profeplan/types type-only at runtime boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('packages/knowledge-factory/src/cartography/structural-recognition.service.ts')
+          text = path.read_text()
+          old = """import {\n  STRUCTURAL_RECOGNITION_CONTRACT_VERSION,\n  type CartographicNodeCandidate,\n  type CartographicNodeKind,\n  type CartographicPartScope,\n  type CartographicRegionCandidate,\n  type CartographyEvidenceRef,\n  type IngestionSourceVersionRef,\n  type PhysicalPageRange,\n  type StructuralRecognitionSnapshot,\n  type StructuralRecognitionWarning,\n} from '@profeplan/types';"""
+          new = """import type {\n  CartographicNodeCandidate,\n  CartographicNodeKind,\n  CartographicPartScope,\n  CartographicRegionCandidate,\n  CartographyEvidenceRef,\n  IngestionSourceVersionRef,\n  PhysicalPageRange,\n  StructuralRecognitionSnapshot,\n  StructuralRecognitionWarning,\n} from '@profeplan/types';"""
+          if old not in text:
+              raise SystemExit('expected import block not found')
+          text = text.replace(old, new, 1)
+          marker = "import { deriveFilenameHints, type FilenameHintRule } from './filename-hints.service.ts';\n"
+          replacement = marker + "\nconst STRUCTURAL_RECOGNITION_VERSION: StructuralRecognitionSnapshot['contractVersion'] =\n  '1.0.0';\n"
+          if marker not in text:
+              raise SystemExit('expected filename-hint import not found')
+          text = text.replace(marker, replacement, 1)
+          text = text.replace(
+              'contractVersion: STRUCTURAL_RECOGNITION_CONTRACT_VERSION,',
+              'contractVersion: STRUCTURAL_RECOGNITION_VERSION,',
+              1,
+          )
+          path.write_text(text)
+          PY
+          pnpm --filter @profeplan/knowledge-factory remove @profeplan/types
+          pnpm exec prettier --write packages/knowledge-factory/src/cartography/structural-recognition.service.ts
+      - name: Prove structural cartography tests
         run: node --experimental-strip-types --test packages/knowledge-factory/test/structural-recognition.test.mjs
+      - name: Commit verified runtime-boundary fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages/knowledge-factory/src/cartography/structural-recognition.service.ts packages/knowledge-factory/package.json pnpm-lock.yaml
+          git commit -m "fix(knowledge-factory): keep cartography types dependency type-only"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
