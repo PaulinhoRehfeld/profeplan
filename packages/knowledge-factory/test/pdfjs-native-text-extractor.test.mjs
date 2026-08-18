@@ -18,18 +18,31 @@ function escapePdfString(value) {
   return value.replaceAll('\\', '\\\\').replaceAll('(', '\\(').replaceAll(')', '\\)');
 }
 
-function buildSyntheticPdf(pageTexts) {
+function normalizePageSpec(page) {
+  if (typeof page === 'string') {
+    return page.trim().length === 0 ? [] : [{ text: page, x: 72, y: 720 }];
+  }
+  return page;
+}
+
+function buildSyntheticPdf(pageSpecs) {
+  const pages = pageSpecs.map(normalizePageSpec);
   const objects = [];
-  const pageObjectNumbers = pageTexts.map((_, index) => 4 + index * 2);
+  const pageObjectNumbers = pages.map((_, index) => 4 + index * 2);
 
   objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-  objects[2] = `<< /Type /Pages /Kids [${pageObjectNumbers.map((number) => `${number} 0 R`).join(' ')}] /Count ${pageTexts.length} >>`;
+  objects[2] = `<< /Type /Pages /Kids [${pageObjectNumbers.map((number) => `${number} 0 R`).join(' ')}] /Count ${pages.length} >>`;
   objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
 
-  for (const [index, text] of pageTexts.entries()) {
+  for (const [index, blocks] of pages.entries()) {
     const pageObjectNumber = pageObjectNumbers[index];
     const contentObjectNumber = pageObjectNumber + 1;
-    const stream = `BT\n/F1 14 Tf\n72 720 Td\n(${escapePdfString(text)}) Tj\nET`;
+    const stream = blocks
+      .map(
+        ({ text, x, y }) =>
+          `BT\n/F1 14 Tf\n1 0 0 1 ${x} ${y} Tm\n(${escapePdfString(text)}) Tj\nET`
+      )
+      .join('\n');
 
     objects[pageObjectNumber] =
       `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] ` +
@@ -91,10 +104,49 @@ test('PDF.js adapter extracts native text page by page from an in-memory synthet
   assert.equal(result.pages[0].elements[0].logicalLocator, 'page:1/text:1');
 });
 
-test('PDF.js adapter does not mutate the governed artifact bytes', async () => {
-  const body = buildSyntheticPdf(['Bytes sinteticos imutaveis']);
+test('PDF.js adapter preserves physical pages, empty-page gaps and parser-observed block order', async () => {
+  const body = buildSyntheticPdf([
+    [
+      { text: 'Titulo sintetico', x: 72, y: 740 },
+      { text: 'Bloco esquerdo', x: 72, y: 680 },
+      { text: 'Bloco direito', x: 320, y: 680 },
+    ],
+    [],
+    [{ text: 'Retomada apos pagina vazia', x: 72, y: 720 }],
+  ]);
+
+  const result = await extractVerifiedNativeText(
+    new PdfJsNativeTextExtractorAdapter(),
+    verifiedArtifact(body)
+  );
+
+  assert.equal(result.pageCount, 3);
+  assert.deepEqual(
+    result.pages.map((page) => page.physicalPageNumber),
+    [1, 2, 3]
+  );
+  assert.equal(result.pages[1].text, '');
+  assert.deepEqual(result.pages[1].elements, []);
+  assert.deepEqual(
+    result.pages[0].elements.map((element) => element.logicalLocator),
+    ['page:1/text:1', 'page:1/text:2', 'page:1/text:3']
+  );
+  assert.deepEqual(
+    result.pages[0].elements.map((element) => element.text),
+    ['Titulo sintetico', 'Bloco esquerdo', 'Bloco direito']
+  );
+  assert.match(result.pages[2].text, /Retomada apos pagina vazia/);
+});
+
+test('PDF.js adapter keeps escaped PDF text observable without changing the governed bytes', async () => {
+  const body = buildSyntheticPdf(['Texto com \\ barra e (parenteses)']);
   const before = body.slice();
-  await extractVerifiedNativeText(new PdfJsNativeTextExtractorAdapter(), verifiedArtifact(body));
+  const result = await extractVerifiedNativeText(
+    new PdfJsNativeTextExtractorAdapter(),
+    verifiedArtifact(body)
+  );
+
+  assert.match(result.pages[0].text, /Texto com \\ barra e \(parenteses\)/);
   assert.deepEqual(body, before);
 });
 
