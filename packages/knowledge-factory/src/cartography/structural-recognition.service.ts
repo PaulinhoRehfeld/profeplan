@@ -441,16 +441,9 @@ export class StructuralRecognitionService {
       ? physicalByPrintedLabel.get(referenceEntry.declaredPrintedPageLabel)
       : undefined;
     const excludedEntries = new Set(
-      [teacherEntry, referenceEntry].filter(
-        (entry): entry is ParsedTocEntry => entry !== undefined
-      )
+      [teacherEntry, referenceEntry].filter((entry): entry is ParsedTocEntry => entry !== undefined)
     );
-    const drafts = tocNodeDrafts(
-      entries,
-      baseInspection.pageRefs,
-      vocabulary,
-      excludedEntries
-    );
+    const drafts = tocNodeDrafts(entries, baseInspection.pageRefs, vocabulary, excludedEntries);
     const rootStarts = drafts
       .filter((draft) => draft.rank === 1 && draft.startPhysicalPage)
       .map((draft) => draft.startPhysicalPage as number);
