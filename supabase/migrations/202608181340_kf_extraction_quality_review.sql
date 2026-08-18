@@ -376,7 +376,7 @@ BEGIN
       RAISE EXCEPTION USING ERRCODE='22023', MESSAGE='authorization purpose must be extraction';
     END IF;
     IF public.kf_extraction_text_internal(v_evidence->'checkpoint','authorizationEvidence.checkpoint')
-      <> CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END THEN
+      <> (CASE WHEN p_operation='begin_extraction' THEN 'claim' ELSE 'finalization' END) THEN
       RAISE EXCEPTION USING ERRCODE='22023', MESSAGE='authorization checkpoint is invalid for operation';
     END IF;
     IF public.kf_extraction_timestamp_internal(v_evidence->'evaluatedAt','authorizationEvidence.evaluatedAt')
