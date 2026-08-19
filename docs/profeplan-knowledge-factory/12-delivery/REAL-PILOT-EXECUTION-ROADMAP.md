@@ -14,6 +14,7 @@ Documento normativo de referência: [REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITIO
 | Natureza do uso declarada (referencial, não cópia) | ✅ | Seção 2 do documento de fronteira — PR #120 |
 | Base jurídica de acesso ao exemplar | ✅ | Seção 3.1 — acesso próprio do professor via cadastro na editora |
 | Ambiente descartável definido | ✅ | Seção 3.2 — pasta dedicada em `private-inputs/pnld/piloto-real/<slug>/`, fora do Git |
+| Pasta do Livro 0 (Sociologia) criada | ✅ | `private-inputs/pnld/piloto-real/livro-0-sociologia/`, fora do Git, com `LEIA-ME.txt` |
 | Retenção definida | ✅ | Seção 3.2 — 30 dias corridos ou até a revisão humana, o que ocorrer primeiro |
 | Descarte definido | ✅ | Seção 3.2 — remoção do arquivo/artefatos, responsável: o próprio responsável pelo projeto |
 | Revisão humana definida | ✅ | Seção 3.2 — o responsável pelo projeto revisa antes de qualquer promoção |
@@ -23,7 +24,7 @@ Documento normativo de referência: [REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITIO
 | Parte única delimitada | ⬜ | uma parte editorial (nunca a obra inteira) — depende do usuário |
 | Páginas físicas delimitadas | ⬜ | intervalo exato autorizado — depende do usuário |
 
-**A Etapa 0 só é considerada concluída quando todos os itens acima estiverem ✅.** 7/11 itens já
+**A Etapa 0 só é considerada concluída quando todos os itens acima estiverem ✅.** 8/12 itens já
 estão concluídos. Os 4 itens restantes exigem que o usuário forneça o arquivo real e delimite a
 obra/parte/páginas — não podem ser preenchidos por decisão técnica. Enquanto houver qualquer ⬜
 nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
@@ -32,7 +33,7 @@ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
 
 | Item | Status | Nota |
 |---|---|---|
-| Arquivo depositado em `private-inputs/pnld` (fora do Git) | ⬜ | |
+| Arquivo depositado em `private-inputs/pnld/piloto-real/livro-0-sociologia/` (fora do Git) | ⬜ | aguardando o PDF do Livro 0 (Sociologia) |
 | Identidade do arquivo e assinatura mínima confirmadas | ⬜ | |
 | Reconhecimento estrutural aplicado à janela inicial | ⬜ | sumário, organização da obra, paginação |
 | Mapa candidato da parte produzido | ⬜ | árvore editorial preliminar |
@@ -84,3 +85,7 @@ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
 - 19/08/2026 — Etapa 0 avança para 7/11: política operacional padrão definida (ambiente, retenção,
   descarte, revisão) e proibições confirmadas como já vinculantes. Restam apenas os 4 itens que
   dependem de uma obra real específica (obra/edição, arquivo, parte única, páginas físicas).
+- 19/08/2026 — criada a pasta dedicada `private-inputs/pnld/piloto-real/livro-0-sociologia/`
+  (fora do Git, com `LEIA-ME.txt`) para o "Livro 0", um livro de Sociologia que servirá de modelo.
+  Etapa 0 avança para 8/12. Aguardando o depósito do PDF pelo usuário para prosseguir com
+  identidade do arquivo, obra/edição, parte única e páginas físicas.
