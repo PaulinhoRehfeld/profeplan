@@ -81,6 +81,21 @@ Branches e PRs continuam sendo a unidade preferencial de isolamento e revisão. 
 - revisão pós-merge e CI pós-merge permanecem recomendados para mudanças técnicas relevantes, mas não criam automaticamente um novo gate humano antes da próxima atividade de Nível A;
 - avanço concorrente da `main` deve ser reconciliado e auditado, sem uso de reset/rebase destrutivo por conveniência.
 
+## Eficiência de contexto e custo
+
+A proporcionalidade ao risco não implica uso indiscriminado de agentes ou modelos avançados. Dentro de qualquer nível de autorização, a execução deve usar o menor grau de autonomia e contexto que ainda preserve correção e auditabilidade.
+
+A política operacional detalhada está em [COST-AWARE-EXECUTION-MODE.md](COST-AWARE-EXECUTION-MODE.md).
+
+Em síntese:
+
+- a conversa principal orquestra decisões, arquitetura e análise;
+- o terminal local é preferido para execução determinística;
+- uma conversa de execução pode operar com contexto mínimo por meio de `Execution Packs`;
+- Work/Codex ou agente avançado é escalado quando autonomia, exploração ou iteração trouxerem ganho material;
+- decisões documentadas não devem ser redescobertas repetidamente por sessões agênticas;
+- economia de contexto/créditos nunca reduz gates jurídicos, de segurança ou de autorização.
+
 ## Aplicação a C.3
 
 Após integração da definição de C.3:
