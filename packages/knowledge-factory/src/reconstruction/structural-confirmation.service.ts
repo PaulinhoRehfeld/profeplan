@@ -8,7 +8,8 @@ import type {
   StructuralRecognitionSnapshot,
 } from '@profeplan/types';
 
-const STRUCTURAL_CONFIRMATION_VERSION: StructuralConfirmationSnapshot['contractVersion'] = '1.0.0';
+const STRUCTURAL_CONFIRMATION_VERSION: StructuralConfirmationSnapshot['contractVersion'] =
+  '1.0.0';
 
 export interface StructuralCorrectionInput {
   readonly kind?: CartographicNodeKind;
@@ -57,7 +58,9 @@ function assertLinkedSnapshots(
   reconstruction: PartReconstructionCandidateSnapshot
 ): void {
   if (reconstruction.structuralRecognitionSnapshotId !== recognition.snapshotId) {
-    throw new Error('structural confirmation requires reconstruction from the supplied recognition');
+    throw new Error(
+      'structural confirmation requires reconstruction from the supplied recognition'
+    );
   }
   if (reconstruction.artifactSha256 !== recognition.artifactSha256) {
     throw new Error('structural confirmation artifact digest mismatch');
@@ -121,7 +124,9 @@ function ancestry(
   }));
 }
 
-function cartographicEvidence(root: CartographicNodeCandidate): StructuralConfirmationEvidenceRef[] {
+function cartographicEvidence(
+  root: CartographicNodeCandidate
+): StructuralConfirmationEvidenceRef[] {
   return root.evidence.map((evidence) => ({
     evidenceId: `structural-confirmation:${evidence.evidenceId}`,
     kind: 'cartographic_node' as const,
@@ -136,7 +141,9 @@ function reconstructionEvidence(
   elementIds: readonly string[]
 ): StructuralConfirmationEvidenceRef[] {
   const requested = new Set(elementIds);
-  const elements = reconstruction.elements.filter((element) => requested.has(element.elementId));
+  const elements = reconstruction.elements.filter((element) =>
+    requested.has(element.elementId)
+  );
   if (elements.length !== requested.size) {
     throw new Error('structural confirmation evidence element is absent from reconstruction');
   }
@@ -194,7 +201,9 @@ export class StructuralConfirmationService {
       if (!corroboration) {
         throw new Error('structural confirmation requires body corroboration of the root title');
       }
-      const localEvidence = reconstructionEvidence(request.reconstruction, [corroboration.elementId]);
+      const localEvidence = reconstructionEvidence(request.reconstruction, [
+        corroboration.elementId,
+      ]);
       assertEvidenceInsideScope(localEvidence, request.reconstruction.partScope.pageRange);
 
       return {
