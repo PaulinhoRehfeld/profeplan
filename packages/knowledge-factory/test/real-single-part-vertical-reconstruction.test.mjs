@@ -58,6 +58,13 @@ function isInsideRange(physicalPageNumber, range) {
   );
 }
 
+function inspectedPageCount(ranges) {
+  return ranges.reduce(
+    (sum, range) => sum + range.endPhysicalPage - range.startPhysicalPage + 1,
+    0
+  );
+}
+
 async function temporaryVerifiedArtifact(path) {
   const buffer = await readFile(path);
   const sha256 = createHash('sha256').update(buffer).digest('hex');
@@ -101,6 +108,12 @@ runRealPilot(
     assert.equal(recognition.snapshot.contractVersion, '1.0.0');
     assert.equal(recognition.snapshot.totalPhysicalPages, 449);
     assert.equal(recognition.snapshot.artifactSha256, GOVERNED_SHA256);
+    assert.equal(
+      inspectedPageCount(recognition.snapshot.inspectedPageRanges) <
+        recognition.snapshot.totalPhysicalPages,
+      true,
+      'cartography must remain selective instead of reading all 449 physical pages'
+    );
 
     const tocRegion = recognition.snapshot.regions.find(
       (region) => region.kind === 'table_of_contents'
@@ -162,7 +175,15 @@ runRealPilot(
       confidence: section.confidence,
     };
 
-    const reconstruction = await new PartReconstructionService(inspector).reconstruct({
+    const reconstructionRequests = [];
+    const reconstructionInspector = {
+      async inspect(request) {
+        reconstructionRequests.push(request.pageRanges);
+        return inspector.inspect(request);
+      },
+    };
+
+    const reconstruction = await new PartReconstructionService(reconstructionInspector).reconstruct({
       snapshotId: 'part-reconstruction:first-real-evolucionismo-social',
       artifact,
       recognition: recognition.snapshot,
@@ -170,6 +191,11 @@ runRealPilot(
       createdAt: '2026-08-18T23:31:00.000Z',
     });
 
+    assert.deepEqual(
+      reconstructionRequests,
+      [[{ startPhysicalPage: 34, endPhysicalPage: 35 }]],
+      'reconstruction must request exactly the governed two-page CartographicPartScope and nothing else'
+    );
     assert.equal(reconstruction.contractVersion, '1.0.0');
     assert.deepEqual(reconstruction.partScope.pageRange, {
       startPhysicalPage: 34,
@@ -194,7 +220,7 @@ runRealPilot(
     assert.deepEqual(
       outsideScope,
       [],
-      'this pilot section must not require auxiliary deep reads outside its mapped scope'
+      'reconstruction output must not contain evidence from outside its mapped scope'
     );
 
     const partTitle = reconstruction.elements.find((element) => element.kind === 'part_title');
