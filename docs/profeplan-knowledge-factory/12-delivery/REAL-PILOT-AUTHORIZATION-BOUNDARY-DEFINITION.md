@@ -68,13 +68,31 @@ Consequência arquitetônica vinculante para qualquer implementação de C.3–C
 
 Antes de qualquer execução, os campos abaixo devem estar preenchidos e confirmados por quem detém
 autoridade jurídica sobre o material. A declaração da seção 2 esclarece a **finalidade** do
-processamento, mas não preenche por si só o campo "Base jurídica" abaixo — o campo exige a
-confirmação de que existe acesso legítimo ao exemplar específico que será lido:
+processamento; a declaração abaixo (3.1) endereça especificamente o campo "Base jurídica":
+
+### 3.1 Base jurídica — declaração do responsável pelo projeto (19/08/2026)
+
+> Os exemplares a serem utilizados são cópias às quais o responsável, na condição de professor,
+> tem acesso liberado diretamente pelas editoras, mediante cadastro próprio junto a elas. As
+> editoras incentivam esse acesso para consulta e elaboração de material didático. Os arquivos
+> não são compostos apenas de imagens digitalizadas nem possuem marca d'água ou criptografia que
+> restrinjam sua leitura/consulta.
+
+Isso preenche o campo "Base jurídica" **para exemplares que atendam a essa descrição** (acesso
+próprio do professor, liberado pela editora, para consulta/elaboração de material — não cópia de
+terceiros nem material obtido fora desse canal). Continua valendo, por obra individual, que:
+
+- cada exemplar efetivamente usado deve se enquadrar nessa descrição (acesso cadastrado próprio
+  junto à editora daquela obra específica), não apenas em geral;
+- a finalidade permanece estritamente referencial (seção 2) — a base jurídica de acesso ao
+  exemplar não autoriza, por si só, redistribuição, republicação ou reprodução integral;
+- esta é uma auto-declaração do responsável pelo projeto, registrada para fins de rastreabilidade
+  documental; ela não constitui parecer jurídico independente.
 
 | Campo | Descrição | Preenchido? |
 |---|---|---|
 | Obra/edição | título, editora, edição, componente curricular, PNLD/ano | ⬜ pendente |
-| Base jurídica | origem legítima do exemplar (compra, licença, posse do professor/escola no PNLD) + confirmação de que o uso é apenas referencial, conforme seção 2 | ⬜ pendente |
+| Base jurídica | acesso próprio do professor, liberado pela editora mediante cadastro, para consulta/elaboração de material; arquivo sem watermark/criptografia — ver 3.1 | ✅ preenchido |
 | Arquivo | identidade do arquivo, hash/versão, origem | ⬜ pendente |
 | Parte única | uma parte editorial delimitada (ex.: uma introdução, um capítulo) — nunca a obra inteira | ⬜ pendente |
 | Páginas físicas | intervalo exato de páginas físicas autorizadas para leitura profunda | ⬜ pendente |
