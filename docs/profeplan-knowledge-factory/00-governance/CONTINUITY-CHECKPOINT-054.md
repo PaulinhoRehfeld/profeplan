@@ -1,4 +1,4 @@
-# CONTINUITY CHECKPOINT 054 — primeiro piloto real VERDE; integração do PR #125 aguarda decisão humana
+# CONTINUITY CHECKPOINT 054 — primeiro piloto real VERDE; aprovado para integração do PR #125
 
 Data: 19 de agosto de 2026.
 
@@ -7,6 +7,8 @@ Data: 19 de agosto de 2026.
 O primeiro piloto real governado da ProfePlan Knowledge Factory foi executado materialmente contra o PDF real autorizado e classificado como **VERDE** pelo protocolo `REAL-PILOT-RESULT-DECISION-PROTOCOL.md`.
 
 A execução ocorreu no worktree local dedicado ao PR #125, sem commit/publicação do PDF e sem uso de conteúdo real em CI remoto.
+
+Em 19/08/2026, após apresentação do resultado resumido, o responsável pelo projeto registrou decisão humana **APROVADO** e autorizou a continuidade da ação de integração.
 
 ## 2. Artefato e escopo executados
 
@@ -79,14 +81,14 @@ A diferença real observada no Sumário foi resolvida por generalização locali
 - alteração de `PartReconstructionService`;
 - obra inteira como contexto.
 
-## 6. Estado do roadmap após a prova
+## 6. Estado do roadmap após a prova e revisão humana
 
 - Etapa 0 — **12/12 concluída**;
 - Etapa 1 — **4/4 concluída**;
 - Etapa 2 — **5/5 concluída**;
 - Etapa 3 — **5/5 concluída no escopo C.4-local do piloto**;
-- Etapa 4 — classificação técnica concluída; decisão humana `aprovado/corrigido/rejeitado` ainda pendente;
-- Etapa 5 — descarte ainda pendente e não deve ser antecipado antes do fechamento humano do piloto.
+- Etapa 4 — **revisão humana concluída; decisão APROVADO**;
+- Etapa 5 — descarte permanece pendente conforme política de retenção e não bloqueia a integração do código/documentação, desde que o PDF continue fora do Git e fora de qualquer persistência hospedada.
 
 ## 7. PR #125
 
@@ -94,14 +96,14 @@ Linha ativa:
 
 `feat/knowledge-factory-real-pilot-reconciliation-v2`
 
-O PR #125 deve permanecer Draft até a decisão humana final do responsável sobre o resultado resumido.
+A decisão humana de 19/08/2026 autoriza:
 
-Se a decisão for `aprovado` e os checks remotos do HEAD final estiverem verdes:
-
-1. registrar a aprovação;
-2. tornar o PR pronto para revisão;
-3. integrar o PR #125 conforme a estratégia governada do repositório;
+1. tornar o PR #125 pronto para revisão;
+2. confirmar os checks remotos do HEAD final;
+3. integrar o PR #125 por squash, preservando o gate de SHA do HEAD;
 4. somente após a integração, tornar elegível a entrada mínima em C.4 descrita por `POST-REAL-PILOT-C4-ENTRY-PLAN.md`.
+
+A aprovação não autoriza corpus, embeddings, retrieval/RAG, C.5–C.7 ou produção.
 
 ## 8. Próximo problema arquitetônico elegível após integração
 
@@ -116,7 +118,7 @@ Hipótese preferencial, ainda não promovida a contrato:
 
 ## 9. Escopo negativo preservado
 
-O VERDE deste piloto não autoriza:
+O VERDE e a aprovação deste piloto não autorizam:
 
 - processar a obra inteira como contexto;
 - outra obra/coleção;
@@ -132,3 +134,5 @@ O VERDE deste piloto não autoriza:
 ## 10. Regra de continuidade
 
 Checkpoint 054 substitui o Checkpoint 053 como ponto operacional mais recente da linha do primeiro piloto real. O Checkpoint 053 permanece histórico e correto para o estado anterior à execução material.
+
+Após o squash do PR #125, criar novo checkpoint somente se houver ganho real de continuidade ao abrir C.4 mínimo; não criar microcheckpoint para ações intermediárias sem valor arquitetônico.
