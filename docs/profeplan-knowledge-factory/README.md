@@ -91,6 +91,7 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Primeira prova vertical — Introdução](12-delivery/INTRODUCTION-VERTICAL-RECONSTRUCTION-PROOF.md)
 - [Segunda prova vertical — Unidade 1](12-delivery/SECOND-PART-VERTICAL-RECONSTRUCTION-PROOF.md)
 - [Checkpoint 051 — duas provas verticais integradas](00-governance/CONTINUITY-CHECKPOINT-051.md)
+- [Fronteira jurídica e operacional do piloto real (pré-autorização)](12-delivery/REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITION.md)
 
 ## Estado atual
 
@@ -127,6 +128,7 @@ continua definindo os limites de autorização.
 - segunda prova vertical da Unidade 1 — integrada pelo PR nº 116;
 - C.3.6 / PR nº 110 — aberto, não integrado e suspenso;
 - C.4-local candidata — generalização mínima comprovada; C.4 integral e C.4–C.7 permanecem bloqueados;
+- fronteira do piloto real definida documentalmente; aguardando dados da obra/parte e autorização Nível B;
 - conteúdo real/PDF/livro/PNLD — somente por autorização Nível B juridicamente delimitada;
 - produção, credenciais e dados pessoais/sensíveis — somente por autorização Nível C específica.
 
