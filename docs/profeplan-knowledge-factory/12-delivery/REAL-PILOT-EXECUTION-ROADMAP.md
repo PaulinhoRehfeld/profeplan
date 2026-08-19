@@ -7,6 +7,19 @@
 
 Documento normativo de referência: [REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITION.md](REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITION.md).
 
+Política operacional de custo/contexto: [COST-AWARE-EXECUTION-MODE.md](../00-governance/COST-AWARE-EXECUTION-MODE.md).
+
+## Modo operacional deste piloto
+
+A execução das etapas abaixo deve separar decisão de execução mecânica:
+
+- arquitetura, delimitação da parte, análise e critérios de sucesso permanecem na conversa orquestradora;
+- o PDF e demais inputs privados permanecem no ambiente local autorizado e fora do Git;
+- ações determinísticas devem ser preparadas como `Execution Packs` mínimos e executadas no terminal local;
+- apenas evidências necessárias à próxima decisão retornam para análise;
+- Work/Codex ou agente avançado só deve ser escalado quando exploração autônoma ou ciclos complexos de implementação/debugging trouxerem ganho material;
+- o modo econômico não altera a classificação Nível A/B/C nem qualquer gate jurídico, de segurança ou de proveniência.
+
 ## Etapa 0 — Fronteira jurídica e operacional (pré-requisito de qualquer execução real)
 
 | Item | Status | Nota |
@@ -89,3 +102,7 @@ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
   (fora do Git, com `LEIA-ME.txt`) para o "Livro 0", um livro de Sociologia que servirá de modelo.
   Etapa 0 avança para 8/12. Aguardando o depósito do PDF pelo usuário para prosseguir com
   identidade do arquivo, obra/edição, parte única e páginas físicas.
+- 19/08/2026 — adotado o modo de execução consciente de custo/contexto: conversa principal como
+  orquestradora, terminal local para execução determinística, `Execution Packs` mínimos e uso de
+  Work/Codex ou agente avançado somente quando a autonomia trouxer ganho material. A mudança é
+  operacional e não altera gates Nível A/B/C nem o escopo técnico do piloto.
