@@ -91,16 +91,36 @@ terceiros nem material obtido fora desse canal). Continua valendo, por obra indi
 
 | Campo | Descrição | Preenchido? |
 |---|---|---|
-| Obra/edição | título, editora, edição, componente curricular, PNLD/ano | ⬜ pendente |
+| Obra/edição | título, editora, edição, componente curricular, PNLD/ano | ⬜ pendente — depende de uma obra real específica |
 | Base jurídica | acesso próprio do professor, liberado pela editora mediante cadastro, para consulta/elaboração de material; arquivo sem watermark/criptografia — ver 3.1 | ✅ preenchido |
-| Arquivo | identidade do arquivo, hash/versão, origem | ⬜ pendente |
-| Parte única | uma parte editorial delimitada (ex.: uma introdução, um capítulo) — nunca a obra inteira | ⬜ pendente |
-| Páginas físicas | intervalo exato de páginas físicas autorizadas para leitura profunda | ⬜ pendente |
-| Ambiente | ambiente temporário e descartável, não produtivo, isolado do restante do sistema | ⬜ pendente |
-| Retenção | prazo máximo de retenção do arquivo/artefatos derivados | ⬜ pendente |
-| Descarte | mecanismo e responsável pelo descarte ao final do prazo | ⬜ pendente |
-| Revisão | quem revisa humanamente o resultado antes de qualquer uso posterior | ⬜ pendente |
-| Proibições | proibição explícita de publicação, corpus, produção ou reuso fora do piloto; e, agora, proibição explícita de armazenar/expor texto literal extenso da obra (apenas referência) | ⬜ pendente |
+| Arquivo | identidade do arquivo, hash/versão, origem | ⬜ pendente — depende de uma obra real específica |
+| Parte única | uma parte editorial delimitada (ex.: uma introdução, um capítulo) — nunca a obra inteira | ⬜ pendente — depende de uma obra real específica |
+| Páginas físicas | intervalo exato de páginas físicas autorizadas para leitura profunda | ⬜ pendente — depende de uma obra real específica |
+| Ambiente | ambiente temporário e descartável, não produtivo, isolado do restante do sistema — ver 3.2 | ✅ preenchido |
+| Retenção | prazo máximo de retenção do arquivo/artefatos derivados — ver 3.2 | ✅ preenchido |
+| Descarte | mecanismo e responsável pelo descarte ao final do prazo — ver 3.2 | ✅ preenchido |
+| Revisão | quem revisa humanamente o resultado antes de qualquer uso posterior — ver 3.2 | ✅ preenchido |
+| Proibições | proibição explícita de publicação, corpus, produção ou reuso fora do piloto; e proibição explícita de armazenar/expor texto literal extenso da obra (apenas referência) — já vinculante pelas seções 2 e 6 | ✅ preenchido |
+
+### 3.2 Política operacional padrão (ambiente, retenção, descarte, revisão)
+
+Estes quatro campos são decisões de processo, não fatos sobre uma obra específica, e por isso podem
+ser definidos como política padrão do piloto, sem depender de um arquivo real já existir:
+
+- **Ambiente:** pasta dedicada e efêmera `private-inputs/pnld/piloto-real/<slug-da-obra>/`, fora do
+  Git, sem infraestrutura hospedada, sem Supabase/Storage de produção e sem cópia do arquivo fora
+  dessa pasta. Processamento local, dentro deste workspace.
+- **Retenção:** 30 dias corridos a partir do depósito do arquivo, ou até a conclusão da revisão
+  humana (o que ocorrer primeiro). Qualquer prorrogação exige nova decisão explícita registrada
+  neste documento.
+- **Descarte:** remoção do arquivo físico e de todos os artefatos temporários da pasta dedicada,
+  ao final do prazo de retenção ou logo após a revisão humana concluir, o que ocorrer primeiro.
+  Responsável: o responsável pelo projeto, com a exclusão confirmada na Etapa 5 do
+  [roadmap de execução](REAL-PILOT-EXECUTION-ROADMAP.md).
+- **Revisão:** o responsável pelo projeto revisa o resultado (estrutura, referências e metadados
+  produzidos) antes de qualquer promoção ou reuso. Nenhuma promoção automática é permitida.
+
+Esta política é o padrão aplicável salvo decisão explícita em contrário registrada por obra.
 
 ## 4. Regras que já se aplicam independentemente do preenchimento
 
@@ -148,9 +168,13 @@ Nenhuma etapa desta sequência deve ser executada antes da autorização explíc
 
 ## 7. Próximo passo real
 
-Este documento fica pronto para revisão. O avanço seguinte depende de uma decisão humana explícita:
-fornecer os dados da seção 3 e autorizar formalmente o piloto de Nível B, ou manter a Fase C parada
-neste ponto até que essa autorização exista.
+Restam quatro campos pendentes na seção 3, e todos dependem de uma obra real específica que ainda
+não existe neste ambiente: **Obra/edição, Arquivo, Parte única e Páginas físicas**. Os demais
+campos (base jurídica, ambiente, retenção, descarte, revisão, proibições) já estão preenchidos.
+
+O avanço seguinte depende de uma decisão humana explícita fornecendo esses quatro dados e
+autorizando formalmente o piloto de Nível B, ou manter a Fase C parada neste ponto até que essa
+decisão exista.
 
 Nenhum arquivo real deve ser processado, e nenhuma etapa da seção 5 deve começar, sem essa decisão.
 

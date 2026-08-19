@@ -13,18 +13,20 @@ Documento normativo de referência: [REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITIO
 |---|---|---|
 | Natureza do uso declarada (referencial, não cópia) | ✅ | Seção 2 do documento de fronteira — PR #120 |
 | Base jurídica de acesso ao exemplar | ✅ | Seção 3.1 — acesso próprio do professor via cadastro na editora |
-| Obra/edição definida | ⬜ | título, editora, edição, componente curricular, PNLD/ano |
-| Arquivo identificado | ⬜ | identidade do arquivo, hash/versão, origem |
-| Parte única delimitada | ⬜ | uma parte editorial (nunca a obra inteira) |
-| Páginas físicas delimitadas | ⬜ | intervalo exato autorizado |
-| Ambiente descartável definido | ⬜ | não produtivo, isolado |
-| Retenção definida | ⬜ | prazo máximo do arquivo/artefatos |
-| Descarte definido | ⬜ | mecanismo e responsável |
-| Revisão humana definida | ⬜ | quem revisa antes de qualquer uso posterior |
-| Proibições confirmadas | ⬜ | sem publicação/corpus/produção; sem texto literal extenso |
+| Ambiente descartável definido | ✅ | Seção 3.2 — pasta dedicada em `private-inputs/pnld/piloto-real/<slug>/`, fora do Git |
+| Retenção definida | ✅ | Seção 3.2 — 30 dias corridos ou até a revisão humana, o que ocorrer primeiro |
+| Descarte definido | ✅ | Seção 3.2 — remoção do arquivo/artefatos, responsável: o próprio responsável pelo projeto |
+| Revisão humana definida | ✅ | Seção 3.2 — o responsável pelo projeto revisa antes de qualquer promoção |
+| Proibições confirmadas | ✅ | Seções 2 e 6 — sem publicação/corpus/produção; sem texto literal extenso |
+| Obra/edição definida | ⬜ | título, editora, edição, componente curricular, PNLD/ano — depende do usuário |
+| Arquivo identificado | ⬜ | identidade do arquivo, hash/versão, origem — depende do usuário |
+| Parte única delimitada | ⬜ | uma parte editorial (nunca a obra inteira) — depende do usuário |
+| Páginas físicas delimitadas | ⬜ | intervalo exato autorizado — depende do usuário |
 
-**A Etapa 0 só é considerada concluída quando todos os itens acima estiverem ✅.** Enquanto houver
-qualquer ⬜ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
+**A Etapa 0 só é considerada concluída quando todos os itens acima estiverem ✅.** 7/11 itens já
+estão concluídos. Os 4 itens restantes exigem que o usuário forneça o arquivo real e delimite a
+obra/parte/páginas — não podem ser preenchidos por decisão técnica. Enquanto houver qualquer ⬜
+nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
 
 ## Etapa 1 — Cartografia preliminar da parte
 
@@ -79,3 +81,6 @@ qualquer ⬜ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda nã
 
 - 19/08/2026 — criação do roadmap; Etapa 0 com 2/11 itens concluídos (natureza do uso e base
   jurídica); demais etapas não iniciadas.
+- 19/08/2026 — Etapa 0 avança para 7/11: política operacional padrão definida (ambiente, retenção,
+  descarte, revisão) e proibições confirmadas como já vinculantes. Restam apenas os 4 itens que
+  dependem de uma obra real específica (obra/edição, arquivo, parte única, páginas físicas).
