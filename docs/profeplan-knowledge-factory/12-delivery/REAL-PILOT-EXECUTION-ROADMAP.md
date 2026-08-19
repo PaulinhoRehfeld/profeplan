@@ -19,24 +19,65 @@ Documento normativo de referência: [REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITIO
 | Descarte definido | ✅ | Seção 3.2 — remoção do arquivo/artefatos, responsável: o próprio responsável pelo projeto |
 | Revisão humana definida | ✅ | Seção 3.2 — o responsável pelo projeto revisa antes de qualquer promoção |
 | Proibições confirmadas | ✅ | Seções 2 e 6 — sem publicação/corpus/produção; sem texto literal extenso |
-| Obra/edição definida | ⬜ | título, editora, edição, componente curricular, PNLD/ano — depende do usuário |
-| Arquivo identificado | ⬜ | identidade do arquivo, hash/versão, origem — depende do usuário |
-| Parte única delimitada | ⬜ | uma parte editorial (nunca a obra inteira) — depende do usuário |
-| Páginas físicas delimitadas | ⬜ | intervalo exato autorizado — depende do usuário |
+| Obra/edição definida | ✅ | Sociologia — Volume Único, Coleção "Do Seu Jeito", PNLD EM 2026 (Cód. 0113P260101204816) |
+| Arquivo identificado | ✅ | `DOSEUJEITO_PNLD26_SOCIOLOGIA_VU_MP.pdf`, 119 MB, 449 págs. físicas, SHA-256: `1e7f8d61...ad82e39a` |
+| Parte única delimitada | ⬜ | usuário ainda não escolheu qual parte processar — ver mapa abaixo |
+| Páginas físicas delimitadas | ⬜ | definido após escolha da parte única |
 
-**A Etapa 0 só é considerada concluída quando todos os itens acima estiverem ✅.** 8/12 itens já
-estão concluídos. Os 4 itens restantes exigem que o usuário forneça o arquivo real e delimite a
-obra/parte/páginas — não podem ser preenchidos por decisão técnica. Enquanto houver qualquer ⬜
-nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
+**A Etapa 0 só é considerada concluída quando todos os itens acima estiverem ✅.** 10/12 itens já
+estão concluídos. Restam apenas: **parte única** e **páginas físicas** — ambos dependem da escolha
+do usuário sobre qual parte do livro processar primeiro.
+
+### Mapa editorial do Livro 0 (cartógrafia preliminar observada, 19/08/2026)
+
+Este mapa foi construído a partir da inspeção real do arquivo. Deslocamento de paginação
+observado: página física 1 = capa; paginação impressa começa em 10 (pág física ~11). Offset ≈ +1.
+
+| Parte editorial | Pág. impressa | Pág. física (est.) |
+|---|---|---|
+| **Introdução** — O que é a sociedade? | 10 | ~11 |
+| **Unidade 1** — Antropologia | — | ~30 |
+|   Cap. 1 — Diversidade cultural e etnocentrismo | 30 | ~31 |
+|   Cap. 2 — Identidade e cultura | 44 | ~45 |
+|   Cap. 3 — Da estrutura à identidade | 70 | ~71 |
+|   Debate plural: Cotas étnico-raciais | 92 | ~93 |
+| **Unidade 2** — Antropologia no espaço e no tempo | 94 | ~95 |
+|   Cap. 4 — Antropologia no Brasil | 96 | ~97 |
+|   Cap. 5 — Antropologia contemporânea | 116 | ~117 |
+|   Debate plural: Masculinidades | 140 | ~141 |
+| **Unidade 3** — Sociologia | 142 | ~143 |
+|   Cap. 6 — Pensar a sociedade capitalista | 144 | ~145 |
+|   Cap. 7 — Mundos do trabalho | 165 | ~166 |
+|   Cap. 8 — Classe e estratificação social | 188 | ~189 |
+|   Agir no mundo | 210 | ~211 |
+| **Unidade 4** — Sociologia no espaço e no tempo | 212 | ~213 |
+|   Cap. 9 — Sociologia brasileira | 214 | ~215 |
+|   Cap. 10 — Temas contemporâneos da Sociologia | 236 | ~237 |
+|   Debate plural: Indústria cultural | 258 | ~259 |
+| **Unidade 5** — Ciência Política | 260 | ~261 |
+|   Cap. 11 — Política, poder e Estado | 262 | ~263 |
+|   Cap. 12 — Globalização e política | 280 | ~281 |
+|   Cap. 13 — A sociedade diante do Estado | 300 | ~301 |
+|   Debate plural: Protestos e manifestações | 318 | ~319 |
+| **Unidade 6** — Ciência Política no espaço e no tempo | 320 | ~321 |
+|   Cap. 14 — A política no Brasil | 322 | ~323 |
+|   Cap. 15 — Temas contemporâneos da Ciência Política | 342 | ~343 |
+|   Agir no mundo | 362 | ~363 |
+| Transcrição de áudios | 364 | ~365 |
+| Referências bibliográficas comentadas | 366 | ~367 |
+
+**Notas do mapa:** (a) deslocamento físico/impresso exato será confirmado na extração da parte
+escolhida; (b) o Manual do Professor está intercalado ao livro do estudante (tipo MP); (c) esta
+é uma cartografia candidata, não autoridade canônica — confirmação pertence a C.4.
 
 ## Etapa 1 — Cartografia preliminar da parte
 
 | Item | Status | Nota |
 |---|---|---|
-| Arquivo depositado em `private-inputs/pnld/piloto-real/livro-0-sociologia/` (fora do Git) | ⬜ | aguardando o PDF do Livro 0 (Sociologia) |
-| Identidade do arquivo e assinatura mínima confirmadas | ⬜ | |
-| Reconhecimento estrutural aplicado à janela inicial | ⬜ | sumário, organização da obra, paginação |
-| Mapa candidato da parte produzido | ⬜ | árvore editorial preliminar |
+| Arquivo depositado em `private-inputs/pnld/piloto-real/livro-0-sociologia/` (fora do Git) | ✅ | `DOSEUJEITO_PNLD26_SOCIOLOGIA_VU_MP.pdf`, 119 MB, 449 págs. físicas |
+| Identidade do arquivo e assinatura mínima confirmadas | ✅ | `%PDF-` ✅, SHA-256 registrado, tamanho confirmado |
+| Reconhecimento estrutural aplicado à janela inicial | ✅ | págs. 1–30 inspecionadas; sumário extraído; mapa editorial candidato produzido (ver Etapa 0) |
+| Mapa candidato da parte produzido | ⬜ | aguardando usuário escolher a parte (ver tabela acima) |
 
 ## Etapa 2 — Extração nativa da parte (C.3.3)
 
@@ -87,5 +128,8 @@ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
   dependem de uma obra real específica (obra/edição, arquivo, parte única, páginas físicas).
 - 19/08/2026 — criada a pasta dedicada `private-inputs/pnld/piloto-real/livro-0-sociologia/`
   (fora do Git, com `LEIA-ME.txt`) para o "Livro 0", um livro de Sociologia que servirá de modelo.
-  Etapa 0 avança para 8/12. Aguardando o depósito do PDF pelo usuário para prosseguir com
-  identidade do arquivo, obra/edição, parte única e páginas físicas.
+  Etapa 0 avança para 8/12.
+- 19/08/2026 — PDF depositado e lido com sucesso pelo PDF.js do projeto. Obra identificada:
+  Sociologia Vol. Único “Do Seu Jeito”, PNLD EM 2026. 449 págs. Sumário e mapa editorial extraídos.
+  Etapa 0 avança para 10/12. Etapa 1 parcialmente concluída (3/4). Bloqueio final: usuário
+  precisa escolher a parte única a processar.

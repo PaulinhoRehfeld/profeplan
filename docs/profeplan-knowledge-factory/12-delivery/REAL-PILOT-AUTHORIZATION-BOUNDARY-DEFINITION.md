@@ -91,11 +91,11 @@ terceiros nem material obtido fora desse canal). Continua valendo, por obra indi
 
 | Campo | Descrição | Preenchido? |
 |---|---|---|
-| Obra/edição | título, editora, edição, componente curricular, PNLD/ano | ⬜ pendente — depende de uma obra real específica |
+| Obra/edição | **Sociologia — Volume Único**, Coleção "Do Seu Jeito", Editora: Saraiva/Somos Educação, PNLD EM 2026, Código: 0113P260101204816, Área: Ciências Humanas e Sociais Aplicadas, Autores: Celso Rocha de Barros, Henrique Amorim, Igor José de Renó Machado | ✅ preenchido |
 | Base jurídica | acesso próprio do professor, liberado pela editora mediante cadastro, para consulta/elaboração de material; arquivo sem watermark/criptografia — ver 3.1 | ✅ preenchido |
-| Arquivo | identidade do arquivo, hash/versão, origem | ⬜ pendente — depende de uma obra real específica |
-| Parte única | uma parte editorial delimitada (ex.: uma introdução, um capítulo) — nunca a obra inteira | ⬜ pendente — depende de uma obra real específica |
-| Páginas físicas | intervalo exato de páginas físicas autorizadas para leitura profunda | ⬜ pendente — depende de uma obra real específica |
+| Arquivo | `DOSEUJEITO_PNLD26_SOCIOLOGIA_VU_MP.pdf`, 119 MB (123 974 827 bytes), SHA-256: `1e7f8d613fdb43a49d4a1f0a031465784b03b31b1d22e1779d279365ad82e39a`, 449 páginas físicas, depositado em `private-inputs/pnld/piloto-real/livro-0-sociologia/` | ✅ preenchido |
+| Parte única | uma parte editorial delimitada (ex.: uma introdução, um capítulo) — nunca a obra inteira | ⬜ pendente — usuário ainda não delimitou qual parte processar |
+| Páginas físicas | intervalo exato de páginas físicas autorizadas para leitura profunda | ⬜ pendente — definido após escolha da parte única |
 | Ambiente | ambiente temporário e descartável, não produtivo, isolado do restante do sistema — ver 3.2 | ✅ preenchido |
 | Retenção | prazo máximo de retenção do arquivo/artefatos derivados — ver 3.2 | ✅ preenchido |
 | Descarte | mecanismo e responsável pelo descarte ao final do prazo — ver 3.2 | ✅ preenchido |
