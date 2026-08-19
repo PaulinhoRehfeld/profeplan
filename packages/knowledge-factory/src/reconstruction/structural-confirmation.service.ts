@@ -263,8 +263,7 @@ export class StructuralConfirmationService {
       assertEvidenceInsideScope(localEvidence, request.reconstruction.partScope.pageRange);
 
       const pageRange = correction.pageRange ?? root.pageRange;
-      const printedPageLabel =
-        correction.declaredPrintedPageLabel ?? root.declaredPrintedPageLabel;
+      const printedPageLabel = correction.declaredPrintedPageLabel ?? root.declaredPrintedPageLabel;
 
       return {
         ...base,
