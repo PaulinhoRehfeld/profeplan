@@ -46,47 +46,69 @@ Plano pós-VERDE: [POST-REAL-PILOT-C4-ENTRY-PLAN.md](POST-REAL-PILOT-C4-ENTRY-PL
 | Parte única selecionada conforme Etapa 0 | ✅ | escopo profundo: físicas 34–35 |
 | Generalização mínima para Sumário fragmentado preparada | ✅ | limitada a `StructuralRecognitionService`; contratos permanecem em `1.0.0` |
 | Teste real dedicado preparado | ✅ | `real-single-part-vertical-reconstruction.test.mjs`, condicionado a `PROFEPLAN_REAL_PILOT_PDF` |
-| Teste dedicado executado materialmente contra o SHA governado | ⬜ | precisa rodar no runtime local com dependências do repositório e o PDF montado |
-| Extração nativa restrita às páginas autorizadas comprovada pelo teste | ⬜ | não declarar verde antes da execução material |
+| Teste dedicado executado materialmente contra o SHA governado | ✅ | execução local válida em 19/08/2026; teste real passou |
+| Extração nativa restrita às páginas autorizadas comprovada pelo teste | ✅ | reconstrução profunda solicitou exatamente físicas 34–35 |
+
+**Etapa 2 concluída: 5/5.** A execução material usou o PDF real governado e terminou com 132 testes passados, 0 falhas e 0 skips.
 
 ## Etapa 3 — Reconstrução estrutural local (C.4-local)
 
 | Item | Status | Nota |
 |---|---|---|
-| Reconstrução da parte sem tratar a obra inteira como unidade | ⬜ | gate depende do teste real da Etapa 2 |
-| Dupla paginação físicas 34–35 / impressas 33–34 preservada | ⬜ | critério executável do piloto |
-| Hierarquia Unidade → Capítulo → seção preservada | ⬜ | critério executável do piloto |
-| Elementos e relações apoiados por evidência | ⬜ | sem inferência global da obra |
-| Apenas referências/estrutura persistidas | ⬜ | sem texto integral |
+| Reconstrução da parte sem tratar a obra inteira como unidade | ✅ | teste real comprovou cartografia seletiva e reconstrução por `CartographicPartScope` |
+| Dupla paginação físicas 34–35 / impressas 33–34 preservada | ✅ | labels 34→33 e 35→34 verificados materialmente |
+| Hierarquia Unidade → Capítulo → seção preservada | ✅ | parentage verificada no snapshot real |
+| Elementos e relações apoiados por evidência | ✅ | asserts exigem evidência para todo elemento/relação |
+| Apenas referências/estrutura persistidas | ✅ | o teste não cria persistência do PDF/texto integral; snapshot permanece candidato e em memória |
+
+**Etapa 3 concluída: 5/5 no escopo C.4-local do piloto.** Isso não equivale à abertura ou conclusão integral do Lote C.4.
 
 ## Etapa 4 — Revisão humana
 
 | Item | Status | Nota |
 |---|---|---|
-| Resultado material revisado | ⬜ | somente após Etapas 2–3 verdes |
-| Classificação arquitetônica final registrada (A/B/C/D) | ⬜ | observação preliminar atual: **B — pequena generalização** |
-| Decisão registrada: aprovado / corrigido / rejeitado | ⬜ | |
+| Resultado material revisado | 🚧 | revisão técnica concluída; aprovação humana do responsável ainda é gate de integração |
+| Classificação arquitetônica final registrada (A/B/C/D) | ✅ | **B — pequena generalização** |
+| Decisão registrada: aprovado / corrigido / rejeitado | ⬜ | aguardando decisão humana explícita antes de tirar o PR #125 de Draft/merge |
 
 ## Etapa 5 — Descarte
 
 | Item | Status | Nota |
 |---|---|---|
-| Arquivo original descartado ao fim do prazo de retenção/revisão | ⬜ | não antecipar enquanto o piloto material estiver em andamento |
+| Arquivo original descartado ao fim do prazo de retenção/revisão | ⬜ | não antecipar antes da decisão humana e fechamento do piloto |
 | Artefatos temporários descartados | ⬜ | |
 | Descarte registrado neste roadmap | ⬜ | |
 
-## Gate de decisão imediatamente após a execução material
+## Resultado material do primeiro piloto real
 
-A execução não deve abrir uma nova fase de planejamento. O resultado será classificado pelo protocolo dedicado:
+**Classificação: VERDE.**
 
-| Estado | Interpretação | Ação imediata |
-|---|---|---|
-| INVÁLIDA | runtime/arquivo não permitiu avaliar a arquitetura | corrigir somente o ambiente e repetir |
-| VERDE | invariantes do piloto comprovados | registrar evidência → revisão humana → integrar #125 → tornar C.4 mínimo elegível |
-| AMARELO | gap localizado com arquitetura central preservada | reproduzir → correção mínima → repetir o mesmo piloto |
-| VERMELHO | princípio arquitetônico/gate violado | parar promoção → classificar causa → redefinir gate mínimo |
+Execução local válida em 19/08/2026:
 
-Nenhuma dessas rotas autoriza saltar para corpus, embeddings, retrieval/RAG ou produção.
+- pacote instalado com `pnpm 11.5.2` e Node 22.x;
+- PDF real carregado fora do Git;
+- SHA-256 governado aceito pelo teste;
+- teste real `real PNLD 2026 PDF reconstructs one mapped section without deep-reading the book` passou;
+- 132 testes totais;
+- 132 passados;
+- 0 falhas;
+- 0 cancelados;
+- 0 skips;
+- duração total aproximada: 10,2 s;
+- duração do teste real: aproximadamente 7,54 s.
+
+Pelos asserts já incorporados ao teste, o VERDE material implica simultaneamente: 449 páginas físicas; cartografia seletiva; Sumário real; hierarquia Unidade 1 → Capítulo 1 → `Evolucionismo social`; escopo 34–35; dupla paginação 33–34; reconstrução profunda restrita exatamente a 34–35; evidências localizadas; estados cartográficos candidatos; contratos `1.0.0`; ausência de regressão das provas sintéticas.
+
+## Gate de decisão após o VERDE
+
+A execução material encerrou o gate técnico do piloto. O próximo gate é exclusivamente humano/governado:
+
+1. revisar o resumo do resultado;
+2. registrar `aprovado`, `corrigido` ou `rejeitado`;
+3. se `aprovado` e checks remotos permanecerem verdes, tirar o PR #125 de Draft e integrar;
+4. somente após integração, tornar elegível a entrada mínima em C.4 descrita em `POST-REAL-PILOT-C4-ENTRY-PLAN.md`.
+
+VERDE não autoriza saltar para corpus, embeddings, retrieval/RAG ou produção.
 
 ## Fora de escopo neste piloto
 
@@ -106,3 +128,4 @@ Nenhuma dessas rotas autoriza saltar para corpus, embeddings, retrieval/RAG ou p
 - 19/08/2026 — reconciliação com o PR #118: corrigida a divergência documental do PR #124 e recuperada a parte real já delimitada (`Evolucionismo social`, físicas 34–35). Etapa 0 passa a 12/12 e Etapa 1 a 4/4.
 - 19/08/2026 — implementação/teste do PR #118 reaplicados sobre a `main` atual em branch de reconciliação. O próximo gate material deixa de ser nova documentação e passa a ser a execução local do teste real contra o mesmo SHA-256.
 - 19/08/2026 — protocolo VERDE/AMARELO/VERMELHO e plano de entrada mínima em C.4 preparados antecipadamente para evitar nova pausa de planejamento após a execução material.
+- 19/08/2026 — piloto real executado materialmente no Ubuntu contra o SHA governado: 132/132 testes verdes, 0 falhas e 0 skips. Etapas 2 e 3 encerradas no escopo do piloto; classificação VERDE e arquitetura B — pequena generalização.
