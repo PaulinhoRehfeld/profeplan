@@ -6,6 +6,8 @@
 
 Documento normativo de referência: [REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITION.md](REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITION.md).
 Documento técnico do piloto: [FIRST-REAL-SINGLE-PART-PILOT.md](FIRST-REAL-SINGLE-PART-PILOT.md).
+Protocolo de decisão do resultado: [REAL-PILOT-RESULT-DECISION-PROTOCOL.md](REAL-PILOT-RESULT-DECISION-PROTOCOL.md).
+Plano pós-VERDE: [POST-REAL-PILOT-C4-ENTRY-PLAN.md](POST-REAL-PILOT-C4-ENTRY-PLAN.md).
 
 ## Etapa 0 — Fronteira jurídica e operacional
 
@@ -73,6 +75,19 @@ Documento técnico do piloto: [FIRST-REAL-SINGLE-PART-PILOT.md](FIRST-REAL-SINGL
 | Artefatos temporários descartados | ⬜ | |
 | Descarte registrado neste roadmap | ⬜ | |
 
+## Gate de decisão imediatamente após a execução material
+
+A execução não deve abrir uma nova fase de planejamento. O resultado será classificado pelo protocolo dedicado:
+
+| Estado | Interpretação | Ação imediata |
+|---|---|---|
+| INVÁLIDA | runtime/arquivo não permitiu avaliar a arquitetura | corrigir somente o ambiente e repetir |
+| VERDE | invariantes do piloto comprovados | registrar evidência → revisão humana → integrar #125 → tornar C.4 mínimo elegível |
+| AMARELO | gap localizado com arquitetura central preservada | reproduzir → correção mínima → repetir o mesmo piloto |
+| VERMELHO | princípio arquitetônico/gate violado | parar promoção → classificar causa → redefinir gate mínimo |
+
+Nenhuma dessas rotas autoriza saltar para corpus, embeddings, retrieval/RAG ou produção.
+
 ## Fora de escopo neste piloto
 
 - obra inteira como contexto semântico;
@@ -90,3 +105,4 @@ Documento técnico do piloto: [FIRST-REAL-SINGLE-PART-PILOT.md](FIRST-REAL-SINGL
 - 19/08/2026 — Livro 0 depositado localmente e identificado pelo SHA-256 governado; leitura nativa e cartografia preliminar observadas.
 - 19/08/2026 — reconciliação com o PR #118: corrigida a divergência documental do PR #124 e recuperada a parte real já delimitada (`Evolucionismo social`, físicas 34–35). Etapa 0 passa a 12/12 e Etapa 1 a 4/4.
 - 19/08/2026 — implementação/teste do PR #118 reaplicados sobre a `main` atual em branch de reconciliação. O próximo gate material deixa de ser nova documentação e passa a ser a execução local do teste real contra o mesmo SHA-256.
+- 19/08/2026 — protocolo VERDE/AMARELO/VERMELHO e plano de entrada mínima em C.4 preparados antecipadamente para evitar nova pausa de planejamento após a execução material.
