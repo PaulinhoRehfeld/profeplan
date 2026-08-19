@@ -29,15 +29,52 @@ Redigir essa fronteira é trabalho documental (Nível A). Processar o conteúdo 
 exige autorização humana explícita e específica antes da execução, conforme
 `../00-governance/RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md`.
 
-## 2. Escopo material a ser preenchido antes da autorização
+## 2. Natureza pretendida do uso (declaração do responsável pelo projeto, 19/08/2026)
+
+O responsável pelo projeto declarou explicitamente a intenção de produto para este piloto e para a
+Fase C como um todo:
+
+> O sistema não usará o conteúdo das obras como cópia. O uso é referencial: o Sócrates/ProfePlan
+> deve indicar ao professor **onde**, na obra que ele já possui e utiliza, está o conteúdo relevante
+> para o que ele precisa — não reproduzir ou substituir esse conteúdo. A catalogação é de
+> referência (localização, estrutura, cobertura), não de cópia.
+
+Esta declaração é registrada aqui como decisão de produto/arquitetura e **reduz materialmente o
+risco de redistribuição**, mas não substitui, sozinha, a confirmação de base jurídica exigida na
+seção 3. Dois pontos permanecem verdadeiros ao mesmo tempo:
+
+1. um sistema puramente referencial (ponteiros de localização, estrutura, cobertura — sem
+   armazenar nem expor texto literal extenso da obra) é significativamente mais seguro do ponto de
+   vista de direitos autorais do que um sistema que reproduz ou redistribui o conteúdo;
+2. mesmo assim, C.2/C.3 exigem **ingerir e ler o arquivo real** para produzir esses ponteiros. Ler
+   um exemplar da obra para indexá-la ainda pressupõe acesso legítimo a esse exemplar (compra,
+   licença institucional, autorização do professor/escola detentor do PNLD, ou base legal
+   equivalente). Este documento não tem autoridade para determinar sozinho se um uso específico se
+   enquadra em alguma exceção de direito autoral aplicável; isso deve ser confirmado por quem
+   detém a base jurídica antes da execução.
+
+Consequência arquitetônica vinculante para qualquer implementação de C.3–C.7 sobre conteúdo real:
+
+- persistir e expor apenas **estrutura, localização, metadados e trechos mínimos estritamente
+  necessários** para orientar o professor (ex.: título de seção, número de página, resumo curto
+  gerado, referência cruzada com o currículo) — nunca o texto integral de páginas, capítulos ou
+  imagens da obra;
+- qualquer trecho literal citado deve ser curto, com finalidade de localização/citação, e nunca
+  substituir a leitura da obra pelo professor;
+- nenhuma exportação, corpus ou API deve permitir reconstruir a obra a partir dos dados
+  armazenados.
+
+## 3. Escopo material a ser preenchido antes da autorização
 
 Antes de qualquer execução, os campos abaixo devem estar preenchidos e confirmados por quem detém
-autoridade jurídica sobre o material:
+autoridade jurídica sobre o material. A declaração da seção 2 esclarece a **finalidade** do
+processamento, mas não preenche por si só o campo "Base jurídica" abaixo — o campo exige a
+confirmação de que existe acesso legítimo ao exemplar específico que será lido:
 
 | Campo | Descrição | Preenchido? |
 |---|---|---|
 | Obra/edição | título, editora, edição, componente curricular, PNLD/ano | ⬜ pendente |
-| Base jurídica | licença, autorização de uso, ou titularidade que legitima o processamento | ⬜ pendente |
+| Base jurídica | origem legítima do exemplar (compra, licença, posse do professor/escola no PNLD) + confirmação de que o uso é apenas referencial, conforme seção 2 | ⬜ pendente |
 | Arquivo | identidade do arquivo, hash/versão, origem | ⬜ pendente |
 | Parte única | uma parte editorial delimitada (ex.: uma introdução, um capítulo) — nunca a obra inteira | ⬜ pendente |
 | Páginas físicas | intervalo exato de páginas físicas autorizadas para leitura profunda | ⬜ pendente |
@@ -45,9 +82,9 @@ autoridade jurídica sobre o material:
 | Retenção | prazo máximo de retenção do arquivo/artefatos derivados | ⬜ pendente |
 | Descarte | mecanismo e responsável pelo descarte ao final do prazo | ⬜ pendente |
 | Revisão | quem revisa humanamente o resultado antes de qualquer uso posterior | ⬜ pendente |
-| Proibições | proibição explícita de publicação, corpus, produção ou reuso fora do piloto | ⬜ pendente |
+| Proibições | proibição explícita de publicação, corpus, produção ou reuso fora do piloto; e, agora, proibição explícita de armazenar/expor texto literal extenso da obra (apenas referência) | ⬜ pendente |
 
-## 3. Regras que já se aplicam independentemente do preenchimento
+## 4. Regras que já se aplicam independentemente do preenchimento
 
 Estas regras já são vinculantes por herança de C.1, C.2 e da governança proporcional ao risco, e não
 dependem de nenhuma decisão nova:
@@ -61,9 +98,9 @@ dependem de nenhuma decisão nova:
 7. o material real, se e quando fornecido, deve permanecer fora do repositório Git, em
    `private-inputs/pnld`, conforme a separação já estabelecida no ambiente local.
 
-## 4. Sequência operacional após autorização (não iniciar antes)
+## 5. Sequência operacional após autorização (não iniciar antes)
 
-Somente após os campos da seção 2 estarem preenchidos e uma autorização humana explícita e
+Somente após os campos da seção 3 estarem preenchidos e uma autorização humana explícita e
 específica de Nível B ter sido concedida para esta fronteira:
 
 ```text
@@ -76,12 +113,12 @@ específica de Nível B ter sido concedida para esta fronteira:
 6. reconstruir estruturalmente a parte (C.4-local) sem tratar o livro inteiro como unidade
 7. revisão humana do resultado antes de qualquer promoção ou reuso
 8. ao fim do prazo de retenção, descartar o arquivo e os artefatos temporários conforme definido
-   na seção 2
+   na seção 3
 ```
 
 Nenhuma etapa desta sequência deve ser executada antes da autorização explícita mencionada acima.
 
-## 5. Fora de escopo (reforço)
+## 6. Fora de escopo (reforço)
 
 - obra inteira;
 - OCR ou novo provider sem necessidade demonstrada;
@@ -91,10 +128,14 @@ Nenhuma etapa desta sequência deve ser executada antes da autorização explíc
 - runtime multiagente;
 - qualquer efeito público, comercial ou de produção.
 
-## 6. Próximo passo real
+## 7. Próximo passo real
 
 Este documento fica pronto para revisão. O avanço seguinte depende de uma decisão humana explícita:
-fornecer os dados da seção 2 e autorizar formalmente o piloto de Nível B, ou manter a Fase C parada
+fornecer os dados da seção 3 e autorizar formalmente o piloto de Nível B, ou manter a Fase C parada
 neste ponto até que essa autorização exista.
 
-Nenhum arquivo real deve ser processado, e nenhuma etapa da seção 4 deve começar, sem essa decisão.
+Nenhum arquivo real deve ser processado, e nenhuma etapa da seção 5 deve começar, sem essa decisão.
+
+A declaração de finalidade referencial (seção 2) já orienta, desde já, qualquer implementação
+futura de C.5–C.7 sobre conteúdo real: essas camadas devem ser desenhadas para armazenar e expor
+referências e estrutura, não texto integral da obra.
