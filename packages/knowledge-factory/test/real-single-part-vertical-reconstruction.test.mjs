@@ -65,6 +65,24 @@ function inspectedPageCount(ranges) {
   );
 }
 
+function physicalPagesFromRanges(ranges) {
+  const pages = new Set();
+  for (const range of ranges) {
+    for (
+      let physicalPageNumber = range.startPhysicalPage;
+      physicalPageNumber <= range.endPhysicalPage;
+      physicalPageNumber += 1
+    ) {
+      pages.add(physicalPageNumber);
+    }
+  }
+  return [...pages].sort((left, right) => left - right);
+}
+
+function flattenInspectionRequests(requests) {
+  return requests.flatMap((ranges) => ranges ?? []);
+}
+
 async function temporaryVerifiedArtifact(path) {
   const buffer = await readFile(path);
   const sha256 = createHash('sha256').update(buffer).digest('hex');
@@ -96,7 +114,14 @@ runRealPilot(
 
     const artifact = await temporaryVerifiedArtifact(REAL_PILOT_PATH);
     const inspector = new PdfJsDocumentInspectorAdapter();
-    const recognition = await new StructuralRecognitionService(inspector).recognize({
+    const recognitionRequests = [];
+    const recognitionInspector = {
+      async inspect(request) {
+        recognitionRequests.push(request.pageRanges);
+        return inspector.inspect(request);
+      },
+    };
+    const recognition = await new StructuralRecognitionService(recognitionInspector).recognize({
       snapshotId: 'snapshot:first-real-single-part-pilot',
       sourceVersion: { kind: 'source_version', id: 'source-version:first-real-pilot' },
       artifact,
@@ -109,10 +134,30 @@ runRealPilot(
     assert.equal(recognition.snapshot.totalPhysicalPages, 449);
     assert.equal(recognition.snapshot.artifactSha256, GOVERNED_SHA256);
     assert.equal(
+      recognitionRequests.every((ranges) => Array.isArray(ranges) && ranges.length > 0),
+      true,
+      'cartography must never invoke the inspector without an explicit bounded page range'
+    );
+
+    const actualCartographyRanges = flattenInspectionRequests(recognitionRequests);
+    const actualCartographyPages = physicalPagesFromRanges(actualCartographyRanges);
+    const reportedCartographyPages = physicalPagesFromRanges(recognition.snapshot.inspectedPageRanges);
+
+    assert.deepEqual(
+      actualCartographyPages,
+      reportedCartographyPages,
+      'reported cartography coverage must equal the pages actually requested from the inspector'
+    );
+    assert.equal(
+      actualCartographyPages.length < recognition.snapshot.totalPhysicalPages,
+      true,
+      'cartography must remain selective instead of reading all 449 physical pages'
+    );
+    assert.equal(
       inspectedPageCount(recognition.snapshot.inspectedPageRanges) <
         recognition.snapshot.totalPhysicalPages,
       true,
-      'cartography must remain selective instead of reading all 449 physical pages'
+      'compacted cartography coverage must remain selective instead of spanning all 449 pages'
     );
 
     const tocRegion = recognition.snapshot.regions.find(
@@ -197,6 +242,8 @@ runRealPilot(
       'reconstruction must request exactly the governed two-page CartographicPartScope and nothing else'
     );
     assert.equal(reconstruction.contractVersion, '1.0.0');
+    assert.equal(reconstruction.artifactSha256, GOVERNED_SHA256);
+    assert.equal(reconstruction.structuralRecognitionSnapshotId, recognition.snapshot.snapshotId);
     assert.deepEqual(reconstruction.partScope.pageRange, {
       startPhysicalPage: 34,
       endPhysicalPage: 35,
@@ -236,6 +283,21 @@ runRealPilot(
       reconstruction.relations.every((relation) => relation.evidence.length > 0),
       true,
       'every reconstructed relation must remain evidence-backed'
+    );
+
+    const allEvidence = [
+      ...reconstruction.elements.flatMap((element) => element.evidence),
+      ...reconstruction.relations.flatMap((relation) => relation.evidence),
+    ];
+    assert.equal(
+      allEvidence.every((evidence) => isInsideRange(evidence.page.physicalPageNumber, partScope.pageRange)),
+      true,
+      'every reconstruction evidence locator must remain inside the governed two-page scope'
+    );
+    assert.equal(
+      reconstruction.warnings.some((warning) => warning.code === 'part_title_not_found'),
+      false,
+      'the governed section title must not remain unresolved after body corroboration'
     );
   }
 );
