@@ -92,6 +92,7 @@ Consulte [SYNC-MANIFEST.md](SYNC-MANIFEST.md) para procedência, inventário e l
 - [Segunda prova vertical — Unidade 1](12-delivery/SECOND-PART-VERTICAL-RECONSTRUCTION-PROOF.md)
 - [Checkpoint 051 — duas provas verticais integradas](00-governance/CONTINUITY-CHECKPOINT-051.md)
 - [Fronteira jurídica e operacional do piloto real (pré-autorização)](12-delivery/REAL-PILOT-AUTHORIZATION-BOUNDARY-DEFINITION.md)
+- [Roadmap de execução do piloto real (acompanhamento contínuo)](12-delivery/REAL-PILOT-EXECUTION-ROADMAP.md)
 
 ## Estado atual
 
