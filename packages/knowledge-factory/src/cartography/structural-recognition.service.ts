@@ -124,24 +124,58 @@ function compactPageRanges(physicalPages: readonly number[]): readonly PhysicalP
   return ranges;
 }
 
-function parseTocEntries(pages: readonly NativeTextExtractedPage[]): readonly ParsedTocEntry[] {
+function shouldResetTocAccumulator(
+  value: string,
+  vocabulary: StructuralRecognitionVocabulary
+): boolean {
+  const normalized = normalizeSearchText(value);
+  const tocHeading = vocabulary.tableOfContentsHeadings.some((heading) => {
+    const normalizedHeading = normalizeSearchText(heading);
+    return (
+      normalized === normalizedHeading ||
+      normalized.startsWith(`${normalizedHeading} -`) ||
+      normalized.startsWith(`${normalizedHeading} –`) ||
+      normalized.startsWith(`${normalizedHeading}:`)
+    );
+  });
+
+  return tocHeading || textMatchesHeading(value, vocabulary.introductionHeadings);
+}
+
+function parseTocEntries(
+  pages: readonly NativeTextExtractedPage[],
+  vocabulary: StructuralRecognitionVocabulary
+): readonly ParsedTocEntry[] {
   const entries: ParsedTocEntry[] = [];
   const pattern = /^(.+?)\s*\.{2,}\s*([0-9ivxlcdm]+)\s*$/iu;
 
   for (const page of pages) {
+    const pendingParts: string[] = [];
+
     for (const element of page.elements) {
-      if (!element.text) {
+      const text = element.text?.trim();
+      if (!text) {
         continue;
       }
-      const match = pattern.exec(element.text.trim());
+
+      if (shouldResetTocAccumulator(text, vocabulary)) {
+        pendingParts.length = 0;
+        continue;
+      }
+
+      pendingParts.push(text);
+      const candidate = pendingParts.join(' ').replace(/\s+/g, ' ').trim();
+      const match = pattern.exec(candidate);
       if (!match) {
         continue;
       }
+
       entries.push({
         title: match[1].trim(),
         declaredPrintedPageLabel: match[2].trim(),
         page,
       });
+      pendingParts.length = 0;
     }
   }
 
@@ -410,7 +444,7 @@ export class StructuralRecognitionService {
           page.physicalPageNumber >= tocPage.physicalPageNumber &&
           page.physicalPageNumber <= tocPage.physicalPageNumber + 1
       );
-      entries = parseTocEntries(tocWindow);
+      entries = parseTocEntries(tocWindow, vocabulary);
       const tocEndPhysicalPage = Math.max(
         tocPage.physicalPageNumber,
         ...entries.map((entry) => entry.page.physicalPageNumber)

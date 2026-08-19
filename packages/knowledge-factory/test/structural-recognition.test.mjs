@@ -150,6 +150,118 @@ test('structural recognition finds the map before deep-reading the synthetic boo
   assert.deepEqual(result.snapshot.warnings, []);
 });
 
+function syntheticPage(physicalPageNumber, printedPageLabel, texts) {
+  return {
+    physicalPageNumber,
+    printedPageLabel,
+    text: texts.join('\n'),
+    elements: texts.map((text, index) => ({
+      logicalLocator: `page:${physicalPageNumber}:text:${index + 1}`,
+      kind: 'text_block',
+      text,
+    })),
+  };
+}
+
+test('structural recognition recomposes fragmented TOC entries before classifying hierarchy', async () => {
+  const totalPhysicalPages = 40;
+  const pageRefs = Array.from({ length: totalPhysicalPages }, (_, index) => {
+    const physicalPageNumber = index + 1;
+    return {
+      physicalPageNumber,
+      printedPageLabel: physicalPageNumber === 1 ? 'Capa' : String(physicalPageNumber - 1),
+    };
+  });
+
+  const pagesByPhysicalNumber = new Map([
+    [5, syntheticPage(5, '4', ['Conheca seu livro'])],
+    [
+      7,
+      syntheticPage(7, '6', [
+        'Sumario',
+        'Unidade 1 — Antropologia',
+        '........',
+        '28',
+        'Capitulo 1 — O pensamento',
+        'antropologico',
+        '........',
+        '30',
+        'Evolucionismo social',
+        '........',
+        '33',
+        'Trabalhando com quadrinhos',
+        '........',
+        '35',
+      ]),
+    ],
+    [29, syntheticPage(29, '28', ['Unidade 1 — Antropologia'])],
+  ]);
+
+  const inspector = {
+    async inspect({ pageRanges }) {
+      const ranges = pageRanges ?? [
+        { startPhysicalPage: 1, endPhysicalPage: totalPhysicalPages },
+      ];
+      const pages = [...pagesByPhysicalNumber.values()]
+        .filter((page) =>
+          ranges.some(
+            (range) =>
+              page.physicalPageNumber >= range.startPhysicalPage &&
+              page.physicalPageNumber <= range.endPhysicalPage
+          )
+        )
+        .sort((left, right) => left.physicalPageNumber - right.physicalPageNumber);
+
+      return {
+        method: { kind: 'native_text', provider: 'synthetic-fragmented-toc', version: '1.0.0' },
+        totalPhysicalPages,
+        pageRefs,
+        pages,
+      };
+    },
+  };
+
+  const result = await new StructuralRecognitionService(inspector).recognize({
+    snapshotId: 'snapshot-fragmented-toc-001',
+    sourceVersion: { kind: 'source_version', id: 'source-version-fragmented-toc-001' },
+    artifact: verifiedGoldenSampleArtifact(),
+    createdAt: '2026-08-19T20:10:00.000Z',
+  });
+
+  const unit = result.snapshot.nodes.find(
+    (node) => node.kind === 'unit' && node.observedTitle === 'Unidade 1 — Antropologia'
+  );
+  const chapter = result.snapshot.nodes.find(
+    (node) => node.kind === 'chapter' && node.observedTitle === 'Capitulo 1 — O pensamento antropologico'
+  );
+  const section = result.snapshot.nodes.find(
+    (node) => node.kind === 'section' && node.observedTitle === 'Evolucionismo social'
+  );
+  const nextSibling = result.snapshot.nodes.find(
+    (node) => node.kind === 'section' && node.observedTitle === 'Trabalhando com quadrinhos'
+  );
+
+  assert.ok(unit?.pageRange);
+  assert.equal(unit.pageRange.startPhysicalPage, 29);
+  assert.equal(unit.declaredPrintedPageLabel, '28');
+
+  assert.ok(chapter?.pageRange);
+  assert.equal(chapter.pageRange.startPhysicalPage, 31);
+  assert.equal(chapter.declaredPrintedPageLabel, '30');
+  assert.equal(chapter.parentNodeId, unit.nodeId);
+
+  assert.deepEqual(section?.pageRange, {
+    startPhysicalPage: 34,
+    endPhysicalPage: 35,
+  });
+  assert.equal(section?.declaredPrintedPageLabel, '33');
+  assert.equal(section?.parentNodeId, chapter.nodeId);
+
+  assert.equal(nextSibling?.pageRange?.startPhysicalPage, 36);
+  assert.equal(nextSibling?.declaredPrintedPageLabel, '35');
+  assert.equal(nextSibling?.parentNodeId, chapter.nodeId);
+});
+
 test('full C.3.3 native extraction still reads every page after inspector reuse', async () => {
   const { PdfJsNativeTextExtractorAdapter, extractVerifiedNativeText } = await import('../src/index.ts');
   const result = await extractVerifiedNativeText(
