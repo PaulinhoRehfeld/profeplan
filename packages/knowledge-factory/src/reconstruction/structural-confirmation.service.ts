@@ -8,8 +8,7 @@ import type {
   StructuralRecognitionSnapshot,
 } from '@profeplan/types';
 
-const STRUCTURAL_CONFIRMATION_VERSION: StructuralConfirmationSnapshot['contractVersion'] =
-  '1.0.0';
+const STRUCTURAL_CONFIRMATION_VERSION: StructuralConfirmationSnapshot['contractVersion'] = '1.0.0';
 
 export interface StructuralCorrectionInput {
   readonly kind?: CartographicNodeKind;
@@ -141,9 +140,7 @@ function reconstructionEvidence(
   elementIds: readonly string[]
 ): StructuralConfirmationEvidenceRef[] {
   const requested = new Set(elementIds);
-  const elements = reconstruction.elements.filter((element) =>
-    requested.has(element.elementId)
-  );
+  const elements = reconstruction.elements.filter((element) => requested.has(element.elementId));
   if (elements.length !== requested.size) {
     throw new Error('structural confirmation evidence element is absent from reconstruction');
   }
