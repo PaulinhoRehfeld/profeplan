@@ -50,7 +50,9 @@ export class PartStructureConfirmationService {
     const { candidate, decisions } = request;
     const reasons: DomainReason[] = [];
     const elementsById = new Map(candidate.elements.map((element) => [element.elementId, element]));
-    const relationsById = new Map(candidate.relations.map((relation) => [relation.relationId, relation]));
+    const relationsById = new Map(
+      candidate.relations.map((relation) => [relation.relationId, relation])
+    );
     const seenTargets = new Set<string>();
 
     for (const decision of decisions) {
@@ -95,7 +97,9 @@ export class PartStructureConfirmationService {
           )
         );
       } else {
-        const availableEvidence = new Set(candidateTarget.evidence.map((evidence) => evidence.evidenceId));
+        const availableEvidence = new Set(
+          candidateTarget.evidence.map((evidence) => evidence.evidenceId)
+        );
         for (const evidenceId of decision.evidenceIds) {
           if (!availableEvidence.has(evidenceId)) {
             reasons.push(
