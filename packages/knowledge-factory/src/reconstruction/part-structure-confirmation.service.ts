@@ -49,7 +49,9 @@ export class PartStructureConfirmationService {
   ): DomainDecision<PartStructureConfirmationSnapshot> {
     const { candidate, decisions } = request;
     const reasons: DomainReason[] = [];
-    const elementsById = new Map(candidate.elements.map((element) => [element.elementId, element]));
+    const elementsById = new Map(
+      candidate.elements.map((element) => [element.elementId, element])
+    );
     const relationsById = new Map(
       candidate.relations.map((relation) => [relation.relationId, relation])
     );
