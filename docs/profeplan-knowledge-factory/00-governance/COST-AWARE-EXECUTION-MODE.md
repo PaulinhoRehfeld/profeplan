@@ -46,11 +46,13 @@ O terminal local é o executor preferencial para operações determinísticas, i
 
 O terminal não precisa receber o histórico completo da Knowledge Factory. Deve receber apenas o necessário para a tarefa corrente.
 
-### 3. Conversa de execução local — contexto mínimo
+### 3. Codex Remote — ponte de execução local com contexto mínimo
 
-Quando útil, pode existir uma conversa separada dedicada exclusivamente à execução local.
+Quando o responsável pelo projeto estiver longe do notebook e não puder operar diretamente o terminal, uma sessão local do Codex pode permanecer disponível no notebook e ser acessada pelo Controle Remoto a partir do celular.
 
-Ela recebe um **Execution Pack** curto e autocontido, não o contexto integral do projeto.
+Nesse papel, o Codex Remote é **canal de execução**, não camada principal de raciocínio arquitetônico.
+
+Ele recebe um **Execution Pack** curto, autocontido e já decidido pela conversa orquestradora. O objetivo é executar comandos no ambiente local do notebook sem exigir que o usuário manipule remotamente a interface do Ubuntu ou do VS Code.
 
 Formato mínimo recomendado:
 
@@ -67,11 +69,20 @@ Critério de sucesso
 Evidência a devolver
 ```
 
-Essa conversa não redefine arquitetura, não amplia escopo e não substitui a conversa principal como orquestradora.
+Regras para esse modo:
 
-### 4. Work/Codex ou agente avançado — exceção justificada
+- não solicitar ao Codex Remote que redescubra arquitetura já decidida;
+- não pedir exploração ampla do repositório quando os arquivos já forem conhecidos;
+- não ampliar escopo por iniciativa do executor;
+- executar exatamente o pacote autorizado sempre que possível;
+- devolver somente a evidência necessária à próxima decisão;
+- interromper e retornar o erro quando a execução exigir decisão nova, exploração ampla ou mudança material de escopo.
 
-A autonomia agêntica deve ser usada quando a tarefa exigir ganho real de exploração ou iteração, por exemplo:
+O uso do Codex Remote como ponte local pode fazer parte do fluxo econômico padrão, desde que permaneça restrito, curto e determinístico. Isso é diferente de usar Codex/Work em modo agêntico amplo.
+
+### 4. Work/Codex em modo agêntico avançado — exceção justificada
+
+A autonomia agêntica ampla deve ser usada quando a tarefa exigir ganho real de exploração ou iteração, por exemplo:
 
 - diagnóstico cuja causa ainda não esteja delimitada;
 - alteração transversal em muitos arquivos interdependentes;
@@ -106,10 +117,11 @@ Evitar:
 
 A escolha de capacidade/modelo deve seguir a complexidade material da tarefa:
 
-1. **execução determinística sem agente**, quando possível;
-2. **modelo/agente mais leve adequado**, para tarefas simples;
-3. **modelo intermediário**, para implementação e debugging normal;
-4. **modelo avançado**, apenas quando ambiguidade, profundidade ou autonomia justificarem o custo.
+1. **execução determinística direta**, quando o usuário estiver diante do notebook;
+2. **Codex Remote como executor restrito**, quando for necessário operar o notebook à distância com um Execution Pack fechado;
+3. **modelo/agente mais leve adequado**, para tarefas simples que ainda exijam algum raciocínio;
+4. **modelo intermediário**, para implementação e debugging normal;
+5. **modelo avançado**, apenas quando ambiguidade, profundidade ou autonomia justificarem o custo.
 
 A escolha do modelo nunca deve reduzir os gates de segurança, jurídico, proveniência ou qualidade.
 
@@ -148,6 +160,8 @@ Esta política complementa `RISK-PROPORTIONAL-EXECUTION-GOVERNANCE.md`.
 
 Uma ação ser Nível A não significa que deva ser entregue a um agente avançado. Da mesma forma, economia de créditos nunca autoriza reduzir uma ação de Nível B ou C para Nível A.
 
+O uso de Codex Remote como transporte/executor local não muda o nível de risco da ação. Se o Execution Pack contém uma ação Nível B ou C, a autorização correspondente continua obrigatória.
+
 ## Aplicação imediata ao piloto real
 
 Para o piloto real da Fase C:
@@ -155,9 +169,10 @@ Para o piloto real da Fase C:
 - decisões de cartografia, parte, janela e critérios ficam na conversa orquestradora;
 - o PDF permanece no ambiente local privado autorizado e fora do Git;
 - comandos de inspeção e execução são preparados como Execution Packs mínimos;
-- o terminal local executa operações determinísticas;
+- quando o responsável estiver diante do notebook, o terminal local executa diretamente as operações determinísticas;
+- quando estiver distante, o Codex Remote pode executar o mesmo Execution Pack no ambiente local do notebook, sem receber o histórico integral do projeto;
 - apenas resultados/evidências necessários retornam para análise;
-- agente avançado é acionado somente se surgir problema que realmente exija exploração autônoma.
+- Work/Codex em modo agêntico avançado é acionado somente se surgir problema que realmente exija exploração autônoma.
 
 ## Regra de continuidade
 
