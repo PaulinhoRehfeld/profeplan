@@ -1,22 +1,22 @@
 # Índice de Blueprints — EMPRESA PROFEPLAN
 
-Esta pasta deve conter **somente os Blueprints dos domínios**. Nesta primeira etapa, os Blueprints individuais ainda não serão criados em massa: este índice registra o mapa oficial A–M e o estado de materialização de cada Blueprint.
+Esta pasta contém **somente os Blueprints dos domínios A–M**.
 
 ## Regra
 
-Cada Blueprint deverá, quando criado, conter no mínimo:
+Cada Blueprint deve conter, conforme maturidade disponível:
 
-1. objetivo e fronteira do domínio;
-2. estado atual verificável;
+1. missão e fronteira do domínio;
+2. estado atual;
 3. capacidades principais;
-4. decisões vigentes;
-5. roadmap resumido;
-6. relações com outros projetos;
-7. caminhos canônicos da documentação especializada.
+4. relações com outros projetos;
+5. interfaces relevantes;
+6. documentos relacionados;
+7. gate de maturidade ou reconciliação.
 
 ## Knowledge Bridge obrigatório
 
-Cada Blueprint deverá conter:
+Cada Blueprint deve explicitar:
 
 ### Consome de
 - domínios, fontes e datasets necessários.
@@ -36,24 +36,26 @@ Cada Blueprint deverá conter:
 
 ## Índice A–M
 
-| ID | Blueprint previsto | Estado |
+| ID | Blueprint | Estado do domínio |
 |---|---|---|
-| A | `A-EMPRESA-PROFEPLAN-PUCTEC-BLUEPRINT.md` | a criar quando a camada empresarial for consolidada |
-| B | `B-APLICATIVO-PROFEPLAN-BLUEPRINT.md` | a criar a partir do produto operacional |
-| C | `C-KNOWLEDGE-FACTORY-PNLD-BLUEPRINT.md` | adiado até o marco PNLD v1; atualmente apontará para `docs/profeplan-knowledge-factory/BLUEPRINT.md` |
-| D | `D-CURRICULUM-FACTORY-BNCC-ESTADOS-BLUEPRINT.md` | prioritário para a implantação da fábrica curricular |
-| E | `E-SITE-SAAS-UX-BLUEPRINT.md` | a criar a partir do estado operacional atual |
-| F | `F-MARKETING-VENDAS-BLUEPRINT.md` | prioritário devido à urgência comercial |
-| G | `G-PDI-DUA-FACTORY-BLUEPRINT.md` | a criar após definição da arquitetura de evidências e fontes |
-| H | `H-ENEM-SAEB-BLUEPRINT.md` | futuro próximo |
-| I | `I-AVALIACOES-BLUEPRINT.md` | a criar a partir da capacidade existente e suas dependências |
-| J | `J-APRESENTACOES-BLUEPRINT.md` | a criar a partir da capacidade existente |
-| K | `K-EVOLUTION-NEXUS-CRM-BLUEPRINT.md` | futuro / congelado |
-| L | `L-NEB-BLUEPRINT.md` | futuro / congelado |
-| M | `M-PROFEPLAN-KIDS-BLUEPRINT.md` | incubation/discovery; registrar somente decisões essenciais até aproximação do desenvolvimento |
+| A | [EMPRESA PROFEPLAN & PUCTEC](A-EMPRESA-PROFEPLAN-PUCTEC-BLUEPRINT.md) | operacional / contínuo |
+| B | [APLICATIVO PROFEPLAN](B-APLICATIVO-PROFEPLAN-BLUEPRINT.md) | operacional / evolução |
+| C | [KNOWLEDGE FACTORY PNLD](C-KNOWLEDGE-FACTORY-PNLD-BLUEPRINT.md) | desenvolvimento ativo |
+| D | [CURRICULUM FACTORY](D-CURRICULUM-FACTORY-BNCC-ESTADOS-BLUEPRINT.md) | implantação prioritária |
+| E | [SITE / SAAS / UX](E-SITE-SAAS-UX-BLUEPRINT.md) | operacional / evolução |
+| F | [MARKETING & VENDAS](F-MARKETING-VENDAS-BLUEPRINT.md) | implantação urgente |
+| G | [PDI / DUA FACTORY](G-PDI-DUA-FACTORY-BLUEPRINT.md) | arquitetura a construir |
+| H | [ENEM / SAEB](H-ENEM-SAEB-BLUEPRINT.md) | futuro próximo |
+| I | [AVALIAÇÕES](I-AVALIACOES-BLUEPRINT.md) | existente / evolução |
+| J | [APRESENTAÇÕES](J-APRESENTACOES-BLUEPRINT.md) | existente / evolução |
+| K | [EVOLUTION / NEXUS / CRM](K-EVOLUTION-NEXUS-CRM-BLUEPRINT.md) | futuro |
+| L | [NEB](L-NEB-BLUEPRINT.md) | futuro |
+| M | [PROFEPLAN KIDS](M-PROFEPLAN-KIDS-BLUEPRINT.md) | incubation / discovery |
 
-## Política de criação
+## Regra de profundidade
 
-Não criar Blueprint vazio apenas para completar a lista.
+Blueprints de domínios imaturos permanecem deliberadamente enxutos. Eles devem registrar fronteira e dependências, não inventar arquitetura que ainda não foi validada.
 
-Um Blueprint deve nascer quando houver informação suficiente para orientar execução real, reduzir ambiguidade e evitar mistura de contexto.
+## Relação com documentação especializada
+
+O Blueprint é a porta de entrada do domínio, não um substituto dos documentos especializados. Por exemplo, o Blueprint C aponta para `docs/profeplan-knowledge-factory/`, que continua sendo a documentação técnica principal da Knowledge Factory PNLD durante seu desenvolvimento ativo.
