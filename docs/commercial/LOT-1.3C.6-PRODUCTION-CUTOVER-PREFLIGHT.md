@@ -518,3 +518,183 @@ O preflight de 1.3C.6 só pode ser considerado tecnicamente pronto para pedir au
 - nenhum recurso hospedado tiver sido modificado pelo preflight.
 
 Mesmo depois disso, produção continuará bloqueada até uma autorização material específica para a janela de cutover.
+
+
+## 17. Reconciliação operacional pós-Preview
+
+Esta seção registra, de forma sanitizada, as evidências operacionais obtidas depois da integração dos PRs #96 e #98. Ela é uma fotografia de auditoria de 15 de agosto de 2026 e não altera o caráter histórico das seções anteriores.
+
+A classificação permanece:
+
+**1.3C.6 NO-GO para produção.**
+
+### 17.1 Preview de árvore exatamente igual à main
+
+Após o hardening de recuperação autenticada de perfil, a `main` foi confirmada em:
+
+- commit: `2b1a3dbb56268c6da1ceabf6407f934aa22a4ec4`;
+- tree: `e580464a0cbffed9e3cdcc37a0a189212639da74`;
+- origem: PR #98, `fix(commercial): harden authenticated profile recovery`.
+
+Para obter uma prova hospedada sem promover a `main`, foi criada a branch técnica:
+
+`ops/preview-2b1a3db`
+
+Como a Vercel não gerou um novo Preview para o mesmo SHA já associado à `main`, foi criado um único commit vazio:
+
+- commit: `2aaae3300eb0213dea60fa40f84c970359919c05`;
+- mensagem: `chore(ops): trigger exact-tree Vercel preview`;
+- parent: `2b1a3dbb56268c6da1ceabf6407f934aa22a4ec4`;
+- tree: `e580464a0cbffed9e3cdcc37a0a189212639da74`.
+
+A comparação confirmou um commit à frente, zero atrás e nenhum arquivo alterado. Portanto, o Preview testado possuía árvore exatamente igual à `main` auditada, sem merge ou promoção.
+
+Deployment do aplicativo:
+
+- ID: `dpl_E1PiMMAmxcqZJiMmTz68whRqAAEz`;
+- estado observado: `READY`;
+- SHA: `2aaae3300eb0213dea60fa40f84c970359919c05`;
+- branch: `ops/preview-2b1a3db`;
+- target: `null`;
+- URL técnica: `profeplan-h0pp7lukb-paulo-roberto-rehfelds-projects.vercel.app`.
+
+Esse deployment era Preview, não produção. Nenhum link temporário de compartilhamento, cookie, token ou credencial efêmera integra esta documentação.
+
+### 17.2 Resultado funcional read-only
+
+A raiz `/` do Preview enviava o usuário não autenticado para `/landing`, e essa rota encaminhava para o site público de produção. Por isso, a prova funcional usou diretamente `/login`.
+
+Com a conta interna `suporte@profeplan.com.br`, a validação confirmou:
+
+- usuário existente no Auth;
+- email confirmado e senha configurada;
+- perfil existente;
+- autenticação bem-sucedida;
+- criação da sessão;
+- carregamento do perfil;
+- bootstrap da aplicação;
+- redirecionamento interno para `/app`;
+- renderização da visão geral e da navegação.
+
+Resultado:
+
+**PASS para autenticação e bootstrap read-only do Preview.**
+
+A expressão “read-only” qualifica o domínio econômico e funcional da prova. A autenticação pode atualizar metadados técnicos, como `last_sign_in_at`, e telemetria de login; portanto, não se declara “zero writes absolutos”.
+
+Não foram executados:
+
+- geração de conteúdo;
+- primeiro Save;
+- consumo ou concessão de crédito;
+- produtor econômico positivo;
+- alteração de perfil;
+- operação administrativa de criação, edição ou exclusão;
+- atualização de banco RAG;
+- Stripe write;
+- deploy ou invocação econômica de Edge Function;
+- smoke econômico;
+- cutover.
+
+### 17.3 Limitação crítica: Preview sem isolamento de dados
+
+As requisições observadas no navegador autenticaram contra:
+
+`https://uatejrgmbzgoeayfascf.supabase.co`
+
+Esse é o projeto Supabase hospedado canônico. Logo, o Preview comprovou o frontend e o bootstrap da aplicação, mas não comprovou isolamento de dados.
+
+Consequências obrigatórias:
+
+- a prova não autoriza geração, Save, administração ou smoke econômico;
+- esse Preview não é validação funcional final da migração de credenciais do PR #99;
+- nenhuma credencial administrativa de produção deve ser usada em validação funcional;
+- testes mutáveis somente podem ocorrer em Supabase isolado ou branch descartável sem dados de produção;
+- o wiring entre o Preview do HEAD final do PR #99 e o ambiente isolado deve ser comprovado antes de qualquer teste funcional daquela frente.
+
+### 17.4 Conta inadequada para smoke econômico
+
+O estado persistido observado para `suporte@profeplan.com.br` foi:
+
+- tier: `FREE`;
+- saldo legado: 10 créditos.
+
+A interface, porém, exibiu “Plano Gold”. A inspeção do código confirmou a causa:
+
+1. `apps/web/src/constants.ts` inclui esse email em `ADMIN_EMAILS`;
+2. `applyAdminOverride()`, em `useProfeplanAuth.ts`, substitui em memória o perfil por `role=admin`, `is_admin=true`, `tier=GOLD` e `is_unlimited=true`;
+3. `Sidebar.tsx` apresenta “Plano Gold” quando o perfil em memória é Gold ou ilimitado.
+
+Não foi comprovada alteração do tier persistido no banco. A divergência é uma representação administrativa client-side, mas basta para tornar a conta não neutra para uma prova de débito finito. Essa conta não deve ser usada como conta econômica de smoke do cutover.
+
+O override do cliente, isoladamente, também não constitui prova de autorização administrativa server-side.
+
+### 17.5 Findings auxiliares do Preview e da cobertura de build
+
+Foi observado erro CORS em recurso auxiliar/PWA redirecionado para a proteção `vercel.com/sso-api`. O aplicativo principal carregou e autenticou; o finding foi não bloqueante para o bootstrap e não deve ser confundido com falha do Supabase. Ele deve ser reavaliado no Preview final se a experiência PWA fizer parte do gate de release.
+
+Embora o deployment tenha terminado `READY`, os logs do build registraram:
+
+`api/auth/admin-create-user.ts(86,32): error TS2339: Property 'getUser' does not exist on type 'SupabaseAuthClient'.`
+
+`api/auth/admin-create-user.ts(150,75): error TS2339: Property 'admin' does not exist on type 'SupabaseAuthClient'.`
+
+Também houve avisos de versão Node/pnpm.
+
+Classificação:
+
+**defeito técnico real e lacuna de cobertura do CI; não impediu o bundle principal, mas bloqueia promoção e cutover até validação do endpoint no HEAD final.**
+
+A explicação estrutural observada foi:
+
+- o build da Vercel executa `pnpm --filter ./apps/web build`;
+- o CI executa `pnpm -r typecheck` nos workspaces;
+- a pasta raiz `api/` não é um workspace;
+- o `tsconfig.json` raiz possui `files: []`;
+- assim, CI verde não comprova typecheck de `api/**/*.ts`;
+- a análise de funções da Vercel emite os diagnósticos sem torná-los fatais para o deployment.
+
+Como o PR #99 modifica a fronteira compartilhada de `supabaseAdmin`, qualquer correção ou ampliação de cobertura deve ser reconciliada com o HEAD final daquela frente, sem branch concorrente.
+
+### 17.6 Produção reconfirmada como inalterada
+
+Depois da prova do Preview, o deployment produtivo observado permaneceu:
+
+- ID: `dpl_7F8dnhxgDy6Bv1aJzvvHnEneTo7A`;
+- SHA: `57d7e387676224ef6fb5e3101270c0b6e4f8c245`;
+- branch: `main`;
+- target: `production`;
+- alias: `app.profeplan.com.br`;
+- estado: `READY`.
+
+A `main@2b1a3dbb56268c6da1ceabf6407f934aa22a4ec4` não estava publicada em produção nessa leitura.
+
+Não houve:
+
+- promoção do Preview;
+- novo deployment de produção;
+- alteração de alias ou flags;
+- migration do ledger no Supabase hospedado;
+- alteração Stripe;
+- deploy de Edge Function;
+- início do cutover.
+
+### 17.7 Bloqueios e sequência atualizada de gates
+
+Antes de qualquer pedido de GO para 1.3C.6, permanecem necessários, em ordem governada:
+
+1. concluir a frente do Draft PR #99 sem criar correção concorrente;
+2. confirmar, em consoles oficiais, credenciais substitutas por componente;
+3. disponibilizar credenciais substitutas somente no ambiente de Preview;
+4. comprovar o wiring do Preview com Supabase isolado ou branch descartável sem dados de produção;
+5. gerar e identificar um Preview do HEAD final do PR #99;
+6. validar `signup`, busca, embeddings e webhook somente no ambiente isolado;
+7. resolver ou classificar os erros TypeScript de `admin-create-user.ts` e fechar a lacuna de cobertura de `api/**/*.ts`;
+8. revisar e, somente com autorização separada, integrar o PR #99;
+9. planejar a troca lado a lado em produção, preservando rollback;
+10. considerar revogação das credenciais antigas apenas após autorização posterior e independente;
+11. designar ou criar, com autorização material, uma conta econômica neutra;
+12. repetir todo o preflight hospedado imediatamente antes da janela;
+13. obter autorização material separada para o cutover 1.3C.6.
+
+A existência de preparação técnica, de um Preview READY ou de CI verde não satisfaz esses gates por si só. C.3 da Knowledge Factory permanece fora deste escopo.
