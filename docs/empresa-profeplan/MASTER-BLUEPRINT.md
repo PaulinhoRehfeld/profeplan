@@ -40,6 +40,8 @@ Projetos futuros como Evolution/Nexus/CRM, NEB e ProfePlan Kids possuem ciclos p
 
 ## 3. Domínios A–M
 
+Os Blueprints vigentes estão em `blueprints/README.md`.
+
 - **A — EMPRESA PROFEPLAN & PUCTEC:** estratégia, administrativo, contabilidade, jurídico, societário, propriedade intelectual, PUCTec, contratos, orçamento, investimentos e governança.
 - **B — APLICATIVO PROFEPLAN:** plataforma principal do professor e integradora das fábricas.
 - **C — KNOWLEDGE FACTORY — PNLD:** cartografia editorial, reconstrução estrutural, evidências e tratamento governado de livros e manuais PNLD.
@@ -56,42 +58,19 @@ Projetos futuros como Evolution/Nexus/CRM, NEB e ProfePlan Kids possuem ciclos p
 
 ## 4. Dependências principais
 
+O mapa completo está em `governance/PROJECT-DEPENDENCY-MAP.md`.
+
 ### Curriculum Factory
 
-Fornece currículo estruturado para:
-
-- Aplicativo ProfePlan;
-- Planejamentos;
-- Avaliações;
-- PDI/DUA;
-- Apresentações;
-- ENEM/SAEB quando houver relação curricular pertinente.
+Fornece currículo estruturado para Aplicativo ProfePlan, planejamentos, Avaliações, PDI/DUA, Apresentações e relações curriculares relevantes de ENEM/SAEB.
 
 ### Knowledge Factory — PNLD
 
-Fornece conteúdo editorial estruturado e evidenciado para:
-
-- Aplicativo ProfePlan;
-- Planejamentos;
-- Avaliações;
-- Apresentações;
-- outros módulos pedagógicos autorizados.
+Fornece conteúdo editorial estruturado e evidenciado para Aplicativo ProfePlan, planejamentos, Avaliações, Apresentações e outros módulos pedagógicos autorizados.
 
 ### PDI/DUA Factory
 
-Consome:
-
-- currículo;
-- legislação;
-- evidências científicas;
-- contexto pedagógico autorizado.
-
-Fornece:
-
-- adaptações;
-- estratégias inclusivas;
-- relatórios e estruturas de apoio individual;
-- artefatos consumidos pelo Aplicativo ProfePlan.
+Consome currículo, legislação, evidências científicas e contexto pedagógico autorizado. Fornece adaptações, estratégias inclusivas, relatórios e estruturas de apoio individual.
 
 ### Aplicativo ProfePlan
 
@@ -99,7 +78,7 @@ Fornece:
 
 ## 5. Knowledge Bridge
 
-Cada Blueprint específico deverá declarar:
+Cada Blueprint específico declara:
 
 ### Consome de
 Fontes e domínios necessários para operar.
@@ -117,6 +96,8 @@ Caminhos canônicos que descrevem estado e decisões.
 
 A reorganização documental NÃO será executada de forma massiva.
 
+A política detalhada está em `governance/DOMAIN-MIGRATION-POLICY.md`.
+
 Cada domínio migra quando atingir um marco estável suficiente para possuir:
 
 1. identidade de domínio clara;
@@ -129,36 +110,28 @@ Cada domínio migra quando atingir um marco estável suficiente para possuir:
 
 ## 7. Estado operacional de referência
 
+O mapa completo está em `governance/PROJECT-MATURITY-MAP.md`.
+
 - Site/SaaS/UX: operacional, em evolução;
 - Aplicativo ProfePlan: operacional, em evolução;
 - Knowledge Factory PNLD: desenvolvimento estrutural ativo;
 - Curriculum Factory: implantação prioritária;
 - Marketing & Vendas: implantação urgente;
-- PDI/DUA: arquitetura a construir;
-- demais domínios conforme `governance/PROJECT-MATURITY-MAP.md`.
+- PDI/DUA: arquitetura a construir.
 
 ## 8. Hierarquia de verdade
 
 Em caso de conflito, considerar recência, especificidade e estado real, usando como referência:
 
 `código/schema/runtime vigente`
-
 → `ADRs aceitas`
-
 → `contratos técnicos`
-
 → `Blueprints vigentes`
-
 → `roadmaps`
-
 → `checkpoints/evidências`
-
 → `Continuity Pack`
-
 → `documentação histórica`
-
 → `conversas de IA`
-
 → `memória de IA`.
 
 Nenhum documento deve vencer automaticamente apenas por ser mais antigo ou mais categórico.
@@ -167,12 +140,16 @@ Nenhum documento deve vencer automaticamente apenas por ser mais antigo ou mais 
 
 - **GitHub/documentação:** fonte institucional rastreável.
 - **Continuity Pack:** bootstrap para novos chats, agentes e ambientes.
+- **MASTER BLUEPRINT:** mapa corporativo transversal.
+- **Blueprints A–M:** portas de entrada dos domínios.
 - **ChatGPT/Codex/agentes:** consumidores e operadores sobre fontes canônicas.
 - **Memória de IA:** camada de conveniência, não fonte exclusiva de verdade.
 
 Fluxo recomendado:
 
 `novo ambiente -> Continuity Pack -> MASTER BLUEPRINT -> Blueprint do domínio -> fontes específicas -> execução`.
+
+A integração detalhada está em `governance/CONTINUITY-INTEGRATION.md` e a organização prevista dos projetos do ChatGPT em `governance/CHATGPT-PROJECT-MAP.md`.
 
 ## 10. Repositórios
 
@@ -190,14 +167,15 @@ Destino previsto: `Profeplan-Edtech/profeplan`.
 
 A transferência de propriedade pode ocorrer antes da reorganização completa de todos os domínios, desde que a auditoria administrativa de GitHub, Actions, secrets, environments, Apps, Vercel, remotes e integrações esteja concluída.
 
-A reorganização documental A–M ocorrerá gradualmente por maturidade.
+O checklist está em `governance/GITHUB-MIGRATION-CHECKLIST.md`.
 
 ## 12. Princípio de execução
 
 A documentação deve reduzir risco e carga cognitiva, não se transformar em fim em si mesma.
 
-Priorizar:
+As prioridades operacionais estão em `governance/EXECUTION-PRIORITIES.md` e o roadmap de reorganização em `governance/REORGANIZATION-ROADMAP.md`.
 
+Priorizar:
 - governança proporcional ao risco;
 - menor mudança material capaz de produzir clareza;
 - preservação do histórico útil;
