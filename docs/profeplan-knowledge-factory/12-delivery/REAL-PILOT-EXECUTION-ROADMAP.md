@@ -15,9 +15,12 @@ A execução das etapas abaixo deve separar decisão de execução mecânica:
 
 - arquitetura, delimitação da parte, análise e critérios de sucesso permanecem na conversa orquestradora;
 - o PDF e demais inputs privados permanecem no ambiente local autorizado e fora do Git;
-- ações determinísticas devem ser preparadas como `Execution Packs` mínimos e executadas no terminal local;
+- ações determinísticas devem ser preparadas como `Execution Packs` mínimos;
+- quando o responsável estiver diante do notebook, o `Execution Pack` é executado diretamente no terminal local;
+- quando o responsável estiver distante, uma sessão local do Codex pode permanecer disponível no notebook e ser acionada pelo Controle Remoto apenas como ponte de execução do `Execution Pack`;
+- nesse modo remoto, o executor não deve redescobrir arquitetura, explorar amplamente o repositório ou ampliar escopo por iniciativa própria;
 - apenas evidências necessárias à próxima decisão retornam para análise;
-- Work/Codex ou agente avançado só deve ser escalado quando exploração autônoma ou ciclos complexos de implementação/debugging trouxerem ganho material;
+- Work/Codex em modo agêntico amplo só deve ser escalado quando exploração autônoma ou ciclos complexos de implementação/debugging trouxerem ganho material;
 - o modo econômico não altera a classificação Nível A/B/C nem qualquer gate jurídico, de segurança ou de proveniência.
 
 ## Etapa 0 — Fronteira jurídica e operacional (pré-requisito de qualquer execução real)
@@ -103,6 +106,8 @@ nesta etapa, nenhuma etapa abaixo pode começar (Nível B ainda não elegível).
   Etapa 0 avança para 8/12. Aguardando o depósito do PDF pelo usuário para prosseguir com
   identidade do arquivo, obra/edição, parte única e páginas físicas.
 - 19/08/2026 — adotado o modo de execução consciente de custo/contexto: conversa principal como
-  orquestradora, terminal local para execução determinística, `Execution Packs` mínimos e uso de
-  Work/Codex ou agente avançado somente quando a autonomia trouxer ganho material. A mudança é
-  operacional e não altera gates Nível A/B/C nem o escopo técnico do piloto.
+  orquestradora, `Execution Packs` mínimos e uso de autonomia agêntica avançada somente quando
+  houver ganho material. A mudança é operacional e não altera gates Nível A/B/C nem o escopo técnico do piloto.
+- 19/08/2026 — refinado o modo econômico: Codex Remote pode ser usado como ponte de execução local
+  para `Execution Packs` fechados quando o responsável estiver distante do notebook. Esse uso restrito
+  é separado do uso agêntico amplo de Work/Codex e não transfere decisões arquitetônicas ao executor.
