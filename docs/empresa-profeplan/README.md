@@ -7,15 +7,23 @@
 
 A EMPRESA PROFEPLAN é organizada por domínios A–M. Cada domínio possui identidade própria, dependências explícitas e, quando atingir maturidade suficiente, documentação especializada própria.
 
-Nesta fase, esta estrutura NÃO substitui nem move documentação existente. Ela funciona como mapa institucional acima das estruturas atuais.
+Esta estrutura funciona como mapa institucional acima das estruturas existentes. Ela não autoriza movimentação automática de documentos.
 
 ## 2. Porta de entrada
 
 Comece por:
 
 1. `MASTER-BLUEPRINT.md` — visão integrada da empresa, produto e fábricas;
-2. `blueprints/README.md` — índice dos domínios A–M;
-3. `governance/PROJECT-MATURITY-MAP.md` — estágio atual e critério de migração de cada domínio.
+2. `blueprints/README.md` — índice e acesso aos Blueprints A–M;
+3. `governance/PROJECT-MATURITY-MAP.md` — estágio atual de cada domínio;
+4. `governance/PROJECT-DEPENDENCY-MAP.md` — relações entre projetos;
+5. `governance/EXECUTION-PRIORITIES.md` — prioridades de execução;
+6. `governance/REORGANIZATION-ROADMAP.md` — sequência de reorganização;
+7. `governance/DOMAIN-MIGRATION-POLICY.md` — regras de migração por maturidade;
+8. `governance/DOCUMENT-MAP.md` — classificação inicial da documentação existente;
+9. `governance/GITHUB-MIGRATION-CHECKLIST.md` — gate para transferência institucional;
+10. `governance/CHATGPT-PROJECT-MAP.md` — organização futura dos projetos do ChatGPT;
+11. `governance/CONTINUITY-INTEGRATION.md` — relação entre esta camada e o Continuity Pack.
 
 ## 3. Regra de migração por maturidade
 
@@ -43,9 +51,9 @@ Em especial, permanecem intactas nesta fase:
 
 O Continuity Pack é a camada técnica de bootstrap para IA e novos ambientes.
 
-A arquitetura pretendida é:
+Arquitetura:
 
-`Continuity Pack -> MASTER-BLUEPRINT -> domínio A–M -> documentação especializada -> código/ADR/contrato/checkpoint`.
+`Continuity Pack -> MASTER-BLUEPRINT -> Blueprint A–M -> documentação especializada -> código/ADR/contrato/checkpoint`.
 
 O Continuity Pack não deve duplicar a visão institucional; deve apontar para ela.
 
@@ -54,3 +62,7 @@ O Continuity Pack não deve duplicar a visão institucional; deve apontar para e
 Até a transferência institucional, o repositório canônico permanece `PaulinhoRehfeld/profeplan`.
 
 O destino previsto é `Profeplan-Edtech/profeplan`, condicionado à auditoria administrativa e ao corte seguro de integrações.
+
+## 7. Regra operacional
+
+A documentação deve reduzir carga cognitiva e risco. Quando um documento não desbloqueia execução, continuidade, integração ou segurança, ele não deve preceder uma entrega de produto ou negócio de prioridade superior.
