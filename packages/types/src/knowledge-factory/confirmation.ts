@@ -8,11 +8,7 @@ import type {
 
 export const PART_STRUCTURE_CONFIRMATION_CONTRACT_VERSION = '1.0.0' as const;
 
-export const PART_STRUCTURE_DECISION_STATES = [
-  'confirmed',
-  'corrected',
-  'rejected',
-] as const;
+export const PART_STRUCTURE_DECISION_STATES = ['confirmed', 'corrected', 'rejected'] as const;
 export type PartStructureDecisionState = (typeof PART_STRUCTURE_DECISION_STATES)[number];
 
 export interface PartStructureElementCorrection {
@@ -46,9 +42,7 @@ export interface PartStructureRelationDecision extends PartStructureDecisionBase
   readonly correction?: PartStructureRelationCorrection;
 }
 
-export type PartStructureDecision =
-  | PartStructureElementDecision
-  | PartStructureRelationDecision;
+export type PartStructureDecision = PartStructureElementDecision | PartStructureRelationDecision;
 
 export interface PartStructureConfirmationWarning {
   readonly warningId: EntityId;
