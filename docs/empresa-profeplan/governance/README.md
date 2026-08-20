@@ -13,6 +13,18 @@ Esta pasta reúne documentos transversais de governança. Eles não substituem B
 - `GITHUB-MIGRATION-CHECKLIST.md` — pré-condições do corte para `Profeplan-Edtech/profeplan`.
 - `CHATGPT-PROJECT-MAP.md` — organização dos projetos de IA por domínio.
 - `CONTINUITY-INTEGRATION.md` — relação entre Continuity Pack e camada institucional.
+- `AUTONOMY-EXECUTION-RULE.md` — autonomia para ações seguras e reversíveis.
+- `SECURITY-STOP-CONDITIONS.md` — situações que exigem interrupção e decisão humana.
+- `WORK-CODEX-USAGE-POLICY.md` — critérios para evitar consumo desnecessário de Work/Codex.
+- `NEXT-SAFE-ACTIONS.md` — sequência operacional que pode avançar sem nova autorização.
+- `KF-C4-READONLY-FINDING.md` — achado read-only que abriu o menor gap executável de C.4.
+
+## Projetos P0 já semeados
+
+Além da camada de governança, duas pastas de execução já podem receber trabalho sem aguardar migração física dos domínios legados:
+
+- `../projects/D-curriculum-factory/` — proveniência e plano piloto da Curriculum Factory;
+- `../projects/F-marketing-vendas/` — Product Evidence Pack, Truth Matrix e permissões de conteúdo.
 
 ## Regra
 
