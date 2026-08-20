@@ -1,0 +1,171 @@
+name: Knowledge Factory C.3.6 Recovery Cleanup CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/knowledge-factory-c3-6-recovery-cleanup-ci.yml'
+      - 'supabase/migrations/202608181410_kf_extraction_recovery_cleanup.sql'
+      - 'supabase/tests/knowledge_factory_extraction_c3_6_recovery_cleanup.sql'
+      - 'supabase/migrations/202608181340_kf_extraction_quality_review.sql'
+      - 'supabase/migrations/202608181341_kf_extraction_quality_review_corrections.sql'
+      - 'supabase/tests/knowledge_factory_extraction_c3_5_quality_review.sql'
+      - 'supabase/migrations/202608181310_kf_extraction_incremental_persistence.sql'
+      - 'supabase/migrations/202608180320_kf_extraction_control_plane.sql'
+      - 'supabase/migrations/202608180321_kf_extraction_control_plane_corrections.sql'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prove-c3-6-recovery-cleanup:
+    name: Prove C.3.6 recovery and cleanup on disposable Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      KF_DB_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      KF_WORKDIR: .kf-c3-6-supabase-ci
+      KF_EVIDENCE: .kf-evidence/knowledge-factory-c3-6-recovery-cleanup-validation.log
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 11.5.2
+      - name: Install JavaScript dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      - name: Prepare disposable Knowledge Factory baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$KF_WORKDIR" .kf-evidence
+          mkdir -p "$KF_WORKDIR" .kf-evidence
+          (
+            cd "$KF_WORKDIR"
+            supabase init --force
+            mkdir -p supabase/migrations
+            cp ../supabase/tests/fixtures/knowledge_factory_minimal_baseline.sql \
+              supabase/migrations/202608071100_kf_test_baseline.sql
+            cp ../supabase/migrations/202608071120_knowledge_factory_schema.sql \
+              supabase/migrations/202608071120_knowledge_factory_schema.sql
+            cp ../supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql \
+              supabase/migrations/202608122230_kf_source_lifecycle_persistence.sql
+          )
+          {
+            echo "Knowledge Factory C.3.6 disposable recovery/cleanup validation"
+            echo "UTC start: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Commit: $GITHUB_SHA"
+          } | tee "$KF_EVIDENCE"
+      - name: Start disposable Supabase
+        shell: bash
+        run: |
+          set -euo pipefail
+          START_LOG="$(mktemp)"
+          if ! (
+            cd "$KF_WORKDIR"
+            supabase start -x studio,imgproxy,realtime,edge-runtime,logflare,vector,supavisor
+          ) >"$START_LOG" 2>&1; then
+            LINES="$(wc -l < "$START_LOG")"
+            rm -f "$START_LOG"
+            echo "Disposable Supabase failed to start; raw output suppressed."
+            echo "Captured diagnostic lines: $LINES"
+            exit 1
+          fi
+          echo "Disposable Supabase started; generated credentials omitted." | tee -a "$KF_EVIDENCE"
+          rm -f "$START_LOG"
+      - name: Recreate synthetic C.2 handoff prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608141120_kf_source_lifecycle_command_boundary.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608150140_kf_ingestion_recovery_boundary.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/knowledge_factory_ingestion_c2_4.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608151600_kf_ingestion_human_review_handoff.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/knowledge_factory_ingestion_c2_5.sql 2>&1 | tee -a "$KF_EVIDENCE"
+      - name: Apply and prove C.3.2 prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608180320_kf_extraction_control_plane.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608180321_kf_extraction_control_plane_corrections.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/knowledge_factory_extraction_c3_2_control_plane.sql 2>&1 | tee -a "$KF_EVIDENCE"
+      - name: Apply C.3.4 persistence prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608181310_kf_extraction_incremental_persistence.sql 2>&1 | tee -a "$KF_EVIDENCE"
+      - name: Apply and prove C.3.5 quality/review prerequisite
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608181340_kf_extraction_quality_review.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608181341_kf_extraction_quality_review_corrections.sql 2>&1 | tee -a "$KF_EVIDENCE"
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/knowledge_factory_extraction_c3_5_quality_review.sql 2>&1 | tee -a "$KF_EVIDENCE"
+      - name: Apply C.3.6 recovery and cleanup boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/202608181410_kf_extraction_recovery_cleanup.sql 2>&1 | tee -a "$KF_EVIDENCE"
+      - name: Prove retry, cancellation, cleanup and replay safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$KF_DB_URL" -v ON_ERROR_STOP=1 -f supabase/tests/knowledge_factory_extraction_c3_6_recovery_cleanup.sql 2>&1 | tee -a "$KF_EVIDENCE"
+      - name: Assert no forbidden C.3.6 surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          FORBIDDEN="$(psql "$KF_DB_URL" -At -v ON_ERROR_STOP=1 -c "
+            select table_name || '.' || column_name
+            from information_schema.columns
+            where table_schema='public'
+              and table_name in (
+                'kf_extraction_recovery_attempts','kf_extraction_cleanup_receipts'
+              )
+              and (data_type='bytea' or column_name ~* '(embedding|chunk|ocr|bucket|url|credential|secret)');
+          ")"
+          if [ -n "$FORBIDDEN" ]; then
+            echo "Forbidden C.3.6 surface detected: $FORBIDDEN"
+            exit 1
+          fi
+          echo "C.3.6 remains recovery/cleanup evidence only; no hosted Storage, OCR, chunks, embeddings or providers." | tee -a "$KF_EVIDENCE"
+      - name: Finalize evidence
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .kf-evidence
+          {
+            echo "UTC finish: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "Workflow: $GITHUB_WORKFLOW"
+            echo "Run ID: $GITHUB_RUN_ID"
+          } >> "$KF_EVIDENCE"
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knowledge-factory-c3-6-recovery-cleanup-validation-${{ github.run_id }}
+          path: .kf-evidence/knowledge-factory-c3-6-recovery-cleanup-validation.log
+          if-no-files-found: error
+          retention-days: 30
+      - name: Stop disposable Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$KF_WORKDIR/supabase/config.toml" ]; then
+            (cd "$KF_WORKDIR" && supabase stop --no-backup || true)
+          fi
