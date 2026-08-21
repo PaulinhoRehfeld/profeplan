@@ -16,7 +16,9 @@ export interface PartStructuralReviewRequest {
   readonly decisions: readonly PartStructuralReviewDecision[];
 }
 
-function hasCorrectionValue(correction: PartStructuralReviewCorrection | undefined): boolean {
+function hasCorrectionValue(
+  correction: PartStructuralReviewCorrection | undefined
+): boolean {
   return Boolean(
     correction &&
       (correction.elementKind ||
@@ -55,10 +57,14 @@ export class PartStructuralReviewService {
       reviewedTargets.add(targetKey);
 
       if (!decision.rationale.trim()) {
-        throw new Error(`rationale is required for structural review decision ${decision.decisionId}`);
+        throw new Error(
+          `rationale is required for structural review decision ${decision.decisionId}`
+        );
       }
       if (decision.evidenceIds.length === 0) {
-        throw new Error(`evidence is required for structural review decision ${decision.decisionId}`);
+        throw new Error(
+          `evidence is required for structural review decision ${decision.decisionId}`
+        );
       }
 
       const target =
