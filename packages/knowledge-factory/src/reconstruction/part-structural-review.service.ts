@@ -16,16 +16,14 @@ export interface PartStructuralReviewRequest {
   readonly decisions: readonly PartStructuralReviewDecision[];
 }
 
-function hasCorrectionValue(
-  correction: PartStructuralReviewCorrection | undefined
-): boolean {
+function hasCorrectionValue(correction: PartStructuralReviewCorrection | undefined): boolean {
   return Boolean(
     correction &&
-      (correction.elementKind ||
-        correction.relationKind ||
-        correction.parentElementId ||
-        correction.fromElementId ||
-        correction.toElementId)
+    (correction.elementKind ||
+      correction.relationKind ||
+      correction.parentElementId ||
+      correction.fromElementId ||
+      correction.toElementId)
   );
 }
 
@@ -72,9 +70,7 @@ export class PartStructuralReviewService {
           ? elementById.get(decision.targetId)
           : relationById.get(decision.targetId);
       if (!target) {
-        throw new Error(
-          `structural review target not found in candidate snapshot: ${targetKey}`
-        );
+        throw new Error(`structural review target not found in candidate snapshot: ${targetKey}`);
       }
 
       const correctionPresent = hasCorrectionValue(decision.correction);
@@ -94,7 +90,9 @@ export class PartStructuralReviewService {
         decision.targetKind === 'element' &&
         (decision.correction?.fromElementId || decision.correction?.toElementId)
       ) {
-        throw new Error(`element decision ${decision.decisionId} cannot correct relation endpoints`);
+        throw new Error(
+          `element decision ${decision.decisionId} cannot correct relation endpoints`
+        );
       }
       if (
         decision.targetKind === 'relation' &&

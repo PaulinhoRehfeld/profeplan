@@ -7,13 +7,8 @@ import type {
 
 export const PART_STRUCTURAL_REVIEW_CONTRACT_VERSION = '1.0.0' as const;
 
-export const PART_STRUCTURAL_REVIEW_DISPOSITIONS = [
-  'confirmed',
-  'corrected',
-  'rejected',
-] as const;
-export type PartStructuralReviewDisposition =
-  (typeof PART_STRUCTURAL_REVIEW_DISPOSITIONS)[number];
+export const PART_STRUCTURAL_REVIEW_DISPOSITIONS = ['confirmed', 'corrected', 'rejected'] as const;
+export type PartStructuralReviewDisposition = (typeof PART_STRUCTURAL_REVIEW_DISPOSITIONS)[number];
 
 export type PartStructuralReviewTargetKind = 'element' | 'relation';
 
