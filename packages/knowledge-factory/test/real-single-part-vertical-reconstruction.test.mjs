@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
   PartReconstructionService,
+  PartStructuralReviewService,
   PdfJsDocumentInspectorAdapter,
   StructuralRecognitionService,
 } from '../src/index.ts';
@@ -108,7 +109,7 @@ async function temporaryVerifiedArtifact(path) {
 }
 
 runRealPilot(
-  'real PNLD 2026 PDF reconstructs one mapped section without deep-reading the book',
+  'real PNLD 2026 PDF reconstructs and structurally confirms one mapped section without deep-reading the book',
   async () => {
     assert.ok(REAL_PILOT_PATH);
 
@@ -298,6 +299,48 @@ runRealPilot(
       reconstruction.warnings.some((warning) => warning.code === 'part_title_not_found'),
       false,
       'the governed section title must not remain unresolved after body corroboration'
+    );
+
+    const candidateBeforeReview = JSON.stringify(reconstruction);
+    const review = new PartStructuralReviewService().review({
+      reviewSnapshotId: 'part-structural-review:first-real-evolucionismo-social',
+      candidate: reconstruction,
+      reviewerId: 'reviewer:governed-real-pilot',
+      createdAt: '2026-08-21T10:50:00.000Z',
+      decisions: [
+        {
+          decisionId: 'structural-review-decision:real-part-title',
+          targetKind: 'element',
+          targetId: partTitle.elementId,
+          disposition: 'confirmed',
+          rationale: 'The section title is corroborated by native text inside the governed body scope.',
+          evidenceIds: partTitle.evidence.map((evidence) => evidence.evidenceId),
+        },
+      ],
+    });
+
+    assert.equal(review.contractVersion, '1.0.0');
+    assert.equal(review.candidateSnapshotId, reconstruction.snapshotId);
+    assert.equal(review.decisions.length, 1);
+    assert.equal(review.decisions[0].disposition, 'confirmed');
+    assert.equal(review.decisions[0].targetId, partTitle.elementId);
+    assert.equal(review.decisions[0].evidence.length > 0, true);
+    assert.equal(
+      review.decisions[0].evidence.every((evidence) =>
+        isInsideRange(evidence.page.physicalPageNumber, partScope.pageRange)
+      ),
+      true,
+      'C.4 confirmation evidence must remain inside the governed CartographicPartScope'
+    );
+    assert.equal(
+      JSON.stringify(reconstruction),
+      candidateBeforeReview,
+      'C.4 review must preserve the original candidate snapshot unchanged'
+    );
+    assert.deepEqual(
+      reconstructionRequests,
+      [[{ startPhysicalPage: 34, endPhysicalPage: 35 }]],
+      'C.4 review must not trigger any additional PDF inspection'
     );
   }
 );
