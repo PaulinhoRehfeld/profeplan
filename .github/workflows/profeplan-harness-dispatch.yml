@@ -1,0 +1,91 @@
+name: ProfePlan Harness Dispatch
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Governed task beginning with HARNESS JOB
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: profeplan-harness
+  cancel-in-progress: false
+
+jobs:
+  execute:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.actor == 'PaulinhoRehfeld') ||
+      (github.event_name == 'issues' && github.event.label.name == 'harness:ready' &&
+      github.actor == 'PaulinhoRehfeld' && github.event.issue.user.login == 'PaulinhoRehfeld')
+    runs-on: [self-hosted, Linux, X64, profeplan-harness]
+    timeout-minutes: 45
+
+    steps:
+      - name: Execute governed Harness job
+        id: harness
+        env:
+          HARNESS_TASK: ${{ github.event.issue.body || inputs.task }}
+          HARNESS_ACTOR: ${{ github.actor }}
+          HARNESS_JOB_NUMBER: ${{ github.event.issue.number || 'manual' }}
+          HARNESS_RUN_ID: ${{ github.run_id }}
+        run: /opt/profeplan-harness/run-github-job.sh
+
+      - name: Create Draft PR
+        if: steps.harness.outputs.changed == 'true'
+        uses: actions/github-script@v8
+        env:
+          JOB_BRANCH: ${{ steps.harness.outputs.branch }}
+          JOB_NUMBER: ${{ github.event.issue.number || 'manual' }}
+          RESULT_PATH: ${{ steps.harness.outputs.result_path }}
+        with:
+          script: |
+            const fs = require('fs')
+            const { owner, repo } = context.repo
+            await github.rest.pulls.create({
+              owner,
+              repo,
+              base: 'main',
+              head: process.env.JOB_BRANCH,
+              title: `Harness job ${process.env.JOB_NUMBER}`,
+              body: fs.readFileSync(process.env.RESULT_PATH, 'utf8'),
+              draft: true,
+            })
+
+      - name: Publish result on Issue
+        if: always() && github.event_name == 'issues'
+        uses: actions/github-script@v8
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          RESULT_PATH: ${{ steps.harness.outputs.result_path }}
+          JOB_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const fs = require('fs')
+            const { owner, repo } = context.repo
+            const path = process.env.RESULT_PATH
+            const body = path && fs.existsSync(path)
+              ? fs.readFileSync(path, 'utf8')
+              : `Harness job finished with status: ${process.env.JOB_STATUS}. No result artifact was produced.`
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: Number(process.env.ISSUE_NUMBER),
+              body,
+            })
+
+      - name: Write workflow summary
+        if: always()
+        env:
+          RESULT_PATH: ${{ steps.harness.outputs.result_path }}
+        run: |
+          if [ -f "$RESULT_PATH" ]; then
+            sed -n '1,300p' "$RESULT_PATH" >> "$GITHUB_STEP_SUMMARY"
+          fi
