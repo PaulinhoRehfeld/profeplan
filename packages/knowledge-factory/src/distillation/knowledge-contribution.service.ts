@@ -87,7 +87,9 @@ export class KnowledgeContributionService {
       }
 
       const evidenceById = new Map(
-        sourceElements.flatMap((element) => element.evidence).map((evidence) => [evidence.evidenceId, evidence])
+        sourceElements
+          .flatMap((element) => element.evidence)
+          .map((evidence) => [evidence.evidenceId, evidence])
       );
 
       return {
