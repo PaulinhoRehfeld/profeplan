@@ -4,12 +4,13 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { sendEmailConfirmation } from '../_lib/email';
+import { buildSupabaseAdminHeaders, resolveSupabaseAdminKey } from '../_lib/supabaseCredentials';
 
 // APP_URL controla o redirectTo do link de confirmação.
 // Deve ser https://profeplan.com.br em produção.
 const APP_URL = process.env.APP_URL || 'https://profeplan.com.br';
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const SUPABASE_ADMIN_KEY = resolveSupabaseAdminKey();
 
 const isAllowedOrigin = (origin: string): boolean => {
   if (!origin) return false;
@@ -76,10 +77,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
   // Checa env vars críticas antes de qualquer operação
-  if (!SUPABASE_URL || !SERVICE_KEY) {
-    log.error('[Signup] SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes', {
+  if (!SUPABASE_URL || !SUPABASE_ADMIN_KEY) {
+    log.error('[Signup] SUPABASE_URL ou credencial administrativa Supabase ausentes', {
       hasUrl: !!SUPABASE_URL,
-      hasKey: !!SERVICE_KEY,
+      hasKey: !!SUPABASE_ADMIN_KEY,
     });
     return res
       .status(503)
@@ -104,8 +105,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const supabaseResp = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${SERVICE_KEY}`,
-        apikey: SERVICE_KEY,
+        ...buildSupabaseAdminHeaders(SUPABASE_ADMIN_KEY),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

@@ -1,11 +1,29 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.21.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.108.2";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
 const STRIPE_WEBHOOK_SIGNING_SECRET = Deno.env.get("STRIPE_WEBHOOK_SIGNING_SECRET");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+function resolveSupabaseAdminKey(): string | undefined {
+  const serializedKeys = Deno.env.get("SUPABASE_SECRET_KEYS");
+  if (serializedKeys) {
+    try {
+      const keys = JSON.parse(serializedKeys) as Record<string, unknown>;
+      const selectedKey = keys["stripe_webhook"] ?? keys.default;
+      if (typeof selectedKey === "string" && selectedKey.trim()) {
+        return selectedKey.trim();
+      }
+    } catch {
+      console.error("[stripe-webhook] SUPABASE_SECRET_KEYS is not valid JSON");
+    }
+  }
+
+  return Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")?.trim() || undefined;
+}
+
+const SUPABASE_ADMIN_KEY = resolveSupabaseAdminKey();
 
 const PRODUCT_ID_GOLD = "prod_UtI9NVcQK04CrP";
 const PRODUCT_ID_SILVER = "prod_UyXrOejWaOHI4j";
@@ -37,7 +55,7 @@ function checkoutEmail(session: Record<string, any>): string | null {
 serve(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
-  if (!STRIPE_SECRET_KEY || !STRIPE_WEBHOOK_SIGNING_SECRET || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  if (!STRIPE_SECRET_KEY || !STRIPE_WEBHOOK_SIGNING_SECRET || !SUPABASE_URL || !SUPABASE_ADMIN_KEY) {
     console.error("[stripe-webhook] Missing required environment configuration");
     return json({ error: "Webhook not configured" }, 503);
   }
@@ -49,7 +67,7 @@ serve(async (req) => {
     apiVersion: "2022-11-15",
     httpClient: Stripe.createFetchHttpClient(),
   });
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ADMIN_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 

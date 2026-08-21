@@ -1,11 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
+import { resolveSupabaseAdminKey } from './supabaseCredentials';
 
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const SUPABASE_URL = process.env.SUPABASE_URL?.trim() || '';
+const SUPABASE_ADMIN_KEY = resolveSupabaseAdminKey();
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+if (!SUPABASE_URL || !SUPABASE_ADMIN_KEY) {
   console.error(
-    '[supabaseAdmin] CRITICAL: SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY ausentes nas variáveis de ambiente.'
+    '[supabaseAdmin] CRITICAL: SUPABASE_URL e uma credencial administrativa Supabase são obrigatórias.'
   );
 }
 
@@ -13,6 +14,6 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 // crash no módulo. Chamadas reais falharão com erro da API, capturado pelo try-catch.
 export const supabaseAdmin = createClient(
   SUPABASE_URL || 'https://placeholder.supabase.co',
-  SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key',
+  SUPABASE_ADMIN_KEY || 'placeholder-key',
   { auth: { autoRefreshToken: false, persistSession: false } }
 );

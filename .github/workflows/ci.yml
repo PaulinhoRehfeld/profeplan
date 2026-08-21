@@ -63,6 +63,9 @@ jobs:
       - name: Run Linter (ESLint)
         run: pnpm --filter '!./apps/bff' --filter '!./packages/db' --filter '!./packages/ai' --filter '!./packages/auth' -r lint
 
+      - name: Run API Typecheck (TypeScript)
+        run: pnpm exec tsc --project api/tsconfig.json --noEmit
+
       - name: Run Typecheck (TypeScript)
         run: pnpm --filter '!./apps/bff' --filter '!./packages/db' --filter '!./packages/ai' --filter '!./packages/auth' -r typecheck
 
