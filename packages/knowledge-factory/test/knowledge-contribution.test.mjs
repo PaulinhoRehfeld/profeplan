@@ -86,7 +86,8 @@ test('C.5 distills an authorial candidate from structurally confirmed evidence',
       {
         contributionId: 'contribution:synthetic:culture:1',
         kind: 'conceptual',
-        statement: 'A cultura é socialmente aprendida e compartilhada por meio de práticas e significados.',
+        statement:
+          'A cultura é socialmente aprendida e compartilhada por meio de práticas e significados.',
         sourceElementIds: ['element:body:1'],
       },
     ],
@@ -144,5 +145,33 @@ test('C.5 rejects an unconfirmed structural source element', () => {
         ],
       }),
     /source element is not structurally confirmed/
+  );
+});
+
+test('C.5 rejects confirmed source elements without inherited evidence', () => {
+  const service = new KnowledgeContributionService();
+  const reconstructionWithoutEvidence = {
+    ...reconstruction,
+    elements: reconstruction.elements.map((element) =>
+      element.elementId === 'element:body:1' ? { ...element, evidence: [] } : element
+    ),
+  };
+
+  assert.throws(
+    () =>
+      service.distill({
+        reconstruction: reconstructionWithoutEvidence,
+        structuralReview,
+        createdAt: '2026-08-21T23:05:00.000Z',
+        proposals: [
+          {
+            contributionId: 'contribution:synthetic:missing-evidence',
+            kind: 'conceptual',
+            statement: 'A contribuição exige evidência herdada do elemento-fonte confirmado.',
+            sourceElementIds: ['element:body:1'],
+          },
+        ],
+      }),
+    /source elements must provide evidence/
   );
 });

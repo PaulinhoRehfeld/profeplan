@@ -90,6 +90,11 @@ export class KnowledgeContributionService {
           .flatMap((element) => element.evidence)
           .map((evidence) => [evidence.evidenceId, evidence])
       );
+      if (evidenceById.size === 0) {
+        throw new Error(
+          `source elements must provide evidence for contribution ${proposal.contributionId}`
+        );
+      }
 
       return {
         contractVersion: CONTRIBUTION_CONTRACT_VERSION,
