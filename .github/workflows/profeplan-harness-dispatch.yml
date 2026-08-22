@@ -29,17 +29,6 @@ jobs:
     timeout-minutes: 45
 
     steps:
-      - name: Prepare GitHub SSH host key
-        shell: bash
-        run: |
-          set -euo pipefail
-          install -d -m 700 "$HOME/.ssh"
-          touch "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/known_hosts"
-          if ! ssh-keygen -F github.com -f "$HOME/.ssh/known_hosts" >/dev/null; then
-            ssh-keyscan -H -t rsa,ecdsa,ed25519 github.com >> "$HOME/.ssh/known_hosts"
-          fi
-
       - name: Execute governed Harness job
         id: harness
         env:
@@ -47,6 +36,9 @@ jobs:
           HARNESS_ACTOR: ${{ github.actor }}
           HARNESS_JOB_NUMBER: ${{ github.event.issue.number || 'manual' }}
           HARNESS_RUN_ID: ${{ github.run_id }}
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: url.https://x-access-token:${{ github.token }}@github.com/.insteadOf
+          GIT_CONFIG_VALUE_0: git@github.com:
         shell: bash
         run: |
           set +e
