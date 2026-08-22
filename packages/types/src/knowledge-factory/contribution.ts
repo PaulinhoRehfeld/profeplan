@@ -1,18 +1,12 @@
-import type { EntityId, ISODateTime } from "./common.ts";
-import type { PartReconstructionEvidenceRef } from "./reconstruction.ts";
+import type { EntityId, ISODateTime } from './common.ts';
+import type { PartReconstructionEvidenceRef } from './reconstruction.ts';
 
-export const KNOWLEDGE_CONTRIBUTION_CANDIDATE_CONTRACT_VERSION =
-  "1.0.0" as const;
+export const KNOWLEDGE_CONTRIBUTION_CANDIDATE_CONTRACT_VERSION = '1.0.0' as const;
 
-export const KNOWLEDGE_CONTRIBUTION_KINDS = [
-  "conceptual",
-  "contextual",
-  "methodological",
-] as const;
-export type KnowledgeContributionKind =
-  (typeof KNOWLEDGE_CONTRIBUTION_KINDS)[number];
+export const KNOWLEDGE_CONTRIBUTION_KINDS = ['conceptual', 'contextual', 'methodological'] as const;
+export type KnowledgeContributionKind = (typeof KNOWLEDGE_CONTRIBUTION_KINDS)[number];
 
-export const KNOWLEDGE_CONTRIBUTION_CANDIDATE_STATES = ["candidate"] as const;
+export const KNOWLEDGE_CONTRIBUTION_CANDIDATE_STATES = ['candidate'] as const;
 export type KnowledgeContributionCandidateState =
   (typeof KNOWLEDGE_CONTRIBUTION_CANDIDATE_STATES)[number];
 
