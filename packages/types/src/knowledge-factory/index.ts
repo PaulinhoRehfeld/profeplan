@@ -8,6 +8,7 @@ export * from './extraction.ts';
 export * from './cartography.ts';
 export * from './reconstruction.ts';
 export * from './reconstruction-review.ts';
+export * from './contribution.ts';
 export * from './staging.ts';
 export * from './integrity.ts';
 export * from './curriculum.ts';
