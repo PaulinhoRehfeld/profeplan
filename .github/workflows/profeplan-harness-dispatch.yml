@@ -36,7 +36,15 @@ jobs:
           HARNESS_ACTOR: ${{ github.actor }}
           HARNESS_JOB_NUMBER: ${{ github.event.issue.number || 'manual' }}
           HARNESS_RUN_ID: ${{ github.run_id }}
-        run: /opt/profeplan-harness/run-github-job.sh
+        shell: bash
+        run: |
+          set +e
+          HARNESS_LOG="$RUNNER_TEMP/profeplan-harness-${HARNESS_JOB_NUMBER}.log"
+          /opt/profeplan-harness/run-github-job.sh 2>&1 | tee "$HARNESS_LOG"
+          status=${PIPESTATUS[0]}
+          echo "runner_exit_code=$status" >> "$GITHUB_OUTPUT"
+          echo "runner_log=$HARNESS_LOG" >> "$GITHUB_OUTPUT"
+          exit "$status"
 
       - name: Create Draft PR
         if: steps.harness.outputs.changed == 'true'
@@ -66,14 +74,34 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           RESULT_PATH: ${{ steps.harness.outputs.result_path }}
           JOB_STATUS: ${{ job.status }}
+          RUNNER_EXIT_CODE: ${{ steps.harness.outputs.runner_exit_code }}
+          RUNNER_LOG: ${{ steps.harness.outputs.runner_log }}
         with:
           script: |
             const fs = require('fs')
             const { owner, repo } = context.repo
             const path = process.env.RESULT_PATH
-            const body = path && fs.existsSync(path)
-              ? fs.readFileSync(path, 'utf8')
-              : `Harness job finished with status: ${process.env.JOB_STATUS}. No result artifact was produced.`
+            let body
+            if (path && fs.existsSync(path)) {
+              body = fs.readFileSync(path, 'utf8')
+            } else {
+              const logPath = process.env.RUNNER_LOG
+              let diagnostic = ''
+              if (logPath && fs.existsSync(logPath)) {
+                const lines = fs.readFileSync(logPath, 'utf8').split(/\r?\n/).slice(-120)
+                diagnostic = lines.join('\n')
+                  .replace(/ghp_[A-Za-z0-9_]+/g, '[REDACTED_GITHUB_TOKEN]')
+                  .replace(/github_pat_[A-Za-z0-9_]+/g, '[REDACTED_GITHUB_TOKEN]')
+                  .replace(/sk-[A-Za-z0-9_-]+/g, '[REDACTED_API_KEY]')
+                  .replace(/(authorization:\s*bearer\s+)[^\s]+/ig, '$1[REDACTED]')
+                  .replace(/((?:token|password|secret)\s*[=:]\s*)[^\s]+/ig, '$1[REDACTED]')
+              }
+              body = [
+                `Harness job finished with status: ${process.env.JOB_STATUS}. No result artifact was produced.`,
+                `Runner exit code: ${process.env.RUNNER_EXIT_CODE || 'unknown'}.`,
+                diagnostic ? `\n### Runner diagnostic tail\n\n\`\`\`text\n${diagnostic}\n\`\`\`` : '\nNo runner diagnostic log was available.'
+              ].join('\n')
+            }
             await github.rest.issues.createComment({
               owner,
               repo,
@@ -85,7 +113,13 @@ jobs:
         if: always()
         env:
           RESULT_PATH: ${{ steps.harness.outputs.result_path }}
+          RUNNER_LOG: ${{ steps.harness.outputs.runner_log }}
         run: |
           if [ -f "$RESULT_PATH" ]; then
             sed -n '1,300p' "$RESULT_PATH" >> "$GITHUB_STEP_SUMMARY"
+          elif [ -f "$RUNNER_LOG" ]; then
+            echo '### Harness runner diagnostic tail' >> "$GITHUB_STEP_SUMMARY"
+            echo '```text' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 120 "$RUNNER_LOG" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
