@@ -8,6 +8,7 @@ export * from './cartography/structural-recognition.service.ts';
 export * from './reconstruction/part-reconstruction.service.ts';
 export * from './reconstruction/part-structural-review.service.ts';
 export * from './distillation/knowledge-contribution.service.ts';
+export * from './distillation/knowledge-contribution-relation.service.ts';
 export * from './extraction/artifact-read.port.ts';
 export * from './extraction/artifact-read.service.ts';
 export * from './extraction/native-text-extractor.port.ts';
